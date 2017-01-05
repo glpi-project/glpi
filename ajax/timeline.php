@@ -39,7 +39,7 @@ if (!isset($_POST['action'])) {
    exit;
 }
 
-switch($_POST['action']) {
+switch ($_POST['action']) {
    case "change_task_state":
       if (!isset($_POST['tasks_id'])) {
          exit();
@@ -70,9 +70,9 @@ switch($_POST['action']) {
              && isset($_POST["id"])
              && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
 
-            $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() ) ;
-            if($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
-               ObjectLock::setReadOnlyProfile( ) ;
+            $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() );
+            if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+               ObjectLock::setReadOnlyProfile( );
             }
 
             Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent,

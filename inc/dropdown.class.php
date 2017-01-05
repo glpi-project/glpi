@@ -110,7 +110,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = array();
-      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
+      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -146,7 +146,7 @@ class Dropdown {
             // translation not needed - only for debug
             $output .= "entity_sons options is not available with entity option as array";
          } else {
-            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
+            $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
          }
       }
 
@@ -199,7 +199,7 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
-         $output .= "&nbsp;".Html::showToolTip($comment,$options_tooltip);
+         $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
@@ -272,7 +272,7 @@ class Dropdown {
       $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
-         return getTreeValueCompleteName($table,$id,$withcomment, $translate, $tooltip);
+         return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip);
       }
 
       $name    = "";
@@ -282,7 +282,7 @@ class Dropdown {
          $SELECTNAME    = "'' AS transname";
          $SELECTCOMMENT = "'' AS transcomment";
          $JOIN          = '';
-         if  ($translate) {
+         if ($translate) {
             if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
                $SELECTNAME = "`namet`.`value` AS transname";
                $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
@@ -367,7 +367,7 @@ class Dropdown {
                      break;
 
                   case "glpi_suppliers" :
-                     if($tooltip) {
+                     if ($tooltip) {
                         if (!empty($data["phonenumber"])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
                                                       "</span>".$data['phonenumber']);
@@ -390,7 +390,7 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if($tooltip) {
+                     if ($tooltip) {
                         if (!empty($data['locations_id'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                       "<span class='b'>".__('Location')."</span>",
@@ -463,7 +463,7 @@ class Dropdown {
 
             $query = "SELECT `id`, `$field`
                       FROM `$table`
-                      WHERE `id` IN (".implode(',',$ids).")";
+                      WHERE `id` IN (".implode(',', $ids).")";
 
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -583,7 +583,7 @@ class Dropdown {
             sort($files);
 
             foreach ($files as $file) {
-               if (preg_match("/\.png$/i",$file)) {
+               if (preg_match("/\.png$/i", $file)) {
                   $values[$file] = $file;
                }
             }
@@ -723,7 +723,7 @@ class Dropdown {
       global $CFG_GLPI;
       static $optgroup = NULL;
 
-      if (!Session::haveRightsOr('device', array(CREATE, UPDATE, PURGE))) {
+      if (!Session::haveRight('device', READ)) {
          return array();
       }
 
@@ -758,7 +758,7 @@ class Dropdown {
                                                 Session::getPluralNumber()),
                  'Manufacturer'           => _n('Manufacturer', 'Manufacturers',
                                                 Session::getPluralNumber()),
-                 'Blacklist'              => _n('Blacklist','Blacklists',
+                 'Blacklist'              => _n('Blacklist', 'Blacklists',
                                                 Session::getPluralNumber()),
                  'BlacklistedMailContent' => __('Blacklisted mail content')
              ),
@@ -767,9 +767,9 @@ class Dropdown {
                  'ITILCategory'     => _n('Ticket category',
                                           'Ticket categories',
                                           Session::getPluralNumber()),
-                 'TaskCategory'     => _n('Task category','Task categories',
+                 'TaskCategory'     => _n('Task category', 'Task categories',
                                           Session::getPluralNumber()),
-                 'TaskTemplate'     => _n('Task template','Task templates',
+                 'TaskTemplate'     => _n('Task template', 'Task templates',
                                           Session::getPluralNumber()),
                  'SolutionType'     => _n('Solution type', 'Solution types',
                                           Session::getPluralNumber()),
@@ -1166,14 +1166,14 @@ class Dropdown {
       $values   = array();
       $selected = '';
 
-      for ($i=$begin ; $i<$end ; $i++) {
+      for ($i=$begin; $i<$end; $i++) {
          if ($i < 10) {
             $tmp = "0".$i;
          } else {
             $tmp = $i;
          }
 
-         for ($j=0 ; $j<60 ; $j+=$p['step']) {
+         for ($j=0; $j<60; $j+=$p['step']) {
             if ($j < 10) {
                $val = $tmp.":0$j";
             } else {
@@ -1368,8 +1368,9 @@ class Dropdown {
          // default itemtype and the default value can be '' thus empty won't be valid !
          if (array_key_exists ('default_itemtype', $options)) {
             echo "<script type='text/javascript' >\n";
+            echo "$(function() {";
             echo Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
-            echo "</script>\n";
+            echo "});</script>\n";
 
             $p["idtable"] = $params['default_itemtype'];
             Ajax::updateItem($show_id, $CFG_GLPI["root_doc"]. "/ajax/dropdownAllItems.php", $p);
@@ -1424,7 +1425,7 @@ class Dropdown {
 
       $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
       if (!isset($p['toadd'][$p['value']])) {
-         $valuename = self::getValueWithUnit($p['value'],$p['unit']);
+         $valuename = self::getValueWithUnit($p['value'], $p['unit']);
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
@@ -1530,7 +1531,7 @@ class Dropdown {
             $opt[$key] = $val;
          }
       }
-      return self::showNumber($myname,$opt);
+      return self::showNumber($myname, $opt);
 
    }
 
@@ -1606,7 +1607,7 @@ class Dropdown {
          }
       }
 
-      for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
+      for ($i = $params['min']; $i <= $params['max']; $i+=$params['step']) {
          $values[$i] = '';
       }
 
@@ -1639,10 +1640,10 @@ class Dropdown {
 
                   //TRANS: %1$d is the number of days, %2$d the number of hours,
                   //       %3$s the number of minutes : display 1 day 3h15
-                  $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s', $day),
+                  $values[$i] = sprintf(_n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
                                        $day, $hour, $minute);
                } else {
-                  $values[$i] = sprintf(_n('%d day','%d days',$day), $day);
+                  $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                }
 
             } else if ($hour > 0 || $minute > 0) {
@@ -1814,7 +1815,7 @@ class Dropdown {
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
       if ($param["display_emptychoice"]) {
-         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
+         $elements = array( 0 => $param['emptylabel'] ) + $elements;
       }
 
       if ($param["multiple"]) {
@@ -1834,12 +1835,12 @@ class Dropdown {
                $to_display[] = $elements[$value];
             }
          }
-         $output .= implode('<br>',$to_display);
+         $output .= implode('<br>', $to_display);
       } else {
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
-         if($param['tooltip']) {
+         if ($param['tooltip']) {
             $output .= ' title="'.Html::entities_deep($param['tooltip']).'"';
          }
 
@@ -1867,9 +1868,9 @@ class Dropdown {
 
                $output .= "<optgroup label=\"$opt_goup\"";
                $optgroup_tooltips = false;
-               if(isset($param['option_tooltips'][$key])) {
-                  if(is_array($param['option_tooltips'][$key])) {
-                     if(isset($param['option_tooltips'][$key]['__optgroup_label'])){
+               if (isset($param['option_tooltips'][$key])) {
+                  if (is_array($param['option_tooltips'][$key])) {
+                     if (isset($param['option_tooltips'][$key]['__optgroup_label'])) {
                         $output .= ' title="'.$param['option_tooltips'][$key]['__optgroup_label'].'"';
                      }
                      $optgroup_tooltips = $param['option_tooltips'][$key];
@@ -1884,12 +1885,12 @@ class Dropdown {
                      $output .= "<option value='".$key2."'";
                      // Do not use in_array : trouble with 0 and empty value
                      foreach ($param['values'] as $value) {
-                        if (strcmp($key2,$value) === 0) {
+                        if (strcmp($key2, $value) === 0) {
                            $output .= " selected";
                            break;
                         }
                      }
-                     if($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
+                     if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
                         $output .= ' title="'.$optgroup_tooltips[$key2].'"';
                      }
                      $output .= ">" .  $val2 . "</option>";
@@ -1904,12 +1905,12 @@ class Dropdown {
                   $output .= "<option value='".$key."'";
                   // Do not use in_array : trouble with 0 and empty value
                   foreach ($param['values'] as $value) {
-                     if (strcmp($key,$value)===0) {
+                     if (strcmp($key, $value)===0) {
                         $output .= " selected";
                         break;
                      }
                   }
-                  if(isset($param['option_tooltips'][$key])) {
+                  if (isset($param['option_tooltips'][$key])) {
                      $output .= ' title="'.$param['option_tooltips'][$key].'"';
                   }
                   $output .= ">" .$val . "</option>";
@@ -2121,8 +2122,8 @@ class Dropdown {
 
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' class='pointer' src='".
-             $CFG_GLPI["root_doc"]."/pics/export.png' title=\""._sx('button', 'Export')."\" value=\"".
-             _sx('button', 'Export')."\">";
+             $CFG_GLPI["root_doc"] . "/pics/export.png' title=\"" . _sx('button', 'Export') . "\" alt=\"" .
+        _sx('button', 'Export')."\">";
    }
 
 
@@ -2144,22 +2145,22 @@ class Dropdown {
 
       $values = array();
 
-      for ($i=5 ; $i<20 ; $i+=5) {
+      for ($i=5; $i<20; $i+=5) {
          $values[$i] = $i;
       }
-      for ($i=20 ; $i<50 ; $i+=10) {
+      for ($i=20; $i<50; $i+=10) {
          $values[$i] = $i;
       }
-      for ($i=50 ; $i<250 ; $i+=50) {
+      for ($i=50; $i<250; $i+=50) {
          $values[$i] = $i;
       }
-      for ($i=250 ; $i<1000 ; $i+=250) {
+      for ($i=250; $i<1000; $i+=250) {
          $values[$i] = $i;
       }
-      for ($i=1000 ; $i<5000 ; $i+=1000) {
+      for ($i=1000; $i<5000; $i+=1000) {
          $values[$i] = $i;
       }
-      for ($i=5000 ; $i<=10000 ; $i+=5000) {
+      for ($i=5000; $i<=10000; $i+=5000) {
          $values[$i] = $i;
       }
       $values[9999999] = 9999999;

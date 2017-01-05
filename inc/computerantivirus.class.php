@@ -106,7 +106,7 @@ class ComputerAntivirus extends CommonDBChild {
    static function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      foreach($DB->request('glpi_computerantiviruses', array('computers_id' => $oldid)) as $data) {
+      foreach ($DB->request('glpi_computerantiviruses', array('computers_id' => $oldid)) as $data) {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
@@ -369,7 +369,7 @@ class ComputerAntivirus extends CommonDBChild {
                                                    Computer::getTypeName(1), $comp->getName()));
 
             $antivirus = new self();
-            foreach($result as $data) {
+            foreach ($result as $data) {
                $antivirus->getFromDB($data['id']);
                echo "<tr class='tab_bg_2'>";
                echo "<td>".$antivirus->getLink()."</td>";

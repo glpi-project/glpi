@@ -51,7 +51,7 @@ class Contact_Supplier extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Contact/Supplier','Links Contact/Supplier',$nb);
+      return _n('Link Contact/Supplier', 'Links Contact/Supplier', $nb);
    }
 
    function getForbiddenStandardMassiveAction() {
@@ -157,7 +157,7 @@ class Contact_Supplier extends CommonDBRelation{
                 LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
                 WHERE `glpi_contacts_suppliers`.`contacts_id` = '$instID'
                       AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`".
-                      getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) ."
+                      getEntitiesRestrictRequest(" AND", "glpi_suppliers", '', '', true) ."
                 ORDER BY `glpi_entities`.`completename`, `name`";
 
       $result = $DB->query($query);
@@ -185,7 +185,7 @@ class Contact_Supplier extends CommonDBRelation{
                                   'entity'      => $contact->fields["entities_id"],
                                   'entity_sons' => $contact->fields["is_recursive"]));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -237,7 +237,7 @@ class Contact_Supplier extends CommonDBRelation{
             if (!empty($website)) {
                $website = $data["website"];
 
-               if (!preg_match("?https*://?",$website)) {
+               if (!preg_match("?https*://?", $website)) {
                   $website = "http://".$website;
                }
                $website = "<a target=_blank href='$website'>".$data["website"]."</a>";
@@ -321,7 +321,7 @@ class Contact_Supplier extends CommonDBRelation{
                                  'entity_sons' => $supplier->fields["is_recursive"]));
 
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -369,7 +369,7 @@ class Contact_Supplier extends CommonDBRelation{
          foreach ($contacts as $data) {
             $ID                = $data["ID_ent"];
             $used[$data["id"]] = $data["id"];
-            Session::addToNavigateListItems('Contact',$data["id"]);
+            Session::addToNavigateListItems('Contact', $data["id"]);
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             if ($canedit) {

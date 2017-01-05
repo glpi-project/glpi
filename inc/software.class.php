@@ -141,7 +141,7 @@ class Software extends CommonDBTM {
       //If category was not set by user (when manually adding a user)
       if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
          $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null,null,Toolbox::stripslashes_deep($input));
+         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
          if (!empty($result) && isset($result["softwarecategories_id"])) {
             $input["softwarecategories_id"] = $result["softwarecategories_id"];
@@ -695,7 +695,7 @@ class Software extends CommonDBTM {
 
       // Make a select box
       $rand  = mt_rand();
-      $where = getEntitiesRestrictRequest('', 'glpi_softwares','entities_id',
+      $where = getEntitiesRestrictRequest('', 'glpi_softwares', 'entities_id',
                                           $entity_restrict, true);
       $rand = Dropdown::show('Software', array('condition' => $where));
 
@@ -827,7 +827,7 @@ class Software extends CommonDBTM {
                              AND `manufacturers_id` = '$manufacturer_id'
                              AND `is_template` = '0' ".
                              getEntitiesRestrictRequest('AND', 'glpi_softwares',
-                                                        'entities_id', $entity,true);
+                                                        'entities_id', $entity, true);
 
       $result_search = $DB->query($query_search);
 
@@ -929,7 +929,7 @@ class Software extends CommonDBTM {
                      AND `glpi_softwares`.`name` = '".addslashes($this->fields["name"])."'
                      AND `glpi_softwares`.`is_deleted` = '0'
                      AND `glpi_softwares`.`is_template` = '0' " .
-                         getEntitiesRestrictRequest('AND', 'glpi_softwares','entities_id',
+                         getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id',
                                                     getSonsOf("glpi_entities",
                                                               $this->fields["entities_id"]),
                                                               false).")
@@ -1051,7 +1051,7 @@ class Software extends CommonDBTM {
       // Move software license
       $sql = "UPDATE `glpi_softwarelicenses`
               SET `softwares_id` = '$ID'
-              WHERE `softwares_id` IN (".implode(",",$item).")";
+              WHERE `softwares_id` IN (".implode(",", $item).")";
 
       if ($DB->query($sql)) {
          $i++;

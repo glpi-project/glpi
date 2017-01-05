@@ -151,7 +151,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $datas['##change.numberofproblems##'] = count($datas['problems']);
 
          $restrict = "`changes_id` = '".$item->getField('id')."'";
-         $items    = getAllDatasFromTable('glpi_changes_items',$restrict);
+         $items    = getAllDatasFromTable('glpi_changes_items', $restrict);
 
          $datas['items'] = array();
          if (count($items)) {
@@ -216,7 +216,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
-         $validations = getAllDatasFromTable('glpi_changevalidations',$restrict);
+         $validations = getAllDatasFromTable('glpi_changevalidations', $restrict);
          $datas['validations'] = array();
          foreach ($validations as $validation) {
             $tmp = array();
@@ -337,7 +337,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       $tags = array('tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
                     'items'       => _n('Item', 'Items', Session::getPluralNumber()),
-                    'validations' => _n('Validation','Validations', Session::getPluralNumber()),
+                    'validations' => _n('Validation', 'Validations', Session::getPluralNumber()),
                     'documents'   => _n('Document', 'Documents', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {

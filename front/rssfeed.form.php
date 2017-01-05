@@ -45,7 +45,7 @@ $rssfeed = new RSSFeed();
 Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
-   $rssfeed->check(-1, CREATE,$_POST);
+   $rssfeed->check(-1, CREATE, $_POST);
 
    $newID = $rssfeed->add($_POST);
    Event::log($newID, "rssfeed", 4, "tools",
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$newID);
 
 } else if (isset($_POST["purge"])) {
-   $rssfeed->check($_POST["id"],PURGE);
+   $rssfeed->check($_POST["id"], PURGE);
    $rssfeed->delete($_POST, 1);
    Event::log($_POST["id"], "rssfeed", 4, "tools",
               //TRANS: %s is the user login
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-}  else if (isset($_POST["addvisibility"])) {
+} else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["rssfeeds_id"]) && $_POST["rssfeeds_id"]) {
       $item = NULL;
@@ -106,11 +106,11 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-}  else {
+} else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()),'',$_SESSION["glpiname"]);
+      Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
    } else {
-      Html::header(RSSFeed::getTypeName(Session::getPluralNumber()),'',"tools","rssfeed");
+      Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), '', "tools", "rssfeed");
    }
 
    $rssfeed->display(array('id' => $_GET["id"]));

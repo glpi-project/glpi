@@ -85,14 +85,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
       $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
-      $this->assertContains('GET',           $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('PUT',           $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('POST',          $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('DELETE',        $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('OPTIONS',       $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('origin',        $headers['Access-Control-Allow-Headers'][0]);
-      $this->assertContains('content-type',  $headers['Access-Control-Allow-Headers'][0]);
-      $this->assertContains('accept',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('GET', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('PUT', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('POST', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('DELETE', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('OPTIONS', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('origin', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('content-type', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('accept', $headers['Access-Control-Allow-Headers'][0]);
       $this->assertContains('session-token', $headers['Access-Control-Allow-Headers'][0]);
       $this->assertContains('authorization', $headers['Access-Control-Allow-Headers'][0]);
    }
@@ -308,7 +308,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_array($data));
       $this->assertEquals(2, count($data));
 
-      foreach($data as $item) {
+      foreach ($data as $item) {
          $this->assertArrayHasKey('id', $item);
          $this->assertArrayHasKey('name', $item);
          $this->assertArrayNotHasKey('password', $item);
@@ -895,7 +895,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    public function testUpdateItems($session_token, $computers_id_collection) {
       $input    = array();
       $computer = new Computer;
-      foreach($computers_id_collection as $key => $computers_id) {
+      foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id'          => $computers_id['id'],
                      'otherserial' => "abcdef"];
       }
@@ -910,7 +910,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      foreach($data as $index => $row) {
+      foreach ($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertArrayHasKey('message', $row);
@@ -957,7 +957,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $input    = array();
       $computer = new Computer;
       $lastComputer = array_pop($computers_id_collection);
-      foreach($computers_id_collection as $key => $computers_id) {
+      foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
       $res = $this->doHttpRequest('DELETE', "Computer/",
@@ -971,7 +971,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      foreach($data as $index => $row) {
+      foreach ($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertArrayHasKey('message', $row);
@@ -990,7 +990,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                   'id'  => $lastComputer['id'] + 1 // Non existing computer id
             ]
       ];
-      foreach($computers_id_collection as $key => $computers_id) {
+      foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
       $res = $this->doHttpRequest('DELETE', "Computer/",

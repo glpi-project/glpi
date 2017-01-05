@@ -47,7 +47,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-$ret = 0 ;
+$ret = 0;
 if (isset($_GET['unlock']) && isset($_GET["id"])) {
    // then we may have something to unlock
    $ol = new ObjectLock();
@@ -57,7 +57,7 @@ if (isset($_GET['unlock']) && isset($_GET["id"])) {
          Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0,
                       Log::HISTORY_UNLOCK_ITEM);
       }
-      $ret = 1 ;
+      $ret = 1;
    }
 
 } else if (isset($_GET['requestunlock'])
@@ -65,15 +65,15 @@ if (isset($_GET['unlock']) && isset($_GET["id"])) {
    // the we must ask for unlock
    $ol = new ObjectLock();
    if ($ol->getFromDB( $_GET["id"])) {
-      NotificationEvent::raiseEvent( 'unlock', $ol ) ;
-      $ret = 1 ;
+      NotificationEvent::raiseEvent( 'unlock', $ol );
+      $ret = 1;
    }
 } else if (isset($_GET['lockstatus'])
            && isset($_GET["id"])) {
-   $ol = new ObjectLock() ;
-   if($ol->getFromDB($_GET["id"])) {
-      $ret = 1 ; // found = still locked
+   $ol = new ObjectLock();
+   if ($ol->getFromDB($_GET["id"])) {
+      $ret = 1; // found = still locked
    } // else will return 0 = not found
 }
 
-echo $ret ;
+echo $ret;

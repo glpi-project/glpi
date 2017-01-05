@@ -319,7 +319,7 @@ class MailCollector  extends CommonDBTM {
       echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value=\""._sx('button','Get email tickets now').
+      echo "<input type='submit' name='get_mails' value=\""._sx('button', 'Get email tickets now').
              "\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
@@ -436,7 +436,7 @@ class MailCollector  extends CommonDBTM {
       $mailbox_id = 0;
       $query      = "SELECT *
                      FROM `glpi_notimportedemails`
-                     WHERE `id` IN (".implode(',',$emails_ids).")
+                     WHERE `id` IN (".implode(',', $emails_ids).")
                      ORDER BY `mailcollectors_id`";
 
       $todelete = array();
@@ -453,7 +453,7 @@ class MailCollector  extends CommonDBTM {
             // Get Total Number of Unread Email in mail box
             $tot = $this->getTotalMails(); //Total Mails in Inbox Return integer value
 
-            for($i=1 ; $i<=$tot ; $i++) {
+            for ($i=1; $i<=$tot; $i++) {
                $head = $this->getHeaders($i);
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
@@ -527,7 +527,7 @@ class MailCollector  extends CommonDBTM {
             $refused     = 0;
             $blacklisted = 0;
 
-            for ($i=1 ; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails) ; $i++) {
+            for ($i=1; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails); $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
 
@@ -744,7 +744,7 @@ class MailCollector  extends CommonDBTM {
       if (!empty($this->charset)
           && !$this->body_converted
           && mb_detect_encoding($body) != 'UTF-8') {
-         $body                 = Toolbox::encodeInUtf8($body,$this->charset);
+         $body                 = Toolbox::encodeInUtf8($body, $this->charset);
          $this->body_converted = true;
       }
 
@@ -771,7 +771,7 @@ class MailCollector  extends CommonDBTM {
 
       // See in title
       if (!isset($tkt['tickets_id'])
-          && preg_match('/\[.+#(\d+)\]/',$head['subject'],$match)) {
+          && preg_match('/\[.+#(\d+)\]/', $head['subject'], $match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
@@ -839,13 +839,13 @@ class MailCollector  extends CommonDBTM {
             foreach ($content as $ID => $val) {
                // Get first tag for begin
                if ($begin_strip < 0) {
-                  if (preg_match($begin_match,$val)) {
+                  if (preg_match($begin_match, $val)) {
                      $begin_strip = $ID;
                   }
                }
                // Get last tag for end
                if ($begin_strip >= 0) {
-                  if (preg_match($end_match,$val)) {
+                  if (preg_match($end_match, $val)) {
                      $end_strip = $ID;
                      continue;
                   }
@@ -854,11 +854,11 @@ class MailCollector  extends CommonDBTM {
 
             if ($begin_strip >= 0) {
                // Clean first and last lines
-               $content[$begin_strip] = preg_replace($begin_match,'',$content[$begin_strip]);
+               $content[$begin_strip] = preg_replace($begin_match, '', $content[$begin_strip]);
             }
             if ($end_strip >= 0) {
                // Clean first and last lines
-               $content[$end_strip] = preg_replace($end_match,'',$content[$end_strip]);
+               $content[$end_strip] = preg_replace($end_match, '', $content[$end_strip]);
             }
 
             if ($begin_strip >= 0) {
@@ -974,16 +974,16 @@ class MailCollector  extends CommonDBTM {
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
-      $string = str_replace(array("<br>"),"==$rand==", $string);
+      $string = str_replace(array("<br>"), "==$rand==", $string);
 
-      $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
+      $string = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $string);
 
       // Wrap content for blacklisted items
       $itemstoclean = array();
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
          if (!empty($toclean)) {
-            $toclean        = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
+            $toclean        = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $toclean);
             $itemstoclean[] = $toclean;
          }
       }
@@ -1053,7 +1053,7 @@ class MailCollector  extends CommonDBTM {
          $decodedStr      = '';
          $mimeStrs        = imap_mime_header_decode($mimeStr);
 
-         for ($n=sizeOf($mimeStrs),$i=0 ; $i<$n ; $i++) {
+         for ($n=sizeOf($mimeStrs),$i=0; $i<$n; $i++) {
             $mimeStr          = $mimeStrs[$i];
             $mimeStr->charset = Toolbox::strtolower($mimeStr->charset);
 
@@ -1090,7 +1090,7 @@ class MailCollector  extends CommonDBTM {
       } else {
          $try_options = array(array('DISABLE_AUTHENTICATOR' => 'GSSAPI'),
                               array('DISABLE_AUTHENTICATOR' => 'PLAIN'));
-         foreach($try_options as $option) {
+         foreach ($try_options as $option) {
             $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                         Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                         CL_EXPUNGE, 1, $option);
@@ -1127,7 +1127,7 @@ class MailCollector  extends CommonDBTM {
 
       if (($mid != $this->mid)
           || !$this->structure) {
-         $this->structure = imap_fetchstructure($this->marubox,$mid);
+         $this->structure = imap_fetchstructure($this->marubox, $mid);
 
          if ($this->structure) {
             $this->mid = $mid;
@@ -1182,7 +1182,7 @@ class MailCollector  extends CommonDBTM {
     * from      => From address of mail
     * fromName  => Form Name of Mail
    **/
-   function getHeaders($mid) { // Get Header info
+   function getHeaders($mid) {
 
       $mail_header  = imap_header($this->marubox, $mid);
       $sender       = $mail_header->from[0];
@@ -1303,7 +1303,7 @@ class MailCollector  extends CommonDBTM {
                       && function_exists('mb_convert_encoding')
                       && (strtoupper($param->value) != 'UTF-8')) {
 
-                     $text                 = mb_convert_encoding($text, 'utf-8',$param->value);
+                     $text                 = mb_convert_encoding($text, 'utf-8', $param->value);
                      $this->body_converted = true;
                   }
                }
@@ -1336,7 +1336,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return an integer (Total Mail)
    **/
-   function getTotalMails() {//Get Total Number off Unread Email In Mailbox
+   function getTotalMails() {
 
       $headers = imap_headers($this->marubox);
       return count($headers);
@@ -1448,9 +1448,9 @@ class MailCollector  extends CommonDBTM {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
-                    && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+                    && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
                $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
-               $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
+               $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename);
             }
          }
 
@@ -1460,7 +1460,7 @@ class MailCollector  extends CommonDBTM {
          }
          //try to avoid conflict between inline image and attachment
          $i = 2;
-         while(in_array($filename, $this->files)) {
+         while (in_array($filename, $this->files)) {
             //replace filename with name_(num).EXT by name_(num+1).EXT
             $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
             if ($new_filename !== $filename) {
@@ -1541,7 +1541,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $mid : mail Id
    **/
-   function getBody($mid) {// Get Message Body
+   function getBody($mid) {
 
       $this->getStructure($mid);
       $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
@@ -1568,7 +1568,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function deleteMails($mid, $folder='') {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
-         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
+         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
             return true;
          }
@@ -1594,7 +1594,7 @@ class MailCollector  extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      switch($name) {
+      switch ($name) {
          case 'mailgate' :
             return array('description' => __('Retrieve email (Mails receivers)'),
                          'parameter'   => __('Number of emails to retrieve'));
@@ -1701,7 +1701,7 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $msg = 'Way of sending emails: ';
-      switch($CFG_GLPI['smtp_mode']) {
+      switch ($CFG_GLPI['smtp_mode']) {
          case MAIL_MAIL :
             $msg .= 'PHP';
             break;
@@ -1822,7 +1822,7 @@ class MailCollector  extends CommonDBTM {
    static function showMaxFilesize($name, $value=0) {
 
       $sizes[0] = __('No import');
-      for ($index=1 ; $index<100 ; $index++) {
+      for ($index=1; $index<100; $index++) {
          $sizes[$index*1048576] = sprintf(__('%s Mio'), $index);
       }
       Dropdown::showFromArray($name, $sizes, array('value' => $value));

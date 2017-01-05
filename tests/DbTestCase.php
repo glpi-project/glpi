@@ -49,14 +49,14 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
       global $DB;
 
       // Cleanup log directory
-      foreach(glob(GLPI_LOG_DIR . '/*.log') as $file) {
+      foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
          unlink($file);
       }
 
       // Need Innodb -- $DB->rollback()  -- workaround:
       foreach ($DB->objcreated as $table => $ids) {
          foreach ($ids as $id) {
-            $DB->query($q="DELETE FROM `$table` WHERE `id`=$id");
+            $DB->query($q = "DELETE FROM `$table` WHERE `id`=$id");
          }
       }
       unset($DB->objcreated);
@@ -93,7 +93,7 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
       static $int = NULL;
 
       if (is_null($this->int)) {
-         return $this->int = mt_rand(1000,10000);
+         return $this->int = mt_rand(1000, 10000);
       }
       return $this->int++;
    }
@@ -103,6 +103,6 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
     */
    protected function setEntity($entityname, $subtree) {
 
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', $entityname,  true), $subtree));
+      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', $entityname, true), $subtree));
    }
 }

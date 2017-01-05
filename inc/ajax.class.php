@@ -96,7 +96,7 @@ class Ajax {
          open: function (){
             var fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
-         $out .= json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+         $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
       } else {
          $out .= '{}';
       }
@@ -150,6 +150,7 @@ class Ajax {
       }
 
       $out  =  "<script type='text/javascript'>\n";
+      $out .= "$(function() {";
       $out .= "var $name=";
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
@@ -162,7 +163,7 @@ class Ajax {
          height:".$param['height'].",\n
          modal: ".($param['modal']?'true':'false').",\n
          title: \"".addslashes($param['title'])."\"\n
-         });\n";
+         });\n});";
       $out .= "</script>";
 
       if ($param['display']) {
@@ -206,13 +207,13 @@ class Ajax {
             }
          }
       }
-      $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
+      $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
 
       $out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                frameBorder='0' scrolling='auto'></iframe></div>";
+      $out .= "<iframe id='Iframe$domid' class='iframe hidden'></iframe></div>";
 
       $out .= "<script type='text/javascript'>
+         $(function() {
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,
@@ -221,12 +222,13 @@ class Ajax {
                draggable: true,
                resizeable: true,
                open: function(ev, ui){
-               $('#Iframe$domid').attr('src','$url');},";
+               $('#Iframe$domid').attr('src','$url').removeClass('hidden');},";
       if ($param['reloadonclose']) {
          $out .= "close: function(ev, ui) { window.location.reload() },";
       }
 
       $out.= "title: \"".addslashes($param['title'])."\"});
+         });
             </script>";
 
       if ($param['display']) {
@@ -286,7 +288,7 @@ class Ajax {
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $ID=0, $orientation='vertical') {
+                              $type='', $ID=0, $orientation='vertical') {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -307,7 +309,7 @@ class Ajax {
                $selected_tab = $current;
             }
             echo "<li><a title=\"".
-                 str_replace(array("<sup class='tab_nb'>", '</sup>'),'',$val['title'])."\" ";
+                 str_replace(array("<sup class='tab_nb'>", '</sup>'), '', $val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             // $title = '';
@@ -389,9 +391,10 @@ class Ajax {
                                      $forceloadfor=array(), $display=true) {
 
       $output  = "<script type='text/javascript'>";
+      $output .= "$(function() {";
       $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events,
                                                $minsize, $buffertime, $forceloadfor, false);
-      $output .=  "</script>";
+      $output .=  "});</script>";
       if ($display) {
          echo $output;
       } else {
@@ -446,7 +449,7 @@ class Ajax {
          $buffertime = 0;
       }
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     array("dblclick", "keyup"),  $minsize, $buffertime,
+                                     array("dblclick", "keyup"), $minsize, $buffertime,
                                      $forceloadfor, $display);
    }
 
@@ -482,14 +485,14 @@ class Ajax {
             $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
                '$event',
                function(event) {";
-                  // TODO manage buffer time !! ?
-            if ($buffertime > 0) {
-               // $output.= "var elapsed = new Date().getTime() - last$zone$event;
-               //       last$zone$event = new Date().getTime();
-               //       if (elapsed < $buffertime) {
-               //          return;
-               //       }";
-            }
+            // TODO manage buffer time !! ?
+            // if ($buffertime > 0) {
+            //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
+            //          last$zone$event = new Date().getTime();
+            //          if (elapsed < $buffertime) {
+            //             return;
+            //          }";
+            // }
 
             $condition = '';
             if ($minsize >= 0) {
@@ -613,7 +616,7 @@ class Ajax {
             }
 
             $out .= $key.":";
-            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 
             } else if (!is_array($val) && $val==="__VALUE__") {
@@ -648,8 +651,9 @@ class Ajax {
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
       $output = "<script type='text/javascript'>";
-      $output .= self::updateItemJsCode($toupdate,$url,$parameters,$toobserve, false);
-      $output .= "</script>";
+      $output  = "$(function() {";
+      $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
+      $output .= "});</script>";
       if ($display) {
          echo $output;
       } else {

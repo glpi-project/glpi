@@ -301,7 +301,7 @@ class Problem extends CommonITILObject {
 
          if (isset($this->input["status"])
              && $this->input["status"]
-             && in_array("status",$this->updates)
+             && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
@@ -309,7 +309,7 @@ class Problem extends CommonITILObject {
 
          if (isset($this->input["status"])
              && $this->input["status"]
-             && in_array("status",$this->updates)
+             && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getClosedStatusArray())) {
 
             $mailtype = "closed";
@@ -425,7 +425,7 @@ class Problem extends CommonITILObject {
          'id'                 => '63',
          'table'              => 'glpi_items_problems',
          'field'              => 'id',
-         'name'               => _x('quantity','Number of items'),
+         'name'               => _x('quantity', 'Number of items'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'count',
@@ -648,7 +648,7 @@ class Problem extends CommonITILObject {
          $search_assign   = " 0 = 1 ";
 
          if (count($_SESSION['glpigroups'])) {
-            $groups          = implode("','",$_SESSION['glpigroups']);
+            $groups          = implode("','", $_SESSION['glpigroups']);
             $search_assign   = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
                                   AND `glpi_groups_problems`.`type`
                                         = '".CommonITILActor::ASSIGN."')";
@@ -690,7 +690,7 @@ class Problem extends CommonITILObject {
                                                '".self::ASSIGNED."',
                                                '".self::WAITING."'))
                              AND NOT ($search_assign) ".
-                             getEntitiesRestrictRequest("AND","glpi_problems");
+                             getEntitiesRestrictRequest("AND", "glpi_problems");
       }
 
       $query  .= " ORDER BY date_mod DESC";
@@ -727,7 +727,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                         Toolbox::append_params($options,'&amp;')."\">".
+                         Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
                   break;
 
@@ -743,7 +743,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                         Toolbox::append_params($options,'&amp;')."\">".
+                         Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
                   break;
 
@@ -759,7 +759,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                         Toolbox::append_params($options,'&amp;')."\">".
+                         Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
             }
 
@@ -777,7 +777,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                         Toolbox::append_params($options,'&amp;')."\">".
+                         Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
                   break;
 
@@ -793,7 +793,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                         Toolbox::append_params($options,'&amp;')."\">".
+                         Toolbox::append_params($options, '&amp;')."\">".
                          Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
                   break;
 
@@ -809,7 +809,7 @@ class Problem extends CommonITILObject {
                   $options['criteria'][1]['link']       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".
+                        Toolbox::append_params($options, '&amp;')."\">".
                         Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
             }
          }
@@ -819,7 +819,7 @@ class Problem extends CommonITILObject {
             echo "<tr><th></th>";
             echo "<th>".__('Requester')."</th>";
             echo "<th>".__('Description')."</th></tr>";
-            for ($i = 0 ; $i < $number ; $i++) {
+            for ($i = 0; $i < $number; $i++) {
                $ID = $DB->result($result, $i, "id");
                self::showVeryShort($ID, $forcetab);
             }
@@ -871,7 +871,7 @@ class Problem extends CommonITILObject {
 
          if (isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
-            $groups = implode(",",$_SESSION['glpigroups']);
+            $groups = implode(",", $_SESSION['glpigroups']);
             $query .= " OR `glpi_groups_problems`.`groups_id` IN (".$groups.") ";
          }
          $query.= ")";
@@ -913,16 +913,16 @@ class Problem extends CommonITILObject {
       echo "<tr class='noHover'><th colspan='2'>";
 
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-               Toolbox::append_params($options,'&amp;')."\">".__('Problem followup')."</a>";
+               Toolbox::append_params($options, '&amp;')."\">".__('Problem followup')."</a>";
 
       echo "</th></tr>";
-      echo "<tr><th>"._n('Problem','Problems', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
+      echo "<tr><th>"._n('Problem', 'Problems', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
          echo "<tr class='tab_bg_2'>";
          echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                    Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
+                    Toolbox::append_params($options, '&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
       }
 
@@ -930,7 +930,7 @@ class Problem extends CommonITILObject {
       $options['is_deleted']  = 1;
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".__('Deleted')."</a></td>";
+                 Toolbox::append_params($options, '&amp;')."\">".__('Deleted')."</a></td>";
       echo "<td class='numeric'>".$number_deleted."</td></tr>";
 
       echo "</table><br>";
@@ -966,7 +966,7 @@ class Problem extends CommonITILObject {
              && count($problem->users[CommonITILActor::REQUESTER])) {
             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
-                  $userdata = getUserName($d["users_id"],2);
+                  $userdata = getUserName($d["users_id"], 2);
                   $name     = "<span class='b'>".$userdata['name']."</span>";
                   if ($viewusers) {
                      $name = sprintf(__('%1$s %2$s'), $name,
@@ -1420,7 +1420,7 @@ class Problem extends CommonITILObject {
                   ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
                 self::getCommonLeftJoin()."
                 WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND","glpi_problems")."
+                      getEntitiesRestrictRequest("AND", "glpi_problems")."
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
@@ -1444,7 +1444,7 @@ class Problem extends CommonITILObject {
          echo "<tr><th colspan='$colspan'>";
 
          //TRANS : %d is the number of problems
-         echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
+         echo sprintf(_n('Last %d problem', 'Last %d problems', $number), $number);
          // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
          //         Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 

@@ -267,7 +267,7 @@ class Cartridge extends CommonDBChild {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         $cID = $DB->result($result,0,0);
+         $cID = $DB->result($result, 0, 0);
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $query = "UPDATE `".$this->getTable()."`
                    SET `date_use` = '".date("Y-m-d")."',
@@ -358,19 +358,19 @@ class Cartridge extends CommonDBChild {
             $out .= "<table  class='tab_format $highlight' width='100%'><tr><td>";
             $out .= __('Total')."</td><td>$total";
             $out .= "</td><td class='b'>";
-            $out .= _nx('cartridge','New','New',$unused);
+            $out .= _nx('cartridge', 'New', 'New', $unused);
             $out .= "</td><td class='b'>$unused</td></tr>";
             $out .= "<tr><td>";
-            $out .= _nx('cartridge','Used','Used',$used);
+            $out .= _nx('cartridge', 'Used', 'Used', $used);
             $out .= "</td><td>$used</td><td>";
-            $out .= _nx('cartridge','Worn','Worn',$old);
+            $out .= _nx('cartridge', 'Worn', 'Worn', $old);
             $out .= "</td><td>$old</td></tr></table>";
 
          } else {
             //TRANS : for display cartridges count : %1$d is the total number,
             //        %2$d the new one, %3$d the used one, %4$d worn one
             $out .= sprintf(__('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
-                            $total ,$unused, $used, $old);
+                            $total, $unused, $used, $old);
          }
 
       } else {
@@ -413,15 +413,15 @@ class Cartridge extends CommonDBChild {
             $out .= __('Total')."</td><td>$total";
             $out .= "</td><td colspan='2'></td><tr>";
             $out .= "<tr><td>";
-            $out .= _nx('cartridge','Used','Used',$used);
+            $out .= _nx('cartridge', 'Used', 'Used', $used);
             $out .= "</td><td>$used</span></td><td>";
-            $out .= _nx('cartridge','Worn','Worn',$old);
+            $out .= _nx('cartridge', 'Worn', 'Worn', $old);
             $out .= "</td><td>$old</span></td></tr></table>";
 
          } else {
             //TRANS : for display cartridges count : %1$d is the total number,
             //        %2$d the used one, %3$d the worn one
-            $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total , $used, $old);
+            $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old);
          }
 
       } else {
@@ -672,7 +672,7 @@ class Cartridge extends CommonDBChild {
          echo "<table class='tab_cadre_fixehov'>";
          if (!$show_old) {
             echo "<tr class='noHover'><th colspan='".($canedit?'7':'6')."'>".
-                  self::getCount($tID,-1)."</th>";
+                  self::getCount($tID, -1)."</th>";
             echo "</tr>";
          } else { // Old
             echo "<tr class='noHover'><th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges');
@@ -738,8 +738,8 @@ class Cartridge extends CommonDBChild {
                } else {
                   echo NOT_AVAILABLE;
                }
-               $tmp_dbeg       = explode("-",$data["date_in"]);
-               $tmp_dend       = explode("-",$data["date_use"]);
+               $tmp_dbeg       = explode("-", $data["date_in"]);
+               $tmp_dend       = explode("-", $data["date_use"]);
                $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                                  - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
                $stock_time    += $stock_time_tmp;
@@ -747,8 +747,8 @@ class Cartridge extends CommonDBChild {
             if ($show_old) {
                echo "</td><td class='center'>";
                echo $date_out;
-               $tmp_dbeg      = explode("-",$data["date_use"]);
-               $tmp_dend      = explode("-",$data["date_out"]);
+               $tmp_dbeg      = explode("-", $data["date_use"]);
+               $tmp_dend      = explode("-", $data["date_out"]);
                $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                                  - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
                $use_time     += $use_time_tmp;
@@ -765,7 +765,7 @@ class Cartridge extends CommonDBChild {
                   $pages_printed   += $data['pages']-$pages[$printer];
                   $nb_pages_printed++;
                   $pp               = $data['pages']-$pages[$printer];
-                  printf(_n('%d printed page','%d printed pages',$pp), $pp);
+                  printf(_n('%d printed page', '%d printed pages', $pp), $pp);
                   $pages[$printer]  = $data['pages'];
                } else if ($data['pages'] != 0) {
                   echo "<span class='tab_bg_1_2'>".__('Counter error')."</span>";
@@ -773,7 +773,7 @@ class Cartridge extends CommonDBChild {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink('Cartridge',$data["id"]);
+            Infocom::showDisplayLink('Cartridge', $data["id"]);
             echo "</td>";
             echo "</tr>";
          }
@@ -784,10 +784,10 @@ class Cartridge extends CommonDBChild {
             }
             echo "<tr class='tab_bg_2'><td colspan='".($canedit?'4':'3')."'>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in stock')."<br>";
-            echo round($stock_time/$number/60/60/24/30.5,1)." ".__('month')."</td>";
+            echo round($stock_time/$number/60/60/24/30.5, 1)." ".__('month')."</td>";
             echo "<td>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in use')."<br>";
-            echo round($use_time/$number/60/60/24/30.5,1)." ".__('month')."</td>";
+            echo round($use_time/$number/60/60/24/30.5, 1)." ".__('month')."</td>";
             echo "<td class='center b'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";
@@ -900,7 +900,7 @@ class Cartridge extends CommonDBChild {
                                                  'min'   => 1,
                                                  'max'   => 5));
             $installok = true;
-            echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
+            echo "</td><td><input type='submit' name='install' value=\""._sx('button', 'Install')."\"
                           ".($installok?'':'disabled')." class='submit'>";
 
          } else {
@@ -958,8 +958,8 @@ class Cartridge extends CommonDBChild {
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_end    .= "</th>";
       }
-      $header_end .= "<th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
-      $header_end .= "<th>"._n('Cartridge type','Cartridge types',1)."</th>";
+      $header_end .= "<th>".__('ID')."</th><th>"._n('Cartridge model', 'Cartridge models', 1)."</th>";
+      $header_end .= "<th>"._n('Cartridge type', 'Cartridge types', 1)."</th>";
       $header_end .= "<th>".__('Add date')."</th>";
       $header_end .= "<th>".__('Use date')."</th>";
       if ($old != 0) {
@@ -1051,10 +1051,10 @@ class Cartridge extends CommonDBChild {
             }
             echo "<tr class='tab_bg_2'><td colspan='".($canedit?"4":'3')."'>&nbsp;</td>";
             echo "<td class='center b'>".__('Average time in stock')."<br>";
-            $time_stock = round($stock_time/$number/60/60/24/30.5,1);
+            $time_stock = round($stock_time/$number/60/60/24/30.5, 1);
             echo sprintf(_n('%d month', '%d months', $time_stock), $time_stock)."</td>";
             echo "<td class='center b'>".__('Average time in use')."<br>";
-            $time_use = round($use_time/$number/60/60/24/30.5,1);
+            $time_use = round($use_time/$number/60/60/24/30.5, 1);
             echo sprintf(_n('%d month', '%d months', $time_use), $time_use)."</td>";
             echo "<td class='center b' colspan='2'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
@@ -1104,13 +1104,13 @@ class Cartridge extends CommonDBChild {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Printer','Printers',1)."</td><td>";
+      echo "<td>"._n('Printer', 'Printers', 1)."</td><td>";
       echo $printer->getLink();
       echo "<input type='hidden' name='printers_id' value='".$this->getField('printers_id')."'>\n";
       echo "<input type='hidden' name='cartridgeitems_id' value='".
              $this->getField('cartridgeitems_id')."'>\n";
       echo "</td>\n";
-      echo "<td>"._n('Cartridge model','Cartridge models',1)."</td>";
+      echo "<td>"._n('Cartridge model', 'Cartridge models', 1)."</td>";
       echo "<td>".$cartitem->getLink()."</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

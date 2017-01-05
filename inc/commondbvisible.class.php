@@ -155,7 +155,7 @@ abstract class CommonDBVisible extends CommonDBTM {
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params = $this->getShowVisibilityDropdownParams();
 
-         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand, "visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
 
          echo "</td>";
@@ -226,7 +226,7 @@ abstract class CommonDBVisible extends CommonDBTM {
                }
                echo "<td>".__('Group')."</td>";
 
-               $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'], 1);
                $entname = sprintf(__('%1$s %2$s'), $names["name"],
                                   Html::showToolTip($names["comment"], array('display' => false)));
                if ($data['entities_id'] >= 0) {
@@ -256,7 +256,7 @@ abstract class CommonDBVisible extends CommonDBTM {
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
-               $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'], 1);
                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['is_recursive']) {
@@ -281,7 +281,7 @@ abstract class CommonDBVisible extends CommonDBTM {
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
 
-               $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+               $names   = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['entities_id'] >= 0) {

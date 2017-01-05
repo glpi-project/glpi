@@ -456,12 +456,12 @@ class RuleCriteria extends CommonDBChild {
             $results = array();
             // Permit use < and >
             $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
-            if (preg_match_all($pattern."i",$field,$results)>0) {
+            if (preg_match_all($pattern."i", $field, $results)>0) {
                // Drop $result[0] : complete match result
                array_shift($results);
                // And add to $regex_result array
                $res = array();
-               foreach($results as $data) {
+               foreach ($results as $data) {
                   $res[] = $data[0];
                }
                $regex_result[]               = $res;
@@ -571,7 +571,7 @@ class RuleCriteria extends CommonDBChild {
       $elements = array();
       foreach (self::getConditions($itemtype, $p['criterion']) as $pattern => $label) {
          if (empty($p['allow_conditions'])
-             || (!empty($p['allow_conditions']) && in_array($pattern,$p['allow_conditions']))) {
+             || (!empty($p['allow_conditions']) && in_array($pattern, $p['allow_conditions']))) {
             $elements[$pattern] = $label;
          }
       }
@@ -624,10 +624,11 @@ class RuleCriteria extends CommonDBChild {
          $params['condition'] = $this->fields['condition'];
          $params['pattern']   = $this->fields['pattern'];
          echo "<script type='text/javascript' >\n";
+         echo "$(function() {";
          Ajax::updateItemJsCode("criteria_span",
                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",
                                  $params);
-         echo '</script>';
+         echo '});</script>';
       }
 
       if ($rule->specific_parameters) {

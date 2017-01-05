@@ -52,7 +52,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    Session::loadLanguage();
    // no translation
    if (!isCommandLine()) {
-      Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
+      Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
       echo "<div class='center'>";
       echo "<p>Error: GLPI seems to not be configured properly.</p>";
       echo "<p>config_db.php file is missing.</p>";
@@ -132,7 +132,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    if (count($current_config) > 0) {
-      $CFG_GLPI = array_merge($CFG_GLPI,$current_config);
+      $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
 
       if (isset($CFG_GLPI['priority_matrix'])) {
          $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
@@ -186,7 +186,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    // Check maintenance mode
-   if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"])  {
+   if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"]) {
       if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
          $_SESSION["glpiskipMaintenance"] = 1;
       }
@@ -198,7 +198,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             echo "\n";
 
          } else {
-            Html::nullHeader("MAINTENANCE MODE",$CFG_GLPI["root_doc"]);
+            Html::nullHeader("MAINTENANCE MODE", $CFG_GLPI["root_doc"]);
             echo "<div class='center'>";
 
             echo "<p class='red'>";
@@ -224,7 +224,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          echo "\n";
 
       } else {
-         Html::nullHeader("UPDATE NEEDED",$CFG_GLPI["root_doc"]);
+         Html::nullHeader("UPDATE NEEDED", $CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
          echo "<table class='tab_cadre'>";
          $error = Toolbox::commonCheckForUseGLPI();

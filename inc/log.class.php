@@ -134,7 +134,7 @@ class Log extends CommonDBTM {
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
-            if (!is_array($val2)) {
+            if (!isset($val2['table'])) {
                // skip sub-title
                continue;
             }
@@ -157,7 +157,7 @@ class Log extends CommonDBTM {
                if ($val2['table'] == $item->getTable()) {
                   $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                } else {
-                  // other cases ; link field -> get data from dropdown
+                  // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
                                       addslashes(sprintf(__('%1$s (%2$s)'),
@@ -223,10 +223,10 @@ class Log extends CommonDBTM {
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
-         $old_value = Toolbox::substr($old_value,0,250);
+         $old_value = Toolbox::substr($old_value, 0, 250);
       }
       if (Toolbox::strlen($new_value) > 255) {
-         $new_value = Toolbox::substr($new_value,0,250);
+         $new_value = Toolbox::substr($new_value, 0, 250);
       }
 
       // Build query
@@ -291,7 +291,7 @@ class Log extends CommonDBTM {
       $header .= "<th>"._x('name', 'Update')."</th></tr>";
       echo $header;
 
-      foreach (self::getHistoryData($item,$start, $_SESSION['glpilist_limit']) as $data) {
+      foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";

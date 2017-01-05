@@ -55,7 +55,7 @@ class XML {
    /// 1 there is a problem !!!
    public $IsError      = 0;
    /// If there is an error, this string explains it
-   public $ErrorString  = "NO errors ;)";
+   public $ErrorString  = "NO errors;)";
    /// Which format do you want your XML ?
    public $Type         = 1;
    ///path where the file will be saved.
@@ -127,7 +127,7 @@ class XML {
    function DoXML() {
       global $DB;
 
-      $fp = fopen($this->FilePath,'wb');
+      $fp = fopen($this->FilePath, 'wb');
       fputs($fp, "<?xml version=\"1.0\"?>\n");
       fputs($fp, "<dataxml>\n");
 
@@ -144,12 +144,12 @@ class XML {
             $this->ErrorString = "Error in SQL Query: ".$strqry;
             return -1;
          }
-         // OK... let's create XML ;)
+         // OK... let's create XML;)
          fputs($fp, "   <fields>\n");
          $i = 0;
          $FieldsVector = array();
          while ($i < $DB->num_fields ($result)) {
-            $name = $DB->field_name($result,$i);
+            $name = $DB->field_name($result, $i);
             fputs($fp, "      <field>".$name."</field>\n");
             $FieldsVector[] = $name;
             $i++;
@@ -160,7 +160,7 @@ class XML {
          fputs($fp, "   <rows>\n");
          while ($row = $DB->fetch_row($result)) {
             fputs($fp, "      <row>\n");
-            for ($j=0 ; $j<$i ; $j++) {
+            for ($j=0; $j<$i; $j++) {
                $FieldName  = "";   // Name of TAG
                $Attributes = "";
                switch ($this->Type) {
@@ -190,7 +190,7 @@ class XML {
          $DB->free_result($result);
       }
       fputs($fp, "</dataxml>");
-      //OK free ...  ;)
+      //OK free ...;)
       fclose($fp);
 
    } // End  Function : DoXML

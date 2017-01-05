@@ -43,7 +43,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
-   switch ($_POST["validatortype"]){
+   switch ($_POST["validatortype"]) {
       case 'user' :
          if (isset($_POST['users_id_validate']['groups_id'])) {
             $_POST['users_id_validate'] = array();
@@ -98,7 +98,7 @@ if (isset($_POST["validatortype"])) {
          if (isset($_POST['users_id_validate']) && is_array($_POST['users_id_validate'])) {
             $values = $_POST['users_id_validate'];
          }
-         foreach($data_users as $data){
+         foreach ($data_users as $data) {
             $users[$data['id']] = formatUserName($data['id'], $data['name'], $data['realname'],
                                                  $data['firstname']);
             if (in_array($data['id'], $values)) {
@@ -120,7 +120,7 @@ if (isset($_POST["validatortype"])) {
                                           $users, $param);
 
          // Display all/none buttons to select all or no users in group
-         if (!empty($_POST['groups_id'])){
+         if (!empty($_POST['groups_id'])) {
             echo "<br><br><a id='all_users' class='vsubmit'>".__('All')."</a>";
             $param_button['validatortype']      = 'list_users';
             $param_button['name']               = !empty($_POST['name']) ? $_POST['name']:'';

@@ -66,7 +66,7 @@ class Change_Project extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Project/Change','Links Project/Change',$nb);
+      return _n('Link Project/Change', 'Links Project/Change', $nb);
    }
 
 

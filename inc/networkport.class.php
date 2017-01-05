@@ -276,11 +276,11 @@ class NetworkPort extends CommonDBChild {
          if (array_key_exists($field, $clone->fields) || $field[0] == '_') {
             continue;
          }
-         if (preg_match('/^NetworkName_/',$field)) {
-            $networkName_field = preg_replace('/^NetworkName_/','',$field);
+         if (preg_match('/^NetworkName_/', $field)) {
+            $networkName_field = preg_replace('/^NetworkName_/', '', $field);
             $this->input_for_NetworkName[$networkName_field] = $value;
-         } else if (preg_match('/^NetworkPortConnect_/',$field)) {
-            $networkName_field = preg_replace('/^NetworkPortConnect_/','',$field);
+         } else if (preg_match('/^NetworkPortConnect_/', $field)) {
+            $networkName_field = preg_replace('/^NetworkPortConnect_/', '', $field);
             $this->input_for_NetworkPortConnect[$networkName_field] = $value;
          } else {
             $this->input_for_instantiation[$field] = $value;
@@ -557,7 +557,7 @@ class NetworkPort extends CommonDBChild {
          _e('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "<td>\n";
-         echo "<input type='submit' name='create' value=\""._sx('button','Add')."\" class='submit'>\n";
+         echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='submit'>\n";
          echo "</td></tr></table></div>\n";
          Html::closeForm();
       }
@@ -879,7 +879,7 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Ports number', 1) ."</td>\n";
          echo "<td>";
-         Html::autocompletionTextField($this,"logical_number", array('size' => 5));
+         Html::autocompletionTextField($this, "logical_number", array('size' => 5));
          echo "</td></tr>\n";
 
       } else {

@@ -426,7 +426,7 @@ class SLT extends CommonDBChild {
     */
    function getSltDataForTicket($tickets_id, $type) {
 
-      switch($type){
+      switch ($type) {
          case SLT::TTR :
             $field = 'slts_ttr_id';
             break;
@@ -456,7 +456,7 @@ class SLT extends CommonDBChild {
     *
     * @return array
    **/
-   static function getSltFieldNames($type){
+   static function getSltFieldNames($type) {
 
       $dateField = null;
       $sltField  = null;
@@ -524,7 +524,7 @@ class SLT extends CommonDBChild {
                $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLT').
                                           "?id=".$this->fields["id"];
             }
-            Html::showToolTip($commentsla,$slaoptions);
+            Html::showToolTip($commentsla, $slaoptions);
             if ($canupdate) {
                $fields = array('slt_delete'        => 'slt_delete',
                                'id'                => $ticket->getID(),
@@ -654,7 +654,7 @@ class SLT extends CommonDBChild {
     *
     * @param $options
    **/
-   static function getSltTypeDropdown($options){
+   static function getSltTypeDropdown($options) {
 
       $params = array('name'  => 'type');
 
@@ -823,7 +823,7 @@ class SLT extends CommonDBChild {
          if ($this->fields['number_time'] >= 0) {
             $starttime = strtotime($start_date);
             $endtime   = $starttime+$delay+$additional_delay;
-            return date('Y-m-d H:i:s',$endtime);
+            return date('Y-m-d H:i:s', $endtime);
          }
       }
 
@@ -886,7 +886,7 @@ class SLT extends CommonDBChild {
                $delay    += $additional_delay+$slalevel->fields['execution_time'];
                $starttime = strtotime($start_date);
                $endtime   = $starttime+$delay;
-               return date('Y-m-d H:i:s',$endtime);
+               return date('Y-m-d H:i:s', $endtime);
             }
          }
       }

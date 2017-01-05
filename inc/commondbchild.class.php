@@ -79,7 +79,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype."' AS itemtype";
          if (($itemtype ==  static::$itemtype)
-             || is_subclass_of($itemtype,  static::$itemtype)) {
+             || is_subclass_of($itemtype, static::$itemtype)) {
             $condition = $condition_id;
          }
       }
@@ -406,7 +406,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       // Check item exists
       if (static::$mustBeAttached
-          && !$this->getItemFromArray(static::$itemtype, static::$items_id,$input)) {
+          && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)) {
          return false;
       }
 
@@ -672,7 +672,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if ($canedit) {
          echo "<input type='text' size='40' name='$field_name' value='$value'>";
       } else {
-         echo "<input type='hidden' name='$field_name' value='$value'>$value" ;
+         echo "<input type='hidden' name='$field_name' value='$value'>$value";
       }
    }
 

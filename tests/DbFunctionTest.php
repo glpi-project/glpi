@@ -213,9 +213,9 @@ class DbFunctionTest extends DbTestCase {
 
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
-      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','id'));
-      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','context'));
-      $this->assertEquals(1, countDistinctElementsInTable('glpi_configs','context',
+      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs', 'id'));
+      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs', 'context'));
+      $this->assertEquals(1, countDistinctElementsInTable('glpi_configs', 'context',
                                                           "name = 'version'"));
       $this->assertEquals(0, countDistinctElementsInTable('glpi_configs', 'id',
                                                           "context ='fakecontext'"));
@@ -271,8 +271,8 @@ class DbFunctionTest extends DbTestCase {
 
       $data = getAllDatasFromTable('glpi_configs');
       $this->assertTrue(is_array($data));
-      $this->assertGreaterThan(100,count($data));
-      foreach($data as $key => $array) {
+      $this->assertGreaterThan(100, count($data));
+      foreach ($data as $key => $array) {
          $this->assertTrue(is_array($array));
          $this->assertTrue($key == $array['id']);
       }
@@ -280,9 +280,9 @@ class DbFunctionTest extends DbTestCase {
       $data = getAllDatasFromTable('glpi_configs', "context = 'core' AND `name` = 'version'");
       $this->assertEquals(1, count($data));
 
-      $data = getAllDatasFromTable('glpi_configs',"", false,'name');
+      $data = getAllDatasFromTable('glpi_configs', "", false, 'name');
       $previousArrayName = "";
-      foreach($data as $key => $array) {
+      foreach ($data as $key => $array) {
          $this->assertTrue($previousArrayName <= $previousArrayName = $array['name']);
       }
    }
@@ -303,10 +303,10 @@ class DbFunctionTest extends DbTestCase {
    **/
    public function testFieldExist() {
 
-      $this->assertTrue(FieldExists('glpi_configs','id'));
-      $this->assertFalse(FieldExists('glpi_configs','fakeField'));
-      $this->assertFalse(FieldExists('fakeTable','id'));
-      $this->assertFalse(FieldExists('fakeTable','fakeField'));
+      $this->assertTrue(FieldExists('glpi_configs', 'id'));
+      $this->assertFalse(FieldExists('glpi_configs', 'fakeField'));
+      $this->assertFalse(FieldExists('fakeTable', 'id'));
+      $this->assertFalse(FieldExists('fakeTable', 'fakeField'));
    }
 
 
@@ -315,18 +315,18 @@ class DbFunctionTest extends DbTestCase {
    **/
    public function testIsIndex() {
 
-      $this->assertFalse(isIndex('glpi_configs','fakeField'));
-      $this->assertFalse(isIndex('fakeTable','id'));
-      $this->assertFalse(isIndex('glpi_configs','name'));
-      $this->assertTrue(isIndex('glpi_users','locations_id'));
-      $this->assertTrue(isIndex('glpi_users','unicity'));
+      $this->assertFalse(isIndex('glpi_configs', 'fakeField'));
+      $this->assertFalse(isIndex('fakeTable', 'id'));
+      $this->assertFalse(isIndex('glpi_configs', 'name'));
+      $this->assertTrue(isIndex('glpi_users', 'locations_id'));
+      $this->assertTrue(isIndex('glpi_users', 'unicity'));
    }
 
 
    /**
     * @covers ::formatOutputWebLink
    **/
-   public function testFormatOutputWebLink(){
+   public function testFormatOutputWebLink() {
 
       $this->assertEquals('http://www.glpi-project.org/',
                           formatOutputWebLink('www.glpi-project.org/'));

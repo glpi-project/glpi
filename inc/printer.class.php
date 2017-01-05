@@ -120,15 +120,15 @@ class Printer  extends CommonDBTM {
          return false;
       }
 
-      $entities = getAncestorsOf("glpi_entities",$this->fields['entities_id']);
+      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
       $entities[] = $this->fields['entities_id'];
 
       // RELATION : printers -> _port -> _wire -> _port -> device
 
       // Evaluate connection in the 2 ways
       for ($tabend = array("networkports_id_1" => "networkports_id_2",
-                           "networkports_id_2" => "networkports_id_1") ;
-           list($enda, $endb) = each($tabend) ; ) {
+                           "networkports_id_2" => "networkports_id_1");
+           list($enda, $endb) = each($tabend); ) {
 
          $sql = "SELECT `itemtype`,
                         GROUP_CONCAT(DISTINCT `items_id`) AS ids
@@ -412,7 +412,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Port','Ports', Session::getPluralNumber())."</td>";
+      echo "<td>"._n('Port', 'Ports', Session::getPluralNumber())."</td>";
       echo "<td>\n<table>";
       // serial interface
       echo "<tr><td>".__('Serial')."</td><td width='80'>";
@@ -428,7 +428,7 @@ class Printer  extends CommonDBTM {
       echo "</td>";
       // ethernet interface?
       echo "<td>".__('Ethernet')."</td><td>";
-      Dropdown::showYesNo("have_ethernet",$this->fields["have_ethernet"]);
+      Dropdown::showYesNo("have_ethernet", $this->fields["have_ethernet"]);
       echo "</td></tr>";
       // wifi ?
       echo "<tr><td>".__('Wifi')."</td><td colspan='3'>";
@@ -484,7 +484,6 @@ class Printer  extends CommonDBTM {
 
       return $actions;
    }
-
 
    function getSearchOptionsNew() {
       $tab = [];
@@ -685,7 +684,7 @@ class Printer  extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
-         'name'               => _n('Cartridge','Cartridges', Session::getPluralNumber()),
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

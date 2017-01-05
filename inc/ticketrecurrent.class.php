@@ -181,19 +181,19 @@ class TicketRecurrent extends CommonDropdown {
       switch ($field['name']) {
          case 'periodicity' :
             $possible_values = array();
-            for ($i=1 ; $i<24 ; $i++) {
-               $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i), $i);
+            for ($i=1; $i<24; $i++) {
+               $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
             }
-            for ($i=1 ; $i<=30 ; $i++) {
-               $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i), $i);
-            }
-
-            for ($i=1 ; $i<12 ; $i++) {
-               $possible_values[$i.'MONTH'] = sprintf(_n('%d month','%d months',$i), $i);
+            for ($i=1; $i<=30; $i++) {
+               $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
             }
 
-            for ($i=1 ; $i<5 ; $i++) {
-               $possible_values[$i.'YEAR'] = sprintf(_n('%d year','%d years',$i), $i);
+            for ($i=1; $i<12; $i++) {
+               $possible_values[$i.'MONTH'] = sprintf(_n('%d month', '%d months', $i), $i);
+            }
+
+            for ($i=1; $i<5; $i++) {
+               $possible_values[$i.'YEAR'] = sprintf(_n('%d year', '%d years', $i), $i);
             }
 
             Dropdown::showFromArray($field['name'], $possible_values,
@@ -217,11 +217,11 @@ class TicketRecurrent extends CommonDropdown {
 
       switch ($field) {
          case 'periodicity' :
-            if (preg_match('/([0-9]+)MONTH/',$values[$field], $matches)) {
-               return sprintf(_n('%d month','%d months',$matches[1]), $matches[1]);
+            if (preg_match('/([0-9]+)MONTH/', $values[$field], $matches)) {
+               return sprintf(_n('%d month', '%d months', $matches[1]), $matches[1]);
             }
-            if (preg_match('/([0-9]+)YEAR/',$values[$field], $matches)) {
-               return sprintf(_n('%d year','%d years',$matches[1]), $matches[1]);
+            if (preg_match('/([0-9]+)YEAR/', $values[$field], $matches)) {
+               return sprintf(_n('%d year', '%d years', $matches[1]), $matches[1]);
             }
             return Html::timestampToString($values[$field], false);
          break;
@@ -335,8 +335,8 @@ class TicketRecurrent extends CommonDropdown {
          }
       }
       $check = true;
-      if (preg_match('/([0-9]+)MONTH/',$periodicity)
-          || preg_match('/([0-9]+)YEAR/',$periodicity)) {
+      if (preg_match('/([0-9]+)MONTH/', $periodicity)
+          || preg_match('/([0-9]+)YEAR/', $periodicity)) {
          $check = false;
       }
 
@@ -354,10 +354,10 @@ class TicketRecurrent extends CommonDropdown {
          if ($now > $timestart) {
             $value = $periodicity;
             $step  = "second";
-            if (preg_match('/([0-9]+)MONTH/',$periodicity, $matches)) {
+            if (preg_match('/([0-9]+)MONTH/', $periodicity, $matches)) {
                $value = $matches[1];
                $step  = 'MONTH';
-            } else if (preg_match('/([0-9]+)YEAR/',$periodicity, $matches)) {
+            } else if (preg_match('/([0-9]+)YEAR/', $periodicity, $matches)) {
                $value = $matches[1];
                $step  = 'YEAR';
             } else {
@@ -371,7 +371,7 @@ class TicketRecurrent extends CommonDropdown {
             }
 
             while ($timestart < $now) {
-               $timestart = strtotime("+ $value $step",$timestart);
+               $timestart = strtotime("+ $value $step", $timestart);
             }
          }
          // Time start over end date
@@ -387,7 +387,7 @@ class TicketRecurrent extends CommonDropdown {
             $durations = $calendar->getDurationsCache();
             if (array_sum($durations) > 0) { // working days exists
                while (!$calendar->isAWorkingDay($timestart)) {
-                  $timestart = strtotime("+ 1 day",$timestart);
+                  $timestart = strtotime("+ 1 day", $timestart);
                }
             }
          }

@@ -169,8 +169,8 @@ class KnowbaseItem extends CommonDBVisible {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
-      $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -187,7 +187,7 @@ class KnowbaseItem extends CommonDBVisible {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
                   }
-                  $ong[2] = self::createTabEntry(_n('Target','Targets', Session::getPluralNumber()),
+                  $ong[2] = self::createTabEntry(_n('Target', 'Targets', Session::getPluralNumber()),
                                                     $nb);
                   $ong[3] = __('Edit');
                }
@@ -201,7 +201,7 @@ class KnowbaseItem extends CommonDBVisible {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == __CLASS__) {
-         switch($tabnum) {
+         switch ($tabnum) {
             case 1 :
                $item->showFull();
                break;
@@ -422,7 +422,7 @@ class KnowbaseItem extends CommonDBVisible {
          // Groups
          if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
             $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
-                                    IN ('".implode("','",$_SESSION["glpigroups"])."')
+                                    IN ('".implode("','", $_SESSION["glpigroups"])."')
                                AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
                                     ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
                                                                  '', '', true).")) ";
@@ -586,7 +586,7 @@ class KnowbaseItem extends CommonDBVisible {
       echo "</td><td>";
       //TRANS: %d is the number of view
       if ($ID) {
-         printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
+         printf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
       }
       echo "</td>";
       echo "</tr>\n";
@@ -630,7 +630,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       if ($this->isNewID($ID)) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>"._n('Target','Targets',1)."</td>";
+         echo "<td>"._n('Target', 'Targets', 1)."</td>";
          echo "<td>";
          $types   = array('Entity', 'Group', 'Profile', 'User');
          $addrand = Dropdown::showItemTypes('_visibility[_type]', $types);
@@ -640,7 +640,7 @@ class KnowbaseItem extends CommonDBVisible {
                           'prefix'   => '_visibility',
                           'nobutton' => 1);
 
-         Ajax::updateItemOnSelectEvent("dropdown__visibility__type_".$addrand,"visibility$rand",
+         Ajax::updateItemOnSelectEvent("dropdown__visibility__type_".$addrand, "visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php",
                                        $params);
          echo "<span id='visibility$rand'></span>";
@@ -811,7 +811,7 @@ class KnowbaseItem extends CommonDBVisible {
       echo "<input type='text' size='50' name='contains' value=\"".
              Html::cleanInputText(stripslashes($params["contains"]))."\"></td>";
       echo "<td class='left'>";
-      echo "<input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
+      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['item_itemtype'])
           && isset($options['item_items_id'])) {
@@ -860,7 +860,7 @@ class KnowbaseItem extends CommonDBVisible {
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
          KnowbaseItemCategory::dropdown(array('value' => $params["knowbaseitemcategories_id"]));
          echo "</td><td class='left'>";
-         echo "<input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
+         echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
          echo "</tr></table>";
          if (isset($options['item_itemtype'])
              && isset($options['item_items_id'])) {
@@ -909,7 +909,7 @@ class KnowbaseItem extends CommonDBVisible {
       }
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
       echo "</td><td class='left'>";
-      echo "<input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
+      echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
       echo "</tr></table>";
       Html::closeForm();
       echo "</div>";
@@ -1015,7 +1015,7 @@ class KnowbaseItem extends CommonDBVisible {
                            AGAINST('$search_wilcard' IN BOOLEAN MODE)";
 
                if (!empty($addscore)) {
-                  foreach($addscore as $addscore_field) {
+                  foreach ($addscore as $addscore_field) {
                      $score.= " + MATCH($addscore_field)
                                         AGAINST('$search_wilcard' IN BOOLEAN MODE)";
                   }
@@ -1027,7 +1027,7 @@ class KnowbaseItem extends CommonDBVisible {
                           AGAINST('$search_wilcard' IN BOOLEAN MODE) ";
 
                if (!empty($addscore)) {
-                  foreach($addscore as $addscore_field) {
+                  foreach ($addscore as $addscore_field) {
                      $where_1.= "OR $addscore_field IS NOT NULL
                                     AND MATCH($addscore_field)
                                         AGAINST('$search_wilcard' IN BOOLEAN MODE)";
@@ -1049,7 +1049,7 @@ class KnowbaseItem extends CommonDBVisible {
                              $join
                              WHERE $where_1";
                $result_1  = $DB->query($query_1);
-               $numrows_1 = $DB->result($result_1,0,0);
+               $numrows_1 = $DB->result($result_1, 0, 0);
 
                if ($numrows_1 <= 0) {// not result this fulltext try with alternate search
                   $search1 = array(/* 1 */   '/\\\"/',
@@ -1061,7 +1061,7 @@ class KnowbaseItem extends CommonDBVisible {
                                    /* 7 */   "/\(/",
                                    /* 8 */   "/\)/",
                                    /* 9 */   "/\-/");
-                  $contains = preg_replace($search1,"", $params["contains"]);
+                  $contains = preg_replace($search1, "", $params["contains"]);
                   $addwhere = '';
                   if (KnowbaseItemTranslation::isKbTranslationActive()
                       && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
@@ -1228,7 +1228,7 @@ class KnowbaseItem extends CommonDBVisible {
 
             // Num of the row (1=header_line)
             $row_num = 1;
-            for ($i=0 ; $i<$numrows_limit ; $i++) {
+            for ($i=0; $i<$numrows_limit; $i++) {
                $data = $DB->fetch_assoc($result_limit);
 
                Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
@@ -1253,7 +1253,7 @@ class KnowbaseItem extends CommonDBVisible {
                   $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
+                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"";
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                             $CFG_GLPI["root_doc"].
                                                                "/front/knowbaseitem.form.php?id=".$data["id"],
@@ -1432,7 +1432,7 @@ class KnowbaseItem extends CommonDBVisible {
                                    .__("This item is part of the FAQ")."' "
                                    :" class='knowbase' ")." href=\"".
                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
-                  Html::resume_text($name,80)."</a></td></tr>";
+                  Html::resume_text($name, 80)."</a></td></tr>";
          }
          echo "</table>";
       }
@@ -1587,8 +1587,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return string
     */
-   public function getAnswer()
-   {
+   public function getAnswer() {
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
          $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
       } else {

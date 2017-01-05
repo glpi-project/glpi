@@ -50,11 +50,11 @@ class Document_Item extends CommonDBRelation{
    // From CommonDBRelation
    static public $itemtype_1    = 'Document';
    static public $items_id_1    = 'documents_id';
-   static public $take_entity_1 = true ;
+   static public $take_entity_1 = true;
 
    static public $itemtype_2    = 'itemtype';
    static public $items_id_2    = 'items_id';
-   static public $take_entity_2 = false ;
+   static public $take_entity_2 = false;
 
 
    /**
@@ -78,7 +78,7 @@ class Document_Item extends CommonDBRelation{
          $ticket = new Ticket();
          // Not item linked for closed tickets
          if ($ticket->getFromDB($this->fields['items_id'])
-             && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+             && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
 
             return false;
          }
@@ -228,7 +228,7 @@ class Document_Item extends CommonDBRelation{
          }
          $nb += countElementsInTable(array('glpi_documents_items'), $restrict);
       }
-      return $nb ;
+      return $nb;
    }
 
 
@@ -410,7 +410,7 @@ class Document_Item extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      for ($i=0 ; $i < $number ; $i++) {
+      for ($i=0; $i < $number; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -666,12 +666,12 @@ class Document_Item extends CommonDBRelation{
             }
 
             if ($item->isRecursive()) {
-               $entities = getSonsOf('glpi_entities',$entity);
+               $entities = getSonsOf('glpi_entities', $entity);
             } else {
                $entities = $entity;
             }
          }
-         $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
+         $limit = getEntitiesRestrictRequest(" AND ", "glpi_documents", '', $entities, true);
 
          $q = "SELECT COUNT(*)
                FROM `glpi_documents`
@@ -679,7 +679,7 @@ class Document_Item extends CommonDBRelation{
                $limit";
 
          $result = $DB->query($q);
-         $nb     = $DB->result($result,0,0);
+         $nb     = $DB->result($result, 0, 0);
 
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
@@ -817,7 +817,7 @@ class Document_Item extends CommonDBRelation{
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
       if (Session::getLoginUserID()) {
-         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+         $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
       } else {
          // Anonymous access from FAQ
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
@@ -843,7 +843,7 @@ class Document_Item extends CommonDBRelation{
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
          if (Session::getLoginUserID()) {
-            $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+            $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
          } else {
             // Anonymous access from FAQ
             $query .= " AND `glpi_documents`.`entities_id`='0' ";
@@ -915,7 +915,7 @@ class Document_Item extends CommonDBRelation{
          }
 
          $document = new Document();
-         foreach  ($documents as $data) {
+         foreach ($documents as $data) {
             $docID        = $data["id"];
             $link         = NOT_AVAILABLE;
             $downloadlink = NOT_AVAILABLE;
@@ -945,7 +945,7 @@ class Document_Item extends CommonDBRelation{
             if (!empty($data["link"])) {
                echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"];
                echo "</a>";
-            } else {;
+            } else {
                echo "&nbsp;";
             }
             echo "</td>";

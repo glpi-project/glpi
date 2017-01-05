@@ -155,7 +155,7 @@ class DeviceNetworkCard extends CommonDevice {
          $base->addHeader($column_name, __('Interface'), $super, $father);
       } else {
          $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-         if ($column == $father)  {
+         if ($column == $father) {
             return $father;
          }
          Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);

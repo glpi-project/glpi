@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["restore"])) {
    $computer->check($_POST['id'], DELETE);
    if ($computer->restore($_POST)) {
-      Event::log($_POST["id"],"computers", 4, "inventory",
+      Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["purge"])) {
    $computer->check($_POST['id'], PURGE);
-   if ($computer->delete($_POST,1)) {
+   if ($computer->delete($_POST, 1)) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

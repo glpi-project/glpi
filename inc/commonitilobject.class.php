@@ -820,12 +820,12 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (isset($input["status"])
-          && !in_array($input["status"],array_merge($this->getSolvedStatusArray(),
+          && !in_array($input["status"], array_merge($this->getSolvedStatusArray(),
                                                     $this->getClosedStatusArray()))) {
          $input['solvedate'] = 'NULL';
       }
 
-      if (isset($input["status"]) && !in_array($input["status"],$this->getClosedStatusArray())) {
+      if (isset($input["status"]) && !in_array($input["status"], $this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
       return $input;
@@ -838,8 +838,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->loadActors();
 
       // Setting a solution or solution type means the problem is solved
-      if ((in_array("solutiontypes_id",$this->updates) && ($this->input["solutiontypes_id"] > 0))
-          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
+      if ((in_array("solutiontypes_id", $this->updates) && ($this->input["solutiontypes_id"] > 0))
+          || (in_array("solution", $this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
             $this->oldvalues['status'] = $this->fields['status'];
@@ -867,26 +867,26 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Check dates change interval due to the fact that second are not displayed in form
-      if ((($key = array_search('date',$this->updates)) !== false)
-          && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
+      if ((($key = array_search('date', $this->updates)) !== false)
+          && (substr($this->fields["date"], 0, 16) == substr($this->oldvalues['date'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['date']);
       }
 
-      if ((($key=array_search('closedate',$this->updates)) !== false)
-          && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
+      if ((($key=array_search('closedate', $this->updates)) !== false)
+          && (substr($this->fields["closedate"], 0, 16) == substr($this->oldvalues['closedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['closedate']);
       }
 
-      if ((($key=array_search('due_date',$this->updates)) !== false)
-          && (substr($this->fields["due_date"],0,16) == substr($this->oldvalues['due_date'],0,16))) {
+      if ((($key=array_search('due_date', $this->updates)) !== false)
+          && (substr($this->fields["due_date"], 0, 16) == substr($this->oldvalues['due_date'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['due_date']);
       }
 
-      if ((($key=array_search('solvedate',$this->updates)) !== false)
-          && (substr($this->fields["solvedate"],0,16) == substr($this->oldvalues['solvedate'],0,16))) {
+      if ((($key=array_search('solvedate', $this->updates)) !== false)
+          && (substr($this->fields["solvedate"], 0, 16) == substr($this->oldvalues['solvedate'], 0, 16))) {
          unset($this->updates[$key]);
          unset($this->oldvalues['solvedate']);
       }
@@ -896,7 +896,7 @@ abstract class CommonITILObject extends CommonDBTM {
              && ($this->countSuppliers(CommonITILActor::ASSIGN) == 0)
              && ($this->countUsers(CommonITILActor::ASSIGN) == 0)
              && ($this->countGroups(CommonITILActor::ASSIGN) == 0)
-             && !in_array($this->fields['status'],array_merge($this->getSolvedStatusArray(),
+             && !in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
                                                               $this->getClosedStatusArray()))) {
 
             if (!in_array('status', $this->updates)) {
@@ -945,17 +945,17 @@ abstract class CommonITILObject extends CommonDBTM {
       // check dates
 
       // check due_date (SLA)
-      if ((in_array("date",$this->updates) || in_array("due_date",$this->updates))
+      if ((in_array("date", $this->updates) || in_array("due_date", $this->updates))
           && !is_null($this->fields["due_date"])) { // Date set
 
          if ($this->fields["due_date"] < $this->fields["date"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
-            if (($key = array_search('date',$this->updates)) !== false) {
+            if (($key = array_search('date', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
             }
-            if (($key = array_search('due_date',$this->updates)) !== false) {
+            if (($key = array_search('due_date', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['due_date']);
             }
@@ -964,14 +964,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Status close : check dates
       if (in_array($this->fields["status"], $this->getClosedStatusArray())
-          && (in_array("date",$this->updates) || in_array("closedate",$this->updates))) {
+          && (in_array("date", $this->updates) || in_array("closedate", $this->updates))) {
 
          // Invalid dates : no change
          // closedate must be > solvedate
          if ($this->fields["closedate"] < $this->fields["solvedate"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
-            if (($key = array_search('closedate',$this->updates)) !== false) {
+            if (($key = array_search('closedate', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['closedate']);
             }
@@ -980,18 +980,18 @@ abstract class CommonITILObject extends CommonDBTM {
          // closedate must be > create date
          if ($this->fields["closedate"] < $this->fields["date"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
-            if (($key = array_search('date',$this->updates)) !== false) {
+            if (($key = array_search('date', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
             }
-            if (($key = array_search('closedate',$this->updates)) !== false) {
+            if (($key = array_search('closedate', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['closedate']);
             }
          }
       }
 
-      if ((($key = array_search('status',$this->updates)) !== false)
+      if ((($key = array_search('status', $this->updates)) !== false)
           && $this->oldvalues['status'] == $this->fields['status']) {
 
          unset($this->updates[$key]);
@@ -1000,18 +1000,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Status solved : check dates
       if (in_array($this->fields["status"], $this->getSolvedStatusArray())
-          && (in_array("date",$this->updates) || in_array("solvedate",$this->updates))) {
+          && (in_array("date", $this->updates) || in_array("solvedate", $this->updates))) {
 
          // Invalid dates : no change
          // solvedate must be > create date
          if ($this->fields["solvedate"] < $this->fields["date"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
-            if (($key = array_search('date',$this->updates)) !== false) {
+            if (($key = array_search('date', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
             }
-            if (($key = array_search('solvedate',$this->updates)) !== false) {
+            if (($key = array_search('solvedate', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['solvedate']);
             }
@@ -1020,7 +1020,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Manage come back to waiting state
       if (!is_null($this->fields['begin_waiting_date'])
-          && (($key = array_search('status',$this->updates)) !== false)
+          && (($key = array_search('status', $this->updates)) !== false)
           && (($this->oldvalues['status'] == self::WAITING)
                // From solved to another state than closed
               || (in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
@@ -1104,19 +1104,19 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // solve_delay_stat : use delay between opendate and solvedate
-      if (in_array("solvedate",$this->updates)) {
+      if (in_array("solvedate", $this->updates)) {
          $this->updates[]                  = "solve_delay_stat";
          $this->fields['solve_delay_stat'] = $this->computeSolveDelayStat();
       }
       // close_delay_stat : use delay between opendate and closedate
-      if (in_array("closedate",$this->updates)) {
+      if (in_array("closedate", $this->updates)) {
          $this->updates[]                  = "close_delay_stat";
          $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
       }
 
       // Do not take into account date_mod if no update is done
       if ((count($this->updates) == 1)
-          && (($key = array_search('date_mod',$this->updates)) !== false)) {
+          && (($key = array_search('date_mod', $this->updates)) !== false)) {
          unset($this->updates[$key]);
       }
    }
@@ -1170,13 +1170,13 @@ abstract class CommonITILObject extends CommonDBTM {
       $input['content'] = ltrim($input['content']);
       if (empty($input["name"])) {
          $input['name'] = Html::clean(Html::entity_decode_deep($input['content']));
-         $input["name"] = preg_replace('/\\r\\n/',' ',$input['name']);
-         $input["name"] = preg_replace('/\\n/',' ',$input['name']);
+         $input["name"] = preg_replace('/\\r\\n/', ' ', $input['name']);
+         $input["name"] = preg_replace('/\\n/', ' ', $input['name']);
          // For mailcollector
-         $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
-         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+         $input["name"] = preg_replace('/\\\\r\\\\n/', ' ', $input['name']);
+         $input["name"] = preg_replace('/\\\\n/', ' ', $input['name']);
          $input['name'] = Toolbox::stripslashes_deep($input['name']);
-         $input["name"] = Toolbox::substr($input['name'],0,70);
+         $input["name"] = Toolbox::substr($input['name'], 0, 70);
          $input['name'] = Toolbox::addslashes_deep($input['name']);
       }
 
@@ -1250,11 +1250,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && count($this->input['_documents_id'])) {
          $docitem = new Document_Item();
          foreach ($this->input['_documents_id'] as $docID) {
-            if ($docitem->add(array('documents_id' => $docID,
-                                    '_do_notif'    => false,
-                                    'itemtype'     => $this->getType(),
-                                    'items_id'     => $this->fields['id']))) {
-            }
+            $docitem->add(array('documents_id' => $docID,
+                                '_do_notif'    => false,
+                                'itemtype'     => $this->getType(),
+                                'items_id'     => $this->fields['id']));
          }
       }
 
@@ -1295,7 +1294,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_requester_notif"])) {
                   foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
-                     if(isset($val[$key_requester])){
+                     if (isset($val[$key_requester])) {
                         $input2[$key] = $val[$key_requester];
                      }
                   }
@@ -1337,7 +1336,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_observer_notif"])) {
                   foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
-                     if(isset($val[$key_observer])){
+                     if (isset($val[$key_observer])) {
                         $input2[$key] = $val[$key_observer];
                      }
                   }
@@ -1379,7 +1378,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_assign_notif"])) {
                   foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
-                     if(isset($val[$key_assign])){
+                     if (isset($val[$key_assign])) {
                         $input2[$key] = $val[$key_assign];
                      }
                   }
@@ -1848,7 +1847,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $values[2] = static::getPriorityName(2);
       $values[1] = static::getPriorityName(1);
 
-      return Dropdown::showFromArray($p['name'],$values, $p);
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 
@@ -1962,7 +1961,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      return Dropdown::showFromArray($p['name'],$values, $p);
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 
@@ -2073,7 +2072,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      return Dropdown::showFromArray($p['name'],$values, $p);
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 
@@ -2362,7 +2361,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function showGroupsAssociated($type, $canedit, array $options=array()) {
       global $CFG_GLPI;
 
-      $groupicon = self::getActorIcon('group',$type);
+      $groupicon = self::getActorIcon('group', $type);
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
 
@@ -2420,7 +2419,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $showsupplierlink = 2;
       }
 
-      $suppliericon = self::getActorIcon('supplier',$type);
+      $suppliericon = self::getActorIcon('supplier', $type);
       $supplier     = new Supplier();
       $linksupplier = new $this->supplierlinkclass();
 
@@ -2459,7 +2458,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      if (empty($supemail)) {
                         $supemail = $supplier->fields['email'];
                      }
-                     $text .= sprintf(__('%1$s: %2$s'),__('Email'), $supemail);
+                     $text .= sprintf(__('%1$s: %2$s'), __('Email'), $supemail);
                   }
                   echo "&nbsp;";
                   if ($canedit) {
@@ -2602,7 +2601,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             Dropdown::showYesNo('use_notification');
             echo "<br><br>";
-            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             return true;
             return true;
       }
@@ -2658,7 +2657,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $linkclass->update($data);
                      }
                   }
-                  $linkclass = new $this->supplierlinkclass();
+                  $linkclass = new $item->supplierlinkclass();
                   foreach ($linkclass->getActors($id) as $type => $users) {
                      foreach ($users as $data) {
                         $data['use_notification'] = $input['use_notification'];
@@ -3058,7 +3057,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $newtab['condition']       .= " AND `id` IN (".implode(",",$_SESSION['glpigroups']).")";
+         $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
       }
       $tab[] = $newtab;
 
@@ -3351,7 +3350,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (User::canView()) {
          $showuserlink = 2;
       }
-      $usericon  = self::getActorIcon('user',$type);
+      $usericon  = self::getActorIcon('user', $type);
       $user      = new User();
       $linkuser  = new $this->userlinkclass();
 
@@ -3403,7 +3402,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
                      $uemail = $user->getDefaultEmail();
                   }
-                  $text .= sprintf(__('%1$s: %2$s'),__('Email'), $uemail);
+                  $text .= sprintf(__('%1$s: %2$s'), __('Email'), $uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
                      $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
@@ -3641,7 +3640,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             $options2['reset'] = 'reset';
 
-            $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+            $url = $this->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
             echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
             printf(__('%1$s: %2$s'), __('Processing'),
@@ -3656,11 +3655,12 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</span>";
 
             echo "<script type='text/javascript'>";
+            echo "$(function() {";
             Ajax::updateItemJsCode("countassign_$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                    array('users_id_assign' => '__VALUE__'),
                                    "dropdown__users_id_".$typename.$rand);
-            echo "</script>";
+            echo "});</script>";
          }
       }
 
@@ -3669,10 +3669,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("notif_".$typename."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
                                 "dropdown_".$actor_name.$rand);
-         echo "</script>";
+         echo "});</script>";
       }
 
       return $rand;
@@ -3744,11 +3745,12 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<span id='countassign_$rand'>";
          echo "</span>";
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("countassign_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                 array('suppliers_id_assign' => '__VALUE__'),
                                 "dropdown__suppliers_id_assign".$rand);
-         echo "</script>";
+         echo "});</script>";
       }
 
       if ($CFG_GLPI['use_mailing']) {
@@ -3756,10 +3758,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("notif_assign_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
                                 "dropdown__suppliers_id_assign".$rand);
-         echo "</script>";
+         echo "});</script>";
       }
    }
 
@@ -4123,11 +4126,12 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</span>";
 
             echo "<script type='text/javascript'>";
+            echo "$(function() {";
             Ajax::updateItemJsCode("countgroupassign_$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                    array('groups_id_assign' => '__VALUE__'),
                                    "dropdown__groups_id_assign$rand");
-            echo "</script>";
+            echo "});</script>";
 
             echo '<hr>';
          } else { // predefined value
@@ -4195,7 +4199,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($ID == 0) {
                return "";
             }
-            return getUserName($ID,$link);
+            return getUserName($ID, $link);
 
          case 'Supplier' :
          case 'Group' :
@@ -4417,7 +4421,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 WHERE `".$this->getForeignKeyField()."` = '$ID'";
 
       if ($result = $DB->query($query)) {
-         $sum = $DB->result($result,0,0);
+         $sum = $DB->result($result, 0, 0);
          if (!is_null($sum)) {
             $tot += $sum;
          }
@@ -4451,7 +4455,7 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
-                && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+                && in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $types[$itemtype] = $item->getTypeName(1);
             }
          }
@@ -4459,8 +4463,8 @@ abstract class CommonITILObject extends CommonDBTM {
       asort($types); // core type first... asort could be better ?
 
       // Drop not available plugins
-      foreach($ptypes as $itemtype => $itemtype_name) {
-         if (!in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+      foreach ($ptypes as $itemtype => $itemtype_name) {
+         if (!in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             unset($ptypes[$itemtype]);
          }
       }
@@ -4595,7 +4599,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
          echo "<tr class='tab_bg_2'><td>".__('Take into account')."</td><td>";
          if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-            echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'],0);
+            echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0);
          } else {
             echo '&nbsp;';
          }
@@ -4607,7 +4611,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat'] > 0) {
-            echo Html::timestampToString($this->fields['solve_delay_stat'],0);
+            echo Html::timestampToString($this->fields['solve_delay_stat'], 0);
          } else {
             echo '&nbsp;';
          }
@@ -4626,7 +4630,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Pending')."</td><td>";
       if ($this->fields['waiting_duration'] > 0) {
-         echo Html::timestampToString($this->fields['waiting_duration'],0);
+         echo Html::timestampToString($this->fields['waiting_duration'], 0);
       } else {
          echo '&nbsp;';
       }
@@ -5257,7 +5261,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $item_num = 1;
          $bgcolor  = $_SESSION["glpipriority_".$item->fields["priority"]];
 
-         echo Search::showNewLine($p['output_type'],$p['row_num']%2);
+         echo Search::showNewLine($p['output_type'], $p['row_num']%2);
 
          $check_col = '';
          if (($candelete || $canupdate)
@@ -5533,7 +5537,7 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach ($items as $key => $val) {
          $issort = 0;
          $link   = "";
-         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+         echo Search::showHeaderItem($output_type, $key, $header_num, $link);
       }
 
       // End Line for column headers

@@ -103,7 +103,7 @@ class Toolbox {
 
       if ($str{0} >= "\xc3") {
          return (($str{1} >= "\xa0") ? ($str{0}.chr(ord($str{1})-32))
-                                     : ($str{0}.$str{1})).substr($str,2);
+                                     : ($str{0}.$str{1})).substr($str, 2);
       }
       return ucfirst($str);
    }
@@ -125,7 +125,7 @@ class Toolbox {
       $pos = self::strpos(self::strtolower($str), $shortcut);
       if ($pos !== false) {
          return self::substr($str, 0, $pos).
-                "<u>". self::substr($str, $pos,1)."</u>".
+                "<u>". self::substr($str, $pos, 1)."</u>".
                 self::substr($str, $pos+1);
       }
       return $str;
@@ -243,7 +243,7 @@ class Toolbox {
    **/
    static function encodeInUtf8($string, $from_charset="ISO-8859-1") {
 
-      if (strcmp($from_charset,"auto") == 0) {
+      if (strcmp($from_charset, "auto") == 0) {
          $from_charset = mb_detect_encoding($string);
       }
       return mb_convert_encoding($string, "UTF-8", $from_charset);
@@ -274,7 +274,7 @@ class Toolbox {
    static function encrypt($string, $key) {
 
       $result = '';
-      for($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0; $i<strlen($string); $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)+ord($keychar));
@@ -297,7 +297,7 @@ class Toolbox {
       $result = '';
       $string = base64_decode($string);
 
-      for($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0; $i<strlen($string); $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)-ord($keychar));
@@ -327,7 +327,7 @@ class Toolbox {
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
                   : (is_null($value)
                         ? NULL : (is_resource($value)
-                                     ? $value : str_replace($in,$out,$value)));
+                                     ? $value : str_replace($in, $out, $value)));
 
       return $value;
    }
@@ -351,7 +351,7 @@ class Toolbox {
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
                   : (is_null($value)
                         ? NULL : (is_resource($value)
-                                     ? $value : str_replace($out,$in,$value)));
+                                     ? $value : str_replace($out, $in, $value)));
 
       return $value;
    }
@@ -378,7 +378,7 @@ class Toolbox {
                   ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'), $value)
                   : (is_null($value)
                       ? NULL : (is_resource($value)
-                                  ? $value : str_replace($out,$in,$value)));
+                                  ? $value : str_replace($out, $in, $value)));
 
       // revert unclean inside <pre>
       $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
@@ -419,14 +419,14 @@ class Toolbox {
       }
 
       if ($tps && function_exists('memory_get_usage')) {
-         $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
-                      number_format(memory_get_usage()/1024/1024,2).'Mio)';
+         $msg .= ' ('.number_format(microtime(true)-$tps, 3).'", '.
+                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
       }
       $msg .= "\n  ";
 
       foreach (func_get_args() as $arg) {
          if (is_array($arg) || is_object($arg)) {
-            $msg .= str_replace("\n", "\n  ",print_r($arg, true));
+            $msg .= str_replace("\n", "\n  ", print_r($arg, true));
          } else if (is_null($arg)) {
             $msg .= 'NULL ';
          } else if (is_bool($arg)) {
@@ -437,7 +437,7 @@ class Toolbox {
       }
 
       $tps = microtime(true);
-      self::logInFile('php-errors', $msg."\n",true);
+      self::logInFile('php-errors', $msg."\n", true);
    }
 
 
@@ -672,7 +672,7 @@ class Toolbox {
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
 
-      if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
+      if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
          Event::log($file, "sendFile", 1, "security",
                     $_SESSION["glpiname"]." try to get a non standard file.");
          die("Security attack!!!");
@@ -683,7 +683,7 @@ class Toolbox {
       }
 
       // if $mime is defined, ignore mime type by extension
-      if($mime === null && preg_match('/\.(...)$/', $file, $regs)){
+      if ($mime === null && preg_match('/\.(...)$/', $file, $regs)) {
          $mimeTypeMap = [
             'sql' => 'text/x-sql',
             'xml' => 'text/xml',
@@ -694,9 +694,9 @@ class Toolbox {
 
          $ext = strtolower($regs[1]);
 
-         if(isset($mimeTypeMap[$ext])){
+         if (isset($mimeTypeMap[$ext])) {
             $mime = $mimeTypeMap[$ext];
-         }else{
+         } else {
             $mime = 'application/octetstream';
          }
       }
@@ -704,7 +704,7 @@ class Toolbox {
       // don't download picture files, see them inline
       $attachment = "";
       // if not begin 'image/'
-      if(strncmp($mime, 'image/', 6) !== 0){
+      if (strncmp($mime, 'image/', 6) !== 0) {
          $attachment = ' attachment;';
       }
 
@@ -721,11 +721,11 @@ class Toolbox {
 
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
       // http://tools.ietf.org/html/rfc7232#section-3.3
-      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
+      if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
          http_response_code(304); //304 - Not Modified
          exit;
       }
-      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+      if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
          http_response_code(304); //304 - Not Modified
          exit;
       }
@@ -791,10 +791,9 @@ class Toolbox {
          if (is_array($v)) {
             $params[] = self::append_params($v, $separator,
                                             (empty($parent) ? rawurlencode($k)
-                                                            : $parent .'['.rawurlencode($k).']'));
+                                                            : $parent . '%5B' . rawurlencode($k) . '%5D'));
          } else {
-            $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']'
-                                         : rawurlencode($k)) . '=' . rawurlencode($v);
+            $params[] = (!empty($parent) ? $parent . '%5B' . rawurlencode($k) . '%5D' : rawurlencode($k)) . '=' . rawurlencode($v);
          }
       }
       return implode($separator, $params);
@@ -1692,7 +1691,7 @@ class Toolbox {
 
       fwrite($fp, $request);
 
-      $header = true ;
+      $header = true;
       $redir  = false;
       $errstr = "";
       while (!feof($fp)) {
@@ -1722,14 +1721,12 @@ class Toolbox {
                   $errstr = "Too deep";
                   break;
 
-               } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
-                  // HTTP 200 = OK
-
                } else if (preg_match("/^HTTP.*302/", $buf)) {
                   // HTTP 302 = Moved Temporarily
                   $redir = true;
 
-               } else if (preg_match("/^HTTP/", $buf)) {
+               } else if (preg_match("/^HTTP/", $buf)
+                       && !preg_match("/^HTTP.*200.*OK/", $buf)) {
                   // Other HTTP status = error
                   $errstr = trim($buf);
                   break;
@@ -1749,7 +1746,7 @@ class Toolbox {
             $msgerr = __('No data available on the web site');
          } else {
             //TRANS: %s is the error string
-            $msgerr = sprintf(__('Impossible to connect to site (%s)'),$errstr);
+            $msgerr = sprintf(__('Impossible to connect to site (%s)'), $errstr);
          }
       }
       return $content;
@@ -1813,10 +1810,10 @@ class Toolbox {
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
-            if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/',$decoded_where, $matches)) {
-               if($matches[1] !== $CFG_GLPI['url_base']) {
+            if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/', $decoded_where, $matches)) {
+               if ($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
-                  if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
+                  if ($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                   } else {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
@@ -1854,7 +1851,7 @@ class Toolbox {
                                && $item->isEntityAssign()) {
                               if ($item->getFromDB($data[1])) {
                                  if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                    Session::changeActiveEntities($item->getEntityID(),1);
+                                    Session::changeActiveEntities($item->getEntityID(), 1);
                                  }
                               }
                            }
@@ -1907,7 +1904,7 @@ class Toolbox {
                               if ($item->isEntityAssign()) {
                                  if ($item->getFromDB($data[1])) {
                                     if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                       Session::changeActiveEntities($item->getEntityID(),1);
+                                       Session::changeActiveEntities($item->getEntityID(), 1);
                                     }
                                  }
                               }
@@ -1943,7 +1940,7 @@ class Toolbox {
       $last = self::strtolower($val[strlen($val)-1]);
       $val  = (int)$val;
 
-      switch($last) {
+      switch ($last) {
          // Le modifieur 'G' est disponible depuis PHP 5.1.0
          case 'g' :
             $val *= 1024;
@@ -1976,12 +1973,12 @@ class Toolbox {
    static function parseMailServerConnectString($value, $forceport=false) {
 
       $tab = array();
-      if (strstr($value,":")) {
+      if (strstr($value, ":")) {
          $tab['address'] = str_replace("{", "", preg_replace("/:.*/", "", $value));
          $tab['port']    = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
 
       } else {
-         if (strstr($value,"/")) {
+         if (strstr($value, "/")) {
             $tab['address'] = str_replace("{", "", preg_replace("/\/.*/", "", $value));
          } else {
             $tab['address'] = str_replace("{", "", preg_replace("/}.*/", "", $value));
@@ -1991,13 +1988,13 @@ class Toolbox {
       $tab['mailbox'] = preg_replace("/.*}/", "", $value);
 
       $tab['type']    = '';
-      if (strstr($value,"/imap")) {
+      if (strstr($value, "/imap")) {
          $tab['type'] = 'imap';
-      } else if (strstr($value,"/pop")) {
+      } else if (strstr($value, "/pop")) {
          $tab['type'] = 'pop';
       }
       $tab['ssl'] = false;
-      if (strstr($value,"/ssl")) {
+      if (strstr($value, "/ssl")) {
          $tab['ssl'] = true;
       }
 
@@ -2018,29 +2015,29 @@ class Toolbox {
          }
       }
       $tab['tls'] = '';
-      if (strstr($value,"/tls")) {
+      if (strstr($value, "/tls")) {
          $tab['tls'] = true;
       }
-      if (strstr($value,"/notls")) {
+      if (strstr($value, "/notls")) {
          $tab['tls'] = false;
       }
       $tab['validate-cert'] = '';
-      if (strstr($value,"/validate-cert")) {
+      if (strstr($value, "/validate-cert")) {
          $tab['validate-cert'] = true;
       }
-      if (strstr($value,"/novalidate-cert")) {
+      if (strstr($value, "/novalidate-cert")) {
          $tab['validate-cert'] = false;
       }
       $tab['norsh'] = '';
-      if (strstr($value,"/norsh")) {
+      if (strstr($value, "/norsh")) {
          $tab['norsh'] = true;
       }
       $tab['secure'] = '';
-      if (strstr($value,"/secure")) {
+      if (strstr($value, "/secure")) {
          $tab['secure'] = true;
       }
       $tab['debug'] = '';
-      if (strstr($value,"/debug")) {
+      if (strstr($value, "/debug")) {
          $tab['debug'] = true;
       }
 
@@ -2405,7 +2402,7 @@ class Toolbox {
    static function decodeArrayFromInput($value) {
 
       if ($dec = base64_decode($value)) {
-         if ($ret = json_decode($dec,true)) {
+         if ($ret = json_decode($dec, true)) {
             return $ret;
          }
       }
@@ -2425,14 +2422,13 @@ class Toolbox {
 
       $isvalidReferer = true;
 
-      if (!isset($_SERVER['HTTP_REFERER'])){
+      if (!isset($_SERVER['HTTP_REFERER'])) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("No HTTP_REFERER found in request. Reload previous page before doing action again."),
                                   true);
             $isvalidReferer = false;
          }
-      }
-      else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))){
+      } else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("Error when parsing HTTP_REFERER. Reload previous page before doing action again."),
                                   true);
@@ -2440,10 +2436,10 @@ class Toolbox {
          }
       }
 
-      if(!isset($url['host'])
+      if (!isset($url['host'])
           || (($url['host'] != $_SERVER['SERVER_NAME'])
             && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))){
+               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."),
                                   true);
@@ -2451,7 +2447,7 @@ class Toolbox {
          }
       }
 
-      if(!isset($url['path'])
+      if (!isset($url['path'])
           || (!empty($CFG_GLPI['root_doc'])
             && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -2461,7 +2457,7 @@ class Toolbox {
          }
       }
 
-      if(!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE){
+      if (!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."),
                                   true);
       }
@@ -2539,13 +2535,13 @@ class Toolbox {
 
       $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($haystack));
 
-      foreach($it AS $element) {
-         if($strict) {
-            if($element === $needle) {
+      foreach ($it AS $element) {
+         if ($strict) {
+            if ($element === $needle) {
                return true;
             }
          } else {
-            if($element == $needle) {
+            if ($element == $needle) {
                return true;
             }
          }
@@ -2573,8 +2569,7 @@ class Toolbox {
     *
     * @return string
     */
-   public static function removeHtmlSpecialChars($string)
-   {
+   public static function removeHtmlSpecialChars($string) {
       $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
       $string = preg_replace(
          '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
@@ -2593,8 +2588,7 @@ class Toolbox {
     *
     * @return string
     */
-   public static function slugify($string)
-   {
+   public static function slugify($string) {
       $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
       $string = self::removeHtmlSpecialChars($string);
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);

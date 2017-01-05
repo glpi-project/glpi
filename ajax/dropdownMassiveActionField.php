@@ -55,7 +55,7 @@ $inline = false;
 if (isset($_POST['inline']) && $_POST['inline']) {
    $inline = true;
 }
-$submitname = _sx('button','Post');
+$submitname = _sx('button', 'Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {
    $submitname= stripslashes($_POST['submitname']);
 }

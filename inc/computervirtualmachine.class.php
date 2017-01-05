@@ -205,7 +205,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td>";
@@ -340,7 +340,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          $header .= "<th>".__('State of the virtual machine')."</th>";
          $header .= "<th>".__('UUID')."</th>";
          $header .= "<th>"._x('quantity', 'Processors number')."</th>";
-         $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'),__('Mio'))."</th>";
+         $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</th>";
          $header .= "<th>".__('Machine')."</th>";
          $header .= "</tr>";
          echo $header;
@@ -464,7 +464,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       //Virtual machine found, return ID
       if ($DB->numrows($result)) {
-         return $DB->result($result,0,'id');
+         return $DB->result($result, 0, 'id');
       }
 
       return false;

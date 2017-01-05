@@ -45,8 +45,8 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    Report::title();
 
    // Titre
-   $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
-   echo "<div class='center spaced'><h2>".sprintf(__('Network report by location: %s'),$name).
+   $name = Dropdown::getDropdownName("glpi_locations", $_POST["locations_id"]);
+   echo "<div class='center spaced'><h2>".sprintf(__('Network report by location: %s'), $name).
         "</h2></div>";
 
    Report::reportForNetworkInformations("`glpi_locations`
@@ -57,13 +57,13 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
                                              ON (`glpi_networkportethernets`.`netpoints_id`
                                                    = `glpi_netpoints`.`id`)",
                                         "PORT_1.`id` = `glpi_networkportethernets`.`networkports_id`",
-                                        getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"]),
+                                        getRealQueryForTreeItem("glpi_locations", $_POST["locations_id"]),
                                         "`glpi_locations`.`completename`, PORT_1.`name`",
                                         "`glpi_netpoints`.`name` AS extra, ",
                                         Netpoint::getTypeName());
 
    Html::footer();
 
-} else  {
+} else {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }

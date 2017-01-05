@@ -46,9 +46,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $itemtype_1; // Type ref or field name (must start with itemtype)
    static public $items_id_1; // Field name
    // * entity inheritance
-   static public $take_entity_1          = true ;
+   static public $take_entity_1          = true;
    // * rights
-   static public $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM ;
+   static public $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
    static public $mustBeAttached_1       = true;
    // * log
    static public $logs_for_item_1        = true;
@@ -63,7 +63,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static public $itemtype_2; // Type ref or field name (must start with itemtype)
    static public $items_id_2; // Field name
    // * entity inheritance
-   static public $take_entity_2          = false ;
+   static public $take_entity_2          = false;
    // * rights
    static public $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
    static public $mustBeAttached_2       = true;
@@ -107,7 +107,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_1."' AS itemtype_1";
          if (($itemtype ==  static::$itemtype_1)
-             || is_subclass_of($itemtype,  static::$itemtype_1)) {
+             || is_subclass_of($itemtype, static::$itemtype_1)) {
             $condition_1 = $condition_id_1;
          }
       }
@@ -127,7 +127,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_2."' AS itemtype_2";
          if (($itemtype ==  static::$itemtype_2)
-             || is_subclass_of($itemtype,  static::$itemtype_2)) {
+             || is_subclass_of($itemtype, static::$itemtype_2)) {
             $condition_2 = $condition_id_2;
          }
       }

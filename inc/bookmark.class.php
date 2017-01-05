@@ -340,7 +340,7 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</div></td></tr>";
 
       } else {
@@ -558,7 +558,7 @@ class Bookmark extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists delete it
-               $deleteID = $DB->result($result,0,0);
+               $deleteID = $DB->result($result, 0, 0);
                $dd->delete(array('id' => $deleteID));
             }
          }
@@ -796,7 +796,7 @@ class Bookmark extends CommonDBTM {
 
       if (in_array($ID, $personalorder)) {
          $pos = array_search($ID, $personalorder);
-         switch($action) {
+         switch ($action) {
             case 'up' :
                if (isset($personalorder[$pos-1])) {
                   $personalorder[$pos] = $personalorder[$pos-1];
@@ -828,7 +828,7 @@ class Bookmark extends CommonDBTM {
     *
     * @return true if all ok
    **/
-   function moveBookmark($items= array(), $ref_ID, $action='after') {
+   function moveBookmark(array $items, $ref_ID, $action='after') {
       global $DB;
 
       if (count($items)) {

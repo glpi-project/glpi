@@ -147,11 +147,11 @@ abstract class CommonDropdown extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       if ($this->dohistory) {
-         $this->addStandardTab('Log',$ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
 
       if (DropdownTranslation::canBeTranslated($this)) {
-         $this->addStandardTab('DropdownTranslation',$ong, $options);
+         $this->addStandardTab('DropdownTranslation', $ong, $options);
       }
 
       return $ong;
@@ -575,10 +575,10 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<td><input type='hidden' name='id' value='$ID'>";
          echo "<input type='hidden' name='forcepurge' value='1'>";
          echo "<input class='submit' type='submit' name='purge'
-                value=\""._sx('button','Confirm')."\">";
+                value=\""._sx('button', 'Confirm')."\">";
          echo "</td>";
          echo "<td><input class='submit' type='submit' name='annuler'
-                    value=\""._sx('button','Cancel')."\">";
+                    value=\""._sx('button', 'Cancel')."\">";
          echo "</td></tr></table>\n";
          Html::closeForm();
       }
@@ -606,9 +606,9 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       echo "<input type='hidden' name='id' value='$ID' />";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='replace' value=\""._sx('button','Replace')."\">";
+      echo "<input class='submit' type='submit' name='replace' value=\""._sx('button', 'Replace')."\">";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='annuler' value=\""._sx('button','Cancel')."\">";
+      echo "<input class='submit' type='submit' name='annuler' value=\""._sx('button', 'Cancel')."\">";
       echo "</td></tr></table>\n";
       Html::closeForm();
       echo "</div>";
@@ -700,7 +700,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       $ruleinput      = array("name" => stripslashes($value));
-      $rulecollection = RuleCollection::getClassByType($this->getType(),true);
+      $rulecollection = RuleCollection::getClassByType($this->getType(), true);
 
       foreach ($this->additional_fields_for_dictionnary as $field) {
          if (isset($external_params[$field])) {

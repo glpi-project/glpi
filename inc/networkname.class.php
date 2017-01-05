@@ -390,8 +390,9 @@ class NetworkName extends FQDNLabel {
       $networkName = new self();
 
       if ($networkName->can($ID, READ)) {
-         return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
-                                                               $this->fields["fqdns_id"]);
+         return FQDNLabel::getInternetNameFromLabelAndDomainID(
+                 $networkName->fields["name"],
+                 $networkName->fields["fqdns_id"]);
       }
       return "";
    }
@@ -703,7 +704,7 @@ class NetworkName extends FQDNLabel {
          self::dropdown(array('name'      => 'addressID',
                               'condition' => '`items_id`=0'));
          echo "</td><td class='left'>";
-         echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
+         echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
                 "' class='submit'>";
          echo "</td>";
          if (static::canCreate()) {

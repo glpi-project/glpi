@@ -145,10 +145,7 @@ class APIXmlrpc extends API {
             $this->returnError(__("itemtype not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
-         } else
-
-         // get an CommonDBTM item
-         if ($resource === "getItem") {
+         } else if ($resource === "getItem") { // get an CommonDBTM item
             // check id parameter
             if (!isset($this->parameters['id'])) {
                $this->returnError(__("missing id"), 400, "ID_RESOURCE_MISSING");
@@ -173,10 +170,10 @@ class APIXmlrpc extends API {
             if (isset($this->parameters['range'])) {
                $range = explode("-", $this->parameters['range']);
                // fix end range
-               if($range[1] > $totalcount - 1){
+               if ($range[1] > $totalcount - 1) {
                   $range[1] = $totalcount - 1;
                }
-               if($range[1] - $range[0] + 1 < $totalcount){
+               if ($range[1] - $range[0] + 1 < $totalcount) {
                   $code = 206; // partial content
                }
             }
@@ -195,7 +192,7 @@ class APIXmlrpc extends API {
             } else {
                // add a link header targetting created elements
                $additionalheaders['link'] = "";
-               foreach($response as $created_item) {
+               foreach ($response as $created_item) {
                   if ($created_item['id']) {
                      $additionalheaders['link'] .= self::$api_url.$this->parameters['itemtype'].
                                                   "/".$created_item['id'].",";
@@ -236,7 +233,7 @@ class APIXmlrpc extends API {
       $parameters = array();
       $resource = "";
 
-      $parameters = xmlrpc_decode_request(trim(file_get_contents("php://input")),
+      $parameters = xmlrpc_decode_request(trim($this->getHttpBodyStream()),
                                           $resource,
                                           'UTF-8');
 
@@ -249,7 +246,7 @@ class APIXmlrpc extends API {
           && is_array($this->parameters['input'])) {
          $first_field = array_values($this->parameters['input'])[0];
          if (is_array($first_field)) {
-            foreach($this->parameters['input'] as &$input) {
+            foreach ($this->parameters['input'] as &$input) {
                $input = json_decode(json_encode($input), false);
             }
          } else {
@@ -275,7 +272,7 @@ class APIXmlrpc extends API {
          $httpcode = 200;
       }
 
-      foreach($aditionnalheaders as $key => $value) {
+      foreach ($aditionnalheaders as $key => $value) {
          header("$key: $value");
       }
 

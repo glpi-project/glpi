@@ -107,7 +107,7 @@ class DropdownTranslation extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      if ($this->checkBeforeAddorUpdate($input,false)) {
+      if ($this->checkBeforeAddorUpdate($input, false)) {
          return $input;
       }
       Session::addMessageAfterRedirect(__("There's already a translation for this field in this language"),
@@ -249,13 +249,13 @@ class DropdownTranslation extends CommonDBChild {
 
       //If there's already a completename for this language, get it's ID, otherwise 0
       $completenames_id = self::getTranslationID($input['items_id'], $input['itemtype'],
-                                                 'completename',  $input['language']);
+                                                 'completename', $input['language']);
       $item = new $input['itemtype']();
       //Completename is used only for tree dropdowns !
       if ($item instanceof CommonTreeDropdown
           && isset($input['language'])) {
          $item->getFromDB($input['items_id']);
-         $foreignKey = $item->getForeignKeyField() ;
+         $foreignKey = $item->getForeignKeyField();
 
          //Regenerate completename : look for item's ancestors
          $completename = "";
@@ -432,7 +432,7 @@ class DropdownTranslation extends CommonDBChild {
          $options['items_id'] = $item->getID();
 
          // Create item
-         $this->check(-1 , CREATE, $options);
+         $this->check(-1, CREATE, $options);
       }
       $rand = mt_rand();
       $this->showFormHeader($options);
@@ -534,8 +534,12 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the translated value of the value in the default language
    **/
-   static function getTranslatedValue($ID, $itemtype, $field='name', $language, $value='') {
+   static function getTranslatedValue($ID, $itemtype, $field='name', $language='', $value='') {
       global $DB;
+
+      if ($language == '') {
+         $language = $_SESSION['glpilanguage'];
+      }
 
       //If dropdown translation is globally off, or if this itemtype cannot be translated,
       //then original value should be returned

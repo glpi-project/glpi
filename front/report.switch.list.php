@@ -47,8 +47,8 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
 
    Report::title();
 
-   $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
-   echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'),$name).
+   $name = Dropdown::getDropdownName("glpi_networkequipments", $_POST["switch"]);
+   echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'), $name).
         "</h2></div>";
 
    Report::reportForNetworkInformations("`glpi_networkequipments` AS ITEM",
@@ -58,6 +58,6 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
 
    Html::footer();
 
-} else  {
+} else {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }

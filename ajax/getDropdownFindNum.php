@@ -69,8 +69,8 @@ if ($item->isEntityAssign()) {
    $where = "WHERE 1";
 }
 
-if(isset($_POST['used']) && !empty($_POST['used'])){
-   $where .= " AND `id` NOT IN ('".implode("','" ,$_POST['used'])."') ";
+if (isset($_POST['used']) && !empty($_POST['used'])) {
+   $where .= " AND `id` NOT IN ('".implode("','", $_POST['used'])."') ";
 }
 
 if ($item->maybeDeleted()) {
@@ -87,20 +87,20 @@ if ((strlen($_POST['searchText']) > 0)) {
    $where .= " AND (`name` ".$search."
                     OR `id` = '".$_POST['searchText']."'";
 
-   if (FieldExists($_POST['table'],"contact")) {
+   if (FieldExists($_POST['table'], "contact")) {
       $where .= " OR `contact` ".$search;
    }
-   if (FieldExists($_POST['table'],"serial")) {
+   if (FieldExists($_POST['table'], "serial")) {
       $where .= " OR `serial` ".$search;
    }
-   if (FieldExists($_POST['table'],"otherserial")) {
+   if (FieldExists($_POST['table'], "otherserial")) {
       $where .= " OR `otherserial` ".$search;
    }
    $where .= ")";
 }
 
 //If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
-if (in_array($_POST['itemtype'],$CFG_GLPI["helpdesk_visible_types"])) {
+if (in_array($_POST['itemtype'], $CFG_GLPI["helpdesk_visible_types"])) {
    $where .= " AND `is_helpdesk_visible` = '1' ";
 }
 

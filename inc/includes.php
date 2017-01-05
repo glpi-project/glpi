@@ -128,16 +128,16 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 
 // Manage force tab
 if (isset($_REQUEST['forcetab'])) {
-   if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
+   if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
       $itemtype = 'plugin'.$matches[1].$matches[2];
       Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-   } else if (preg_match('/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
+   } else if (preg_match('/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
       $itemtype = $matches[1];
       Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-   } else if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/',$_SERVER['PHP_SELF'],$matches)) {
+   } else if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
       $itemtype = 'plugin'.$matches[1].$matches[2];
       Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-   } else if (preg_match('/([a-zA-Z]+).php/',$_SERVER['PHP_SELF'],$matches)) {
+   } else if (preg_match('/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
       $itemtype = $matches[1];
       Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
    }

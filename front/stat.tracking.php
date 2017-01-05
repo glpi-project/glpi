@@ -59,13 +59,13 @@ if (empty($_GET["value2"])) {
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
    $year              = date("Y")-1;
-   $_GET["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
    $_GET["date2"] = date("Y-m-d");
 }
 
 if (!empty($_GET["date1"])
     && !empty($_GET["date2"])
-    && (strcmp($_GET["date2"],$_GET["date1"]) < 0)) {
+    && (strcmp($_GET["date2"], $_GET["date1"]) < 0)) {
 
    $tmp           = $_GET["date1"];
    $_GET["date1"] = $_GET["date2"];
@@ -82,7 +82,7 @@ $requester = array('user'               => array('title' => __('Requester')),
                    'users_id_recipient' => array('title' => __('Writer')),
                    'group'              => array('title' => __('Group')),
                    'group_tree'         => array('title' => __('Group tree')),
-                   'usertitles_id'      => array('title' => _x('person','Title')),
+                   'usertitles_id'      => array('title' => _x('person', 'Title')),
                    'usercategories_id'  => array('title' => __('Category')));
 
 $caract    = array('itilcategories_id'   => array('title' => __('Category')),

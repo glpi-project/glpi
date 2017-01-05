@@ -36,30 +36,30 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","9.2");
-define("GLPI_SCHEMA_VERSION","9.2");
+define("GLPI_VERSION", "9.2");
+define("GLPI_SCHEMA_VERSION", "9.2");
 define('GLPI_MIN_PHP', '5.5.0');
 define('GLPI_YEAR', '2016');
-define("GLPI_DEMO_MODE","0");
+define("GLPI_DEMO_MODE", "0");
 
 define("GLPI_USE_CSRF_CHECK", "1");
-define("GLPI_CSRF_EXPIRES","7200");
-define("GLPI_CSRF_MAX_TOKENS","100");
+define("GLPI_CSRF_EXPIRES", "7200");
+define("GLPI_CSRF_MAX_TOKENS", "100");
 
 // for compatibility with mysql 5.7
 // TODO: this var need to be set to 0 after review of all sql queries)
-define("GLPI_FORCE_EMPTY_SQL_MODE","1");
+define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
 
 // rights
-define("READ",        1);
-define("UPDATE",      2);
-define("CREATE",      4);
-define("DELETE",      8);
-define("PURGE",      16);
+define("READ", 1);
+define("UPDATE", 2);
+define("CREATE", 4);
+define("DELETE", 8);
+define("PURGE", 16);
 define("ALLSTANDARDRIGHT", 31);
-define("READNOTE",   32);
+define("READNOTE", 32);
 define("UPDATENOTE", 64);
-define("UNLOCK",     128);
+define("UNLOCK", 128);
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
@@ -118,45 +118,45 @@ $DEFAULT_PLURAL_NUMBER = 2;
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = array();
 
-define("NOT_AVAILABLE",'N/A');
+define("NOT_AVAILABLE", 'N/A');
 
 // key used to crypt passwords in DB for external access : proxy / smtp / ldap /  mailcollectors
 // This key is not used to crypt user's passwords
 // If you hav to define passwords again
-define("GLPIKEY","GLPI£i'snarss'ç");
+define("GLPIKEY", "GLPI£i'snarss'ç");
 
 // TIMES
-define("MINUTE_TIMESTAMP",60);
-define("HOUR_TIMESTAMP",3600);
-define("DAY_TIMESTAMP",86400);
-define("WEEK_TIMESTAMP",604800);
-define("MONTH_TIMESTAMP",2592000);
+define("MINUTE_TIMESTAMP", 60);
+define("HOUR_TIMESTAMP", 3600);
+define("DAY_TIMESTAMP", 86400);
+define("WEEK_TIMESTAMP", 604800);
+define("MONTH_TIMESTAMP", 2592000);
 
 
 //Management modes
-define("MANAGEMENT_UNITARY",0);
-define("MANAGEMENT_GLOBAL",1);
+define("MANAGEMENT_UNITARY", 0);
+define("MANAGEMENT_GLOBAL", 1);
 
 
 //Mail send methods
-define("MAIL_MAIL",0);
-define("MAIL_SMTP",1);
-define("MAIL_SMTPSSL",2);
-define("MAIL_SMTPTLS",3);
+define("MAIL_MAIL", 0);
+define("MAIL_SMTP", 1);
+define("MAIL_SMTPSSL", 2);
+define("MAIL_SMTPTLS", 3);
 
 
 // MESSAGE TYPE
-define("INFO",0);
-define("ERROR",1);
-define("WARNING",2);
+define("INFO", 0);
+define("ERROR", 1);
+define("WARNING", 2);
 
 // ACTIONS_ERROR
 
-define("ERROR_NOT_FOUND",1);
-define("ERROR_RIGHT",2);
-define("ERROR_COMPAT",3);
-define("ERROR_ON_ACTION",4);
-define("ERROR_ALREADY_DEFINED",5);
+define("ERROR_NOT_FOUND", 1);
+define("ERROR_RIGHT", 2);
+define("ERROR_COMPAT", 3);
+define("ERROR_ON_ACTION", 4);
+define("ERROR_ALREADY_DEFINED", 5);
 
 
 // For plugins
@@ -350,4 +350,32 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
-                                           'SoftwareLicense') ;
+                                           'SoftwareLicense');
+
+$CFG_GLPI['javascript'] = [
+   'central'   => [
+      'central'   => ['fullcalendar']
+   ],
+   'helpdesk'  => [
+      'planning'  => ['fullcalendar', 'colorpicker'],
+      'ticket'    => ['rateit', 'tinymce', 'imageupload'],
+      'problem'   => ['tinymce'],
+      'change'    => ['tinymce']
+   ],
+   'tools'     => [
+      'project'      => ['gantt'],
+      'knowbaseitem' => ['tinymce'],
+      'reminder'     => ['tinymce']
+   ],
+   'config'    => [
+      'config'    => ['colorpicker'],
+      'commondropdown'  => [
+         'ProjectState'       => ['colorpicker'],
+         'SolutionTemplate'   => ['tinymce']
+      ],
+      'notification'    => [
+         'notificationtemplate' => ['tinymce']
+      ]
+   ],
+   'preference'=> ['colorpicker'],
+];

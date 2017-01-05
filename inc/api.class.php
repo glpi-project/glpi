@@ -68,7 +68,7 @@ abstract class API extends CommonGLPI {
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
@@ -345,7 +345,7 @@ abstract class API extends CommonGLPI {
       $this->initEndpoint();
 
       $myprofiles = array();
-      foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
+      foreach ($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
          // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
@@ -477,7 +477,7 @@ abstract class API extends CommonGLPI {
                                                    AND `itemtype` = '".$item->getType()."'
                                                    AND `is_deleted` = '0'", true);
 
-            foreach($found_devices as $devices_id => &$device) {
+            foreach ($found_devices as $devices_id => &$device) {
                unset($device['items_id']);
                unset($device['itemtype']);
                unset($device['is_deleted']);
@@ -628,7 +628,7 @@ abstract class API extends CommonGLPI {
 
                            $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
                            $ipadresses = array();
-                           foreach($raw_ipadresses as $ipadress) {
+                           foreach ($raw_ipadresses as $ipadress) {
                               $ipadress = explode(Search::SHORTSEP, $ipadress);
 
                               //find ip network attached to these ip
@@ -708,7 +708,7 @@ abstract class API extends CommonGLPI {
                      WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
                            AND `glpi_contracts_items`.`items_id` = '$id'
                            AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                           getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                           getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
                      ORDER BY `glpi_contracts`.`name`";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -786,7 +786,7 @@ abstract class API extends CommonGLPI {
                             Problem::getCommonLeftJoin()."
                             WHERE `items_id` = '$id'
                                   AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND","glpi_problems")."
+                                  getEntitiesRestrictRequest("AND", "glpi_problems")."
                             ORDER BY `glpi_problems`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -810,7 +810,7 @@ abstract class API extends CommonGLPI {
                             Change::getCommonLeftJoin()."
                             WHERE `items_id` = '$id'
                                   AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND","glpi_changes")."
+                                  getEntitiesRestrictRequest("AND", "glpi_changes")."
                             ORDER BY `glpi_changes`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -850,7 +850,7 @@ abstract class API extends CommonGLPI {
       // get hateoas from children
       if ($params['get_hateoas']) {
          $hclasses = self::getHatoasClasses($itemtype);
-         foreach($hclasses as $hclass) {
+         foreach ($hclasses as $hclass) {
             $fields['links'][] = array('rel'  => $hclass,
                                        'href' => self::$api_url."/$itemtype/".$item->getID()."/$hclass/");
          }
@@ -933,7 +933,7 @@ abstract class API extends CommonGLPI {
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
-      } else{
+      } else {
          $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
@@ -950,7 +950,9 @@ abstract class API extends CommonGLPI {
       $already_linked_table = array();
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
-      if ($where == '') $where = "1=1 ";
+      if ($where == '') {
+         $where = "1=1 ";
+      }
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
@@ -983,10 +985,10 @@ abstract class API extends CommonGLPI {
                  && isset($item->fields['items_id'])) {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
-         } else if(isset($parent_item->fields[$fk_child])) {
+         } else if (isset($parent_item->fields[$fk_child])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
             $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
-            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'" ;
+            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
          } else if (isset($parent_item->fields['itemtype'])
                  && isset($parent_item->fields['items_id'])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
@@ -1012,7 +1014,7 @@ abstract class API extends CommonGLPI {
          }
 
          // make text search
-         foreach($params['searchText']  as $filter_field => $filter_value) {
+         foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
                $search = Search::makeTextSearch($filter_value);
                $where.= " AND (`$table`.`$filter_field` $search
@@ -1077,7 +1079,7 @@ abstract class API extends CommonGLPI {
          // get hateoas from children
          if ($params['get_hateoas']) {
             $hclasses = self::getHatoasClasses($itemtype);
-            foreach($hclasses as $hclass) {
+            foreach ($hclasses as $hclass) {
                $fields['links'][] = array('rel' => $hclass,
                                           'href' => self::$api_url."/$itemtype/".$fields['id']."/$hclass/");
             }
@@ -1126,7 +1128,7 @@ abstract class API extends CommonGLPI {
       }
 
       $allitems = [];
-      foreach($params['items'] as $item) {
+      foreach ($params['items'] as $item) {
          if (!isset($item['items_id']) && !isset($item['itemtype'])) {
             return $this->messageBadArrayError();
          }
@@ -1157,7 +1159,7 @@ abstract class API extends CommonGLPI {
       }
 
       $cleaned_soptions = array();
-      foreach($soptions as $sID => $option) {
+      foreach ($soptions as $sID => $option) {
          if (is_int($sID)) {
             $available_searchtypes = Search::getActionsFor($itemtype, $sID);
             unset($available_searchtypes['searchopt']);
@@ -1329,7 +1331,7 @@ abstract class API extends CommonGLPI {
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
-      } else{
+      } else {
          $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
@@ -1378,7 +1380,7 @@ abstract class API extends CommonGLPI {
          }
       }
 
-      foreach($rawdata['data']['rows'] as $row) {
+      foreach ($rawdata['data']['rows'] as $row) {
          $raw = $row['raw'];
          $id = $raw['id'];
 
@@ -1432,7 +1434,7 @@ abstract class API extends CommonGLPI {
       // add rows with their html
       if (isset($params['giveItems'])) {
          $cleaned_data['data_html'] = array();
-         foreach($rawdata['data']['rows'] as $row) {
+         foreach ($rawdata['data']['rows'] as $row) {
             $new_row = array();
             foreach ($row as $cell_key => $cell) {
                if (isset($cell['displayname'])) {
@@ -1488,7 +1490,7 @@ abstract class API extends CommonGLPI {
       if (is_array($input)) {
          $idCollection = array();
          $failed       = 0;
-         foreach($input as $object) {
+         foreach ($input as $object) {
             $object = self::inputObjectToArray($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
@@ -1582,7 +1584,7 @@ abstract class API extends CommonGLPI {
       if (is_array($input)) {
          $idCollection = array();
          $failed       = 0;
-         foreach($input as $object) {
+         foreach ($input as $object) {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
@@ -1663,7 +1665,7 @@ abstract class API extends CommonGLPI {
       if (is_array($input)) {
          $idCollection = array();
          $failed = 0;
-         foreach($input as $object) {
+         foreach ($input as $object) {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
@@ -1811,7 +1813,7 @@ abstract class API extends CommonGLPI {
    protected function checkSessionToken() {
 
       if (!isset($this->parameters['session_token'])
-          || empty($this->parameters['session_token']))  {
+          || empty($this->parameters['session_token'])) {
          return $this->messageSessionTokenMissing();
       }
 
@@ -1854,7 +1856,7 @@ abstract class API extends CommonGLPI {
       };
 
       // clean html
-      foreach($messages_after_redirect as $type => $messages) {
+      foreach ($messages_after_redirect as $type => $messages) {
          foreach ($messages as $message) {
             $all_messages[] = Html::clean($message);
          }
@@ -1956,7 +1958,7 @@ abstract class API extends CommonGLPI {
       $params = array_merge($default, $params);
 
       // parse fields recursively
-      foreach($fields as $key => &$value) {
+      foreach ($fields as $key => &$value) {
          if (is_array($value)) {
             $value = self::parseDropdowns($value);
          }
@@ -2036,7 +2038,7 @@ abstract class API extends CommonGLPI {
       }
       if (in_array($itemtype, $CFG_GLPI["itemdevices_types"])) {
          //$hclasses[] = "Item_Devices";
-         foreach($CFG_GLPI['device_types'] as $device_type) {
+         foreach ($CFG_GLPI['device_types'] as $device_type) {
             if ((($device_type =="DeviceMemory")
                  && !in_array($itemtype, $CFG_GLPI["itemdevicesmemory_types"]))
                 || (($device_type =="DevicePowerSupply")
@@ -2050,7 +2052,7 @@ abstract class API extends CommonGLPI {
       }
 
       //specific case
-      switch($itemtype) {
+      switch ($itemtype) {
          case 'Ticket' :
             $hclasses[] = "TicketFollowup";
             $hclasses[] = "TicketTask";
@@ -2213,5 +2215,15 @@ abstract class API extends CommonGLPI {
          return $this->returnResponse(array($statuscode, $message), $httpcode);
       }
       return array($statuscode, $message);
+   }
+
+
+   /**
+    * get the raw HTTP request body
+    *
+    * @return string
+    */
+   protected function getHttpBodyStream() {
+      return file_get_contents('php://input');
    }
 }

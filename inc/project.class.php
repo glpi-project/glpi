@@ -64,7 +64,7 @@ class Project extends CommonDBTM {
     * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
-      return _n('Project','Projects',$nb);
+      return _n('Project', 'Projects', $nb);
    }
 
 
@@ -280,7 +280,7 @@ class Project extends CommonDBTM {
 
    function pre_deleteItem() {
 
-      NotificationEvent::raiseEvent('delete',$this);
+      NotificationEvent::raiseEvent('delete', $this);
       return true;
    }
 
@@ -635,7 +635,7 @@ class Project extends CommonDBTM {
       foreach ($items as $key => $val) {
          $issort = 0;
          $link   = "";
-         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+         echo Search::showHeaderItem($output_type, $key, $header_num, $link);
       }
 
       // End Line for column headers
@@ -690,7 +690,7 @@ class Project extends CommonDBTM {
          $item_num = 1;
          $bgcolor  = $_SESSION["glpipriority_".$item->fields["priority"]];
 
-         echo Search::showNewLine($p['output_type'],$p['row_num']%2);
+         echo Search::showNewLine($p['output_type'], $p['row_num']%2);
 
          $check_col = '';
          if (($candelete || $canupdate)
@@ -923,11 +923,11 @@ class Project extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,'name');
+      Html::autocompletionTextField($this, 'name');
       echo "</td>";
       echo "<td>".__('Code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,'code');
+      Html::autocompletionTextField($this, 'code');
       echo "</td>";
       echo "</tr>";
 
@@ -1122,7 +1122,7 @@ class Project extends CommonDBTM {
 
          echo "</td>";
          echo "<td width='20%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\"
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\"
                class='submit'>";
          echo "</td>";
          echo "</tr>";
@@ -1161,7 +1161,7 @@ class Project extends CommonDBTM {
                   echo "<tr class='tab_bg_2'>";
                   if ($canedit) {
                      echo "<td>";
-                     Html::showMassiveActionCheckBox('ProjectTeam',$data["id"]);
+                     Html::showMassiveActionCheckBox('ProjectTeam', $data["id"]);
                      echo "</td>";
                   }
                   echo "<td>".$item->getTypeName(1)."</td>";
@@ -1280,7 +1280,7 @@ class Project extends CommonDBTM {
             $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
 
             // Add ordered subprojects
-            foreach($projects as $key => $val) {
+            foreach ($projects as $key => $val) {
                $todisplay[$key] = $val;
             }
          }
@@ -1311,7 +1311,7 @@ class Project extends CommonDBTM {
                    FROM `glpi_projects`
                    WHERE `projects_id` = '0'
                         AND `show_on_global_gantt` = '1'
-                         ".getEntitiesRestrictRequest("AND",'glpi_projects',"", '', true);
+                         ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
          foreach ($DB->request($query) as $data) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);
          }
@@ -1355,7 +1355,7 @@ class Project extends CommonDBTM {
                         $color = 'ganttMilestone';
                      }
                      $temp = array('name'   => ' ',
-                                   'desc'   => str_repeat('-',$val['parents']).$val['link'],
+                                   'desc'   => str_repeat('-', $val['parents']).$val['link'],
                                    'values' => array(array('from'
                                                             => "/Date(".strtotime($val['from'])."000)/",
                                                            'to'
@@ -1378,7 +1378,7 @@ class Project extends CommonDBTM {
       }
 
       if (count($invalid)) {
-         echo sprintf(__('Invalid items (no start or end date): %s'), implode(',',$invalid));
+         echo sprintf(__('Invalid items (no start or end date): %s'), implode(',', $invalid));
          echo "<br><br>";
       }
 
@@ -1387,10 +1387,10 @@ class Project extends CommonDBTM {
                          __('June'), __('July'), __('August'), __('September'),
                          __('October'), __('November'), __('December'));
 
-         $dow    = array(Toolbox::substr(__('Sunday'),0,1), Toolbox::substr(__('Monday'),0,1),
-                         Toolbox::substr(__('Tuesday'),0,1), Toolbox::substr(__('Wednesday'),0,1),
-                         Toolbox::substr(__('Thursday'),0,1), Toolbox::substr(__('Friday'),0,1),
-                         Toolbox::substr(__('Saturday'),0,1)
+         $dow    = array(Toolbox::substr(__('Sunday'), 0, 1), Toolbox::substr(__('Monday'), 0, 1),
+                         Toolbox::substr(__('Tuesday'), 0, 1), Toolbox::substr(__('Wednesday'), 0, 1),
+                         Toolbox::substr(__('Thursday'), 0, 1), Toolbox::substr(__('Friday'), 0, 1),
+                         Toolbox::substr(__('Saturday'), 0, 1)
                      );
 
          echo "<div class='gantt'></div>";

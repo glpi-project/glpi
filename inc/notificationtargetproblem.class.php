@@ -140,7 +140,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $datas['##problem.numberofchanges##'] = count($datas['changes']);
 
          $restrict = "`problems_id` = '".$item->getField('id')."'";
-         $items    = getAllDatasFromTable('glpi_items_problems',$restrict);
+         $items    = getAllDatasFromTable('glpi_items_problems', $restrict);
 
          $datas['items'] = array();
          if (count($items)) {

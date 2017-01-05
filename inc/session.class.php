@@ -269,7 +269,7 @@ class Session {
       }
       $url = '';
 
-      if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'],"tabs") > 0)) {
+      if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
          if (isset($_SERVER['HTTP_REFERER'])) {
             $url = $_SERVER['HTTP_REFERER'];
          }
@@ -352,7 +352,7 @@ class Session {
          $_SESSION['glpiactiveentities_string']    = "'".implode("', '", $newentities)."'";
          $active                                   = reset($newentities);
          $_SESSION['glpiparententities']           = $ancestors;
-         $_SESSION['glpiparententities_string']    = implode("', '" ,$ancestors);
+         $_SESSION['glpiparententities_string']    = implode("', '", $ancestors);
          if (!empty($_SESSION['glpiparententities_string'])) {
             $_SESSION['glpiparententities_string'] = "'".$_SESSION['glpiparententities_string']."'";
          }
@@ -420,7 +420,7 @@ class Session {
             // Try to load default entity if it is a root entity
             foreach ($data['entities'] as $key => $val) {
                if ($val['id'] == $_SESSION["glpidefault_entity"]) {
-                  if (self::changeActiveEntities($val['id'],$val['is_recursive'])) {
+                  if (self::changeActiveEntities($val['id'], $val['is_recursive'])) {
                      $active_entity_done = true;
                   }
                }
@@ -514,8 +514,8 @@ class Session {
                    FROM `glpi_groups_users`
                    LEFT JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                    WHERE `glpi_groups_users`.`users_id`='" . self::getLoginUserID() . "' " .
-                         getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",
-                                                    $_SESSION['glpiactiveentities'],true);
+                         getEntitiesRestrictRequest(" AND ", "glpi_groups", "entities_id",
+                                                    $_SESSION['glpiactiveentities'], true);
       $result_gp = $DB->query($query_gp);
       if ($DB->numrows($result_gp)) {
          while ($data = $DB->fetch_assoc($result_gp)) {
@@ -575,11 +575,12 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
          $TRANSLATE->setCache($cache);
       } catch (Exception $e) {
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
       }

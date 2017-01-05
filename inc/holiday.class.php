@@ -49,7 +49,7 @@ class Holiday extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Close time','Close times',$nb);
+      return _n('Close time', 'Close times', $nb);
    }
 
 

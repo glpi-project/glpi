@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
       unset($input['from_logical_number']);
       unset($input['to_logical_number']);
 
-      for ($i=$_POST["from_logical_number"] ; $i<=$_POST["to_logical_number"] ; $i++) {
+      for ($i=$_POST["from_logical_number"]; $i<=$_POST["to_logical_number"]; $i++) {
          $add = "";
          if ($i < 10) {
             $add = "0";

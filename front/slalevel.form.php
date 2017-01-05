@@ -86,7 +86,7 @@ if (isset($_POST["update"])) {
 
    Html::back();
 
-}  else if (isset($_POST["add_criteria"])) {
+} else if (isset($_POST["add_criteria"])) {
 
    $item->check($_POST['slalevels_id'], UPDATE);
    $criteria = new SlaLevelCriteria();

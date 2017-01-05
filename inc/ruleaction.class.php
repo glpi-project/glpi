@@ -284,7 +284,7 @@ class RuleAction extends CommonDBChild {
                 && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   /// TODO review it : need to pass display param and others...
-                  return $this->displayActionSelectPattern($values);
+                  return $rule->displayActionSelectPattern($values);
                }
             }
             break;
@@ -499,7 +499,7 @@ class RuleAction extends CommonDBChild {
             $actions = Rule::getActionsByType($options["sub_type"]);
             if (isset($actions[$options["field"]]['type'])) {
 
-               switch($actions[$options["field"]]['type']) {
+               switch ($actions[$options["field"]]['type']) {
                   case "dropdown" :
                      $table   = $actions[$options["field"]]['table'];
                      $param['name'] = "value";
@@ -556,7 +556,7 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "yesonly" :
-                     Dropdown::showYesNo("value",$param['value'],0);
+                     Dropdown::showYesNo("value", $param['value'], 0);
                      $display = true;
                      break;
 
@@ -690,10 +690,11 @@ class RuleAction extends CommonDBChild {
          $params['action_type'] = $this->fields['action_type'];
          $params['value']       = $this->fields['value'];
          echo "<script type='text/javascript' >\n";
+         echo "$(function() {";
          Ajax::updateItemJsCode("action_span",
                                  $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",
                                  $params);
-         echo '</script>';
+         echo '});</script>';
       }
       echo "</td></tr>";
       echo "<tr><td colspan='4'><span id='action_span'>\n";

@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
-Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config","mailcollector");
+Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
 
 if (!Toolbox::canUseImapPop()) {
    echo "<div class='center'>";

@@ -389,7 +389,7 @@ class IPAddress extends CommonDBChild {
 
       if (!empty($binaryField)) {
          $binary = $this->getBinary();
-         for ($i = 0 ; $i < 4 ; ++$i) {
+         for ($i = 0; $i < 4; ++$i) {
             if ($binary !== false) {
                $array[$binaryField."_".$i] = $binary[$i];
             } else {
@@ -689,7 +689,7 @@ class IPAddress extends CommonDBChild {
          }
 
          $binary = array();
-         for ($i = 0 ; $i < 4 ; $i++) {
+         for ($i = 0; $i < 4; $i++) {
             $binary[$i] = $epanded[2 * $i + 0] * 65536 + $epanded[2 * $i + 1];
          }
 
@@ -735,7 +735,7 @@ class IPAddress extends CommonDBChild {
                    WHERE `items_id` = '$items_id'
                          AND `itemtype` = '$itemtype'";
 
-         for ($i = 0 ; $i < 4 ; ++$i) {
+         for ($i = 0; $i < 4; ++$i) {
             $query .= " AND `binary_".$i."` = '".$address[$i]."'";
          }
          $result = $DB->query($query);
@@ -792,7 +792,7 @@ class IPAddress extends CommonDBChild {
          $hexValue = str_pad($textual[6], 4, "0", STR_PAD_LEFT).str_pad($textual[7], 4, "0",
                                                                         STR_PAD_LEFT);
          $textual  = array();
-         for ($i = 0 ; $i < 4 ; $i++) {
+         for ($i = 0; $i < 4; $i++) {
             $textual[] = hexdec($hexValue[2*$i+0].$hexValue[2*$i+1]);
          }
          $textual = implode('.', $textual);
@@ -837,7 +837,7 @@ class IPAddress extends CommonDBChild {
          return false;
       }
 
-      for ($i = 3 ; $i >= 0 ; --$i) {
+      for ($i = 3; $i >= 0; --$i) {
          $address[$i] += $value;
          if ($address[$i] < 0) {
             $address[$i] += (0x80000000 * 2);
@@ -900,7 +900,7 @@ class IPAddress extends CommonDBChild {
                 WHERE `gip`.`version` = '".$address->version."'\n";
       $startIndex = (($address->version == 4) ? 3 : 1);
       $binaryIP = $address->getBinary();
-      for ($i = $startIndex ; $i < 4 ; ++$i) {
+      for ($i = $startIndex; $i < 4; ++$i) {
          $query .= "AND `gip`.`binary_$i` = '".$binaryIP[$i]."'";
       }
       $addressesWithItems = array();
@@ -977,7 +977,7 @@ class IPAddress extends CommonDBChild {
          return false;
       }
 
-      for ($index = 0 ; $index < 4 ; $index ++) {
+      for ($index = 0; $index < 4; $index ++) {
          if ($this->binary[$index] != $ipaddress->binary[$index]) {
             return false;
          }
@@ -1004,7 +1004,7 @@ class IPAddress extends CommonDBChild {
 
       if ($itemtype == 'IPNetwork') {
 
-         $base->addHeader('Item'       , _n('Item', 'Items', 1)     , $super, $father);
+         $base->addHeader('Item', _n('Item', 'Items', 1), $super, $father);
          $base->addHeader('NetworkPort', NetworkPort::getTypeName(0), $super, $father);
          $base->addHeader('NetworkName', NetworkName::getTypeName(1), $super, $father);
          $base->addHeader('Entity', Entity::getTypeName(1), $super, $father);

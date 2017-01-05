@@ -87,12 +87,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // CSS theme link
       echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$CFG_GLPI["palette"].".css");
    // surcharge CSS hack for IE
-   echo "<!--[if lte IE 6]>" ;
+   echo "<!--[if lte IE 6]>";
    echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' ".
          "media='screen' />\n";
    echo "<![endif]-->";
-//    echo "<script type='text/javascript'><!--document.getElementById('var_login_name').focus();-->".
-//          "</script>";
 
    echo "</head>";
 
@@ -129,7 +127,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          <span class="login_img"></span>
          </p>';
    echo '<p class="login_input">
-         <input type="submit" name="submit" value="'._sx('button','Post').'" class="submit" />
+         <input type="submit" name="submit" value="'._sx('button', 'Post').'" class="submit" />
          </p>';
 
    if ($CFG_GLPI["use_mailing"]
@@ -199,4 +197,3 @@ if (!GLPI_DEMO_MODE) {
 }
 
 echo "</body></html>";
-?>

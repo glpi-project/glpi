@@ -51,7 +51,7 @@ if (isset($_POST["urgency"])
 
    if ($_POST["priority"]) {
       echo "<script type='text/javascript' >\n";
-      echo Html::jsSetDropdownValue($_POST["priority"],$priority);
+      echo Html::jsSetDropdownValue($_POST["priority"], $priority);
       echo "\n</script>";
 
    } else {

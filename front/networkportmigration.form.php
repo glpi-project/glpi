@@ -96,7 +96,7 @@ if (isset($_POST["purge"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
 } else {
-   Session::checkRight("networking",UPDATE);
+   Session::checkRight("networking", UPDATE);
    Html::header(NetworkPort::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools",
                 "migration", "networkportmigration");
 

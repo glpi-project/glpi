@@ -48,13 +48,13 @@ class Item_Devices extends CommonDBRelation {
    static public $itemtype_1            = 'itemtype';
    static public $items_id_1            = 'items_id';
    static public $mustBeAttached_1      = false;
-   static public $take_entity_1         = false ;
+   static public $take_entity_1         = false;
    // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
    static public $logs_for_item_2       = false;
-   static public $take_entity_2         = true ;
+   static public $take_entity_2         = true;
 
    static public $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
    static public $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
@@ -149,7 +149,7 @@ class Item_Devices extends CommonDBRelation {
    **/
    static function getSpecificities($specif='') {
 
-      switch($specif) {
+      switch ($specif) {
          case 'serial' :
             return array('long name'  => __('Serial number'),
                          'short name' => __('Serial number'),
@@ -476,17 +476,17 @@ class Item_Devices extends CommonDBRelation {
     * @param $item
     * @param $table
     * @param $options            array
-    * @param $delete_all_column          (default NULL)
+    * @param $delete_all_column
     * @param $common_column
     * @param $specific_column
-    * @param $delete_column               (default NULL)
+    * @param $delete_column
     * @param $dynamic_column
    **/
    function getTableGroup(CommonDBTM $item, HTMLTableMain $table, array $options,
-                          HTMLTableSuperHeader $delete_all_column=NULL,
+                          HTMLTableSuperHeader $delete_all_column,
                           HTMLTableSuperHeader $common_column,
                           HTMLTableSuperHeader $specific_column,
-                          HTMLTableSuperHeader $delete_column=NULL, $dynamic_column) {
+                          HTMLTableSuperHeader $delete_column, $dynamic_column) {
       global $DB;
 
       $is_device = ($item instanceof CommonDevice);
@@ -724,7 +724,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($this->can(-1, CREATE, $input)) {
-         for ($i = 0 ; $i < $numberToAdd ; $i ++) {
+         for ($i = 0; $i < $numberToAdd; $i ++) {
             $this->add($input);
          }
       }
@@ -802,7 +802,7 @@ class Item_Devices extends CommonDBRelation {
       // Update quantity or values
       $device_type = '';
       foreach ($input as $key => $val) {
-         $data = explode("_",$key);
+         $data = explode("_", $key);
          if (!empty($data[0])) {
             $command = $data[0];
          } else {
@@ -919,7 +919,6 @@ class Item_Devices extends CommonDBRelation {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[READ]);
       return $values;
    }
 

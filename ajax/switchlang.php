@@ -33,18 +33,12 @@
 
 /** @file
 * @brief
-* @since version 9.1
 */
 
+include ('../inc/includes.php');
 
-define('DO_NOT_CHECK_HTTP_REFERER', 1);
-ini_set('session.use_cookies', 0);
-
-include ('./inc/includes.php');
-
-$api = new APIRest;
-if ($CFG_GLPI['enable_api']) {
-   $api->call();
-} else {
-   Html::displayErrorAndDie(__("API disabled"), true);
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
+$user = new User();
+echo $user->showSwitchLangForm(false, ['showbutton' => false, 'on_change' => 'this.form.submit()']);
+Html::ajaxFooter();

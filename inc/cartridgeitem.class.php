@@ -56,7 +56,7 @@ class CartridgeItem extends CommonDBTM {
    static $rightname                   = 'cartridge';
 
    static function getTypeName($nb=0) {
-      return _n('Cartridge model','Cartridge models',$nb);
+      return _n('Cartridge model', 'Cartridge models', $nb);
    }
 
 
@@ -113,9 +113,9 @@ class CartridgeItem extends CommonDBTM {
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Link',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -125,16 +125,20 @@ class CartridgeItem extends CommonDBTM {
    ///// SPECIFIC FUNCTIONS
 
    /**
-   * Count cartridge of the cartridge type
-   *
-   * @return number of cartridges
-   **/
-   static function getCount() {
+    * Count cartridge of the cartridge type
+    *
+    * @param integer $id Item id
+    *
+    * @return number of cartridges
+    *
+    * @since 9.2 add $id parameter
+    **/
+   static function getCount($id) {
       global $DB;
 
       $query = "SELECT *
                 FROM `glpi_cartridges`
-                WHERE `cartridgeitems_id` = '".$this->fields["id"]."'";
+                WHERE `cartridgeitems_id` = '".$id."'";
 
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
@@ -266,7 +270,6 @@ class CartridgeItem extends CommonDBTM {
       return $actions;
    }
 
-
    function getSearchOptionsNew() {
       $tab = [];
 
@@ -321,7 +324,7 @@ class CartridgeItem extends CommonDBTM {
          'id'                 => '9',
          'table'              => $this->getTable(),
          'field'              => '_virtual',
-         'name'               => _n('Cartridge','Cartridges', Session::getPluralNumber()),
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

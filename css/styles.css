@@ -2254,6 +2254,14 @@ a.icon_nav_move:hover img {
    text-decoration: underline;
 }
 
+#c_preference .select2-choice {
+   color: #3a5693;
+}
+
+#c_preference p {
+   margin: 0;
+}
+
 #c_recherche {
    position: relative;
 }
@@ -2583,6 +2591,18 @@ ul#menu ul.ssmenu {
 
 #show_all_menu .tab_bg_1 a:hover {
    background: transparent;
+}
+
+.iframe {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-width: 0px;
+}
+
+.iframe.hidden {
+   height: 0;
+   width: 0;
 }
 
 /* ################--------------- Footer  ---------------#################### */

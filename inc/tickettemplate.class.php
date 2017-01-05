@@ -428,7 +428,7 @@ class TicketTemplate extends CommonDropdown {
                if ($field == 'itemtype') {
                   $output .= "<input type='hidden' name='items_id' value=\"".
                                $ticket->fields['items_id']."\">";
-                  if ($num = array_search('items_id',$this->getAllowedFields())) {
+                  if ($num = array_search('items_id', $this->getAllowedFields())) {
                      $output = sprintf(__('%1$s - %2$s'), $output,
                                        $ticket->getValueToDisplay($num, $ticket->fields,
                                                                   $display_options));
@@ -600,7 +600,7 @@ class TicketTemplate extends CommonDropdown {
                      $input2['is_recursive'] = 1;
                      $input2 = Toolbox::addslashes_deep($input2);
 
-                     if (!$item->import($input2)){
+                     if (!$item->import($input2)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      } else {
@@ -713,7 +713,7 @@ class TicketTemplate extends CommonDropdown {
    function formatFieldsToMerge($data) {
 
       $output = array();
-      foreach($data as $val){
+      foreach ($data as $val) {
          $output[$val['num']] = $val;
       }
 

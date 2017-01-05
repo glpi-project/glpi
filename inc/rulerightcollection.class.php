@@ -120,7 +120,7 @@ class RuleRightCollection extends RuleCollection {
                $this->displayActionByName("profile", $val[1]);
             }
             if (isset($val[2])) {
-               $this->displayActionByName("is_recursive",$val[2]);
+               $this->displayActionByName("is_recursive", $val[2]);
             }
          }
       }
@@ -235,7 +235,7 @@ class RuleRightCollection extends RuleCollection {
             //Get all the ldap fields
             $fields = $this->getFieldsForQuery();
             foreach ($fields as $field) {
-               switch(Toolbox::strtoupper($field)) {
+               switch (Toolbox::strtoupper($field)) {
                   case "LDAP_SERVER" :
                      $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
                      break;

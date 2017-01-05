@@ -200,8 +200,8 @@ class Config extends CommonDBTM {
       if (isset($input['_matrix'])) {
          $tab = array();
 
-         for ($urgency=1 ; $urgency<=5 ; $urgency++) {
-            for ($impact=1 ; $impact<=5 ; $impact++) {
+         for ($urgency=1; $urgency<=5; $urgency++) {
+            for ($impact=1; $impact<=5; $impact++) {
                $priority               = $input["_matrix_${urgency}_${impact}"];
                $tab[$urgency][$impact] = $priority;
             }
@@ -211,7 +211,7 @@ class Config extends CommonDBTM {
          $input['urgency_mask']    = 0;
          $input['impact_mask']     = 0;
 
-         for ($i=1 ; $i<=5 ; $i++) {
+         for ($i=1; $i<=5; $i++) {
             if ($input["_urgency_${i}"]) {
                $input['urgency_mask'] += (1<<$i);
             }
@@ -401,7 +401,7 @@ class Config extends CommonDBTM {
                                  'display_emptychoice'   => true,
                                  'value'                 => $CFG_GLPI['lock_lockprofile_id']));
       } else {
-         echo dropdown::getDropdownName( Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']) ;
+         echo dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
       }
       echo "</td></tr>";
 
@@ -418,7 +418,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -853,7 +853,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
-      for ($impact=5 ; $impact>=1 ; $impact--) {
+      for ($impact=5; $impact>=1; $impact--) {
          echo "<td class='center'>".Ticket::getImpactName($impact).'<br>';
 
          if ($impact==3) {
@@ -871,12 +871,12 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b' colspan='2'>".__('Urgency')."</td>";
 
-      for ($impact=5 ; $impact>=1 ; $impact--) {
+      for ($impact=5; $impact>=1; $impact--) {
          echo "<td>&nbsp;</td>";
       }
       echo "</tr>";
 
-      for ($urgency=5 ; $urgency>=1 ; $urgency--) {
+      for ($urgency=5; $urgency>=1; $urgency--) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".Ticket::getUrgencyName($urgency)."&nbsp;</td>";
          echo "<td>";
@@ -891,7 +891,7 @@ class Config extends CommonDBTM {
          }
          echo "</td>";
 
-         for ($impact=5 ; $impact>=1 ; $impact--) {
+         for ($impact=5; $impact>=1; $impact--) {
             $pri = round(($urgency+$impact)/2);
 
             if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
@@ -914,7 +914,7 @@ class Config extends CommonDBTM {
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='7' class='center'>";
-         echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
       }
 
@@ -938,7 +938,7 @@ class Config extends CommonDBTM {
       $userpref  = false;
       $url       = Toolbox::getItemTypeFormURL(__CLASS__);
 
-      if (array_key_exists('last_login',$data)) {
+      if (array_key_exists('last_login', $data)) {
          $userpref = true;
          if ($data["id"] === Session::getLoginUserID()) {
             $url  = $CFG_GLPI['root_doc']."/front/preference.php";
@@ -1383,7 +1383,7 @@ class Config extends CommonDBTM {
       echo '</script>';
       if (count($needs)) {
          echo "<br>";
-         printf(__('%1$s: %2$s'), __('Password must contains'), implode(', ',$needs));
+         printf(__('%1$s: %2$s'), __('Password must contains'), implode(', ', $needs));
       }
    }
 
@@ -1724,7 +1724,7 @@ class Config extends CommonDBTM {
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
-      echo wordwrap("PHP ".phpversion().' '.php_sapi_name()." (".implode(', ',$exts).")\n",
+      echo wordwrap("PHP ".phpversion().' '.php_sapi_name()." (".implode(', ', $exts).")\n",
                     $width, "\n\t");
       $msg = "Setup: ";
 
@@ -1890,7 +1890,7 @@ class Config extends CommonDBTM {
       $choices[0] = __('Yes - Restrict to unit management for manual add');
       $choices[1] = __('Yes - Restrict to global management for manual add');
       $choices[2] = __('No');
-      Dropdown::showFromArray($name,$choices,array('value'=>$value));
+      Dropdown::showFromArray($name, $choices, array('value'=>$value));
    }
 
 
@@ -1909,23 +1909,23 @@ class Config extends CommonDBTM {
       //                   / extjs dico / tinymce dico
       // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
-         if ((strcasecmp($lang,$ID) == 0)
-             || (strcasecmp($lang,$language[2]) == 0)
-             || (strcasecmp($lang,$language[3]) == 0)) {
+         if ((strcasecmp($lang, $ID) == 0)
+             || (strcasecmp($lang, $language[2]) == 0)
+             || (strcasecmp($lang, $language[3]) == 0)) {
             return $ID;
          }
       }
 
       // native lang
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
-         if (strcasecmp($lang,$language[0]) == 0) {
+         if (strcasecmp($lang, $language[0]) == 0) {
             return $ID;
          }
       }
 
       // english lang name
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
-         if (strcasecmp($lang,$language[4]) == 0) {
+         if (strcasecmp($lang, $language[4]) == 0) {
             return $ID;
          }
       }
@@ -1944,19 +1944,19 @@ class Config extends CommonDBTM {
 
          $currentdir = getcwd();
          chdir(GLPI_ROOT);
-         $glpidir    = str_replace(str_replace('\\', '/',getcwd()), "",
-                                   str_replace('\\', '/',$currentdir));
+         $glpidir    = str_replace(str_replace('\\', '/', getcwd()), "",
+                                   str_replace('\\', '/', $currentdir));
          chdir($currentdir);
          $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
-         $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
+         $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/", "", $globaldir);
 
          // api exception
          if (strpos($globaldir, 'api/') !== false) {
             $globaldir = preg_replace("/(.*\/)api\/.*/", "$1", $globaldir);
          }
 
-         $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
-         $CFG_GLPI["root_doc"] = preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
+         $CFG_GLPI["root_doc"] = str_replace($glpidir, "", $globaldir);
+         $CFG_GLPI["root_doc"] = preg_replace("/\/$/", "", $CFG_GLPI["root_doc"]);
          // urldecode for space redirect to encoded URL : change entity
          $CFG_GLPI["root_doc"] = urldecode($CFG_GLPI["root_doc"]);
       }

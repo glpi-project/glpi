@@ -202,7 +202,7 @@ abstract class CommonITILActor extends CommonDBRelation {
                $emailtab[''] = $new_email;
             }
          }
-         Dropdown::showFromArray("alternative_email",$emailtab,
+         Dropdown::showFromArray("alternative_email", $emailtab,
                                  array('value'   => $this->fields['alternative_email']));
       } else {
          echo "<input type='text' size='40' name='alternative_email' value='".
@@ -212,7 +212,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 
@@ -276,7 +276,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 

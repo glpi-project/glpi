@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="glpi">
+  <!-- use http://edorian.github.io/php-coding-standard-generator/#phpcs -->
+
   <!-- white spaces at end of line or empty line have spaces -->
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 
@@ -19,7 +21,43 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!-- White space after comma in function call -->
+  <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+
+  <!--  Disallows the use of any deprecated functions -->
+  <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
+  <!--  Makes sure that shorthand PHP open tags are not used. -->
+  <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+
+  <!--  Checks that no perl-style comments (#) are used. -->
+  <rule ref="PEAR.Commenting.InlineComment"/>
+
   <!-- No white spaces after opening bracket and before closing bracket in IF -->
   <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
+  <!-- Empty statement -->
+  <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+
+  <!-- inline control structure forbidden because it's hard to read the code -->
+  <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+
+  <!-- Open Brace on the same line as the function -->
+  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+
+  <!-- Ensure that parameters defined for a function that have a default value come at the end of the function signature -->
+  <rule ref="PEAR.Functions.ValidDefaultValue"/>
+
+  <!-- Ensures that there is no whitespace before a semicolon -->
+  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
+
+  <!-- Ensures that $this is not used in static methods -->
+  <rule ref="Squiz.Scope.StaticThisUsage"/>
+
+  <!-- TODO disallow the direct usage of $_REQUEST, $_GET, $_POST and $_FILES -->
+  <!-- <rule ref="MySource.PHP.GetRequestData"/> -->
+
+    <!-- White space after IF, ELSE, FOREACH, SWITCH keyword -->
+  <rule ref="Squiz.ControlStructures.ControlSignature" />
 
 </ruleset>

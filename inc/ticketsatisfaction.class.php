@@ -86,7 +86,7 @@ class TicketSatisfaction extends CommonDBTM {
          return false;
       }
 
-      if ($ticket->isUser(CommonITILActor::REQUESTER,Session::getLoginUserID())
+      if ($ticket->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
           || ($ticket->fields["users_id_recipient"] === Session::getLoginUserID())
           || (isset($_SESSION["glpigroups"])
               && $ticket->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"]))) {
@@ -127,13 +127,14 @@ class TicketSatisfaction extends CommonDBTM {
 
          echo "<select id='satisfaction_data' name='satisfaction'>";
 
-         for ($i=0 ; $i<=5 ; $i++) {
+         for ($i=0; $i<=5; $i++) {
             echo "<option value='$i' ".(($i == $this->fields["satisfaction"])?'selected':'').
                   ">$i</option>";
          }
          echo "</select>";
          echo "<div class='rateit' id='stars'></div>";
          echo  "<script type='text/javascript'>\n";
+         echo "$(function() {";
          echo "$('#stars').rateit({value: ".$this->fields["satisfaction"].",
                                    min : 0,
                                    max : 5,
@@ -141,7 +142,7 @@ class TicketSatisfaction extends CommonDBTM {
                                    backingfld: '#satisfaction_data',
                                    ispreset: true,
                                    resetable: false});";
-         echo "</script>";
+         echo "});</script>";
 
          echo "</td></tr>";
 

@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $contract->check($_POST['id'], PURGE);
 
-   if ($contract->delete($_POST,1)) {
+   if ($contract->delete($_POST, 1)) {
       Event::log($_POST["id"], "contracts", 4, "financial",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

@@ -80,7 +80,7 @@ class Location extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Location','Locations',$nb);
+      return _n('Location', 'Locations', $nb);
    }
 
 
@@ -186,7 +186,8 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
-      $this->addStandardTab(__CLASS__,$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
    }
@@ -293,7 +294,7 @@ class Location extends CommonTreeDropdown {
 
       if ($number) {
          echo "<div class='spaced'>";
-         Html::printAjaxPager('',  $start, $number);
+         Html::printAjaxPager('', $start, $number);
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('Type')."</th>";
@@ -304,7 +305,7 @@ class Location extends CommonTreeDropdown {
          echo "</tr>";
 
          $DB->data_seek($result, $start);
-         for ($row=0 ; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']) ; $row++) {
+         for ($row=0; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']); $row++) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
             echo "<tr class='tab_bg_1'><td class='center top'>".$item->getTypeName()."</td>";

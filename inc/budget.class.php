@@ -61,11 +61,11 @@ class Budget extends CommonDropdown{
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__,$ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Link',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -339,7 +339,7 @@ class Budget extends CommonDropdown{
 
       $num       = 0;
       $itemtypes = array();
-      for ($i = 0; $i < $number ; $i++) {
+      for ($i = 0; $i < $number; $i++) {
          $itemtypes[] = $DB->result($result, $i, "itemtype");
       }
       $itemtypes[] = 'Contract';
@@ -481,7 +481,7 @@ class Budget extends CommonDropdown{
                        "</td></tr>";
 
                } else if ($nb) {
-                  for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+                  for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
                      $name = NOT_AVAILABLE;
                      if ($item->getFromDB($data["id"])) {
                         if ($item instanceof Item_Devices) {
@@ -549,7 +549,7 @@ class Budget extends CommonDropdown{
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_infocoms`
                 WHERE `budgets_id` = '$budgets_id'
-                      AND `itemtype` NOT IN ('".implode("','",$ignore)."')".
+                      AND `itemtype` NOT IN ('".implode("','", $ignore)."')".
                       getEntitiesRestrictRequest(" AND", 'glpi_infocoms', "entities_id")."
                 GROUP BY `itemtype`";
 
@@ -679,7 +679,7 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       // get all entities ordered by names
-      $allentities = getAllDatasFromTable('glpi_entities','',true, 'completename');
+      $allentities = getAllDatasFromTable('glpi_entities', '', true, 'completename');
 
       foreach ($allentities as $entity => $data) {
          if (isset($entities_values[$entity])) {

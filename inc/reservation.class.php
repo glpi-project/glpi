@@ -98,7 +98,7 @@ class Reservation extends CommonDBChild {
 
          // Processing Email
          if ($CFG_GLPI["use_mailing"]) {
-            NotificationEvent::raiseEvent("delete",$this);
+            NotificationEvent::raiseEvent("delete", $this);
          }
       }
       return true;
@@ -150,7 +150,7 @@ class Reservation extends CommonDBChild {
 
       if (count($this->updates)
           && $CFG_GLPI["use_mailing"]) {
-         NotificationEvent::raiseEvent("update",$this);
+         NotificationEvent::raiseEvent("update", $this);
          //$mail = new MailingResa($this,"update");
          //$mail->send();
       }
@@ -192,7 +192,7 @@ class Reservation extends CommonDBChild {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_mailing"]) {
-         NotificationEvent::raiseEvent("new",$this);
+         NotificationEvent::raiseEvent("new", $this);
       }
 
       parent::post_addItem();
@@ -208,14 +208,14 @@ class Reservation extends CommonDBChild {
       global $DB;
 
       do {
-         $rand = mt_rand(1,mt_getrandmax());
+         $rand = mt_rand(1, mt_getrandmax());
 
          $query = "SELECT COUNT(*) AS CPT
                    FROM `glpi_reservations`
                    WHERE `reservationitems_id` = '$reservationitems_id'
                          AND `group` = '$rand';";
          $result = $DB->query($query);
-         $count  = $DB->result($result,0,0);
+         $count  = $DB->result($result, 0, 0);
       } while ($count > 0);
 
       return $rand;
@@ -494,7 +494,7 @@ class Reservation extends CommonDBChild {
       echo "<div class='calendrier_mois'>";
       echo "<div class='center b'>$annee_avant</div>";
 
-      for ($i=$mois_courant ; $i<13 ; $i++) {
+      for ($i=$mois_courant; $i<13; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
                "annee_courante=$annee_avant'>".$monthsarray[$i]."</a></div>";
@@ -502,7 +502,7 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center b'>$annee_courante</div>";
 
-      for ($i=1 ; $i<13 ; $i++) {
+      for ($i=1; $i<13; $i++) {
          if ($i == $mois_courant) {
             echo "<div class='calendrier_case1 b'>".$monthsarray[$i]."</div>\n";
          } else {
@@ -513,7 +513,7 @@ class Reservation extends CommonDBChild {
       }
       echo "<div class='center b'>$annee_apres</div>\n";
 
-      for ($i=1 ; $i<$mois_courant+1 ; $i++) {
+      for ($i=1; $i<$mois_courant+1; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
                "annee_courante=$annee_apres'>".$monthsarray[$i]."</a></div>\n";
@@ -535,7 +535,7 @@ class Reservation extends CommonDBChild {
       echo "<tr class='tab_bg_3' >";
 
       // Insert blank cell before the first day of the month
-      for ($i=1 ; $i<$jour_debut_mois ; $i++) {
+      for ($i=1; $i<$jour_debut_mois; $i++) {
          echo "<td class='calendrier_case_white'>&nbsp;</td>";
       }
 
@@ -544,7 +544,7 @@ class Reservation extends CommonDBChild {
          $mois_courant = "0".$mois_courant;
       }
 
-      for ($i=1 ; $i<$nb_jour[$mois_courant-1]+1 ; $i++) {
+      for ($i=1; $i<$nb_jour[$mois_courant-1]+1; $i++) {
          if ($i < 10) {
             $ii = "0".$i;
          } else {
@@ -579,7 +579,7 @@ class Reservation extends CommonDBChild {
 
       // on recommence pour finir le tableau proprement pour les m�es raisons
       if ($jour_fin_mois != 0) {
-         for ($i=0 ; $i<7-$jour_fin_mois ; $i++) {
+         for ($i=0; $i<7-$jour_fin_mois; $i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";
          }
       }
@@ -801,12 +801,12 @@ class Reservation extends CommonDBChild {
 
          switch ($options['type']) {
             case 'day' :
-               $begin_time = strtotime("+1 day",$begin_time);
-               $end_time   = strtotime("+1 day",$end_time);
+               $begin_time = strtotime("+1 day", $begin_time);
+               $end_time   = strtotime("+1 day", $end_time);
                while ($begin_time < $repeat_end) {
                   $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                  $begin_time = strtotime("+1 day",$begin_time);
-                  $end_time   = strtotime("+1 day",$end_time);
+                  $begin_time = strtotime("+1 day", $begin_time);
+                  $end_time   = strtotime("+1 day", $end_time);
                }
                break;
 
@@ -815,8 +815,8 @@ class Reservation extends CommonDBChild {
 
                // No days set add 1 week
                if (!isset($options['days'])) {
-                  $dates = array(array('begin' => strtotime('+1 week',$begin_time),
-                                       'end'   => strtotime('+1 week',$end_time)));
+                  $dates = array(array('begin' => strtotime('+1 week', $begin_time),
+                                       'end'   => strtotime('+1 week', $end_time)));
                } else {
                   if (is_array($options['days'])) {
                      $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
@@ -834,8 +834,8 @@ class Reservation extends CommonDBChild {
 
                   while ($begin_time < $repeat_end) {
                      $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                     $begin_time = strtotime('+1 week',$begin_time);
-                     $end_time   = strtotime('+1 week',$end_time);
+                     $begin_time = strtotime('+1 week', $begin_time);
+                     $end_time   = strtotime('+1 week', $end_time);
                   }
                }
                break;
@@ -857,7 +857,7 @@ class Reservation extends CommonDBChild {
                         break;
 
                      case 'day':
-                        $dayofweek = date('l',$begin_time);
+                        $dayofweek = date('l', $begin_time);
 
                         $i               = 1;
                         $calc_begin_time = strtotime("+$i month", $begin_time);
@@ -943,7 +943,7 @@ class Reservation extends CommonDBChild {
                      }
                   }
 
-                  list($annee,$mois,$jour) = explode("-",$date);
+                  list($annee,$mois,$jour) = explode("-", $date);
                   echo "<tr class='tab_bg_1'><td>";
                   echo "<a href='reservation.php?reservationitems_id=".$data['id'].
                         "&amp;mois_courant=$mois&amp;annee_courante=$annee'>".
@@ -1001,14 +1001,14 @@ class Reservation extends CommonDBChild {
                   $heure_fin = get_hour_from_sql($row['end']);
                }
 
-               if ((strcmp($heure_debut,"00:00") == 0)
-                   && (strcmp($heure_fin,"24:00") == 0)) {
+               if ((strcmp($heure_debut, "00:00") == 0)
+                   && (strcmp($heure_fin, "24:00") == 0)) {
                   $display = __('Day');
 
-               } else if (strcmp($heure_debut,"00:00") == 0) {
+               } else if (strcmp($heure_debut, "00:00") == 0) {
                   $display = sprintf(__('To %s'), $heure_fin);
 
-               } else if (strcmp($heure_fin,"24:00") == 0) {
+               } else if (strcmp($heure_fin, "24:00") == 0) {
                   $display = sprintf(__('From %s'), $heure_debut);
 
                } else {
@@ -1057,7 +1057,7 @@ class Reservation extends CommonDBChild {
       ReservationItem::showActivationFormForItem($item);
 
       $ri = new ReservationItem();
-      if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
+      if ($ri->getFromDBbyItem($item->getType(), $item->getID())) {
          $now = $_SESSION["glpi_currenttime"];
 
          // Print reservation in progress

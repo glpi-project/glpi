@@ -181,7 +181,7 @@ class RequestType extends CommonDropdown {
    function post_updateItem($history=1) {
       global $DB;
 
-      if (in_array('is_helpdesk_default',$this->updates)) {
+      if (in_array('is_helpdesk_default', $this->updates)) {
 
          if ($this->input["is_helpdesk_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -194,7 +194,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_followup_default',$this->updates)) {
+      if (in_array('is_followup_default', $this->updates)) {
 
          if ($this->input["is_followup_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -207,7 +207,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_mail_default',$this->updates)) {
+      if (in_array('is_mail_default', $this->updates)) {
 
          if ($this->input["is_mail_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -220,7 +220,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_mailfollowup_default',$this->updates)) {
+      if (in_array('is_mailfollowup_default', $this->updates)) {
 
          if ($this->input["is_mailfollowup_default"]) {
             $query = "UPDATE `".$this->getTable()."`

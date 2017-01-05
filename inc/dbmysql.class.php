@@ -97,7 +97,7 @@ class DBmysql {
 
       if (is_array($this->dbhost)) {
          // Round robin choice
-         $i    = (isset($choice) ? $choice : mt_rand(0,count($this->dbhost)-1));
+         $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost)-1));
          $host = $this->dbhost[$i];
 
       } else {
@@ -508,13 +508,13 @@ class DBmysql {
       $lastresult     = false;
       while (!feof($DBf_handle)) {
          // specify read length to be able to read long lines
-         $buffer = fgets($DBf_handle,102400);
+         $buffer = fgets($DBf_handle, 102400);
 
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
-         if ((substr(rtrim($formattedQuery),-1) == ";")
-             && (substr(rtrim($formattedQuery),-4) != "&gt;")
-             && (substr(rtrim($formattedQuery),-4) != "160;")) {
+         if ((substr(rtrim($formattedQuery), -1) == ";")
+             && (substr(rtrim($formattedQuery), -4) != "&gt;")
+             && (substr(rtrim($formattedQuery), -4) != "160;")) {
 
             $formattedQuerytorun = $formattedQuery;
 
@@ -581,7 +581,7 @@ class DBmysql {
          return -1;
       }
 
-      if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+      if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
          $migration->displayTitle(__('Optimizing tables'));
          $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
@@ -596,11 +596,11 @@ class DBmysql {
          if ($cron
              || (countElementsInTable($table) < 15000000)) {
 
-            if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+            if (!is_null($migration) && method_exists($migration, 'displayMessage')) {
                $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
             }
 
-            $query = "OPTIMIZE TABLE `".$table."` ;";
+            $query = "OPTIMIZE TABLE `".$table."`;";
             $DB->query($query);
             $nb++;
          }
@@ -608,7 +608,7 @@ class DBmysql {
       $DB->free_result($result);
 
       if (!is_null($migration)
-          && method_exists($migration,'displayMessage') ) {
+          && method_exists($migration, 'displayMessage') ) {
          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
       }
 
@@ -855,7 +855,7 @@ class DBmysqlIterator  implements Iterator {
                } else if (is_array($f)) {
                   $t = self::quoteName($t);
                   $f = array_map([__CLASS__, 'quoteName'], $f);
-                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.",$f);
+                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.", $f);
                } else {
                   $t = self::quoteName($t);
                   $f = ($f == '*' ? $f : self::quoteName($f));
@@ -872,7 +872,7 @@ class DBmysqlIterator  implements Iterator {
          if (is_array($table)) {
             if (count($table)) {
                $table = array_map([__CLASS__, 'quoteName'], $table);
-               $this->sql .= ' FROM '.implode(", ",$table);
+               $this->sql .= ' FROM '.implode(", ", $table);
             } else {
                trigger_error("Missing table name", E_USER_ERROR);
             }
@@ -902,22 +902,22 @@ class DBmysqlIterator  implements Iterator {
             $cleanorderby = array();
             foreach ($orderby as $o) {
                $new = '';
-               $tmp = explode(' ',$o);
+               $tmp = explode(' ', $o);
                $new .= self::quoteName($tmp[0]);
                // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
+               if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
                   $new .= ' '.$tmp[1];
                }
                $cleanorderby[] = $new;
             }
 
-            $this->sql .= " ORDER BY ".implode(", ",$cleanorderby);
+            $this->sql .= " ORDER BY ".implode(", ", $cleanorderby);
          } else if (!empty($orderby)) {
             $this->sql .= " ORDER BY ";
-            $tmp = explode(' ',$orderby);
+            $tmp = explode(' ', $orderby);
             $this->sql .= self::quoteName($tmp[0]);
             // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
+            if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
                $this->sql .= ' '.$tmp[1];
             }
          }
@@ -1055,7 +1055,7 @@ class DBmysqlIterator  implements Iterator {
    public function rewind() {
 
       if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res,0);
+         $this->conn->data_seek($this->res, 0);
       }
       return $this->next();
    }

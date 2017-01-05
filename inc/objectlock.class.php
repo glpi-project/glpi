@@ -54,14 +54,14 @@ class ObjectLock extends CommonDBTM {
    private $itemtypename = "";
    private $itemid       = 0;
 
-   private static $shutdownregistered = false ;
+   private static $shutdownregistered = false;
 
 
    /**
     * @see CommonGLPI::getTypeName()
     */
    static function getTypeName($nb=0) {
-      return _n('Object Lock','Object Locks',$nb);
+      return _n('Object Lock', 'Object Locks', $nb);
    }
 
 
@@ -84,7 +84,7 @@ class ObjectLock extends CommonDBTM {
     * @return 0
    **/
    function getEntityID() {
-      return 0 ;
+      return 0;
    }
 
 
@@ -94,10 +94,10 @@ class ObjectLock extends CommonDBTM {
     * @return an array of lockable objects 'itemtype' => 'plural itemtype'
    **/
    static function getLockableObjects() {
-      global $CFG_GLPI ;
+      global $CFG_GLPI;
 
       $ret = array();
-      foreach ($CFG_GLPI['lock_lockable_objects'] as $lo){
+      foreach ($CFG_GLPI['lock_lockable_objects'] as $lo) {
          $ret[$lo] = $lo::getTypeName(Session::getPluralNumber());
       }
       asort($ret, SORT_STRING);
@@ -138,11 +138,11 @@ class ObjectLock extends CommonDBTM {
     * Shows 'Locked by You!' message and proposes to unlock it
    **/
    private function setLockedByYouMessage() {
-      global $CFG_GLPI ;
+      global $CFG_GLPI;
 
       $ret = Html::scriptBlock("
          function unlockIt(obj) {
-            $('#message_after_lock').fadeToggle() ;
+            $('#message_after_lock').fadeToggle();
 
             function callUnlock( ) {
                $.ajax({
@@ -153,23 +153,23 @@ class ObjectLock extends CommonDBTM {
                         Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
                               window.location.reload(true);
                            }", "function() {
-                              $('#message_after_lock').fadeToggle() ;
+                              $('#message_after_lock').fadeToggle();
                            }") ."
                      },
                   error: function() { ".
-                        Html::jsAlertCallback(__('Contact your GLPI admin!'),__('Item NOT unlocked!'), 'function(){$(\'#message_after_lock\').fadeToggle()}')."
+                        Html::jsAlertCallback(__('Contact your GLPI admin!'), __('Item NOT unlocked!'), 'function(){$(\'#message_after_lock\').fadeToggle()}')."
                      }
                });
             }".
             Html::jsConfirmCallback(__('Unlock this item?'), $this->itemtypename." #".$this->itemid, "callUnlock", "function() {
-                  $('#message_after_lock').fadeToggle() ;
+                  $('#message_after_lock').fadeToggle();
                }"
             )."
          }
 
-         ") ;
+         ");
 
-      echo $ret ;
+      echo $ret;
 
       $msg = "<table><tr><td class=red>";
       $msg .= __("Locked by you!")."</td>";
@@ -186,7 +186,7 @@ class ObjectLock extends CommonDBTM {
     * Shows 'Locked by ' message and proposes to request unlock from locker
    **/
    private function setLockedByMessage() {
-      global $CFG_GLPI ;
+      global $CFG_GLPI;
 
       // should get locking user info
       $user = new User();
@@ -203,29 +203,29 @@ class ObjectLock extends CommonDBTM {
       if ($showAskUnlock) {
          $ret = Html::scriptBlock("
          function askUnlock() {
-            $('#message_after_lock').fadeToggle() ;
+            $('#message_after_lock').fadeToggle();
             ". Html::jsConfirmCallback( __('Ask for unlock item?'), $this->itemtypename." #".$this->itemid, "function() {
                   $.ajax({
                      url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                      cache: false,
                      data: 'requestunlock=1&id=".$this->fields['id']."',
                      success: function( data, textStatus, jqXHR ) {
-                           ".Html::jsAlertCallback($completeUserName, __('Request sent to'), "function() { $('#message_after_lock').fadeToggle() ; }" )."
+                           ".Html::jsAlertCallback($completeUserName, __('Request sent to'), "function() { $('#message_after_lock').fadeToggle(); }" )."
                         }
                      });
                }", "function() {
-                  $('#message_after_lock').fadeToggle() ;
+                  $('#message_after_lock').fadeToggle();
                }"
             ) ."
          }
 
-         ") ;
+         ");
          echo $ret;
       }
 
       $ret = Html::scriptBlock("
          $(function(){
-            var lockStatusTimer ;
+            var lockStatusTimer;
             $('#alertMe').change(function( eventObject ){
                if( this.checked ) {
                   lockStatusTimer = setInterval( function() {
@@ -236,7 +236,7 @@ class ObjectLock extends CommonDBTM {
                            success: function( data, textStatus, jqXHR ) {
                                  if( data == 0 ) {
                                     clearInterval(lockStatusTimer);
-                                    $('#message_after_lock').fadeToggle() ;".
+                                    $('#message_after_lock').fadeToggle();".
                                     Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
                                        window.location.reload(true);
                                     }") ."
@@ -250,7 +250,7 @@ class ObjectLock extends CommonDBTM {
             });
          });
       ");
-      echo $ret ;
+      echo $ret;
 
       $msg = "<table><tr><td class=red nowrap>";
 
@@ -262,7 +262,7 @@ class ObjectLock extends CommonDBTM {
       }
       $msg .= "</td><td>&nbsp;&nbsp;</td><td>".__('Alert me when unlocked')."</td><td>&nbsp;".Html::getCheckbox(array('id' => 'alertMe'))."</td></tr></table>";
 
-      $this->displayLockMessage( $msg ) ;
+      $this->displayLockMessage($msg);
    }
 
 
@@ -275,7 +275,7 @@ class ObjectLock extends CommonDBTM {
 
       echo Html::scriptBlock("
          function requestLock() {
-               window.location.assign( window.location.href + '&lockwrite=1') ;
+               window.location.assign( window.location.href + '&lockwrite=1');
                }
          ");
 
@@ -309,22 +309,23 @@ class ObjectLock extends CommonDBTM {
                                           'items_id' => $this->itemid,
                                           'users_id' => Session::getLoginUserID()))) {
          // add a script to unlock the Object
-         echo Html::scriptBlock( "$(document).ready( function() {
+         echo Html::scriptBlock( "$(function() {
                   $(window).on('beforeunload', function() {
-                     //debugger ;
+                     //debugger;
                       $.ajax({
                           url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                           async: false,
                           cache: false,
                           data: 'unlock=1&id=$id'
                           });
-                      }) ;
-                  }) ;" );
+                      });
+                  });" );
          $ret = true;
       } else { // can't add a lock as another one is already existing
-         if (!$gotIt)
+         if (!$gotIt) {
             $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
                                            AND items_id = ".$this->itemid." " );
+         }
          // open the object as read-only as it is already locked by someone
          self::setReadonlyProfile();
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
@@ -346,7 +347,7 @@ class ObjectLock extends CommonDBTM {
     * @return bool: true if object is locked, and $this is filled with record from DB
    **/
    private function getLockedObjectInfo() {
-      global $CFG_GLPI ;
+      global $CFG_GLPI;
 
       $ret = false;
       if ($CFG_GLPI["lock_use_lock_item"]
@@ -399,7 +400,7 @@ class ObjectLock extends CommonDBTM {
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
             ProfileRight::getAllPossibleRights();
-            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val){
+            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val) {
                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
                   $_SESSION['glpiactiveprofile'][$key]
                      = intval($_SESSION['glpilocksavedprofile'][$key])
@@ -469,7 +470,7 @@ class ObjectLock extends CommonDBTM {
 
       $hideTitle = '';
       if ($title == '') {
-         $hideTitle = "$('.ui-dialog-titlebar', ui.dialog | ui).hide();" ;
+         $hideTitle = "$('.ui-dialog-titlebar', ui.dialog | ui).hide();";
       }
 
       echo "<div id='message_after_lock' title='$title'>";
@@ -477,7 +478,7 @@ class ObjectLock extends CommonDBTM {
       echo "</div>";
 
       echo Html::scriptBlock("
-         $(document).ready(function() {
+         $(function() {
             $('#message_after_lock').dialog({
                dialogClass: 'message_after_redirect',
                minHeight: 10,
@@ -591,9 +592,9 @@ class ObjectLock extends CommonDBTM {
           && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
           && in_array($itemtype, $CFG_GLPI['lock_lockable_objects'])) {
-         $ret = array(UNLOCK  => __('Unlock') ) ;
+         $ret = array(UNLOCK  => __('Unlock'));
       }
-      return $ret ;
+      return $ret;
    }
 
 

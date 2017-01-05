@@ -575,7 +575,7 @@ class NotificationTarget extends CommonDBChild {
    function getItemGroupAddress() {
 
       if (!empty($this->target_object)) {
-         foreach($this->target_object as $val){
+         foreach ($this->target_object as $val) {
             if ($val->fields['groups_id'] > 0) {
                $this->getAddressesByGroup(0, $val->fields['groups_id']);
             }
@@ -990,7 +990,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  $this->getSpecificTargets($data,$options);
+                  $this->getSpecificTargets($data, $options);
             }
             break;
 
@@ -1011,11 +1011,11 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            $this->getSpecificTargets($data,$options);
+            $this->getSpecificTargets($data, $options);
       }
       // action for target from plugin
       $this->data = $data;
-      Plugin::doHook('item_action_targets',$this);
+      Plugin::doHook('item_action_targets', $this);
 
    }
 

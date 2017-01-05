@@ -82,7 +82,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForCartridgeItem($item);
                }
-               return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()),$nb);
+               return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -151,7 +151,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
          PrinterModel::dropdown(array('used' => $used));
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -189,7 +189,18 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
-            echo "<td class='center'>".$data['type']."</td>";
+            $opt = [
+               'is_deleted' => 0,
+               'criteria'   => [
+                  [
+                     'field'      => 40, // printer model
+                     'searchtype' => 'equals',
+                     'value'      => $data["pmid"],
+                  ]
+               ]
+            ];
+            $url = Printer::getSearchURL()."?".Toolbox::append_params($opt, '&amp;');
+            echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;

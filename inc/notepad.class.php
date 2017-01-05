@@ -154,7 +154,7 @@ class Notepad extends CommonDBChild {
                      AND `glpi_notepads`.`items_id` = '".$item->getID()."'
                 ORDER BY `date_mod` DESC";
 
-      foreach($DB->request($query) as $note) {
+      foreach ($DB->request($query) as $note) {
          $data[] = $note;
       }
       return $data;
@@ -293,7 +293,7 @@ class Notepad extends CommonDBChild {
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button','Add'), array('name' => 'add'));
+         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
          echo "</div>";
 
          Html::closeForm();
@@ -339,7 +339,9 @@ class Notepad extends CommonDBChild {
             }
             echo ">";
             $content = nl2br($note['content']);
-            if (empty($content)) $content = NOT_AVAILABLE;
+            if (empty($content)) {
+               $content = NOT_AVAILABLE;
+            }
             echo $content.'</div>'; // boxnotetext
 
             echo "</div>"; // boxnotecontent
@@ -368,7 +370,7 @@ class Notepad extends CommonDBChild {
                 echo "</div>"; // boxnotecontent
 
                 echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button','Update'), array('name' => 'update'));
+                echo Html::submit(_x('button', 'Update'), array('name' => 'update'));
                 echo "</div>"; // boxnoteright
 
                 Html::closeForm();

@@ -134,7 +134,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
 
    function addCell() {
-      $this->numberCells ++ ;
+      $this->numberCells++;
    }
 
 

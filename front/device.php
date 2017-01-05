@@ -37,7 +37,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRightsOr('device', array(CREATE, UPDATE, PURGE));
+Session::checkRight("device", READ);
 
 Html::header(_n('Component', 'Components', 2), $_SERVER['PHP_SELF'], "config", "commondevice");
 echo "<div class='center'>";

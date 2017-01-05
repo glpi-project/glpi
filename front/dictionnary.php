@@ -51,84 +51,84 @@ echo "<tr><th>".__('Global dictionary')."</th></tr>";
 
 if (Session::haveRight("rule_dictionnary_software", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href=\"ruledictionnarysoftware.php\">" . _n('Software','Software',2) ."</a></td></tr>";
+   echo "<a href=\"ruledictionnarysoftware.php\">" . _n('Software', 'Software', 2) ."</a></td></tr>";
 }
 if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href=\"ruledictionnarymanufacturer.php\">" . _n('Manufacturer','Manufacturers',2) .
+   echo "<a href=\"ruledictionnarymanufacturer.php\">" . _n('Manufacturer', 'Manufacturers', 2) .
         "</a></td></tr>";
 }
 if (Session::haveRight("rule_dictionnary_printer", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href=\"ruledictionnaryprinter.php\">" . _n('Printer','Printers',2) ."</a></td></tr>";
+   echo "<a href=\"ruledictionnaryprinter.php\">" . _n('Printer', 'Printers', 2) ."</a></td></tr>";
 }
 
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
 if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
-   echo "<tr><th>"._n('Model','Models',2)."</th></tr>";
+   echo "<tr><th>"._n('Model', 'Models', 2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnarycomputermodel.php'>" . _n('Computer model','Computer models',2) .
+         "<a href='ruledictionnarycomputermodel.php'>" . _n('Computer model', 'Computer models', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnarymonitormodel.php'>" . _n('Monitor model','Monitor models',2) .
+         "<a href='ruledictionnarymonitormodel.php'>" . _n('Monitor model', 'Monitor models', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryprintermodel.php'>" . _n('Printer model','Printer models',2) .
+         "<a href='ruledictionnaryprintermodel.php'>" . _n('Printer model', 'Printer models', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryperipheralmodel.php'>" . _n('Device model','Device models',2) .
+         "<a href='ruledictionnaryperipheralmodel.php'>" . _n('Device model', 'Device models', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarynetworkequipmentmodel.php'>". _n('Network equipment model',
-                                                                   'Network equipment models',2) .
+                                                                   'Network equipment models', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryphonemodel.php'>" . _n('Phone model','Phone models',2) .
+         "<a href='ruledictionnaryphonemodel.php'>" . _n('Phone model', 'Phone models', 2) .
          "</a></td></tr>";
 }
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
 if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
-   echo "<tr><th>"._n('Type','Types',2)."</th></tr>";
+   echo "<tr><th>"._n('Type', 'Types', 2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnarycomputertype.php'>" . _n('Computer type','Computer types',2) .
+         "<a href='ruledictionnarycomputertype.php'>" . _n('Computer type', 'Computer types', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnarymonitortype.php'>" . _n('Monitor type','Monitor types',2) .
+         "<a href='ruledictionnarymonitortype.php'>" . _n('Monitor type', 'Monitor types', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryprintertype.php'>" . _n('Printer type','Printer types',2) .
+         "<a href='ruledictionnaryprintertype.php'>" . _n('Printer type', 'Printer types', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryperipheraltype.php'>" . _n('Device type','Device types',2) .
+         "<a href='ruledictionnaryperipheraltype.php'>" . _n('Device type', 'Device types', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarynetworkequipmenttype.php'>". _n('Network equipment type',
-                                                                  'Network equipment types',2) .
+                                                                  'Network equipment types', 2) .
          "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryphonetype.php'>" . _n('Phone type','Phone types',2) .
+         "<a href='ruledictionnaryphonetype.php'>" . _n('Phone type', 'Phone types', 2) .
          "</a></td></tr>";
 }
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
 if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
-   echo "<tr><th>"._n('Operating system','Operating systems',2)."</th></tr>";
+   echo "<tr><th>"._n('Operating system', 'Operating systems', 2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystem.php'>".
-           _n('Operating system','Operating systems',2)."</a></td></tr>";
+           _n('Operating system', 'Operating systems', 2)."</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystemservicepack.php'>".
-           _n('Service pack', 'Service packs',2)."</a></td></tr>";
+           _n('Service pack', 'Service packs', 2)."</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryoperatingsystemversion.php'>" . _n('Version','Versions',2) .
+         "<a href='ruledictionnaryoperatingsystemversion.php'>" . _n('Version', 'Versions', 2) .
          "</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryoperatingsystemarchitecture.php'>" . _n('Architecture','Architectures',2) .
+         "<a href='ruledictionnaryoperatingsystemarchitecture.php'>" . _n('Architecture', 'Architectures', 2) .
          "</a></td></tr>";
 }
 echo "</table></td></tr>";

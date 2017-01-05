@@ -55,7 +55,7 @@ $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
-   $kb->check(-1, CREATE,$_POST);
+   $kb->check(-1, CREATE, $_POST);
    $newID = $kb->add($_POST);
    Event::log($newID, "knowbaseitem", 5, "tools",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));

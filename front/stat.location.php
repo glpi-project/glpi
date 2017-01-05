@@ -48,7 +48,7 @@ if (empty($_GET["showgraph"])) {
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
    $year          = date("Y")-1;
-   $_GET["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
    $_GET["date2"] = date("Y-m-d");
 }
 
@@ -84,7 +84,7 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 echo "<input type='hidden' name='itemtype' value='". $_GET['itemtype'] ."'>";
 
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
-$values = array(_n('Dropdown','Dropdowns',2) => array('ComputerType'    => __('Type'),
+$values = array(_n('Dropdown', 'Dropdowns', 2) => array('ComputerType'    => __('Type'),
                                                        'ComputerModel'   => __('Model'),
                                                        'OperatingSystem' => __('Operating system'),
                                                        'Location'        => __('Location')),

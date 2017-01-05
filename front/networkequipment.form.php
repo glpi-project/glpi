@@ -48,7 +48,7 @@ if (!isset($_GET["withtemplate"])) {
 
 $netdevice = new NetworkEquipment();
 if (isset($_POST["add"])) {
-   $netdevice->check(-1, CREATE,$_POST);
+   $netdevice->check(-1, CREATE, $_POST);
 
    if ($newID = $netdevice->add($_POST)) {
       Event::log($newID, "networkequipment", 4, "inventory",
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $netdevice->check($_POST["id"], PURGE);
 
-   $netdevice->delete($_POST,1);
+   $netdevice->delete($_POST, 1);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

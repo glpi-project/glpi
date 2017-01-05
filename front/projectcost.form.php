@@ -49,7 +49,7 @@ if (!isset($_GET["projects_id"])) {
 
 $cost = new ProjectCost();
 if (isset($_POST["add"])) {
-   $cost->check(-1, CREATE,$_POST);
+   $cost->check(-1, CREATE, $_POST);
 
    if ($newID = $cost->add($_POST)) {
       Event::log($_POST['projects_id'], "project", 4, "maintain",

@@ -275,7 +275,7 @@ class RuleImportComputer extends Rule {
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
                   if (!isset($input[$criterion]) || ($input[$criterion] == '')) {
                      $continue = false;
-                  } else  {
+                  } else {
                      $complex_criterias[] = $crit;
                   }
                }
@@ -299,7 +299,7 @@ class RuleImportComputer extends Rule {
 
       //Build the request to check if the machine exists in GLPI
       if (is_array($input['entities_id'])) {
-         $where_entity = implode($input['entities_id'],',');
+         $where_entity = implode($input['entities_id'], ',');
       } else {
          $where_entity = $input['entities_id'];
       }

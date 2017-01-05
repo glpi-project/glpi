@@ -43,14 +43,14 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-# Titre
+// Titre
 
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<table class='tab_cadre_fixe' >";
 echo "<tr><th colspan='4'>".__('Hardware under contract')." </th></tr>";
 
-# 3. Selection d'affichage pour generer la liste
+// 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center' width='20%'>". __('Item type')."</td>";
 echo "<td width='30%'>";
@@ -60,7 +60,7 @@ foreach ($CFG_GLPI["contract_types"] as $itemtype) {
       $values[$itemtype] = $item->getTypeName();
    }
 }
-Dropdown::showFromArray('item_type',$values, array('value'    => 0,
+Dropdown::showFromArray('item_type', $values, array('value'    => 0,
                                                    'multiple' => true));
 echo "</td> ";
 
@@ -68,10 +68,10 @@ echo "<td class='center' width='20%'>". __('Date')."</td>";
 echo "<td width='30%'>";
 $y      = date("Y");
 $values = array( 0 => __('All'));
-for ($i=($y-10) ; $i<($y+10) ; $i++) {
+for ($i=($y-10); $i<($y+10); $i++) {
    $values[$i] = $i;
 }
-Dropdown::showFromArray('year',$values, array('value'    => $y,
+Dropdown::showFromArray('year', $values, array('value'    => $y,
                                               'multiple' => true));
 
 echo "</td></tr>";

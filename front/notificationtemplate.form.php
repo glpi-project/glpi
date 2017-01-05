@@ -45,7 +45,7 @@ if (!isset($_GET["id"])) {
 
 $notificationtemplate = new NotificationTemplate();
 if (isset($_POST["add"])) {
-   $notificationtemplate->check(-1, CREATE,$_POST);
+   $notificationtemplate->check(-1, CREATE, $_POST);
 
    $newID = $notificationtemplate->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
