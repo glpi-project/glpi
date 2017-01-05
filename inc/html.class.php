@@ -1123,9 +1123,6 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
 
-      //file upload is required... almost everywhere.
-      Html::requireJs('fileupload');
-
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
          $jslibs = [];
@@ -1168,6 +1165,9 @@ class Html {
             Html::requireJs('tinymce');
          }
       }
+
+      //file upload is required... almost everywhere.
+      Html::requireJs('fileupload');
 
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
       if (CommonGLPI::isLayoutWithMain()
@@ -5792,13 +5792,13 @@ class Html {
       }
       switch ($name) {
          case 'tinymce':
-            $_SESSION['glpi_js_toload'][$name][] = 'tiny_mce/tinymce.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.min.js';
             break;
          case 'fullcalendar':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/fullcalendar/lib/moment.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/fullcalendar/fullcalendar.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/lib/moment.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.min.js';
             if (isset($_SESSION['glpilanguage'])) {
-               $filename = "jqueryplugins/fullcalendar/locale/".
+               $filename = "lib/jqueryplugins/fullcalendar/locale/".
                   strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
                if (file_exists(GLPI_ROOT . '/lib/' . $filename)) {
                   $_SESSION['glpi_js_toload'][$name][] = $filename;
@@ -5806,23 +5806,21 @@ class Html {
             }
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jstree/jquery.jstree.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jquery.jstree.min.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js';
             break;
          case 'rateit':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/rateit/jquery.rateit.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/rateit/jquery.rateit.min.js';
             break;
          case 'colorpicker':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/spectrum-colorpicker/spectrum-min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js';
             break;
          case 'fileupload':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js';
-            break;
-         case 'jcrop':
-            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jcrop/jquery.Jcrop.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
             break;
          default:
             $found = false;
@@ -5855,10 +5853,10 @@ class Html {
          foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
             if (is_array($script)) {
                foreach ($script as $s) {
-                  echo Html::script("{$CFG_GLPI['root_doc']}/lib/$s");
+                  echo Html::script("{$CFG_GLPI['root_doc']}/$s");
                }
             } else {
-               echo Html::script("{$CFG_GLPI['root_doc']}/lib/$script");
+               echo Html::script("{$CFG_GLPI['root_doc']}/$script");
             }
             unset($_SESSION['glpi_js_toload'][$key]);
          }
@@ -5885,7 +5883,6 @@ class Html {
 
       // Some Javascript-Functions which we may need later
       echo Html::script($CFG_GLPI["root_doc"].'/js/common.js');
-      echo Html::script($CFG_GLPI["root_doc"].'/js/fileupload.js');
       self::redefineAlert();
       self::redefineConfirm();
 
