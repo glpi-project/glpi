@@ -3815,25 +3815,28 @@ class Html {
       }
 
       Html::scriptStart();
-      $js = "tinyMCE.init({
-         language: '$language',
-         browser_spellcheck: true,
-         mode: 'exact',
-         elements: '$name',
-         relative_urls: false,
-         remove_script_host: false,
-         entity_encoding: 'raw',
-         paste_data_images: $('.fileupload').length,
-         menubar: false,
-         statusbar: false,
-         skin: 'light',
-         plugins: [
-            'table directionality searchreplace',
-            'tabfocus autoresize link image paste',
-            'code fullscreen paste_upload_doc'
-         ],
-         toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
+      $js = "
+      $(function() {
+         tinyMCE.init({
+            language: '$language',
+            browser_spellcheck: true,
+            mode: 'exact',
+            elements: '$name',
+            relative_urls: false,
+            remove_script_host: false,
+            entity_encoding: 'raw',
+            paste_data_images: $('.fileupload').length,
+            menubar: false,
+            statusbar: false,
+            skin: 'light',
+            plugins: [
+               'table directionality searchreplace',
+               'tabfocus autoresize link image paste',
+               'code fullscreen paste_upload_doc'
+            ],
+            toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
 
+         });
       });
    ";
 
