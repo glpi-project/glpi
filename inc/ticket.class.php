@@ -3102,8 +3102,13 @@ class Ticket extends CommonITILObject {
 
       $delegating = User::getDelegateGroupsForUser($values['entities_id']);
 
-      if (count($delegating)) {
+      if (count($delegating) || $CFG_GLPI['use_check_pref']) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+         Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$opt]);
+      }
+
+      if (count($delegating)) {
          echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
 
          $rand   = Dropdown::showYesNo("nodelegate", $values['nodelegate']);
@@ -3156,7 +3161,6 @@ class Ticket extends CommonITILObject {
          $values['_users_id_requester'] = Session::getLoginUserID();
 
          if ($CFG_GLPI['use_check_pref']) {
-            echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('Check your personnal information')."</th></tr>";
             echo "<tr class='tab_bg_1'><td class='center'>";
             User::showPersonalInformation(Session::getLoginUserID());
@@ -3460,6 +3464,8 @@ class Ticket extends CommonITILObject {
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
+
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "</table></div>";
       if (!$ticket_template) {
