@@ -581,12 +581,16 @@ class Auth extends CommonGLPI {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
             // Used for log when login process failed
-            $login_name                     = $this->user->fields['name'];
-            $this->auth_succeded            = true;
-            $this->extauth                  = 1;
-            $this->user_present             = $this->user->getFromDBbyName(addslashes($login_name));
-            $this->user->fields['authtype'] = $authtype;
-            $user_dn                        = false;
+            $login_name                        = $this->user->fields['name'];
+            $this->auth_succeded               = true;
+            $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
+            if (self::isAlternateAuth($authtype)) {
+               $this->extauth                  = 0;
+            } else {
+               $this->extauth                  = 1;
+               $this->user->fields['authtype'] = $authtype;
+            }
+            $user_dn                           = false;
 
             $ldapservers = '';
             //if LDAP enabled too, get user's infos from LDAP
@@ -938,7 +942,7 @@ class Auth extends CommonGLPI {
          case self::DB_GLPI :
             return __('GLPI internal database');
 
-         case self::API: 
+         case self::API :
             return __("API");
 
          case self::NOT_YET_AUTHENTIFIED :
@@ -1027,7 +1031,7 @@ class Auth extends CommonGLPI {
     * @return boolean
    **/
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API));
    }
 
 
