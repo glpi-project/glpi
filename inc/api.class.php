@@ -174,7 +174,7 @@ abstract class API extends CommonGLPI {
       }
 
       // login on glpi
-      if (!$auth->Login($params['login'], $params['password'], $noAuto)) {
+      if (!$auth->login($params['login'], $params['password'], $noAuto)) {
          $err = Html::clean($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {

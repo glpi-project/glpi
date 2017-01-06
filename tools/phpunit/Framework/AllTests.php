@@ -68,7 +68,7 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
       $tab  = array();
       $auth = new Auth();
       // First session
-      $auth->Login('glpi', 'glpi') ;
+      $auth->login('glpi', 'glpi') ;
 
       // Create entity tree
       $entity = new Entity();
@@ -102,7 +102,7 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
                                              'entities_id' => $tab['entity'][2]));
 
       // New session with all the entities
-      $auth->Login('glpi', 'glpi') or die("Login glpi/glpi invalid !\n");
+      $auth->login('glpi', 'glpi') or die("Login glpi/glpi invalid !\n");
 
       // Shared this with all tests
       $this->sharedFixture = $tab;

@@ -46,10 +46,10 @@ class Framework_Version extends PHPUnit_Framework_TestCase {
 //      $DB->connect();
 //      
 //      $auth = new Auth();
-//      $res = $auth->Login('stupid_login_which_doesnt_exists', 'stupid_password');
+//      $res = $auth->login('stupid_login_which_doesnt_exists', 'stupid_password');
 //      $this->assertFalse($res, "Bad login accepted");
 //
-//      $res = $auth->Login('glpi', 'glpi');
+//      $res = $auth->login('glpi', 'glpi');
 //      $this->assertTrue($res, "Good login refused");
 //   }
 }

@@ -69,7 +69,7 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
    protected function login() {
 
       $auth = new Auth();
-      if (!$auth->Login(TU_USER, TU_PASS, true)) {
+      if (!$auth->login(TU_USER, TU_PASS, true)) {
          $this->markTestSkipped('No login');
       }
    }

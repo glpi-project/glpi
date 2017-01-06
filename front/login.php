@@ -75,7 +75,7 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->Login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
    Auth::redirectIfAuthenticated();
 } else {
    // we have done at least a good login? No, we exit.
