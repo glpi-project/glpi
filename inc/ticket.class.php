@@ -2978,6 +2978,9 @@ class Ticket extends CommonITILObject {
 
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+         Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$opt]);
+
          echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
 
          $rand   = Dropdown::showYesNo("nodelegate", $values['nodelegate']);
@@ -3342,6 +3345,8 @@ class Ticket extends CommonITILObject {
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
+
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "</table></div>";
       if (!$ticket_template) {
