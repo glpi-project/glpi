@@ -125,7 +125,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       Ajax::createIframeModalWindow("tags".$rand,
                                     $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
                                        $template->getField('itemtype'));
-      echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open');\">".__('Show list of available tags')."</a>";
+      echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open'); return false;\">".__('Show list of available tags')."</a>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

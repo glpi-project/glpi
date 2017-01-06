@@ -1401,7 +1401,7 @@ class KnowbaseItem extends CommonDBVisible {
                   $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"";
+                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open'); return false;\"";
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                             $CFG_GLPI["root_doc"].
                                                                "/front/knowbaseitem.form.php?id=".$data["id"],

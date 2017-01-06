@@ -175,7 +175,7 @@ class DocumentType  extends CommonDropdown {
 
       $display = "&nbsp;";
       $display .= "<a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').
-                  ".dialog('open');\">";
+                  ".dialog('open'); return false;\">";
       $display .= "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
                         alt=\"".__s('Help')."\" class='calendrier pointer'>";
       $display .= "</a>";

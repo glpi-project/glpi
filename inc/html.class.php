@@ -1450,7 +1450,7 @@ class Html {
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
+      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
              "\"  class='button-icon'></span>";
       echo "</a></li>";
@@ -1957,7 +1957,7 @@ class Html {
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
+      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
              "\" class='button-icon'>";
       echo "</a></li>";
@@ -2345,7 +2345,7 @@ class Html {
       echo Html::scriptEnd();
 
       /// Button to toggle responsive menu
-      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
+      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open'); return false;\"
             id='menu_all_button' class='button-icon'>";
       echo "</a>";
 
@@ -3668,7 +3668,7 @@ class Html {
             $out .= " href='".$param['link']."'";
 
             if (!empty($param['popup'])) {
-               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open');\" ";
+               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open'); return false;\" ";
             }
             $out .= '>';
          }
