@@ -99,6 +99,7 @@ echo "Delete various scripts and directories"
 \rm -rf phpunit.xml.dist;
 \rm -rf composer.json;
 \rm -rf composer.lock;
+\rm -rf .composer.hash;
 \rm -rf ISSUE_TEMPLATE.md;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
 
