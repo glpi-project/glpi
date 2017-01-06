@@ -70,6 +70,14 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
 
 Session::destroy();
 
-// Redirect to the login-page
+//Remove cookie to allow new login
+$cookie_name = session_name() . '_rememberme';
+$cookie_path = ini_get('session.cookie_path');
 
+if (isset($_COOKIE[$cookie_name])) {
+   setcookie($cookie_name, '', time() - 3600, $cookie_path);
+   unset($_COOKIE[$cookie_name]);
+}
+
+// Redirect to the login-page
 Html::redirect($CFG_GLPI["root_doc"]."/index.php".$toADD);

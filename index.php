@@ -65,8 +65,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $_GET["noAUTO"] = $_GET["noCAS"];
    }
 
+   if (!isset($_GET["noAUTO"])) {
+      Auth::redirectIfAuthenticated();
+   }
    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
-   Auth::redirectIfAuthenticated();
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -107,6 +109,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $_SESSION['namfield'] = $namfield = uniqid('fielda');
    $_SESSION['pwdfield'] = $pwdfield = uniqid('fieldb');
+   $_SESSION['rmbfield'] = $rmbfield = uniqid('fieldc');
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
@@ -127,6 +130,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
+   if ($CFG_GLPI["login_remember_time"]) {
+      echo '<p class="login_input">
+            <label for="login_remember">
+                   <input type="checkbox" name="'.$rmbfield.'" id="login_remember"
+                   '.($CFG_GLPI['login_remember_default']?'checked="checked"':'').' />
+            '.__('Remember me').'</label>
+            </p>';
+   }
    echo '<p class="login_input">
          <input type="submit" name="submit" value="'._sx('button', 'Post').'" class="submit" />
          </p>';

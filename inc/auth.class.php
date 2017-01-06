@@ -73,6 +73,7 @@ class Auth extends CommonGLPI {
    const CAS      = 5;
    const X509     = 6;
    const API      = 7;
+   const COOKIE   = 8;
    const NOT_YET_AUTHENTIFIED = 0;
 
 
@@ -480,6 +481,34 @@ class Auth extends CommonGLPI {
                $this->addToError(__("Login with external token disabled"));
             }
             break;
+         case self::COOKIE:
+            $cookie_name = session_name() . '_rememberme';
+            $cookie_path = ini_get('session.cookie_path');
+
+            if ($CFG_GLPI["login_remember_time"]) {
+               $data = json_decode($_COOKIE[$cookie_name], true);
+               if (count($data) === 2) {
+                  list ($cookie_id, $cookie_token) = $data;
+
+                  $token = User::getPersonalToken($cookie_id);
+
+                  if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
+                     $user = new User();
+                     $user->getFromDB($cookie_id); //true if $token is not false
+                     $this->user->fields['name'] = $user->fields['name'];
+                     return true;
+                  } else {
+                     $this->addToError(__("Invalid cookie data"));
+                  }
+               }
+            } else {
+               $this->addToError(__("Auto login disabled"));
+            }
+
+            //Remove cookie to allow new login
+            setcookie($cookie_name, '', time() - 3600, $cookie_path);
+            unset($_COOKIE[$cookie_name]);
+            break;
       }
       return false;
    }
@@ -538,7 +567,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean (success)
    */
-   function Login($login_name, $login_password, $noauto=false) {
+   function Login($login_name, $login_password, $noauto=false, $remember_me = false) {
       global $DB, $CFG_GLPI;
 
       $this->getAuthMethods();
@@ -785,6 +814,33 @@ class Auth extends CommonGLPI {
          $_SESSION["noAUTO"] = 1;
       }
 
+      if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
+         $token = false;
+         if (!empty($this->user->fields['personal_token'])) {
+            $token = $this->user->fields['personal_token'];
+         } else {
+            $token = User::getPersonalToken($this->user->fields['id']);
+         }
+
+         if ($token) {
+            //Cookie name (Allow multiple GLPI)
+            $cookie_name = session_name() . '_rememberme';
+            //Cookie session path
+            $cookie_path = ini_get('session.cookie_path');
+
+            $hash = Auth::getPasswordHash($token);
+
+            $data = json_encode([
+                $this->user->fields['id'],
+                $hash,
+            ]);
+
+            //Send cookie to browser
+            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
+            $_COOKIE[$cookie_name] = $data;
+         }
+      }
+
       return $this->auth_succeded;
    }
 
@@ -992,7 +1048,7 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API));
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE));
    }
 
    /**
@@ -1053,6 +1109,16 @@ class Auth extends CommonGLPI {
       if (!empty($_REQUEST['user_token'])) {
          return self::API;
       }
+
+      $cookie_name = session_name() . '_rememberme';
+      if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
+         if ($redirect) {
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
+         } else {
+            return self::COOKIE;
+         }
+      }
+
       return false;
    }
 

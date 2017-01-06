@@ -415,6 +415,22 @@ class Config extends CommonDBTM {
                                     'readonly' => !$CFG_GLPI["lock_use_lock_item"]));
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Auto Login').
+           "</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>". __('Time to allow "Remember Me"').
+           "</td><td>";
+      Dropdown::showTimeStamp('login_remember_time', array('value' => $CFG_GLPI["login_remember_time"],
+                                                     'emptylabel'   => __('Disabled'),
+                                                     'min'   => 0,
+                                                     'max'   => MONTH_TIMESTAMP * 2,
+                                                     'step'  => DAY_TIMESTAMP,
+                                                     'toadd' => array(HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12)));
+      echo "<td>" . __("Default state of checkbox") . "</td><td>";
+      Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"]);
+      echo "</td>";
+      echo "</td></tr>";
+
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
