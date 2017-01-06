@@ -1147,6 +1147,8 @@ INSERT INTO `glpi_configs` VALUES ('167','core','enable_api','0');
 INSERT INTO `glpi_configs` VALUES ('168','core','enable_api_login_credentials','0');
 INSERT INTO `glpi_configs` VALUES ('169','core','enable_api_login_external_token','1');
 INSERT INTO `glpi_configs` VALUES ('170','core','url_base_api','http://localhost/glpi/api');
+INSERT INTO `glpi_configs` VALUES ('171','core','login_remember_time','604800');
+INSERT INTO `glpi_configs` VALUES ('172','core','login_remember_default','1');
 
 
 ### Dump table glpi_consumableitems

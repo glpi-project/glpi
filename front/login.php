@@ -61,6 +61,8 @@ if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
    $password = '';
 }
 
+$remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
+
 // Redirect management
 $REDIRECT = "";
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
@@ -74,7 +76,7 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false), $remember)) {
    Auth::redirectIfAuthenticated();
 } else {
    // we have done at least a good login? No, we exit.

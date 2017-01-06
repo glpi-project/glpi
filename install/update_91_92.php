@@ -629,6 +629,10 @@ function update91to92() {
       ]);
    }
 
+   /************** Auto login **************/
+   Config::setConfigurationValues('core', array('login_remember_time'    => 604800,
+                                                'login_remember_default' => 1));
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

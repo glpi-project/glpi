@@ -2191,6 +2191,11 @@ a.icon_nav_move:hover img {
    box-shadow:0 0 3px #FFA500;
 }
 
+#boxlogin label {
+   color: #FFF;
+   font-size: 1.2em;
+}
+
 #boxlogin input:-webkit-autofill {
    box-shadow: 0 0 0px 1000px white inset;
 }
