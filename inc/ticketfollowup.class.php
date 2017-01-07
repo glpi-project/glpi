@@ -239,12 +239,19 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+      $input["_job"] = new Ticket();
+      if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
+         return false;
+      }
+
+      $input = $this->addFiles($input);
 
       // update writer if content change
       if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
          $input["users_id"] = $uid;
       }
+
       return $input;
    }
 
@@ -271,10 +278,6 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          // change ticket status (from splitted button)
-         $this->input['_job'] = new Ticket();
-         if (!$this->input['_job']->getFromDB($this->input["tickets_id"])) {
-            return false;
-         }
          if (isset($this->input['_status'])
              && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
              $update['status']        = $this->input['_status'];
@@ -307,25 +310,6 @@ class TicketFollowup  extends CommonDBTM {
       }
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;
-      }
-      if ($CFG_GLPI["use_rich_text"]) {
-         $input['content'] = $input["_job"]->setSimpleTextContent($input["content"]);
-      }
-      // Manage File attached (from mailgate)
-      // Pass filename if set to ticket
-      if (isset($input['_filename'])) {
-         $input["_job"]->input['_filename'] = $input['_filename'];
-      }
-      // Add docs without notif
-      $docadded = $input["_job"]->addFiles(0, 1);
-
-      if (count($docadded) > 0) {
-         $input['content'] .= "\n";
-         foreach ($docadded as $name) {
-            //TRANS: %s is tha document name
-            $input['content'] .= "\n".sprintf(__('Added document: %s'),
-                                              Toolbox::addslashes_deep($name['data']));
-         }
       }
 
       // Pass old assign From Ticket in case of assign change
@@ -386,6 +370,9 @@ class TicketFollowup  extends CommonDBTM {
 
    function post_addItem() {
       global $CFG_GLPI;
+
+      // Add document if needed, without notification
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
       $donotif = $CFG_GLPI["use_mailing"];
 
@@ -646,18 +633,38 @@ class TicketFollowup  extends CommonDBTM {
          }
       }
 
+      $width = '100%';
+      if ($CFG_GLPI['use_rich_text']) {
+         $width = '50%';
+      }
+
       if ($tech) {
          $this->showFormHeader($options);
 
          $rand = mt_rand();
+         $rand_text = mt_rand();
+         $content_id = "content$rand";
+
+         $cols       = 90;
+         $rows       = 6;
 
          echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='3'>".__('Description')."</td>";
-         echo "<td rowspan='3' style='width:60%'>";
-         echo "<textarea id='content$rand' name='content' style='width: 95%; height: 120px'>";
-         echo $this->fields["content"];
-         echo "</textarea>";
-         echo Html::scriptBlock("$(function() { $('#content$rand').autogrow(); });");
+         echo "<td rowspan='3' style='width:65%'>";
+
+         if ($CFG_GLPI["use_rich_text"]) {
+            $cols              = 100;
+            $rows              = 10;
+         }
+         Html::textarea(['name'              => 'content',
+                         'value'             => $this->fields["content"],
+                         'rand'              => $rand_text,
+                         'editor_id'         => $content_id,
+                         'enable_fileupload' => true,
+                         'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                         'cols'              => $cols,
+                         'rows'              => $rows]);
+
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
@@ -683,10 +690,6 @@ class TicketFollowup  extends CommonDBTM {
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
 
-         if ($ID <= 0) {
-            Document_Item::showSimpleAddForItem($this);
-         }
-
          $this->showFormButtons($options);
 
       } else {
@@ -694,10 +697,26 @@ class TicketFollowup  extends CommonDBTM {
 
          $this->showFormHeader($options);
 
+         $rand = mt_rand();
+         $rand_text = mt_rand();
+         $content_id = "content$rand";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle'>";
-         echo "<textarea name='content' cols='80' rows='6'>".$this->fields["content"]."</textarea>";
+
+         if ($CFG_GLPI["use_rich_text"]) {
+            $cols              = 100;
+            $rows              = 10;
+         }
+         Html::textarea(['name'              => 'content',
+                         'value'             => $this->fields["content"],
+                         'rand'              => $rand_text,
+                         'editor_id'         => $content_id,
+                         'enable_fileupload' => true,
+                         'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                         'cols'              => $cols,
+                         'rows'              => $rows]);
+
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
          echo "<input type='hidden' name='requesttypes_id' value='".
                 RequestType::getDefault('followup')."'>";
@@ -707,10 +726,6 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          echo "</td></tr>\n";
-
-         if ($ID <= 0) {
-            Document_Item::showSimpleAddForItem($ticket);
-         }
 
          $this->showFormButtons($options);
       }
@@ -978,7 +993,14 @@ class TicketFollowup  extends CommonDBTM {
             if (empty($content)) {
                $content = NOT_AVAILABLE;
             }
-            echo $content.'</div>'; // boxnotetext
+
+            if ($CFG_GLPI["use_rich_text"]) {
+               $content = html_entity_decode($content);
+               echo $content.'</div>';
+            } else {
+               $content = linkUrlsInTrustedHtml($content);
+               echo $content.'</div>';
+            }
 
             echo "</div>"; // boxnotecontent
             echo "<div class='boxnoteright'>";

@@ -63,7 +63,6 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 * [Update](http://glpi-project.org/spip.php?article172)
 
 
-
 ## Additional resources
 
 * [Official website](http://glpi-project.org)

@@ -295,6 +295,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
+      $input = $this->addFiles($input);
+
       return $input;
    }
 
@@ -367,7 +369,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-
       $itemtype = $this->getItilObjectItemType();
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -411,20 +412,15 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input['is_private'] = 0;
       }
 
-      // Manage File attached (from mailgate)
-      // Pass filename if set to ticket
-      if (isset($input['_filename'])) {
-         $input["_job"]->input['_filename'] = $input['_filename'];
-      }
-      // Add docs without notif
-      $docadded = $input["_job"]->addFiles(0, 1);
-
       return $input;
    }
 
 
    function post_addItem() {
       global $CFG_GLPI;
+
+      // Add document if needed, without notification
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
       if (isset($this->input['_planningrecall'])) {
          $this->input['_planningrecall']['items_id'] = $this->fields['id'];
@@ -1329,10 +1325,27 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' style='width:100px'>".__('Description')."</td>";
-      echo "<td rowspan='$rowspan' style='width:50%' id='content$rand_text'>".
-           "<textarea name='content' style='width: 95%; height: 160px' id='task$rand_text'>".$this->fields["content"].
-           "</textarea>";
-      echo Html::scriptBlock("$(function() { $('#content$rand').autogrow(); });");
+      echo "<td rowspan='$rowspan' style='width:65%' id='content$rand_text'>";
+
+      $rand_text = mt_rand();
+      $content_id = "content$rand";
+
+      $cols       = 90;
+      $rows       = 6;
+      if ($CFG_GLPI["use_rich_text"]) {
+         $cols              = 100;
+         $rows              = 10;
+      }
+
+      Html::textarea(['name'              => 'content',
+                      'value'             => $this->fields["content"],
+                      'rand'              => $rand_text,
+                      'editor_id'         => $content_id,
+                      'enable_fileupload' => true,
+                      'enable_richtext'   => $CFG_GLPI["use_rich_text"],
+                      'cols'              => $cols,
+                      'rows'              => $rows]);
+
       echo "</td>";
       echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
       echo "</td></tr>\n";
@@ -1421,9 +1434,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</td></tr>\n";
 
-      if ($ID <= 0) {
-         Document_Item::showSimpleAddForItem($item);
-      }
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By')."</td>";
       echo "<td colspan='2'>";
@@ -1445,7 +1455,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
       User::dropdown($params);
 
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open'); return false;\">";
       echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
              class='calendrier'>";

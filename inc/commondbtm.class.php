@@ -4529,4 +4529,144 @@ class CommonDBTM extends CommonGLPI {
    static function generateLinkContents($link, CommonDBTM $item) {
       return Link::generateLinkContents($link, $item);
    }
+
+
+   /**
+    * add files (from $this->input['_filename']) to an CommonDBTM object
+    * create document if needed
+    * create link from document to CommonDBTM object
+    *
+    * @param $input  array
+    * @param $options  array with theses keys
+    *                        - force_update (default false) update the content field of the object
+    *                        - content_field (default content) the field who receive the main text
+    *                                                          (with images)
+    *
+    * @since version 9.2
+    *
+    * @return array the input param transformed
+   **/
+   function addFiles(array $input, $options = []) {
+      global $CFG_GLPI;
+
+      $default_options = [
+         'force_update'  => false,
+         'content_field' => 'content',
+      ];
+      $options = array_merge($default_options, $options);
+
+      if (!isset($input['_filename'])
+          || (count($input['_filename']) == 0)) {
+         return $input;
+      }
+      $docadded     = array();
+      $donotif      = isset($input['_donotif']) ? $input['_donotif'] : 0;
+      $disablenotif = isset($input['_disablenotif']) ? $input['_disablenotif'] : 0;
+
+      foreach ($input['_filename'] as $key => $file) {
+         $doc      = new Document();
+         $docitem  = new Document_Item();
+         $docID    = 0;
+         $filename = GLPI_TMP_DIR."/".$file;
+         $input2   = array();
+
+         //If file tag is present
+         if (isset($input['_tag_filename'])
+             && !empty($input['_tag_filename'][$key])) {
+            $input['_tag'][$key] = $input['_tag_filename'][$key];
+         }
+
+         //retrieve entity
+         $entities_id = isset($this->fields["entities_id"])
+                           ? $this->fields["entities_id"]
+                           : $_SESSION['glpiactive_entity'];
+
+         // Check for duplicate
+         if ($doc->getFromDBbyContent($entities_id, $filename)) {
+            if (!$doc->fields['is_blacklisted']) {
+               $docID = $doc->fields["id"];
+            }
+            // File already exist, we replace the tag by the existing one
+            if (isset($input['_tag'][$key])
+                && ($docID > 0)
+                && isset($input[$options['content_field']])) {
+
+               $input[$options['content_field']]
+                  = preg_replace('/'.Document::getImageTag($input['_tag'][$key]).'/',
+                                 Document::getImageTag($doc->fields["tag"]),
+                                 $input[$options['content_field']]);
+               $docadded[$docID]['tag'] = $doc->fields["tag"];
+            }
+
+         } else {
+            if ($this->getType() == 'Ticket') {
+               //TRANS: Default document to files attached to tickets : %d is the ticket id
+               $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
+               $input2["tickets_id"] = $this->getID();
+            }
+            // Insert image tag
+            $input2["tag"] = $input['_tag'][$key];
+            $input2["entities_id"]             = $entities_id;
+            $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
+            $input2["_only_if_upload_succeed"] = 1;
+            $input2["_filename"]               = array($file);
+            $docID = $doc->add($input2);
+            $docadded[$docID]['tag'] = $input['_tag'][$key];
+         }
+
+         if ($docID > 0) {
+            // complete doc information
+            $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'),
+                                                stripslashes($doc->fields["name"]),
+                                                stripslashes($doc->fields["filename"]));
+
+            // for sub item, attach to document to parent item
+            $item_fordocitem = $this;
+            $skip_docitem = false;
+            if (isset($input['_job'])) {
+               $item_fordocitem = $input['_job'];
+            }
+
+            // if doc is an image and already inserted in content, do not attach in docitem
+            if (isset($input[$options['content_field']])
+                && strpos($input[$options['content_field']], $doc->fields["tag"]) !== false
+                && strpos($doc->fields['mime'], 'image/') !== false) {
+               $skip_docitem = true;
+            }
+
+            // add doc - item ling
+            if (!$skip_docitem) {
+               $docitem->add(array('documents_id'  => $docID,
+                                   '_do_notif'     => $donotif,
+                                   '_disablenotif' => $disablenotif,
+                                   'itemtype'      => $item_fordocitem->getType(),
+                                   'items_id'      => $item_fordocitem->getID()));
+            }
+         }
+         // Only notification for the first New doc
+         $donotif = false;
+      }
+
+      // manage content transformation
+      if (isset($input[$options['content_field']])) {
+         if ($CFG_GLPI["use_rich_text"]) {
+            $input[$options['content_field']]
+               = Toolbox::convertTagToImage($input[$options['content_field']],
+                                            $this,
+                                            $docadded);
+            $input['_forcenotif'] = true;
+         } else {
+            $input[$options['content_field']]
+               = Html::setSimpleTextContent($input[$options['content_field']]);
+         }
+
+         // force update of content on add process (we are in post_addItem function)
+         if ($options['force_update']) {
+            $this->fields[$options['content_field']] = $input[$options['content_field']];
+            $this->updateInDB(array($options['content_field']));
+         }
+      }
+
+      return $input;
+   }
 }
