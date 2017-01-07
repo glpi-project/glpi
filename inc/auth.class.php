@@ -767,10 +767,10 @@ class Auth extends CommonGLPI {
                $input = Toolbox::addslashes_deep($input);
 
                // update user and Blank PWD to clean old database for the external auth
-               $this->user->update($input);
                if ($this->extauth && $this->user->fields["authtype"] != self::API) {
-                  $this->user->blankPassword();
+                  $input['_extauth'] = 1;
                }
+               $this->user->update($input);
             } else if ($CFG_GLPI["is_users_auto_add"]) {
                // Auto add user
                // First stripslashes to avoid double slashes
