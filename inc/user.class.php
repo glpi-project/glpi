@@ -757,6 +757,10 @@ class User extends CommonDBTM {
          unset($input["password"]);
       }
 
+      if (isset($input["_extauth"])) {
+         $input["password"] = "";
+      }
+
       // Update User in the database
       if (!isset($input["id"])
           && isset($input["name"])) {
