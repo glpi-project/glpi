@@ -645,7 +645,8 @@ class Auth extends CommonGLPI {
             } else {
                //If user is set as present in GLPI but no LDAP DN found : it means that the user
                //is not present in an ldap directory anymore
-               if (!$user_dn
+               if ($this->user->fields['authtype'] == self::LDAP
+                   && !$user_dn
                    && $this->user_present) {
                   $user_deleted_ldap       = true;
                   $this->user_deleted_ldap = true;
@@ -735,6 +736,7 @@ class Auth extends CommonGLPI {
 
       if ($user_deleted_ldap) {
          User::manageDeletedUserInLdap($this->user->fields["id"]);
+         $this->auth_succeded = false;
       }
       // Ok, we have gathered sufficient data, if the first return false the user
       // is not present on the DB, so we add him.
