@@ -1,4 +1,4 @@
-# GLPi REST API:  Documentation
+# GLPI REST API:  Documentation
 
 ## Summary
 
@@ -13,7 +13,7 @@
 * [Get active entities](#get-active-entities)
 * [Change active entities](#change-active-entities)
 * [Get full session](#get-full-session)
-* [Get GLPi config](#get-glpi-config)
+* [Get GLPI config](#get-glpi-config)
 * [Get an item](#get-an-item)
 * [Get all items](#get-all-items)
 * [Get sub items](#get-sub-items)
@@ -86,7 +86,7 @@ App(lication) token
   This read-only mode allow to use this API with parallel calls.
   In write mode, sessions are locked and your client must wait the end of a call before the next one can execute.
 
-* You can filter API access by enable the following parameters in GLPi General Configuration (API tab):
+* You can filter API access by enable the following parameters in GLPI General Configuration (API tab):
   * IPv4 range
   * IPv6 address
   * *App-Token* parameter: if not empty, you should pass this parameter in all of your api calls
@@ -99,7 +99,7 @@ App(lication) token
 * **Description**: Request a session token to uses other api endpoints.
 * **Method**: GET
 * **Parameters**: (Headers)
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
   * a couple *login* & *password*: 2 parameters to login with user authentication.
      You should pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
      It consists in a Base64 string with login and password separated by ":"
@@ -151,7 +151,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK).
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -175,7 +175,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array of all profiles.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -211,7 +211,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing current profile.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -241,7 +241,7 @@ $ curl -X GET \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
 * **Returns**:
@@ -268,7 +268,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array of all entities (with id and name).
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -301,7 +301,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array with 3 keys:
     * *active_entity*: current set entity.
@@ -338,7 +338,7 @@ $ curl -X POST \
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
   * *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
@@ -366,7 +366,7 @@ $ curl -X POST \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing the php session.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -391,14 +391,14 @@ $ curl -X POST \
    }
 ```
 
-## Get GLPi config
+## Get GLPI config
 
 * **URL**: [apirest.php/getGlpiConfig/](getGlpiConfig/?debug)
 * **Description**: Return the current $CFG_GLPI.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**:
   * 200 (OK) with an array representing the php global variable $CFG_GLPI.
   * 400 (Bad Request) with a message indicating an error in input parameter.
@@ -430,7 +430,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -539,7 +539,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
@@ -660,7 +660,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * id: unique identifier of the parent itemtype. Mandatory.
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -725,7 +725,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *items*: items to retrieve. Mandatory.
               Each line of this array should contains two keys:
@@ -783,7 +783,7 @@ $ curl -X GET \
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *raw*: return searchoption uncleaned (as provided by core)
 * **Returns**:
@@ -833,12 +833,12 @@ $ curl -X GET \
 ## Search items
 
 * **URL**: [apirest.php/search/:itemtype/](search/Computer/?debug)
-* **Description**: Expose the GLPi searchEngine and combine criteria to retrieve a list of elements of specified itemtype.
+* **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype.
   > Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's types.
 * **Method**: GET
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *criteria*: array of criterion objects to filter search. Optional.
       Each criterion object must provide:
@@ -970,11 +970,11 @@ criteria\[0\]\[link\]\=AND\
 ## Add item(s)
 
 * **URL**: apirest.php/:itemtype/
-* **Description**: Add an object (or multiple objects) into GLPi.
+* **Description**: Add an object (or multiple objects) into GLPI.
 * **Method**: POST
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *input*: an object with fields of itemtype to be inserted.
               You can add several items in one action by passing an array of objects.
@@ -1024,11 +1024,11 @@ $ curl -X POST \
 ## Update item(s)
 
 * **URL**: apirest.php/:itemtype/:id
-* **Description**: Update an object (or multiple objects) existing in GLPi.
+* **Description**: Update an object (or multiple objects) existing in GLPI.
 * **Method**: PUT
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (JSON Payload)
   * *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
   * *input*: Array of objects with fields of itemtype to be updated.
@@ -1079,11 +1079,11 @@ $ curl -X PUT \
 ## Delete item(s)
 
 * **URL**: apirest.php/:itemtype/:id
-* **Description**: Delete an object existing in GLPi.
+* **Description**: Delete an object existing in GLPI.
 * **Method**: DELETE
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
       OR
@@ -1140,7 +1140,7 @@ $ curl -X DELETE \
 
 ### ERROR_ITEM_NOT_FOUND
 
-The desired resource (itemtype-id) was not found in the GLPi database.
+The desired resource (itemtype-id) was not found in the GLPI database.
 
 ### ERROR_BAD_ARRAY
 
@@ -1153,7 +1153,7 @@ You specified an inexistent or not not allowed resource.
 ### ERROR_RIGHT_MISSING
 
 The current logged user miss rights in his profile to do the provided action.
-Alter this profile or choose a new one for the user in GLPi main interface.
+Alter this profile or choose a new one for the user in GLPI main interface.
 
 ### ERROR_SESSION_TOKEN_INVALID
 
@@ -1175,7 +1175,7 @@ You must mark the item for deletion before actually deleting it
 ### ERROR_NOT_ALLOWED_IP
 
 We can't find an active client defined in configuration for your IP.
-Go to the GLPi Configuration > Setup menu and API tab to check IP access.
+Go to the GLPI Configuration > Setup menu and API tab to check IP access.
 
 ### ERROR_LOGIN_PARAMETERS_MISSING
 
@@ -1186,30 +1186,30 @@ One of theses parameter(s) is missing:
 
 ### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED
 
-The GLPi setup forbid the login with credentials, you must login with your user_token instead.
-See your personal preferences page or setup API access in GLPi main interface.
+The GLPI setup forbid the login with credentials, you must login with your user_token instead.
+See your personal preferences page or setup API access in GLPI main interface.
 
 ### ERROR_GLPI_LOGIN_USER_TOKEN
 
 The provided user_token seems invalid.
-Check your personal preferences page in GLPi main interface.
+Check your personal preferences page in GLPI main interface.
 
 ### ERROR_GLPI_LOGIN
 
-We cannot login you into GLPi. This error is not relative to API but GLPi core.
-Check the user administration and the GLPi logs files (in files/_logs directory).
+We cannot login you into GLPI. This error is not relative to API but GLPI core.
+Check the user administration and the GLPI logs files (in files/_logs directory).
 
 ### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM
 
-You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPi CommonDBTM resources.
+You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
 
 See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html) for available resources
 
 ### ERROR_SQL
 
 We suspect an SQL error.
-This error is not relative to API but to GLPi core.
-Check the GLPi logs files (in files/_logs directory).
+This error is not relative to API but to GLPI core.
+Check the GLPI logs files (in files/_logs directory).
 
 ### ERROR_RANGE_EXCEED_TOTAL
 
@@ -1217,8 +1217,8 @@ The range parameter you provided is superior to the total count of available dat
 
 ### ERROR_GLPI_ADD
 
-We cannot add the object to GLPi. This error is not relative to API but to GLPi core.
-Check the GLPi logs files (in files/_logs directory).
+We cannot add the object to GLPI. This error is not relative to API but to GLPI core.
+Check the GLPI logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_ADD
 
@@ -1228,8 +1228,8 @@ You'll find with this error a collection of results.
 
 ### ERROR_GLPI_UPDATE
 
-We cannot update the object to GLPi. This error is not relative to API but to GLPi core.
-Check the GLPi logs files (in files/_logs directory).
+We cannot update the object to GLPI. This error is not relative to API but to GLPI core.
+Check the GLPI logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_UPDATE
 
@@ -1239,8 +1239,8 @@ You'll find with this error a collection of results.
 
 ### ERROR_GLPI_DELETE
 
-We cannot delete the object to GLPi. This error is not relative to API but to GLPi core.
-Check the GLPi logs files (in files/_logs directory).
+We cannot delete the object to GLPI. This error is not relative to API but to GLPI core.
+Check the GLPI logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_DELETE
 
@@ -1255,7 +1255,7 @@ You'll find below some examples to configure your web server to redirect your <h
 
 ### Apache Httpd
 
-We provide in root .htaccess of GLPi an example to enable api url rewriting.
+We provide in root .htaccess of GLPI an example to enable api url rewriting.
 
 You need to uncomment (removing #) theses lines:
 
@@ -1269,7 +1269,7 @@ You need to uncomment (removing #) theses lines:
 ```
 
 By enabling url rewriting, you could use api with this url : <http://path/to/glpi/api/>.
-You need also to enable rewrite module in apache httpd and permit GLPi's .htaccess to override server configuration (see AllowOverride directive).
+You need also to enable rewrite module in apache httpd and permit GLPI's .htaccess to override server configuration (see AllowOverride directive).
 
 ### Nginx
 
@@ -1280,7 +1280,7 @@ server {
    listen 80 default_server;
    listen [::]:80 default_server;
 
-   # change here to match your GLPi directory
+   # change here to match your GLPI directory
    root /var/www/html/glpi/;
 
    index index.html index.htm index.nginx-debian.html index.php;
