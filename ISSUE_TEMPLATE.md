@@ -1,4 +1,4 @@
-Dear GLPi user.
+Dear GLPI user.
 
 BEFORE SUBMITTING YOUR ISSUE, please make sure to read and follow these steps :
 
@@ -9,4 +9,4 @@ BEFORE SUBMITTING YOUR ISSUE, please make sure to read and follow these steps :
 * Provide us steps to reproduce your issue.
 * Delete this text to submit your issue.
 
-The GLPi team.
+The GLPI team.

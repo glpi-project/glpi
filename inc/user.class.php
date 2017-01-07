@@ -3824,7 +3824,7 @@ class User extends CommonDBTM {
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
 
-      //The only case where users_id can be null if when a user has been imported into GLPi
+      //The only case where users_id can be null if when a user has been imported into GLPI
       //it's dn still exists, but doesn't match the connection filter anymore
       //In this case, do not try to process the user
       if (!$users_id) {
