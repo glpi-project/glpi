@@ -767,7 +767,7 @@ class Auth extends CommonGLPI {
                $input = Toolbox::addslashes_deep($input);
 
                // update user and Blank PWD to clean old database for the external auth
-               if ($this->extauth && $this->user->fields["authtype"] != self::API) {
+               if ($this->extauth) {
                   $input['_extauth'] = 1;
                }
                $this->user->update($input);
