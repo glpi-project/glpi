@@ -34,7 +34,8 @@
         "ircmaxell/random-lib": "^1.2"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "~5"
+        "guzzlehttp/guzzle": "~5",
+        "glpi-project/coding-standard": "0.5"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
