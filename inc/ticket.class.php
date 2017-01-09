@@ -6047,10 +6047,7 @@ class Ticket extends CommonITILObject {
       $document_items = $document_item_obj->find("itemtype = 'Ticket' AND items_id = ".$this->getID());
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
-
-         // #1476 - override document date_mod to ticket attachment date_mod
-         $document_obj->fields['date_mod'] = $document_item['date_mod'];
-         $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
+         $timeline[$document_obj->fields['date_mod']."_document_".$document_item['documents_id']]
             = array('type' => 'Document_Item', 'item' => $document_obj->fields);
       }
 
