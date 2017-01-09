@@ -345,7 +345,7 @@ if (!file_exists($autoload)) {
    if (!file_exists(GLPI_ROOT . '/.composer.hash')) {
       /* First time */
       $needrun = true;
-   } else if (sha1_file(GLPI_ROOT . '/composer.lock') != explode(' ', file_get_contents(GLPI_ROOT . '/.composer.hash'))[0]) {
+   } else if (sha1_file(GLPI_ROOT . '/composer.lock') != file_get_contents(GLPI_ROOT . '/.composer.hash')) {
       /* update */
       $needrun = true;
    }
