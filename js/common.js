@@ -954,7 +954,7 @@ var isImage = function(file) {
  * @param  {String} ext the extension
  * @return {string}   an image html tag
  */
-var getExtIcon = function(ext = '') {
+var getExtIcon = function(ext) {
    var url = '../pics/icones/'+ext+'-dist.png';
    if (!urlExists(url)) {
       url = '../pics/icones/defaut-dist.png';
@@ -968,7 +968,7 @@ var getExtIcon = function(ext = '') {
  * @param  {String} url
  * @return {Bool}
  */
-var urlExists = function(url = '') {
+var urlExists = function(url) {
    var exist = false;
 
    $.ajax({
