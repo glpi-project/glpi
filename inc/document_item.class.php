@@ -108,6 +108,13 @@ class Document_Item extends CommonDBRelation{
                                'items_id'     => $input['items_id']]) > 0) {
          return false;
       }
+
+      // #1476 - Inject ID of the actual user to known who attach an already existing document
+      // to another item
+      if (!isset($input['users_id'])) {
+         $input['users_id'] = Session::getLoginUserID();
+      }
+
       return parent::prepareInputForAdd($input);
    }
 

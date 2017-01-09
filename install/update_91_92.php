@@ -212,6 +212,12 @@ function update91to92() {
    // add kb category to task categories
    $migration->addField("glpi_taskcategories", "knowbaseitemcategories_id", "integer");
 
+   // #1476 - Add users_id on glpi_documents_items
+   $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => TRUE]);
+   $migration->addKey("glpi_documents_items", "users_id");
+   $query = "UPDATE glpi_documents_items GDI, glpi_documents GD SET GDI.users_id = GD.users_id WHERE GDI.documents_id = GD.id";
+   $DB->queryOrDie($query, "9.2 update set users_id on glpi_documents_items");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

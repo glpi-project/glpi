@@ -2086,9 +2086,11 @@ CREATE TABLE `glpi_documents_items` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `users_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`),
-  KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`)
+  KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
+  KEY `users_id` (`users_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
