@@ -1433,7 +1433,7 @@ class Html {
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  class='button-icon'></span>";
+             "\" class='button-icon'></span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1941,7 +1941,7 @@ class Html {
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\" class='button-icon' /></span>";
+             "\" class='button-icon'></span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1952,23 +1952,29 @@ class Html {
       }
       echo "</a></li>";
 
-      echo "<li>";
+      /// Bookmark load
+      echo "<li id='bookmark_link'>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\" class='button-icon'>";
+      echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
+             "\"  class='button-icon'></span>";
       echo "</a></li>";
 
-      echo "<li id='help_link'>".
-            "<a href='".(empty($CFG_GLPI["helpdesk_doc_url"])
-                        ? "http://glpi-project.org/help-helpdesk"
-                        : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-           "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
-                  "\" class='button-icon'>";
-           "</a></li>";
+      echo "<li id='help_link'><a href='".
+                 (empty($CFG_GLPI["helpdesk_doc_url"])
+                   ? "http://glpi-project.org/help-helpdesk"
+                   : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
+                  "<span id='help_icon' title=\"".__s('Help').
+                  "\"  class='button-icon'></span>";
+      echo "</a></li>";
+
+      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                 "/front/preference.php?forcetab=User\$1' title=\"".
+                 addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                 Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
 
       echo "</ul>";
       echo "</div>"; // c_preference
