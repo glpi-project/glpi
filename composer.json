@@ -28,13 +28,13 @@
         "zendframework/zend-cache": "~2.4.0",
         "zendframework/zend-i18n": "~2.4.0",
         "zendframework/zend-loader": "~2.4.0",
-        "zetacomponents/graph": "~1.5",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
         "ircmaxell/random-lib": "^1.2"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "~5"
+        "guzzlehttp/guzzle": "~5",
+        "glpi-project/coding-standard": "0.5"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": "sha1sum composer.lock > .composer.hash",
-        "post-update-cmd": "sha1sum composer.lock > .composer.hash"
+        "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+        "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }
 }

@@ -286,7 +286,7 @@ class Stat extends CommonGLPI {
     * @param $value     array
     * @param $value2             (default '')
    **/
-   static function getDatas($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
 
       $export_data = array();
 
@@ -1086,278 +1086,6 @@ class Stat extends CommonGLPI {
       return $entrees;
    }
 
-
-   /** Get groups assigned to tickets between 2 dates
-    *
-    * @param $entrees   array containing data to displayed
-    * @param $options   array of possible options:
-    *     - title string title displayed (default empty)
-    *     - showtotal boolean show total in title (default false)
-    *     - width integer width of the graph (default 700)
-    *     - height integer height of the graph (default 300)
-    *     - unit integer height of the graph (default empty)
-    *     - type integer height of the graph (default line) : line bar stack pie
-    *     - csv boolean export to CSV (default true)
-    *     - datatype string datatype (count or average / default is count)
-    *
-    * @return array contains the distinct groups assigned to a tickets
-   **/
-   static function showGraph(array $entrees, $options=array()) {
-      global $CFG_GLPI;
-
-      if ($uid = Session::getLoginUserID(false)) {
-         if (!isset($_SESSION['glpigraphtype'])) {
-            $_SESSION['glpigraphtype'] = $CFG_GLPI['default_graphtype'];
-         }
-
-         $param['showtotal'] = false;
-         $param['title']     = '';
-         $param['width']     = 900;
-         $param['height']    = 300;
-         $param['unit']      = '';
-         $param['type']      = 'line';
-         $param['csv']       = true;
-         $param['datatype']  = 'count';
-
-         if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-               $param[$key] = $val;
-            }
-         }
-
-         // Clean data
-         if (is_array($entrees) && count($entrees)) {
-            foreach ($entrees as $key => $val) {
-               if (!is_array($val) || (count($val) == 0)) {
-                  unset($entrees[$key]);
-               }
-            }
-         }
-
-         if (!is_array($entrees) || (count($entrees) == 0)) {
-            if (!empty($param['title'])) {
-               echo "<div class='center'>".$param['title']."<br>".__('No item to display')."</div>";
-            }
-            return false;
-         }
-
-         echo "<div class='center-h' style='width:".$param['width']."px'>";
-         echo "<div>";
-
-         switch ($param['type']) {
-            case 'pie' :
-               // Check datas : sum must be > 0
-               reset($entrees);
-               $sum = array_sum(current($entrees));
-               while (($sum == 0) && ($data = next($entrees))) {
-                  $sum += array_sum($data);
-               }
-               if ($sum == 0) {
-                  echo "</div></div>";
-                  return false;
-               }
-               $graph                                         = new ezcGraphPieChart();
-               $graph->palette                                = new GraphPalette();
-               $graph->options->font->maxFontSize             = 15;
-               $graph->title->background                      = '#EEEEEC';
-               $graph->renderer                               = new ezcGraphRenderer3d();
-               $graph->renderer->options->pieChartHeight      = 20;
-               $graph->renderer->options->moveOut             = .2;
-               $graph->renderer->options->pieChartOffset      = 63;
-               $graph->renderer->options->pieChartGleam       = .3;
-               $graph->renderer->options->pieChartGleamColor  = '#FFFFFF';
-               $graph->renderer->options->pieChartGleamBorder = 2;
-               $graph->renderer->options->pieChartShadowSize  = 5;
-               $graph->renderer->options->pieChartShadowColor = '#BABDB6';
-
-               if (count($entrees) == 1) {
-                  $graph->legend = false;
-               }
-
-               break;
-
-            case 'bar' :
-            case 'stack' :
-               $graph                                       = new ezcGraphBarChart();
-               $graph->options->fillLines                   = 210;
-               $graph->xAxis->axisLabelRenderer       = new ezcGraphAxisRotatedBoxedLabelRenderer();
-               $graph->xAxis->axisLabelRenderer->angle      = 45;
-               $graph->xAxis->axisSpace                     = .2;
-               $graph->yAxis->min                           = 0;
-               $graph->palette                              = new GraphPalette();
-               $graph->options->font->maxFontSize           = 15;
-               $graph->title->background                    = '#EEEEEC';
-               $graph->renderer                             = new ezcGraphRenderer3d();
-               $graph->renderer->options->legendSymbolGleam = .5;
-               $graph->renderer->options->barChartGleam     = .5;
-
-               if ($param['type'] == 'stack') {
-                  $graph->options->stackBars                = true;
-               }
-
-               $max    = 0;
-               $valtmp = array();
-               foreach ($entrees as $key => $val) {
-                  foreach ($val as $key2 => $val2) {
-                     $valtmp[$key2] = $val2;
-                  }
-               }
-               $graph->xAxis->labelCount = count($valtmp);
-               break;
-
-            case 'line' :
-               // No break default case
-
-            default :
-               $graph                                       = new ezcGraphLineChart();
-               $graph->options->fillLines                   = 210;
-               $graph->xAxis->axisLabelRenderer             = new ezcGraphAxisRotatedLabelRenderer();
-               $graph->xAxis->axisLabelRenderer->angle      = 45;
-               $graph->xAxis->axisSpace                     = .2;
-               $graph->yAxis->min                           = 0;
-               $graph->palette                              = new GraphPalette();
-               $graph->options->font->maxFontSize           = 15;
-               $graph->title->background                    = '#EEEEEC';
-               $graph->renderer                             = new ezcGraphRenderer3d();
-               $graph->renderer->options->legendSymbolGleam = .5;
-               $graph->renderer->options->barChartGleam     = .5;
-               $graph->renderer->options->depth             = 0.07;
-               break;
-         }
-
-         if (!empty($param['title'])) {
-            $posttoadd = "";
-            if (!empty($param['unit'])) {
-               $posttoadd = $param['unit'];
-            }
-
-            // Add to title
-            if (count($entrees) == 1) {
-               if ($param['showtotal'] == 1) {
-                  reset($entrees);
-                  $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'],
-                                            round(array_sum(current($entrees)), 2));
-               }
-               $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'], $posttoadd);
-
-            } else { // add sum to legend and unit to title
-               $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'], $posttoadd);
-               // Cannot display totals of already average values
-
-               if (($param['showtotal'] == 1)
-                   && ($param['datatype'] != 'average')) {
-                  $entree_tmp = $entrees;
-                  $entrees    = array();
-                  foreach ($entree_tmp as $key => $data) {
-                     $sum = round(array_sum($data));
-                     $entrees[$key." ($sum)"] = $data;
-                  }
-               }
-            }
-
-            $graph->title = $param['title'];
-         }
-
-         switch ($_SESSION['glpigraphtype']) {
-            case "png" :
-               $extension            = "png";
-               $graph->driver        = new ezcGraphGdDriver();
-               $graph->options->font = GLPI_FONT_FREESANS;
-               break;
-
-            default :
-               $extension = "svg";
-               break;
-         }
-
-         $filename    = $uid.'_'.mt_rand();
-         $csvfilename = $filename.'.csv';
-         $filename   .= '.'.$extension;
-         foreach ($entrees as $label => $data) {
-            $graph->data[$label]         = new ezcGraphArrayDataSet($data);
-            $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL;
-         }
-
-         switch ($_SESSION['glpigraphtype']) {
-            case "png" :
-               $graph->render($param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename);
-               echo "<img src='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'>";
-               break;
-
-            default :
-               $graph->render($param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename);
-               echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
-                      type='image/svg+xml' width='".$param['width']."' height='".$param['height']."'>
-                      <param name='src' value='".$CFG_GLPI['root_doc'].
-                       "/front/graph.send.php?file=$filename'>
-                      __('You need a browser capeable of SVG to display this image.')
-                     </object> ";
-            break;
-         }
-
-         // Render CSV
-         if ($param['csv']) {
-            if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
-               // reformat datas
-               $values  = array();
-               $labels  = array();
-               $row_num = 0;
-               foreach ($entrees as $label => $data) {
-                  $labels[$row_num] = $label;
-                  if (is_array($data) && count($data)) {
-                     foreach ($data as $key => $val) {
-                        if (!isset($values[$key])) {
-                           $values[$key] = array();
-                        }
-                        if ($param['datatype'] == 'average') {
-                           $val = round($val, 2);
-                        }
-                        $values[$key][$row_num] = $val;
-                     }
-                  }
-                  $row_num++;
-               }
-               ksort($values);
-               // Print labels
-               fwrite($fp, $_SESSION["glpicsv_delimiter"]);
-               foreach ($labels as $val) {
-                  fwrite($fp, $val.$_SESSION["glpicsv_delimiter"]);
-               }
-               fwrite($fp, "\n");
-               foreach ($values as $key => $data) {
-                  fwrite($fp, $key.$_SESSION["glpicsv_delimiter"]);
-                  foreach ($data as $value) {
-                     fwrite($fp, $value.$_SESSION["glpicsv_delimiter"]);
-                  }
-                  fwrite($fp, "\n");
-               }
-
-               fclose($fp);
-            }
-         }
-         echo "</div>";
-         echo "<div class='right' style='width:".$param['width']."px'>";
-         $graphtype = '';
-         if ($_SESSION['glpigraphtype'] != 'svg') {
-            $graphtype = "<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=svg'>".
-                           __('SVG')."</a>";
-         }
-         if ($_SESSION['glpigraphtype'] != 'png') {
-            $graphtype = "<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=png'>".
-                           __('PNG')."</a>";
-         }
-         if ($param['csv']) {
-            $graphtype = sprintf(__('%1$s / %2$s'), $graphtype,
-                                 "<a href='".$CFG_GLPI['root_doc'].
-                                    "/front/graph.send.php?file=$csvfilename'>".__('CSV')."</a>");
-         }
-         echo $graphtype;
-         echo "</div>";
-         echo '</div>';
-      }
-   }
-
-
    /**
     * @param $target
     * @param $date1
@@ -1578,4 +1306,271 @@ class Stat extends CommonGLPI {
       return $values;
    }
 
+   /**
+    * Display line graph
+    *
+    * @param string   $title  Graph title
+    * @param string[] $labels Labels to display
+    * @param array    $series Series data. An array of the form:
+    *                 [
+    *                    ['name' => 'a name', 'data' => []],
+    *                    ['name' => 'another name', 'data' => []]
+    *                 ]
+    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param boolean  $display  Whether to display directly; defauts to true
+    *
+    * @return void
+    */
+   public function displayLineGraph($title, $labels, $series, $options = null, $display = true) {
+
+      $param = [
+         'width'   => 900,
+         'height'  => 300,
+         'tooltip' => true,
+         'legend'  => true,
+         'animate' => true
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      $slug = str_replace('-', '_', Toolbox::slugify($title));
+      $this->checkEmptyLabels($labels);
+      $out = "<h2 class='center'>$title</h2>";
+      $out .= "<div id='$slug' class='chart'></div>";
+      Html::requireJs('charts');
+      $out .= "<script type='text/javascript'>
+                  $(function() {
+                     var chart_$slug = new Chartist.Line('#$slug', {
+                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
+                        series: [";
+
+      $first = true;
+      foreach ($series as $serie) {
+         if ($first === true) {
+            $first = false;
+         } else {
+            $out .= ",\n";
+         }
+         if (isset($serie['name'])) {
+            $out .= "{'name': '{$serie['name']}', 'data': [" . implode(', ', $serie['data']) . "]}";
+         } else {
+            $out .= "[" . implode(', ', $serie['data']) . "]";
+         }
+      }
+
+      $out .= "
+                        ]
+                     }, {
+                        low: 0,
+                        showArea: true,
+                        width: '{$param['width']}',
+                        height: '{$param['height']}',
+                        fullWidth: true,
+                        lineSmooth: Chartist.Interpolation.simple({
+                           divisor: 10,
+                           fillHoles: false
+                        }),
+                        axisX: {
+                           labelOffset: {
+                              x: -" . mb_strlen($labels[0]) * 7  . "
+                           }
+                        }";
+
+      if ($param['legend'] === true || $param['tooltip'] === true) {
+         $out .= ", plugins: [";
+         if ($param['legend'] === true) {
+            $out .= "Chartist.plugins.legend()";
+         }
+         if ($param['tooltip'] === true) {
+            $out .= ($param['legend'] === true ? ',' : '') . "Chartist.plugins.tooltip()";
+         }
+         $out .= "]";
+      }
+
+      $out .= "});";
+
+      if ($param['animate'] === true) {
+                  $out .= "
+                     chart_$slug.on('draw', function(data) {
+                        if(data.type === 'line' || data.type === 'area') {
+                           data.element.animate({
+                              d: {
+                                 begin: 300 * data.index,
+                                 dur: 500,
+                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                                 to: data.path.clone().stringify(),
+                                 easing: Chartist.Svg.Easing.easeOutQuint
+                              }
+                           });
+                        }
+                     });
+                  });";
+      }
+      $out .="</script>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
+   }
+
+   /**
+    * Display pie graph
+    *
+    * @param string   $title  Graph title
+    * @param string[] $labels Labels to display
+    * @param array    $series Series data. An array of the form:
+    *                 [
+    *                    ['name' => 'a name', 'data' => []],
+    *                    ['name' => 'another name', 'data' => []]
+    *                 ]
+    * @param boolean  $display  Whether to display directly; defauts to true
+    *
+    * @return void
+    */
+   public function displayPieGraph($title, $labels, $series, $display = true) {
+      $slug = str_replace('-', '_', Toolbox::slugify($title));
+      $this->checkEmptyLabels($labels);
+      $out = "<h2 class='center'>$title</h2>";
+      $out .= "<div id='$slug' class='chart'></div>";
+      $out .= "<script type='text/javascript'>
+                  $(function() {
+                     var $slug = new Chartist.Pie('#$slug', {
+                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
+                        series: [";
+
+      $first = true;
+      foreach ($series as $label => $serie) {
+         if ($first === true) {
+            $first = false;
+         } else {
+            $out .= ",\n";
+         }
+
+         $label = Toolbox::addslashes_deep($label);
+         $out .= "{'meta': '{$label}', 'value': '{$serie}'}";
+      }
+
+      $out .= "
+                        ]
+                     }, {
+                        donut: true,
+                        showLabel: false,
+                        height: 300,
+                        width: 300,
+                        plugins: [
+                           Chartist.plugins.legend(),
+                           Chartist.plugins.tooltip()
+                        ]
+                     });
+
+                     $slug.on('draw', function(data) {
+                        if(data.type === 'slice') {
+                           // Get the total path length in order to use for dash array animation
+                           var pathLength = data.element._node.getTotalLength();
+
+                           // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                           data.element.attr({
+                              'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                           });
+
+                           // Create animation definition while also assigning an ID to the animation for later sync usage
+                           var animationDefinition = {
+                              'stroke-dashoffset': {
+                                 id: 'anim' + data.index,
+                                 dur: 300,
+                                 from: -pathLength + 'px',
+                                 to:  '0px',
+                                 easing: Chartist.Svg.Easing.easeOutQuint,
+                                 // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                                 fill: 'freeze'
+                              }
+                           };
+
+                           // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
+                           data.element.attr({
+                              'stroke-dashoffset': -pathLength + 'px'
+                           });
+
+                           // We can't use guided mode as the animations need to rely on setting begin manually
+                           // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                           data.element.animate(animationDefinition, false);
+                        }
+                     });
+                  });
+              </script>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
+   }
+
+   /**
+    * Display search form
+    *
+    * @param string  $itemtype Item type
+    * @param string  $date1    First date
+    * @param string  $date2    Second date
+    * @param boolean $display  Whether to display directly; defauts to true
+    *
+    * @return void|string
+    */
+   public function displaySearchForm($itemtype, $date1, $date2, $display = true) {
+      $out = "<form method='get' name='form' action='stat.global.php'><div class='center'>";
+      // Keep it at first parameter
+      $out .= "<input type='hidden' name='itemtype' value='$itemtype'>";
+
+      $out .= "<table class='tab_cadre'>";
+      $out .= "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
+      $out .= Html::showDateField(
+         'date1',
+         array(
+            'value'   => $date1,
+            'display' => false
+         )
+      );
+      $out .= "</td><td rowspan='2' class='center'>";
+      $out .= "<input type='submit' class='submit' value='".__s('Display report')."'></td></tr>";
+
+      $out .= "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
+      $out .= Html::showDateField(
+         'date2',
+         array(
+            'value'   => $date2,
+            'display' => false
+         )
+      );
+      $out .= "</td></tr>";
+      $out .= "</table></div>";
+      // form using GET method : CRSF not needed
+      $out .= Html::closeForm(false);
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
+   }
+
+   /**
+    * Check and replace empty labels
+    *
+    * @param array $labels Labels
+    *
+    * @return void
+    */
+   private function checkEmptyLabels(&$labels) {
+      foreach ($labels as &$label) {
+         if (empty($label)) {
+            $label = '-';
+         }
+      }
+   }
 }
