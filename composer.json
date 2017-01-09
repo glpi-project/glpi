@@ -47,7 +47,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": "sha1sum composer.lock > .composer.hash",
-        "post-update-cmd": "sha1sum composer.lock > .composer.hash"
+        "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+        "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }
 }
