@@ -766,7 +766,7 @@ class Auth extends CommonGLPI {
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
 
-               // update user and Blank PWD to clean old database for the external auth
+               // blank PWD to clean old database for the external auth
                if ($this->extauth) {
                   $input['_extauth'] = 1;
                }
