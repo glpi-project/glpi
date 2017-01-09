@@ -1453,9 +1453,6 @@ class Stat extends CommonGLPI {
          }
 
          $label = Toolbox::addslashes_deep($label);
-         if ($i > 0) {
-            $out .= ",\n";
-         }
          $out .= "{'meta': '{$label}', 'value': '{$serie}'}";
       }
 
