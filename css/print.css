@@ -1123,6 +1123,7 @@ ul#menu ul li a {
 }
 
 ul#menu ul li a:hover {
+   // File not found...
    background: url("../pics/fd_nav2.png") 0 0 repeat;
 }
 
@@ -1214,6 +1215,7 @@ div#header div#c_logo a {
 
 
 div#c_ssmenu1 {
+   // File not found...
    background: url("../pics/fd_nav2.png") 0 0 repeat-x;
    height: 24px;
    clear: both;
