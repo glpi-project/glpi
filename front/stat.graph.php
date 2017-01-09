@@ -277,6 +277,8 @@ if ($foundkey >= 0) {
    }
 }
 
+$stat = new Stat();
+
 echo "<div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr><td>";
@@ -315,6 +317,8 @@ Html::showDateField("date2", array('value' => $_POST["date2"]));
 echo "</td></tr>";
 echo "</table></div>";
 
+// form using GET method : CRSF not needed
+Html::closeForm();
 
 
 $show_all = false;
@@ -338,101 +342,89 @@ $values['late']   = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_
                                                $_GET["date1"], $_GET["date2"], $_GET["type"],
                                                $val1, $val2);
 
-$available = array('total'  => _nx('ticket', 'Opened', 'Opened', 2),
-                   'solved' => _nx('ticket', 'Solved', 'Solved', 2),
-                   'late'   => __('Late'),
-                   'closed' => __('Closed'),);
-echo "<div class='center'>";
 
-foreach ($available as $key => $name) {
-   echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-          ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
-}
-echo "</div>";
+$stat->displayLineGraph(
+   _x('Quantity', 'Number') . " - " . $item->getTypeName(Session::getPluralNumber()),
+   array_keys($values['total']), [
+      [
+         'name' => _nx('ticket', 'Opened', 'Opened', 2),
+         'data' => $values['total']
+      ], [
+         'name' => _nx('ticket', 'Solved', 'Solved', 2),
+         'data' => $values['solved']
+      ], [
+         'name' => __('Late'),
+         'data' => $values['late']
+      ], [
+         'name' => __('Closed'),
+         'data' => $values['closed']
+      ]
+   ]
+);
 
-$toprint = array();
-foreach ($available as $key => $name) {
-   if ($show_all || isset($_POST['graph'][$key])) {
-      $toprint[$name] = $values[$key];
-   }
-}
-
-Stat::showGraph($toprint, array('title'     => _x('quantity', 'Number of tickets'),
-                                'showtotal' => 1,
-                                'unit'      => __('Tickets')));
-
+$values = [];
 //Temps moyen de resolution d'intervention
-$values2['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
+$values['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
                                                    $_GET["date1"], $_GET["date2"],
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
-foreach ($values2['avgsolved'] as $key => $val) {
-   $values2['avgsolved'][$key] /= HOUR_TIMESTAMP;
+foreach ($values['avgsolved'] as $key => &$val) {
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen de cloture d'intervention
-$values2['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
+$values['avgclosed'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgclosedtime",
                                                    $_GET["date1"], $_GET["date2"],
                                                    $_GET["type"], $val1, $val2);
 // Pass to hour values
-foreach ($values2['avgclosed'] as $key => $val) {
-   $values2['avgclosed'][$key] /= HOUR_TIMESTAMP;
+foreach ($values['avgclosed'] as $key => &$val) {
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 //Temps moyen d'intervention reel
-$values2['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
+$values['avgactiontime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgactiontime",
                                                        $_GET["date1"], $_GET["date2"],
                                                        $_GET["type"], $val1, $val2);
 // Pass to hour values
-foreach ($values2['avgactiontime'] as $key => $val) {
-   $values2['avgactiontime'][$key] /= HOUR_TIMESTAMP;
+foreach ($values['avgactiontime'] as $key => &$val) {
+   $val = round($val / HOUR_TIMESTAMP, 2);
 }
 
-
-$available = array('avgclosed'     => __('Closure'),
-                   'avgsolved'     => __('Resolution'),
-                   'avgactiontime' => __('Real duration'));
-
+$series = [
+   [
+      'name' => __('Closure'),
+      'data' => $values['avgsolved']
+   ], [
+      'name' => __('Resolution'),
+      'data' => $values['avgclosed']
+   ], [
+      'name' => __('Real duration'),
+      'data' => $values['avgactiontime']
+   ]
+];
 
 if ($_GET['itemtype'] == 'Ticket') {
-   $available['avgtaketime'] = __('Take into account');
    //Temps moyen de prise en compte de l'intervention
-   $values2['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgtakeaccount",
+   $values['avgtaketime'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgtakeaccount",
                                                         $_GET["date1"], $_GET["date2"],
                                                         $_GET["type"], $val1, $val2);
    // Pass to hour values
-   foreach ($values2['avgtaketime'] as $key => $val) {
-      $values2['avgtaketime'][$key] /= HOUR_TIMESTAMP;
+   foreach ($values['avgtaketime'] as $key => &$val) {
+      $val = round($val / HOUR_TIMESTAMP, 2);
    }
+
+   $series[] = [
+      'name' => __('Take into account'),
+      'data' => $values['avgtaketime']
+   ];
 }
 
-
-
-echo "<div class='center'>";
-
-$show_all2 = false;
-if (!isset($_GET['graph2']) || (count($_GET['graph2']) == 0)) {
-   $show_all2 = true;
-}
-
-foreach ($available as $key => $name) {
-   echo "<input type='checkbox' onchange='submit()' name='graph2[$key]' ".
-          ($show_all2||isset($_GET['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
-}
-echo "</div>";
-
-$toprint = array();
-foreach ($available as $key => $name) {
-   if ($show_all2 || isset($_GET['graph2'][$key])) {
-      $toprint[$name] = $values2[$key];
-   }
-}
-
-Stat::showGraph($toprint, array('title'     => __('Average time'),
-                                'unit'      => _n('Hour', 'Hours', 2),
-                                'showtotal' => 1,
-                                'datatype'  => 'average'));
-
+$stat->displayLineGraph(
+   __('Average time') . " - " .  _n('Hour', 'Hours', 2),
+   array_keys($values['avgsolved']),
+   $series
+);
 
 if ($_GET['itemtype'] == 'Ticket') {
+   $values = [];
    ///////// Satisfaction
    $values['opensatisfaction']   = Stat::constructEntryValues($_GET['itemtype'],
                                                               "inter_opensatisfaction",
@@ -444,52 +436,33 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                               $_GET["date1"], $_GET["date2"],
                                                               $_GET["type"], $val1, $val2);
 
+   $stat->displayLineGraph(
+      __('Satisfaction survey') . " - " .  __('Tickets'),
+      array_keys($values['opensatisfaction']), [
+         [
+            'name' => _nx('survey', 'Opened', 'Opened', 2),
+            'data' => $values['opensatisfaction']
+         ], [
+            'name' => _nx('survey', 'Answered', 'Answered', 2),
+            'data' => $values['answersatisfaction']
+         ]
+      ]
+   );
 
-   $available = array('opensatisfaction'   => _nx('survey', 'Opened', 'Opened', 2),
-                     'answersatisfaction'  => _nx('survey', 'Answered', 'Answered', 2));
-   echo "<div class='center'>";
-
-   foreach ($available as $key => $name) {
-      echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
-   }
-   echo "</div>";
-
-   $toprint = array();
-   foreach ($available as $key => $name) {
-      if ($show_all || isset($_POST['graph'][$key])) {
-         $toprint[$name] = $values[$key];
-      }
-   }
-
-   Stat::showGraph($toprint, array('title'   => __('Satisfaction survey'),
-                                 'showtotal' => 1,
-                                 'unit'      => __('Tickets')));
-
+   $values = [];
    $values['avgsatisfaction'] = Stat::constructEntryValues($_GET['itemtype'],
                                                            "inter_avgsatisfaction",
                                                            $_GET["date1"], $_GET["date2"],
                                                            $_GET["type"], $val1, $val2);
 
-   $available = array('avgsatisfaction' => __('Satisfaction'));
-   echo "<div class='center'>";
-
-   foreach ($available as $key => $name) {
-      echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
-   }
-   echo "</div>";
-
-   $toprint = array();
-   foreach ($available as $key => $name) {
-      if ($show_all || isset($_POST['graph'][$key])) {
-         $toprint[$name] = $values[$key];
-      }
-   }
-
-   Stat::showGraph($toprint, array('title' => __('Satisfaction')));
-
+   $stat->displayLineGraph(
+      __('Satisfaction'),
+      array_keys($values['avgsatisfaction']), [
+         [
+            'name' => __('Satisfaction'),
+            'data' => $values['avgsatisfaction']
+         ]
+      ]
+   );
 }
-// form using GET method : CRSF not needed
-Html::closeForm();
 Html::footer();

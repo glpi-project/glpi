@@ -28,7 +28,6 @@
         "zendframework/zend-cache": "~2.4.0",
         "zendframework/zend-i18n": "~2.4.0",
         "zendframework/zend-loader": "~2.4.0",
-        "zetacomponents/graph": "~1.5",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
         "ircmaxell/random-lib": "^1.2"
