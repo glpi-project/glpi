@@ -341,9 +341,12 @@ $autoload = GLPI_ROOT . '/vendor/autoload.php';
 $needrun  = false;
 if (!file_exists($autoload)) {
    $needrun = true;
-} else if (file_exists(GLPI_ROOT . '/composer.lock')
-           && file_exists(GLPI_ROOT . '/vendor/composer/installed.json')) {
-   if (filemtime(GLPI_ROOT . '/composer.lock') > filemtime(GLPI_ROOT . '/vendor/composer/installed.json')) {
+} else if (file_exists(GLPI_ROOT . '/composer.lock')) {
+   if (!file_exists(GLPI_ROOT . '/.composer.hash')) {
+      /* First time */
+      $needrun = true;
+   } else if (sha1_file(GLPI_ROOT . '/composer.lock') != explode(' ', file_get_contents(GLPI_ROOT . '/.composer.hash'))[0]) {
+      /* update */
       $needrun = true;
    }
 }

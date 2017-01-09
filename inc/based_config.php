@@ -135,3 +135,9 @@ if (!defined("GLPI_FONT_FREESANS")) {
    // if FreeSans.ttf available in system, use (in config_path.php)
    // define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
 }
+
+// Default path to juqery file upload handler
+if (!defined("GLPI_JQUERY_UPLOADHANDLER")) {
+   define("GLPI_JQUERY_UPLOADHANDLER",
+          GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
+}

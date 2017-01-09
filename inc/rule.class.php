@@ -915,7 +915,7 @@ class Rule extends CommonDBTM {
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
             echo "<a class='vsubmit' href='#' onClick=\"".
-                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open');\">".
+                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open'); return false;\">".
                   _x('button', 'Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
                                           $url."/front/rule.test.php?". "sub_type=".$this->getType().

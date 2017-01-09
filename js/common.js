@@ -931,3 +931,115 @@ $(function(){
       langSwitch($(this));
    });
 });
+
+/**
+* Determines if data from drop is an image.
+*
+* @param      {Blob}   file    The file
+* @return     {boolean}  True if image, False otherwise.
+*/
+var isImage = function(file) {
+   var validimagetypes = ["image/gif", "image/jpeg","image/jpg", "image/png"];
+
+   if ($.inArray(file["type"], validimagetypes) < 0) {
+      return false;
+   } else {
+      return true;
+   }
+};
+
+/**
+ * Return a png url reprensenting an extension
+ *
+ * @param  {String} ext the extension
+ * @return {string}   an image html tag
+ */
+var getExtIcon = function(ext = '') {
+   var url = '../pics/icones/'+ext+'-dist.png';
+   if (!urlExists(url)) {
+      url = '../pics/icones/defaut-dist.png';
+   }
+   return '<img src="'+url+'" title="'+ext+'">';
+};
+
+/**
+ * Check for existence of an url
+ *
+ * @param  {String} url
+ * @return {Bool}
+ */
+var urlExists = function(url = '') {
+   var exist = false;
+
+   $.ajax({
+      'type':    'HEAD',
+      'url':     url,
+      'async':   false,
+      'success': function() {
+         exist = true;
+      },
+   });
+
+   return exist;
+};
+
+/**
+ * Format a size to the last possible unit (o, Kio, Mio, etc)
+ *
+ * @param  {integer} size
+ * @return {string}  The formated size
+ */
+var getSize = function (size) {
+   var bytes   = ['o', 'Kio', 'Mio', 'Gio', 'Tio'];
+   var lastval = '';
+   bytes.some(function(val) {
+      if (size > 1024) {
+         size = size / 1024;
+      } else {
+         lastval = val;
+         return true;
+      }
+   });
+
+   return Math.round(size * 100, 2) / 100 + lastval;
+};
+
+/**
+ * Replace content in tinyMCE
+ *
+ * @param {Object} editor   TinyMCE editor instance
+ * @param {String} search   The search
+ * @param {String} replace  The replace
+ */
+var replaceContent = function(editor, search, replace) {
+   if (!replace) {
+      replace = '';
+   }
+
+   var re =/\[\*\*(.*?)\*\*\]/;
+   body = editor.getContent();
+   body = body.replace(re,replace);
+   editor.setContent(body);
+};
+
+/**
+ * Sets the cursor at the end in a tinymce editor.
+ *
+ * @param  {Object}  editor TinyMCE editor instance
+ */
+var setCursorAtTheEnd = function(editor) {
+   var body = editor.getContent();
+   body +='<p> </p>';
+   editor.setContent(body);
+   editor.dom.add(editor.getBody(),'p');
+   editor.selection.select(editor.getBody(), true); // ed is the editor instance
+   editor.selection.collapse(false);
+};
+
+/**
+ * Stop propagation and navigation default for the specified event
+ */
+var stopEvent = function(event) {
+   event.preventDefault();
+   event.stopPropagation();
+};

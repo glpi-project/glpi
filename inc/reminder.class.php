@@ -267,6 +267,9 @@ class Reminder extends CommonDBVisible {
 
 
    function post_addItem() {
+      // Add document if needed
+      $this->input = $this->addFiles($this->input, ['force_update'  => true,
+                                                    'content_field' => 'text']);
 
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
@@ -587,6 +590,8 @@ class Reminder extends CommonDBVisible {
          }
       }
 
+      $input = $this->addFiles($input, ['content_field' => 'text']);
+
       return $input;
    }
 
@@ -770,10 +775,10 @@ class Reminder extends CommonDBVisible {
            "<td colspan='3'>";
 
       if ($canedit) {
-         $rand = mt_rand();
-         echo "<textarea rows='15' name='text' id='text$rand'>".
-              $this->fields["text"]."</textarea>";
-         Html::initEditorSystem('text'.$rand);
+         Html::textarea(['name'              => 'text',
+                         'value'             => $this->fields["text"],
+                         'enable_richtext'   => true,
+                         'enable_fileupload' => true]);
       } else {
          echo "<div  id='kbanswer'>";
          echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);

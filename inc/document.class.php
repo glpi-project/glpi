@@ -425,7 +425,7 @@ class Document extends CommonDBTM {
 
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
       echo "<td>";
-      echo Html::file();
+      Html::file();
       echo "</td></tr>";
 
       $this->showFormButtons($options);

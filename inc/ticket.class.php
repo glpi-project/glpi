@@ -1065,12 +1065,10 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($input['content'])) {
-         if (isset($input['_stock_image'])) {
-            $this->addImagePaste();
+         if (isset($input['_filename'])) {
             $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else if ($CFG_GLPI["use_rich_text"]) {
-            $input['content'] = $this->convertTagToImage($input['content']);
             if (!isset($input['_filename'])) {
                $input['_donotadddocs'] = true;
             }
@@ -1643,12 +1641,6 @@ class Ticket extends CommonITILObject {
 
    function post_addItem() {
       global $CFG_GLPI;
-
-      if (isset($this->input['content'])) {
-         if (isset($this->input['_stock_image'])) {
-            $this->addImagePaste();
-         }
-      }
 
       // Log this event
       $username = 'anonymous';
@@ -3102,8 +3094,13 @@ class Ticket extends CommonITILObject {
 
       $delegating = User::getDelegateGroupsForUser($values['entities_id']);
 
-      if (count($delegating)) {
+      if (count($delegating) || $CFG_GLPI['use_check_pref']) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+         Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$opt]);
+      }
+
+      if (count($delegating)) {
          echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
 
          $rand   = Dropdown::showYesNo("nodelegate", $values['nodelegate']);
@@ -3156,7 +3153,6 @@ class Ticket extends CommonITILObject {
          $values['_users_id_requester'] = Session::getLoginUserID();
 
          if ($CFG_GLPI['use_check_pref']) {
-            echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('Check your personnal information')."</th></tr>";
             echo "<tr class='tab_bg_1'><td class='center'>";
             User::showPersonalInformation(Session::getLoginUserID());
@@ -3390,63 +3386,35 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content')).
               "</td><td>";
-         $rand      = mt_rand();
-         $rand_text = mt_rand();
+
+         $rand       = mt_rand();
+         $rand_text  = mt_rand();
 
          $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='middle right'>".__('Description')."</td>";
+         echo "<td class='center middle'>";
 
          if ($CFG_GLPI["use_rich_text"]) {
-            $values["content"] = $this->setRichTextContent($content_id, $values["content"], $rand);
+            $values["content"] = Html::setRichTextContent($content_id,
+                                                          $this->fields["content"],
+                                                          $rand);
             $cols              = 100;
             $rows              = 10;
          } else {
-            $values["content"] = $this->setSimpleTextContent($values["content"]);
+            $values["content"] = $this->fields["content"];
          }
 
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
-                $values['content']."</textarea></div>";
+                         $values['content']."</textarea></div>";
+         Html::file(array('editor_id' => $content_id,
+                          'showtitle' => false));
+
          echo "</td></tr>";
       }
-
-      // File upload system
-      $width = '100%';
-      if ($CFG_GLPI['use_rich_text']) {
-         $width = '50%';
-      }
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='top'>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
-      DocumentType::showAvailableTypesLink();
-      echo "</td>";
-      echo "<td class='top'>";
-      echo "<div id='fileupload_info'></div>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4'>";
-      echo "<table width='100%'><tr>";
-      echo "<td width='$width '>";
-
-      echo Html::file(array('multiple' => true,
-                            'values' => array('filename' => $values['_filename'],
-                                              'tag' => $values['_tag_filename'])
-                     ));
-      echo "</td>";
-      if ($CFG_GLPI['use_rich_text']) {
-         echo "<td width='$width '>";
-         if (!isset($rand)) {
-            $rand = mt_rand();
-         }
-         echo Html::initImagePasteSystem($content_id, $rand);
-         echo "</td>";
-      }
-      echo "</tr></table>";
-
-      echo "</td>";
-      echo "</tr>";
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
@@ -3460,6 +3428,8 @@ class Ticket extends CommonITILObject {
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
+
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "</table></div>";
       if (!$ticket_template) {
@@ -4430,12 +4400,12 @@ class Ticket extends CommonITILObject {
          $content_id = "content$rand";
 
          if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = $this->setRichTextContent($content_id,
-                                                                 $this->fields["content"],
-                                                                 $rand);
+            $this->fields["content"] = Html::setRichTextContent($content_id,
+                                                                $this->fields["content"],
+                                                                $rand);
             $rows = 10;
          } else {
-            $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
+            $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
          }
 
          echo "<div id='content$rand_text'>";
@@ -4445,8 +4415,29 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
-         $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
-         echo nl2br(Html::Clean($content));
+
+         $rand       = mt_rand();
+         $rand_text  = mt_rand();
+         $rows       = 6;
+         $content_id = "content$rand";
+
+         if ($CFG_GLPI["use_rich_text"]) {
+            $this->fields["content"] = Html::setRichTextContent($content_id,
+                                                                $this->fields["content"],
+                                                                $rand);
+            $rows = 10;
+
+            echo "<div id='content$rand_text'>";
+            echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+               $this->fields["content"]."</textarea></div>";
+
+            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+            echo $tt->getEndHiddenFieldValue('content', $this);
+
+         } else {
+            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+            echo nl2br(Html::Clean($content));
+         }
       }
       echo "</td>";
       echo "</tr>";
@@ -4526,7 +4517,9 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      echo "<div id='fileupload_info'></div>";
+      Html::file(array('filecontainer' => 'fileupload_info_ticket',
+                       'editor_id'     => $content_id,
+                       'showtitle'     => false));
       echo "</td>";
       echo "</tr>";
 
@@ -4585,27 +4578,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // File upload system
-      echo "<div>";
-      echo $tt->getBeginHiddenFieldValue('_documents_id');
-
-      echo Html::file(array('multiple' => true,
-                            'showfilecontainer' => 'fileupload_info',
-                            'values' => array('filename' => $values['_filename'],
-                                              'tag' => $values['_tag_filename'])
-                            ));
-      if ($CFG_GLPI['use_rich_text']) {
-         echo "</div>";
-         echo "<div>";
-         if (!isset($rand)) {
-            $rand = mt_rand();
-         }
-         if ($canupdate_descr) {
-            echo Html::initImagePasteSystem($content_id, $rand);
-         }
-      }
-      echo "</div>";
-
+      echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
       echo "</div>";
@@ -5881,157 +5854,6 @@ class Ticket extends CommonITILObject {
       return $values;
    }
 
-
-   /**
-    * Add image pasted to GLPI doc after ADD and before UPDATE of the item in the database
-    *
-    * @since version 0.85
-    *
-    * @return nothing
-   **/
-   function addImagePaste() {
-
-      if (count($this->input['_stock_image']) > 0) {
-         $count_files = 0;
-         // Filename
-         if (isset($this->input['_filename'])) {
-            $count_files = count($this->input['_stock_image']);
-            foreach ($this->input['_filename'] as $key => $filename) {
-               $this->input['_filename'][$count_files] = $filename;
-               $count_files++;
-            }
-            $count_files = count($this->input['_stock_image']);
-            foreach ($this->input['_tag_filename'] as $key => $tag) {
-               $this->input['_tag'][$count_files] = $tag;
-               $count_files++;
-            }
-            unset($this->input['_tag_filename']);
-         }
-
-         // Stock_image
-         foreach ($this->input['_stock_image'] as $key => $filename) {
-            $this->input['_filename'][$key] = $filename;
-         }
-         unset($this->input['_stock_image']);
-         foreach ($this->input['_tag_stock_image'] as $key => $tag) {
-            $this->input['_tag'][$key] = $tag;
-            $count_files++;
-         }
-         unset($this->input['_tag_stock_image']);
-
-         ksort($this->input['_filename']);
-         ksort($this->input['_tag']);
-
-         // $this->input['_forcenotif'] = 1;
-      }
-
-   }
-
-
-   /**
-    * Convert tag to image
-    *
-    * @since version 0.85
-    *
-    * @param $content_text         text content of input
-    * @param $force_update         force update of content in item (false by default
-    * @param $doc_data       array of filenames and tags
-    *
-    * @return nothing
-   **/
-   function convertTagToImage($content_text, $force_update=false, $doc_data=array()) {
-      global $CFG_GLPI;
-
-      $matches = array();
-      // If no doc data available we match all tags in content
-      if (!count($doc_data)) {
-         $doc = new Document();
-         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
-                        $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
-         }
-      }
-
-      if (count($doc_data)) {
-         foreach ($doc_data as $id => $image) {
-            // Add only image files : try to detect mime type
-            $ok       = false;
-            $mime     = '';
-            if (isset($image['filepath'])) {
-               $fullpath = GLPI_DOC_DIR."/".$image['filepath'];
-               $mime = Toolbox::getMime($fullpath);
-               $ok   = Toolbox::getMime($fullpath, 'image');
-            }
-            if (isset($image['tag'])) {
-               if ($ok || empty($mime)) {
-                  // Replace tags by image in textarea
-                  $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
-                          "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
-
-                  // Replace tag by the image
-                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               Html::entities_deep($img), $content_text);
-
-                  // Replace <br> TinyMce bug
-                  $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
-                                              '&gt;&lt;', $content_text);
-
-                  // If the tag is from another ticket : link document to ticket
-                  // TODO : comment maybe not used
-                  // if($image['tickets_id'] != $this->fields['id']){
-                  //    $docitem = new Document_Item();
-                  //    $docitem->add(array('documents_id'  => $image['id'],
-                  //                        '_do_notif'     => false,
-                  //                        '_disablenotif' => true,
-                  //                        'itemtype'      => $this->getType(),
-                  //                        'items_id'      => $this->fields['id']));
-                  // }
-               } else {
-                  // Remove tag
-                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                               '', $content_text);
-               }
-            }
-         }
-      }
-
-      if ($force_update) {
-         $this->fields['content'] = $content_text;
-         $this->updateInDB(array('content'));
-      }
-
-      return $content_text;
-   }
-
-
-   /**
-    * Convert image to tag
-    *
-    * @since version 0.85
-    *
-    * @param $content_html   html content of input
-    * @param $force_update   force update of content in item (false by default
-    *
-    * @return htlm content
-   **/
-   function convertImageToTag($content_html, $force_update=false) {
-
-      if (!empty($content_html)) {
-         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
-         if (isset($matches[1]) && count($matches[1])) {
-            // Get all image src
-            foreach ($matches[1] as $src) {
-               // Set tag if image matches
-               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html);
-            }
-         }
-
-         return $content_html;
-      }
-   }
-
-
    /**
     * Convert img of the collector for ticket
     *
@@ -6159,91 +5981,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      return $content;
-   }
-
-
-   /**
-    * Delete tag or image from ticket content
-    *
-    * @since version 0.85
-    *
-    * @param $content   html content of input
-    * @param $tags
-    *
-    * @return htlm content
-   **/
-   function cleanTagOrImage($content, $tags) {
-      global $CFG_GLPI;
-
-      // RICH TEXT : delete img tag
-      if ($CFG_GLPI["use_rich_text"]) {
-         $content = Html::entity_decode_deep($content);
-
-         foreach ($tags as $tag) {
-            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
-         }
-
-      } else { // SIMPLE TEXT : delete tag
-         foreach ($tags as $tag) {
-            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
-         }
-      }
-
-      return $content;
-   }
-
-
-   /**
-    * Convert rich text content to simple text content
-    *
-    * @since version 0.85
-    *
-    * @param $content : content to convert in html
-    *
-    * @return $content
-   **/
-   function setSimpleTextContent($content) {
-
-      $content = Html::entity_decode_deep($content);
-
-      // If is html content
-      if ($content != strip_tags($content)) {
-         $content = Html::clean($this->convertImageToTag($content), false, 1);
-         $content = Html::entity_decode_deep(Html::clean($this->convertImageToTag($content)));
-      }
-
-      return $content;
-   }
-
-   /**
-    * Convert simple text content to rich text content, init html editor
-    *
-    * @since version 0.85
-    *
-    * @param $name       name of textarea
-    * @param $content    content to convert in html
-    * @param $rand
-    *
-    * @return $content
-   **/
-   function setRichTextContent($name, $content, $rand) {
-
-      // Init html editor
-      Html::initEditorSystem($name, $rand);
-
-      // If no html
-      if ($content == strip_tags($content)) {
-         $content = $this->convertTagToImage($content);
-      }
-
-      // Neutralize non valid HTML tags
-      $content = html::clean($content, false, 1);
-
-      // If content does not contain <br> or <p> html tag, use nl2br
-      if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
-         $content = nl2br($content);
-      }
       return $content;
    }
 
@@ -6544,8 +6281,14 @@ class Ticket extends CommonITILObject {
                            title='".Planning::getState($item_i['state'])."'>";
                echo "</span>";
             }
-            echo $content;
+
+            if ($CFG_GLPI["use_rich_text"]) {
+               echo html_entity_decode($content);
+            } else {
+               echo $content;
+            }
             echo "</p>";
+
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
                echo "<a class='read_more_button'>.....</a>";
@@ -6707,7 +6450,11 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='ticket_description'>";
 
-         echo $this->setSimpleTextContent($this->fields['content']);
+         if ($CFG_GLPI["use_rich_text"]) {
+            echo html_entity_decode($this->fields['content']);
+         } else {
+            echo Html::setSimpleTextContent($this->fields['content']);
+         }
 
          echo "</div>";
 

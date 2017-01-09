@@ -20,3 +20,4 @@ phpunit.xml
 /config/config.php
 /config/define.php
 /nbproject
+.composer.hash

@@ -13,5 +13,6 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - Display knowledge base category items in tickets using a popup instead of a
 new whole window
+- Reviewed all richtext editor (tinymce) and their upload parts, now more simpler and intuitive
 
 For older entries, please check [GLPI website](http://glpi-project.org).

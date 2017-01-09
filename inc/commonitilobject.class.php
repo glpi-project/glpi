@@ -582,14 +582,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $docadded = $this->addFiles(1, isset($input['_disablenotif'])?$input['_disablenotif']:0);
-         if (isset($this->input['_forcenotif'])) {
-            $input['_forcenotif'] = $this->input['_forcenotif'];
-            unset($input['_disablenotif']);
-         }
-         if (isset($this->input['content'])) {
-            $input['content'] = $this->input['content'];
-         }
+         $input = $this->addFiles($input);
       }
 
       if (isset($input["document"]) && ($input["document"] > 0)) {
@@ -1242,7 +1235,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function post_addItem() {
 
       // Add document if needed, without notification
-      $this->addFiles(0, 1);
+      $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
       // Add default document if set in template
       if (isset($this->input['_documents_id'])
@@ -1651,129 +1644,6 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       }
-   }
-
-
-   /**
-    * add files (from $this->input['_filename']) to an ITIL object
-    * create document if needed
-    * create link from document to ITIL object
-    *
-    * @param $donotif         Boolean  if we want to raise notification (default 1)
-    * @param $disablenotif             (default 0)
-    *
-    * @return array of doc added name
-   **/
-   function addFiles($donotif=1, $disablenotif=0) {
-      global $CFG_GLPI;
-      if (!isset($this->input['_filename']) || (count($this->input['_filename']) == 0)) {
-         return array();
-      }
-      $docadded  = array();
-
-      foreach ($this->input['_filename'] as $key => $file) {
-         $doc       = new Document();
-         $docitem   = new Document_Item();
-
-         $docID = 0;
-         $filename = GLPI_TMP_DIR."/".$file;
-         $input2         = array();
-
-         // Crop/Resize image file if needed
-         if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
-            $image_coordinates = json_decode(urldecode($this->input['_coordinates'][$key]), true);
-            Toolbox::resizePicture($filename,
-                                   $filename,
-                                   $image_coordinates['img_w'],
-                                   $image_coordinates['img_h'],
-                                   $image_coordinates['img_y'],
-                                   $image_coordinates['img_x'],
-                                   $image_coordinates['img_w'],
-                                   $image_coordinates['img_h'],
-                                   0);
-         } else {
-            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0, 0);
-         }
-
-         //If file tag is present
-         if (isset($this->input['_tag_filename']) && !empty($this->input['_tag_filename'][$key])) {
-            $this->input['_tag'][$key] = $this->input['_tag_filename'][$key];
-         }
-
-         // Check for duplicate
-         if ($doc->getFromDBbyContent($this->fields["entities_id"],
-                                      $filename)) {
-            if (!$doc->fields['is_blacklisted']) {
-               $docID = $doc->fields["id"];
-            }
-            // File already exist, we replace the tag by the existing one
-            if (isset($this->input['_tag'][$key])
-                && ($docID > 0)
-                && isset($this->input['content'])) {
-
-               $this->input['content'] = preg_replace('/'.Document::getImageTag($this->input['_tag'][$key]).'/',
-                                                      Document::getImageTag($doc->fields["tag"]),
-                                                      $this->input['content']);
-               $docadded[$docID]['tag'] = $doc->fields["tag"];
-            }
-
-         } else {
-            //TRANS: Default document to files attached to tickets : %d is the ticket id
-            $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
-
-            if ($this->getType() == 'Ticket') {
-               $input2["tickets_id"]           = $this->getID();
-               // Insert image tag
-               if (isset($this->input['_tag'][$key])) {
-                  $input2["tag"]               = $this->input['_tag'][$key];
-               }
-            }
-            $input2["entities_id"]             = $this->fields["entities_id"];
-            $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
-            $input2["_only_if_upload_succeed"] = 1;
-            $input2["entities_id"]             = $this->fields["entities_id"];
-            $input2["_filename"]               = array($file);
-            $docID = $doc->add($input2);
-         }
-
-         if ($docID > 0) {
-            if ($docitem->add(array('documents_id'  => $docID,
-                                    '_do_notif'     => $donotif,
-                                    '_disablenotif' => $disablenotif,
-                                    'itemtype'      => $this->getType(),
-                                    'items_id'      => $this->getID()))) {
-               $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'),
-                                                   stripslashes($doc->fields["name"]),
-                                                   stripslashes($doc->fields["filename"]));
-
-               if (isset($input2["tag"])) {
-                  $docadded[$docID]['tag'] = $input2["tag"];
-                  unset($this->input['_filename'][$key]);
-                  unset($this->input['_tag'][$key]);
-               }
-               if (isset($this->input['_coordinates'][$key])) {
-                  unset($this->input['_coordinates'][$key]);
-               }
-
-            }
-         }
-         // Only notification for the first New doc
-         $donotif = 0;
-      }
-
-      // Ticket update
-      if (isset($this->input['content'])) {
-         if ($CFG_GLPI["use_rich_text"]) {
-            $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
-                                                                $docadded);
-            $this->input['_forcenotif'] = true;
-         } else {
-            $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
-            $this->updateInDB(array('content'));
-         }
-      }
-
-      return $docadded;
    }
 
 

@@ -2594,4 +2594,154 @@ class Toolbox {
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
       return trim($string, '-');
    }
+
+   /**
+    * Convert tag to image
+    *
+    * @since version 9.2
+    *
+    * @param string $content_text   text content of input
+    * @param CommonDBTM $item       Glpi item where to convert image tag to image document
+    * @param array $doc_data        list of filenames and tags
+    *
+    * @return string                the $content_text param after parsing
+   **/
+   static function convertTagToImage($content_text, CommonDBTM $item, $doc_data=array()) {
+      global $CFG_GLPI;
+
+      $document = new Document();
+      $matches  = array();
+      // If no doc data available we match all tags in content
+      if (!count($doc_data)) {
+         preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
+                        $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
+         }
+      }
+
+      if (count($doc_data)) {
+         foreach ($doc_data as $id => $image) {
+            if (isset($image['tag'])) {
+               // Add only image files : try to detect mime type
+               if ($document->getFromDB($id)
+                   && strpos($document->fields['mime'], 'image/') !== false) {
+                  // Replace tags by image in textarea
+                  $ticket_url_param = "";
+                  if ($item instanceof Ticket) {
+                     $ticket_url_param = "&tickets_id=".$item->fields['id'];
+                  }
+                  $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
+                          "/front/document.send.php?docid=".$id.$ticket_url_param."'/>";
+
+                  // 1 - Replace direct tag (with prefix and suffix) by the image
+                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
+                                               Html::entities_deep($img), $content_text);
+
+                  // 2 - Replace img with tag in id attribute by the image
+                  preg_match_all("/<img.*".$image['tag'].".*>/Uim",
+                                 Html::entity_decode_deep($content_text), $matches);
+                  foreach ($matches[0] as $match_img) {
+                     //retrieve dimensions
+                     $width = $height = 50;
+                     preg_match_all('/(width|height)=\\\"([^"]*)\\\"/i', $match_img, $attributes);
+                     if (isset($attributes[1][0])) {
+                        ${$attributes[1][0]} = $attributes[2][0];
+                     }
+                     if (isset($attributes[1][0])) {
+                        ${$attributes[1][1]} = $attributes[2][1];
+                     }
+
+                     // replace image
+                     $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
+                                                                          $width, $height);
+                     $content_text = preg_replace("/<img([^>]*?)(".$image['tag'].")([^<]*?)>/Uim",
+                                                  $new_image,
+                                                  Html::entity_decode_deep($content_text));
+                     $content_text = Html::entities_deep($content_text);
+                  }
+
+                  // Replace <br> TinyMce bug
+                  $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
+                                              '&gt;&lt;', $content_text);
+
+                  // If the tag is from another ticket : link document to ticket
+                  if ($item instanceof Ticket
+                     && $item->getID()
+                     && isset($image['tickets_id'])
+                     && $image['tickets_id'] != $item->getID()) {
+                     $docitem = new Document_Item();
+                     $docitem->add(array('documents_id'  => $image['id'],
+                                         '_do_notif'     => false,
+                                         '_disablenotif' => true,
+                                         'itemtype'      => $item->getType(),
+                                         'items_id'      => $item->fields['id']));
+                  }
+               } else {
+                  // Remove tag
+                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
+                                               '', $content_text);
+               }
+            }
+         }
+      }
+
+      return $content_text;
+   }
+
+   /**
+    * Convert image to tag
+    *
+    * @since version 9.2
+    *
+    * @param $content_html   html content of input
+    * @param $force_update   force update of content in item (false by default)
+    *
+    * @return html content
+   **/
+   static function convertImageToTag($content_html, $force_update=false) {
+
+      if (!empty($content_html)) {
+         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            // Get all image src
+            foreach ($matches[1] as $src) {
+               // Set tag if image matches
+               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html);
+            }
+         }
+
+         return $content_html;
+      }
+   }
+
+   /**
+    * Delete tag or image from ticket content
+    *
+    * @since version 9.2
+    *
+    * @param string $content   html content of input
+    * @param array $tags       list of tags to clen
+    *
+    * @return html content
+   **/
+   static function cleanTagOrImage($content, array $tags) {
+      global $CFG_GLPI;
+
+      // RICH TEXT : delete img tag
+      if ($CFG_GLPI["use_rich_text"]) {
+         $content = Html::entity_decode_deep($content);
+
+         foreach ($tags as $tag) {
+            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
+         }
+
+      } else { // SIMPLE TEXT : delete tag
+         foreach ($tags as $tag) {
+            $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
+         }
+      }
+
+      return $content;
+   }
 }
