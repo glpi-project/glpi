@@ -331,13 +331,13 @@ class Migration {
 
       $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
-      if ($params['comment']) {
+      if (!empty($params['comment'])) {
          $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
       }
 
-      if ($params['after']) {
+      if (!empty($params['after'])) {
          $params['after'] = " AFTER `".$params['after']."`";
-      } else if (isset($params['first'])) {
+      } else if (!empty($params['first'])) {
          $params['first'] = " FIRST ";
       }
 
@@ -346,7 +346,7 @@ class Migration {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
                                            $params['first'].$params['after']."";
 
-            if (isset($params['update']) && strlen($params['update'])) {
+            if (!empty($params['update'])) {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
                          SET `$field` = ".$params['update']." ".
