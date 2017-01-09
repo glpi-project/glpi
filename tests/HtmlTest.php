@@ -278,20 +278,20 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
     * @covers Html::weblink_extract
     */
    public function testWeblink_extract() {
-      $origin = '<a href="http://glpi-project.org" class="example">THE GLPi Project!</a>';
+      $origin = '<a href="http://glpi-project.org" class="example">THE GLPI Project!</a>';
       $expected = 'http://glpi-project.org';
       $this->assertEquals($expected, Html::weblink_extract($origin));
 
-      $origin = '<a href="http://glpi-project.org/?one=two">THE GLPi Project!</a>';
+      $origin = '<a href="http://glpi-project.org/?one=two">THE GLPI Project!</a>';
       $expected = 'http://glpi-project.org/?one=two';
       $this->assertEquals($expected, Html::weblink_extract($origin));
 
       //These ones does not work, but probably should...
-      $origin = '<a class="example" href="http://glpi-project.org">THE GLPi Project!</a>';
+      $origin = '<a class="example" href="http://glpi-project.org">THE GLPI Project!</a>';
       $expected = $origin;
       $this->assertEquals($origin, Html::weblink_extract($origin));
 
-      $origin = '<a href="http://glpi-project.org" class="example">THE <span>GLPi</span> Project!</a>';
+      $origin = '<a href="http://glpi-project.org" class="example">THE <span>GLPI</span> Project!</a>';
       $expected = $origin;
       $this->assertEquals($expected, Html::weblink_extract($origin));
    }
