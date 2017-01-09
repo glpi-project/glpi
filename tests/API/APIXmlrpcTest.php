@@ -360,6 +360,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $first_user_date_mod = strtotime($first_user[19]);
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+
+      $headers = $res->getHeaders();
+      $this->checkContentRange($data, $headers);
    }
 
 
@@ -393,6 +396,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $first_user_date_mod = strtotime($first_user[19]);
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+
+      $headers = $res->getHeaders();
+      $this->checkContentRange($data, $headers);
    }
 
 
@@ -617,5 +623,30 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
          $response = $e->getResponse();
          $this->assertEquals(401, $response->getStatusCode());
       }
+   }
+
+   /**
+    * Check consistency of Content-Range header
+    *
+    * @param array $data
+    * @param array $headers
+    */
+   protected function checkContentRange($data, $headers) {
+      $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+      $this->assertArrayHasKey('Content-Range', $headers);
+      $expectedContentRange = '0-'.($data['count'] - 1).'/'.$data['totalcount'];
+      $this->assertEquals($expectedContentRange, $headers['Content-Range'][0]);
+   }
+
+   /**
+    * Check consistency of Content-Range header
+    *
+    * @param array $data
+    * @param array $headers
+    */
+   protected function checkEmptyContentRange($data, $headers) {
+      $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+      $this->assertEquals(0, $data['totalcount']);
+      $this->assertArrayNotHasKey('Content-Range', $headers);
    }
 }
