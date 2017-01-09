@@ -171,9 +171,9 @@ function update91to92() {
 
    //set kb translations users...
    $query = "SELECT `id`, `users_id`
-             FROM `glpi_knowbaseitem`
+             FROM `glpi_knowbaseitems`
              INNER JOIN `glpi_knowbaseitemtranslations`
-                ON `glpi_knowbaseitemtranslations`.`knowbaseitems_id` = `glpi_knowbaseitem`.`id`";
+                ON `glpi_knowbaseitemtranslations`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`";
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
