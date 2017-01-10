@@ -232,60 +232,13 @@ var dataURItoBlob = function(dataURI) {
 };
 
 /**
-* Function to convert File object to File Reader
-*
-* @param      {String}      mimeType  The mime type
-* @param      {String}     base64    The base 64
-* @return     {FileReader}  File object
-*/
-var convertFileToFileReader = function(file) {
-   var fr = new FileReader();
-   fr.fileName = file.name;
-   fr.readAsDataURL(file);
-   return fr;
-};
-
-
-
-/**
-* Function to convert base64 data to File Object
-*
-* @param      {String}      mimeType  The mime type
-* @param      {String}     base64    The base 64
-* @return     {FileReader}  File object
-*/
-var convertBase64ToFileReader = function (mimeType , base64) {
-   var the_file = new Blob([window.atob(base64)], {type: mimeType, encoding: 'utf-8'});
-   var fr = new FileReader();
-
-   fr.onload = function (oFREvent) {
-      var v = oFREvent.target.result.split(',')[1]; // encoding is messed up here, so we fix it
-      v = atob(v);
-      var good_b64 = btoa(decodeURIComponent(escape(v)));
-   };
-
-   fr.fileName = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1); ;
-   fr.readAsDataURL(the_file);
-
-   return fr;
-};
-
-
-/**
 * Function to check if data paste on TinyMCE is an image
 *
 * @param      String content  The img tag
 * @return     String mimeType   return mimeType of data
 */
 var isImageFromPaste = function(content) {
-   var regex1 = new RegExp('<img src="data:image\/');
-   var regex2 = new RegExp('<img alt="" src="data:image\/');
-
-   if (content.match(regex1) || content.match(regex2)) {
-      return true;
-   } else {
-      return false;
-   }
+   return content.match(new RegExp('<img.*data:image\/')) !== null;
 };
 
 /**
@@ -295,51 +248,7 @@ var isImageFromPaste = function(content) {
 * @return     String mimeType   return mimeType of data
 */
 var isImageBlobFromPaste = function(content) {
-   var regex3 = new RegExp('<img alt="" src="blob:');
-   var regex4 = new RegExp('<img src="blob:');
-
-   if (content.match(regex3) || content.match(regex4)) {
-      return true;
-   } else {
-      return false;
-   }
-};
-
-/**
-* Function to remove 'alt' attribute
-*
-* @param      {string}  content  The content
-* @return     {string}  content The content cleaning
-*/
-var cleanDataPasted = function(content) {
-   content = content.replace('alt=""', '');
-   return content;
-};
-
-/**
-* Function to extract mimeType data from img tag process bu TinyMCE
-*
-* @param      String content  The img tag
-* @return     String mimeType   return mimeType of data
-*/
-var extractMimeTypeFromImgTag = function(content) {
-   content      = extractSrcFromImgTag(content);
-   var type     = content.split(',')[0]; //data:image/png;base64
-   var mimetype = type.split(';')[0];
-   mimetype     = mimetype.split(':')[1];
-   return mimetype;
-};
-
-/**
-* Function to extract base64 data from img tag process bu TinyMCE
-*
-* @param      String content  The img tag
-* @return     String base64   return base64 data
-*/
-var extractBase64FromImgTag = function(content) {
-   content = extractSrcFromImgTag(content);
-   base64 = content.split(',')[1];
-   return base64;
+   return content.match(new RegExp('<img.*src="blob:')) !== null;
 };
 
 /**
@@ -349,7 +258,10 @@ var extractBase64FromImgTag = function(content) {
 */
 var extractSrcFromImgTag = function(content) {
    var match = content.match(/\<img.+src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)
-   return match[1];
+   if (match !== null) {
+      return match[1];
+   }
+   return '';
 };
 
 /**
@@ -359,10 +271,10 @@ var extractSrcFromImgTag = function(content) {
 */
 var extractSrcFromBlobImgTag = function(content) {
    var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-      if(match == null) {
+      if (match == null) {
          var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
 
-         if(match == null) {
+         if (match == null) {
             var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
          }
       }
@@ -418,13 +330,16 @@ if (typeof tinymce != 'undefined') {
          if (isImageFromPaste(event.content)) {
             stopEvent(event);
 
+            console.log(event)
+
             //extract base64 data
             var base64 = extractSrcFromImgTag(event.content);
 
-            //trasnform to blob
-            var file = dataURItoBlob(base64);
-
-            insertImageInTinyMCE(editor, file);
+            //transform to blob and insert into editor
+            if (base64.length) {
+               var file = dataURItoBlob(base64);
+               insertImageInTinyMCE(editor, file);
+            }
 
          } else if (isImageBlobFromPaste(event.content)) {
             stopEvent(event);
