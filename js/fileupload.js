@@ -257,7 +257,7 @@ var isImageBlobFromPaste = function(content) {
 * @param      {string}  content  The img tag
 */
 var extractSrcFromImgTag = function(content) {
-   var match = content.match(/\<img.+src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/)
+   var match = content.match(/<img[^>]*?src=['"](.*)['"]/)
    if (match !== null) {
       return match[1];
    }
@@ -318,7 +318,7 @@ if (typeof tinymce != 'undefined') {
              && event.dataTransfer.files.length > 0) {
             stopEvent(event);
 
-            // for earch dropped files
+            // for each dropped files
             $.each(event.dataTransfer.files, function(index, element) {
                insertImageInTinyMCE(editor, element);
             });
@@ -329,8 +329,6 @@ if (typeof tinymce != 'undefined') {
          //Check if data is an image
          if (isImageFromPaste(event.content)) {
             stopEvent(event);
-
-            console.log(event)
 
             //extract base64 data
             var base64 = extractSrcFromImgTag(event.content);
