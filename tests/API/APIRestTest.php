@@ -352,7 +352,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Accept-Range', $headers);
       $this->assertContains('User', $headers['Accept-Range'][0]);
-      $this->assertArrayHasKey('Content-Range', $headers);
 
       $body = $res->getBody();
       $data = json_decode($body, true);
@@ -371,9 +370,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $first_user_date_mod = strtotime($first_user[19]);
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+
+      $this->checkContentRange($data, $headers);
    }
-   
-   
+
+
    /**
     * @depends testInitSessionCredentials
     */
@@ -430,6 +431,43 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $first_user_date_mod = strtotime($first_user[19]);
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+
+      $this->checkContentRange($data, $headers);
+   }
+
+
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testListSearchEmpty($session_token) {
+      $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=1&criteria[0][searchtype]=contains&criteria[0][value]=nonexistent',
+            ['headers' => [
+                  'Session-Token' => $session_token],
+                  'query' => [
+                        'sort'          => 19,
+                        'order'         => 'DESC',
+                        'range'         => '0-100',
+                        'forcedisplay'  => '81',
+                        'rawdata'       => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Accept-Range', $headers);
+      $this->assertContains('User', $headers['Accept-Range'][0]);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $this->assertEquals(0, $data['totalcount']);
+
+      $this->checkContentRange($data, $headers);
    }
 
 
@@ -1132,6 +1170,24 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       } catch (ClientException $e) {
          $response = $e->getResponse();
          $this->assertEquals(401, $response->getStatusCode());
+      }
+   }
+
+
+   /**
+    * Check consistency of Content-Range header
+    * 
+    * @param array $data
+    * @param array $headers
+    */
+   protected function checkContentRange($data, $headers) {
+      $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+      if ($data['totalcount'] > 0) {
+         $this->assertArrayHasKey('Content-Range', $headers);
+         $expectedContentRange = '0-'.($data['count'] - 1).'/'.$data['totalcount'];
+         $this->assertEquals($expectedContentRange, $headers['Content-Range'][0]);
+      } else {
+         $this->assertArrayNotHasKey('Content-Range', $headers);
       }
    }
 }
