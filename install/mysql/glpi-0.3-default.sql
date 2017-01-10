@@ -1,3 +1,33 @@
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2017 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
 # phpMyAdmin SQL Dump
 # version 2.5.6
 # http://www.phpmyadmin.net
@@ -363,11 +393,11 @@ CREATE TABLE `followups` (
 # Dumping data for table `followups`
 #
 
-INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (1, 1, '2003-09-18 00:53:35', 'tech', 'J\\\'ai été voir, je pense que la carte mere a grillé.');
+INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (1, 1, '2003-09-18 00:53:35', 'tech', 'J\\\'ai ï¿½tï¿½ voir, je pense que la carte mere a grillï¿½.');
 INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (2, 1, '2003-09-18 00:54:06', 'tech', 'L\\\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
-INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (3, 1, '2003-09-18 00:54:40', 'tech', 'Probleme reglé j\\\'ai seulement changé l\\\'alimentation.\r\nLe reste fonctionne tres bien.');
+INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (3, 1, '2003-09-18 00:54:40', 'tech', 'Probleme reglï¿½ j\\\'ai seulement changï¿½ l\\\'alimentation.\r\nLe reste fonctionne tres bien.');
 INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (4, 3, '2003-09-18 00:55:08', 'tech', 'Je pense que l\\\'on peux changer la souris.');
-INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (5, 2, '2003-09-18 00:55:52', 'tech', 'Je suis passé, il faudra faire une restauration de windows NT4.');
+INSERT INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (5, 2, '2003-09-18 00:55:52', 'tech', 'Je suis passï¿½, il faudra faire une restauration de windows NT4.');
 
 # --------------------------------------------------------
 
@@ -697,7 +727,7 @@ CREATE TABLE `tracking` (
 #
 
 INSERT INTO `tracking` (`ID`, `date`, `closedate`, `status`, `author`, `assign`, `computer`, `contents`, `priority`, `is_group`, `uemail`, `emailupdates`) VALUES (1, '2003-09-18 00:46:40', '2003-09-18 00:54:43', 'old', 'Helpdesk', 'tech', 8, 'Mon ordinateur ne s\\\'allume plus, et il ya des bruits byzarres', 3, 'no', '', '');
-INSERT INTO `tracking` (`ID`, `date`, `closedate`, `status`, `author`, `assign`, `computer`, `contents`, `priority`, `is_group`, `uemail`, `emailupdates`) VALUES (2, '2003-09-18 00:48:19', '0000-00-00 00:00:00', 'new', 'Helpdesk', 'tech', 10, 'Un message en anglais s\\\'affiche, je n\\\'y comprend rien, je n\\\'ose plus toucher à rien de peur de tout casser.\r\nVenez vite !!!!', 4, 'no', '', '');
+INSERT INTO `tracking` (`ID`, `date`, `closedate`, `status`, `author`, `assign`, `computer`, `contents`, `priority`, `is_group`, `uemail`, `emailupdates`) VALUES (2, '2003-09-18 00:48:19', '0000-00-00 00:00:00', 'new', 'Helpdesk', 'tech', 10, 'Un message en anglais s\\\'affiche, je n\\\'y comprend rien, je n\\\'ose plus toucher ï¿½ rien de peur de tout casser.\r\nVenez vite !!!!', 4, 'no', '', '');
 INSERT INTO `tracking` (`ID`, `date`, `closedate`, `status`, `author`, `assign`, `computer`, `contents`, `priority`, `is_group`, `uemail`, `emailupdates`) VALUES (3, '2003-09-18 00:49:29', '0000-00-00 00:00:00', 'new', 'Helpdesk', 'tech', 18, 'Ma souris se bloque sans arret, elle defile mal sur l\\\'ecran et elle glisse tres mal sur le tapis de souris.', 3, 'no', '', '');
 
 # --------------------------------------------------------
