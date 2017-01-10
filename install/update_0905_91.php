@@ -231,7 +231,7 @@ function update0905to91() {
       ##objectlock.date_mod##
 
       Hello ##objectlock.lockedby.firstname##,
-      Could go to this item and unlock it for me?
+      Could you go to this item and unlock it for me?
       Thank you,
       Regards,
       ##objectlock.requester.firstname##',
