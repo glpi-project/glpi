@@ -540,6 +540,7 @@ class Planning extends CommonGLPI {
 
       self::initSessionForCurrentUser();
 
+      $rand='';
       if ($fullview) {
          Planning::showPlanningFilter();
          $default_view = "agendaWeek";
@@ -552,9 +553,10 @@ class Planning extends CommonGLPI {
          $default_view = "listYear";
          $header = "false";
          $pl_height = "400";
+         $rand = rand();
       }
 
-      echo "<div id='planning'></div>";
+      echo "<div id='planning$rand'></div>";
       echo Html::scriptBlock("
       $(function() {
          var disable_qtip = false,
@@ -573,7 +575,7 @@ class Planning extends CommonGLPI {
          window.onblur = function() { window_focused = false; }
          window.onfocus = function() { window_focused = true; }
 
-         $('#planning').fullCalendar({
+         $('#planning$rand').fullCalendar({
             height:      $pl_height,
             theme:       true,
             weekNumbers: ".($fullview?'true':'false').",
@@ -666,7 +668,7 @@ class Planning extends CommonGLPI {
             viewRender: function(view, element) {
                // force refetch events from ajax on view change (don't refetch on firt load)
                if (loaded) {
-                  $('#planning').fullCalendar('refetchEvents')
+                  $('#planning$rand').fullCalendar('refetchEvents')
                }
             },
             eventAfterAllRender: function(view) {
@@ -674,25 +676,25 @@ class Planning extends CommonGLPI {
                loaded = true;
 
                // scroll div to first element needed to be viewed
-               var scrolltoevent = $('#planning .event_past.event_todo').first();
+               var scrolltoevent = $('#planning$rand .event_past.event_todo').first();
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_today').first();
+                  scrolltoevent = $('#planning$rand .event_today').first();
                }
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_future').first();
+                  scrolltoevent = $('#planning$rand .event_future').first();
                }
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_past').last();
+                  scrolltoevent = $('#planning$rand .event_past').last();
                }
                if (scrolltoevent.length) {
-                  $('#planning .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
+                  $('#planning$rand .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
                }
             },
             eventSources: [{
                url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
                type: 'POST',
                data: function() {
-                  var view_name = $('#planning').fullCalendar('getView').name;
+                  var view_name = $('#planning$rand').fullCalendar('getView').name;
                   var display_done_events = 1;
                   if (view_name == 'listYear') {
                      display_done_events = 0;
@@ -704,7 +706,7 @@ class Planning extends CommonGLPI {
                },
                success: function(data) {
                   if (!$fullview_str && data.length == 0) {
-                     $('#planning').fullCalendar('option', 'height', 0);
+                     $('#planning$rand').fullCalendar('option', 'height', 0);
                   }
                },
                error: function() {
@@ -773,7 +775,7 @@ class Planning extends CommonGLPI {
                   }
                });
 
-               $('#planning').fullCalendar('unselect');
+               $('#planning$rand').fullCalendar('unselect');
             }
          });
 
@@ -818,7 +820,7 @@ class Planning extends CommonGLPI {
                   if (!html) {
                      revertFunc();
                   }
-                  $('#planning').fullCalendar('updateEvent', event);
+                  $('#planning$rand').fullCalendar('updateEvent', event);
                   displayAjaxMessageAfterRedirect();
                },
                error: function() {
@@ -828,7 +830,7 @@ class Planning extends CommonGLPI {
          };
 
          // attach button (planning and refresh) in planning header
-         $('#planning .fc-toolbar .fc-center h2')
+         $('#planning$rand .fc-toolbar .fc-center h2')
             .after(
                $('<img id=\"refresh_planning\" class=\"pointer\" src=\"".
                    $CFG_GLPI['root_doc']."/pics/refresh.png\">')
@@ -837,7 +839,7 @@ class Planning extends CommonGLPI {
             );
 
          $('#refresh_planning').click(function() {
-            $('#planning').fullCalendar('refetchEvents')
+            $('#planning$rand').fullCalendar('refetchEvents')
          })
 
          // datepicker behavior
@@ -851,7 +853,7 @@ class Planning extends CommonGLPI {
             dateFormat:      'DD, d MM, yy',
             onSelect: function(dateText, inst) {
                var selected_date = $(this).datepicker('getDate');
-               $('#planning').fullCalendar('gotoDate', selected_date);
+               $('#planning$rand').fullCalendar('gotoDate', selected_date);
             }
          });
       });"
