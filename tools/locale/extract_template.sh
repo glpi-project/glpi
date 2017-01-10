@@ -1,7 +1,7 @@
 #!/bin/bash
 
 soft='GLPI'
-version='0.84'
+version='9.2'
 email=glpi-translation@gna.org
 copyright='INDEPNET Development Team'
 
