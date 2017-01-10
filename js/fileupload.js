@@ -312,7 +312,7 @@ var insertImageInTinyMCE = function(editor, image) {
  * @param  {[Object]} editor TinyMCE editor
  */
 if (typeof tinymce != 'undefined') {
-   tinymce.PluginManager.add('paste_upload_doc', function(editor) {
+   tinymce.PluginManager.add('glpi_upload_doc', function(editor) {
       editor.on('drop', function(event) {
          if (event.dataTransfer
              && event.dataTransfer.files.length > 0) {
