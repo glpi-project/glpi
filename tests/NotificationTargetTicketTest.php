@@ -76,7 +76,7 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categoryid##']);
 
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
-      // test of the getDatasForObject for default language en_US
+      // test of the getDatasForObject for default language en_GB
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
       $expected = [
                      [
@@ -130,7 +130,7 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $ret['tasks']);
 
       // switch back to default language
-      $_SESSION["glpilanguage"] = Session::loadLanguage( 'en_US' );
+      $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
 
    }
 }
