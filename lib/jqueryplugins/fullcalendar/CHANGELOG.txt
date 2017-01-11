@@ -1,4 +1,27 @@
 
+v3.1.0 (2016-12-05)
+-------------------
+
+- experimental support for implicitly batched ("debounced") event rendering (#2938)
+	- `eventRenderWait` (off by default)
+- new `footer` option, similar to header toolbar (#654, #3299)
+- event rendering batch methods (#3351):
+	- `renderEvents`
+	- `updateEvents`
+- more granular touch settings (#3377):
+	- `eventLongPressDelay`
+	- `selectLongPressDelay`
+- eventDestroy not called when removing the popover (#3416, #3419)
+- print stylesheet and gcal extension now offered as minified (#3415)
+- fc-today in agenda header cells (#3361, #3365)
+- height-related options in tandem with other options (#3327, #3384)
+- Kazakh locale (#3394)
+- Afrikaans locale (#3390)
+- internal refactor related to timing of rendering and firing handlers.
+  calls to rerender the current date-range and events from within handlers
+  might not execute immediately. instead, will execute after handler finishes.
+
+
 v3.0.1 (2016-09-26)
 -------------------
 
