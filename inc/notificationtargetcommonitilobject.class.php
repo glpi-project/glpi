@@ -996,7 +996,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                  || !$options['additionnaloption']['show_private'])) {
             $restrict .= " AND `is_private` = '0'";
          }
-         $restrict .= " ORDER BY `date` DESC, `id` ASC";
+         $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
 
          $tasks          = getAllDatasFromTable($taskobj->getTable(), $restrict);
          $datas['tasks'] = array();
