@@ -227,7 +227,7 @@ class NotificationTemplate extends CommonDBTM {
 
       if (!isset($this->templates_by_languages[$tid])) {
          //Switch to the desired language
-         $bak_dropdowntranslations = $_SESSION['glpi_dropdowntranslations'] ;
+         $bak_dropdowntranslations = (isset($_SESSION['glpi_dropdowntranslations']) ? $_SESSION['glpi_dropdowntranslations'] : null);
          $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($language);
          Session::loadLanguage($language);
          $bak_language = $_SESSION["glpilanguage"] ;
@@ -250,7 +250,11 @@ class NotificationTemplate extends CommonDBTM {
          //Restore default language
          $_SESSION["glpilanguage"] = $bak_language ;
          Session::loadLanguage();
-         $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations ;
+         if ($bak_dropdowntranslations !== null) {
+            $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations;
+         } else {
+            unset($_SESSION['glpi_dropdowntranslations']);
+         }
          if ($plug = isPluginItemType(get_class($target->obj))) {
             Plugin::loadLang(strtolower($plug['plugin']));
          }
