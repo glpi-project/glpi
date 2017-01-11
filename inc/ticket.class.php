@@ -612,8 +612,7 @@ class Ticket extends CommonITILObject {
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
             if ($satisfaction->getFromDB($item->getID())
-                     && $item->fields['status'] == self::CLOSED
-                     && $satisfaction->canUpdateItem()){
+                     && $item->fields['status'] == self::CLOSED){
                $ong[3] = __('Satisfaction');
             }
             if ($item->canUpdate()) {
