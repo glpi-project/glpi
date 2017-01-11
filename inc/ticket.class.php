@@ -610,12 +610,11 @@ class Ticket extends CommonITILObject {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
-            if (($item->fields['status'] == self::CLOSED)
-                && Session::haveRight('ticket', Ticket::SURVEY)){
-               $satisfaction = new TicketSatisfaction();
-               if ($satisfaction->getFromDB($item->getID())) {
-                  $ong[3] = __('Satisfaction');
-               }
+            $satisfaction = new TicketSatisfaction();
+            if ($satisfaction->getFromDB($item->getID())
+                     && $item->fields['status'] == self::CLOSED
+                     && $satisfaction->canUpdateItem()){
+               $ong[3] = __('Satisfaction');
             }
             if ($item->canUpdate()) {
                $ong[4] = __('Statistics');
@@ -4643,8 +4642,11 @@ class Ticket extends CommonITILObject {
                         INNER JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`)
                         WHERE $is_deleted
-                              AND ($search_users_id
-                                   OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
+                              AND ($search_users_id";
+            if (Session::haveRight('ticket', Ticket::SURVEY)) {
+               $query .= " OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
+            }
+            $query .=  ")
                               AND `glpi_tickets`.`status` = '".self::CLOSED."'
                               AND (`glpi_entities`.`inquest_duration` = 0
                                    OR DATEDIFF(ADDDATE(`glpi_ticketsatisfactions`.`date_begin`,

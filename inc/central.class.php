@@ -153,8 +153,6 @@ class Central extends CommonGLPI {
 
       $showproblem = Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
 
-      $showsurvey  = Session::haveRight('ticket', Ticket::SURVEY);
-
       echo "<table class='tab_cadre_central'>";
 
       Plugin::doHook('display_central');
@@ -227,9 +225,7 @@ class Central extends CommonGLPI {
             Ticket::showCentralList(0, "toapprove", false);
          }
 
-         if ($showsurvey) {
-            Ticket::showCentralList(0, "survey", false);
-         }
+         Ticket::showCentralList(0, "survey", false);
 
          Ticket::showCentralList(0, "rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);
