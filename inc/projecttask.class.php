@@ -1156,7 +1156,7 @@ class ProjectTask extends CommonDBChild {
                         = array('id'    => $task->getID(),
                               'name'    => $task->fields['name'],
                               'desc'    => $task->fields['content'],
-                              'link'    => $task->getlink(),
+                              'link'    => $task->getlink(['linkoption' => " title='{$task->fields['name']}'"]),
                               'type'    => 'task',
                               'percent' => $percent,
                               'from'    => $real_begin,
