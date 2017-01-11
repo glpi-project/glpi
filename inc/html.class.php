@@ -3845,10 +3845,10 @@ class Html {
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
-               'code fullscreen paste_upload_doc'
+               'code fullscreen paste_upload_doc',
+               'textcolor colorpicker'
             ],
-            toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
-
+            toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
          });
       });
    ";
