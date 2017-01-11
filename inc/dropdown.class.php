@@ -1007,7 +1007,7 @@ class Dropdown {
       }
       Dropdown::showFromArray('dpmenu', $values,
                               array('on_change'
-                                       => "window.location.href=this.options[this.selectedIndex].value",
+                                       => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
                                     'value'               => $selected,
                                     'display_emptychoice' => true));
 
