@@ -942,7 +942,10 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $DONE_EVENTS = '';
       if (!$options['display_done_events']) {
-         $DONE_EVENTS = "`".$item->getTable()."`.`state` != ".Planning::DONE." AND";
+         $DONE_EVENTS = "(`".$item->getTable()."`.`state` = ".Planning::TODO."
+                          OR (`".$item->getTable()."`.`state` = ".Planning::INFO."
+                              AND `".$item->getTable()."`.`end` > NOW()))
+                         AND ";
       }
 
       $addrestrict = '';
