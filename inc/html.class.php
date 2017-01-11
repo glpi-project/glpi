@@ -3933,9 +3933,9 @@ class Html {
          plugins: [
             'table directionality searchreplace paste',
             'tabfocus autoresize link image',
-            'code fullscreen'
+            'code fullscreen textcolor colorpicker'
          ],
-         toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
+         toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
       });
    ";
 
