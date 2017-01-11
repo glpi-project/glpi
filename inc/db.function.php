@@ -1706,19 +1706,16 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
    }
 
    if (is_array($value)) {
-      $query .= "$field";
-      $query .= " IN ('" . implode("','",$value) . "') ";
+      $query .= "$field IN ('" . implode("','",$value) . "') ";
    } else {
       if (strlen($value) == 0) {
          if (isset($_SESSION['glpiactiveentities_string'])) {
-            $query .= "$field";
-            $query .= " IN (".$_SESSION['glpiactiveentities_string'].") ";
+            $query .= "$field IN (".$_SESSION['glpiactiveentities_string'].") ";
          } else {
             $query .= " 0 ";
          }
       } else {
-         $query .= "$field";
-         $query .= " = '$value' ";
+         $query .= "$field = '$value' ";
       }
    }
 
