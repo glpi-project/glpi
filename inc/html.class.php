@@ -3827,9 +3827,9 @@ class Html {
          }
       }
 
+      // init tinymce
       Html::scriptStart();
-      $js = "
-      $(function() {
+      $js = "$(function() {
          tinyMCE.init({
             language: '$language',
             browser_spellcheck: true,
@@ -3846,12 +3846,15 @@ class Html {
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
                'code fullscreen paste_upload_doc',
-               'textcolor colorpicker'
+               'textcolor colorpicker',
+               // load glpi_upload_doc specific plugin if we need to upload files
+               typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
+                  ? 'glpi_upload_doc'
+                  : '',
             ],
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
          });
-      });
-   ";
+      });";
 
       if ($display) {
          echo  Html::scriptBlock($js);
