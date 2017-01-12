@@ -935,7 +935,13 @@ class CommonDBTM extends CommonGLPI {
 
       $link = $this->getLinkURL();
 
-      return "<a ".$p['linkoption']." href='$link'>".$this->getNameID($options)."</a>";
+      $label = $this->getNameID($options);
+      $title = '';
+      if (!preg_match('/title=/', $p['linkoption'])) {
+         $title = $label;
+      }
+
+      return "<a ".$p['linkoption']." href='$link' $title>$label</a>";
    }
 
 

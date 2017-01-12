@@ -3845,15 +3845,14 @@ class Html {
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
-               'code fullscreen',
+               'code fullscreen paste_upload_doc',
+               'textcolor colorpicker',
                // load glpi_upload_doc specific plugin if we need to upload files
                typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
                   ? 'glpi_upload_doc'
                   : '',
             ],
-            toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify' +
-                      ' | bullist numlist outdent indent | link image code fullscreen',
-
+            toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
          });
       });";
 
@@ -3980,7 +3979,7 @@ class Html {
       // Print the "where am I?"
       echo "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      echo sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -4168,7 +4167,7 @@ class Html {
 
       echo "<td width='20%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      printf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button

@@ -10548,7 +10548,7 @@ msgstr[1] ""
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3979 inc/html.class.php:4167
 #, php-format
-msgid "From %1$d to %2$d on %3$d"
+msgid "From %1$d to %2$d of %3$d"
 msgstr ""
 
 #: inc/html.class.php:4051
