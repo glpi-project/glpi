@@ -3845,7 +3845,7 @@ class Html {
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
-               'code fullscreen paste_upload_doc',
+               'code fullscreen',
                'textcolor colorpicker',
                // load glpi_upload_doc specific plugin if we need to upload files
                typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
