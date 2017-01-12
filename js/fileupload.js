@@ -248,7 +248,7 @@ var isImageFromPaste = function(content) {
 * @return     String mimeType   return mimeType of data
 */
 var isImageBlobFromPaste = function(content) {
-   return content.match(new RegExp('<img.*src="blob:')) !== null;
+   return content.match(new RegExp('<img.*src=[\'"]blob:')) !== null;
 };
 
 /**
