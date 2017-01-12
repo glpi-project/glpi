@@ -3091,13 +3091,14 @@ class User extends CommonDBTM {
             $where .= ')';
       }
 
-
-      $where .= " AND `glpi_users`.`is_deleted` = '0'
-                  AND `glpi_users`.`is_active` = '1'
+      $where .= " AND `glpi_users`.`is_deleted` = '0' " ;
+      if( !isset($CFG_GLPI['include_inactive_users']) || !$CFG_GLPI['include_inactive_users']) {
+         $where .= " AND `glpi_users`.`is_active` = '1'
                   AND (`glpi_users`.`begin_date` IS NULL
                        OR `glpi_users`.`begin_date` < NOW())
                   AND (`glpi_users`.`end_date` IS NULL
                        OR `glpi_users`.`end_date` > NOW())";
+      }
 
       if ((is_numeric($value) && $value)
           || count($used)) {
