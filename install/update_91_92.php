@@ -170,7 +170,7 @@ function update91to92() {
    $migration->addKey("glpi_knowbaseitemtranslations", "users_id");
 
    //set kb translations users...
-   $query = "SELECT `id`, `users_id`
+   $query = "SELECT `glpi_knowbaseitems`.`id`, `glpi_knowbaseitems`.`users_id`
              FROM `glpi_knowbaseitems`
              INNER JOIN `glpi_knowbaseitemtranslations`
                 ON `glpi_knowbaseitemtranslations`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`";
