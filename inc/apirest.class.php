@@ -216,8 +216,10 @@ class APIRest extends API {
                          $code = 206; // partial content
                      }
                   }
-                  $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
                   $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
+                  if ($totalcount > 0) {
+                     $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
+                  }
                }
                break;
 
