@@ -2076,9 +2076,15 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $options Options
     *
-    * @return boolean
+    * @return boolean|string
    **/
    function showDates($options = []) {
+
+      if (!isset($options['display'])) {
+         $options['display'] = GLPI_DISPLAY;
+      }
+
+      $out = '';
 
       $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
          || $this->isNewID($this->getID()));
@@ -2096,44 +2102,50 @@ class CommonDBTM extends CommonGLPI {
          $colspan = 1;
       }
 
-      echo "<tr class='tab_bg_1 footerRow'>";
+      $out .= "<tr class='tab_bg_1 footerRow'>";
       //Display when it's not a new asset being created
       if ($date_creation_exists
          && $this->getID() > 0
             && (!isset($options['withtemplate']) || $options['withtemplate'] == 0)) {
-         echo "<th colspan='$colspan'>";
-         printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
-         echo "</th>";
+         $out .= "<th colspan='$colspan'>";
+         $out .= sprintf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
+         $out .= "</th>";
       } else if (!isset($options['withtemplate']) || $options['withtemplate'] == 0) {
-         echo "<th colspan='$colspan'>";
-         echo "</th>";
+         $out .= "<th colspan='$colspan'>";
+         $out .= "</th>";
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate']) {
-         echo "<th colspan='$colspan'>";
+         $out .= "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-         echo "</th>";
+         $out .= sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+         $out .= "</th>";
       }
 
       if ($date_mod_exists) {
-         echo "<th colspan='$colspan'>";
+         $out .= "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-         echo "</th>";
+         $out .= sprintf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         $out .= "</th>";
       } else {
-         echo "<th colspan='$colspan'>";
-         echo "</th>";
+         $out .= "<th colspan='$colspan'>";
+         $out .= "</th>";
       }
 
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
-         echo "<th colspan='".($colspan * 2)."'>";
-         printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</th>";
+         $out .= "<th colspan='".($colspan * 2)."'>";
+         $out .= sprintf(__('Created from the template %s'), $this->fields['template_name']);
+         $out .= "</th>";
       }
 
-      echo "</tr>";
+      $out .= "</tr>";
+
+      if ($options['display'] === true) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
    /**
@@ -2141,11 +2153,12 @@ class CommonDBTM extends CommonGLPI {
     * Close the form is user can edit
     *
     * @param array $options array of possible options:
-    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-    *     - colspan for each column (default 2)
-    *     - candel : set to false to hide "delete" button
-    *     - canedit : set to false to hide all buttons
-    *     - addbuttons : array of buttons to add
+    *                       - withtemplate: 1 for newtemplate, 2 for newobject from template
+    *                       - colspan for each column (default 2)
+    *                       - candel: set to false to hide "delete" button
+    *                       - canedit: set to false to hide all buttons
+    *                       - addbuttons: array of buttons to add
+    *                       - display: direct display or return string output
     *
     * @return void
    **/
@@ -2166,38 +2179,53 @@ class CommonDBTM extends CommonGLPI {
       $params['addbuttons']   = [];
       $params['formfooter']   = null;
 
+      $out = '';
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
+      //force false to get full output at the end
+      $params['display'] = false;
 
       Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
 
+      if (isset($params['plugins_output'])) {
+         $out .= $params['plugins_output'];
+         unset($params['plugins_output']);
+      }
+
       if ($params['formfooter'] === null) {
-          $this->showDates($params);
+          $out .= $this->showDates($params);
       }
 
       if (!$params['canedit']
           || !$this->canEdit($ID)) {
-         echo "</table></div>";
+         $out .= "</table></div>";
          // Form Header always open form
-         Html::closeForm();
-         return false;
+         $out .= Html::closeForm($params['display']);
+
+         if ($params['display'] === true) {
+            echo $out;
+            return false;
+         } else {
+            return $out;
+         }
       }
 
-      echo "<tr class='tab_bg_2'>";
+      $out .= "<tr class='tab_bg_2'>";
 
       if ($params['withtemplate']
           ||$this->isNewID($ID)) {
 
-         echo "<td class='center' colspan='".($params['colspan']*2)."'>";
+         $out .= "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
+            $out .= Html::submit(_x('button', 'Add'), ['name' => 'add']);
          } else {
             //TRANS : means update / actualize
-            echo Html::submit(_x('button', 'Save'), ['name' => 'update']);
+            $out .= Html::submit(_x('button', 'Save'), ['name' => 'update']);
          }
 
       } else {
@@ -2208,80 +2236,85 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($params['canedit'] && $this->can($ID, UPDATE)) {
-            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-            echo Html::submit(_x('button', 'Save'), ['name' => 'update']);
+            $out .= "<td class='center' colspan='".($params['colspan']*2)."'>\n";
+            $out .= Html::submit(_x('button', 'Save'), ['name' => 'update']);
          }
 
          if ($params['candel']) {
             if ($params['canedit'] && $this->can($ID, UPDATE)) {
-               echo "</td></tr><tr class='tab_bg_2'>\n";
+               $out .= "</td></tr><tr class='tab_bg_2'>\n";
             }
             if ($this->isDeleted()) {
                if ($this->can($ID, DELETE)) {
-                  echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-                  echo Html::submit(_x('button', 'Restore'), ['name' => 'restore']);
+                  $out .= "<td class='right' colspan='".($params['colspan']*2)."' >\n";
+                  $out .= Html::submit(_x('button', 'Restore'), ['name' => 'restore']);
                }
 
                if ($this->can($ID, PURGE)) {
-                  echo "<span class='very_small_space'>";
+                  $out .= "<span class='very_small_space'>";
                   if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
-                     Html::showToolTip(__('Check to keep the devices while deleting this item'));
-                     echo "&nbsp;";
-                     echo "<input type='checkbox' name='keep_devices' value='1'";
+                     $out .= Html::showToolTip(__('Check to keep the devices while deleting this item'), ['display' => $params['display']]);
+                     $out .= "&nbsp;<input type='checkbox' name='keep_devices' value='1'";
                      if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
-                        echo " checked";
+                        $out .= " checked";
                      }
-                     echo ">&nbsp;";
+                     $out .= ">&nbsp;";
                   }
-                  echo Html::submit(_x('button', 'Delete permanently'), ['name' => 'purge']);
-                  echo "</span>";
+                  $out .= Html::submit(_x('button', 'Delete permanently'), ['name' => 'purge']);
+                  $out .= "</span>";
                }
 
             } else {
-               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
+               $out .= "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                // If maybe dynamic : do not take into account  is_deleted  field
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
-                     echo Html::submit(_x('button', 'Delete permanently'),
+                     $out .= Html::submit(_x('button', 'Delete permanently'),
                                        ['name'    => 'purge',
                                              'confirm' => __('Confirm the final deletion?')]);
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_x('button', 'Put in dustbin'), ['name' => 'delete']);
+                  $out .= Html::submit(_x('button', 'Put in dustbin'), ['name' => 'delete']);
                }
             }
 
          }
          if ($this->isField('date_mod')) {
-            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+            $out .= "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
          }
       }
 
       if (!$this->isNewID($ID)) {
-         echo "<input type='hidden' name='id' value='$ID'>";
+         $out .= "<input type='hidden' name='id' value='$ID'>";
       }
-      echo "</td>";
-      echo "</tr>\n";
+      $out .= "</td>";
+      $out .= "</tr>\n";
 
       if ($params['canedit']
           && count($params['addbuttons'])) {
-         echo "<tr class='tab_bg_2'>";
+         $out .= "<tr class='tab_bg_2'>";
          if ((($params['colspan']*2) - count($params['addbuttons'])) > 0) {
-            echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;".
+            $out .= "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;".
                  "</td>";
          }
          foreach ($params['addbuttons'] as $key => $val) {
-            echo "<td><input class='submit' type='submit' name='$key' value=\"".
+            $out .= "<td><input class='submit' type='submit' name='$key' value=\"".
                         Html::entities_deep($val)."\"></td>";
          }
-         echo "</tr>";
+         $out .= "</tr>";
       }
 
       // Close for Form
-      echo "</table></div>";
-      Html::closeForm();
+      $out .= "</table></div>";
+      $out .= Html::closeForm($params['display']);
+
+      if (GLPI_DISPLAY === true || isset($options['display']) && $options['display'] == true) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 
