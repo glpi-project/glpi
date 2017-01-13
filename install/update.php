@@ -799,6 +799,7 @@ function updateDbUpTo031() {
          include_once("update_91_911.php");
          update91to911();
 
+      case "9.1.1" :
       case GLPI_VERSION:
          break;
 
