@@ -1434,4 +1434,49 @@ class Plugin extends CommonDBTM {
          );
       }
    }
+
+   /**
+    * Get an internationnalized message for missing requirement (extension, other plugin, ...)
+    *
+    * @param string $type Type of what is missing, one of:
+    *                     - ext (PHP module)
+    *                     - plugin (other plugin)
+    *                     - compil (compilation option)
+    *                     - param (GLPI configuration parameter)
+    * @param string $name Missing name
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   static public function messageMissingRequirement($type, $name) {
+      switch ($type) {
+         case 'ext':
+            return sprintf(
+               __('This plugin requires PHP extension %1$s'),
+               $name
+            );
+            break;
+         case 'plugin':
+            return sprintf(
+               __('This plugin requires %1$s plugin'),
+               $name
+            );
+            break;
+         case 'compil':
+            return sprintf(
+               __('This plugin requires PHP compiled along with "%1$s"'),
+               $name
+            );
+            break;
+         case 'param':
+            return sprintf(
+               __('This plugin requires PHP parameter %1$s'),
+               $name
+            );
+            break;
+         default:
+            throw new \RuntimeException("messageMissing type $type is unknwown!");
+      }
+   }
 }
