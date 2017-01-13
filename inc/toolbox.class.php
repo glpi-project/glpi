@@ -2313,17 +2313,24 @@ class Toolbox {
       $DB = new DB();
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
          echo "Errors occurred inserting default database";
-      }
-      // update default language
-      Config::setConfigurationValues('core', array('language' => $lang));
-      $query = "UPDATE `glpi_users`
-                SET `language` = NULL";
-      $DB->queryOrDie($query, "4203");
-
-      if (defined('GLPI_SYSTEM_CRON')) {
-         // Downstream packages may provide a good system cron
-         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+      } else {
+         // update default language
+         Config::setConfigurationValues(
+            'core',
+            array(
+               'language' => $lang,
+               'version'  => GLPI_VERSION
+            )
+         );
+         $query = "UPDATE `glpi_users`
+                   SET `language` = NULL";
          $DB->queryOrDie($query, "4203");
+
+         if (defined('GLPI_SYSTEM_CRON')) {
+            // Downstream packages may provide a good system cron
+            $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+            $DB->queryOrDie($query, "4203");
+         }
       }
    }
 
