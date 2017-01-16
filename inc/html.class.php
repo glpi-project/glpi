@@ -5172,7 +5172,7 @@ class Html {
                               var editor = {
                                  targetElm: $('#fileupload{$p['rand']}')
                               };
-                              displayUploadedFile(file, tag[index], editor);
+                              displayUploadedFile(file, tag[index], editor, '{$p['name']}');
 
                               $('#progress{$p['rand']} .uploadbar')
                                  .text('".__('Upload successful')."')

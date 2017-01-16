@@ -83,7 +83,10 @@ var getFileTag = function(data) {
  * @param      {Object}  editor        The TinyMCE editor instance
  */
 var fileindex = 0;
-var displayUploadedFile = function(file, tag, editor) {
+var displayUploadedFile = function(file, tag, editor, name) {
+   // default argument(s)
+   name = (typeof name === 'undefined') ? 'filename' : name;
+
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);
    var iteration = 0;
@@ -113,13 +116,13 @@ var displayUploadedFile = function(file, tag, editor) {
       // File
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_filename['+fileindex+']')
-         .attr('value',file.name).appendTo(p);
+         .attr('name', '_'+name+'['+fileindex+']')
+         .attr('value', file.name).appendTo(p);
 
       // Tag
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_tag_filename['+fileindex+']')
+         .attr('name', '_tag_'+name+'['+fileindex+']')
          .attr('value', tag.name)
          .appendTo(p);
 
