@@ -2100,7 +2100,7 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
-      if (TicketValidation::getValidateRights()) {
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt                              = array();
          $opt['reset']                     = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
