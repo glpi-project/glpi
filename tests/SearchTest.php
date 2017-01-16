@@ -360,4 +360,68 @@ class DupSearchOpt extends CommonDBTM {
 
       return $tab;
    }
+
+   public function testIsNotifyComputerGroup() {
+      $search_params = array('is_deleted'   => 0,
+                             'start'        => 0,
+                             'search'       => 'Search',
+                             'criteria'     => array(0 => array('field'      => 'view',
+                                                                'searchtype' => 'contains',
+                                                                'value'      => '')),
+                                                     // group is_notify
+                             'metacriteria' => array(0 => array('link'       => 'AND',
+                                                                'itemtype'   => 'Group',
+                                                                'field'      => 20,
+                                                                'searchtype' => 'equals',
+                                                                'value'      => 1)));
+      $this->setEntity('_test_root_entity', true);
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->assertArrayHasKey('data', $data, $data['last_errors']);
+      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      //expecting no result
+      $this->assertEquals(0, $data['data']['totalcount']);
+
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+
+      //create group that can be notified
+      $group = new Group();
+      $gid = $group->add(
+         [
+            'name'         => '_test_group01',
+            'is_notify'    => '1',
+            'entities_id'  => $computer1->fields['entities_id'],
+            'is_recursive' => 1
+         ]
+      );
+      $this->assertGreaterThan(0, $gid, 'Group has not been created!');
+
+      //attach group to computer
+      $updated = $computer1->update(
+         [
+            'id'        => $computer1->getID(),
+            'groups_id' => $gid
+         ]
+      );
+      $this->assertTrue($updated, 'Group has not been attached to computer!');
+
+      $data = $this->doSearch('Computer', $search_params);
+
+      //reset computer
+      $updated = $computer1->update(
+         [
+            'id'        => $computer1->getID(),
+            'groups_id' => 0
+         ]
+      );
+      $this->assertTrue($updated, 'Group has not been detached from computer!');
+
+      // check for sql error (data key missing or empty)
+      $this->assertArrayHasKey('data', $data, $data['last_errors']);
+      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      //expecting one result
+      $this->assertEquals(1, $data['data']['totalcount']);
+   }
 }
