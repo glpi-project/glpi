@@ -343,7 +343,7 @@ class Migration {
          $params['first'] = " FIRST ";
       }
 
-      if($params['null']) {
+      if ($params['null']) {
          $params['null'] = 'NULL ';
       }
 
