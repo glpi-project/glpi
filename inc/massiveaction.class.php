@@ -881,6 +881,25 @@ class MassiveAction {
                   $values = $ma->POST['additionalvalues'];
                }
                $values[$search["field"]] = '';
+               if( $fieldname == 'itilcategories_id' ){
+                  $condition='';
+                  switch( $item->getType() ) {
+                     case 'Ticket':
+                        $condition = '`is_incident` = 1 AND `is_request` = 1' ;
+                        break ;
+                     case 'Problem':
+                        $condition = '`is_problem` = 1' ;
+                        break ;
+                     case 'Change':
+                        $condition = '`is_change` = 1' ;
+                        break ;
+                  }
+                  if( isset( $search['condition'] ) ){
+                     $search['condition'] .= ' AND '.$condition ;
+                  } else {
+                     $search['condition'] = $condition ;
+                  }
+               }
                echo $item->getValueToSelect($search, $fieldname, $values, $options);
             }
 
