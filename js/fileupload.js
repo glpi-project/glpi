@@ -4,8 +4,9 @@
  * @param      {blob}    file           The file to upload
  * @param      {Object}  editor         instance of editor (TinyMCE)
  */
-function uploadFile(file, editor) {
+function uploadFile(file, editor, name) {
    var returnTag = false;
+   var glpi_root = getGlpiRoot();
 
    //Create formdata from file to send with ajax request
    var formdata = new FormData();
@@ -15,7 +16,7 @@ function uploadFile(file, editor) {
    // upload file with ajax
    $.ajax({
       type: 'POST',
-      url: '../ajax/fileupload.php',
+      url: glpi_root+'ajax/fileupload.php',
       data: formdata,
       processData: false,
       contentType: false,
@@ -31,7 +32,7 @@ function uploadFile(file, editor) {
                   returnTag = tag.tag;
                }
                //display uploaded file
-               displayUploadedFile(element[0], tag, editor);
+               displayUploadedFile(element[0], tag, editor, name);
             } else {
                returnTag = false;
                alert(element[0].error);
@@ -55,10 +56,11 @@ function uploadFile(file, editor) {
  */
 var getFileTag = function(data) {
    var returnString = '';
+   var glpi_root = getGlpiRoot();
 
    $.ajax({
       type: 'POST',
-      url: '../ajax/getFileTag.php',
+      url: glpi_root+'ajax/getFileTag.php',
       data: {'data':data},
       dataType: 'JSON',
       async: false,
@@ -410,9 +412,10 @@ $(function() {
       // if file present, insert it in filelist
       if (typeof event.originalEvent.dataTransfer.files) {
          $.each(event.originalEvent.dataTransfer.files, function(index, element) {
-            uploadFile(element, {
-               targetElm: $(event.target).find('.fileupload_info')
-            });
+            uploadFile(element,
+                       {targetElm: $(event.target).find('.fileupload_info')},
+                       $(event.target).find('input[type=file]').attr('name').replace('[]', '')
+                      );
          });
       }
    });

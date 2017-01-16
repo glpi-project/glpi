@@ -5015,6 +5015,7 @@ class Html {
       }
 
       $p['editor_id']     = '';
+      $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';
       $p['display']       = true;
       $rand               = mt_rand();
@@ -5042,7 +5043,8 @@ class Html {
 
             $('#upload_rich_text$rand:hidden').change(function (event) {
                uploadFile($('#upload_rich_text$rand:hidden')[0].files[0],
-                            tinyMCE.get('{$p['editor_id']}'));
+                            tinyMCE.get('{$p['editor_id']}'),
+                            '{$p['name']}');
             });
          });
       ");
