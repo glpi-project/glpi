@@ -364,6 +364,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    static function showItemToAdd($tickets_id, $itemtype, $items_id, $options) {
+      global $CFG_GLPI;
 
       $params = array('rand' => mt_rand(), 'delete' => true);
 
@@ -379,7 +380,7 @@ class Item_Ticket extends CommonDBRelation{
          $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
          $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
          if ($params['delete']) {
-            $result .= " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
+            $result .= " <img src=\"".$CFG_GLPI['root_doc']."/pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
          }
          $result .= "</div>";
       }
