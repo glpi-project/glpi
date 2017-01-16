@@ -346,7 +346,7 @@ class Migration {
       if ($format) {
          if (!FieldExists($table, $field, false)) {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
-                    $params['null'] . ' ' . $params['first'].$params['after']."";
+                                      $params['null'] . ' ' . $params['first'].$params['after'];
 
             if (isset($params['update']) && strlen($params['update'])) {
                $this->migrationOneTable($table);
