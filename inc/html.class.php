@@ -5131,6 +5131,7 @@ class Html {
          $display .= "</div>"; // .fileupload
 
          $display .= Html::scriptBlock("
+         $(function() {
             var fileindex{$p['rand']} = 0;
             $('#fileupload{$p['rand']}').fileupload({
                dataType: 'json',
@@ -5188,7 +5189,7 @@ class Html {
                   });
                }
             });
-         ");
+         });");
       }
 
       if ($p['display']) {
