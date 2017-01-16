@@ -311,7 +311,7 @@ class Migration {
     *    - nodefault : do not define default value (default false)
     *    - comment   : comment to be added during field creation
     *    - after     : where adding the new field
-    *    - null      : value could be NULL (default '')
+    *    - null      : value could be NULL (default false)
    **/
    function addField($table, $field, $type, $options=array()) {
       global $DB;
@@ -323,7 +323,7 @@ class Migration {
       $params['comment']   = '';
       $params['after']     = '';
       $params['first']     = '';
-      $params['null']      = '';
+      $params['null']      = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -343,10 +343,14 @@ class Migration {
          $params['first'] = " FIRST ";
       }
 
+      if($params['null']) {
+         $params['null'] = 'NULL ';
+      }
+
       if ($format) {
          if (!FieldExists($table, $field, false)) {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
-                                      $params['null'] . ' ' . $params['first'].$params['after'];
+                                      $params['first'].$params['after'];
 
             if (isset($params['update']) && strlen($params['update'])) {
                $this->migrationOneTable($table);
