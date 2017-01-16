@@ -1054,7 +1054,7 @@ var getGlpiRoot = function() {
    var glpi_path = '';
 
    ['plugins/', 'front/', 'ajax/'].some(function(folder, index) {
-      if (current_path.indexOf(folder) !== false) {
+      if (current_path.indexOf(folder) >= 0) {
          glpi_path = current_path.split(folder)[0]
 
          // warning this return break the some loop not the function
