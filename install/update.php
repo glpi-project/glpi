@@ -800,6 +800,7 @@ function updateDbUpTo031() {
          update91to911();
 
       case "9.1.1":
+      case "9.1.2":
          include_once("update_91_92.php");
          update91to92();
          break;
