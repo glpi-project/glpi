@@ -186,7 +186,7 @@ function getTableForItemType($itemtype) {
 
       if ($plug = isPluginItemType($itemtype)) {
          /* PluginFooBar   => glpi_plugin_foos_bars */
-         /* Plugin\Foo\Bar => glpi_plugin_foos_bars */
+         /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
          $prefix .= "plugin_".strtolower($plug['plugin'])."_";
          $table   = strtolower($plug['class']);
 
