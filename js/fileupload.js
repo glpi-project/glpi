@@ -3,8 +3,9 @@
  *
  * @param      {blob}    file           The file to upload
  * @param      {Object}  editor         instance of editor (TinyMCE)
+ * @param      {String}  input_name    Name of generated input hidden (default filename)
  */
-function uploadFile(file, editor, name) {
+function uploadFile(file, editor, input_name) {
    var returnTag = false;
 
    //Create formdata from file to send with ajax request
@@ -31,7 +32,7 @@ function uploadFile(file, editor, name) {
                   returnTag = tag.tag;
                }
                //display uploaded file
-               displayUploadedFile(element[0], tag, editor, name);
+               displayUploadedFile(element[0], tag, editor, input_name);
             } else {
                returnTag = false;
                alert(element[0].error);
@@ -81,11 +82,12 @@ var getFileTag = function(data) {
  * @param      {String}  tag           The tag
  * @param      {String}  filecontainer The dom id of the list file container
  * @param      {Object}  editor        The TinyMCE editor instance
+ * @param      {String}  input_name    Name of generated input hidden (default filename)
  */
 var fileindex = 0;
-var displayUploadedFile = function(file, tag, editor, name) {
+var displayUploadedFile = function(file, tag, editor, input_name) {
    // default argument(s)
-   name = (typeof name === 'undefined') ? 'filename' : name;
+   input_name = (typeof input_name === 'undefined') ? 'filename' : input_name;
 
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);
@@ -116,13 +118,13 @@ var displayUploadedFile = function(file, tag, editor, name) {
       // File
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_'+name+'['+fileindex+']')
+         .attr('name', '_'+input_name+'['+fileindex+']')
          .attr('value', file.name).appendTo(p);
 
       // Tag
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_tag_'+name+'['+fileindex+']')
+         .attr('name', '_tag_'+input_name+'['+fileindex+']')
          .attr('value', tag.name)
          .appendTo(p);
 
@@ -410,9 +412,14 @@ $(function() {
       // if file present, insert it in filelist
       if (typeof event.originalEvent.dataTransfer.files) {
          $.each(event.originalEvent.dataTransfer.files, function(index, element) {
+            var input_name = undefined;
+            var input_file = $(event.target).find('input[type=file][name]');
+            if (input_file.length) {
+               input_name = input_file.attr('name').replace('[]', '');
+            }
             uploadFile(element,
                        {targetElm: $(event.target).find('.fileupload_info')},
-                       $(event.target).find('input[type=file]').attr('name').replace('[]', '')
+                       input_name
                       );
          });
       }
