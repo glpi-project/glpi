@@ -36,11 +36,11 @@ class AutoloadTest extends DbTestCase {
 
    public function dataItemType() {
       return [
-         ['Computer',               false, false],
-         ['Glpi\\Event',            false, false],
-         ['PluginFooBar',           'Foo', 'Bar'],
-         ['Plugin\\Foo\\Bar',       'Foo', 'Bar'],
-         ['Plugin\\Foo\\Bar\\More', 'Foo', 'Bar\\More'],
+         ['Computer',                   false, false],
+         ['Glpi\\Event',                false, false],
+         ['PluginFooBar',               'Foo', 'Bar'],
+         ['GlpiPlugin\\Foo\\Bar',       'Foo', 'Bar'],
+         ['GlpiPlugin\\Foo\\Bar\\More', 'Foo', 'Bar\\More'],
       ];
    }
 

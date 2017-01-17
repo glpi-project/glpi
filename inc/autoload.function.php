@@ -42,7 +42,7 @@ include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/based_config.php");
 
 define ('NS_GLPI', 'Glpi\\');
-define ('NS_PLUG', 'Plugin\\');
+define ('NS_PLUG', 'GlpiPlugin\\');
 
 /**
  * Is the script launch in Command line ?

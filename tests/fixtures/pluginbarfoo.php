@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Bar;
+namespace GlpiPlugin\Bar;
 
 class Foo {
 

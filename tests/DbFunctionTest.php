@@ -107,8 +107,8 @@ class DbFunctionTest extends DbTestCase {
       return array(array('glpi_computers', 'Computer', true),
                    array('glpi_events', 'Glpi\\Event', true),
                    array('glpi_users', 'User', true),
-                   array('glpi_plugin_bar_foos', 'Plugin\\Bar\\Foo', true),
-                   array('glpi_plugin_baz_foos', 'Plugin\\Baz\\Foo', false),
+                   array('glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true),
+                   array('glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false),
                    array('glpi_plugin_foo_bars', 'PluginFooBar', true),
                    array('glpi_plugin_foo_bazs', 'PluginFooBaz', false));
    }
