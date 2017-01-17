@@ -333,6 +333,7 @@ switch ($current_version) {
       update91to911();
 
    case "9.1.1":
+   case "9.1.2":
       include_once("../install/update_91_92.php");
       update91to92();
       break;
