@@ -955,11 +955,9 @@ var isImage = function(file) {
  * @return {string}   an image html tag
  */
 var getExtIcon = function(ext) {
-   var glpi_root = getGlpiRoot();
-
-   var url = glpi_root+'pics/icones/'+ext+'-dist.png';
+   var url = CFG_GLPI.root_doc+'/pics/icones/'+ext+'-dist.png';
    if (!urlExists(url)) {
-      url = glpi_root+'pics/icones/defaut-dist.png';
+      url = CFG_GLPI.root_doc+'/pics/icones/defaut-dist.png';
    }
 
    return '<img src="'+url+'" title="'+ext+'">';
@@ -1045,30 +1043,4 @@ var setCursorAtTheEnd = function(editor) {
 var stopEvent = function(event) {
    event.preventDefault();
    event.stopPropagation();
-};
-
-
-var getGlpiRoot = function() {
-   var current_path = document.location.href;
-
-   var glpi_path = '';
-
-   ['plugins/', 'front/', 'ajax/'].some(function(folder, index) {
-      if (current_path.indexOf(folder) >= 0) {
-         glpi_path = current_path.split(folder)[0]
-
-         // warning this return break the some loop not the function
-         return true;
-      }
-   });
-
-   if (glpi_path.length === 0) {
-      glpi_path = location.href    // string http://../..
-                     .split("/")   // transformed to Array,
-                     .splice(-1,1) // then remove last element,
-                     .join("/")    // transform to string,
-                     +"/";         // add a final '/'.
-   }
-
-   return glpi_path;
 };

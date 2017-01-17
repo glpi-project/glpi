@@ -6,7 +6,6 @@
  */
 function uploadFile(file, editor, name) {
    var returnTag = false;
-   var glpi_root = getGlpiRoot();
 
    //Create formdata from file to send with ajax request
    var formdata = new FormData();
@@ -16,7 +15,7 @@ function uploadFile(file, editor, name) {
    // upload file with ajax
    $.ajax({
       type: 'POST',
-      url: glpi_root+'ajax/fileupload.php',
+      url: CFG_GLPI.root_doc+'/ajax/fileupload.php',
       data: formdata,
       processData: false,
       contentType: false,
@@ -56,11 +55,10 @@ function uploadFile(file, editor, name) {
  */
 var getFileTag = function(data) {
    var returnString = '';
-   var glpi_root = getGlpiRoot();
 
    $.ajax({
       type: 'POST',
-      url: glpi_root+'ajax/getFileTag.php',
+      url: CFG_GLPI.root_doc+'/ajax/getFileTag.php',
       data: {'data':data},
       dataType: 'JSON',
       async: false,
