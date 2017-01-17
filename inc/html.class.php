@@ -5015,6 +5015,7 @@ class Html {
       }
 
       $p['editor_id']     = '';
+      $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';
       $p['display']       = true;
       $rand               = mt_rand();
@@ -5042,7 +5043,8 @@ class Html {
 
             $('#upload_rich_text$rand:hidden').change(function (event) {
                uploadFile($('#upload_rich_text$rand:hidden')[0].files[0],
-                            tinyMCE.get('{$p['editor_id']}'));
+                            tinyMCE.get('{$p['editor_id']}'),
+                            '{$p['name']}');
             });
          });
       ");
@@ -5131,6 +5133,7 @@ class Html {
          $display .= "</div>"; // .fileupload
 
          $display .= Html::scriptBlock("
+         $(function() {
             var fileindex{$p['rand']} = 0;
             $('#fileupload{$p['rand']}').fileupload({
                dataType: 'json',
@@ -5171,7 +5174,7 @@ class Html {
                               var editor = {
                                  targetElm: $('#fileupload{$p['rand']}')
                               };
-                              displayUploadedFile(file, tag[index], editor);
+                              displayUploadedFile(file, tag[index], editor, '{$p['name']}');
 
                               $('#progress{$p['rand']} .uploadbar')
                                  .text('".__('Upload successful')."')
@@ -5188,7 +5191,7 @@ class Html {
                   });
                }
             });
-         ");
+         });");
       }
 
       if ($p['display']) {
@@ -5909,6 +5912,15 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"].'/js/common.js');
       self::redefineAlert();
       self::redefineConfirm();
+
+      // transfer some var of php to javascript
+      // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+      echo self::scriptBlock("
+         var CFG_GLPI  = {
+            'url_base': '".$CFG_GLPI["url_base"]."',
+            'root_doc': '".$CFG_GLPI["root_doc"]."',
+         };
+      ");
 
       // add Ajax display message after redirect
       Html::displayAjaxMessageAfterRedirect();

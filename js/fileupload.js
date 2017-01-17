@@ -4,7 +4,7 @@
  * @param      {blob}    file           The file to upload
  * @param      {Object}  editor         instance of editor (TinyMCE)
  */
-function uploadFile(file, editor) {
+function uploadFile(file, editor, name) {
    var returnTag = false;
 
    //Create formdata from file to send with ajax request
@@ -15,7 +15,7 @@ function uploadFile(file, editor) {
    // upload file with ajax
    $.ajax({
       type: 'POST',
-      url: '../ajax/fileupload.php',
+      url: CFG_GLPI.root_doc+'/ajax/fileupload.php',
       data: formdata,
       processData: false,
       contentType: false,
@@ -31,7 +31,7 @@ function uploadFile(file, editor) {
                   returnTag = tag.tag;
                }
                //display uploaded file
-               displayUploadedFile(element[0], tag, editor);
+               displayUploadedFile(element[0], tag, editor, name);
             } else {
                returnTag = false;
                alert(element[0].error);
@@ -58,7 +58,7 @@ var getFileTag = function(data) {
 
    $.ajax({
       type: 'POST',
-      url: '../ajax/getFileTag.php',
+      url: CFG_GLPI.root_doc+'/ajax/getFileTag.php',
       data: {'data':data},
       dataType: 'JSON',
       async: false,
@@ -83,7 +83,10 @@ var getFileTag = function(data) {
  * @param      {Object}  editor        The TinyMCE editor instance
  */
 var fileindex = 0;
-var displayUploadedFile = function(file, tag, editor) {
+var displayUploadedFile = function(file, tag, editor, name) {
+   // default argument(s)
+   name = (typeof name === 'undefined') ? 'filename' : name;
+
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);
    var iteration = 0;
@@ -113,13 +116,13 @@ var displayUploadedFile = function(file, tag, editor) {
       // File
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_filename['+fileindex+']')
-         .attr('value',file.name).appendTo(p);
+         .attr('name', '_'+name+'['+fileindex+']')
+         .attr('value', file.name).appendTo(p);
 
       // Tag
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_tag_filename['+fileindex+']')
+         .attr('name', '_tag_'+name+'['+fileindex+']')
          .attr('value', tag.name)
          .appendTo(p);
 
@@ -407,9 +410,10 @@ $(function() {
       // if file present, insert it in filelist
       if (typeof event.originalEvent.dataTransfer.files) {
          $.each(event.originalEvent.dataTransfer.files, function(index, element) {
-            uploadFile(element, {
-               targetElm: $(event.target).find('.fileupload_info')
-            });
+            uploadFile(element,
+                       {targetElm: $(event.target).find('.fileupload_info')},
+                       $(event.target).find('input[type=file]').attr('name').replace('[]', '')
+                      );
          });
       }
    });

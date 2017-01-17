@@ -955,10 +955,11 @@ var isImage = function(file) {
  * @return {string}   an image html tag
  */
 var getExtIcon = function(ext) {
-   var url = '../pics/icones/'+ext+'-dist.png';
+   var url = CFG_GLPI.root_doc+'/pics/icones/'+ext+'-dist.png';
    if (!urlExists(url)) {
-      url = '../pics/icones/defaut-dist.png';
+      url = CFG_GLPI.root_doc+'/pics/icones/defaut-dist.png';
    }
+
    return '<img src="'+url+'" title="'+ext+'">';
 };
 
