@@ -5250,7 +5250,7 @@ class Search {
       $opts  = &self::getOptions($itemtype);
 
       foreach ($opts as $num => $opt) {
-         if (is_array($opt)
+         if (is_array($opt) && isset($opt['table'])
              && ($opt['table'] == $table)
              && ($opt['field'] == $field)) {
             return $num;
