@@ -2792,6 +2792,7 @@ class Search {
          } else {
             $condition = $item->add_where;
          }
+         unset($item->add_where);
       }
 
       return $condition;
