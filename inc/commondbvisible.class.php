@@ -118,6 +118,8 @@ abstract class CommonDBVisible extends CommonDBTM {
     *
     * @since version 0.83
     * @since version 9.2 moved from each class to parent class
+    *
+    * @return integer
     */
    public function countVisibilities() {
 
@@ -131,6 +133,8 @@ abstract class CommonDBVisible extends CommonDBTM {
     * Show visibility configuration
     *
     * @since version 9.2 moved from each class to parent class
+    *
+    * @return void
    **/
    public function showVisibility() {
       global $DB, $CFG_GLPI;
