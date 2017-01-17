@@ -43,6 +43,8 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 }
 global $CFG_GLPI;
 
+define('GLPI_DISPLAY', false);
+
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';

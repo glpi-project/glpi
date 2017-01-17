@@ -62,7 +62,9 @@ define("GLPI_CSRF_MAX_TOKENS", "100");
 define("GLPI_FORCE_EMPTY_SQL_MODE", "1");
 
 //wheteher to display (echo) per default
-define('GLPI_DISPLAY', true);
+if (!defined('GLPI_DISPLAY')) {
+   define('GLPI_DISPLAY', true);
+}
 
 // rights
 define("READ", 1);

@@ -2096,7 +2096,7 @@ class CommonDBTM extends CommonGLPI {
       $date_creation_exists = ($this->getField('date_creation') != NOT_AVAILABLE);
       $date_mod_exists = ($this->getField('date_mod') != NOT_AVAILABLE);
 
-      $colspan = $options['colspan'];
+      $colspan = (isset($options['colspan']) ? $options['colspan'] : '');
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
          $colspan = 1;
