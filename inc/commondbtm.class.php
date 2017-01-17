@@ -1528,6 +1528,10 @@ class CommonDBTM extends CommonGLPI {
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
       Plugin::doHook("pre_item_restore", $this);
+      if (!is_array($this->input)) {
+         // $input clear by a hook to cancel retore
+         return false;
+      }
 
       if ($this->restoreInDB()) {
          $this->addMessageOnRestoreAction();
