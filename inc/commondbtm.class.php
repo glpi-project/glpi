@@ -2490,6 +2490,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->right !== $right) {
          return false;
       }
+      unset($this->right);
 
       switch ($right) {
          case READ :
