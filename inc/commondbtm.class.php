@@ -2467,6 +2467,26 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }
+
+      /* Hook to restrict user right on current item @since 9.2 */
+      /* hook sample
+         function hook_computer_can(Computer $comp) {
+            // no right to see computer from group 1
+            if (isset($comp->right)) {
+               if ($comp->getField('groups_id') == 1) {
+                  $comp->right = false;
+               }
+            } else {
+               $comp->add_where = "glpi_computers.groups_id != 1";
+            }
+         }
+      */
+      $this->right = $right;
+      Plugin::doHook("item_can", $this);
+      if ($this->right !== $right) {
+         return false;
+      }
+
       switch ($right) {
          case READ :
             // Personnal item

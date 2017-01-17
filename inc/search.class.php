@@ -2579,26 +2579,29 @@ class Search {
    static function addDefaultWhere($itemtype) {
       global $CFG_GLPI;
 
+      $condition = '';
       switch ($itemtype) {
          case 'Reminder' :
-            return Reminder::addVisibilityRestrict();
+            $condition = Reminder::addVisibilityRestrict();
+            break;
 
          case 'RSSFeed' :
-            return RSSFeed::addVisibilityRestrict();
+            $condition = RSSFeed::addVisibilityRestrict();
+            break;
 
          case 'Notification' :
             if (!Config::canView()) {
-               return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
+               $condition = " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
 
          // No link
          case 'User' :
             // View all entities
-            if (Session::isViewAllEntities()) {
-               return "";
+            if (!Session::isViewAllEntities()) {
+               $condition = getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
             }
-            return getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
+            break;
 
          case 'ProjectTask' :
             $condition  = '';
@@ -2612,7 +2615,7 @@ class Search {
             }
             $condition .= ") ";
 
-            return $condition;
+            break;
 
          case 'Project' :
             $condition = '';
@@ -2630,7 +2633,7 @@ class Search {
                }
                $condition .= ") ";
             }
-            return $condition;
+            break;
 
          case 'Ticket' :
             // Same structure in addDefaultJoin
@@ -2709,7 +2712,7 @@ class Search {
                }
                $condition .= ") ";
             }
-            return $condition;
+            break;
 
          case 'Change' :
          case 'Problem':
@@ -2761,27 +2764,38 @@ class Search {
 
                $condition .= ") ";
             }
-            return $condition;
+            break;;
 
          case 'Config':
             $availableContexts = array('core') + $_SESSION['glpi_plugins'];
             $availableContexts = implode("', '", $availableContexts);
             $condition = "`context` IN ('$availableContexts')";
-            return $condition;
+            break;
 
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
                $function = 'plugin_'.$plug['plugin'].'_addDefaultWhere';
                if (function_exists($function)) {
-                  $out = $function($itemtype);
-                  if (!empty($out)) {
-                     return $out;
-                  }
+                  $condition = $function($itemtype);
                }
             }
-            return "";
       }
+
+      /* Hook to restrict user right on current itemtype */
+      /* @since 9.2, see CommonDBTM::can for code sample */
+      $item = getItemForItemtype($itemtype);
+      Plugin::doHook("item_can", $item);
+      if (isset($item->add_where)) {
+         if ($condition) {
+            $condition = "($condition) AND ({$item->add_where})";
+         } else {
+            $condition = $item->add_where;
+         }
+         unset($item->add_where);
+      }
+
+      return $condition;
    }
 
 
