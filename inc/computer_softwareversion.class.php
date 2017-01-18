@@ -841,6 +841,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th></tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>";
          echo _n('License', 'Licenses', Session::getPluralNumber())."&nbsp;&nbsp;";
@@ -932,6 +933,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
+      } else {
+         echo "<p class='center b'>".__('No item found')."</p>";
       }
 
       echo "</div>\n";
