@@ -39,13 +39,14 @@ opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n";
 foreach (readdir(DIRHANDLE)){ 
 	if ($_ ne '..' && $_ ne '.'){
 		if (-d "$dir/$_"){
-			if ($_ !~ m/.svn/i && $_ !~ m/CVS/i && $_ !~ m/lib/i){
-				
+            # Excluded directories
+			if ($_ !~ m/.git/i && $_ !~ m/lib/i && $_ !~ m/plugins/i && $_ !~ m/vendor/i){
 				do_dir("$dir/$_");
 			}
 		} else {
 	 		if(!(-l "$dir/$_")){
-				if ((index($_,".php",0)!=-1)||(index($_,".txt",0)!=-1)||(index($_,".css",0)!=-1)){
+                # Included filetypes
+				if ((index($_,".php",0)!=-1)||(index($_,".txt",0)!=-1)||(index($_,".css",0)!=-1)||(index($_,".js",0)!=-1)){
 					do_file("$dir/$_");
 	 			}
 			}
@@ -77,7 +78,7 @@ sub do_file{
 		} 
 
 		if ($status !~ m/END/){
-			if ($_ =~ m/\/\*/){
+			if ($_ =~ m/\/\*\*/){
 				$status="BEGIN";
 				##### ADD NEW HEADERS
 				open(HEADER_FILE,"HEADER");
@@ -93,10 +94,4 @@ sub do_file{
 	close(TMP_FILE); 
 	
 	system("cp -f /tmp/tmp_glpi.txt $file");
-
-	
-
 }
-
-
-
