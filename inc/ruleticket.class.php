@@ -244,8 +244,9 @@ class RuleTicket extends Rule {
                   if ($action->fields['field'] == 'locations_id' && isset($output['items_locations'])) {
                      $output['locations_id'] = $output['items_locations'];
                   }
-                  if ($action->fields['field'] == 'groups_id' && isset($output['items_groups'])) {
-                     $output['groups_id'] = $output['items_groups'];
+                  if ($action->fields['field'] == '_groups_id_requester'
+                      && isset($output['items_groups'])) {
+                     $output['_groups_id_requester'] = $output['items_groups'];
                   }
                   break;
 
