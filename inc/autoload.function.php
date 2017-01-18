@@ -45,19 +45,19 @@ define ('NS_GLPI', 'Glpi\\');
 define ('NS_PLUG', 'GlpiPlugin\\');
 
 /**
- * Is the script launch in Command line ?
+ * Is the script launch in Command line?
  *
  * @return boolean
-**/
+ */
 function isCommandLine() {
    return (PHP_SAPI == 'cli');
 }
 
 /**
- * Is the script launched From API ?
+ * Is the script launched From API?
  *
  * @return boolean
-**/
+ */
 function isAPI() {
    if (strpos($_SERVER["SCRIPT_FILENAME"], 'apirest.php') !== false) {
       return true;
@@ -72,10 +72,10 @@ function isAPI() {
 /**
  * Determine if an object name is a plugin one
  *
- * @param $classname    class name to analyze
+ * @param string $classname class name to analyze
  *
- * @return false or an object containing plugin name and class name
-**/
+ * @return boolean[object false or an object containing plugin name and class name
+ */
 function isPluginItemType($classname) {
 
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/", $classname, $matches)) {
@@ -96,18 +96,16 @@ function isPluginItemType($classname) {
 }
 
 
-
-/// Translation functions
-/// since version 0.84
-
 /**
  * For translation
  *
- * @param $str      string
- * @param $domain   string domain used (default is glpi, may be plugin name)
+ * @since 0.84
  *
- * @return translated string
-**/
+ * @param string $str    String to translate
+ * @param string $domain domain used (default is glpi, may be plugin name)
+ *
+ * @return string translated string
+ */
 function __($str, $domain='glpi') {
    global $TRANSLATE;
 
@@ -126,11 +124,13 @@ function __($str, $domain='glpi') {
 /**
  * For translation
  *
- * @param $str      string
- * @param $domain   string domain used (default is glpi, may be plugin name)
+ * @since 0.84
+ *
+ * @param string $str    String to translate
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return protected string (with htmlentities)
-**/
+ */
 function __s($str, $domain='glpi') {
    return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');
 }
@@ -139,14 +139,14 @@ function __s($str, $domain='glpi') {
 /**
  * For translation
  *
- * @since version 0.84
+ * @since 0.84
  *
- * @param $ctx       string    context
- * @param $str       string   to translate
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @param string $ctx    context
+ * @param string $str    to translate
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @return protected string (with htmlentities)
-**/
+ * @return string protected string (with htmlentities)
+ */
 function _sx($ctx, $str, $domain='glpi') {
    return htmlentities(_x($ctx, $str, $domain), ENT_QUOTES, 'UTF-8');
 }
@@ -155,11 +155,13 @@ function _sx($ctx, $str, $domain='glpi') {
 /**
  * to delete echo in translation
  *
- * @param $str      string
- * @param $domain   string domain used (default is glpi, may be plugin name)
+ * @since 0.84
  *
- * @return echo string
-**/
+ * @param string $str    String to translate
+ * @param string $domain domain used (default is glpi, may be plugin name)
+ *
+ * @return void
+ */
 function _e($str, $domain='glpi') {
    echo __($str, $domain);
 }
@@ -168,13 +170,15 @@ function _e($str, $domain='glpi') {
 /**
  * For translation
  *
- * @param $sing      string in singular
- * @param $plural    string in plural
- * @param $nb               to select singular or plurial
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @since 0.84
  *
- * @return translated string
-**/
+ * @param string  $sing   in singular
+ * @param string  $plural in plural
+ * @param integer $nb     to select singular or plurial
+ * @param string  $domain domain used (default is glpi, may be plugin name)
+ *
+ * @return string translated string
+ */
 function _n($sing, $plural, $nb, $domain='glpi') {
    global $TRANSLATE;
 
@@ -185,18 +189,16 @@ function _n($sing, $plural, $nb, $domain='glpi') {
 /**
  * For translation
  *
- * @since version 0.84
+ * @since 0.84
  *
- * @param $sing      string in singular
- * @param $plural    string in plural
- * @param $nb               to select singular or plurial
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @param string  $sing   in singular
+ * @param string  $plural in plural
+ * @param integer $nb     to select singular or plurial
+ * @param string  $domain domain used (default is glpi, may be plugin name)
  *
- * @return protected string (with htmlentities)
-**/
+ * @return string protected string (with htmlentities)
+ */
 function _sn($sing, $plural, $nb, $domain='glpi') {
-   global $TRANSLATE;
-
    return htmlentities(_n($sing, $plural, $nb, $domain), ENT_QUOTES, 'UTF-8');
 }
 
@@ -204,12 +206,14 @@ function _sn($sing, $plural, $nb, $domain='glpi') {
 /**
  * For context in translation
  *
- * @param $ctx       string   context
- * @param $str       string   to translate
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @since 0.84
+ *
+ * @param string $ctx    context
+ * @param string $str    to translate
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
-**/
+ */
 function _x($ctx, $str, $domain='glpi') {
 
    // simulate pgettext
@@ -227,12 +231,14 @@ function _x($ctx, $str, $domain='glpi') {
 /**
  * Echo for context in translation
  *
- * @param $ctx       string   context
- * @param $str       string   to translated
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @since 0.84
+ *
+ * @param string $ctx    context
+ * @param string $str    to translated
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
-**/
+ */
 function _ex($ctx, $str, $domain='glpi') {
 
    // simulate pgettext
@@ -250,14 +256,16 @@ function _ex($ctx, $str, $domain='glpi') {
 /**
  * For context in plural translation
  *
- * @param $ctx       string   context
- * @param $sing      string   in singular
- * @param $plural    string   in plural
- * @param $nb                 to select singular or plurial
- * @param $domain    string domain used (default is glpi, may be plugin name)
+ * @since 0.84
+ *
+ * @param string  $ctx    context
+ * @param string  $sing   in singular
+ * @param string  $plural in plural
+ * @param integer $nb     to select singular or plurial
+ * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
-**/
+ */
 function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
 
    // simulate pgettext
@@ -278,12 +286,14 @@ function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
 
 
 /**
- * To load classes
+ * Classes loader
  *
- * @param $classname : class to load
-**/
+ * @param string $classname : class to load
+ *
+ * @return void
+ */
 function glpi_autoload($classname) {
-   global $DEBUG_AUTOLOAD, $CFG_GLPI;
+   global $DEBUG_AUTOLOAD;
    static $notfound = array('xStates'    => true,
                             'xAllAssets' => true, );
 
@@ -298,7 +308,7 @@ function glpi_autoload($classname) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = str_replace('\\', '/', strtolower($plug['class']));
-      // Is the plugin activate ?
+      // Is the plugin active?
       // Command line usage of GLPI : need to do a real check plugin activation
       if (isCommandLine()) {
          $plugin = new Plugin();

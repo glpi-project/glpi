@@ -52,7 +52,6 @@ class Alert extends CommonDBTM {
    const ACTION      = 5;
    const PERIODICITY = 6;
 
-
    function prepareInputForAdd($input) {
 
       if (!isset($input['date']) || empty($input['date'])) {
@@ -65,12 +64,12 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts of an alert type for an item
     *
-    *@param $itemtype   ID of the type to clear
-    *@param $ID         ID of the item to clear
-    *@param $alert_type ID of the alert type to clear
+    *@param string  $itemtype   ID of the type to clear
+    *@param string  $ID         ID of the item to clear
+    *@param integer $alert_type ID of the alert type to clear
     *
-    *@return nothing
-   **/
+    *@return void
+    */
    function clear($itemtype, $ID, $alert_type) {
 
       return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], 1);
@@ -82,22 +81,19 @@ class Alert extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $itemtype   ID of the type to clear
-    * @param $ID         ID of the item to clear
+    * @param string  $itemtype ID of the type to clear
+    * @param integer $ID       ID of the item to clear
     *
     * @return boolean
-   **/
+    */
    function cleanDBonItemDelete($itemtype, $ID) {
 
       return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
    }
 
+   static function dropdown($options = array()) {
 
-   /**
-    * @param $options array
-   **/
-   static function dropdown($options=array()) {
-
+      $p = [];
       $p['name']           = 'alert';
       $p['value']          = 0;
       $p['display']        = true;
@@ -123,8 +119,12 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * @param $options array
-   **/
+    * Builds a Yes/No dropdown
+    *
+    * @param array $options Display options
+    *
+    * @return void|string (see $options['display'])
+    */
    static function dropdownYesNo($options = array()) {
 
       $p['name']           = 'alert';
@@ -150,10 +150,14 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * @param $name
-    * @param $value
-    * @param $options array
-   **/
+    * ?
+    *
+    * @param string $name    Dropdown name
+    * @param string $value   Dropdown selected value
+    * @param array  $options Display options
+    *
+    * @return void|string (see $options['display'])
+    */
    static function dropdownIntegerNever($name, $value, $options=array()) {
 
       $p['min']      = 1;
@@ -186,12 +190,14 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * @param $itemtype  (default '')
-    * @param $items_id  (default '')
-    * @param $type      (default '')
+    * Does alert exists
     *
-    * @return integer of false
-   **/
+    * @param string  $itemtype (default '')
+    * @param integer $items_id (default '')
+    * @param integer $type     (default '')
+    *
+    * @return integer|boolean
+    */
    static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
 
@@ -204,12 +210,16 @@ class Alert extends CommonDBTM {
 
 
    /**
+    * Get date of alert
+    *
     * @since version 0.84
     *
-    * @param $itemtype  (default '')
-    * @param $items_id  (default '')
-    * @param $type      (default '')
-   **/
+    * @param string  $itemtype (default '')
+    * @param integer $items_id (default '')
+    * @param integer $type     (default '')
+    *
+    * @return mixed|boolean
+    */
    static function getAlertDate($itemtype='', $items_id='', $type='') {
       global $DB;
 
@@ -222,11 +232,13 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * @param $itemtype
-    * @param $items_id
+    * Display last alert
     *
-    * @return nothing
-   **/
+    * @param string  $itemtype Item type
+    * @param integer $items_id Item ID
+    *
+    * @return void
+    */
    static function displayLastAlert($itemtype, $items_id) {
       global $DB;
 

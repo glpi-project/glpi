@@ -44,23 +44,24 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Ajax {
 
-
    /**
     * Create modal window
     * After display it using $name.dialog("open");
     *
     * @since version 0.84
     *
-    * @param $name            name of the js object
-    * @param $url             URL to display in modal
-    * @param $options array   of possible options:
+    * @param string   $name    name of the js object
+    * @param string   $url     URL to display in modal
+    * @param string[] $options Possible options:
     *     - width      (default 800)
     *     - height     (default 400)
-    *     - modal      is a modal window ? (default true)
+    *     - modal      is a modal window? (default true)
     *     - container  specify a html element to render (default empty to html.body)
     *     - title      window title (default empty)
-    *     - display    display or get string ? (default true)
-   **/
+    *     - display    display or get string? (default true)
+    *
+    * @return void|string (see $options['display'])
+    */
    static function createModalWindow($name, $url, $options=array() ) {
 
       $param = array('width'           => 800,
@@ -123,15 +124,17 @@ class Ajax {
     *
     * @since version 0.84
     *
-    * @param $name            name of the js object
-    * @param $options array   of possible options:
+    * @param string $name    name of the js object
+    * @param array  $options Possible options:
     *          - width       (default 800)
     *          - height      (default 400)
-    *          - modal       is a modal window ? (default true)
+    *          - modal       is a modal window? (default true)
     *          - container   specify a html element to render (default empty to html.body)
     *          - title       window title (default empty)
-    *          - display     display or get string ? (default true)
-   **/
+    *          - display     display or get string? (default true)
+    *
+    * @return void|string (see $options['display'])
+    */
    static function createFixedModalWindow($name, $options=array() ) {
 
       $param = array('width'     => 800,
@@ -181,16 +184,18 @@ class Ajax {
     *
     * @since version 0.85
     *
-    * @param $domid           DOM ID of the js object
-    * @param $url             URL to display in modal
-    * @param $options array   of possible options:
+    * @param string $domid   DOM ID of the js object
+    * @param string $url     URL to display in modal
+    * @param array  $options Possible options:
     *          - width          (default 800)
     *          - height         (default 400)
-    *          - modal          is a modal window ? (default true)
+    *          - modal          is a modal window? (default true)
     *          - title          window title (default empty)
-    *          - display        display or get string ? (default true)
-    *          - reloadonclose  reload main page on close ? (default false)
-   **/
+    *          - display        display or get string? (default true)
+    *          - reloadonclose  reload main page on close? (default false)
+    *
+    * @return void|string (see $options['display'])
+    */
    static function createIframeModalWindow($domid, $url, $options=array() ) {
 
       $param = array('width'         => 1050,
@@ -242,10 +247,13 @@ class Ajax {
    /**
     * Input text used as search system in ajax system
     *
-    * @param $id   ID of the ajax item
-    * @param $size size of the input text field (default 4)
     * @deprecated since version 0.85
-   **/
+    *
+    * @param string  $id   ID of the ajax item
+    * @param integer $size size of the input text field (default 4)
+    *
+    * @return string
+    */
    static function displaySearchTextForDropdown($id, $size=4) {
       echo self::getSearchTextForDropdown($id, $size);
    }
@@ -253,41 +261,39 @@ class Ajax {
 
    /**
     * Input text used as search system in ajax system
+    *
+    * @deprecated since version 0.85
+    *
     * @since version 0.84
     *
-    * @param $id   ID of the ajax item
-    * @param $size size of the input text field (default 4)
-    * @deprecated since version 0.85
-   **/
+    * @param string  $id   ID of the ajax item
+    * @param integer $size size of the input text field (default 4)
+    *
+    * @return string
+    */
    static function getSearchTextForDropdown($id, $size=4) {
-      global $CFG_GLPI;
-
       //TRANS: %s is the character used as wildcard in ajax search
-      // return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
-      //        "\" type='text' ondblclick=\"this.value='".
-      //        $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
-      return "<input title=\"".sprintf(__s('Search (%s for all)'), '*').
-             "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
+      return "<input title=\"" . sprintf(__s('Search (%s for all)'), '*') .
+              "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
 
 
    /**
     *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
     *
-    * @param $tabdiv_id                ID of the div containing the tabs (default 'tabspanel')
-    * @param $tabdivcontent_id         ID of the div containing the content loaded by tabs
-    *                                  (default 'tabcontent')
-    * @param $tabs               array of tabs to create :
+    * @param string  $tabdiv_id        ID of the div containing the tabs (default 'tabspanel')
+    * @param string  $tabdivcontent_id ID of the div containing the content loaded by tabs (default 'tabcontent')
+    * @param array   $tabs             Tabs to create : tabs is array('key' => array('title'=> 'x',
     *                                  tabs is array('key' => array('title'=> 'x',
-    *                                                                url    => 'url_toload',
-    *                                                                params => 'url_params')...
-    * @param $type                     itemtype for active tab
-    * @param $ID                       ID of element for active tab (default 0)
-    * @param $orientation              orientation of tabs (default vertical may also be horizontal)
-    * @param array $options Display options
+    *                                                                   url    => 'url_toload',
+    *                                                                   params => 'url_params')...
+    * @param string  $type             itemtype for active tab
+    * @param integer $ID               ID of element for active tab (default 0)
+    * @param string  $orientation      orientation of tabs (default vertical may also be horizontal)
+    * @param array   $options          Display options
     *
-    * @return nothing
-   **/
+    * @return void
+    */
    static function createTabs(
       $tabdiv_id='tabspanel',
       $tabdivcontent_id='tabcontent',
@@ -299,7 +305,7 @@ class Ajax {
    ) {
       global $CFG_GLPI;
 
-      /// TODO need to clean params !!
+      // TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
 
       $mainclass = '';
@@ -400,16 +406,18 @@ class Ajax {
    /**
     * Javascript code for update an item when another item changed
     *
-    * @param $toobserve             id (or array of id) of the select to observe
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $events       array    of the observed events (default 'change')
-    * @param $minsize               minimum size of data to update content (default -1)
-    * @param $buffertime            minimum time to wait before reload (default -1)
-    * @param $forceloadfor array    of content which must force update content
-    * @param $display      boolean  display or get string (default true)
-   **/
+    * @param string  $toobserve    id (or array of id) of the select to observe
+    * @param string  $toupdate     id of the item to update
+    * @param string  $url          Url to get datas to update the item
+    * @param array   $parameters   of parameters to send to ajax URL
+    * @param array   $events       of the observed events (default 'change')
+    * @param integer $minsize      minimum size of data to update content (default -1)
+    * @param integer $buffertime   minimum time to wait before reload (default -1)
+    * @param array   $forceloadfor of content which must force update content
+    * @param boolean $display      display or get string (default true)
+    *
+    * @return void|string (see $display)
+    */
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
                                      $events=array("change"), $minsize=-1, $buffertime=-1,
                                      $forceloadfor=array(), $display=true) {
@@ -430,12 +438,14 @@ class Ajax {
    /**
     * Javascript code for update an item when a select item changed
     *
-    * @param $toobserve             id of the select to observe
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $display      boolean  display or get string (default true)
-   **/
+    * @param string  $toobserve  id of the select to observe
+    * @param string  $toupdate   id of the item to update
+    * @param string  $url        Url to get datas to update the item
+    * @param array   $parameters of parameters to send to ajax URL
+    * @param boolean $display    display or get string (default true)
+    *
+    * @return void|string (see $display)
+    */
    static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array(),
                                            $display=true) {
 
@@ -447,20 +457,20 @@ class Ajax {
    /**
     * Javascript code for update an item when a Input text item changed
     *
-    * @param $toobserve             id of the Input text to observe
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $minsize               minimum size of data to update content (default -1)
-    * @param $buffertime            minimum time to wait before reload (default -1)
-    * @param $forceloadfor array    of content which must force update content
-    * @param $display      boolean  display or get string (default true)
+    * @param string  $toobserve    id of the Input text to observe
+    * @param string  $toupdate     id of the item to update
+    * @param string  $url          Url to get datas to update the item
+    * @param array   $parameters   of parameters to send to ajax URL
+    * @param integer $minsize      minimum size of data to update content (default -1)
+    * @param integer $buffertime   minimum time to wait before reload (default -1)
+    * @param array   $forceloadfor of content which must force update content
+    * @param boolean $display      display or get string (default true)
     *
-   **/
+    * @return void|string (see $display)
+    */
    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
                                               $minsize=-1, $buffertime=-1, $forceloadfor=array(),
                                               $display=true) {
-      global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
          $forceloadfor = array('*');
@@ -481,16 +491,18 @@ class Ajax {
    /**
     * Javascript code for update an item when another item changed (Javascript code only)
     *
-    * @param $toobserve             id (or array of id) of the select to observe
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $events       array    of the observed events (default 'change')
-    * @param $minsize               minimum size of data to update content (default -1)
-    * @param $buffertime            minimum time to wait before reload (default -1)
-    * @param $forceloadfor array    of content which must force update content
-    * @param $display      boolean  display or get string (default true)
-   **/
+    * @param string  $toobserve    id (or array of id) of the select to observe
+    * @param string  $toupdate     id of the item to update
+    * @param string  $url          Url to get datas to update the item
+    * @param array   $parameters   of parameters to send to ajax URL
+    * @param array   $events       of the observed events (default 'change')
+    * @param integer $minsize      minimum size of data to update content (default -1)
+    * @param integer $buffertime   minimum time to wait before reload (default -1)
+    * @param array   $forceloadfor of content which must force update content
+    * @param boolean $display      display or get string (default true)
+    *
+    * @return void|string (see $display)
+    */
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
                                            $events=array("change"), $minsize = -1, $buffertime=-1,
                                            $forceloadfor=array(), $display=true) {
@@ -509,7 +521,7 @@ class Ajax {
             $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
                '$event',
                function(event) {";
-            // TODO manage buffer time !! ?
+            // TODO manage buffer time !!?
             // if ($buffertime > 0) {
             //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
             //          last$zone$event = new Date().getTime();
@@ -552,13 +564,15 @@ class Ajax {
    /**
     * Javascript code for update an item (Javascript code only)
     *
-    * @param $options    array    of options
+    * @param array   $options Options :
     *  - toupdate : array / Update a specific item on select change on dropdown
     *               (need value_fieldname, to_update,
     *                url (@see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
-    * @param $display    boolean  display or get string (default true)
-   **/
+    * @param boolean $display display or get string (default true)
+    *
+    * @return void|string (see $display)
+    */
    static function commonDropdownUpdateItem($options, $display=true) {
 
       $field     = '';
@@ -617,14 +631,16 @@ class Ajax {
    /**
     * Javascript code for update an item (Javascript code only)
     *
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $toobserve             id of another item used to get value in case of __VALUE__ used
+    * @param string       $toupdate   id of the item to update
+    * @param string       $url        Url to get datas to update the item
+    * @param array        $parameters of parameters to send to ajax URL
+    * @param string|array $toobserve  id of another item used to get value in case of __VALUE__ used or array    of id to get value in case of __VALUE#__ used (default '')
     *                               or
     *                      array    of id to get value in case of __VALUE#__ used (default '')
-    * @param $display      boolean  display or get string (default true)
-   **/
+    * @param boolean      $display    display or get string (default true)
+    *
+    * @return void|string (see $display)
+    */
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="",
                                     $display=true) {
 
@@ -664,14 +680,15 @@ class Ajax {
    /**
     * Javascript code for update an item
     *
-    * @param $toupdate              id of the item to update
-    * @param $url                   Url to get datas to update the item
-    * @param $parameters   array    of parameters to send to ajax URL
-    * @param $toobserve             id of another item used to get value in case of __VALUE__ used
+    * @param string  $toupdate   id of the item to update
+    * @param string  $url        Url to get datas to update the item
+    * @param array   $parameters of parameters to send to ajax URL
+    * @param string  $toobserve  id of another item used to get value in case of __VALUE__ used
     *                               (default '')
-    * @param $display      boolean  display or get string (default true)
+    * @param boolean $display    display or get string (default true)
     *
-   **/
+    * @return void|string (see $display)
+    */
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
       $output  = "<script type='text/javascript'>";

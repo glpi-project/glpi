@@ -413,7 +413,7 @@ class CommonGLPI {
     * @param integer    $tabnum       tab number (default 1)
     * @param boolean    $withtemplate is a template object ? (default 0)
     *
-    * @return boolean true
+    * @return boolean
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       return false;

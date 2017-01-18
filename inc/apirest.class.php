@@ -30,9 +30,9 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @since version 9.1
-*/
+/**
+ * @since version 9.1
+ */
 
 class APIRest extends API {
 
@@ -43,17 +43,21 @@ class APIRest extends API {
    protected $debug           = 0;
    protected $format          = "json";
 
-
    /**
+    *
+    * @param integer $nb Unused value
+    *
+    * @return string
+    *
     * @see CommonGLPI::GetTypeName()
-   **/
+    */
    public static function getTypeName($nb=0) {
       return __('Rest API');
    }
 
 
    /**
-    * parse url and http body to retrieve :
+    * Parse url and http body to retrieve :
     *  - HTTP VERB (GET/POST/DELETE/PUT)
     *  - Resource : Rest endpoint
     *  - Identifier
@@ -61,8 +65,8 @@ class APIRest extends API {
     *
     *  And send to method corresponding identified resource
     *
-    * @return     json with response or error
-   **/
+    * @return mixed json with response or error
+    */
    public function call() {
 
       //parse http request and find parts
@@ -278,14 +282,14 @@ class APIRest extends API {
    /**
     * Retrieve and check itemtype from $this->url_elements
     *
-    * @param $index       integer    we'll find itemtype in this index of $this->url_elements
-    *                                (default o)
-    * @param $recursive   boolean    can we go depper or we trigger an http error if we fail to find itemtype?
-    *                                (default true)
-    * @param $all_assets  boolean    if we can have allasset virtual type (default false)
+    * @param integer $index      we'll find itemtype in this index of $this->url_elements
+    *                            (default o)
+    * @param boolean $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
+    *                            (default true)
+    * @param boolean $all_assets if we can have allasset virtual type (default false)
     *
     * @return boolean
-   **/
+    */
    private function getItemtype($index=0, $recursive=true, $all_assets= false) {
 
       if (isset($this->url_elements[$index])) {
@@ -319,8 +323,8 @@ class APIRest extends API {
     * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
     * it always find the second
     *
-    * @return int id of current itemtype (or false if not found)
-   **/
+    * @return integer|boolean id of current itemtype (or false if not found)
+    */
    private function getId() {
 
       $id            = isset($this->url_elements[1]) && is_numeric($this->url_elements[1])
@@ -342,10 +346,10 @@ class APIRest extends API {
    /**
     * Construct this->parameters from query string and http body
     *
-    * @param $skip_check_content_type   (default false)
-    *
-    * @param bool $is_inline_doc    Is the current request asks to display inline documentation ?
+    * @param boolean $is_inline_doc Is the current request asks to display inline documentation
     *  This will remove the default behavior who set content-type to application/json
+    *
+    * @return void
     */
    public function parseIncomingParams($is_inline_doc = false) {
 
@@ -458,16 +462,20 @@ class APIRest extends API {
       }
 
       $this->parameters = $parameters;
+
+      return "";
    }
 
 
    /**
     * Generic function to send a message and an http code to client
     *
-    * @param $response           string    message or array of data to send
-    * @param $httpcode           integer   http code (default 200)
-    *                                      (see: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param $aditionnalheaders  array     headers to send with http response (must be an array(key => value))
+    * @param string  $response          message or array of data to send
+    * @param integer $httpcode          http code (default 200)
+    *                                   (see: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    * @param array   $aditionnalheaders headers to send with http response (must be an array(key => value))
+    *
+    * @return void
     */
    public function returnResponse($response, $httpcode=200, $aditionnalheaders=array()) {
 
@@ -507,10 +515,11 @@ class APIRest extends API {
    /**
     * Display the APIRest Documentation in Html (parsed from markdown)
     *
-    * @param $file    string   relative path of documentation file (default 'apirest.md')
-   **/
+    * @param string $file relative path of documentation file (default 'apirest.md')
+    *
+    * @return void
+    */
    public function inlineDocumentation($file = "apirest.md") {
-      global $CFG_GLPI;
 
       if ($this->format == "html") {
          parent::inlineDocumentation($file);
