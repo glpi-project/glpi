@@ -1293,7 +1293,7 @@ class User extends CommonDBTM {
                    && ($v[$i][$field]['count'] > 0)) {
 
                   unset($v[$i][$field]['count']);
-                  foreach( Toolbox::addslashes_deep($v[$i][$field]) as $lgroup){
+                  foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
                      $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)" ;
                   }
                   $query = "SELECT `id`
