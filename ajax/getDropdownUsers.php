@@ -79,11 +79,7 @@ if (!isset($_POST['page'])) {
 
 $entity_restrict = -1;
 if (isset($_POST['entity_restrict'])) {
-   $entity_restrict = Toolbox::stripslashes_deep($_POST['entity_restrict']);
-   $entity_restrict = json_decode($entity_restrict);
-   if (json_last_error() != JSON_ERROR_NONE) {
-      $entity_restrict = $_POST['entity_restrict'];
-   }
+   $entity_restrict = Toolbox::jsonDecode($_POST['entity_restrict']);
 }
 
 if ($one_item < 0) {
