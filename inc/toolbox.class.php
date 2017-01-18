@@ -2548,4 +2548,32 @@ class Toolbox {
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;
    }
+
+   /**
+    * Decode JSON in GLPI
+    * Because json can have been modified from addslashes_deep
+    *
+    * @param string $encoded Encoded JSON
+    *
+    * @return mixed
+    */
+   static public function jsonDecode($encoded) {
+      if (!is_string($encoded)) {
+         Toolbox::logDebug('Only strings can be json to decode!');
+         return $encoded;
+      }
+
+      $json = json_decode($encoded);
+
+      if (json_last_error() != JSON_ERROR_NONE) {
+         //something went wrong... Try to stripslashes before decoding.
+         $json = json_decode(self::stripslashes_deep($encoded));
+         if (json_last_error() != JSON_ERROR_NONE) {
+            Toolbox::logDebug('Unable to decode JSON string! Is this really JSON?');
+            return $encoded;
+         }
+      }
+
+      return $json;
+   }
 }
