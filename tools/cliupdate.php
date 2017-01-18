@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 if (in_array('--help', $_SERVER['argv'])) {
    die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ] [ --fr ]\n");

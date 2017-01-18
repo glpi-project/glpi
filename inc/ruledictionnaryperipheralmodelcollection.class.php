@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_peripheralmodels";

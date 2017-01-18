@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 /**
  * DO NOT FORGET TO REPLACE XX AND XY OCCURENCES WITH CORRECT VALUES

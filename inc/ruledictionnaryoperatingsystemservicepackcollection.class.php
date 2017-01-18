@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystemservicepacks";

@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 class RuleDictionnaryMonitorModel extends RuleDictionnaryDropdown {
 

@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 $AJAX_INCLUDE = 1;
 if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {

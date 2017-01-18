@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownSoftwareLicense.php")) {
    $AJAX_INCLUDE = 1;

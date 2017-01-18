@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 // since version 0.84
 // Use it greping 'Errors' to show files with troubles

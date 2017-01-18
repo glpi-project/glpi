@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 class RuleDictionnaryOperatingSystemArchitectureCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystemarchitectures";

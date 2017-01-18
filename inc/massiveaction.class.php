@@ -35,9 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/** @file
-* @brief
-*/
 
 /**
  * Class that manages all the massive actions

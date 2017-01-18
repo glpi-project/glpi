@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 // Include plugin if it is a plugin table
 if (!strstr($_GET['itemtype'], "Plugin")) {

@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");

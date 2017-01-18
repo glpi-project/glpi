@@ -31,9 +31,6 @@
  */
 
 
-/** @file
-* @brief
-*/
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);

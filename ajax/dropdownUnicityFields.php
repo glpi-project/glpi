@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownUnicityFields.php")) {
    include ('../inc/includes.php');

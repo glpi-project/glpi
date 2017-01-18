@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 // And Marco Gaiarin for ldap features
 
 if (!defined('GLPI_ROOT')) {

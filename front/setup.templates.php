@@ -33,9 +33,6 @@
 // Based on:
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer
-/** @file
-* @brief
-*/
 
 include ('../inc/includes.php');
 

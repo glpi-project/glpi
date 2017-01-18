@@ -34,9 +34,6 @@
  // Ensure current directory when run from crontab
  chdir(__DIR__);
 
-/** @file
-* @brief
-*/
 ini_set("memory_limit","-1");
 ini_set("max_execution_time", "0");
 

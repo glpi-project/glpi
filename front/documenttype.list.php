@@ -31,9 +31,6 @@
  */
 
 
-/** @file
-* @brief
-*/
 
 include ('../inc/includes.php');
 

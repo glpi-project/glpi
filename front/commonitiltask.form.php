@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 // autoload include in objecttask.form (tickettask, problemtask,...)
 if (!defined('GLPI_ROOT')) {

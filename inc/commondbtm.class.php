@@ -35,9 +35,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/** @file
-* @brief
-*/
 
 /**
 *  Common DataBase Table Manager Class - Persistent Object

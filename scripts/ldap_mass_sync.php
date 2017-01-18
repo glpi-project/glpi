@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);

@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_networkequipmentmodels";
