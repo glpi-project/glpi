@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[GLPI.glpipot091]
+[GLPI.glpipot92]
 file_filter = locales/<lang>.po
 source_file = locales/glpi.pot
 source_lang = en_GB

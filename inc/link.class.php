@@ -608,7 +608,7 @@ class Link extends CommonDBTM {
       ];
 
       if (!Session::isCron()
-          && !isCommandLine()) {
+          && !isCommandLine() && isset($_SESSION['glpiID'])) {
          $newtab['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
       }
       $tab[] = $newtab;

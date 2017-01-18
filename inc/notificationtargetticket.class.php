@@ -565,7 +565,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $restrict .= " AND `is_private` = '0'";
          }
 
-         $restrict .= " ORDER BY `date` DESC, `id` ASC";
+         $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
 
          //Followup infos
          $followups          = getAllDatasFromTable('glpi_ticketfollowups', $restrict);

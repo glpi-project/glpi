@@ -159,7 +159,7 @@ class DropdownTest extends DbTestCase {
       $ret = Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
       $this->assertEquals($expected, $ret);
       // switch back to default language
-      $_SESSION["glpilanguage"] = Session::loadLanguage( 'en_US' );
+      $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
 
       ////////////////////////////////
       // test for other dropdown types

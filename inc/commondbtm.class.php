@@ -935,7 +935,13 @@ class CommonDBTM extends CommonGLPI {
 
       $link = $this->getLinkURL();
 
-      return "<a ".$p['linkoption']." href='$link'>".$this->getNameID($options)."</a>";
+      $label = $this->getNameID($options);
+      $title = '';
+      if (!preg_match('/title=/', $p['linkoption'])) {
+         $title = $label;
+      }
+
+      return "<a ".$p['linkoption']." href='$link' $title>$label</a>";
    }
 
 
@@ -1522,6 +1528,10 @@ class CommonDBTM extends CommonGLPI {
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
       Plugin::doHook("pre_item_restore", $this);
+      if (!is_array($this->input)) {
+         // $input clear by a hook to cancel retore
+         return false;
+      }
 
       if ($this->restoreInDB()) {
          $this->addMessageOnRestoreAction();
@@ -2461,6 +2471,15 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }
+
+      /* Hook to restrict user right on current item @since 9.2 */
+      $this->right = $right;
+      Plugin::doHook("item_can", $this);
+      if ($this->right !== $right) {
+         return false;
+      }
+      unset($this->right);
+
       switch ($right) {
          case READ :
             // Personnal item

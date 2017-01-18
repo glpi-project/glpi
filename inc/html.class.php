@@ -2100,7 +2100,7 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
-      if (TicketValidation::getValidateRights()) {
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt                              = array();
          $opt['reset']                     = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
@@ -3827,9 +3827,9 @@ class Html {
          }
       }
 
+      // init tinymce
       Html::scriptStart();
-      $js = "
-      $(function() {
+      $js = "$(function() {
          tinyMCE.init({
             language: '$language',
             browser_spellcheck: true,
@@ -3845,13 +3845,16 @@ class Html {
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
-               'code fullscreen paste_upload_doc'
+               'code fullscreen',
+               'textcolor colorpicker',
+               // load glpi_upload_doc specific plugin if we need to upload files
+               typeof tinymce.AddOnManager.PluginManager.lookup.glpi_upload_doc != 'undefined'
+                  ? 'glpi_upload_doc'
+                  : '',
             ],
-            toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
-
+            toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
          });
-      });
-   ";
+      });";
 
       if ($display) {
          echo  Html::scriptBlock($js);
@@ -3976,7 +3979,7 @@ class Html {
       // Print the "where am I?"
       echo "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      echo sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -4164,7 +4167,7 @@ class Html {
 
       echo "<td width='20%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      printf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -5012,6 +5015,7 @@ class Html {
       }
 
       $p['editor_id']     = '';
+      $p['name']          = 'filename';
       $p['filecontainer'] = 'fileupload_info';
       $p['display']       = true;
       $rand               = mt_rand();
@@ -5039,7 +5043,8 @@ class Html {
 
             $('#upload_rich_text$rand:hidden').change(function (event) {
                uploadFile($('#upload_rich_text$rand:hidden')[0].files[0],
-                            tinyMCE.get('{$p['editor_id']}'));
+                            tinyMCE.get('{$p['editor_id']}'),
+                            '{$p['name']}');
             });
          });
       ");
@@ -5128,6 +5133,7 @@ class Html {
          $display .= "</div>"; // .fileupload
 
          $display .= Html::scriptBlock("
+         $(function() {
             var fileindex{$p['rand']} = 0;
             $('#fileupload{$p['rand']}').fileupload({
                dataType: 'json',
@@ -5168,7 +5174,7 @@ class Html {
                               var editor = {
                                  targetElm: $('#fileupload{$p['rand']}')
                               };
-                              displayUploadedFile(file, tag[index], editor);
+                              displayUploadedFile(file, tag[index], editor, '{$p['name']}');
 
                               $('#progress{$p['rand']} .uploadbar')
                                  .text('".__('Upload successful')."')
@@ -5185,7 +5191,7 @@ class Html {
                   });
                }
             });
-         ");
+         });");
       }
 
       if ($p['display']) {
@@ -5906,6 +5912,15 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"].'/js/common.js');
       self::redefineAlert();
       self::redefineConfirm();
+
+      // transfer some var of php to javascript
+      // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
+      echo self::scriptBlock("
+         var CFG_GLPI  = {
+            'url_base': '".$CFG_GLPI["url_base"]."',
+            'root_doc': '".$CFG_GLPI["root_doc"]."',
+         };
+      ");
 
       // add Ajax display message after redirect
       Html::displayAjaxMessageAfterRedirect();

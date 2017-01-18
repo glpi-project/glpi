@@ -467,6 +467,11 @@ input.submit[type=reset] {
    top: 105px;
 }
 
+#page .mce-btn-group:not(:first-child) {
+   border-left: 1px solid #d9d9d9;
+   padding-left: 0;
+   margin-left: 0;
+}
 
 
 .entity_select:hover {

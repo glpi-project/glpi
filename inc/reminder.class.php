@@ -878,7 +878,9 @@ class Reminder extends CommonDBVisible {
 
       $DONE_EVENTS = '';
       if (!$options['display_done_events']) {
-         $DONE_EVENTS = "AND state != ".Planning::DONE;
+         $DONE_EVENTS = "AND (state = ".Planning::TODO."
+                              OR (state = ".Planning::INFO."
+                                  AND `end` > NOW()))";
       }
 
       if ($ASSIGN) {

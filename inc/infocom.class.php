@@ -133,7 +133,7 @@ class Infocom extends CommonDBChild {
 
       // Can exists on template
       if (Session::haveRight(self::$rightname, READ)) {
-         $nn = 0;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
