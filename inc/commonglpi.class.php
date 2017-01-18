@@ -112,7 +112,7 @@ class CommonGLPI {
     *
     * @param string $typeform object class name to add tab on form
     *
-    * @return array of types
+    * @return array array of types
    **/
    static function getOtherTabs($typeform) {
 
@@ -131,7 +131,7 @@ class CommonGLPI {
     * @param array $options Options
     *     - withtemplate is a template view ?
     *
-    * @return array containing the tabs
+    * @return array array containing the tabs
    **/
    function defineTabs($options=array()) {
 
@@ -149,7 +149,7 @@ class CommonGLPI {
     * @param array $options Options
     *     - withtemplate is a template view ?
     *
-    * @return array containing the onglets
+    * @return array array containing the tabs
    **/
    final function defineAllTabs($options=array()) {
       global $CFG_GLPI;
@@ -191,7 +191,7 @@ class CommonGLPI {
     * @param array  $ong      defined tabs
     * @param array  $options  options (for withtemplate)
     *
-    * @return $this
+    * @return CommonGLPI
    **/
    function addStandardTab($itemtype, array &$ong, array $options) {
 
@@ -247,7 +247,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array for menu
+    * @return array array for menu
    **/
    static function getMenuContent() {
 
@@ -319,7 +319,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array for menu
+    * @return array array for menu
    **/
    static function getAdditionalMenuContent() {
       return false;
@@ -331,7 +331,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array of forbidden actions
+    * @return array array of forbidden actions
    **/
    static function getForbiddenActionsForMenu() {
       return array();
@@ -343,7 +343,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array of additional options
+    * @return array array of additional options
    **/
    static function getAdditionalMenuOptions() {
       return false;
@@ -355,7 +355,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return array of additional options
+    * @return array array of additional options
    **/
    static function getAdditionalMenuLinks() {
       return false;
@@ -367,7 +367,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return character menu shortcut key
+    * @return string character menu shortcut key
    **/
    static function getMenuShorcut() {
       return '';
@@ -379,7 +379,7 @@ class CommonGLPI {
     *
     * @since version 0.85
     *
-    * @return character menu shortcut key
+    * @return string character menu shortcut key
    **/
    static function getMenuName() {
       return static::getTypeName(Session::getPluralNumber());
@@ -413,7 +413,7 @@ class CommonGLPI {
     * @param integer    $tabnum       tab number (default 1)
     * @param boolean    $withtemplate is a template object ? (default 0)
     *
-    * @return true
+    * @return boolean true
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       return false;
@@ -428,7 +428,7 @@ class CommonGLPI {
     * @param boolean    $withtemplate is a template object ? (default 0)
     * @param array      $options      additional options to pass
     *
-    * @return true
+    * @return boolean true
    **/
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options=array()) {
 
@@ -497,7 +497,7 @@ class CommonGLPI {
     * @param string  $text text to display
     * @param integer $nb   number of items (default 0)
     *
-    *  @return array containing the onglets
+    *  @return array array containing the onglets
    **/
    static function createTabEntry($text, $nb=0) {
 
@@ -1098,7 +1098,7 @@ class CommonGLPI {
     *
     * @since version 0.90
     *
-    * @return bool
+    * @return boolean
     */
    public static function isLayoutWithMain() {
       return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], array('classic', 'vsplit')));
@@ -1110,7 +1110,7 @@ class CommonGLPI {
     *
     * @since version 0.90
     *
-    * @return bool
+    * @return boolean
     */
    public static function isLayoutExcludedPage() {
       global $CFG_GLPI;
@@ -1367,7 +1367,7 @@ class CommonGLPI {
     *
     * @since version 0.84
     *
-    * @return all the options
+    * @return array all the options
    **/
    static function getAvailableDisplayOptions() {
       return array();
