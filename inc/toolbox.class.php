@@ -1594,9 +1594,9 @@ class Toolbox {
    /**
     * Get a web page. Use proxy if configured
     *
-    * @param $url    string   to retrieve
-    * @param $msgerr string   set if problem encountered (default NULL)
-    * @param $rec    integer  internal use only Must be 0 (default 0)
+    * @param string  $url    URL to retrieve
+    * @param string  $msgerr set if problem encountered (default NULL)
+    * @param integer $rec    internal use only Must be 0 (default 0)
     *
     * @return content of the page (or empty)
    **/
@@ -1606,125 +1606,65 @@ class Toolbox {
       $content = "";
       $taburl  = parse_url($url);
 
-      // Connection directe
-      if (empty($CFG_GLPI["proxy_name"])) {
-         $hostscheme  = '';
-         $defaultport = 80;
-         // Manage standard HTTPS port : scheme detection or port 443
-         if ((isset($taburl["scheme"]) && $taburl["scheme"]=='https')
-            || (isset($taburl["port"]) && $taburl["port"]=='443')) {
-            $hostscheme  = 'ssl://';
-            $defaultport = 443;
-         }
-         if ($fp = @fsockopen($hostscheme.$taburl["host"],
-                              (isset($taburl["port"]) ? $taburl["port"] : $defaultport),
-                              $errno, $errstr, 1)) {
+      $hostscheme  = '';
+      $defaultport = 80;
 
-            if (isset($taburl["path"]) && ($taburl["path"] != '/')) {
-               $toget = $taburl["path"];
-               if (isset($taburl["query"])) {
-                  $toget .= '?'.$taburl["query"];
-               }
-               // retrieve path + args
-               $request = "GET $toget HTTP/1.1\r\n";
-            } else {
-               $request = "GET / HTTP/1.1\r\n";
-            }
-
-            $request .= "Host: ".$taburl["host"]."\r\n";
-         } else {
-            if (isset($msgerr)) {
-               //TRANS: %s is the error string
-               $msgerr = sprintf(__('Connection failed. If you use a proxy, please configure it. (%s)'),
-                                 $errstr);
-            }
-            return "";
-         }
-
-      } else { // Connection using proxy
-         $fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
-
-         if ($fp) {
-            $request  = "GET $url HTTP/1.1\r\n";
-            $request .= "Host: ".$taburl["host"]."\r\n";
-            if (!empty($CFG_GLPI["proxy_user"])) {
-               $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
-                           self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)) . "\r\n";
-            }
-
-         } else {
-            if (isset($msgerr)) {
-               //TRANS: %s is the error string
-               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'), $errstr);
-            }
-            return "";
-         }
+      // Manage standard HTTPS port : scheme detection or port 443
+      if ((isset($taburl["scheme"]) && $taburl["scheme"]=='https')
+         || (isset($taburl["port"]) && $taburl["port"]=='443')) {
+         $hostscheme  = 'ssl://';
+         $defaultport = 443;
       }
 
-      $request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
-      $request .= "Connection: Close\r\n\r\n";
+      $ch = curl_init($url);
+      $opts = [
+         CURLOPT_URL             => $url,
+         CURLOPT_USERAGENT       => "GLPI/".trim($CFG_GLPI["version"]),
+         CURLOPT_RETURNTRANSFER  => 1
+      ];
 
-      fwrite($fp, $request);
+      if (!empty($CFG_GLPI["proxy_name"])) {
+         // Connection using proxy
+         $opts += [
+            CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
+            CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
+            CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
+            CURLOPT_HTTPPROXYTUNNEL => 1
+         ];
 
-      $header = true ;
-      $redir  = false;
-      $errstr = "";
-      while (!feof($fp)) {
-         if ($buf = fgets($fp, 1024)) {
-            if ($header) {
-
-               if (strlen(trim($buf)) == 0) {
-                  // Empty line = end of header
-                  $header = false;
-
-               } else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
-                  if ($rec < 9) {
-                     $desturl = trim($rep[1]);
-                     $taburl2 = parse_url($desturl);
-
-                     if (isset($taburl2['host'])) {
-                        // Redirect to another host
-                        return (self::getURLContent($desturl, $errstr, $rec+1));
-                     }
-                     // redirect to same host
-                     return (self::getURLContent((isset($taburl['scheme'])?$taburl['scheme']:'http').
-                                                 "://".$taburl['host'].
-                                                 (isset($taburl['port'])?':'.$taburl['port']:'').
-                                                  $desturl, $errstr, $rec+1));
-                  }
-
-                  $errstr = "Too deep";
-                  break;
-
-               } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
-                  // HTTP 200 = OK
-
-               } else if (preg_match("/^HTTP.*302/", $buf)) {
-                  // HTTP 302 = Moved Temporarily
-                  $redir = true;
-
-               } else if (preg_match("/^HTTP/", $buf)) {
-                  // Other HTTP status = error
-                  $errstr = trim($buf);
-                  break;
-               }
-
-            } else {
-               // Body
-               $content .= $buf;
-            }
+         if (!empty($CFG_GLPI["proxy_user"])) {
+            $opts += [
+               CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
+               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)
+            ];
          }
-      } // eof
 
-      fclose($fp);
+      }
 
-      if (empty($content) && isset($msgerr)) {
-         if (empty($errstr)) {
-            $msgerr = __('No data available on the web site');
+      curl_setopt_array($ch, $opts);
+      $content = curl_exec($ch);
+      $errstr = curl_error($ch);
+      curl_close($ch);
+
+      if ($errstr) {
+         if (empty($CFG_GLPI["proxy_name"])) {
+            //TRANS: %s is the error string
+            $msgerr = sprintf(
+               __('Connection failed. If you use a proxy, please configure it. (%s)'),
+               $errstr
+            );
          } else {
             //TRANS: %s is the error string
-            $msgerr = sprintf(__('Impossible to connect to site (%s)'),$errstr);
+            $msgerr = sprintf(
+               __('Failed to connect to the proxy server (%s)'),
+               $errstr
+            );
          }
+         return '';
+      }
+
+      if (empty($content)) {
+         $msgerr = __('No data available on the web site');
       }
       return $content;
    }
