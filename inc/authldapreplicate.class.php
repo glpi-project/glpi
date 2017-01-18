@@ -37,37 +37,25 @@
 
 /**
  *  Class used to manage LDAP replicate config
-**/
+ */
 class AuthLdapReplicate extends CommonDBTM {
 
    static $rightname = 'config';
-
 
    static function canCreate() {
       return static::canUpdate();
    }
 
-
-   /**
-    * @since version 0.85
-   **/
    static function canPurge() {
       return static::canUpdate();
    }
 
-
-   /**
-    * @since version 0.84
-    *
-    * @return string
-   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-
 
    function prepareInputForAdd($input) {
 
@@ -77,22 +65,19 @@ class AuthLdapReplicate extends CommonDBTM {
       return $input;
    }
 
-
    function prepareInputForUpdate($input) {
 
-      if (isset($input["port"]) && (intval($input["port"]) == 0)) {
-         $input["port"] = 389;
-      }
-      return $input;
+      return $this->prepareInputForAdd($input);
    }
-
 
    /**
     * Form to add a replicate to a ldap server
     *
-    * @param $target       target page for add new replicate
-    * @param $master_id    master ldap server ID
-   **/
+    * @param string  $target    target page for add new replicate
+    * @param integer $master_id master ldap server ID
+    *
+    * @return void
+    */
    static function addNewReplicateForm($target, $master_id) {
 
       echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";

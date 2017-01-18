@@ -45,27 +45,19 @@ class APIClient extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-
-
    static function canCreate() {
       return Session::haveRight(static::$rightname, UPDATE);
    }
-
 
    static function canPurge() {
       return Session::haveRight(static::$rightname, UPDATE);
    }
 
-
    static function getTypeName($nb = 0) {
       return _n("API client", "API clients", $nb);
    }
 
-
-   /**
-    * @see CommonGLPI::defineTabs()
-   **/
-   function defineTabs($options=array()) {
+   function defineTabs($options = array()) {
 
       $ong = array();
       $this->addDefaultFormTab($ong)
@@ -73,7 +65,6 @@ class APIClient extends CommonDBTM {
 
       return $ong;
    }
-
 
    function getSearchOptionsNew() {
       $tab = [];
@@ -157,8 +148,7 @@ class APIClient extends CommonDBTM {
       return $tab;
    }
 
-
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = array()) {
 
       switch ($field) {
          case 'dolog_method' :
@@ -173,7 +163,14 @@ class APIClient extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-
+   /**
+    * Show form
+    *
+    * @param integer $ID      Item ID
+    * @param array   $options Options
+    *
+    * @return void
+    */
    function showForm ($ID, $options=array()) {
 
       $this->initForm($ID, $options);
@@ -242,11 +239,9 @@ class APIClient extends CommonDBTM {
       $this->showFormButtons($options);
    }
 
-
    function prepareInputForAdd($input) {
       return $this->prepareInputForUpdate($input);
    }
-
 
    function prepareInputForUpdate($input) {
 
@@ -283,7 +278,10 @@ class APIClient extends CommonDBTM {
       return $input;
    }
 
-
+   /**
+    *
+    * @return array
+    */
    static function getLogMethod() {
 
       return array(self::DOLOG_DISABLED   => __('Disabled'),
@@ -292,14 +290,12 @@ class APIClient extends CommonDBTM {
                                                 Session::getPluralNumber()));
    }
 
-
    /**
     * Get app token checking that it is unique
     *
     * @return string app token
-   **/
+    */
    static function getUniqueAppToken() {
-      global $DB;
 
       $ok = false;
       do {

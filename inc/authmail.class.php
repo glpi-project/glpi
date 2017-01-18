@@ -37,7 +37,7 @@
 
 /**
  *  Class used to manage Auth mail config
-**/
+ */
 class AuthMail extends CommonDBTM {
 
 
@@ -46,11 +46,9 @@ class AuthMail extends CommonDBTM {
 
    static $rightname = 'config';
 
-
    static function getTypeName($nb=0) {
       return _n('Mail server', 'Mail servers', $nb);
    }
-
 
    function prepareInputForUpdate($input) {
 
@@ -60,19 +58,13 @@ class AuthMail extends CommonDBTM {
       return $input;
    }
 
-
    static function canCreate() {
       return static::canUpdate();
    }
 
-
-   /**
-    * @since version 0.85
-   **/
    static function canPurge() {
       return static::canUpdate();
    }
-
 
    function prepareInputForAdd($input) {
 
@@ -82,8 +74,7 @@ class AuthMail extends CommonDBTM {
       return $input;
    }
 
-
-   function defineTabs($options=array()) {
+   function defineTabs($options = array()) {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
@@ -92,7 +83,6 @@ class AuthMail extends CommonDBTM {
 
       return $ong;
    }
-
 
    function getSearchOptionsNew() {
       $tab = [];
@@ -165,15 +155,14 @@ class AuthMail extends CommonDBTM {
       return $tab;
    }
 
-
    /**
     * Print the auth mail form
     *
-    * @param $ID        Integer : ID of the item
-    * @param $options   array
+    * @param integer $ID      ID of the item
+    * @param array   $options Options
     *
-    * @return Nothing (display)
-   **/
+    * @return void (display)
+    */
    function showForm($ID, $options=array()) {
 
       if (!Config::canUpdate()) {
@@ -234,7 +223,11 @@ class AuthMail extends CommonDBTM {
       }
    }
 
-
+   /**
+    * Show test mail form
+    *
+    * @return void
+    */
    function showFormTestMail() {
 
       $ID = $this->getField('id');
@@ -262,10 +255,10 @@ class AuthMail extends CommonDBTM {
 
 
    /**
-    * Is the Mail authentication used ?
+    * Is the Mail authentication used?
     *
     * @return boolean
-   **/
+    */
    static function useAuthMail() {
       return (countElementsInTable('glpi_authmails', "`is_active`") > 0);
    }
@@ -274,12 +267,12 @@ class AuthMail extends CommonDBTM {
    /**
     * Test a connexion to the IMAP/POP server
     *
-    * @param $connect_string     mail server
-    * @param $login              user login
-    * @param $password           user password
+    * @param string $connect_string mail server
+    * @param string $login          user login
+    * @param string $password       user password
     *
-    * @return authentification succeeded ?
-   **/
+    * @return boolean authentification succeeded?
+    */
    static function testAuth($connect_string, $login, $password) {
 
       $auth = new Auth();
@@ -291,13 +284,13 @@ class AuthMail extends CommonDBTM {
    /**
     * Authentify a user by checking a specific mail server
     *
-    * @param $auth         identification object
-    * @param $login        user login
-    * @param $password     user password
-    * @param $mail_method  mail_method array to use
+    * @param object $auth        identification object
+    * @param string $login       user login
+    * @param string $password    user password
+    * @param string $mail_method mail_method array to use
     *
-    * @return identification object
-   **/
+    * @return object identification object
+    */
    static function mailAuth($auth, $login, $password, $mail_method) {
 
       if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
@@ -320,15 +313,15 @@ class AuthMail extends CommonDBTM {
    /**
     * Try to authentify a user by checking all the mail server
     *
-    * @param $auth      identification object
-    * @param $login     user login
-    * @param $password  user password
-    * @param $auths_id  auths_id already used for the user (default 0)
-    * @param $break     if user is not found in the first directory,
-    *                   stop searching or try the following ones (true by default)
+    * @param object  $auth     identification object
+    * @param string  $login    user login
+    * @param string  $password user password
+    * @param integer $auths_id auths_id already used for the user (default 0)
+    * @param boolean $break    if user is not found in the first directory,
+    *                          stop searching or try the following ones (true by default)
     *
-    * @return identification object
-   **/
+    * @return object identification object
+    */
    static function tryMailAuth($auth, $login, $password, $auths_id=0, $break=true) {
 
       if ($auths_id <= 0) {
@@ -349,13 +342,11 @@ class AuthMail extends CommonDBTM {
       return $auth;
    }
 
-
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
    }
 
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && $item->can($item->getField('id'), READ)) {
          $ong = array();
@@ -365,7 +356,6 @@ class AuthMail extends CommonDBTM {
       }
       return '';
    }
-
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 

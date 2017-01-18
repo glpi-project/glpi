@@ -44,9 +44,6 @@ class APIXmlrpc extends API {
    protected $format = "json";
 
 
-   /**
-    * @see CommonGLPI::GetTypeName()
-    */
    public static function getTypeName($nb = 0) {
       return __('XMLRPC API');
    }
@@ -62,7 +59,7 @@ class APIXmlrpc extends API {
     *
     * @since version 9.1
     *
-    * @return     xmlrpc response
+    * @return mixed xmlrpc response
     */
    public function call() {
       $resource = $this->parseIncomingParams();
@@ -235,6 +232,8 @@ class APIXmlrpc extends API {
     * Construct this->parameters from POST data
     *
     * @since version 9.1
+    *
+    * @return string
     */
    public function parseIncomingParams() {
       $parameters = array();
@@ -270,9 +269,11 @@ class APIXmlrpc extends API {
     *
     * @since version 9.1
     *
-    * @param mixed    $response          string message or array of data to send
-    * @param integer  $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array    $aditionnalheaders headers to send with http response (must be an array(key => value))
+    * @param mixed   $response          string message or array of data to send
+    * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    * @param array   $aditionnalheaders headers to send with http response (must be an array(key => value))
+    *
+    * @return void
     */
    protected function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
       if (empty($httpcode)) {
@@ -299,9 +300,9 @@ class APIXmlrpc extends API {
     *
     * @since version 9.1
     *
-    * @param  array  $response the response array to escape
+    * @param  array $response the response array to escape
     *
-    * @return array  the escaped response.
+    * @return array the escaped response.
     */
    protected function escapekeys($response = array()) {
       if (is_array($response)) {
