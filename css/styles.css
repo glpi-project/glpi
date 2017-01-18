@@ -699,7 +699,7 @@ input.submit[type=reset] {
    .layout_vsplit.form table.tab_cadre_pager {
       margin: 0;
       border: 0;
-      width: 150px;
+      min-width: 150px;
    }
 
    .layout_vsplit.form .ui-tabs-panel table.tab_cadre_pager {

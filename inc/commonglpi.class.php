@@ -868,12 +868,11 @@ class CommonGLPI {
                 __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
-         echo "<td><a href=\"" . $glpilisturl . "\">";
-         if ($glpilisttitle) {
-            echo $glpilisttitle;
-         } else {
-            _e('List');
+         if (!$glpilisttitle) {
+            $glpilisttitle = _e('List');
          }
+         echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
+         echo Toolbox::substr($glpilisttitle, 0, 100)."...";
          echo "</a></td>";
 
          $name = $this->getTypeName(1);
@@ -900,7 +899,7 @@ class CommonGLPI {
          echo "</td>";
 
          if ($current !== false) {
-            echo "<td width='40px'>".($current+1) . "/" . count($glpilistitems)."</td>";
+            echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
          }
 
          if ($next >= 0) {
