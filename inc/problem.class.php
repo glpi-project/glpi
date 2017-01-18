@@ -422,6 +422,19 @@ class Problem extends CommonITILObject {
 
       $tab += $this->getSearchOptionsMain();
 
+      // to adjust itilcategories_id condition for dropdown when in massiveaction
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && ($_SESSION['glpiactiveprofile']['interface'] == 'central')
+          && strstr($_SERVER['PHP_SELF'], "/ajax/dropdownMassiveAction.php")) {
+         $condition = '`is_problem` = 1' ;
+         if( isset( $tab[7]['condition'] ) ){
+            $tab[7]['condition'] .= ' AND '.$condition ;
+         } else {
+            $tab[7]['condition'] = $condition ;
+         }
+      }
+
       $tab[63]['table']         = 'glpi_items_problems';
       $tab[63]['field']         = 'id';
       $tab[63]['name']          = _x('quantity','Number of items');
