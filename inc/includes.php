@@ -90,7 +90,7 @@ if (isset($_REQUEST)) {
    $_REQUEST = Toolbox::sanitize($_REQUEST);
 }
 if (isset($_FILES)) {
-   foreach($_FILES as &$file) {
+   foreach ($_FILES as &$file) {
       foreach ($file['name'] as &$filename) {
          $filename = Toolbox::sanitize($filename);
       }
