@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -66,8 +66,7 @@ class AllTests {
       $suite = new PHPUnit_Framework_TestSuite('GLPI');
       $suite->addTest(System_AllTests::suite());
       $suite->addTest(Install_AllTests::suite());
-//      $suite->addTest(Framework_AllTests::suite());
+      //      $suite->addTest(Framework_AllTests::suite());
       return $suite;
    }
 }
-?>

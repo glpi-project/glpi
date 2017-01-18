@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -91,18 +91,18 @@ class Install extends PHPUnit_Framework_TestCase {
       $DB->connect();
 
       // Old devicetype for compatibility
-      define("MOBOARD_DEVICE",1);
-      define("PROCESSOR_DEVICE",2);
-      define("RAM_DEVICE",3);
-      define("HDD_DEVICE",4);
-      define("NETWORK_DEVICE",5);
-      define("DRIVE_DEVICE",6);
-      define("CONTROL_DEVICE",7);
-      define("GFX_DEVICE",8);
-      define("SND_DEVICE",9);
-      define("PCI_DEVICE",10);
-      define("CASE_DEVICE",11);
-      define("POWER_DEVICE",12);
+      define("MOBOARD_DEVICE", 1);
+      define("PROCESSOR_DEVICE", 2);
+      define("RAM_DEVICE", 3);
+      define("HDD_DEVICE", 4);
+      define("NETWORK_DEVICE", 5);
+      define("DRIVE_DEVICE", 6);
+      define("CONTROL_DEVICE", 7);
+      define("GFX_DEVICE", 8);
+      define("SND_DEVICE", 9);
+      define("PCI_DEVICE", 10);
+      define("CASE_DEVICE", 11);
+      define("POWER_DEVICE", 12);
 
       // Install a fresh 0.72.3 DB
       $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.72.3-empty.sql");
@@ -250,4 +250,3 @@ class Install_AllTests  {
       return $suite;
    }
 }
-?>

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -79,4 +79,3 @@ foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       // }
    }
 }
-?>

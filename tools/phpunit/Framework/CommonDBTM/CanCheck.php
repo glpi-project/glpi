@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -314,7 +314,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[2]);   // Child 1
-      $this->assertFalse($rel->can(-1, CREATE,$input));
+      $this->assertFalse($rel->can(-1, CREATE, $input));
 
       $input = array('contacts_id' =>  $idc[3],    // Child 2
                      'suppliers_id' => $ids[3]);   // Child 3
@@ -368,7 +368,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $input=array('entities_id' => -1);
       $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in not existing entity");
 
-      $this->assertTrue(Session::changeActiveEntities($ent2,true));
+      $this->assertTrue(Session::changeActiveEntities($ent2, true));
 
       $this->assertTrue($entity->can(0, READ), "Fail: can't read root entity");
       $this->assertTrue($entity->can($ent0, READ), "Fail: can't read entity 0");
@@ -399,7 +399,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($entity->can(-1, CREATE, $input),
                          "Fail: can create entity in not existing entity");
 
-      $this->assertTrue(Session::changeActiveEntities($ent2,false));
+      $this->assertTrue(Session::changeActiveEntities($ent2, false));
       $input=array('entities_id' => $ent1);
       $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
@@ -411,4 +411,3 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in 2.1");
    }
 }
-?>

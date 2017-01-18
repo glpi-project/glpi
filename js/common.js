@@ -120,7 +120,7 @@ function hidemenu(idMenu) {
    var e = document.getElementById(idMenu);
    var e = e.getElementsByTagName('ul');
 
-   for (var i=0 ; i<e.length ; i++) {
+   for (var i=0; i<e.length; i++) {
       if (e[i]) {
          if (isIe()) {
             doShowSelect(e[i]);
@@ -165,7 +165,7 @@ function doShowSelect(objet) {
             selh = objet.offsetHeight;
             showSelect(selx,sely,selw,selh);
          }
-         if (setdisplay(objet,'none')){
+         if (setdisplay(objet,'none')) {
             return true;
          }
       }
@@ -186,7 +186,7 @@ function showSelect(x,y,w,h) {
    var selx,sely,selw,selh;
    var sel = document.getElementsByTagName("SELECT");
 
-   for (var i=0 ; i<sel.length ; i++) {
+   for (var i=0; i<sel.length; i++) {
       selx = 0;
       sely = 0;
       var selp;
@@ -243,7 +243,7 @@ function hideSelect(x,y,w,h) {
 
    var selx,sely,selw,selh,i;
    var sel = document.getElementsByTagName("SELECT");
-   for (i=0 ; i<sel.length ; i++) {
+   for (i=0; i<sel.length; i++) {
       selx = 0;
       sely = 0;
       var selp;
@@ -273,7 +273,7 @@ function menuAff(id,idMenu){
 
    var m    = document.getElementById(idMenu);
    var item = m.getElementsByTagName('li');
-   for (var i=0 ; i<item.length ; i++) {
+   for (var i=0; i<item.length; i++) {
       if (item[i].id == id) {
          var ssmenu = item[i];
       }
@@ -282,7 +282,7 @@ function menuAff(id,idMenu){
    if (isIe()) {
       //masquage des elements select du document
       if (m) {
-         for (var i=1 ; i<10 ; i++) { //probleme dans le listage et le nomage des menus xhtml
+         for (var i=1; i<10; i++) { //probleme dans le listage et le nomage des menus xhtml
             //listage des elements li nommes du type smenu + i
             var e = document.getElementById('menu'+i);
             if (e) {
@@ -297,7 +297,7 @@ function menuAff(id,idMenu){
       var smenu = ssmenu.getElementsByTagName('ul');
       if (smenu) {
          //masquer tous les menus ouverts
-         for (var i=0 ; i<m.length ; i++) {
+         for (var i=0; i<m.length; i++) {
             setdisplay(m[i],'none');
          }
          setdisplay(smenu[0],'block');
@@ -325,7 +325,7 @@ function jumpTo(URL_List) {
 browserName = navigator.appName;
 browserVer  = parseInt(navigator.appVersion);
 if (((browserName == "Netscape") && (browserVer >= 3))
-    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))){
+    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))) {
    version = "n3";
 } else {
    version = "n2";
@@ -362,7 +362,7 @@ function fillidfield(Type,Id) {
 function markCheckboxes(container_id) {
 
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
+   for (var j=0; j<checkboxes.length; j++ ) {
       checkbox = checkboxes[j];
       if (checkbox && (checkbox.type == 'checkbox')) {
          if (checkbox.disabled == false ) {
@@ -383,7 +383,7 @@ function markCheckboxes(container_id) {
 function unMarkCheckboxes(container_id) {
 
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
+   for (var j=0; j<checkboxes.length; j++ ) {
       checkbox = checkboxes[j];
       if (checkbox && (checkbox.type == 'checkbox')) {
          checkbox.checked = false;
@@ -402,17 +402,17 @@ function unMarkCheckboxes(container_id) {
 function toggleCheckboxes( container_id ) {
 
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
+   for (var j=0; j<checkboxes.length; j++ ) {
       checkbox = checkboxes[j];
-         if (checkbox && (checkbox.type == 'checkbox')) {
-            if (checkbox.disabled == false) {
-               if (checkbox.checked == false) {
-                  checkbox.checked = true;
-               } else {
-                  checkbox.checked = false;
-               }
+      if (checkbox && (checkbox.type == 'checkbox')) {
+         if (checkbox.disabled == false) {
+            if (checkbox.checked == false) {
+               checkbox.checked = true;
+            } else {
+               checkbox.checked = false;
             }
          }
+      }
    }
    return true;
 }
@@ -479,12 +479,12 @@ $.fn.shiftSelectable = function() {
       }
       var selected_checkbox = $(this).children('input[type=checkbox]');
 
-      if(!lastChecked) {
+      if (!lastChecked) {
          lastChecked = selected_checkbox;
          return;
       }
 
-      if(evt.shiftKey) {
+      if (evt.shiftKey) {
          evt.preventDefault();
          var start = $boxes.index(selected_checkbox),
              end = $boxes.index(lastChecked);
@@ -575,7 +575,7 @@ function showHideDiv(id, img_name, img_src_close, img_src_open) {
             }
          } else {
             document.id.display = 'none';
-            if (img_name != ''){
+            if (img_name != '') {
                document[img_name].src=img_src_close;
             }
          }
@@ -633,17 +633,17 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
 function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 
    var tblRows = document.getElementById(tbl).rows;
-   for (i=0 ; i < tblRows.length ; i++) {
+   for (i=0; i < tblRows.length; i++) {
       if (tblRows[i].className.indexOf("headerRow") == -1) {
          if (tblRows[i].style.display == 'none') {
             tblRows[i].style.display = "table-row";
-            if (img_name != ''){
+            if (img_name != '') {
                document[img_name].src = img_src_open;
             }
 
          } else {
             tblRows[i].style.display = "none";
-            if (img_name != ''){
+            if (img_name != '') {
                document[img_name].src = img_src_close;
             }
          }
@@ -673,17 +673,17 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 function submitGetLink(target,fields) {
 
     var myForm    = document.createElement("form");
-    myForm.method = "post" ;
-    myForm.action = target ;
-    for (var name in fields) {
-        var myInput = document.createElement("input") ;
-        myInput.setAttribute("name", name) ;
-        myInput.setAttribute("value", fields[name]);
-        myForm.appendChild(myInput) ;
-    }
-    document.body.appendChild(myForm) ;
-    myForm.submit() ;
-    document.body.removeChild(myForm) ;
+    myForm.method = "post";
+    myForm.action = target;
+   for (var name in fields) {
+      var myInput = document.createElement("input");
+      myInput.setAttribute("name", name);
+      myInput.setAttribute("value", fields[name]);
+      myForm.appendChild(myInput);
+   }
+    document.body.appendChild(myForm);
+    myForm.submit();
+    document.body.removeChild(myForm);
 }
 
 
@@ -720,22 +720,22 @@ function deselectAll(id) {
  *
 **/
 function massiveUpdateCheckbox(criterion, reference) {
-    if (typeof(reference) == 'undefined') {
-        var value = null;
-    } else if (typeof(reference) == 'boolean') {
-        var value = reference;
-    } else if (typeof(reference) == 'string') {
-        var value = $('#' + reference).prop('checked');
-    } else if (typeof(reference) == 'object') {
-        var value = $(reference).prop('checked');
-    }
-    if (typeof(value) == 'undefined') {
-        return false;
-    }
+   if (typeof(reference) == 'undefined') {
+      var value = null;
+   } else if (typeof(reference) == 'boolean') {
+      var value = reference;
+   } else if (typeof(reference) == 'string') {
+      var value = $('#' + reference).prop('checked');
+   } else if (typeof(reference) == 'object') {
+      var value = $(reference).prop('checked');
+   }
+   if (typeof(value) == 'undefined') {
+      return false;
+   }
     $(criterion).each(function() {
-        if (typeof(reference) == 'undefined') {
-            value = !$(this).prop('checked');
-        }
+      if (typeof(reference) == 'undefined') {
+         value = !$(this).prop('checked');
+      }
         $(this).prop('checked', value);
     });
     return true;
@@ -870,15 +870,16 @@ if ($(window).width() <= 700) {
       var st = $(this).scrollTop();
 
       // Make sure they scroll more than delta
-      if(Math.abs(lastScrollTop - st) <= delta)
+      if (Math.abs(lastScrollTop - st) <= delta) {
          return;
+      }
 
-      if (st > lastScrollTop && st > navbarHeight){
+      if (st > lastScrollTop && st > navbarHeight) {
          // Scroll Down
          $('#header').removeClass('nav-down').addClass('nav-up');
       } else {
          // Scroll Up
-         if(st + $(window).height() < $(document).height()) {
+         if (st + $(window).height() < $(document).height()) {
             $('#header').removeClass('nav-up').addClass('nav-down');
          }
       }
@@ -904,21 +905,21 @@ $(function(){
       var col = $(this).closest('tr').children().index($(this));
       var tr = $(this).closest('tr');
       if (!$(this).closest('tr').hasClass('noHover')) {
-      if (e.type == 'mouseover') {
-         tr.addClass("rowHover");
-         // If rowspan
-         if (tr.has('td[rowspan]').length == 0) {
+         if (e.type == 'mouseover') {
+            tr.addClass("rowHover");
+            // If rowspan
+            if (tr.has('td[rowspan]').length == 0) {
 
                tr.prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').addClass("rowHover");
-         }
+            }
 
-         $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
-      } else {
-         tr.removeClass("rowHover");
-         // remove rowspan
-         tr.removeClass("rowHover").prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').removeClass("rowHover");
-         $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
-      }
+            $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
+         } else {
+            tr.removeClass("rowHover");
+            // remove rowspan
+            tr.removeClass("rowHover").prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').removeClass("rowHover");
+            $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
+         }
       }
    });
 

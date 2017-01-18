@@ -11,7 +11,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,7 @@ function update0712to0713() {
    // Update to longtext for fields which may be very long
    if (FieldExists("glpi_kbitems", "answer", false)) {
 
-      if (isIndex("glpi_kbitems","fulltext")) { // to avoid pb in altering column answer
+      if (isIndex("glpi_kbitems", "fulltext")) { // to avoid pb in altering column answer
          $query = "ALTER TABLE `glpi_kbitems`
                    DROP INDEX `fulltext`";
          $DB->queryOrDie($query, "0.71.3 alter kbitem drop index Fulltext");
@@ -74,6 +74,4 @@ function update0712to0713() {
       $DB->queryOrDie($query, "0.71.3 alter tracking contents field to longtext");
    }
 
-
 }
-?>

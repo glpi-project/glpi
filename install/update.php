@@ -44,65 +44,65 @@ include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
 
 // Old itemtype for compatibility
-define("GENERAL_TYPE",         0);
-define("COMPUTER_TYPE",        1);
-define("NETWORKING_TYPE",      2);
-define("PRINTER_TYPE",         3);
-define("MONITOR_TYPE",         4);
-define("PERIPHERAL_TYPE",      5);
-define("SOFTWARE_TYPE",        6);
-define("CONTACT_TYPE",         7);
-define("ENTERPRISE_TYPE",      8);
-define("INFOCOM_TYPE",         9);
-define("CONTRACT_TYPE",       10);
-define("CARTRIDGEITEM_TYPE",  11);
-define("TYPEDOC_TYPE",        12);
-define("DOCUMENT_TYPE",       13);
-define("KNOWBASE_TYPE",       14);
-define("USER_TYPE",           15);
-define("TRACKING_TYPE",       16);
+define("GENERAL_TYPE", 0);
+define("COMPUTER_TYPE", 1);
+define("NETWORKING_TYPE", 2);
+define("PRINTER_TYPE", 3);
+define("MONITOR_TYPE", 4);
+define("PERIPHERAL_TYPE", 5);
+define("SOFTWARE_TYPE", 6);
+define("CONTACT_TYPE", 7);
+define("ENTERPRISE_TYPE", 8);
+define("INFOCOM_TYPE", 9);
+define("CONTRACT_TYPE", 10);
+define("CARTRIDGEITEM_TYPE", 11);
+define("TYPEDOC_TYPE", 12);
+define("DOCUMENT_TYPE", 13);
+define("KNOWBASE_TYPE", 14);
+define("USER_TYPE", 15);
+define("TRACKING_TYPE", 16);
 define("CONSUMABLEITEM_TYPE", 17);
-define("CONSUMABLE_TYPE",     18);
-define("CARTRIDGE_TYPE",      19);
-define("SOFTWARELICENSE_TYPE",20);
-define("LINK_TYPE",           21);
-define("STATE_TYPE",          22);
-define("PHONE_TYPE",          23);
-define("DEVICE_TYPE",         24);
-define("REMINDER_TYPE",       25);
-define("STAT_TYPE",           26);
-define("GROUP_TYPE",          27);
-define("ENTITY_TYPE",         28);
-define("RESERVATION_TYPE",    29);
-define("AUTHMAIL_TYPE",       30);
-define("AUTHLDAP_TYPE",       31);
-define("OCSNG_TYPE",          32);
-define("REGISTRY_TYPE",       33);
-define("PROFILE_TYPE",        34);
-define("MAILGATE_TYPE",       35);
-define("RULE_TYPE",           36);
-define("TRANSFER_TYPE",       37);
-define("BOOKMARK_TYPE",       38);
-define("SOFTWAREVERSION_TYPE",39);
-define("PLUGIN_TYPE",         40);
-define("COMPUTERDISK_TYPE",   41);
-define("NETWORKING_PORT_TYPE",42);
-define("FOLLOWUP_TYPE",       43);
-define("BUDGET_TYPE",         44);
+define("CONSUMABLE_TYPE", 18);
+define("CARTRIDGE_TYPE", 19);
+define("SOFTWARELICENSE_TYPE", 20);
+define("LINK_TYPE", 21);
+define("STATE_TYPE", 22);
+define("PHONE_TYPE", 23);
+define("DEVICE_TYPE", 24);
+define("REMINDER_TYPE", 25);
+define("STAT_TYPE", 26);
+define("GROUP_TYPE", 27);
+define("ENTITY_TYPE", 28);
+define("RESERVATION_TYPE", 29);
+define("AUTHMAIL_TYPE", 30);
+define("AUTHLDAP_TYPE", 31);
+define("OCSNG_TYPE", 32);
+define("REGISTRY_TYPE", 33);
+define("PROFILE_TYPE", 34);
+define("MAILGATE_TYPE", 35);
+define("RULE_TYPE", 36);
+define("TRANSFER_TYPE", 37);
+define("BOOKMARK_TYPE", 38);
+define("SOFTWAREVERSION_TYPE", 39);
+define("PLUGIN_TYPE", 40);
+define("COMPUTERDISK_TYPE", 41);
+define("NETWORKING_PORT_TYPE", 42);
+define("FOLLOWUP_TYPE", 43);
+define("BUDGET_TYPE", 44);
 
 // Old devicetype for compatibility
-define("MOBOARD_DEVICE",   1);
+define("MOBOARD_DEVICE", 1);
 define("PROCESSOR_DEVICE", 2);
-define("RAM_DEVICE",       3);
-define("HDD_DEVICE",       4);
-define("NETWORK_DEVICE",   5);
-define("DRIVE_DEVICE",     6);
-define("CONTROL_DEVICE",   7);
-define("GFX_DEVICE",       8);
-define("SND_DEVICE",       9);
-define("PCI_DEVICE",      10);
-define("CASE_DEVICE",     11);
-define("POWER_DEVICE",    12);
+define("RAM_DEVICE", 3);
+define("HDD_DEVICE", 4);
+define("NETWORK_DEVICE", 5);
+define("DRIVE_DEVICE", 6);
+define("CONTROL_DEVICE", 7);
+define("GFX_DEVICE", 8);
+define("SND_DEVICE", 9);
+define("PCI_DEVICE", 10);
+define("CASE_DEVICE", 11);
+define("POWER_DEVICE", 12);
 
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)) {
@@ -164,9 +164,9 @@ function update_importDropdown ($table, $name) {
              FROM `".$table."`
              WHERE `name` = '".addslashes($name)."'";
 
-   if ($result = $DB->query($query) ) {
+   if ($result = $DB->query($query)) {
       if ($DB->numrows($result) > 0) {
-         return $DB->result($result,0,"ID");
+         return $DB->result($result, 0, "ID");
       }
    }
    $query = "INSERT INTO `".$table."`
@@ -216,7 +216,7 @@ function display_new_locations() {
    $FROM_ALL   = "";
    $ORDER_ALL  = "";
 
-   for ($i=1 ; $i<=$MAX_LEVEL ; $i++) {
+   for ($i=1; $i<=$MAX_LEVEL; $i++) {
       $SELECT_ALL .= " , location$i.`name` AS NAME$i
                        , location$i.`parentID` AS PARENT$i ";
       $FROM_ALL   .= " LEFT JOIN `glpi_dropdown_locations_new` AS location$i
@@ -236,14 +236,14 @@ function display_new_locations() {
    $data_old = array();
    echo "<table><tr>";
 
-   for ($i=0 ; $i<=$MAX_LEVEL ; $i++) {
+   for ($i=0; $i<=$MAX_LEVEL; $i++) {
       echo "<th>$i</th><th>&nbsp;</th>";
    }
    echo "</tr>";
 
    while ($data = $DB->fetch_assoc($result)) {
       echo "<tr class=tab_bg_1>";
-      for ($i=0 ; $i<=$MAX_LEVEL ; $i++) {
+      for ($i=0; $i<=$MAX_LEVEL; $i++) {
 
          if (!isset($data_old["NAME$i"])
              || ($data_old["PARENT$i"] != $data["PARENT$i"])
@@ -334,7 +334,7 @@ function location_create_new($split_char, $add_first) {
 
       $up_ID = $root_ID;
 
-      for ($i=0 ; $i<count($splitter)-1 ; $i++) {
+      for ($i=0; $i<count($splitter)-1; $i++) {
          // Entree existe deja ??
          $query_search = "SELECT `ID`
                           FROM `glpi_dropdown_locations_new`
@@ -343,7 +343,7 @@ function location_create_new($split_char, $add_first) {
          $result_search = $DB->query($query_search);
 
          if ($DB->numrows($result_search)==1) { // Found
-            $up_ID = $DB->result($result_search,0,"ID");
+            $up_ID = $DB->result($result_search, 0, "ID");
          } else { // Not FOUND -> INSERT
             $query_insert = "INSERT INTO `glpi_dropdown_locations_new`
                              VALUES ('$new_ID', '".addslashes($splitter[$i])."', '$up_ID', '')";
@@ -413,7 +413,7 @@ function showLocationUpdateForm() {
             "<input type='text' name='car_sep' value='".$_POST['car_sep']."'></p>";
       echo "<p>".__('Root location').'&nbsp;'.
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
-      echo "<input type='submit' class='submit' name='new_location' value=\""._sx('button','Post')."\">";
+      echo "<input type='submit' class='submit' name='new_location' value=\""._sx('button', 'Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       Html::closeForm();
       echo "</div>";
@@ -429,7 +429,7 @@ function showLocationUpdateForm() {
       echo "<div class='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<input type='submit' class='submit' name='validate_location' value=\"".
-             _sx('button','Post')."\">";
+             _sx('button', 'Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</div>";
       Html::closeForm();
@@ -562,25 +562,25 @@ function updateDbUpTo031() {
    // Save if problem with session during update
    $glpilanguage = $_SESSION["glpilanguage"];
 
-   // < 0.78
    if (TableExists("glpi_config")) {
+      // < 0.78
       // Get current version
       // Use language from session, even if sometime not reliable
       $query = "SELECT `version`, 'language'
                 FROM `glpi_config`";
       $result = $DB->queryOrDie($query, "get current version");
 
-      $current_version = trim($DB->result($result,0,0));
-      $glpilanguage    = trim($DB->result($result,0,1));
-   // < 0.85
+      $current_version = trim($DB->result($result, 0, 0));
+      $glpilanguage    = trim($DB->result($result, 0, 1));
    } else if (FieldExists('glpi_configs', 'version')) {
+      // < 0.85
       // Get current version and language
       $query = "SELECT `version`, `language`
                 FROM `glpi_configs`";
       $result = $DB->queryOrDie($query, "get current version");
 
-      $current_version = trim($DB->result($result,0,0));
-      $glpilanguage    = trim($DB->result($result,0,1));
+      $current_version = trim($DB->result($result, 0, 0));
+      $glpilanguage    = trim($DB->result($result, 0, 1));
    } else {
       $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
 
@@ -929,7 +929,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".sprintf(__('Caution! You will update the GLPI database named: %s'),$DB->dbdefault) ."</h3>";
+      echo "<h3><span class='red'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
@@ -937,8 +937,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "</div>";
    }
 
-// Step 2
 } else {
+   // Step 2
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
       if (!isset($_POST["update_location"])) {

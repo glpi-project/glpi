@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.4 and 0.41 to 0.42
@@ -69,14 +69,14 @@ function update04to042() {
       $DB->queryOrDie($query, "4202");
    }
 
-   if (!FieldExists("glpi_tracking","device_type", false)) {
+   if (!FieldExists("glpi_tracking", "device_type", false)) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ";
       $DB->queryOrDie($query, "4203");
    }
 
    // Ajout language par defaut
-   if (!FieldExists("glpi_config","default_language", false)) {
+   if (!FieldExists("glpi_config", "default_language", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `default_language` VARCHAR(255) DEFAULT 'english' NOT NULL ";
       $DB->queryOrDie($query, "4204");
@@ -84,4 +84,3 @@ function update04to042() {
 
 }
 
-?>

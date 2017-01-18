@@ -46,7 +46,6 @@ function update0853to0855() {
    $migration->displayTitle(sprintf(__('Update to %s'), '0.85.5'));
    $migration->setVersion('0.85.5');
 
-
    $backup_tables = false;
    $newtables     = array();
 
@@ -73,11 +72,9 @@ function update0853to0855() {
    $migration->addKey('glpi_knowbaseitems', 'begin_date', 'begin_date');
    $migration->addKey('glpi_knowbaseitems', 'end_date', 'end_date');
 
-
    // must always be at the end
    $migration->executeMigration();
 
    return $updateresult;
 }
 
-?>

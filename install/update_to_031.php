@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -57,7 +57,6 @@ function updateDbTo031() {
 
    //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
-
    if (!FieldExists("printers", "ramSize", false)) {
       $query = "ALTER TABLE `printers`
                 ADD `ramSize` varchar(6) NOT NULL default ''";
@@ -101,4 +100,3 @@ function updateDbTo031() {
 
    echo "<p class='center'>Version 0.3  </p>";
 }
-?>

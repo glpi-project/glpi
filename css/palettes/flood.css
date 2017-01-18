@@ -1,4 +1,3 @@
-
 /* ===== LOGIN ===== */
 
 #firstboxlogin  {
@@ -6,7 +5,7 @@
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #008B8D; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #008B8D;
 }
 
 #display-login {
@@ -65,7 +64,7 @@ ul#menu ul.ssmenu li.active > a {
    color: #FFF;
 }
 
-ul#menu > li:hover, 
+ul#menu > li:hover,
 ul#menu > li:hover > a {
    background-color: #81BEAA;
    color: #000;
@@ -78,9 +77,9 @@ ul#menu ul li a:hover {
 
 /* ====== BUTTONS ====== */
 
-input.submit, 
+input.submit,
 span.vsubmit, a.vsubmit,
-.ui-widget-content span.vsubmit, a.vsubmit, 
+.ui-widget-content span.vsubmit, a.vsubmit,
 #BackToTop {
    color: #816644;
    background-color: #F4D4AD;
@@ -90,8 +89,8 @@ span.vsubmit, a.vsubmit,
    text-decoration: underline;
 }
 
-input.submit:hover, 
-a.vsubmit:hover, 
+input.submit:hover,
+a.vsubmit:hover,
 #BackToTop:hover {
    background-color: #F4D4AD;
 }

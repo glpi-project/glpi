@@ -11,7 +11,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -34,7 +34,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.72 to 0.72.1
@@ -64,4 +64,3 @@ function update072to0721() {
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0721"); // End
 } // fin 0.72.1 #####################################################################################
-?>

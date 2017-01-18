@@ -34,15 +34,15 @@
 /** @file
 * @brief
 */
-ini_set("memory_limit","-1");
+ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
 if ($argv) {
-   for ($i=1 ; $i<count($argv) ; $i++) {
+   for ($i=1; $i<count($argv); $i++) {
       //To be able to use = in search filters, enter \= instead in command line
       //Replace the \= by ° not to match the split function
       $arg   = str_replace('\=', '°', $argv[$i]);
-      $it    = explode("=",$arg);
+      $it    = explode("=", $arg);
       $it[0] = preg_replace('/^--/', '', $it[0]);
 
       //Replace the ° by = the find the good filter
@@ -95,4 +95,3 @@ if (isset($_GET["dictionnary"])) {
    echo "RuleDictionnaryOperatingSystemServicePack : OS Service Pack\n";
    echo "RuleDictionnaryOperatingSystemArchitecture : OS Architecture\n";
 }
-?>

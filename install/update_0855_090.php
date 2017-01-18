@@ -50,7 +50,6 @@ function update0855to090() {
    $migration->displayTitle(sprintf(__('Update to %s'), '0.90'));
    $migration->setVersion('0.90');
 
-
    $backup_tables = false;
    $newtables     = array();
 
@@ -103,7 +102,7 @@ function update0855to090() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -145,4 +144,3 @@ function update0855to090() {
 
    return $updateresult;
 }
-?>

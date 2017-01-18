@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -47,8 +47,8 @@ class Framework_CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
       $this->assertTrue($printer->getFromDB($id[0]), "Fail: can't read Printer");
 
       // Verify DB Schema have not change
-      $this->assertArrayHasKey('is_deleted',$printer->fields, "Fail: no is_deleted field");
-      $this->assertArrayHasKey('is_template',$printer->fields, "Fail: no is_template field");
+      $this->assertArrayHasKey('is_deleted', $printer->fields, "Fail: no is_deleted field");
+      $this->assertArrayHasKey('is_template', $printer->fields, "Fail: no is_template field");
       $this->assertEquals(0, $printer->fields['is_deleted'], "Fail: is_deleted set");
       $this->assertEquals(0, $printer->fields['is_template'], "Fail: is_template set");
 
@@ -68,7 +68,7 @@ class Framework_CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
       $this->assertEquals(1, $printer->fields['is_deleted'], "Fail: is_deleted not set");
 
       // Purge
-      $this->assertTrue($printer->delete(array('id'=>$id[0]),1), "Fail: to purge Printer");
+      $this->assertTrue($printer->delete(array('id'=>$id[0]), 1), "Fail: to purge Printer");
       $this->assertFalse($printer->getFromDB($id[0]), "Fail: can read Printer (purged)");
    }
 
@@ -89,7 +89,7 @@ class Framework_CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
       $this->assertEquals(1, $printer->fields['is_template'], "Fail: is_template not set");
 
       // Delete (= purge)
-      $this->assertTrue($printer->delete(array('id'=>$id[0]),0), "Fail: can't delete Template");
+      $this->assertTrue($printer->delete(array('id'=>$id[0]), 0), "Fail: can't delete Template");
       $this->assertFalse($printer->getFromDB($id[0]), "Fail: can read Template (deleted)");
    }
 
@@ -108,12 +108,11 @@ class Framework_CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
       $this->assertTrue($reminder->getFromDB($id[0]), "Fail: can't read Reminder");
 
       // Verify DB Schema have not change
-      $this->assertArrayNotHasKey('is_deleted',$reminder->fields, "Fail: is_deleted field");
-      $this->assertArrayNotHasKey('is_template',$reminder->fields, "Fail: is_template field");
+      $this->assertArrayNotHasKey('is_deleted', $reminder->fields, "Fail: is_deleted field");
+      $this->assertArrayNotHasKey('is_template', $reminder->fields, "Fail: is_template field");
 
       // Delete (= purge)
       $this->assertTrue($reminder->delete(array('id'=>$id[0])), "Fail: can't delete Reminder");
       $this->assertFalse($reminder->getFromDB($id[0]), "Fail: can read Reminder (deleted)");
    }
 }
-?>

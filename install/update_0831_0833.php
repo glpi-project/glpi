@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -79,7 +79,6 @@ function update0831to0833() {
    // ************ Keep it at the end **************
    $migration->displayMessage('Migration of glpi_displaypreferences');
 
-
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
@@ -93,7 +92,7 @@ function update0831to0833() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -131,4 +130,3 @@ function update0831to0833() {
 
    return $updateresult;
 }
-?>

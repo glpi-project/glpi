@@ -13,7 +13,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - phpunit --verbose
-  - vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ apirest.php apixmlrpc.php index.php status.php inc/ front/ ajax/ tests/
+  - vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/*,/plugins/*,/files/*,/lib/* ./
 
 matrix:
   include:

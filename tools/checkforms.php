@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -49,7 +49,7 @@ foreach ($dirs as $dir) {
       /* Ceci est la façon correcte de traverser un dossier. */
       while (false !== ($file = readdir($handle))) {
          if (($file != ".") && ($file != "..")
-             && preg_match('/\.php$/',$file)) {
+             && preg_match('/\.php$/', $file)) {
             checkFormsInFile($dir.'/'.$file);
          }
       }
@@ -67,7 +67,7 @@ function checkFormsInFile($file) {
    while (!feof($handle)) {
       $line = fgets($handle);
       $i++;
-//       echo $i.$line;
+      //       echo $i.$line;
       if ((stripos($line, '<form ') !== FALSE)
           || (stripos($line, 'Html::openMassiveActionsForm(') !== FALSE)
           || (stripos($line, 'showFormHeader(') !== FALSE)) {
@@ -92,4 +92,3 @@ function checkFormsInFile($file) {
    }
 }
 
-?>

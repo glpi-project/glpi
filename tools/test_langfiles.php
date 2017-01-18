@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,4 +42,3 @@ Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 foreach ($CFG_GLPI['languages'] as $key => $lang) {
    Session::loadLanguage($key);
 }
-?>

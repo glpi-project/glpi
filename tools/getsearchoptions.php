@@ -41,9 +41,9 @@ define('DO_NOT_CHECK_HTTP_REFERER', 1);
 chdir(__DIR__);
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it = explode("=",$_SERVER['argv'][$i],2);
-      $it[0] = preg_replace('/^--/','',$it[0]);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it = explode("=", $_SERVER['argv'][$i], 2);
+      $it[0] = preg_replace('/^--/', '', $it[0]);
 
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
@@ -82,4 +82,3 @@ if (!isCommandLine()) {
    header("Content-type: text/plain");
 }
 print_r($sort);
-?>

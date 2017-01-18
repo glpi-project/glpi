@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -39,9 +39,9 @@ ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
 if ($argv) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it = explode("=",$_SERVER['argv'][$i]);
-      $it[0] = preg_replace('/^--/','',$it[0]);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it = explode("=", $_SERVER['argv'][$i]);
+      $it[0] = preg_replace('/^--/', '', $it[0]);
       $_GET[$it[0]] = $it[1];
    }
 }
@@ -137,4 +137,3 @@ if (isset($_GET['run'])) {
    echo " Selected entries in history : ".countElementsInTable($table, $where)."\n";
 }
 
-?>
