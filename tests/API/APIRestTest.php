@@ -853,6 +853,17 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
       $this->assertEquals("abcdef", $computer->fields['serial']);
+
+      //try to update an item without input
+      try {
+         $res = $this->doHttpRequest('PUT', 'Computer/',
+                                     ['headers' => [
+                                         'Session-Token' => $session_token],
+                                      'json' => []]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+      }
    }
 
 
