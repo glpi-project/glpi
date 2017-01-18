@@ -1,0 +1,47 @@
+Tools :
+  - locale\extract_template.sh :
+  - locale\move_to_po.php :
+  - locale\update_mo.pl :
+  - locale\update_po.pl :
+  - phpunit\* :
+  - Doxyfile : Obsolete
+  - HEADER : copyright header file (should be used with modify_headers.pl)
+  - autoupdatelocales.sh :
+  - checkforms.php :
+  - checkfunction.php :
+  - check_dict.pl :
+  - check_functions.pl :
+  - check_pofiles.pl :
+  - cleanhistory.php :
+  - cliinstall.php :
+  - cliupdate.php :
+  - convert_search_options.php :
+  - detect_wrong_php_begin_end_file.pl :
+  - diff_plugin_locale.php :
+  - findtableswithoutclass.php :
+  - find_twin_in_dict.sh : Check duplicates key in language template
+  - fix_svn_properties.pl : Obsolete
+  - fix_utf8_bomfiles.sh :
+  - fk_generate.php :
+  - genapidoc.sh :
+  - generate_bigdump.function.php :
+  - generate_bigdump.php :
+  - genphpcov.sh :
+  - getsearchoptions.php :
+  - glpiuser.php :
+  - indent.script.vi :
+  - indent_php.pl :
+  - ldap-glpi.ldif :
+  - ldap-schema.txt :
+  - ldapsync.php :
+  - make_plugin_release.sh :
+  - make_release.sh :
+  - modify_headers.pl :
+  - notincludedlanguages.php :
+  - php.vim :
+  - subversion_config_file : Obsolete
+  - testmail.php :
+  - testunit.php :
+  - test_allfiles.php :
+  - test_langfiles.php :
+  - update_registered_ids.php :
