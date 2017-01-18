@@ -37,6 +37,7 @@ global $CFG_GLPI;
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
+include_once __DIR__ . '/API/APIBaseClass.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
