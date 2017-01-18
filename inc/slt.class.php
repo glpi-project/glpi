@@ -595,8 +595,8 @@ class SLT extends CommonDBChild {
                                                    'canedit'    => $canupdate));
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
-         $slt_data = $this->getSltData("`type` = '$type'
-                                        AND `entities_id` = '".$ticket->fields['entities_id']."'");
+         $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
+         $slt_data     = $this->getSltData("`type` = '$type' AND $sql_entities");
          if ($canupdate
              && !empty($slt_data)) {
             echo $tt->getBeginHiddenFieldText($sltField);
