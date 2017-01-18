@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015-2016 Teclib'.
@@ -256,7 +256,7 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    *  àsince version 0.84
+    *  ??since version 0.84
    **/
    function getSimplifiedInterfaceFields() {
 

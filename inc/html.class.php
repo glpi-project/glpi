@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -1751,7 +1751,7 @@ class Html {
          return;
       }
       $FOOTER_LOADED = true;
-      echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
+      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
 
       echo "<div id='footer' >";
       echo "<table><tr><td class='left'><span class='copyright'>";
@@ -1853,7 +1853,7 @@ class Html {
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
            "<span class='invisible'>Logo</span></a></div>";
 
-      // Les préférences + lien déconnexion
+      // Les pr??f??rences + lien d??connexion
       echo "<div id='c_preference'>";
       echo "<div class='sep'></div>";
       echo "</div>";
@@ -1927,7 +1927,7 @@ class Html {
              __s('Home')."\"><span class='invisible'>Logo</span></a>";
       echo "</div>";
 
-      // Les préférences + lien déconnexion
+      // Les pr??f??rences + lien d??connexion
       echo "<div id='c_preference' >";
       echo "<ul>";
 
@@ -2157,7 +2157,7 @@ class Html {
       }
       $FOOTER_LOADED = true;
 
-      echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
+      echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
 
       echo "<div id='footer'>";
       echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();

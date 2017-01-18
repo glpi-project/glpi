@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -549,7 +549,7 @@ class Toolbox {
                          E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
                          E_DEPRECATED        => 'Deprecated function',
                          E_USER_DEPRECATED   => 'User deprecated function');
-      // Les niveaux qui seront enregistrés
+      // Les niveaux qui seront enregistr??s
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";

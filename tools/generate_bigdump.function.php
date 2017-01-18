@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -940,7 +940,7 @@ function generateGlobalDropdowns() {
                                               'comment' => "comment' $val")));
    }
 
-   $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multimédia');
+   $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multim??dia');
    $dp    = new SoftwareCategory();
    for ($i=0 ; $i<max(1,pow($MAX['softwarecategory'],1/2)) ; $i++) {
       if (isset($items[$i])) {
@@ -1074,7 +1074,7 @@ function generateGlobalDropdowns() {
    }
 
 
-   $items = array("Ingénieur", "Stagiaire", "Secrétaire", "ouvrier d'atelier");
+   $items = array("Ing??nieur", "Stagiaire", "Secr??taire", "ouvrier d'atelier");
    $dp    = new UserCategory();
    for ($i=0 ; $i<$MAX['user_type'] ; $i++) {
       if (isset($items[$i])) {
@@ -1087,7 +1087,7 @@ function generateGlobalDropdowns() {
    }
 
 
-   $items = array("Président", "Agent Comptable", "Directeur d'agence");
+   $items = array("Pr??sident", "Agent Comptable", "Directeur d'agence");
    $dp    = new UserTitle();
    for ($i=0 ; $i<$MAX['user_title'] ; $i++) {
       if (isset($items[$i])) {
@@ -1787,7 +1787,7 @@ function generate_entity($ID_entity) {
 
    $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
 
-   $items = array("d'après KB");
+   $items = array("d'apr??s KB");
    $st    = new SolutionType();
    for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
       if (isset($items[$i])) {

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015-2016 Teclib'.

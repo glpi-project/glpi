@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -426,7 +426,7 @@ function update06to065() {
    $new_model = array("monitors", "networking", "peripherals", "printers");
    foreach ($new_model as $model) {
       if (!TableExists("glpi_dropdown_model_$model")) {
-         // model=type pour faciliter la gestion en post mise �jour : ya plus qu'a deleter les elements non voulu
+         // model=type pour faciliter la gestion en post mise ???jour : ya plus qu'a deleter les elements non voulu
          // cela conviendra a tout le monde en fonction de l'utilisation du champ type
          $query = "CREATE TABLE `glpi_dropdown_model_$model` (
                      `ID` int(11) NOT NULL auto_increment,

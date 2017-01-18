@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique

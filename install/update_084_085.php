@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -346,7 +346,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete reservation_central");
 
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'ticket'") == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
@@ -506,7 +506,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete update_priority right");
 
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'followup'") == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
@@ -629,7 +629,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete delete_followups right");
 
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'task'") == 0) {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
@@ -693,7 +693,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_full_ticket right");
 
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'ticketvalidation'") == 0) {
       // rename delete_validations
       $query  = "UPDATE `glpi_profilerights`
@@ -772,7 +772,7 @@ function update084to085() {
 
 
    // must be done after ticket right
-   // pour que la procédure soit ré-entrante
+   // pour que la proc??dure soit r??-entrante
    if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
       ProfileRight::addProfileRights(array('change'));
 
@@ -804,7 +804,7 @@ function update084to085() {
                                                      AND `rights` & ". PURGE);
    }
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'planning'") == 0) {
       // rename show_planning
       $query  = "UPDATE `glpi_profilerights`
@@ -847,7 +847,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_all_planning right");
 
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'problem'") == 0) {
       // rename show_my_problem
       $query  = "UPDATE `glpi_profilerights`
@@ -951,7 +951,7 @@ function update084to085() {
 
    // entity_dropdown => right by object
 
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'domain'") == 0) {
       ProfileRight::addProfileRights(array('domain'));
       ProfileRight::updateProfileRightsAsOtherRights('domain', 'entity_dropdown');
@@ -1113,7 +1113,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 default value for delay_send_emails for root entity");
    }
 
-   // pour que la procédure soit ré-entrante
+   // pour que la proc??dure soit r??-entrante
    if (countElementsInTable("glpi_profilerights", "`name` = 'queuedmail'") == 0) {
       ProfileRight::addProfileRights(array('queuedmail'));
 

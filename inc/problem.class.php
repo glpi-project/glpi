@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -675,7 +675,7 @@ class Problem extends CommonITILObject {
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
 
-         case "process" : // on affiche les problemes planifiés ou assignés au user
+         case "process" : // on affiche les problemes planifi??s ou assign??s au user
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
                              AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -577,7 +577,7 @@ class Reservation extends CommonDBChild {
          }
       }
 
-      // on recommence pour finir le tableau proprement pour les m�es raisons
+      // on recommence pour finir le tableau proprement pour les m???es raisons
       if ($jour_fin_mois != 0) {
          for ($i=0; $i<7-$jour_fin_mois; $i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -484,7 +484,7 @@ function update0831to084() {
                $query = "INSERT INTO `glpi_notificationtargets`
                                 (`notifications_id`, `type`, `items_id`)
                          VALUES ('".$newID."', '".$target['type']."', '".$target['items_id']."')";
-               $DB->queryOrDie($query, "0.84 insert targets for ĉontract ".$to." notification");
+               $DB->queryOrDie($query, "0.84 insert targets for ??ontract ".$to." notification");
             }
          }
       }

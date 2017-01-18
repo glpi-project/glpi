@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2015 by the INDEPNET Development Team.

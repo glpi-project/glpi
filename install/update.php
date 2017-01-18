@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015-2016 Teclib'.
@@ -446,7 +446,7 @@ function showLocationUpdateForm() {
 }
 
 
-//test la connection a la base de donn�.
+//test la connection a la base de donn???.
 function test_connect() {
    global $DB;
 

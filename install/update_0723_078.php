@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -4854,7 +4854,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                                                              $data['itemtype'])));
 
                   $itemtable = getTableForItemType($data['itemtype']);
-                  // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
+                  // ajout d'un contr??le pour voir si la table existe ( cas migration plugin non fait)
                   if (!TableExists($itemtable)) {
                      $migration->displayWarning("*** Skip : no table $itemtable ***", true);
                      continue;

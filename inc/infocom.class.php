@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -656,7 +656,7 @@ class Infocom extends CommonDBChild {
    **/
    static function showTco($ticket_tco, $value, $date_achat="") {
 
-      // Affiche le TCO ou le TCO mensuel pour un matériel
+      // Affiche le TCO ou le TCO mensuel pour un mat??riel
       $totalcost = $ticket_tco;
 
       if ($date_achat) { // on veut donc le TCO mensuel

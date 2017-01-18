@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -331,7 +331,7 @@ if (!isset($_POST['graph']) || (count($_POST['graph']) == 0)) {
 // Total des interventions
 $values['total']  = Stat::constructEntryValues($_GET['itemtype'], "inter_total", $_GET["date1"],
                                                $_GET["date2"], $_GET["type"], $val1, $val2);
-// Total des interventions résolues
+// Total des interventions r??solues
 $values['solved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_solved", $_GET["date1"],
                                                $_GET["date2"], $_GET["type"], $val1, $val2);
 // Total des interventions closes

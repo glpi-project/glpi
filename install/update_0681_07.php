@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -1288,7 +1288,7 @@ function update0681to07() {
          if ($data['expire']=="") {
             $expire_search = " AND `glpi_licenses`.`expire` IS NULL";
          } else {
-            $expire_search = " AND `glpi_licenses`.`expireÈ = '".$data['expire']."'";
+            $expire_search = " AND `glpi_licenses`.`expire?? = '".$data['expire']."'";
          }
          $query = "SELECT `glpi_licenses`.`ID`
                    FROM `glpi_licenses`
@@ -1345,7 +1345,7 @@ function update0681to07() {
          $result2 = $DB->query($query2);
          if ($DB->numrows($result2)) {
             while ($data2=$DB->fetch_array($result2)) {
-               // Update réservations
+               // Update r??servations
                $query = "UPDATE `glpi_reservation_resa`
                          SET `id_item` = '$refID'
                          WHERE `id_item` = '".$data2['ID']."'";

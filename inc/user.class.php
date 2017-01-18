@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -1073,7 +1073,7 @@ class User extends CommonDBTM {
    /**
     * Synchronise picture (photo) of the user
     *
-    * ÷@since version 0.85
+    * ??@since version 0.85
     *
     * @return string : the filename to be stored in user picture field
    **/

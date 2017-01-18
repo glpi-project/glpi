@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -1040,7 +1040,7 @@ class Contract extends CommonDBTM {
       $result     = $DB->query($query);
       $contract30 = $DB->result($result, 0, 0);
 
-      // contrats avec préavis echeance j-7
+      // contrats avec pr??avis echeance j-7
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
@@ -1055,7 +1055,7 @@ class Contract extends CommonDBTM {
       $result       = $DB->query($query);
       $contractpre7 = $DB->result($result, 0, 0);
 
-      // contrats avec préavis echeance j -30
+      // contrats avec pr??avis echeance j -30
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0'".

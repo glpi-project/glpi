@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
@@ -1042,7 +1042,7 @@ function clicurl($chaine) {
 
 /**
  * Met en "ordre" une chaine avant affichage
- * Remplace trés AVANTAGEUSEMENT nl2br
+ * Remplace tr??s AVANTAGEUSEMENT nl2br
  *
  * @param $pee
  * @param $br
@@ -1075,7 +1075,7 @@ function autop($pee, $br=1) {
 **/
 function split_text($text, $start, $end) {
 
-   // Adapté de PunBB
+   // Adapt?? de PunBB
    //Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
    $tokens     = explode($start, $text);

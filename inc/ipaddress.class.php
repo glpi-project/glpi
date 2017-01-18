@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015-2016 Teclib'.
@@ -857,7 +857,7 @@ class IPAddress extends CommonDBChild {
    /**
     * \brief get absolute value of an integer
     * Convert a negative integer to positiv float. That is usefull as integer, in PHP are signed 32
-    * bits values. As such, they are limited from +2 147 483 647 to −2 147 483 648. Thus, when
+    * bits values. As such, they are limited from +2 147 483 647 to ???2 147 483 648. Thus, when
     * working on integer with bit-wise boolean operations (&, |, ^, ~), the sign of the operand
     * remain inside the result. That make problem as IP address are only positiv ones.
     *
@@ -886,9 +886,9 @@ class IPAddress extends CommonDBChild {
       global $DB;
 
       // We must resolv binary address :
-      //    1°) we don't know if the IP address is valid
-      //    2°) we don't know its version
-      //    3°) binary request is more efficient than textual one (polymorphism of IPv6 addresses)
+      //    1??) we don't know if the IP address is valid
+      //    2??) we don't know its version
+      //    3??) binary request is more efficient than textual one (polymorphism of IPv6 addresses)
       $address = new self();
 
       if (!$address->setAddressFromString($IPaddress)) {
