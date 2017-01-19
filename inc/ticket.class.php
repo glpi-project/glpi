@@ -6539,11 +6539,16 @@ class Ticket extends CommonITILObject {
                    "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
                    _sx("button", "Show")."'>";
             echo "<img src='$pics_url/information.png' /></a>";
-            echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
-                   "&tickets_id=".$this->getID()."' class='delete_document' title='".
-                   _sx("button", "Delete permanently")."'>";
-            echo "<img src='$pics_url/delete.png' /></a>";
+
+            $doc = new Document();
+            $doc->getFromDB($item_i['id']);
+            if ($doc->can($item_i['id'], UPDATE)) {
+               echo "<a href='".$CFG_GLPI['root_doc'].
+                     "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
+                     "&tickets_id=".$this->getID()."' class='delete_document' title='".
+                     _sx("button", "Delete permanently")."'>";
+               echo "<img src='$pics_url/delete.png' /></a>";
+            }
          }
 
          echo "</div>"; // displayed_content
