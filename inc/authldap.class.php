@@ -1626,7 +1626,7 @@ class AuthLDAP extends CommonDBTM {
                // -> renaming case
                if ($userfound) {
                   //Get user in DB with this dn
-                  if (!$tmpuser->getFromDBByDn($user['user_dn'])) {
+                  if (!$tmpuser->getFromDBByDn(Toolbox::addslashes_deep($user['user_dn']))) {
                      //This should never happened
                      //If a user_dn is present more than one time in database
                      //Just skip user synchronization to avoid errors
