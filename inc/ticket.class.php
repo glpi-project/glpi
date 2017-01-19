@@ -6375,8 +6375,8 @@ class Ticket extends CommonITILObject {
             }
             echo "<a href='".$CFG_GLPI['root_doc'].
                    "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
-                   _sx("button", "Update")."'>";
-            echo "<img src='$pics_url/edit.png' /></a>";
+                   _sx("button", "Show")."'>";
+            echo "<img src='$pics_url/information.png' /></a>";
             echo "<a href='".$CFG_GLPI['root_doc'].
                    "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
                    "&tickets_id=".$this->getID()."' class='delete_document' title='".
