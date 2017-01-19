@@ -90,7 +90,11 @@ if (isset($_REQUEST)) {
    $_REQUEST = Toolbox::sanitize($_REQUEST);
 }
 if (isset($_FILES)) {
-   $_FILES = Toolbox::sanitize($_FILES);
+   foreach ($_FILES as &$file) {
+      foreach ($file['name'] as &$filename) {
+         $filename = Toolbox::sanitize($filename);
+      }
+   }
 }
 
 // Mark if Header is loaded or not :
