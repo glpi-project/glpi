@@ -981,7 +981,7 @@ $ curl -X POST \
 -d '{"input": [{"name": "My first computer", "serial": "12345"}, {"name": "My 2nd computer", "serial": "67890"}, {"name": "My 3rd computer", "serial": "qsd12sd"}]}' \
 'http://path/to/glpi/apirest.php/Computer/'
 
-< 201 OK
+< 207 OK
 < Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
 < [ {"id":8, "message": ""}, {"id":false, "message": "You don't have permission to perform this action."}, {"id":9, "message": ""} ]
 ```
@@ -1037,7 +1037,7 @@ $ curl -X PUT \
 -d '{"input": [{"id": 16,  "otherserial": "abcde"}, {"id": 17,  "otherserial": "fghij"}]}' \
 'http://path/to/glpi/apirest.php/Computer/'
 
-< 200 OK
+< 207 OK
 [{"8":true, "message": ""},{"2":false, "message": "Item not found"}]
 ```
 
