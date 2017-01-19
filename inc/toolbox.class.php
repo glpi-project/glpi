@@ -1752,6 +1752,15 @@ class Toolbox {
       return $content;
    }
 
+   /**
+    * Returns whether this is an AJAX (XMLHttpRequest) request.
+    *
+    * @return boolean whether this is an AJAX (XMLHttpRequest) request.
+    */
+   static function isAjax() {
+      return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+   }
+
 
    /**
     * @param $need
