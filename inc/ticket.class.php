@@ -1,38 +1,35 @@
 <?php
-/*
- -------------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
-
- http://glpi-project.org
-
- based on GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2014 by the INDEPNET Development Team.
-
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of GLPI.
-
- GLPI is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- GLPI is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2017 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -4665,14 +4662,14 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "process" : // on affiche les tickets planifiés ou assignés au user
+         case "process" : // on affiche les tickets planifi??s ou assign??s au user
             $query .= "WHERE $is_deleted
                              AND ( $search_assign )
                              AND (`status` IN ('".implode("','", self::getProcessStatusArray())."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "toapprove" : // on affiche les tickets planifiés ou assignés au user
+         case "toapprove" : // on affiche les tickets planifi??s ou assign??s au user
             $query .= "WHERE $is_deleted
                              AND (`status` = '".self::SOLVED."')
                              AND ($search_users_id";
@@ -4683,7 +4680,7 @@ class Ticket extends CommonITILObject {
                       getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "tovalidate" : // on affiche les tickets à valider
+         case "tovalidate" : // on affiche les tickets ?? valider
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE $is_deleted
@@ -4694,7 +4691,7 @@ class Ticket extends CommonITILObject {
                        getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "rejected" : // on affiche les tickets rejetés
+         case "rejected" : // on affiche les tickets rejet??s
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
                              AND `status` <> '".self::CLOSED."'
@@ -4714,7 +4711,7 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "survey" : // tickets dont l'enquête de satisfaction n'est pas remplie et encore valide
+         case "survey" : // tickets dont l'enqu??te de satisfaction n'est pas remplie et encore valide
             $query .= " INNER JOIN `glpi_ticketsatisfactions`
                            ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                         INNER JOIN `glpi_entities`
@@ -4735,8 +4732,8 @@ class Ticket extends CommonITILObject {
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-         case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
-               // à quelqu'un d'autre (exclut les self-tickets)
+         case "requestbyself" : // on affiche les tickets demand??s le user qui sont planifi??s ou assign??s
+               // ?? quelqu'un d'autre (exclut les self-tickets)
 
          default :
             $query .= "WHERE $is_deleted
@@ -5630,7 +5627,7 @@ class Ticket extends CommonITILObject {
 
       $ticket = new self();
 
-      // Recherche des entités
+      // Recherche des entit??s
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
          if ($delay >= 0) {
@@ -5677,7 +5674,7 @@ class Ticket extends CommonITILObject {
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
       }
-      // Recherche des entités
+      // Recherche des entit??s
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
          $query = "SELECT `glpi_tickets`.*
@@ -5797,7 +5794,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Sauvegarde du max_closedate pour ne pas tester les même tickets 2 fois
+      // Sauvegarde du max_closedate pour ne pas tester les m??me tickets 2 fois
       foreach ($maxentity as $parent => $maxdate) {
          $conf->getFromDB($parent);
          $conf->update(array('id'            => $conf->fields['id'],

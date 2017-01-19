@@ -1,39 +1,35 @@
 <?php
-/*
- * @version $Id$
- -------------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
-
- http://glpi-project.org
-
- based on GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of GLPI.
-
- GLPI is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- GLPI is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2017 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
 
 // BIG DUMP GENERATION FOR THE 0.6 VERSION
@@ -940,7 +936,7 @@ function generateGlobalDropdowns() {
                                               'comment' => "comment' $val")));
    }
 
-   $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multimédia');
+   $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multim??dia');
    $dp    = new SoftwareCategory();
    for ($i=0 ; $i<max(1,pow($MAX['softwarecategory'],1/2)) ; $i++) {
       if (isset($items[$i])) {
@@ -1074,7 +1070,7 @@ function generateGlobalDropdowns() {
    }
 
 
-   $items = array("Ingénieur", "Stagiaire", "Secrétaire", "ouvrier d'atelier");
+   $items = array("Ing??nieur", "Stagiaire", "Secr??taire", "ouvrier d'atelier");
    $dp    = new UserCategory();
    for ($i=0 ; $i<$MAX['user_type'] ; $i++) {
       if (isset($items[$i])) {
@@ -1087,7 +1083,7 @@ function generateGlobalDropdowns() {
    }
 
 
-   $items = array("Président", "Agent Comptable", "Directeur d'agence");
+   $items = array("Pr??sident", "Agent Comptable", "Directeur d'agence");
    $dp    = new UserTitle();
    for ($i=0 ; $i<$MAX['user_title'] ; $i++) {
       if (isset($items[$i])) {
@@ -1787,7 +1783,7 @@ function generate_entity($ID_entity) {
 
    $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
 
-   $items = array("d'après KB");
+   $items = array("d'apr??s KB");
    $st    = new SolutionType();
    for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
       if (isset($items[$i])) {
