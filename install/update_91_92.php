@@ -984,6 +984,9 @@ Regards,',
       $migration->dropField('glpi_computers', 'os_kernel_version');
    }
 
+   //add db version
+   Config::setConfigurationValues('core', ['dbversion' => GLPI_SCHEMA_VERSION]);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
