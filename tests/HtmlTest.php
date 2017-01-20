@@ -410,4 +410,203 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
       $this->assertContains(GLPI_VERSION, $message, 'Invalid GLPI version!');
       $this->assertContains(GLPI_YEAR, $message, 'Invalid copyright date!');
    }
+
+   /**
+    * @covers Html::css()
+    */
+   public function testCss() {
+      global $CFG_GLPI;
+
+      //fake files
+      $fake_files = [
+         'file.css',
+         'file.min.css',
+         'other.css',
+         'other-min.css'
+      ];
+      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $base_expected = '<link rel="stylesheet" type="text/css" href="'.
+         $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'" %attrs>';
+      $base_attrs = 'media="screen"';
+
+      //create test files
+      foreach ($fake_files as $fake_file) {
+         touch(GLPI_TMP_DIR . '/' . $fake_file);
+      }
+
+      //expect minified file
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.min.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css'));
+
+      //explicitely require not minified file
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css', [], false));
+
+      //activate debug mode: expect not minified file
+      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css'));
+      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+      //expect original file
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['nofile.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/nofile.css'));
+
+      //expect original file
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['other.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/other.css'));
+
+      //expect original file
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['other-min.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/other-min.css'));
+
+      //expect minified file, print media
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.min.css', 'media="print"'],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css', ['media' => 'print']));
+
+      //expect minified file, screen media
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.min.css', $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css', ['media' => '']));
+
+      //expect minified file and specific version
+      $fake_version = '0.0.1';
+      $expected = str_replace(
+         ['%url', '%attrs', GLPI_VERSION],
+         ['file.min.css', $base_attrs, $fake_version],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css', ['version' => $fake_version]));
+
+      //expect minified file with added attributes
+      $expected = str_replace(
+         ['%url', '%attrs'],
+         ['file.min.css', 'attribute="one" ' . $base_attrs],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::css($dir . '/file.css', ['attribute' => 'one']));
+
+      //remove test files
+      foreach ($fake_files as $fake_file) {
+         unlink(GLPI_TMP_DIR . '/' . $fake_file);
+      }
+   }
+
+   /**
+    * @covers Html::script()
+    */
+   public function testScript() {
+      global $CFG_GLPI;
+
+      //fake files
+      $fake_files = [
+         'file.js',
+         'file.min.js',
+         'other.js',
+         'other-min.js'
+      ];
+      $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
+      $base_expected = '<script type="text/javascript" src="'.
+         $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'"></script>';
+
+      //create test files
+      foreach ($fake_files as $fake_file) {
+         touch(GLPI_TMP_DIR . '/' . $fake_file);
+      }
+
+      //expect minified file
+      $expected = str_replace(
+         '%url',
+         'file.min.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/file.js'));
+
+      //explicitely require not minified file
+      $expected = str_replace(
+         '%url',
+         'file.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/file.js', [], false));
+
+      //activate debug mode: expect not minified file
+      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+      $expected = str_replace(
+         '%url',
+         'file.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/file.js'));
+      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+      //expect original file
+      $expected = str_replace(
+         '%url',
+         'nofile.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/nofile.js'));
+
+      //expect original file
+      $expected = str_replace(
+         '%url',
+         'other.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/other.js'));
+
+      //expect original file
+      $expected = str_replace(
+         '%url',
+         'other-min.js',
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/other-min.js'));
+
+      //expect minified file and specific version
+      $fake_version = '0.0.1';
+      $expected = str_replace(
+         ['%url', GLPI_VERSION],
+         ['file.min.js', $fake_version],
+         $base_expected
+      );
+      $this->assertEquals($expected, Html::script($dir . '/file.js', ['version' => $fake_version]));
+
+      //remove test files
+      foreach ($fake_files as $fake_file) {
+         unlink(GLPI_TMP_DIR . '/' . $fake_file);
+      }
+   }
 }

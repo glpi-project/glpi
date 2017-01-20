@@ -90,6 +90,9 @@ echo "Clean PHP vendor"
 \find vendor/ -type d -name "example*" -prune -exec rm -rf {} \;
 \find vendor/ -type d -name "design" -prune -exec rm -rf {} \;
 
+echo "Minify stylesheets and javascripts"
+$INIT_PWD/vendor/bin/robo minify --load-from tools
+
 echo "Delete various scripts and directories"
 \rm -rf tools;
 \rm -rf phpunit;
