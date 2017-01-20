@@ -21,3 +21,5 @@ phpunit.xml
 /config/define.php
 /nbproject
 .composer.hash
+/css/**/*.min.css
+/js/*.min.js
