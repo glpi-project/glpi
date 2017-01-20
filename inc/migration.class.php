@@ -56,7 +56,7 @@ class Migration {
 
 
    /**
-    * @param $ver    number of new version of GLPI
+    * @param integer $ver number of new version of GLPI
    **/
    function __construct($ver) {
 
@@ -66,9 +66,13 @@ class Migration {
 
 
    /**
+    * Set versions
+    *
     * @since version 0.84
     *
-    * @param $ver    number of new version
+    * @param integer $ver number of new version
+    *
+    * @return void
    **/
    function setVersion($ver) {
 
@@ -79,9 +83,13 @@ class Migration {
 
 
    /**
+    * Add new message div
+    *
     * @since version 0.84
     *
-    * @param $id
+    * @param string $id Area ID
+    *
+    * @return void
    **/
    function addNewMessageArea($id) {
 
@@ -97,6 +105,8 @@ class Migration {
     * Flush previous display message in log file
     *
     * @since version 0.84
+    *
+    * @return void
    **/
    function flushLogDisplayMessage() {
 
@@ -111,7 +121,9 @@ class Migration {
    /**
     * Additional message in global message
     *
-    * @param $msg    text  to display
+    * @param string $msg text  to display
+    *
+    * @return void
    **/
    function displayMessage($msg) {
 
@@ -131,12 +143,14 @@ class Migration {
 
 
    /**
-    * log message for this migration
+    * Log message for this migration
     *
     * @since version 0.84
     *
-    * @param $message
-    * @param $warning
+    * @param string  $message Message to display
+    * @param boolean $warning Is a warning
+    *
+    * @return void
    **/
    function log($message, $warning) {
 
@@ -157,7 +171,9 @@ class Migration {
    /**
     * Display a title
     *
-    * @param $title string
+    * @param string $title Title to display
+    *
+    * @return void
    **/
    function displayTitle($title) {
       echo "<h3>".Html::entities_deep($title)."</h3>";
@@ -167,8 +183,10 @@ class Migration {
    /**
     * Display a Warning
     *
-    * @param $msg    string
-    * @param $red    boolean (false by default)
+    * @param string  $msg Message to display
+    * @param boolean $red Displays with red class (false by default)
+    *
+    * @return void
    **/
    function displayWarning($msg, $red=false) {
 
@@ -182,11 +200,12 @@ class Migration {
    /**
     * Define field's format
     *
-    * @param $type            string   can be bool, string, integer, date, datatime, text, longtext,
-    *                                         autoincrement, char
-    * @param $default_value   string   new field's default value,
-    *                                  if a specific default value needs to be used
-    * @param $nodefault       bolean   (false by default)
+    * @param string  $type          can be bool, string, integer, date, datatime, text, longtext,
+    * @param string  $default_value new field's default value,
+    *                               if a specific default value needs to be used
+    * @param boolean $nodefault     No default value (false by default)
+    *
+    * @return string
    **/
    private function fieldFormat($type, $default_value, $nodefault=false) {
 
@@ -301,19 +320,21 @@ class Migration {
    /**
     * Add a new GLPI normalized field
     *
-    * @param $table     string
-    * @param $field     string   to add
-    * @param $type      string   (see fieldFormat)
-    * @param $options   array
-    *    - update    : if not empty = value of $field (must be protected)
-    *    - condition : if needed
-    *    - value     : default_value new field's default value, if a specific default value needs to be used
-    *    - nodefault : do not define default value (default false)
-    *    - comment   : comment to be added during field creation
-    *    - after     : where adding the new field
-    *    - null      : value could be NULL (default false)
+    * @param string $table   Table name
+    * @param string $field   Field name
+    * @param string $type    Field type, @see Migration::fieldFormat()
+    * @param array  $options Options:
+    *                         - update    : if not empty = value of $field (must be protected)
+    *                         - condition : if needed
+    *                         - value     : default_value new field's default value, if a specific default value needs to be used
+    *                         - nodefault : do not define default value (default false)
+    *                         - comment   : comment to be added during field creation
+    *                         - after     : where adding the new field
+    *                         - null      : value could be NULL (default false)
+    *
+    * @return boolean
    **/
-   function addField($table, $field, $type, $options=array()) {
+   function addField($table, $field, $type, $options = []) {
       global $DB;
 
       $params['update']    = '';
@@ -369,16 +390,18 @@ class Migration {
    /**
     * Modify field for migration
     *
-    * @param $table        string
-    * @param $oldfield     string   old name of the field
-    * @param $newfield     string   new name of the field
-    * @param $type         string   (see fieldFormat)
-    * @param $options      array
-    *    - default_value new field's default value, if a specific default value needs to be used
-    *    - comment comment to be added during field creation
-    *    - nodefault : do not define default value (default false)
+    * @param string $table    Table name
+    * @param string $oldfield Old name of the field
+    * @param string $newfield New name of the field
+    * @param string $type     Field type, @see Migration::fieldFormat()
+    * @param array  $options  Options:
+    *                         - default_value new field's default value, if a specific default value needs to be used
+    *                         - comment comment to be added during field creation
+    *                         - nodefault : do not define default value (default false)
+    *
+    * @return boolean
    **/
-   function changeField($table, $oldfield, $newfield, $type, $options=array()) {
+   function changeField($table, $oldfield, $newfield, $type, $options = []) {
 
       $params['value']     = NULL;
       $params['nodefault'] = false;
@@ -417,8 +440,10 @@ class Migration {
    /**
     * Drop field for migration
     *
-    * @param $table  string
-    * @param $field  string   field to drop
+    * @param string $table Table name
+    * @param string $field Field name
+    *
+    * @return void
    **/
    function dropField($table, $field) {
 
@@ -431,7 +456,9 @@ class Migration {
    /**
     * Drop immediatly a table if it exists
     *
-    * @param table   string
+    * @param string $table Table name
+    *
+    * @return void
    **/
    function dropTable($table) {
       global $DB;
@@ -445,11 +472,13 @@ class Migration {
    /**
     * Add index for migration
     *
-    * @param $table        string
-    * @param $fields       string or array
-    * @param $indexname    string            if empty =$fields (default '')
-    * @param $type         string            index or unique (default 'INDEX')
-    * @param $len          integer           for field length (default 0)
+    * @param string       $table     Table name
+    * @param string|array $fields    Field(s) name(s)
+    * @param string       $indexname Index name, $fields if empty, defaults to empty
+    * @param string       $type      Index type (index or unique - default 'INDEX')
+    * @param integer      $len       Field length (default 0)
+    *
+    * @return void
    **/
    function addKey($table, $fields, $indexname='', $type='INDEX', $len=0) {
 
@@ -483,8 +512,10 @@ class Migration {
    /**
     * Drop index for migration
     *
-    * @param $table     string
-    * @param $indexname string
+    * @param string $table     Table name
+    * @param string $indexname Index name
+    *
+    * @return void
    **/
    function dropKey($table, $indexname) {
 
@@ -497,8 +528,10 @@ class Migration {
    /**
     * Rename table for migration
     *
-    * @param $oldtable  string
-    * @param $newtable  string
+    * @param string $oldtable Old table name
+    * @param string $newtable new table name
+    *
+    * @return void
    **/
    function renameTable($oldtable, $newtable) {
       global $DB;
@@ -515,8 +548,10 @@ class Migration {
     *
     * @since version 0.84
     *
-    * @param $oldtable  string   The name of the table already inside the database
-    * @param $newtable  string   The copy of the old table
+    * @param string $oldtable The name of the table already inside the database
+    * @param string $newtable The copy of the old table
+    *
+    * @return void
    **/
    function copyTable($oldtable, $newtable) {
       global $DB;
@@ -544,10 +579,10 @@ class Migration {
     *
     * @since version 0.84
     *
-    * @param $table  string   The table to alter
-    * @param $input  array    The elements to add inside the table
+    * @param string $table The table to alter
+    * @param array  $input The elements to add inside the table
     *
-    * @return id of the last item inserted by mysql
+    * @return integer id of the last item inserted by mysql
    **/
    function insertInTable($table, array $input) {
       global $DB;
@@ -576,7 +611,9 @@ class Migration {
    /**
     * Execute migration for only one table
     *
-    * @param $table  string
+    * @param string $table Table name
+    *
+    * @return void
    **/
    function migrationOneTable($table) {
       global $DB;
@@ -593,6 +630,8 @@ class Migration {
 
    /**
     * Execute global migration
+    *
+    * @return void
    **/
    function executeMigration() {
 
@@ -608,13 +647,13 @@ class Migration {
    /**
     * Register a new rule
     *
-    * @param $rule      Array of fields of glpi_rules
-    * @param $criteria  Array of Array of fields of glpi_rulecriterias
-    * @param $actions   Array of Array of fields of glpi_ruleactions
+    * @param array $rule     Array of fields of glpi_rules
+    * @param array $criteria Array of Array of fields of glpi_rulecriterias
+    * @param array $actions  Array of Array of fields of glpi_ruleactions
     *
     * @since version 0.84
     *
-    * @return integer : new rule id
+    * @return integer new rule id
    **/
    function createRule(Array $rule, Array $criteria, Array $actions) {
       global $DB;
@@ -686,8 +725,10 @@ class Migration {
     *
     * @since version 0.85
     *
-    * @param $toadd   array   items to add : itemtype => array of values
-    * @param $todel   array   items to del : itemtype => array of values
+    * @param array $toadd items to add : itemtype => array of values
+    * @param array $todel items to del : itemtype => array of values
+    *
+    * @return void
    **/
    function updateDisplayPrefs($toadd=array(), $todel=array()) {
       global $DB;
