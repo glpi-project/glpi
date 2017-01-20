@@ -759,6 +759,7 @@ class User extends CommonDBTM {
 
       // blank password when authtype changes
       if (isset($input["authtype"])
+          && $input["authtype"] != 1
           && $input["authtype"] != $this->getField('authtype')) {
          $input["password"] = "";
       }
