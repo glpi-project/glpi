@@ -1024,7 +1024,7 @@ class Auth extends CommonGLPI {
     * @return boolean
    **/
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API));
    }
 
 
