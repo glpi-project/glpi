@@ -408,6 +408,14 @@ class APIRest extends API {
          }
          $this->format = "json";
 
+         // move files into _tmp folder
+         $parameters['upload_result'] = [];
+         foreach ($_FILES as $filename => $files) {
+            $parameters['upload_result'][]
+               = GLPIUploadHandler::uploadFiles(['name'           => $filename,
+                                                 'print_response' => false]);
+         }
+
       } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
          parse_str($body, $postvars);
          foreach ($postvars as $field => $value) {
