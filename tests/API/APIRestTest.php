@@ -50,6 +50,10 @@ class APIRestTest extends APIBaseClass {
       if (!empty($relative_uri)) {
          $params['headers']['Content-Type'] = "application/json";
       }
+      if (isset($params['multipart'])) {
+         // Guzzle lib will automatically push the correct Content-type
+         unset($params['headers']['Content-Type']);
+      }
       $verb = strtolower($verb);
       if (in_array($verb, ['get', 'post', 'delete', 'put', 'options', 'patch'])) {
          try {
@@ -250,5 +254,57 @@ class APIRestTest extends APIBaseClass {
       $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
       $this->assertEquals("abcdefg", $computer->fields['serial']);
+   }
+
+
+   /**
+    * @group   api
+    * @depends testInitSessionCredentials
+    */
+   public function testUploadDocument($session_token) {
+      // we will try to upload the README.md file
+      $document_name = "My document uploaded by api";
+      $filename      = "README.md";
+      $filecontent   = file_get_contents($filename);
+
+      $data = $this->query('createItems',
+                           ['verb'      => 'POST',
+                            'itemtype'  => 'Document',
+                            'headers'   => [
+                              'Session-Token' => $session_token
+                            ],
+                            'multipart' => [
+                              // the document part
+                              [
+                                 'name'     => 'uploadManifest',
+                                 'contents' => json_encode([
+                                    'input' => [
+                                       'name'       => $document_name,
+                                       '_filename'  => [$filename],
+                                    ]
+                                 ])
+                              ],
+                              // the FILE part
+                              [
+                                 'name'     => 'filename[]',
+                                 'contents' => $filecontent,
+                                 'filename' => $filename
+                              ]
+                            ]],
+                           201);
+
+      $this->assertArrayHasKey('id', $data);
+      $documents_id = $data['id'];
+      $this->assertEquals(true, is_numeric($documents_id));
+      $this->assertEquals(true, $documents_id > 0);
+      $this->assertArrayHasKey('message', $data);
+
+      $document        = new Document;
+      $documents_exist = (bool) $document->getFromDB($documents_id);
+      $this->assertEquals(true, $documents_exist);
+      $this->assertEquals('text/plain', $document->fields['mime']);
+      $this->assertEquals($document_name, $document->fields['name']);
+      $this->assertEquals($filename, $document->fields['filename']);
+      $this->assertEquals(true, (strpos($document->fields['filepath'], 'MD/') !== false));
    }
 }

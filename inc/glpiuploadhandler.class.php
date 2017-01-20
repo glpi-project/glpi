@@ -112,4 +112,48 @@ class GLPIUploadHandler extends UploadHandler {
 
       return false;
    }
+
+   static function uploadFiles($params = []) {
+      $default_params = [
+         'name'           => '',
+         'showfilesize'   => false,
+         'print_response' => true
+      ];
+      $params = array_merge($default_params, $params);
+
+      $upload_dir     = GLPI_TMP_DIR.'/';
+      $upload_handler = new self(['upload_dir'     => $upload_dir,
+                                  'param_name'     => $params['name'],
+                                  'orient_image'   => false,
+                                  'image_versions' => []],
+                                 false);
+      $response       = $upload_handler->post(false);
+
+      // clean compute display filesize
+      if (isset($response[$params['name']]) && is_array($response[$params['name']])) {
+         foreach ($response[$params['name']] as $key => &$val) {
+            if (Document::isValidDoc(addslashes($val->name))) {
+               if (isset($val->name)) {
+                  $val->display = $val->name;
+               }
+               if (isset($val->size)) {
+                  $val->filesize = Toolbox::getSize($val->size);
+                  if (isset($params['showfilesize']) && $params['showfilesize']) {
+                     $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
+                  }
+               }
+            } else {
+               // Unlink file
+               $val->error = __('Filetype not allowed');
+               if (file_exists($upload_dir.$val->name)) {
+                  unlink($upload_dir.$val->name);
+               }
+            }
+            $val->id = 'doc'.$params['name'].mt_rand();
+         }
+      }
+
+      // send answer
+      return $upload_handler->generate_response($response, $params['print_response']);
+   }
 }

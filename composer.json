@@ -33,7 +33,7 @@
         "ircmaxell/random-lib": "^1.2"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "~5",
+        "guzzlehttp/guzzle": "~6",
         "glpi-project/coding-standard": "0.5",
         "consolidation/robo": "^1.0",
         "natxet/CssMin": "^3.0",

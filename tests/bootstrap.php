@@ -336,6 +336,12 @@ function loadDataset() {
             'knowbaseitems_id' => '_knowbaseitem02',
             'entities_id'      => '_test_child_1'
          ]
+      ], 'DocumentType' => [
+         [
+            'name'          => 'markdown',
+            'is_uploadable' => '1',
+            'ext'           => 'md'
+         ]
       ]
    ];
 
