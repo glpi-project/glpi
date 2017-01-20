@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5598ea765da0358f1c7fbf16df55d3f2",
+    "content-hash": "974047d145f6d4f5cfb09c9726894b1f",
     "packages": [
         {
             "name": "iamcal/lib_autolink",
@@ -1542,7 +1542,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5.0",
+        "php": ">=5.6.0",
         "ext-mysqli": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
@@ -1553,6 +1553,6 @@
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "5.5.0"
+        "php": "5.6.0"
     }
 }
