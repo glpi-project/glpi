@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -144,7 +144,7 @@ function update0803to083() {
    }
 
    if (FieldExists('glpi_tickets', 'ticket_waiting_duration', false)) {
-     $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
+      $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
                              'integer');
    }
 
@@ -275,7 +275,6 @@ function update0803to083() {
 
       $migration->dropTable("glpi_ticketplannings");
 
-
       $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Notification'));
 
       // Migrate templates
@@ -294,10 +293,10 @@ function update0803to083() {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "UPDATE `glpi_notificationtemplatetranslations`
-                         SET `subject` = '".addslashes(str_replace($from,$to,$data['subject']))."',
-                             `content_text` = '".addslashes(str_replace($from,$to,
+                         SET `subject` = '".addslashes(str_replace($from, $to, $data['subject']))."',
+                             `content_text` = '".addslashes(str_replace($from, $to,
                                                                         $data['content_text']))."',
-                             `content_html` = '".addslashes(str_replace($from,$to,
+                             `content_html` = '".addslashes(str_replace($from, $to,
                                                                         $data['content_html']))."'
                          WHERE `id` = ".$data['id']."";
                $DB->queryOrDie($query, "0.83 fix tags usage for multi users");
@@ -305,7 +304,6 @@ function update0803to083() {
          }
       }
    }
-
 
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
@@ -386,7 +384,6 @@ function update0803to083() {
 &lt;/div&gt;')";
          $DB->queryOrDie($query, "0.83 add problem notification translation");
 
-
          $notifications = array('new'         => array(),
                                 'update'      => array(Notification::ASSIGN_TECH,
                                                        Notification::OLD_TECH_IN_CHARGE),
@@ -456,7 +453,6 @@ function update0803to083() {
    $migration->changeField('glpi_tickets_users', 'use_notification', 'use_notification',
                            'bool', array('value' => '1'));
 
-
    // to have correct name of key
    $migration->dropKey('glpi_tickets', 'ticketsolutiontypes_id');
    $migration->migrationOneTable('glpi_tickets');
@@ -467,8 +463,7 @@ function update0803to083() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Rename Category objects'));
 
-
-   $migration->renameTable('glpi_ticketcategories','glpi_itilcategories');
+   $migration->renameTable('glpi_ticketcategories', 'glpi_itilcategories');
    $migration->dropKey('glpi_itilcategories', 'ticketcategories_id');
    $migration->changeField('glpi_itilcategories', 'ticketcategories_id', 'itilcategories_id',
                            'integer');
@@ -569,7 +564,6 @@ function update0803to083() {
 
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
 
-
    /// Add document types
    $types = array('csv' => array('name' => 'Comma-Separated Values',
                                  'icon' => 'csv-dist.png'),
@@ -606,23 +600,21 @@ function update0803to083() {
          if ($DB->numrows($result) == 1) {
             $query = "UPDATE `glpi_documenttypes`
                       SET `icon` = '$icon', `date_mod` = NOW()
-                      WHERE `id` = '".$DB->result($result,0,0)."'";
+                      WHERE `id` = '".$DB->result($result, 0, 0)."'";
             $DB->queryOrDie($query, "0.83 update icon for doc type $ext");
          }
       }
    }
-
 
    /// add missing indexes  for fields
    $migration->addKey("glpi_authldaps", "is_active");
    $migration->addKey("glpi_authmails", "is_active");
    $migration->addKey("glpi_ocsservers", "is_active");
 
-
-   $migration->changeField("glpi_users", 'token','password_forget_token',
+   $migration->changeField("glpi_users", 'token', 'password_forget_token',
                            "char(40) NULL DEFAULT NULL");
 
-   $migration->changeField("glpi_users", 'tokendate','password_forget_token_date',
+   $migration->changeField("glpi_users", 'tokendate', 'password_forget_token_date',
                            "datetime");
 
    $migration->addField("glpi_users", "personal_token", 'string');
@@ -635,7 +627,6 @@ function update0803to083() {
    $migration->addField("glpi_contracts", "template_name", 'string');
    $migration->addField("glpi_contracts", "is_template", 'bool');
 
-
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Give consumable to groups'));
 
    if ($migration->addField("glpi_consumables", "itemtype", "VARCHAR(100) DEFAULT NULL",
@@ -644,9 +635,8 @@ function update0803to083() {
 
       $migration->dropKey("glpi_consumables", 'users_id');
       $migration->changeField("glpi_consumables", 'users_id', 'items_id', 'integer');
-      $migration->addKey("glpi_consumables", array('itemtype','items_id'),'item');
+      $migration->addKey("glpi_consumables", array('itemtype','items_id'), 'item');
    }
-
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Several emails for users'));
 
@@ -718,10 +708,9 @@ function update0803to083() {
 
    // multiple manager in groups
    $migration->changeField("glpi_authldaps", 'email_field', 'email1_field', 'string');
-   $migration->addField("glpi_authldaps", 'email2_field','string');
-   $migration->addField("glpi_authldaps", 'email3_field','string');
-   $migration->addField("glpi_authldaps", 'email4_field','string');
-
+   $migration->addField("glpi_authldaps", 'email2_field', 'string');
+   $migration->addField("glpi_authldaps", 'email3_field', 'string');
+   $migration->addField("glpi_authldaps", 'email4_field', 'string');
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Multiple managers for groups'));
 
@@ -769,7 +758,6 @@ function update0803to083() {
 
    }
 
-
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Add entities information on document links'));
 
    if ($migration->addField("glpi_documents_items", "entities_id", "integer")) {
@@ -806,7 +794,7 @@ function update0803to083() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             // Get rule string
-            $rules = $DB->result($result,0,0);
+            $rules = $DB->result($result, 0, 0);
             // Update actions
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_ruleactions`
@@ -828,8 +816,7 @@ function update0803to083() {
       }
    }
 
-
-   $migration->displayMessage(sprintf(__('Data migration - %s'),'Ticket templates'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Ticket templates'));
 
    $default_ticket_template = 0;
 
@@ -865,10 +852,10 @@ function update0803to083() {
    $migration->addField('glpi_itilcategories', 'is_incident', "integer", array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_incident');
 
-   $migration->addField('glpi_itilcategories', 'is_request', "integer",  array('value' => 1));
+   $migration->addField('glpi_itilcategories', 'is_request', "integer", array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_request');
 
-   $migration->addField('glpi_itilcategories', 'is_problem', "integer",  array('value' => 1));
+   $migration->addField('glpi_itilcategories', 'is_problem', "integer", array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_problem');
 
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
@@ -1003,7 +990,7 @@ function update0803to083() {
                         array('after' => 'init_pages_counter'));
    $migration->addKey('glpi_printers', 'last_pages_counter');
 
-   $migration->displayMessage(sprintf(__('Data migration - %s'),'various cleaning DB'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'various cleaning DB'));
 
    // Clean ticket satisfactions
    $query = "DELETE
@@ -1048,7 +1035,6 @@ function update0803to083() {
       $ADDTODISPLAYPREF['TicketRecurrent'] = array(11, 12, 13, 15, 14);
    }
 
-
    if (!countElementsInTable('glpi_crontasks', "`itemtype`='TicketRecurrent' AND `name`='ticketrecurrent'")) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
@@ -1058,17 +1044,13 @@ function update0803to083() {
       $DB->queryOrDie($query, "0.83 populate glpi_crontasks for ticketrecurrent");
    }
 
-
    $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
 
-
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'various fields add'));
-
 
    // Ticket delegation
    $migration->addField('glpi_groups_users', 'is_userdelegate', 'bool');
    $migration->addKey('glpi_groups_users', 'is_userdelegate');
-
 
    //Software dictionary update
    $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
@@ -1078,8 +1060,8 @@ function update0803to083() {
 
    // Groups perm
    $migration->addField('glpi_groups', 'is_requester', 'bool', array('value' => '1'));
-   $migration->addField('glpi_groups', 'is_assign',    'bool', array('value' => '1'));
-   $migration->addField('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_assign', 'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_notify', 'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
 
@@ -1102,7 +1084,6 @@ function update0803to083() {
 
    // New index for count on tab
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
-
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Create new default profiles'));
 
@@ -1257,12 +1238,12 @@ function update0803to083() {
 
    foreach ($profiles as $profile => $data) {
       $query  = "INSERT INTO `glpi_profiles`
-                         (`".implode("`, `",array_keys($data))."`)
-                  VALUES ('".implode("', '",$data)."')";
+                         (`".implode("`, `", array_keys($data))."`)
+                  VALUES ('".implode("', '", $data)."')";
       $DB->queryOrDie($query, "0.83 create new profile $profile");
    }
 
-   $migration->displayMessage(sprintf(__('Data migration - %s'),'Reminder visibility'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Reminder visibility'));
 
    if (!TableExists('glpi_reminders_users')) {
       $query = "CREATE TABLE `glpi_reminders_users` (
@@ -1474,7 +1455,6 @@ function update0803to083() {
    // Plugins
    $migration->addField('glpi_plugins', 'license', 'string');
 
-
    $migration->migrationOneTable('glpi_entitydatas');
    $restore_root_entity_value = false;
    // create root entity if not exist with old default values
@@ -1543,7 +1523,7 @@ function update0803to083() {
    $field0 = array('calendars_id', 'tickettype', 'inquest_config');
 
    foreach ($field0 as $field_0) {
-      if (FieldExists("glpi_entitydatas", $field_0, false) ) {
+      if (FieldExists("glpi_entitydatas", $field_0, false)) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = '-2'
                    WHERE `$field_0` = '0'
@@ -1587,7 +1567,6 @@ function update0803to083() {
                            'string', array('value' => '-2'));
    $migration->changeField("glpi_entitydatas", "autofill_use_date", "autofill_use_date",
                            'string', array('value' => '-2'));
-
 
    // migration to new values for inherit config
    $fieldconfig = array('auto_assign_mode', 'autoclose_delay', 'cartridges_alert_repeat',
@@ -1653,7 +1632,6 @@ function update0803to083() {
       }
    }
 
-
    if ($restore_root_entity_value) {
       $query = "UPDATE `glpi_entitydatas`
                 SET `calendars_id` = 0
@@ -1669,7 +1647,7 @@ function update0803to083() {
    $migration->addKey('glpi_computervirtualmachines', 'vcpu');
    $migration->addKey('glpi_computervirtualmachines', 'ram');
 
-//   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
+   //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
    $renametables = array('TicketSolutionType'     => 'SolutionType',
                          'TicketSolutionTemplate' => 'SolutionTemplate',
@@ -1691,7 +1669,7 @@ function update0803to083() {
    }
 
    // ************ Keep it at the end **************
-   $migration->displayMessage(sprintf(__('Data migration - %s'),'glpi_displaypreferences'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    // Change is_recursive index
    $query = ("UPDATE `glpi_displaypreferences`
@@ -1713,7 +1691,7 @@ function update0803to083() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -1751,4 +1729,3 @@ function update0803to083() {
 
    return $updateresult;
 }
-?>

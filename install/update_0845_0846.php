@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,6 @@ function update0845to0846() {
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.6'));
    $migration->setVersion('0.84.6');
 
-
    $backup_tables = false;
    $newtables     = array();
 
@@ -68,7 +67,6 @@ function update0845to0846() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
    }
-
 
    // correct entities_id in documents_items
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
@@ -109,4 +107,3 @@ function update0845to0846() {
 
    return $updateresult;
 }
-?>

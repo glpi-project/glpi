@@ -8,7 +8,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -74,7 +74,7 @@ img {
 small {
    font-family: verdana;
    font-size: 10px;
-} 
+}
 
 
 .b {
@@ -109,7 +109,7 @@ small {
 }
 
 
-.red { 
+.red {
    color:red;
 }
 .blue {
@@ -153,8 +153,8 @@ hr {
 /* ################--------------- Tabs ---------------#################### */
 /* TODO improve display */
 .alltab {
-   font-size:14px; 
-   text-align:center; 
+   font-size:14px;
+   text-align:center;
    background-color:#CC9900;
    padding: 5px;
    font-weight: bold;
@@ -168,7 +168,7 @@ hr {
 /* ################--------------- Page ---------------#################### */
 
 #page {
-   margin: 0 auto; 
+   margin: 0 auto;
    text-align:center;
 }
 
@@ -176,7 +176,7 @@ hr {
    font-size: 12px;
    margin:0;
    margin-bottom:5px;
-   padding:0; 
+   padding:0;
 }
 
 #page {
@@ -224,13 +224,13 @@ input.submit {
    border: 1px solid #888888;
    background-color:#eeeeee;
    cursor:pointer;
-   background:  url("../pics/fond_form.png") repeat-x; 
+   background:  url("../pics/fond_form.png") repeat-x;
 }
 
 input.submit:hover {
    border: 1px inset #888888;
    background-color:#ffffff;
-   background:  url("../pics/fond_form_on.png") repeat-x; 
+   background:  url("../pics/fond_form_on.png") repeat-x;
 }
 
 input[type=checkbox] {
@@ -366,7 +366,7 @@ td { }
    font-weight: bold;
    background-color: #fccc6f;
    text-align: center;
-   background:  url("../pics/fond_th.png") repeat-x; 
+   background:  url("../pics/fond_th.png") repeat-x;
    border-bottom:1px solid #cccccc;
 }
 
@@ -447,7 +447,7 @@ ul.autocomp {
    text-align:left;
 }
 
-ul.autocomp  li.selected { 
+ul.autocomp  li.selected {
    background-color: #FFF6CF;
 }
 
@@ -466,8 +466,8 @@ li.auto_comp {
 
 .showplan {
    font-weight: bold;
-   text-decoration: none; 
-   color : #3A5693; 
+   text-decoration: none;
+   color : #3A5693;
    cursor:pointer;
 }
 
@@ -524,7 +524,7 @@ li.auto_comp {
 .tdkb_result {
    vertical-align:top;
    text-align:left;
-   width: 33%; 
+   width: 33%;
    padding: 3px 20px 3px 25px;
 }
 
@@ -535,15 +535,15 @@ li.auto_comp {
 
 .kb_resume {
    text-align:left;
-   font-size: 9px;	
-   line-height: 10px; 
-   clear: both;	
+   font-size: 9px;
+   line-height: 10px;
+   clear: both;
    padding: 5px 0 10px 25px;
 }
 
 .tdkb {
    text-align:left;
-   font-size:10px; 
+   font-size:10px;
    color:#aaaaaa;
 }
 
@@ -555,8 +555,8 @@ li.auto_comp {
 }
 
 .baskb_right {
-   position:absolute; 
-   right:0; 
+   position:absolute;
+   right:0;
    margin-right:5px;
 }
 
@@ -627,7 +627,7 @@ div#menu_navigate {
 div#menu_navigate li {
    margin-left:2px;
    display:block;
-   float:left;   
+   float:left;
    padding:2px;
 }
 
@@ -677,7 +677,7 @@ ul#onglet li.invisible {
    border: 1px solid #fff;
    background-color: #ffffff;
    width: 15px;
-   background:  transparent; 
+   background:  transparent;
 }
 
 ul#onglet li.actif a {
@@ -715,22 +715,22 @@ ul#onglet span.fake {
 
 /* Over onglet div */
 #onglet_plugins {
-   display: none; 
+   display: none;
    position: absolute;
    top:21px;
    left:-20px;
    padding: 5px;
    font-size: 8px;
    width:100px;
-   background: transparent url("../pics/fd_hoverlink.png") repeat; 
-   border: 1px solid gray;	
+   background: transparent url("../pics/fd_hoverlink.png") repeat;
+   border: 1px solid gray;
    -moz-border-radius: 5px;
 }
 
  #onglet_plugins dl {
    margin: 0;
    padding: 0;
-   list-style-type: none;	
+   list-style-type: none;
    border:0;
 }
 
@@ -744,7 +744,7 @@ ul#onglet span.fake {
 }
 
 #onglet_plugins dt a {
-   font-size:10px;	
+   font-size:10px;
    color: #000;
    text-decoration: none;
    display: block;
@@ -765,7 +765,7 @@ ul#onglet span.fake {
 /* ################--------------- box (redirect and other)  ---------------#################### */
 
 .box {
-   margin: 0 auto; 
+   margin: 0 auto;
    width:700px;
    text-align:center;
 }
@@ -959,7 +959,7 @@ ul#onglet span.fake {
 }
 
 .error {
-   color: red; 
+   color: red;
    margin-top:20px;
    text-align:center;
 }
@@ -1001,7 +1001,7 @@ div#c_preference {
    margin-right: 5px;
    position: relative;
    top: 4px;
-   font-size: 0.9em;	
+   font-size: 0.9em;
    z-index:900;
 }
 
@@ -1250,7 +1250,7 @@ div#c_ssmenu2 {
    background: url("../pics/fd_nav3.png") 0 0 repeat-x;
    height: 28px;
    clear: both;
-   font-size: 0.9em; 
+   font-size: 0.9em;
 }
 
 div#c_ssmenu2 ul {
@@ -1301,7 +1301,7 @@ div#show_entities_long {
    padding: 5px;
    font-size: 11px;
    text-align: left;
-   z-index:1000;     
+   z-index:1000;
    overflow:scroll;
    height:300px;
    width:300px;
@@ -1310,7 +1310,7 @@ div#show_entities_long {
 div#show_all_menu {
    display: none;
    position: absolute;
-   top:20px; 
+   top:20px;
    left:5px;
    border: 1px solid  #CC9900;
    background: url("../pics/fd_hoverlink.png") 0 0 repeat;
@@ -1336,7 +1336,7 @@ div#show_all_menu {
 #footer {
    display:none;
    background: url("../pics/fd_footer.png") 0 0 repeat-x;
-   font-size: 9px;	
+   font-size: 9px;
    color :#757575;
    padding: 3px;
    margin-top: 200px;
@@ -1344,7 +1344,7 @@ div#show_all_menu {
 }
 
 .copyright {
-   font-size: 9px;	
+   font-size: 9px;
    color :#757575;
 }
 
@@ -1407,7 +1407,7 @@ div#show_all_menu {
    border-bottom: 2px solid #36f;
 }
 
-#debug, #debug-float, .debug, .see_debug { 
+#debug, #debug-float, .debug, .see_debug {
    display:none;
    background-color:#F0F0F0;
 }
@@ -1420,14 +1420,14 @@ div#show_all_menu {
 
 
 #debug h1, #debugajax h1 {
-   font-size:14px; 
-   text-align:center; 
+   font-size:14px;
+   text-align:center;
    background-color:#efefe7;
    padding: 5px;
 }
 
 #debug h2, #debugajax h2 {
-   font-size:14px; 
+   font-size:14px;
    padding-left: 10px;
    border-left: 4px solid #FFC65D;
    border-bottom: 2px solid #FFC65D;

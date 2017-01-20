@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,9 +36,8 @@ require_once 'DeleteRestore.php';
 class Framework_CommonDBTM_AllTests {
    public static function suite() {
       $suite = new PHPUnit_Framework_TestSuite('Framework_CommonDBTM_CanCheck');
-//      $suite->addTestSuite('Framework_CommonDBTM_DeleteRestore');
+      //      $suite->addTestSuite('Framework_CommonDBTM_DeleteRestore');
 
       return $suite;
    }
 }
-?>

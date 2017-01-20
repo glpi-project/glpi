@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -66,9 +66,9 @@ function update083to0831() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
    }
 
-   $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
-   $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
-   $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
+   $migration->addField('glpi_configs', 'allow_search_view', 'integer', array('value' => 2));
+   $migration->addField('glpi_configs', 'allow_search_all', 'bool', array('value' => 1));
+   $migration->addField('glpi_configs', 'allow_search_global', 'bool', array('value' => 1));
 
    $migration->addKey('glpi_tickets', 'name');
 
@@ -83,7 +83,6 @@ function update083to0831() {
    // ************ Keep it at the end **************
    $migration->displayMessage('Migration of glpi_displaypreferences');
 
-
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
@@ -97,7 +96,7 @@ function update083to0831() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -135,4 +134,3 @@ function update083to0831() {
 
    return $updateresult;
 }
-?>

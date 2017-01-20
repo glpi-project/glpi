@@ -24,11 +24,11 @@ function uploadFile(file, editor, input_name) {
       async: false,
       success: function(data) {
          $.each(data, function(index, element) {
-            if(element[0].error == undefined) {
+            if (element[0].error == undefined) {
                returnTag = '';
                var tag = getFileTag(element);
                //if is an image add tag
-               if(isImage(file)){
+               if (isImage(file)) {
                   returnTag = tag.tag;
                }
                //display uploaded file
@@ -171,7 +171,7 @@ var insertImgFromFile = function(editor, fileImg, tag) {
    var urlCreator = window.URL || window.webkitURL;
    var imageUrl   = urlCreator.createObjectURL(fileImg);
    var regex      = new RegExp('#', 'g');
-   var maxHeight  = $(tinyMCE.activeEditor.getContainer()).height() - 60 ;
+   var maxHeight  = $(tinyMCE.activeEditor.getContainer()).height() - 60;
    var maxWidth   = $(tinyMCE.activeEditor.getContainer()).width()  - 120;
 
    if (window.FileReader && window.File && window.FileList && window.Blob ) {
@@ -185,14 +185,14 @@ var insertImgFromFile = function(editor, fileImg, tag) {
             var imgHeight = this.height;
             var ratio     = 0;
 
-            if(imgWidth > maxWidth){
+            if (imgWidth > maxWidth) {
                ratio     = maxWidth / imgWidth; // get ratio for scaling image
                imgHeight = imgHeight * ratio;   // Reset height to match scaled image
                imgWidth  = imgWidth * ratio;    // Reset width to match scaled image
             }
 
             // Check if current height is larger than max
-            if(imgHeight > maxHeight){
+            if (imgHeight > maxHeight) {
                ratio     = maxHeight / imgHeight; // get ratio for scaling image
                imgWidth  = imgWidth * ratio;      // Reset width to match scaled image
                imgHeight = imgHeight * ratio;     // Reset height to match scaled image
@@ -204,7 +204,7 @@ var insertImgFromFile = function(editor, fileImg, tag) {
       });
       reader.readAsDataURL(fileImg);
 
-   } else{
+   } else {
       console.log('thanks to update your browser to get preview of image');
    }
 };
@@ -276,13 +276,13 @@ var extractSrcFromImgTag = function(content) {
 */
 var extractSrcFromBlobImgTag = function(content) {
    var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-      if (match == null) {
-         var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
+   if (match == null) {
+      var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
 
-         if (match == null) {
-            var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
-         }
+      if (match == null) {
+         var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
       }
+   }
 
    return match[1];
 };
@@ -358,7 +358,7 @@ if (typeof tinymce != 'undefined') {
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
 
                   insertImageInTinyMCE(editor, file);
-               } else{
+               } else {
                   console.log("paste error");
                }
             };

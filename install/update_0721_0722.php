@@ -11,7 +11,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -58,7 +58,6 @@ function update0721to0722() {
              FROM `glpi_alerts`
              WHERE `device_type` = '".SOFTWARELICENSE_TYPE."'";
    $DB->queryOrDie($query, "0.72.2 delete search of state from reservations");
-
 
    //// Correct search.constant numbers
    $updates = array();
@@ -204,7 +203,6 @@ function update0721to0722() {
                       'from'  => 10,
                       'to'    => 16);
 
-
    foreach ($updates as $data) {
       $query = "UPDATE `glpi_display`
                 SET `num` = ".$data['to']."
@@ -216,4 +214,3 @@ function update0721to0722() {
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0722"); // End
 } // fin 0.72.2
-?>

@@ -10,7 +10,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -33,7 +33,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -130,7 +130,6 @@ function update080to0801() {
       $entities    = getAllDatasFromTable('glpi_entities');
       $entities[0] = "Root";
 
-
       foreach ($entities as $entID => $val) {
          // Non recursive ones
          $query3 = "UPDATE `glpi_slalevels`
@@ -152,10 +151,8 @@ function update080to0801() {
       }
    }
 
-
    // must always be at the end
    $migration->executeMigration();
 
    return $updateresult;
 }
-?>

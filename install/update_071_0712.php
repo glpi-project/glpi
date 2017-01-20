@@ -11,7 +11,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -34,13 +34,12 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.71 to 0.71.2
 function update071to0712() {
    global $DB, $CFG_GLPI;
-
 
    $query = "UPDATE `glpi_display`
              SET `num` = 120
@@ -53,4 +52,3 @@ function update071to0712() {
    $DB->queryOrDie($query, "0.71.2 Update ignore field for soft dict");
 
 } // fin 0.71 #####################################################################################
-?>

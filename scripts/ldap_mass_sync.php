@@ -39,9 +39,9 @@
 chdir(__DIR__);
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
       $it    = explode("=", $_SERVER['argv'][$i], 2);
-      $it[0] = preg_replace('/^--/','',$it[0]);
+      $it[0] = preg_replace('/^--/', '', $it[0]);
 
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
@@ -188,4 +188,3 @@ function import(array $options) {
    }
    echo "\n\n";
 }
-?>

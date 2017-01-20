@@ -8,7 +8,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -43,7 +43,7 @@ body {
    width:760px;
    font-family: Verdana;
    font-size:12px;
-   text-align: center; 
+   text-align: center;
    margin: auto;
    padding: 40px 40px 40px 40px;
 }
@@ -69,7 +69,7 @@ a {
    margin:0;
    width: 145px;
    height: 80px;
-   background: url(../pics/login_logo_glpi.png)  no-repeat; 
+   background: url(../pics/login_logo_glpi.png)  no-repeat;
 }
 
 
@@ -123,7 +123,7 @@ th {
 .tab_check th{
    font-size: 14px;
    font-weight: bold;
-   
+
 }
 
 .tab_check td {
@@ -132,7 +132,7 @@ th {
 }
 
 
-.red { 
+.red {
    color:red;
 }
 .green {
@@ -186,7 +186,7 @@ fieldset label {
    text-align:center;
 }
 
-input.submit, 
+input.submit,
 span.vsubmit, a.vsubmit {
    padding: 5px;
    cursor:pointer;
@@ -194,15 +194,15 @@ span.vsubmit, a.vsubmit {
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
    background-color: #FEC95C;
-   border: 0; 
+   border: 0;
 }
 
-input.submit:hover, 
+input.submit:hover,
 a.vsubmit:hover {
    background-color: #fddb6f;
    -moz-box-shadow: 0px 1px 1px #999;
    -webkit-box-shadow: 0px 1px 1px #999;
-   box-shadow: 0px 1px 1px #999;   
+   box-shadow: 0px 1px 1px #999;
 
 }
 

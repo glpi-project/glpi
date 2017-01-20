@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -38,7 +38,7 @@
 // since version 0.84
 // Use it greping 'Errors' to show files with troubles
 define('GLPI_ROOT', realpath('..'));
-#include (GLPI_ROOT . "/inc/includes.php");
+// include (GLPI_ROOT . "/inc/includes.php");
 
 $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
@@ -49,12 +49,12 @@ $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
 foreach ($dirs as $dir) {
    if ($handle = opendir($dir)) {
       echo "Check dir $dir\n";
-#      echo "Files :\n";
+      // echo "Files :\n";
 
       /* Ceci est la façon correcte de traverser un dossier. */
       while (false !== ($file = readdir($handle))) {
-         if ($file != "." && $file != ".." && preg_match('/\.php$/',$file)) {
-#            echo "$file\n";
+         if ($file != "." && $file != ".." && preg_match('/\.php$/', $file)) {
+            // echo "$file\n";
             system("php -l ".$dir.'/'.$file." | grep -i parse");
          }
       }
@@ -62,4 +62,3 @@ foreach ($dirs as $dir) {
       closedir($handle);
    }
 }
-?>

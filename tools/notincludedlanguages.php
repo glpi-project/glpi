@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -51,12 +51,11 @@ $dir   = opendir(GLPI_ROOT.'/locales');
 $files = array();
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")) {
-       if (preg_match("/(.*)\.mo$/i",$file,$reg)) {
+      if (preg_match("/(.*)\.mo$/i", $file, $reg)) {
          $lang = $reg[1];
          if (!isset($CFG_GLPI['languages'][$lang])) {
             echo $lang." is missing\n";
          }
-       }
+      }
    }
 }
-?>

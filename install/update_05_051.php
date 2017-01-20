@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.5 to 0.51
@@ -43,26 +43,23 @@ function update05to051() {
 
    /*******************************GLPI 0.51***********************************************/
 
-   if (!FieldExists("glpi_infocoms","facture", false)) {
+   if (!FieldExists("glpi_infocoms", "facture", false)) {
       $query = "ALTER TABLE `glpi_infocoms`
                 ADD `facture` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field facture");
    }
 
-
-   if (!FieldExists("glpi_enterprises","fax", false)) {
+   if (!FieldExists("glpi_enterprises", "fax", false)) {
       $query = "ALTER TABLE `glpi_enterprises`
                 ADD `fax` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
    }
 
-
-   if (!FieldExists("glpi_docs","link", false)) {
+   if (!FieldExists("glpi_docs", "link", false)) {
       $query = "ALTER TABLE `glpi_docs`
                 ADD `link` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
    }
-
 
    if (!TableExists("glpi_dropdown_contact_type")) {
       $query = "CREATE TABLE `glpi_dropdown_contact_type` (
@@ -83,13 +80,11 @@ function update05to051() {
       $DB->queryOrDie($query, "0.51 add entries to dropdown_contact_type");
    }
 
-
-   if (!FieldExists("glpi_config","cartridges_alarm", false)) {
+   if (!FieldExists("glpi_config", "cartridges_alarm", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `cartridges_alarm` int(11) NOT NULL default '10'";
       $DB->queryOrDie($query, "0.51 add field cartridges_alarm");
    }
-
 
    if (!TableExists("glpi_state_item")) {
       $query = "ALTER TABLE `glpi_repair_item`
@@ -100,7 +95,6 @@ function update05to051() {
                 ADD `state` INT DEFAULT '1'";
       $DB->queryOrDie($query, "0.51 add state field");
    }
-
 
    if (!TableExists("glpi_dropdown_state")) {
       $query = "CREATE TABLE `glpi_dropdown_state` (
@@ -113,4 +107,3 @@ function update05to051() {
 
 }
 
-?>

@@ -10,7 +10,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,9 +37,9 @@
 */
 
 if (isset($_SERVER['argc'])) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it           = explode("=",$_SERVER['argv'][$i],2);
-      $it[0]        = preg_replace('/^--/','',$it[0]);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it           = explode("=", $_SERVER['argv'][$i], 2);
+      $it[0]        = preg_replace('/^--/', '', $it[0]);
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
@@ -95,9 +95,8 @@ $mmail->AltBody="GLPI test mail\nEncoding : $enc\nDate : $dat\nSecret=$secret";
 $mmail->AddAddress($dest, "");
 
 $logo=file_get_contents("../pics/logos/logo-GLPI-100-black.png");
-$mmail->AddStringAttachment($logo,'glpi.png',($enc?$enc:'base64'),'image/png');
+$mmail->AddStringAttachment($logo, 'glpi.png', ($enc?$enc:'base64'), 'image/png');
 
-$mmail->AddStringAttachment($secret,'secret.txt',($enc?$enc:'base64'),'text/plain');
+$mmail->AddStringAttachment($secret, 'secret.txt', ($enc?$enc:'base64'), 'text/plain');
 
 echo "Send : ". ($mmail->Send() ? "OK\n" : "Failed (". $mmail->ErrorInfo.")\n");
-?>

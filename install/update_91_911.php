@@ -50,7 +50,6 @@ function update91to911() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.1.1'));
    $migration->setVersion('9.1.1');
 
-
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
@@ -70,7 +69,6 @@ function update91to911() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
    }
-
 
    // rectify missing right in 9.1 update
    if (countElementsInTable("glpi_profilerights", "`name` = 'license'") == 0) {

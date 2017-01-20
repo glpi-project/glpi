@@ -50,7 +50,6 @@ function update91to92() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2'));
    $migration->setVersion('9.2');
 
-
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration

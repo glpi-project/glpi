@@ -83,7 +83,7 @@ function current_time() {
    list ($usec, $sec) = explode(" ", microtime());
    $TPSFIN = $sec;
 
-   if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) {//une seconde de plus
+   if (round($TPSFIN-$TPSDEB, 1)>=$TPSCOUR+1) {//une seconde de plus
       $TPSCOUR = round($TPSFIN-$TPSDEB, 1);
    }
 }
@@ -124,7 +124,7 @@ function get_update_content($DB, $table, $from, $limit, $conv_utf8) {
                }
             }
 
-            $insert  = preg_replace("/,$/","",$insert);
+            $insert  = preg_replace("/,$/", "", $insert);
             $insert .=" WHERE `id` = '".$row["id"]."' ";
             $insert .= ";\n";
             $content .= $insert;
@@ -151,7 +151,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
       $numtab++;
    }
 
-   for ( ; $offsettable<$numtab ; $offsettable++) {
+   for (; $offsettable<$numtab; $offsettable++) {
       // Dump de la structyre table
       if ($offsetrow==-1) {
          if ($complete_utf8) {
@@ -243,7 +243,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
    if ($DB->error()) {
       echo "<hr>";
-      printf(__("SQL error starting from %s"),"[$formattedQuery]");
+      printf(__("SQL error starting from %s"), "[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
 
@@ -316,7 +316,7 @@ $tot = $DB->numrows($tab);
 
 if (isset($offsettable)) {
    if ($offsettable>=0) {
-      $percent = min(100,round(100*$offsettable/$tot,0));
+      $percent = min(100, round(100*$offsettable/$tot, 0));
    } else {
       $percent = 100;
    }
@@ -332,7 +332,7 @@ if (TableExists("glpi_configs")) {
    $config_table = "glpi_configs";
 }
 
-if (!FieldExists($config_table,"utf8_conv", false)) {
+if (!FieldExists($config_table, "utf8_conv", false)) {
    $conv_utf8 = true;
 } else {
    $query = "SELECT `utf8_conv`
@@ -354,7 +354,7 @@ if ($offsettable>=0 && $complete_utf8) {
       Html::glpi_flush();
    }
 
-   if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8)) {
+   if (UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8)) {
       echo "<br><a href='update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=".
                  "$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt'>".
                  __('Automatic redirection, else click')."</a>";
@@ -384,4 +384,3 @@ if ($complete_utf8) {
                SET `utf8_conv` = '1'
                WHERE `id` = '1'");
 }
-?>
