@@ -53,7 +53,13 @@ class Migration {
    private   $lastMessage;
    private   $log_errors = 0;
    private   $current_message_area_id;
+   private   $queries = [
+      'pre'    => [],
+      'post'   => []
+   ];
 
+   const PRE_QUERY = 'pre';
+   const POST_QUERY = 'post';
 
    /**
     * @param integer $ver number of new version of GLPI
@@ -634,9 +640,18 @@ class Migration {
     * @return void
    **/
    function executeMigration() {
+      global $DB;
+
+      foreach ($this->queries[self::PRE_QUERY] as $query) {
+         $DB->queryOrDie($query['query'], $query['message']);
+      }
 
       foreach ($this->change as $table => $tab) {
          $this->migrationOneTable($table);
+      }
+
+      foreach ($this->queries[self::POST_QUERY] as $query) {
+         $DB->queryOrDie($query['query'], $query['message']);
       }
 
       // end of global message
@@ -797,4 +812,44 @@ class Migration {
       }
    }
 
+   /**
+    * Add a migration SQL query
+    *
+    * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
+    * @param string $query   Query to execute
+    * @param string $message Mesage to display on error, defaults to null
+    *
+    * @return Migration
+    */
+   private function addQuery($type, $query, $message = null) {
+      $this->queries[$type][] =  [
+         'query'     => $query,
+         'message'   => $message
+      ];
+      return $this;
+   }
+
+   /**
+    * Add a pre migration SQL query
+    *
+    * @param string $query   Query to execute
+    * @param string $message Mesage to display on error, defaults to null
+    *
+    * @return Migration
+    */
+   public function addPreQuery($query, $message = null) {
+      return $this->addQuery(self::PRE_QUERY, $query, $message);
+   }
+
+   /**
+    * Add a post migration SQL query
+    *
+    * @param string $query   Query to execute
+    * @param string $message Mesage to display on error, defaults to null
+    *
+    * @return Migration
+    */
+   public function addPostQuery($query, $message = null) {
+      return $this->addQuery(self::POST_QUERY, $query, $message);
+   }
 }
