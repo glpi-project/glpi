@@ -610,12 +610,10 @@ class Ticket extends CommonITILObject {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
-            if (($item->fields['status'] == self::CLOSED)
-                && Session::haveRight('ticket', Ticket::SURVEY)){
-               $satisfaction = new TicketSatisfaction();
-               if ($satisfaction->getFromDB($item->getID())) {
-                  $ong[3] = __('Satisfaction');
-               }
+            $satisfaction = new TicketSatisfaction();
+            if ($satisfaction->getFromDB($item->getID())
+                     && $item->fields['status'] == self::CLOSED){
+               $ong[3] = __('Satisfaction');
             }
             if ($item->canUpdate()) {
                $ong[4] = __('Statistics');
@@ -4432,7 +4430,6 @@ class Ticket extends CommonITILObject {
            || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL, DELETE, PURGE)))
           && !$options['template_preview']) {
 
-         echo "<div>";
          if ($ID) {
             if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
                 || $this->canDeleteItem()
@@ -4643,8 +4640,11 @@ class Ticket extends CommonITILObject {
                         INNER JOIN `glpi_entities`
                            ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`)
                         WHERE $is_deleted
-                              AND ($search_users_id
-                                   OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
+                              AND ($search_users_id";
+            if (Session::haveRight('ticket', Ticket::SURVEY)) {
+               $query .= " OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
+            }
+            $query .=  ")
                               AND `glpi_tickets`.`status` = '".self::CLOSED."'
                               AND (`glpi_entities`.`inquest_duration` = 0
                                    OR DATEDIFF(ADDDATE(`glpi_ticketsatisfactions`.`date_begin`,
@@ -6347,7 +6347,7 @@ class Ticket extends CommonITILObject {
          } else {
             $obj = $item ;
          }
-         Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
+         Plugin::doHook('pre_show_item', array('item' => $obj, 'options' => &$options));
 
          if( is_array( $obj ) ){
             $item_i = $obj['item'];
@@ -6537,13 +6537,18 @@ class Ticket extends CommonITILObject {
             }
             echo "<a href='".$CFG_GLPI['root_doc'].
                    "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
-                   _sx("button", "Update")."'>";
-            echo "<img src='$pics_url/edit.png' /></a>";
-            echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
-                   "&tickets_id=".$this->getID()."' class='delete_document' title='".
-                   _sx("button", "Delete permanently")."'>";
-            echo "<img src='$pics_url/delete.png' /></a>";
+                   _sx("button", "Show")."'>";
+            echo "<img src='$pics_url/information.png' /></a>";
+
+            $doc = new Document();
+            $doc->getFromDB($item_i['id']);
+            if ($doc->can($item_i['id'], UPDATE)) {
+               echo "<a href='".$CFG_GLPI['root_doc'].
+                     "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
+                     "&tickets_id=".$this->getID()."' class='delete_document' title='".
+                     _sx("button", "Delete permanently")."'>";
+               echo "<img src='$pics_url/delete.png' /></a>";
+            }
          }
 
          echo "</div>"; // displayed_content

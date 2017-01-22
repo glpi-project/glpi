@@ -339,6 +339,7 @@ switch ($current_version) {
       include_once("../install/update_91_911.php");
       update91to911();
 
+   case "9.1.1" :
    case GLPI_VERSION :
       break;
 
