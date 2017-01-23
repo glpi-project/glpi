@@ -186,7 +186,6 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
-   toolbox::logdebug("res", $_REQUEST);
    unset($_REQUEST['id']);
    // Add a ticket from item : format data
    if (isset($_REQUEST['_add_fromitem'])
