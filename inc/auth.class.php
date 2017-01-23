@@ -581,12 +581,11 @@ class Auth extends CommonGLPI {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
             // Used for log when login process failed
-            $login_name                     = $this->user->fields['name'];
-            $this->auth_succeded            = true;
-            $this->extauth                  = 1;
-            $this->user_present             = $this->user->getFromDBbyName(addslashes($login_name));
-            $this->user->fields['authtype'] = $authtype;
-            $user_dn                        = false;
+            $login_name                        = $this->user->fields['name'];
+            $this->auth_succeded               = true;
+            $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
+            $this->extauth                     = 1;
+            $user_dn                           = false;
 
             $ldapservers = '';
             //if LDAP enabled too, get user's infos from LDAP
@@ -645,7 +644,8 @@ class Auth extends CommonGLPI {
             } else {
                //If user is set as present in GLPI but no LDAP DN found : it means that the user
                //is not present in an ldap directory anymore
-               if (!$user_dn
+               if ($this->user->fields['authtype'] == self::LDAP
+                   && !$user_dn
                    && $this->user_present) {
                   $user_deleted_ldap       = true;
                   $this->user_deleted_ldap = true;
@@ -735,6 +735,7 @@ class Auth extends CommonGLPI {
 
       if ($user_deleted_ldap) {
          User::manageDeletedUserInLdap($this->user->fields["id"]);
+         $this->auth_succeded = false;
       }
       // Ok, we have gathered sufficient data, if the first return false the user
       // is not present on the DB, so we add him.
@@ -762,11 +763,7 @@ class Auth extends CommonGLPI {
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
 
-               // update user and Blank PWD to clean old database for the external auth
                $this->user->update($input);
-               if ($this->extauth && $this->user->fields["authtype"] != self::API) {
-                  $this->user->blankPassword();
-               }
             } else if ($CFG_GLPI["is_users_auto_add"]) {
                // Auto add user
                // First stripslashes to avoid double slashes
@@ -938,7 +935,7 @@ class Auth extends CommonGLPI {
          case self::DB_GLPI :
             return __('GLPI internal database');
 
-         case self::API: 
+         case self::API :
             return __("API");
 
          case self::NOT_YET_AUTHENTIFIED :
@@ -1027,7 +1024,7 @@ class Auth extends CommonGLPI {
     * @return boolean
    **/
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API));
    }
 
 

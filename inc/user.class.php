@@ -757,6 +757,13 @@ class User extends CommonDBTM {
          unset($input["password"]);
       }
 
+      // blank password when authtype changes
+      if (isset($input["authtype"])
+          && $input["authtype"] != Auth::DB_GLPI
+          && $input["authtype"] != $this->getField('authtype')) {
+         $input["password"] = "";
+      }
+
       // Update User in the database
       if (!isset($input["id"])
           && isset($input["name"])) {
@@ -3021,7 +3028,7 @@ class User extends CommonDBTM {
                   case 'create_ticket_validate' :
                      $where[]= " (`glpi_profilerights`.`name` = 'ticketvalidation'
                                   AND (`glpi_profilerights`.`rights` & ".TicketValidation::CREATEREQUEST."
-                                       OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEDEMAND.") ".
+                                       OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEINCIDENT.") ".
                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                              $entity_restrict, 1).") ";
                      $forcecentral = false;

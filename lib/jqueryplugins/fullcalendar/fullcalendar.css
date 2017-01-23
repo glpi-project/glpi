@@ -1,5 +1,5 @@
 /*!
- * FullCalendar v3.0.0 Stylesheet
+ * FullCalendar v3.1.0 Stylesheet
  * Docs & License: http://fullcalendar.io/
  * (c) 2016 Adam Shaw
  */
@@ -49,7 +49,7 @@ body .fc { /* extra precedence to overcome jqui */
 	color: #666;
 }
 
-.fc-unthemed .fc-today {
+.fc-unthemed td.fc-today {
 	background: #fcf8e3;
 }
 
@@ -811,7 +811,14 @@ a.fc-more:hover {
 
 .fc-toolbar {
 	text-align: center;
+}
+
+.fc-toolbar.fc-header-toolbar {
 	margin-bottom: 1em;
+}
+
+.fc-toolbar.fc-footer-toolbar {
+	margin-top: 1em;
 }
 
 .fc-toolbar .fc-left {

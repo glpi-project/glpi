@@ -7,7 +7,7 @@ before_script:
   - composer self-update
   - composer install -o
   - mysql -u root -e 'create database glpitest;'
-  - php tools/cliinstall.php --lang=en_US --db=glpitest --user=root --tests
+  - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
 
 script:

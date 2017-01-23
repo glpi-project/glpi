@@ -437,6 +437,12 @@ class CommonGLPI {
          case -1 :
             // get tabs and loop over
             $ong = $item->defineAllTabs(array('withtemplate' => $withtemplate));
+
+            if (self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+               //on classical and vertical split; the main tab is always displayed
+               array_shift($ong);
+            }
+
             if (count($ong)) {
                foreach ($ong as $key => $val) {
                   if ($key != 'empty') {
@@ -821,16 +827,16 @@ class CommonGLPI {
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$first$extraparamhtml'>".
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
                     "\" title=\"".__s('First')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
                                     __s('First')."\" title=\"".__s('First')."\"></td>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                     "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
@@ -842,18 +848,16 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
                                     __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
-         echo "<td width='200px'><a href=\"".$glpilisturl."\">";
-         if ($glpilisttitle) {
-            echo $glpilisttitle;
-         } else {
-            _e('List');
+         if (!$glpilisttitle) {
+            $glpilisttitle = _e('List');
          }
+         echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
+         echo Toolbox::substr($glpilisttitle, 0, 100)."...";
          echo "</a></td>";
-
 
          $name = $this->getTypeName(1);
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
@@ -879,11 +883,11 @@ class CommonGLPI {
          echo "</td>";
 
          if ($current !== false) {
-            echo "<td width='40px'>".($current+1) . "/" . count($glpilistitems)."</td>";
+            echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
          }
 
          if ($next >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                     "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
@@ -895,16 +899,16 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
                                      __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$last$extraparamhtml'>".
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>".
                   "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
                     "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
                                      __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 

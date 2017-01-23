@@ -1506,15 +1506,10 @@ class Html {
       echo "<ul>";
 
       echo "<li id='deconnexion'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/logout.php";
-            /// logout witout noAuto login for extauth
-      if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
-         echo "?noAUTO=1";
-      }
-
-      echo "' title=\"".__s('Logout')."\">";
+      echo "<a href='".$CFG_GLPI["root_doc"].
+                       "/front/logout.php?noAUTO=1' title=\"".__s('Logout')."\">";
       echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
+             "\"  alt=\"".__s('Logout')."\" class='button-icon'></span>";
       echo "</a>";
       echo "</li>\n";
 
@@ -2032,8 +2027,8 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       // check user id : header used for display messages when session logout
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
+      echo "<span id='logout_icon' title=\"".__s('Logout').
+             "\"  alt=\"".__s('Logout')."\" class='button-icon'></span>";
       echo "</a>";
       echo "</li>\n";
 
@@ -2188,7 +2183,7 @@ class Html {
              __('Home')."</a></li>";
 
 
-      if (TicketValidation::getValidateRights()) {
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
          $opt                              = array();
          $opt['reset']                     = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
@@ -3933,9 +3928,9 @@ class Html {
          plugins: [
             'table directionality searchreplace paste',
             'tabfocus autoresize link image',
-            'code fullscreen'
+            'code fullscreen textcolor colorpicker'
          ],
-         toolbar: 'styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image code fullscreen',
+         toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
       });
    ";
 
@@ -4049,7 +4044,7 @@ class Html {
       // Print the "where am I?"
       echo "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      echo sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -4237,7 +4232,7 @@ class Html {
 
       echo "<td width='20%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      printf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button

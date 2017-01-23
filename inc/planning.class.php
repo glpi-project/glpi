@@ -542,26 +542,30 @@ class Planning extends CommonGLPI {
 
       self::initSessionForCurrentUser();
 
+      $rand='';
       if ($fullview) {
          Planning::showPlanningFilter();
          $default_view = "agendaWeek";
          $header = "{
             left:   'prev,next,today',
             center: 'title',
-            right:  'month,agendaWeek,agendaDay,listYear'
+            right:  'month,agendaWeek,agendaDay,listFull'
          }";
+         $default_date = 'null';
       } else {
-         $default_view = "listYear";
+         $default_view = "listFull";
          $header = "false";
          $pl_height = "400";
+         $rand = rand();
+         $default_date = "moment().subtract(5, 'years')";
       }
 
-      echo "<div id='planning'></div>";
+      echo "<div id='planning$rand'></div>";
       echo Html::scriptBlock("
       $(document).ready(function() {
          var disable_qtip = false,
              disable_edit = false;
-         $('html')
+         $('.planning_on_central a')
             .mousedown(function() {
                disable_qtip = true;
                $('.qtip').hide();
@@ -572,15 +576,36 @@ class Planning extends CommonGLPI {
 
          var window_focused = true;
          var loaded = false;
+         var lastView;
+         var lastDate;
+         var lastDateDirty = false;
          window.onblur = function() { window_focused = false; }
          window.onfocus = function() { window_focused = true; }
 
-         $('#planning').fullCalendar({
+         // datepicker for planning
+         var initFCDatePicker = function() {
+            $('#planning_datepicker').datepicker({
+               changeMonth:     true,
+               changeYear:      true,
+               numberOfMonths:  3,
+               showOn:          'button',
+               buttonImage:     '".$CFG_GLPI['root_doc']."/pics/calendar.png',
+               buttonImageOnly: true,
+               dateFormat:      'DD, d MM, yy',
+               onSelect: function(dateText, inst) {
+                  var selected_date = $(this).datepicker('getDate');
+                  $('#planning').fullCalendar('gotoDate', selected_date);
+               }
+            });
+         }
+
+         $('#planning$rand').fullCalendar({
             height:      $pl_height,
             theme:       true,
             weekNumbers: ".($fullview?'true':'false').",
             defaultView: '$default_view',
             timeFormat:  'H:mm',
+            defaultDate: $default_date,
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
@@ -598,6 +623,11 @@ class Planning extends CommonGLPI {
                },
                agendaDay: {
                   titleFormat: '$date_format'
+               },
+               listFull: {
+                  type: 'list',
+                  duration: { years: 10 },
+                  titleFormat: '[]',
                }
             },
             viewRender: function(view){ // on date changes, replicate to datepicker
@@ -611,7 +641,9 @@ class Planning extends CommonGLPI {
 
                var content = event.content;
                var tooltip = event.tooltip;
-               if(view.name !== 'month' && view.name !== 'listYear' && !event.allDay){
+               if(view.name !== 'month'
+                  && view.name.indexOf('list') < 0
+                  && !event.allDay){
                   element
                      .append('<div class=\"content\">'+content+'</div>');
                }
@@ -638,7 +670,7 @@ class Planning extends CommonGLPI {
                   var qtip_position = {
                      viewport: 'auto'
                   };
-                  if (view.name === 'listYear') {
+                  if (view.name.indexOf('list') >= 0) {
                      qtip_position.target= element.find('a');
                   }
                   element.qtip({
@@ -668,35 +700,81 @@ class Planning extends CommonGLPI {
             viewRender: function(view, element) {
                // force refetch events from ajax on view change (don't refetch on firt load)
                if (loaded) {
-                  $('#planning').fullCalendar('refetchEvents')
+                  $('#planning$rand').fullCalendar('refetchEvents')
                }
+
+               // specific process for full list
+               if (view.name == 'listFull') {
+                  // hide datepick on full list (which have virtually no limit)
+                  $('#planning_datepicker').datepicker('destroy')
+                                           .hide();
+
+                  // hide control buttons
+                  $('#planning .fc-left .fc-button-group').hide();
+
+                  // set date to today - 5 years
+                  if (!lastDateDirty) {
+                     lastDate = $('#planning').fullCalendar('getDate');
+                     // tag lastDate to dirty as viewRender will be called again with gotoDate
+                     lastDateDirty = true
+
+                     $('#planning').fullCalendar('gotoDate',
+                                                 moment().subtract(5, 'years'));
+                  }
+               } else {
+                  // reinit datepicker
+                  $('#planning_datepicker').show();
+                  initFCDatePicker();
+
+                  // show controls buttons
+                  $('#planning .fc-left .fc-button-group').show();
+
+                  // return to previous save date
+                  if (lastView != view.name
+                      && !lastDateDirty
+                      && typeof lastDate != 'undefined'
+                      && lastDate != $('#planning').fullCalendar('getDate')) {
+                     // tag lastDate to dirty as viewRender will be called again with gotoDate
+                     lastDateDirty = true
+
+                     $('#planning').fullCalendar('gotoDate', lastDate);
+                  }
+                  lastDate = $('#planning').fullCalendar('getDate');
+                  //console.log(lastDate);
+               }
+
+               // remove dirty on lastDate
+               lastDateDirty = false
+
+               // store current view name (to avoid a new call of gotoDate)
+               lastView = view.name;
             },
             eventAfterAllRender: function(view) {
                // set a var to force refetch events (see viewRender callback)
                loaded = true;
 
                // scroll div to first element needed to be viewed
-               var scrolltoevent = $('#planning .event_past.event_todo').first();
+               var scrolltoevent = $('#planning$rand .event_past.event_todo').first();
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_today').first();
+                  scrolltoevent = $('#planning$rand .event_today').first();
                }
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_future').first();
+                  scrolltoevent = $('#planning$rand .event_future').first();
                }
                if (scrolltoevent.length == 0) {
-                  scrolltoevent = $('#planning .event_past').last();
+                  scrolltoevent = $('#planning$rand .event_past').last();
                }
                if (scrolltoevent.length) {
-                  $('#planning .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
+                  $('#planning$rand .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
                }
             },
             eventSources: [{
                url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
                type: 'POST',
                data: function() {
-                  var view_name = $('#planning').fullCalendar('getView').name;
+                  var view_name = $('#planning$rand').fullCalendar('getView').name;
                   var display_done_events = 1;
-                  if (view_name == 'listYear') {
+                  if (view_name.indexOf('list') >= 0) {
                      display_done_events = 0;
                   }
                   return {
@@ -706,7 +784,7 @@ class Planning extends CommonGLPI {
                },
                success: function(data) {
                   if (!$fullview_str && data.length == 0) {
-                     $('#planning').fullCalendar('option', 'height', 0);
+                     $('#planning$rand').fullCalendar('option', 'height', 0);
                   }
                },
                error: function() {
@@ -736,7 +814,10 @@ class Planning extends CommonGLPI {
                      .dialog({
                         modal:  true,
                         width:  'auto',
-                        height: 'auto'
+                        height: 'auto',
+                        close: function(event, ui) {
+                           $('#planning$rand').fullCalendar('refetchEvents');
+                        }
                      })
                      .load(event.ajaxurl, function() {
                         $(this).dialog('option', 'position', ['center', 'center'] );
@@ -775,7 +856,7 @@ class Planning extends CommonGLPI {
                   }
                });
 
-               $('#planning').fullCalendar('unselect');
+               $('#planning$rand').fullCalendar('unselect');
             }
          });
 
@@ -820,7 +901,7 @@ class Planning extends CommonGLPI {
                   if (!html) {
                      revertFunc();
                   }
-                  $('#planning').fullCalendar('updateEvent', event);
+                  $('#planning$rand').fullCalendar('updateEvent', event);
                   displayAjaxMessageAfterRedirect();
                },
                error: function() {
@@ -830,7 +911,7 @@ class Planning extends CommonGLPI {
          };
 
          // attach button (planning and refresh) in planning header
-         $('#planning .fc-toolbar .fc-center h2')
+         $('#planning$rand .fc-toolbar .fc-center h2')
             .after(
                $('<img id=\"refresh_planning\" class=\"pointer\" src=\"".
                    $CFG_GLPI['root_doc']."/pics/refresh.png\">')
@@ -839,23 +920,11 @@ class Planning extends CommonGLPI {
             );
 
          $('#refresh_planning').click(function() {
-            $('#planning').fullCalendar('refetchEvents')
+            $('#planning$rand').fullCalendar('refetchEvents')
          })
 
-         // datepicker behavior
-         $('#planning_datepicker').datepicker({
-            changeMonth:     true,
-            changeYear:      true,
-            numberOfMonths:  3,
-            showOn:          'button',
-            buttonImage:     '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-            buttonImageOnly: true,
-            dateFormat:      'DD, d MM, yy',
-            onSelect: function(dateText, inst) {
-               var selected_date = $(this).datepicker('getDate');
-               $('#planning').fullCalendar('gotoDate', selected_date);
-            }
-         });
+         // attach the date picker to planning
+         initFCDatePicker()
       });"
       );
       return;
