@@ -38,6 +38,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+/**
+ * Manage link beetween computer and software licenses.
+ */
 class Computer_SoftwareLicense extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -48,10 +51,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $items_id_2 = 'softwarelicenses_id';
 
 
-   /**
-    * @since version 0.85
-    * @see CommonDBRelation::post_addItem()
-   **/
    function post_addItem() {
 
       SoftwareLicense::updateValidityIndicator($this->fields['softwarelicenses_id']);
@@ -107,11 +106,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-   **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
@@ -135,11 +129,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
       global $DB;
@@ -215,11 +204,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get number of installed licenses of a license
     *
-    * @param $softwarelicenses_id   license ID
-    * @param $entity                to search for computer in (default = all entities)
-    *                               (default '') -1 means no entity restriction
+    * @param integer $softwarelicenses_id license ID
+    * @param integer $entity              to search for computer in (default = all entities)
+    *                                     (default '') -1 means no entity restriction
     *
-    * @return number of installations
+    * @return integer number of installations
    **/
    static function countForLicense($softwarelicenses_id, $entity='') {
       global $DB;
@@ -249,9 +238,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get number of installed licenses of a software
     *
-    * @param $softwares_id software ID
+    * @param integer $softwares_id software ID
     *
-    * @return number of installations
+    * @return integer number of installations
    **/
    static function countForSoftware($softwares_id) {
       global $DB;
@@ -281,9 +270,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Show number of installation per entity
     *
-    * @param $license SoftwareLicense object
+    * @param SoftwareLicense $license SoftwareLicense instance
     *
-    * @return nothing
+    * @return void
    **/
    static function showForLicenseByEntity(SoftwareLicense $license) {
       global $DB, $CFG_GLPI;
@@ -329,9 +318,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Show computers linked to a License
     *
-    * @param $license SoftwareLicense object
+    * @param SoftwareLicense $license SoftwareLicense instance
     *
-    * @return nothing
+    * @return void
    **/
    static function showForLicense(SoftwareLicense $license) {
       global $DB, $CFG_GLPI;
@@ -583,10 +572,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Update license associated on a computer
     *
-    * @param $licID                 ID of the install software lienk
-    * @param $softwarelicenses_id   ID of the new license
+    * @param integer $licID               ID of the install software lienk
+    * @param integer $softwarelicenses_id ID of the new license
     *
-    * @return nothing
+    * @return void
    **/
    function upgrade($licID, $softwarelicenses_id) {
       global $DB;
@@ -603,10 +592,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get licenses list corresponding to an installation
     *
-    * @param $computers_id          ID of the computer
-    * @param $softwareversions_id   ID of the version
+    * @param integer $computers_id        ID of the computer
+    * @param integer $softwareversions_id ID of the version
     *
-    * @return nothing
+    * @return void
    **/
    static function getLicenseForInstallation($computers_id, $softwareversions_id) {
       global $DB;
@@ -635,8 +624,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Duplicate all software licenses from a computer template to its clone
     *
-    * @param $oldid ID of the computer to clone
-    * @param $newid ID of the computer cloned
+    * @param integer $oldid ID of the computer to clone
+    * @param integer $newid ID of the computer cloned
+    *
+    * @return void
    **/
    static function cloneComputer($oldid, $newid) {
       global $DB;
@@ -656,9 +647,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $nb = 0;
@@ -678,11 +666,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == 'SoftwareLicense') {
@@ -701,9 +684,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
    /**
+    * Count number of licenses for a software
+    *
     * @since version 0.85
     *
-    * count number of licenses for a software
+    * @param integer $softwares_id Software ID
+    *
+    * @return void
     **/
    static function countLicenses($softwares_id) {
       global $DB;
@@ -720,5 +707,4 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
       return 0;
    }
-
 }
