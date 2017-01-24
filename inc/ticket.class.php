@@ -3209,7 +3209,7 @@ class Ticket extends CommonITILObject {
          echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2),
                              $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
-         $values['_right'] = "groups";
+         $values['_right'] = "all";
 
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
