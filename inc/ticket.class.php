@@ -3365,7 +3365,7 @@ class Ticket extends CommonITILObject {
       $params['_users_id_observer_notif']['use_notification'] = true;
       $params['_users_id_observer']                           = 0;
       $params['entities_id']                                  = $_SESSION["glpiactive_entity"];
-      $values['_right']                                       = "groups";
+      $params['_right']                                       = "groups";
 
       // overide default value by function parameters
       if (is_array($options) && count($options)) {
