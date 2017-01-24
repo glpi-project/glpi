@@ -2975,8 +2975,6 @@ class Ticket extends CommonITILObject {
 
       if (count($delegating) || $CFG_GLPI['use_check_pref']) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-
-         Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$opt]);
       }
 
       if (count($delegating)) {
@@ -3115,6 +3113,8 @@ class Ticket extends CommonITILObject {
       }
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
 
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
@@ -3329,7 +3329,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => []]);
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
@@ -3343,8 +3343,6 @@ class Ticket extends CommonITILObject {
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
-
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "</table></div>";
       if (!$ticket_template) {
