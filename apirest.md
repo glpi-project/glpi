@@ -110,7 +110,7 @@ App(lication) token
   * an *user_token* defined in User Preference (See 'Remote access key')
      You should pass this parameter in 'Authorization' HTTP header.
      A valid Authorization header is:
-        * "Authorization: user_token {user_token}"
+        * "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn"
 
 * **Returns**:
   * 200 (OK) with the *session_token* string.
@@ -133,7 +133,7 @@ $ curl -X GET \
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Authorization: user_token {mystringapikey}" \
+-H "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/apirest.php/initSession'
 
