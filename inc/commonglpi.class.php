@@ -749,7 +749,7 @@ class CommonGLPI {
          }
 
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
-                          $this->taborientation);
+                          $this->taborientation, $options);
       }
       echo "</div>";
    }
