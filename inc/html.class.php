@@ -1200,7 +1200,7 @@ class Html {
       echo "<!--[if lte IE 8]>";
       echo Html::css('css/styles_ie.css');
       echo "<![endif]-->";
-      echo Html::css('css/print.css'), array('media' => 'print');
+      echo Html::css('css/print.css', array('media' => 'print'));
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
