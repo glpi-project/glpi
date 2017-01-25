@@ -579,7 +579,7 @@ class Link extends CommonDBTM {
                                                        'joinparams' => array('jointype'
                                                                               => 'itemtypeonly')));
       if (!Session::isCron()
-          && !isCommandLine() && isset($_SESSION['glpiID'])) {
+          && !isCommandLine() && isset($_SESSION['glpiactiveentities_string'])) {
          $tab[145]['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
       }
 
