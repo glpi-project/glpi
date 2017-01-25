@@ -485,6 +485,17 @@ class Log extends CommonDBTM {
                                            $data["new_value"]);
                   break;
 
+               case self::HISTORY_UPDATE_RELATION :
+                  $tmp['field']   = NOT_AVAILABLE;
+                  if ($linktype_field = explode('#', $data["itemtype_link"])) {
+                     $linktype     = $linktype_field[0];
+                     $tmp['field'] = $linktype::getTypeName();
+                  }
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update a link with an item'), 
+                                       sprintf(__('%1$s (%2$s)'), $data["old_value"], 
+                                          $data["new_value"]));
+                  break;
+
                case self::HISTORY_DEL_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item2 = getItemForItemtype($data["itemtype_link"])) {
