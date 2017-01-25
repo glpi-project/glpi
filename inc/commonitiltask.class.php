@@ -1073,11 +1073,10 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tasktype = $this->getType() ;
       if ($canedit) {
-         echo "style='cursor:pointer' onClick=\"viewEdit$tasktype" . $this->fields['id']."$rand();\"";
+         echo "style='cursor:pointer' onClick=\"viewEdit$tasktype" . $this->fields['id'] . "$rand();\"";
       }
 
-      echo " id='viewitem$tasktype" . $this->fields["id"] .
-            "$rand'>";
+      echo " id='viewitem$tasktype" . $this->fields["id"] . "$rand'>";
 
       if ($canview) {
          echo "<td>";
