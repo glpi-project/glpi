@@ -5897,19 +5897,19 @@ class Html {
       //locales for js libraries
       if (isset($_SESSION['glpilanguage'])) {
          // jquery ui
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
+         echo Html::script("lib/jquery/i18n/jquery.ui.datepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
+         $filename = "lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         if (file_exists(GLPI_ROOT.'/'.$filename)) {
+            echo Html::script($filename);
          }
 
          // select2
-         $filename = "/lib/jqueryplugins/select2/select2_locale_".
+         $filename = "lib/jqueryplugins/select2/select2_locale_".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         if (file_exists(GLPI_ROOT.'/'.$filename)) {
+            echo Html::script($filename);
          }
       }
 
@@ -5938,12 +5938,12 @@ class Html {
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
+                     echo Html::script("plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
+                  echo Html::script("plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
