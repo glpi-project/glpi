@@ -1212,12 +1212,12 @@ class Html {
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css("plugins/$plugin/$file"), ['version' => $version];
+                     echo Html::css("plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css("plugins/$plugin/$files"), ['version' => $version];
+                  echo Html::css("plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
