@@ -284,19 +284,32 @@ class Ajax {
     * @param $type                     itemtype for active tab
     * @param $ID                       ID of element for active tab (default 0)
     * @param $orientation              orientation of tabs (default vertical may also be horizontal)
+    * @param array $options Display options
     *
     * @return nothing
    **/
-   static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type='', $ID=0, $orientation='vertical') {
+   static function createTabs(
+      $tabdiv_id='tabspanel',
+      $tabdivcontent_id='tabcontent',
+      $tabs=array(),
+      $type='',
+      $ID=0,
+      $orientation='vertical',
+      $options = []
+   ) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
 
+      $mainclass = '';
+      if (isset($options['main_class'])) {
+         $mainclass = " {$options['main_class']}";
+      }
+
       $rand = mt_rand();
       if (count($tabs) > 0) {
-         echo "<div id='tabs$rand' class='center $orientation'>";
+         echo "<div id='tabs$rand' class='center$mainclass $orientation'>";
          if (CommonGLPI::isLayoutWithMain()
              && !CommonGLPI::isLayoutExcludedPage()) {
             $orientation = 'horizontal';
