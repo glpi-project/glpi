@@ -721,7 +721,9 @@ class Html {
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='debug ".($ajax?"debug_ajax":"")."'>";
-         echo "<h1 id='see_debug$rand' class='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
+         if (!$ajax) {
+            echo "<a id='see_debug' href='#' title='" . __('Display GLPI debug informations')  . "'>See GLPI DEBUG</a>";
+         }
 
          echo "<div id='debugtabs$rand'><ul>";
          if ($CFG_GLPI["debug_sql"]) {
@@ -798,7 +800,8 @@ class Html {
                 $('#debugtabs$rand').css('display', 'none');
             });
 
-            $('#see_debug$rand').click(function() {
+            $('#see_debug').click(function(e) {
+               e.preventDefault();
                console.log('see_debug #debugtabs$rand');
                $('#debugtabs$rand').css('display', 'block');
             });
@@ -1228,7 +1231,7 @@ class Html {
       echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 
       // PLugins jquery
-      echo Html::script('lib/jqueryplugins/backtotop/BackToTop.min.jquery.js');
+      echo Html::script('lib/jqueryplugins/backtotop/BackToTop.jquery.js');
       echo Html::script('lib/jqueryplugins/select2/select2.js');
       echo Html::script('lib/jqueryplugins/qtip2/jquery.qtip.js');
       echo Html::script('lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
@@ -1439,6 +1442,20 @@ class Html {
          echo "</span>";
       }
       echo "</a></li>";
+
+      if (Config::canUpdate()) {
+         $current_mode = $_SESSION['glpi_use_mode'];
+         $class = 'debug' . ($current_mode === Session::DEBUG_MODE ? 'on' : 'off');
+         $title = sprintf(
+            __('Debug mode %1$s'),
+            ($current_mode === Session::DEBUG_MODE ? __('on') : __('off'))
+         );
+         echo "<li id='debug_mode'>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php'>";
+         echo "<span id='debug_icon' title='$title' class='$class'></span>";
+         echo "</a>";
+         echo "</li>";
+      }
 
       /// Bookmark load
       echo "<li id='bookmark_link'>";
@@ -1704,6 +1721,7 @@ class Html {
       // Back to top
       Html::scriptStart();
       echo "$(function() {
+               var bttop = false;
                BackToTop({
                text : '^',
                class: 'vsubmit',
@@ -1711,9 +1729,18 @@ class Html {
                timeEffect : 100,
                autoShowOffset : '0',
                appearMethod : '',
-               effectScroll : 'linear'
-               });
-            });";
+               effectScroll : 'linear',
+               callback: function(e) {
+                  if (e == 'on' && bttop == false) {
+                     $('#see_debug').attr('class', 'wbttop');
+                     bttop = true;
+                  } else if (e == 'off' && bttop == true) {
+                     $('#see_debug').removeAttr('class');
+                     bttop = false;
+                  }
+               }
+            });
+         });";
       echo Html::scriptEnd();
 
       // call static function callcron() every 5min
@@ -1771,11 +1798,6 @@ class Html {
          echo "</div>";
       }
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-         echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI DEBUG MODE</a>";
-         echo "</div>";
-      }
       if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
          echo "<div id='maintenance-float'>";
          echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
