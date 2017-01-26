@@ -29,10 +29,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief Check forms opened / closed
-*/
+/**
+ * @brief Check forms opened / closed
+ */
 
 // since version 0.83.3
 define('GLPI_ROOT', realpath('..'));
@@ -48,7 +47,7 @@ foreach ($dirs as $dir) {
       /* Ceci est la façon correcte de traverser un dossier. */
       while (false !== ($file = readdir($handle))) {
          if (($file != ".") && ($file != "..")
-             && preg_match('/\.php$/',$file)) {
+             && preg_match('/\.php$/', $file)) {
             checkFormsInFile($dir.'/'.$file);
          }
       }
@@ -66,7 +65,7 @@ function checkFormsInFile($file) {
    while (!feof($handle)) {
       $line = fgets($handle);
       $i++;
-//       echo $i.$line;
+      //       echo $i.$line;
       if ((stripos($line, '<form ') !== FALSE)
           || (stripos($line, 'Html::openMassiveActionsForm(') !== FALSE)
           || (stripos($line, 'showFormHeader(') !== FALSE)) {
@@ -91,4 +90,3 @@ function checkFormsInFile($file) {
    }
 }
 
-?>

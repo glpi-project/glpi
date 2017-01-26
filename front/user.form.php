@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 if (empty($_GET["id"])) {

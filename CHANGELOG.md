@@ -9,6 +9,7 @@ The present file will list all changes made to the project; according to the
 - Link knowledge base entries with assets or tickets
 - Revisions on knowledge base entries and their translations, with diff view
 - Add recursive comments on knowledge base entries
+- Load minified CSS and JS files (core and plugins) that are generated on release
 
 ### Changed
 - Display knowledge base category items in tickets using a popup instead of a

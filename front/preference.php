@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 $user = new User();
@@ -67,7 +69,7 @@ if (isset($_POST["update"])
    }
 
    $pref = new Preference();
-   $pref->display();
+   $pref->display(['main_class' => 'tab_cadre_fixe']);
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
       Html::footer();
@@ -75,3 +77,4 @@ if (isset($_POST["update"])
       Html::helpFooter();
    }
 }
+

@@ -29,10 +29,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief Check obsoleted function
-*/
+/**
+ * @brief Check obsoleted function
+ */
 
 if (isset($_SERVER['argv'][1])) {
    $rep = $_SERVER['argv'][1];
@@ -216,4 +215,3 @@ foreach ($obsoleted as $old => $new) {
       }
    }
 }
-?>

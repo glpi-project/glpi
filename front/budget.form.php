@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkRight("budget", READ);

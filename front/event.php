@@ -34,6 +34,8 @@
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkRight("logs", READ);

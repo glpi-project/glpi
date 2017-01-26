@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -3091,8 +3093,6 @@ class Ticket extends CommonITILObject {
 
       if (count($delegating) || $CFG_GLPI['use_check_pref']) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-
-         Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$opt]);
       }
 
       if (count($delegating)) {
@@ -3231,6 +3231,8 @@ class Ticket extends CommonITILObject {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
          echo "(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
@@ -3323,7 +3325,7 @@ class Ticket extends CommonITILObject {
          echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2),
                              $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
-         $values['_right'] = "groups";
+         $values['_right'] = "all";
 
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
@@ -3410,6 +3412,7 @@ class Ticket extends CommonITILObject {
 
          echo "</td></tr>";
       }
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => []]);
 
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
@@ -3423,8 +3426,6 @@ class Ticket extends CommonITILObject {
          echo "<input type='submit' name='add' value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
-
-      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "</table></div>";
       if (!$ticket_template) {
@@ -3445,7 +3446,7 @@ class Ticket extends CommonITILObject {
       $params['_users_id_observer_notif']['use_notification'] = true;
       $params['_users_id_observer']                           = 0;
       $params['entities_id']                                  = $_SESSION["glpiactive_entity"];
-      $values['_right']                                       = "groups";
+      $params['_right']                                       = "all";
 
       // overide default value by function parameters
       if (is_array($options) && count($options)) {
@@ -6044,7 +6045,12 @@ class Ticket extends CommonITILObject {
       $document_items = $document_item_obj->find("itemtype = 'Ticket' AND items_id = ".$this->getID());
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
-         $timeline[$document_obj->fields['date_mod']."_document_".$document_item['documents_id']]
+
+         // #1476 - override document date_mod to ticket attachment date_mod
+         $document_obj->fields['date_mod'] = $document_item['date_mod'];
+         // #1476 - override document "owner" to ticket attachment user
+         $document_obj->fields['users_id'] = $document_item['users_id'];
+         $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
             = array('type' => 'Document_Item', 'item' => $document_obj->fields);
       }
 
@@ -6372,13 +6378,18 @@ class Ticket extends CommonITILObject {
             }
             echo "<a href='".$CFG_GLPI['root_doc'].
                    "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
-                   _sx("button", "Update")."'>";
-            echo "<img src='$pics_url/edit.png' /></a>";
-            echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
-                   "&tickets_id=".$this->getID()."' class='delete_document' title='".
-                   _sx("button", "Delete permanently")."'>";
-            echo "<img src='$pics_url/delete.png' /></a>";
+                   _sx("button", "Show")."'>";
+            echo "<img src='$pics_url/information.png' /></a>";
+
+            $doc = new Document();
+            $doc->getFromDB($item_i['id']);
+            if ($doc->can($item_i['id'], UPDATE)) {
+               echo "<a href='".$CFG_GLPI['root_doc'].
+                     "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
+                     "&tickets_id=".$this->getID()."' class='delete_document' title='".
+                     _sx("button", "Delete permanently")."'>";
+               echo "<img src='$pics_url/delete.png' /></a>";
+            }
          }
 
          echo "</div>"; // displayed_content

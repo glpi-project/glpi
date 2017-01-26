@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,12 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief 
-*/
-
-/// Update from 0.72.2 to 0.72.3
+// Update from 0.72.2 to 0.72.3
 
 function update0722to0723() {
    global $DB, $CFG_GLPI;
@@ -101,7 +94,6 @@ function update0722to0723() {
                           42 => "glpi_networking_ports",
                           43 => "glpi_followups");
 
-
    $query = "SELECT DISTINCT `device_type`
              FROM `glpi_doc_device`";
    if ($result = $DB->query($query)) {
@@ -121,7 +113,6 @@ function update0722to0723() {
       }
    }
 
-
    if (FieldExists("glpi_auth_ldap", "ldap_group_condition", false)) {
       $query = "ALTER TABLE `glpi_auth_ldap`
                 CHANGE `ldap_group_condition` `ldap_group_condition` TEXT NULL DEFAULT NULL";
@@ -131,4 +122,3 @@ function update0722to0723() {
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0723"); // End
 } // fin 0.72.3
-?>

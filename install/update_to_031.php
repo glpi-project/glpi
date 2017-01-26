@@ -29,8 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-
 ///update the database to the 0.31 version
 function updateDbTo031() {
    global $DB;
@@ -52,7 +50,6 @@ function updateDbTo031() {
    echo "<p class='center'>Version 0.2 & < </p>";
 
    //Version 0.21 ajout du champ ramSize a la table printers si non existant.
-
 
    if (!FieldExists("printers", "ramSize", false)) {
       $query = "ALTER TABLE `printers`
@@ -97,4 +94,3 @@ function updateDbTo031() {
 
    echo "<p class='center'>Version 0.3  </p>";
 }
-?>

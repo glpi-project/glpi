@@ -399,6 +399,7 @@ function loadDataset() {
             }
          }
       }
+      Search::$search = [];
       echo "\nDone\n\n";
       Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
    }

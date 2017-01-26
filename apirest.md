@@ -111,7 +111,7 @@ App(lication) token
   * an *user_token* defined in User Preference (See 'Remote access key')
      You should pass this parameter in 'Authorization' HTTP header.
      A valid Authorization header is:
-        * "Authorization: user_token {user_token}"
+        * "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn"
 
 * **Returns**:
   * 200 (OK) with the *session_token* string.
@@ -134,7 +134,7 @@ $ curl -X GET \
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Authorization: user_token {mystringapikey}" \
+-H "Authorization: user_token q56hqkniwot8wntb3z1qarka5atf365taaa2uyjrn" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/apirest.php/initSession'
 
@@ -1016,7 +1016,7 @@ $ curl -X POST \
 -d '{"input": [{"name": "My first computer", "serial": "12345"}, {"name": "My 2nd computer", "serial": "67890"}, {"name": "My 3rd computer", "serial": "qsd12sd"}]}' \
 'http://path/to/glpi/apirest.php/Computer/'
 
-< 201 OK
+< 207 OK
 < Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
 < [ {"id":8, "message": ""}, {"id":false, "message": "You don't have permission to perform this action."}, {"id":9, "message": ""} ]
 ```
@@ -1072,7 +1072,7 @@ $ curl -X PUT \
 -d '{"input": [{"id": 16,  "otherserial": "abcde"}, {"id": 17,  "otherserial": "fghij"}]}' \
 'http://path/to/glpi/apirest.php/Computer/'
 
-< 200 OK
+< 207 OK
 [{"8":true, "message": ""},{"2":false, "message": "Item not found"}]
 ```
 

@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -581,12 +583,7 @@ class Auth extends CommonGLPI {
             $login_name                        = $this->user->fields['name'];
             $this->auth_succeded               = true;
             $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
-            if (self::isAlternateAuth($authtype)) {
-               $this->extauth                  = 0;
-            } else {
-               $this->extauth                  = 1;
-               $this->user->fields['authtype'] = $authtype;
-            }
+            $this->extauth                     = 1;
             $user_dn                           = false;
 
             $ldapservers = '';
@@ -764,10 +761,6 @@ class Auth extends CommonGLPI {
                // Then ensure addslashes
                $input = Toolbox::addslashes_deep($input);
 
-               // blank PWD to clean old database for the external auth
-               if ($this->extauth) {
-                  $input['_extauth'] = 1;
-               }
                $this->user->update($input);
             } else if ($CFG_GLPI["is_users_auto_add"]) {
                // Auto add user

@@ -29,7 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
 class Framework_Version extends PHPUnit_Framework_TestCase {
 
    public function testVersion() {
@@ -39,17 +38,16 @@ class Framework_Version extends PHPUnit_Framework_TestCase {
       $this->assertEquals(GLPI_VERSION, $CFG_GLPI["version"], "Bad version in config");
    }
 
-//   public function testLogin() {
-//      global $DB;
-//      
-//      $DB->connect();
-//      
-//      $auth = new Auth();
-//      $res = $auth->login('stupid_login_which_doesnt_exists', 'stupid_password');
-//      $this->assertFalse($res, "Bad login accepted");
-//
-//      $res = $auth->login('glpi', 'glpi');
-//      $this->assertTrue($res, "Good login refused");
-//   }
+   //   public function testLogin() {
+   //      global $DB;
+   //
+   //      $DB->connect();
+   //
+   //      $auth = new Auth();
+   //      $res = $auth->login('stupid_login_which_doesnt_exists', 'stupid_password');
+   //      $this->assertFalse($res, "Bad login accepted");
+   //
+   //      $res = $auth->login('glpi', 'glpi');
+   //      $this->assertTrue($res, "Good login refused");
+   //   }
 }
-?>

@@ -48,7 +48,6 @@ function updateXXtoXY() {
    $migration->displayTitle(sprintf(__('Update to %s'), 'XY'));
    $migration->setVersion('XY');
 
-
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration

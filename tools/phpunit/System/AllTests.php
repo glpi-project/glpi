@@ -29,13 +29,12 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
 class System extends PHPUnit_Framework_TestCase {
 
    public function testPHP() {
 
       // From Toolbox::commonCheckForUseGLPI
-      $this->assertEquals('5', substr(phpversion(),0,1), "Bad PHP Version ".phpversion());
+      $this->assertEquals('5', substr(phpversion(), 0, 1), "Bad PHP Version ".phpversion());
 
       // Use assertTrue(!init...) because some return false, others return '0'
       $this->assertTrue(!ini_get('zend.ze1_compatibility_mode'), "Fail: zend.ze1_compatibility_mode=On");
@@ -79,4 +78,3 @@ class System_AllTests  {
       return $suite;
    }
 }
-?>

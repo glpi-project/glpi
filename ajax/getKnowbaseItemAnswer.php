@@ -30,11 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @author Alexandre Delaunay
-* @since version 9.2
-*/
+/**
+ * @author Alexandre Delaunay
+ * @since version 9.2
+ */
 
 include ('../inc/includes.php');
 

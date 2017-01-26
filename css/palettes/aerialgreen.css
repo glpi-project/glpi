@@ -35,7 +35,7 @@
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #459436; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #459436;
 }
 
 #display-login {
@@ -48,7 +48,7 @@
 }
 
 
-#boxlogin #forget, 
+#boxlogin #forget,
 #footer-login a  {
    color: #459436;
 }
@@ -111,7 +111,7 @@ ul#menu ul li a {
 }
 
 /* ====== BUTTONS ====== */
-a.vsubmit, 
+a.vsubmit,
 .vsubmit a {
    color: #c1e6ba;
 }

@@ -30,7 +30,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
- 
 
 $cmd = $_SERVER["argv"][0];
 
@@ -91,7 +90,7 @@ if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all"
 
    $dir = opendir(".");
    while (($file = readdir($dir)) !== false) {
-      if (is_dir($file) && substr($file,0,1)!=".") {
+      if (is_dir($file) && substr($file, 0, 1)!=".") {
          checkOne($file,
                   (is_file($file."/trunk/hook.php") ? "LANG" : (isset($exception[$file])
                                                                      ? $exception[$file] : "")));
@@ -130,4 +129,3 @@ if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all"
    echo "\nusage $cmd  langue1   langue2   [ nomtableau | LANG ]\n";
    echo "\nusage $cmd  all\n\n";
 }
-?>

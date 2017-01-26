@@ -121,11 +121,12 @@ function getItemTypeForTable($table) {
       $inittable = $table;
       $table     = str_replace("glpi_", "", $table);
       $prefix    = "";
-      $pref2     = "Glpi\\";
+      $pref2     = NS_GLPI;
 
       if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
          $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
          $prefix = "Plugin".Toolbox::ucfirst($matches[1]);
+         $pref2  = NS_PLUG . ucfirst($matches[1]) . '\\';
       }
 
       if (strstr($table, '_')) {
@@ -142,6 +143,14 @@ function getItemTypeForTable($table) {
 
       $itemtype = $prefix.$table;
       // Get real existence of itemtype
+      if (($item = getItemForItemtype($itemtype))) {
+         $itemtype                                   = get_class($item);
+         $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
+         $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+         return $itemtype;
+      }
+      // Namespaced item
+      $itemtype = $pref2 . str_replace('_', '\\', $table);
       if (($item = getItemForItemtype($itemtype))) {
          $itemtype                                   = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
@@ -173,14 +182,18 @@ function getTableForItemType($itemtype) {
       $prefix = "glpi_";
 
       if ($plug = isPluginItemType($itemtype)) {
-         /* PluginFooBar => glpi_plugin_foor_bars */
+         /* PluginFooBar   => glpi_plugin_foos_bars */
+         /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
          $prefix .= "plugin_".strtolower($plug['plugin'])."_";
          $table   = strtolower($plug['class']);
 
       } else {
          $table = strtolower($itemtype);
+         if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            $table = substr($table, \strlen(NS_GLPI));
+         }
       }
-
+      $table = str_replace('\\', '_', $table);
       if (strstr($table, '_')) {
          $split = explode('_', $table);
 

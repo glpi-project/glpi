@@ -29,8 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-
 include ('../inc/includes.php');
 
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
@@ -38,4 +36,3 @@ Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 foreach ($CFG_GLPI['languages'] as $key => $lang) {
    Session::loadLanguage($key);
 }
-?>

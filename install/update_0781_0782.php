@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief 
-*/
-
 /**
  * Update from 0.78.1 to 0.78.2
  *
@@ -73,7 +69,6 @@ function update0781to0782($output='HTML') {
       }
    }
 
-
    // Drop nl_be langage
    $query = "UPDATE `glpi_configs`
              SET `language` = 'nl_NL'
@@ -104,7 +99,6 @@ function update0781to0782($output='HTML') {
       $DB->queryOrDie($query, "0.78.2 add index for glpi_computers_items");
    }
 
-
    // For Rule::RULE_TRACKING_AUTO_ACTION
    $changes['RuleMailCollector'] = array('X-Priority' => 'x-priority');
 
@@ -118,7 +112,7 @@ function update0781to0782($output='HTML') {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             // Get rule string
-            $rules = $DB->result($result,0,0);
+            $rules = $DB->result($result, 0, 0);
             // Update actions
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_ruleactions`
@@ -184,7 +178,6 @@ function update0781to0782($output='HTML') {
                 VALUES ('$rule_id', 'assign', '_refuse_email_no_response', '1')";
       $DB->queryOrDie($query, "0.78.2 add new action RuleMailCollector");
 
-
       /// Insert new rule
       $query = "INSERT INTO `glpi_rules`
                        (`entities_id`, `sub_type`, `ranking`, `name`,
@@ -211,9 +204,7 @@ function update0781to0782($output='HTML') {
 
    }
 
-
-
-   if (!FieldExists('glpi_ocsservers','ocs_db_utf8', false)) {
+   if (!FieldExists('glpi_ocsservers', 'ocs_db_utf8', false)) {
       $query = "ALTER TABLE `glpi_ocsservers`
                 ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
 
@@ -225,4 +216,3 @@ function update0781to0782($output='HTML') {
 
    return $updateresult;
 }
-?>

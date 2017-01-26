@@ -88,7 +88,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       // child entity - A - existing
       $id[2] = $obj->import(array('name'         => 'A',
                                   'entities_id'  => $ent1));
-      $this->assertEquals($id[0],$id[2]);
+      $this->assertEquals($id[0], $id[2]);
 
       // child entity - B - new
       $id[3] = $obj->import(array('name'         => 'B',
@@ -169,18 +169,17 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
                                  'value'       => $out2='Web Site'));
       $this->assertGreaterThan(0, $ida[1], "Fail: can't create rule 2 action");
 
-
       $manu = new Manufacturer();
 
       // Import first and fill cache
-      $id[0] = $manu->importExternal($in='the indepnet team');
+      $id[0] = $manu->importExternal($in = 'the indepnet team');
       $this->assertGreaterThan(0, $id[0]);
       $this->assertTrue($manu->getFromDB($id[0]));
       $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
 
       // Import second and use cache
-      $id[1] = $manu->importExternal($in='The INDEPNET Team');
+      $id[1] = $manu->importExternal($in = 'The INDEPNET Team');
       $this->assertGreaterThan(0, $id[1]);
       $this->assertEquals($id[0], $id[1]);
       $this->assertTrue($manu->getFromDB($id[1]));
@@ -188,7 +187,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache not filled");
 
       // Import third not in cache
-      $id[2] = $manu->importExternal($in='http://www.indepnet.net/');
+      $id[2] = $manu->importExternal($in = 'http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[2]);
       $this->assertEquals($id[0], $id[2]);
       $this->assertTrue($manu->getFromDB($id[2]));
@@ -202,16 +201,15 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertTrue($rule->update(array('id' => $idr[0],
                                             'is_active' => 1)), "Fail: update rule");
 
-
       // Import again and fill cache
-      $id[3] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $id[3] = $manu->importExternal($in = 'http://www.glpi-project.org/');
       $this->assertGreaterThan(0, $id[3]);
       $this->assertGreaterThan($id[0], $id[3]);
       $this->assertTrue($manu->getFromDB($id[3]));
       $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
 
-      $id[4] = $manu->importExternal($in='http://www.indepnet.net/');
+      $id[4] = $manu->importExternal($in = 'http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[4]);
       $this->assertEquals($id[0], $id[4]);
       $this->assertTrue($manu->getFromDB($id[4]));
@@ -234,12 +232,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not change");
 
       // Import again and fill cache
-      $id[5] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $id[5] = $manu->importExternal($in = 'http://www.glpi-project.org/');
       $this->assertGreaterThan(0, $id[5]);
       $this->assertTrue($manu->getFromDB($id[5]));
       $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
 
-      $id[6] = $manu->importExternal($in='http://www.indepnet.net/');
+      $id[6] = $manu->importExternal($in = 'http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[6]);
       $this->assertTrue($manu->getFromDB($id[6]));
       $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
@@ -258,12 +256,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not change");
 
       // Import again and fill cache
-      $id[7] = $manu->importExternal($in='http://www.glpi-project.org/');
+      $id[7] = $manu->importExternal($in = 'http://www.glpi-project.org/');
       $this->assertGreaterThan(0, $id[7]);
       $this->assertTrue($manu->getFromDB($id[7]));
       $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
 
-      $id[8] = $manu->importExternal($in='http://www.indepnet.net/');
+      $id[8] = $manu->importExternal($in = 'http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[8]);
       $this->assertTrue($manu->getFromDB($id[8]));
       $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
@@ -352,7 +350,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $ida[2], "Fail: can't create software rule action");
 
       // Apply Rule to manufacturer
-      $manu = Dropdown::import('Manufacturer','the indepnet team');
+      $manu = Dropdown::import('Manufacturer', 'the indepnet team');
       $this->assertEquals('Indepnet', $manu, "Fail: manufacturer not altered");
 
       // Apply Rule to software
@@ -399,12 +397,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       // Import again => same result
       $id[1] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent0);
       $this->assertGreaterThan(0, $id[1], "Fail: can't create software 2");
-      $this->assertEquals($id[0],$id[1], "Fail: previous not found");
+      $this->assertEquals($id[0], $id[1], "Fail: previous not found");
 
       // Import in another entity
       $id[2] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent1);
       $this->assertGreaterThan(0, $id[2], "Fail: can't create software 3");
-      $this->assertNotEquals($id[0],$id[2], "Fail: previous used (from another entity)");
+      $this->assertNotEquals($id[0], $id[2], "Fail: previous used (from another entity)");
 
       // Delete
       $this->assertTrue($soft->delete(array('id'=>$id[2])), "Fail: can't delete software 3)");
@@ -413,7 +411,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Import again => restore
       $id[3] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent1);
-      $this->assertEquals($id[2],$id[3], "Fail: previous not used");
+      $this->assertEquals($id[2], $id[3], "Fail: previous not used");
       $this->assertTrue($soft->getFromDB($id[2]), "Fail: can't read new soft");
       $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
 
@@ -421,11 +419,11 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertTrue($soft->update(array('id'           => $id[0],
                                             'is_recursive' => 1)), "Fail: can't update software 1)");
       $id[4] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent2);
-      $this->assertEquals($id[0],$id[4], "Fail: previous not used");
+      $this->assertEquals($id[0], $id[4], "Fail: previous not used");
 
       // Clean
-      $this->assertTrue($soft->delete(array('id'=>$id[0]),true), "Fail: can't delete software 1)");
-      $this->assertTrue($soft->delete(array('id'=>$id[2]),true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(array('id'=>$id[0]), true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(array('id'=>$id[2]), true), "Fail: can't delete software 1)");
    }
 
    /**
@@ -443,10 +441,10 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
 
       $idcat[0] = Dropdown::import('SoftwareCategory', array('name'=>'Trashed'));
-      $this->assertGreaterThan(0,$idcat[0],"Fail: can't create SoftwareCategory");
+      $this->assertGreaterThan(0, $idcat[0], "Fail: can't create SoftwareCategory");
 
       $idcat[1] = Dropdown::import('SoftwareCategory', array('name'=>'OpenSource'));
-      $this->assertGreaterThan(0,$idcat[1],"Fail: can't create SoftwareCategory");
+      $this->assertGreaterThan(0, $idcat[1], "Fail: can't create SoftwareCategory");
 
       $rule = new RuleSoftwareCategory();
       $crit = new RuleCriteria();
@@ -501,7 +499,6 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
 
       // Clean
-      $this->assertTrue($soft->delete(array('id'=>$id[0]),true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(array('id'=>$id[0]), true), "Fail: can't delete software 1)");
    }
 }
-?>

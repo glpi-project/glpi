@@ -31,10 +31,9 @@
  */
 
 
-/** @file
-* @brief
-* @since version 0.84
-*/
+/**
+ * @since version 0.84
+ */
 
 include ('../inc/includes.php');
 

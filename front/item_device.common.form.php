@@ -30,10 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85
-*/
+/**
+ * @since version 0.85
+ */
+
+use Glpi\Event;
 
 if (!($item_device instanceof Item_Devices)) {
    Html::displayErrorAndDie('');

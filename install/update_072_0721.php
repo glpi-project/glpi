@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,13 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief 
-*/
-
-/// Update from 0.72 to 0.72.1
-
+// Update from 0.72 to 0.72.1
 function update072to0721() {
    global $DB, $CFG_GLPI;
 
@@ -63,4 +55,3 @@ function update072to0721() {
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0721"); // End
 } // fin 0.72.1 #####################################################################################
-?>

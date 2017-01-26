@@ -31,8 +31,7 @@
  */
 
 
-/** @file
- * @brief
+/**
  * @since version 9.1
  */
 

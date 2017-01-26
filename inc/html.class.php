@@ -1113,11 +1113,11 @@ class Html {
       // auto desktop / mobile viewport
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
+      echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
-      echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
+      echo Html::css('css/jstree/style.css');
+      echo Html::css('lib/jqueryplugins/select2/select2.css');
+      echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
 
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
@@ -1135,25 +1135,25 @@ class Html {
          }
 
          if (in_array('fullcalendar', $jslibs)) {
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
+            echo Html::css('lib/jqueryplugins/fullcalendar/fullcalendar.css',
                            array('media' => ''));
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.min.css",
+            echo Html::css('/lib/jqueryplugins/fullcalendar/fullcalendar.print.css',
                            array('media' => 'print'));
             Html::requireJs('fullcalendar');
          }
 
          if (in_array('gantt', $jslibs)) {
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
+            echo Html::css('lib/jqueryplugins/jquery-gantt/css/style.css');
             Html::requireJs('gantt');
          }
 
          if (in_array('rateit', $jslibs)) {
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.min.css");
+            echo Html::css('lib/jqueryplugins/rateit/rateit.css');
             Html::requireJs('rateit');
          }
 
          if (in_array('colorpicker', $jslibs)) {
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css");
+            echo Html::css('lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css');
             Html::requireJs('colorpicker');
          }
 
@@ -1162,9 +1162,9 @@ class Html {
          }
 
          if (in_array('charts', $jslibs)) {
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/chartist-js-0.10.1/chartist.min.css");
-            echo Html::css($CFG_GLPI["root_doc"]."/css/chartists-glpi.css");
-            echo Html::css($CFG_GLPI["root_doc"]."/lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.css");
+            echo Html::css('lib/chartist-js-0.10.1/chartist.css');
+            echo Html::css('css/chartists-glpi.css');
+            echo Html::css('lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.css');
             Html::requireJs('charts');
          }
       }
@@ -1172,31 +1172,31 @@ class Html {
       //file upload is required... almost everywhere.
       Html::requireJs('fileupload');
 
-      echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+      echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.min.css");
+         echo Html::css('/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css');
       }
 
       //  CSS link
-      echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
+      echo Html::css('css/styles.css');
 
       // High constrast CSS link
       if (isset($_SESSION['glpihighcontrast_css'])
          && $_SESSION['glpihighcontrast_css']) {
-         echo Html::css($CFG_GLPI["root_doc"]."/css/highcontrast.css");
+         echo Html::css('css/highcontrast.css');
       }
 
       // CSS theme link
       if (isset($_SESSION["glpipalette"])) {
-         echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+         echo Html::css("css/palettes/{$_SESSION["glpipalette"]}.css");
       }
 
       // surcharge CSS hack for IE
-      echo "<!--[if lte IE 6]>";
-      echo Html::css($CFG_GLPI["root_doc"]."/css/styles_ie.css");
+      echo "<!--[if lte IE 8]>";
+      echo Html::css('css/styles_ie.css');
       echo "<![endif]-->";
-      echo Html::css($CFG_GLPI["root_doc"]."/css/print.css", array('media' => 'print'));
+      echo Html::css('css/print.css', array('media' => 'print'));
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
@@ -1208,39 +1208,33 @@ class Html {
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
+                     echo Html::css("plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
+                  echo Html::css("plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
       }
 
       // AJAX library
-      if (isset($_SESSION['glpi_use_mode'])
-            && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
-      } else {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
-      }
+      echo Html::script('lib/jquery/js/jquery-1.10.2.js');
+      echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 
       // PLugins jquery
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.min.js");
+      echo Html::script('lib/jqueryplugins/backtotop/BackToTop.min.jquery.js');
+      echo Html::script('lib/jqueryplugins/select2/select2.js');
+      echo Html::script('lib/jqueryplugins/qtip2/jquery.qtip.js');
+      echo Html::script('lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
+      echo Html::script('lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js');
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.min.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.min.js");
+         echo Html::script('lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js');
+         echo Html::script('lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js');
       }
 
       // End of Head
@@ -1421,13 +1415,8 @@ class Html {
       echo "<ul>";
 
       echo "<li id='deconnexion'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/logout.php";
-            /// logout witout noAuto login for extauth
-      if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
-         echo "?noAUTO=1";
-      }
-
-      echo "' title=\"".__s('Logout')."\">";
+      echo "<a href='".$CFG_GLPI["root_doc"].
+                       "/front/logout.php?noAUTO=1' title=\"".__s('Logout')."\">";
       echo "<span id='logout_icon' title=\"".__s('Logout').
              "\" class='button-icon'></span>";
       echo "</a>";
@@ -4943,18 +4932,26 @@ class Html {
     * Returns one or many script tags depending on the number of scripts given.
     *
     * @since version 0.85
+    * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
-    * @param $url     String of javascript file to include
-    * @param $options Array  of HTML attributes.
+    * @param string  $url     File to include (relative to GLPI_ROOT)
+    * @param array   $options Array of HTML attributes
+    * @param boolean $minify  Try to load minified file (defaults to true)
     *
     * @return String of script tags
    **/
-   static function script($url, $options=array()) {
+   static function script($url, $options=array(), $minify = true) {
       $version = GLPI_VERSION;
       if (isset($options['version'])) {
          $version = $options['version'];
          unset($options['version']);
       }
+
+      if ($minify === true) {
+         $url = self::getMiniFile($url);
+      }
+
+      $url = self::getPrefixedUrl($url);
 
       if ($version) {
          $url .= '?v=' . $version;
@@ -4968,13 +4965,15 @@ class Html {
     * Creates a link element for CSS stylesheets.
     *
     * @since version 0.85
+    * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
-    * @param $url       String   of javascript file to include
-    * @param $options   Array    of HTML attributes.
+    * @param sring   $url     File to include (raltive to GLPI_ROOT)
+    * @param array   $options Array of HTML attributes
+    * @param boolean $minify  Try to load minified file (defaults to true)
     *
     * @return string CSS link tag
    **/
-   static function css($url, $options=array()) {
+   static function css($url, $options=array(), $minify = true) {
 
       if (!isset($options['media']) || $options['media'] == '') {
          $options['media'] = 'screen';
@@ -4985,6 +4984,12 @@ class Html {
          $version = $options['version'];
          unset($options['version']);
       }
+
+      if ($minify === true) {
+         $url = self::getMiniFile($url);
+      }
+
+      $url = self::getPrefixedUrl($url);
 
       if ($version) {
          $url .= '?v=' . $version;
@@ -4999,7 +5004,7 @@ class Html {
     *
     * @since  version 9.2
     *
-    * @param  array  $options theses following keys:
+    * @param  array $options theses following keys:
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
     */
@@ -5810,11 +5815,11 @@ class Html {
       }
       switch ($name) {
          case 'tinymce':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
             break;
          case 'fullcalendar':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/lib/moment.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/lib/moment.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                $filename = "lib/jqueryplugins/fullcalendar/locale/".
                   strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
@@ -5824,26 +5829,26 @@ class Html {
             }
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jquery.jstree.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jquery.jstree.js';
             break;
          case 'gantt':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
             break;
          case 'rateit':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/rateit/jquery.rateit.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/rateit/jquery.rateit.js';
             break;
          case 'colorpicker':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js';
             break;
          case 'fileupload':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js';
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
             break;
          case 'charts':
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-js-0.10.1/chartist.js';
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
-            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.min.js';
+            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js';
             break;
          default:
             $found = false;
@@ -5876,10 +5881,10 @@ class Html {
          foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
             if (is_array($script)) {
                foreach ($script as $s) {
-                  echo Html::script("{$CFG_GLPI['root_doc']}/$s");
+                  echo Html::script($s);
                }
             } else {
-               echo Html::script("{$CFG_GLPI['root_doc']}/$script");
+               echo Html::script($script);
             }
             unset($_SESSION['glpi_js_toload'][$key]);
          }
@@ -5905,7 +5910,7 @@ class Html {
       }
 
       // Some Javascript-Functions which we may need later
-      echo Html::script($CFG_GLPI["root_doc"].'/js/common.js');
+      echo Html::script('js/common.js');
       self::redefineAlert();
       self::redefineConfirm();
 
@@ -5939,5 +5944,46 @@ class Html {
             }
          }
       }
+   }
+
+   /**
+    * Get a stylesheet or javascript path, minified if any
+    * Return minified path if minified file exists and not in
+    * debug mode, else standard path
+    *
+    * @param string $file_path File path part
+    *
+    * @return string
+    */
+   static private function getMiniFile($file_path) {
+      $debug = (isset($_SESSION['glpi_use_mode'])
+         && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? true : false);
+
+      $file_minpath = str_replace(['.css', '.js'], ['.min.css', '.min.js'], $file_path);
+      if (file_exists(GLPI_ROOT . '/' . $file_minpath)) {
+         if (!$debug || !file_exists(GLPI_ROOT . '/' . $file_path)) {
+            return $file_minpath;
+         }
+      }
+
+      return $file_path;
+   }
+
+   /**
+    * Return prefixed URL
+    *
+    * @since 9.2
+    *
+    * @param string $url Original URL (not prefixed)
+    *
+    * @return string
+    */
+   static private function getPrefixedUrl($url) {
+      global $CFG_GLPI;
+      $prefix = $CFG_GLPI['root_doc'];
+      if (substr($url, 0, 1) != '/') {
+         $prefix .= '/';
+      }
+      return $prefix . $url;
    }
 }

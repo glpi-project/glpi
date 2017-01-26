@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,8 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-
 include ('../inc/includes.php');
 
 // COMPUTER ONLY UNDEF CATEGORIES
@@ -62,4 +58,3 @@ if ($result=$DB->query($query)) {
       }
    }
 }
-?>

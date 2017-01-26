@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85
-*/
+/**
+ * @since version 0.85
+ */
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "getDropdownValue.php")) {
@@ -50,7 +49,7 @@ if (isset($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])
     && (substr($_POST["entity_restrict"], 0, 1) === '[')
     && (substr($_POST["entity_restrict"], -1) === ']')) {
-   $_POST["entity_restrict"] = json_decode($_POST["entity_restrict"]);
+    $_POST["entity_restrict"] = Toolbox::jsonDecode($_POST["entity_restrict"]);
 }
 
 // Security

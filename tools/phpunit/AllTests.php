@@ -65,8 +65,7 @@ class AllTests {
       $suite = new PHPUnit_Framework_TestSuite('GLPI');
       $suite->addTest(System_AllTests::suite());
       $suite->addTest(Install_AllTests::suite());
-//      $suite->addTest(Framework_AllTests::suite());
+      //      $suite->addTest(Framework_AllTests::suite());
       return $suite;
    }
 }
-?>

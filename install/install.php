@@ -232,11 +232,10 @@ function step3($host, $user, $password, $update) {
    //Check if the port is in url
    $hostport = explode(":", $host);
    if (count($hostport) < 2) {
-     $link = new mysqli($hostport[0], $user, $password);
+      $link = new mysqli($hostport[0], $user, $password);
    } else {
-     $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+      $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
    }
-
 
    if ($link->connect_error
        || empty($host)
@@ -333,7 +332,6 @@ function step4 ($databasename, $newdatabasename) {
    //display the form to return to the previous step.
    echo "<h3>".__('Initialization of the database')."</h3>";
 
-
    function prev_form($host, $user, $password) {
 
       echo "<br><form action='install.php' method='post'>";
@@ -347,7 +345,6 @@ function step4 ($databasename, $newdatabasename) {
       Html::closeForm();
    }
 
-
    //Display the form to go to the next page
    function next_form() {
 
@@ -358,13 +355,12 @@ function step4 ($databasename, $newdatabasename) {
       Html::closeForm();
    }
 
-
    //Check if the port is in url
    $hostport = explode(":", $host);
    if (count($hostport) < 2) {
-     $link = new mysqli($hostport[0], $user, $password);
+      $link = new mysqli($hostport[0], $user, $password);
    } else {
-     $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+      $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
    }
 
    $databasename    = $link->real_escape_string($databasename);
@@ -379,7 +375,7 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (DBConnection::createMainConfig($host,$user,$password,$databasename)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $databasename)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -396,7 +392,7 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (DBConnection::createMainConfig($host,$user,$password,$newdatabasename)) {
+         if (DBConnection::createMainConfig($host, $user, $password, $newdatabasename)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
@@ -411,7 +407,7 @@ function step4 ($databasename, $newdatabasename) {
             echo "<p>".__('Database created')."</p>";
 
             if ($link->select_db($newdatabasename)
-                && DBConnection::createMainConfig($host,$user,$password,$newdatabasename)) {
+                && DBConnection::createMainConfig($host, $user, $password, $newdatabasename)) {
 
                Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
@@ -448,7 +444,6 @@ function step7() {
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
 
-
    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
    $query = "UPDATE `glpi_configs`
              SET `value`     = '".$DB->escape($url_base)."'
@@ -481,7 +476,7 @@ function update1($DBname) {
    $user     = $_SESSION['db_access']['user'];
    $password = $_SESSION['db_access']['password'];
 
-   if (DBConnection::createMainConfig($host,$user,$password,$DBname) && !empty($DBname)) {
+   if (DBConnection::createMainConfig($host, $user, $password, $DBname) && !empty($DBname)) {
       $from_install = true;
       include_once(GLPI_ROOT ."/install/update.php");
 
@@ -580,7 +575,7 @@ if (!isset($_POST["install"])) {
       case "Etape_2" : // mysql settings ok, go test mysql settings and select database.
          checkConfigFile();
          header_html(sprintf(__('Step %d'), 2));
-         step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
+         step3($_POST["db_host"], $_POST["db_user"], $_POST["db_pass"], $_POST["update"]);
          break;
 
       case "Etape_3" : // Create and fill database

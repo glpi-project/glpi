@@ -30,10 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief List of device for tracking.
-* @since version 0.85
-*/
+/**
+ * @brief List of device for tracking.
+ * @since version 0.85
+ */
 
 include ('../inc/includes.php');
 

@@ -28,7 +28,14 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-function uploadFile(file, editor, name) {
+/**
+ * Uploads a file receive on tinyMCE to Server
+ *
+ * @param      {blob}    file           The file to upload
+ * @param      {Object}  editor         instance of editor (TinyMCE)
+ * @param      {String}  input_name    Name of generated input hidden (default filename)
+ */
+function uploadFile(file, editor, input_name) {
    var returnTag = false;
 
    //Create formdata from file to send with ajax request
@@ -47,15 +54,15 @@ function uploadFile(file, editor, name) {
       async: false,
       success: function(data) {
          $.each(data, function(index, element) {
-            if(element[0].error == undefined) {
+            if (element[0].error == undefined) {
                returnTag = '';
                var tag = getFileTag(element);
                //if is an image add tag
-               if(isImage(file)){
+               if (isImage(file)) {
                   returnTag = tag.tag;
                }
                //display uploaded file
-               displayUploadedFile(element[0], tag, editor, name);
+               displayUploadedFile(element[0], tag, editor, input_name);
             } else {
                returnTag = false;
                alert(element[0].error);
@@ -105,11 +112,12 @@ var getFileTag = function(data) {
  * @param      {String}  tag           The tag
  * @param      {String}  filecontainer The dom id of the list file container
  * @param      {Object}  editor        The TinyMCE editor instance
+ * @param      {String}  input_name    Name of generated input hidden (default filename)
  */
 var fileindex = 0;
-var displayUploadedFile = function(file, tag, editor, name) {
+var displayUploadedFile = function(file, tag, editor, input_name) {
    // default argument(s)
-   name = (typeof name === 'undefined') ? 'filename' : name;
+   input_name = (typeof input_name === 'undefined') ? 'filename' : input_name;
 
    // find the nearest fileupload_info where to append file list
    var current_dom_point = $(editor.targetElm);
@@ -140,13 +148,13 @@ var displayUploadedFile = function(file, tag, editor, name) {
       // File
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_'+name+'['+fileindex+']')
+         .attr('name', '_'+input_name+'['+fileindex+']')
          .attr('value', file.name).appendTo(p);
 
       // Tag
       $('<input/>')
          .attr('type', 'hidden')
-         .attr('name', '_tag_'+name+'['+fileindex+']')
+         .attr('name', '_tag_'+input_name+'['+fileindex+']')
          .attr('value', tag.name)
          .appendTo(p);
 
@@ -193,7 +201,7 @@ var insertImgFromFile = function(editor, fileImg, tag) {
    var urlCreator = window.URL || window.webkitURL;
    var imageUrl   = urlCreator.createObjectURL(fileImg);
    var regex      = new RegExp('#', 'g');
-   var maxHeight  = $(tinyMCE.activeEditor.getContainer()).height() - 60 ;
+   var maxHeight  = $(tinyMCE.activeEditor.getContainer()).height() - 60;
    var maxWidth   = $(tinyMCE.activeEditor.getContainer()).width()  - 120;
 
    if (window.FileReader && window.File && window.FileList && window.Blob ) {
@@ -207,14 +215,14 @@ var insertImgFromFile = function(editor, fileImg, tag) {
             var imgHeight = this.height;
             var ratio     = 0;
 
-            if(imgWidth > maxWidth){
+            if (imgWidth > maxWidth) {
                ratio     = maxWidth / imgWidth; // get ratio for scaling image
                imgHeight = imgHeight * ratio;   // Reset height to match scaled image
                imgWidth  = imgWidth * ratio;    // Reset width to match scaled image
             }
 
             // Check if current height is larger than max
-            if(imgHeight > maxHeight){
+            if (imgHeight > maxHeight) {
                ratio     = maxHeight / imgHeight; // get ratio for scaling image
                imgWidth  = imgWidth * ratio;      // Reset width to match scaled image
                imgHeight = imgHeight * ratio;     // Reset height to match scaled image
@@ -226,7 +234,7 @@ var insertImgFromFile = function(editor, fileImg, tag) {
       });
       reader.readAsDataURL(fileImg);
 
-   } else{
+   } else {
       console.log('thanks to update your browser to get preview of image');
    }
 };
@@ -298,13 +306,13 @@ var extractSrcFromImgTag = function(content) {
 */
 var extractSrcFromBlobImgTag = function(content) {
    var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-      if (match == null) {
-         var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
+   if (match == null) {
+      var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
 
-         if (match == null) {
-            var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
-         }
+      if (match == null) {
+         var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
       }
+   }
 
    return match[1];
 };
@@ -380,7 +388,7 @@ if (typeof tinymce != 'undefined') {
                   file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
 
                   insertImageInTinyMCE(editor, file);
-               } else{
+               } else {
                   console.log("paste error");
                }
             };
@@ -434,9 +442,14 @@ $(function() {
       // if file present, insert it in filelist
       if (typeof event.originalEvent.dataTransfer.files) {
          $.each(event.originalEvent.dataTransfer.files, function(index, element) {
+            var input_name = undefined;
+            var input_file = $(event.target).find('input[type=file][name]');
+            if (input_file.length) {
+               input_name = input_file.attr('name').replace('[]', '');
+            }
             uploadFile(element,
                        {targetElm: $(event.target).find('.fileupload_info')},
-                       $(event.target).find('input[type=file]').attr('name').replace('[]', '')
+                       input_name
                       );
          });
       }

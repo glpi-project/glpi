@@ -1158,13 +1158,12 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "2' ";
       }
 
+      $tasktype = $this->getType();
       if ($canedit) {
-         echo "style='cursor:pointer' onClick=\"viewEditTask".$item->fields['id'].
-               $this->fields['id']."$rand();\"";
+         echo "style='cursor:pointer' onClick=\"viewEdit$tasktype" . $this->fields['id'] . "$rand();\"";
       }
 
-      echo " id='viewfollowup" . $this->fields[$item->getForeignKeyField()] . $this->fields["id"] .
-            "$rand'>";
+      echo " id='viewitem$tasktype" . $this->fields["id"] . "$rand'>";
 
       if ($canview) {
          echo "<td>";
@@ -1203,13 +1202,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<td>";
          if ($canedit) {
             echo "\n<script type='text/javascript' >\n";
-            echo "function viewEditTask" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
+            echo "function viewEdit$tasktype" . $this->fields["id"] . "$rand() {\n";
             $params = array('type'       => $this->getType(),
                             'parenttype' => $item->getType(),
                             $item->getForeignKeyField()
                                          => $this->fields[$item->getForeignKeyField()],
                             'id'         => $this->fields["id"]);
-            Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
+            Ajax::updateItemJsCode("viewitem$tasktype$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
             echo "</script>\n";
@@ -1589,7 +1588,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tID = $item->fields['id'];
 
-      // Display existing Followups
+      // Display existing Tasks
       $showprivate = $this->canViewPrivates();
       $caneditall  = $this->canEditAll();
       $tmp         = array($item->getForeignKeyField() => $tID);
@@ -1614,26 +1613,27 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $rand = mt_rand();
 
+      $tasktype = $this->getType();
       if ($caneditall || $canadd || $canpurge) {
-         echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+         echo "<div id='viewitem$tasktype$rand'></div>\n";
       }
 
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
-         echo "function viewAddTask" . $item->fields['id'] . "$rand() {\n";
-         $params = array('type'                      => $this->getType(),
+         echo "function viewAdd$tasktype$rand() {\n";
+         $params = array('type'                      => $tasktype,
                          'parenttype'                => $item->getType(),
                          $item->getForeignKeyField() => $item->fields['id'],
                          'id'                        => -1);
-         Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
+         Ajax::updateItemJsCode("viewitem$tasktype$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
-         echo Html::jsHide('addbutton'.$item->fields['id'] . "$rand");
+         echo Html::jsHide("addbutton$rand");
          echo "};";
          echo "</script>\n";
          if (!in_array($item->fields["status"],
                array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-            echo "<div id='addbutton".$item->fields['id'] . "$rand' class='center firstbloc'>".
-                 "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
+            echo "<div id='addbutton$rand' class='center firstbloc'>".
+                 "<a class='vsubmit' href='javascript:viewAdd$tasktype$rand();'>";
             echo __('Add a new task')."</a></div>\n";
          }
       }

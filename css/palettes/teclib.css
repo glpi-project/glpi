@@ -35,7 +35,7 @@
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #8E21A1; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #8E21A1;
 }
 
 #display-login {
@@ -47,7 +47,7 @@
    color: #FFF;
 }
 
-#boxlogin #forget, 
+#boxlogin #forget,
 #footer-login a  {
    color: #424242;
 }
@@ -111,9 +111,9 @@ ul#menu ul li a {
 
 /* ====== BUTTONS ====== */
 
-input.submit, 
+input.submit,
 span.vsubmit, a.vsubmit,
-.ui-widget-content span.vsubmit, a.vsubmit, 
+.ui-widget-content span.vsubmit, a.vsubmit,
 #BackToTop {
    color: #353B17;
    background-color: #BCDA1A;
@@ -123,8 +123,8 @@ span.vsubmit, a.vsubmit,
    text-decoration: underline;
 }
 
-input.submit:hover, 
-a.vsubmit:hover, 
+input.submit:hover,
+a.vsubmit:hover,
 #BackToTop:hover {
    background-color: #BCDA1A;
 }

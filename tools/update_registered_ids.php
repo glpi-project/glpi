@@ -29,11 +29,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
+/**
  * @since version 0.85
-* @brief Purge history with some criteria
-*/
+ * @brief Purge history with some criteria
+ */
 
 include ('../inc/includes.php');
 
@@ -78,4 +77,3 @@ foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       // }
    }
 }
-?>

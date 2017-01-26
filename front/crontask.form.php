@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Form to edit Cron Task
-*/
+/**
+ * @brief Form to edit Cron Task
+ */
 
 include ('../inc/includes.php');
 

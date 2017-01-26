@@ -33,11 +33,13 @@
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it    = explode("=",$_SERVER['argv'][$i], 2);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it    = explode("=", $_SERVER['argv'][$i], 2);
       $it[0] = preg_replace('/^--/', '', $it[0]);
 
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);

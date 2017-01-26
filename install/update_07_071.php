@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,12 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief 
-*/
-
-/// Update from 0.7 to 0.71
+// Update from 0.7 to 0.71
 function update07to071() {
    global $DB, $CFG_GLPI;
 
@@ -58,7 +52,6 @@ function update07to071() {
                 SET `rule_dictionnary_dropdown` = `rule_dictionnary_software`";
       $DB->queryOrDie($query, "0.71 update value of rule_dictionnary_dropdown");
    }
-
 
    $cache_tables = array("glpi_rule_cache_manufacturer",
                          "glpi_rule_cache_model_computer",
@@ -145,7 +138,7 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 add table glpi_auth_ldap_replicate");
    }
 
-   if (!FieldExists("glpi_config","dbreplicate_notify_desynchronization", false)) {
+   if (!FieldExists("glpi_config", "dbreplicate_notify_desynchronization", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `dbreplicate_notify_desynchronization` SMALLINT NOT NULL DEFAULT '0',
                 ADD `dbreplicate_email` VARCHAR( 255 ) NULL ,
@@ -535,11 +528,10 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 drop name_2 index in glpi_users");
    }
 
-   if (!FieldExists("glpi_rules_descriptions","comments", false)) {
+   if (!FieldExists("glpi_rules_descriptions", "comments", false)) {
       $query = "ALTER TABLE `glpi_rules_descriptions`
                 ADD `comments` TEXT NULL DEFAULT NULL";
       $DB->queryOrDie($query, "0.71 add comments to glpi_rules_descriptions");
    }
 
 } // fin 0.71 #####################################################################################
-?>

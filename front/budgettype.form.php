@@ -30,12 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 9.1
-*/
-
-
+/**
+ * @since version 9.1
+ */
 include ('../inc/includes.php');
 
 $dropdown = new BudgetType();

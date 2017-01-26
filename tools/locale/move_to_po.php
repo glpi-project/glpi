@@ -34,11 +34,11 @@
 chdir(__DIR__);
 
 if ($argv) {
-   for ($i=1 ; $i<count($argv) ; $i++) {
+   for ($i=1; $i<count($argv); $i++) {
       //To be able to use = in search filters, enter \= instead in command line
       //Replace the \= by ° not to match the split function
       $arg   = str_replace('\=', '°', $argv[$i]);
-      $it    = explode("=",$arg);
+      $it    = explode("=", $arg);
       $it[0] = preg_replace('/^--/', '', $it[0]);
 
       //Replace the ° by = the find the good filter
@@ -65,7 +65,7 @@ $lf     = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".php", "r");
 $lf_new = fopen(GLPI_ROOT . "/locales/temp.php", "w+");
 
 while (($content = fgets($lf, 4096)) !== false) {
-   if (!preg_match('/string to be translated/',$content,$reg)) {
+   if (!preg_match('/string to be translated/', $content, $reg)) {
       if (fwrite($lf_new, $content) === FALSE) {
          echo "unable to write in clean lang file";
          exit;
@@ -94,31 +94,31 @@ if ($pot && $po) {
    $context = '';
 
    while (($content = fgets($pot, 4096)) !== false) {
-      if (preg_match('/^msgctxt "(.*)"$/',$content,$reg)) {
+      if (preg_match('/^msgctxt "(.*)"$/', $content, $reg)) {
          $context = $reg[1];
       }
-      if (preg_match('/^msgid "(.*)"$/',$content,$reg)) {
+      if (preg_match('/^msgid "(.*)"$/', $content, $reg)) {
          $current_string = $reg[1];
       }
 
-      if (preg_match('/^msgid_plural "(.*)"$/',$content,$reg)) {
+      if (preg_match('/^msgid_plural "(.*)"$/', $content, $reg)) {
          $current_string_plural = $reg[1];
          $sing_trans = '';
          $plural_trans = '';
       }
 
       // String on several lines
-      if (preg_match('/^"(.*)"$/',$content,$reg)) {
+      if (preg_match('/^"(.*)"$/', $content, $reg)) {
          if ($in_plural) {
             $current_string_plural .= $reg[1];
          } else {
             $current_string        .= $reg[1];
          }
-//          echo '-'.$current_string."-\n";
+         //          echo '-'.$current_string."-\n";
       }
 
 
-      if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
+      if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/', $content, $reg)) {
          if (strlen($reg[1]) == 0) { //Singular
             $in_plural = false;
             if ($_GET['lang']=='en_GB') {
@@ -126,8 +126,8 @@ if ($pot && $po) {
             } else {
                $translation = search_in_dict($current_string, $context);
                $content     = "msgstr \"$translation\"\n";
-//              echo '+'.$current_string."+\n";
-//                echo "$translation\n";
+               //              echo '+'.$current_string."+\n";
+               //                echo "$translation\n";
             }
          } else {
 
@@ -135,17 +135,17 @@ if ($pot && $po) {
                case "0" : // Singular
                   $in_plural = false;
 
-//                   echo '+'.$current_string."+\n";
+                  //                   echo '+'.$current_string."+\n";
                   $sing_trans = search_in_dict($current_string, $context);
-//                   echo "$translation\n";
+                  //                   echo "$translation\n";
                   break;
 
                case "1" : // Plural
                   $in_plural = true;
 
-//                   echo '++'.$current_string."++\n";
+                  //                   echo '++'.$current_string."++\n";
                   $plural_trans = search_in_dict($current_string_plural, $context);
-//                   echo "$translation\n";
+                  //                   echo "$translation\n";
                   break;
             }
 
@@ -154,9 +154,9 @@ if ($pot && $po) {
                   $content = "msgstr[0] \"$current_string\"\n";
                   $content .= "msgstr[1] \"$current_string_plural\"\n";
                } else {
-//                   echo $current_string.'->'.$sing_trans.' '.$current_string_plural.'->'.$plural_trans."\n";
+                  //                   echo $current_string.'->'.$sing_trans.' '.$current_string_plural.'->'.$plural_trans."\n";
                   if (!strlen($sing_trans) || !strlen($plural_trans)) {
-//                      echo "clean\n";
+                     //                      echo "clean\n";
                      $sing_trans = '';
                      $plural_trans = '';
                   }
@@ -169,12 +169,12 @@ if ($pot && $po) {
          }
          $context = '';
       }
-     // Standard replacement
-     $content = preg_replace('/charset=CHARSET/','charset=UTF-8',$content);
+      // Standard replacement
+      $content = preg_replace('/charset=CHARSET/', 'charset=UTF-8', $content);
 
-     if (preg_match('/Plural-Forms/',$content)) {
+      if (preg_match('/Plural-Forms/', $content)) {
          $content = "\"Plural-Forms: nplurals=2; plural=(n != 1)\\n\"\n";
-     }
+      }
 
       if (fwrite($po, $content) === FALSE) {
          echo "unable to write in po file";
@@ -197,8 +197,8 @@ function search_in_dict($string, $context) {
    $ponctmatch = "([\.: \(\)]*)";
    $varmatch = "(%s)*";
 
-   if (preg_match("/$varmatch$ponctmatch(.*)$ponctmatch$varmatch$/U",$string,$reg)) {
-//       print_r($reg);
+   if (preg_match("/$varmatch$ponctmatch(.*)$ponctmatch$varmatch$/U", $string, $reg)) {
+      //       print_r($reg);
       $left   = $reg[1];
       $left   .= $reg[2];
       $string = $reg[3];
@@ -207,45 +207,45 @@ function search_in_dict($string, $context) {
          $right  .= $reg[5];
       }
    }
-//    echo $left.' <- '.$string.' -> '.$right."\n";
+   //    echo $left.' <- '.$string.' -> '.$right."\n";
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          if (!isset($LANG[$mod][$key])) {
             continue;
          }
          // Search same case with punc
-         if (strcmp($val,$left.$string.$right) === 0) {
+         if (strcmp($val, $left.$string.$right) === 0) {
             return $LANG[$mod][$key];
          }
          // Search same case with punc
-         if (strcasecmp($val,$left.$string.$right) === 0) {
+         if (strcasecmp($val, $left.$string.$right) === 0) {
             return $LANG[$mod][$key];
          }
 
          // Search same case with left punc
-         if (strcmp($val,$left.$string) === 0) {
+         if (strcmp($val, $left.$string) === 0) {
             return $LANG[$mod][$key].$right;
          }
          // Search same case with left punc
-         if (strcasecmp($val,$left.$string) === 0) {
+         if (strcasecmp($val, $left.$string) === 0) {
             return $LANG[$mod][$key].$right;
          }
 
          // Search same case with right punc
-         if (strcmp($val,$string.$right) === 0) {
+         if (strcmp($val, $string.$right) === 0) {
             return $left.$LANG[$mod][$key];
          }
          // Search same case with right punc
-         if (strcasecmp($val,$string.$right) === 0) {
+         if (strcasecmp($val, $string.$right) === 0) {
             return $left.$LANG[$mod][$key];
          }
 
          // Search same case without punc
-         if (strcmp($val,$string) === 0) {
+         if (strcmp($val, $string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
          // Search non case sensitive
-         if (strcasecmp($val,$string) === 0) {
+         if (strcasecmp($val, $string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
 
@@ -254,4 +254,3 @@ function search_in_dict($string, $context) {
 
    return "";
 }
-?>

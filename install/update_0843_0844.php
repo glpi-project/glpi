@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 /**
  * Update from 0.84.3 to 0.84.4
  *
@@ -45,7 +44,6 @@ function update0843to0844() {
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.4'));
    $migration->setVersion('0.84.4');
-
 
    $backup_tables = false;
    $newtables     = array();
@@ -78,8 +76,7 @@ function update0843to0844() {
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
                     'qualification' => CommonITILObject::QUALIFICATION);
-   
-   
+
    // Migrate templates : back for validation
    $query = "SELECT `glpi_notificationtemplatetranslations`.*
                FROM `glpi_notificationtemplatetranslations`
@@ -97,9 +94,9 @@ function update0843to0844() {
             $text = $data['content_text'];
             $html = $data['content_html'];
             foreach ($status as $old => $new) {
-               $subject = str_replace("validation.storestatus=$new","validation.storestatus=$old",$subject);
-               $text    = str_replace("validation.storestatus=$new","validation.storestatus=$old",$text);
-               $html    = str_replace("validation.storestatus=$new","validation.storestatus=$old",$html);
+               $subject = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $subject);
+               $text    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $text);
+               $html    = str_replace("validation.storestatus=$new", "validation.storestatus=$old", $html);
             }
             $query = "UPDATE `glpi_notificationtemplatetranslations`
                         SET `subject` = '".addslashes($subject)."',
@@ -128,7 +125,7 @@ function update0843to0844() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -167,4 +164,3 @@ function update0843to0844() {
    return $updateresult;
 }
 
-?>

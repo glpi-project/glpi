@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
+/**
  * @since version 9.1
-* @brief
-*/
+ */
 
 include ('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");

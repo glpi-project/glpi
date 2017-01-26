@@ -153,33 +153,6 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
       }
-      $group = new Group_Ticket();
-      $groups = $group->find("`tickets_id` = ". $input['tickets_id']. " AND `type` = ".CommonITILActor::REQUESTER);
-
-      if (count($groups) <= 0) {
-         if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
-            if ($item = getItemForItemtype($input["itemtype"])) {
-               if ($item->getFromDB($input["items_id"])) {
-                  if ($item->isField('groups_id')) {
-                     $ticket->fields['items_groups'] = $item->fields['groups_id'];
-
-                     // Process Business Rules
-                     $rules = new RuleTicketCollection($ticket->fields['entities_id']);
-
-                     $ticket->fields = $rules->processAllRules(Toolbox::stripslashes_deep($ticket->fields),
-                                                Toolbox::stripslashes_deep($ticket->fields),
-                                                array('recursive' => true));
-
-                     unset($ticket->fields['items_groups']);
-
-                     if ($item->fields['groups_id'] > 0) {
-                        $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
-                     }
-                  }
-               }
-            }
-         }
-      }
 
       return parent::prepareInputForAdd($input);
    }

@@ -117,8 +117,11 @@ class APIXmlrpc extends API {
 
          //add pagination headers
          $additionalheaders                  = array();
-         $additionalheaders["Content-Range"] = $response['content-range'];
-         $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".Toolbox::get_max_input_vars();
+         $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." "
+                                               .Toolbox::get_max_input_vars();
+         if ($response['totalcount'] > 0) {
+            $additionalheaders["Content-Range"] = $response['content-range'];
+         }
 
          // diffent http return codes for complete or partial response
          if ($response['count'] < $response['totalcount']) {
@@ -174,8 +177,12 @@ class APIXmlrpc extends API {
                }
             }
             $additionalheaders                  = array();
-            $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
-            $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".Toolbox::get_max_input_vars();
+            $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".
+                                                  Toolbox::get_max_input_vars();
+            if ($totalcount > 0) {
+               $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
+            }
+
             return $this->returnResponse($response, $code, $additionalheaders);
 
          } else if ($resource === "createItems") { // create one or many CommonDBTM items

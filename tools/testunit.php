@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -64,4 +63,3 @@ for ($i = 0; $line = $DB->fetch_array($result); $i++) {
    }
 }
 echo "End of $i tables analysed\n";
-?>

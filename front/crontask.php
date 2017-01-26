@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Search engine from cron tasks
-*/
+/**
+ * @brief Search engine from cron tasks
+ */
 
 include ('../inc/includes.php');
 

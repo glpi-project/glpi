@@ -559,7 +559,7 @@ class Planning extends CommonGLPI {
       $(function() {
          var disable_qtip = false,
              disable_edit = false;
-         $('html')
+         $('.planning_on_central a')
             .mousedown(function() {
                disable_qtip = true;
                $('.qtip').hide();
@@ -808,7 +808,10 @@ class Planning extends CommonGLPI {
                      .dialog({
                         modal:  true,
                         width:  'auto',
-                        height: 'auto'
+                        height: 'auto',
+                        close: function(event, ui) {
+                           $('#planning$rand').fullCalendar('refetchEvents');
+                        }
                      })
                      .load(event.ajaxurl, function() {
                         $(this).dialog('option', 'position', ['center', 'center'] );

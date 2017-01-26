@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief 
-*/
-
 /**
  * Update from 0.78 to 0.78.1
  *
@@ -65,7 +61,7 @@ function update078to0781() {
                continue;
             }
             $do_recursive = false;
-            if (FieldExists($itemtable,'is_recursive', false)) {
+            if (FieldExists($itemtable, 'is_recursive', false)) {
                $do_recursive=true;
             }
             foreach ($entities as $entID => $val) {
@@ -108,8 +104,7 @@ function update078to0781() {
                                 FROM `glpi_ticketvalidations`)";
    $DB->query($query) or die("0.78.1 update ticket global_validation state");
 
-
-   if (!FieldExists('glpi_knowbaseitemcategories','entities_id', false)) {
+   if (!FieldExists('glpi_knowbaseitemcategories', 'entities_id', false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
@@ -130,4 +125,3 @@ function update078to0781() {
 
    return $updateresult;
 }
-?>

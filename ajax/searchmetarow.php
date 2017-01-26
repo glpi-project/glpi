@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85
-*/
+/**
+ * @since version 0.85
+ */
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "searchmetarow.php")) {

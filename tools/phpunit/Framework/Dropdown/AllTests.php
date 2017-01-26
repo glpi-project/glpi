@@ -39,4 +39,3 @@ class Framework_Dropdown_AllTests {
       return $suite;
    }
 }
-?>

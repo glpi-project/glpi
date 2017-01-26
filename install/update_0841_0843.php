@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 /**
  * Update from 0.84.1 to 0.84.3
  *
@@ -45,7 +44,6 @@ function update0841to0843() {
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.3'));
    $migration->setVersion('0.84.3');
-
 
    $backup_tables = false;
    $newtables     = array();
@@ -163,7 +161,7 @@ function update0841to0843() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -202,4 +200,3 @@ function update0841to0843() {
    return $updateresult;
 }
 
-?>

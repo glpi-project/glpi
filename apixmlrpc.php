@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 9.1
-*/
+/**
+ * @since version 9.1
+ */
 
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);

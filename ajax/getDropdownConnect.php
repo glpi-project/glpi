@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85
-*/
+/**
+ * @since version 0.85
+ */
 
 if (strpos($_SERVER['PHP_SELF'], "getDropdownConnect.php")) {
    include ('../inc/includes.php');

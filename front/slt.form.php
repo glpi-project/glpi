@@ -30,10 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 9.1
-*/
+/**
+ * @since version 9.1
+ */
+
+use Glpi\Event;
 
 include ('../inc/includes.php');
 

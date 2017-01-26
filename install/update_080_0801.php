@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,10 +29,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief 
-*/
 
 /**
  * Update from 0.80 to 0.80.1
@@ -129,7 +124,6 @@ function update080to0801() {
       $entities    = getAllDatasFromTable('glpi_entities');
       $entities[0] = "Root";
 
-
       foreach ($entities as $entID => $val) {
          // Non recursive ones
          $query3 = "UPDATE `glpi_slalevels`
@@ -151,10 +145,8 @@ function update080to0801() {
       }
    }
 
-
    // must always be at the end
    $migration->executeMigration();
 
    return $updateresult;
 }
-?>

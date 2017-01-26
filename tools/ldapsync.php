@@ -30,17 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since versin 0.83
-*/
+/**
+ * @since version 0.83
+ */
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
 if (isset($_SERVER['argv'])) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it = explode("=",$_SERVER['argv'][$i], 2);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it = explode("=", $_SERVER['argv'][$i], 2);
       $it[0] = preg_replace('/^--/', '', $it[0]);
 
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
@@ -93,7 +92,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
    }
 
    $entity = new Entity();
-   if ($entity->getFromDB($id=$data['id'])) {
+   if ($entity->getFromDB($id = $data['id'])) {
       $tps = microtime(true);
       if ($verb) {
          echo "  $pid: Synchonizing entity '".$entity->getField('completename')."' ($id, mail=$mail)\n";
@@ -220,7 +219,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
 
 include ('../inc/includes.php');
 
-ini_set('display_errors',1);
+ini_set('display_errors', 1);
 restore_error_handler();
 
 if (isset($_GET['verbose'])) {
@@ -305,7 +304,7 @@ foreach ($rows as $row) {
       if ($verb) {
          echo "+ $pid: started, ".count($pids)." running\n";
       }
-   } else  {
+   } else {
       syncEntity(posix_getpid(), $row, $server, $prof, $verb, $mail);
       exit(0);
    }
@@ -327,9 +326,8 @@ while (count($pids) > 0) {
 $tps = microtime(true)-$tps;
 if ($nbproc == 1) {
    printf("%d users synchronized in %s\n", $nb,
-          Html::clean(Html::timestampToString(round($tps,0),true)));
+          Html::clean(Html::timestampToString(round($tps, 0), true)));
 } else {
    printf("%d entities synchronized in %s\n", $nb,
-          Html::clean(Html::timestampToString(round($tps,0),true)));
+          Html::clean(Html::timestampToString(round($tps, 0), true)));
 }
-?>

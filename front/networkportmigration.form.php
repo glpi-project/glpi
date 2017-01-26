@@ -31,6 +31,8 @@
  */
 
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 if (!TableExists('glpi_networkportmigrations')) {

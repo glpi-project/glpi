@@ -86,7 +86,9 @@ if (isset($_REQUEST)) {
    $_REQUEST = Toolbox::sanitize($_REQUEST);
 }
 if (isset($_FILES)) {
-   $_FILES = Toolbox::sanitize($_FILES);
+   foreach ($_FILES as &$file) {
+      $file['name'] = Toolbox::sanitize($file['name']);
+   }
 }
 
 // Mark if Header is loaded or not :

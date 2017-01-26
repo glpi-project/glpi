@@ -32,6 +32,8 @@
 
 
 
+use Glpi\Event;
+
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
 include_once (GLPI_ROOT . "/inc/define.php");

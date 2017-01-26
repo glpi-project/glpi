@@ -29,18 +29,17 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief Purge history with some criteria
-*/
+/**
+ * @brief Purge history with some criteria
+ */
 
 ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
 if ($argv) {
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it = explode("=",$_SERVER['argv'][$i]);
-      $it[0] = preg_replace('/^--/','',$it[0]);
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
+      $it = explode("=", $_SERVER['argv'][$i]);
+      $it[0] = preg_replace('/^--/', '', $it[0]);
       $_GET[$it[0]] = $it[1];
    }
 }
@@ -136,4 +135,3 @@ if (isset($_GET['run'])) {
    echo " Selected entries in history : ".countElementsInTable($table, $where)."\n";
 }
 
-?>

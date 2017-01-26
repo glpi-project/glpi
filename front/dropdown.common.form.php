@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }

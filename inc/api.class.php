@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @since version 9.1
-*/
+/**
+ * @since version 9.1
+ */
 
 abstract class API extends CommonGLPI {
 

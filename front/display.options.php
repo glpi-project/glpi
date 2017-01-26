@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.84
-*/
+/**
+ * @since version 0.84
+ */
 
 if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');

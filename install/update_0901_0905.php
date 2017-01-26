@@ -46,7 +46,6 @@ function update0901to0905() {
    $migration->displayTitle(sprintf(__('Update to %s'), '0.90.5'));
    $migration->setVersion('0.90.5');
 
-
    $backup_tables = false;
    $newtables     = array();
 
@@ -72,11 +71,8 @@ function update0901to0905() {
                AND alternative_email = ''";
    $DB->query($query);
 
-
-
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
    return $updateresult;
 }
-?>

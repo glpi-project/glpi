@@ -35,7 +35,7 @@
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #5ABCFF; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #5ABCFF;
 }
 
 #display-login {
@@ -94,7 +94,7 @@ ul#menu ul.ssmenu li.active > a {
    color: #FFF;
 }
 
-ul#menu > li:hover, 
+ul#menu > li:hover,
 ul#menu > li:hover > a {
    background-color: #41B1FF;
    color: #fff;
@@ -107,7 +107,7 @@ ul#menu ul li a:hover {
 
 /* ====== BUTTONS ====== */
 
-input.submit {   
+input.submit {
    background-color: #41B1FF;
    color: #fff;
    border: 1px solid #88c9ff;

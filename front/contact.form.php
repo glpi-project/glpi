@@ -32,6 +32,8 @@
 
 
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkRight("contact_enterprise", READ);

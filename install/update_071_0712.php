@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,15 +29,9 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief 
-*/
-
-/// Update from 0.71 to 0.71.2
+// Update from 0.71 to 0.71.2
 function update071to0712() {
    global $DB, $CFG_GLPI;
-
 
    $query = "UPDATE `glpi_display`
              SET `num` = 120
@@ -51,5 +43,4 @@ function update071to0712() {
              WHERE `action_type` = 'ignore'";
    $DB->queryOrDie($query, "0.71.2 Update ignore field for soft dict");
 
-} // fin 0.71 #####################################################################################
-?>
+}

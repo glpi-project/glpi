@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 /**
  * Update from 0.84 to 0.84.1
  *
@@ -45,7 +44,6 @@ function update084to0841() {
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.1'));
    $migration->setVersion('0.84.1');
-
 
    $backup_tables = false;
    $newtables     = array();
@@ -75,7 +73,7 @@ function update084to0841() {
    foreach ($fields_to_clean as $table => $field) {
       foreach ($DB->request($table) as $data) {
          $text  = Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
-         $text  = html_entity_decode($text,ENT_NOQUOTES,'UTF-8');
+         $text  = html_entity_decode($text, ENT_NOQUOTES, 'UTF-8');
          $text  = addslashes($text);
          $text  = Toolbox::clean_cross_side_scripting_deep($text);
          $query = "UPDATE `$table`
@@ -95,7 +93,6 @@ function update084to0841() {
    $DB->queryOrDie($query_doc_i,
                   "0.84.1 update date_mod in glpi_documents_items");
 
-
    // correct entities_id in documents_items
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
@@ -103,7 +100,6 @@ function update084to0841() {
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
-
 
    // add delete_problem
    $migration->addField('glpi_profiles', 'delete_problem', 'char',
@@ -127,7 +123,7 @@ function update084to0841() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -166,4 +162,3 @@ function update084to0841() {
    return $updateresult;
 }
 
-?>

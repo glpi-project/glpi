@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.83
-*/
+/**
+ * @since version 0.83
+ */
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {

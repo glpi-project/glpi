@@ -47,7 +47,6 @@ function update0905to91() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.1'));
    $migration->setVersion('9.1');
 
-
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
@@ -69,7 +68,6 @@ function update0905to91() {
    }
 
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
-
 
    /************** Lock Objects *************/
    if (!TableExists('glpi_objectlocks')) {
@@ -97,7 +95,7 @@ function update0905to91() {
                         0, 0,
                         '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
-      $DB->queryOrDie($query, "9.1 update profile with Unlock profile") ;
+      $DB->queryOrDie($query, "9.1 update profile with Unlock profile");
       $ro_p_id = $DB->insert_id();
       $DB->queryOrDie("INSERT INTO `glpi_profilerights`
                               (`profiles_id`, `name`, `rights`)
@@ -174,13 +172,13 @@ function update0905to91() {
                               ($ro_p_id, 'user',                      '2177')");
 
       // updates rights for Super-Admin profile
-      foreach( $CFG_GLPI['lock_lockable_objects'] as $itemtype ) {
-         $rightnames[] = "'".$itemtype::$rightname."'" ;
+      foreach ($CFG_GLPI['lock_lockable_objects'] as $itemtype) {
+         $rightnames[] = "'".$itemtype::$rightname."'";
       }
       $query = "UPDATE `glpi_profilerights`
                 SET `rights` = `rights` | ".UNLOCK."
                 WHERE `profiles_id` = '4'
-                      AND `name` IN (".implode( ",", $rightnames ).")" ;
+                      AND `name` IN (".implode( ",", $rightnames ).")";
       $DB->queryOrDie($query, "update super-admin profile with UNLOCK right");
 
       Config::setConfigurationValues('core', array('lock_use_lock_item'             => 0,
@@ -197,7 +195,7 @@ function update0905to91() {
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3,
-                        0, 24, 30, NULL, NULL, NULL); " ;
+                        0, 24, 30, NULL, NULL, NULL); ";
       $DB->queryOrDie($query, "9.1 Add UnlockObject cron task");
    }
    // notification template
@@ -267,8 +265,6 @@ function update0905to91() {
    $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
    $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
-
-
    /************** Default Requester *************/
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
@@ -295,7 +291,6 @@ function update0905to91() {
    /************** Kernel version for os *************/
    $migration->addField("glpi_computers", "os_kernel_version", "string");
 
-
    /************** os architecture *************/
    $migration->addField("glpi_computers", "operatingsystemarchitectures_id", "integer");
    $migration->addKey("glpi_computers", "operatingsystemarchitectures_id");
@@ -314,7 +309,6 @@ function update0905to91() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
    }
-
 
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
@@ -336,11 +330,9 @@ function update0905to91() {
       $DB->queryOrDie($query, "9.1 add table glpi_tasktemplates");
    }
 
-
    /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
-
 
    /************** Location for budgets *************/
    $migration->addField("glpi_budgets", "locations_id", "integer");
@@ -370,10 +362,8 @@ function update0905to91() {
       $DB->queryOrDie($query, "change budget display preference");
    }
 
-
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
-
 
    /************** API Rest *************/
    Config::setConfigurationValues('core', array('enable_api'                      => 0));
@@ -406,7 +396,6 @@ function update0905to91() {
                         INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);";
       $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
    }
-
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
@@ -453,7 +442,6 @@ function update0905to91() {
          $migration->migrationOneTable($table);
       }
    }
-
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
@@ -548,7 +536,6 @@ function update0905to91() {
       }
    }
 
-
    /************** Add more fields to software licenses */
    $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
@@ -580,13 +567,11 @@ function update0905to91() {
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
    $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
-
    /************* Add is_recursive on assets ***/
    foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
       $migration->addField($table, "is_recursive", "bool");
       $migration->addKey($table, "is_recursive");
    }
-
 
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
@@ -644,7 +629,6 @@ function update0905to91() {
    //new field
    $migration->addField('glpi_authldaps', 'location_field', 'string', ['after' => 'email4_field']);
 
-
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
@@ -662,7 +646,7 @@ function update0905to91() {
                          WHERE `users_id` = '".$data['users_id']."'
                                AND `itemtype` = '$type'";
                $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
+               $rank   = $DB->result($result, 0, 0);
                $rank++;
 
                foreach ($tab as $newval) {
@@ -694,7 +678,6 @@ function update0905to91() {
          }
       }
    }
-
 
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
@@ -800,11 +783,9 @@ function update0905to91() {
       $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
    }
 
-
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
-
 
    /************** SMTP option for self-signed certificates **************/
    Config::setConfigurationValues('core', array('smtp_check_certificate' => 1));
@@ -829,11 +810,9 @@ function update0905to91() {
    $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
    $migration->addKey("glpi_ticketfollowups", "date_mod");
 
-
    // for is_active adding to glpi_taskcategories
    $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
    $migration->addKey("glpi_taskcategories", "is_active");
-
 
    // for is_active, is_followup_default, is_ticketheader and is_ticketfollowup in glpi_requesttypes
    $migration->addField("glpi_requesttypes", "is_active", "bool", array('value' => 1));
@@ -853,7 +832,6 @@ function update0905to91() {
              WHERE `autoclose_delay` = '-1'
                    AND `id` = 0";
    $DB->queryOrDie($query, "glpi_entities root_entity change autoclose_delay value from -1 to 0");
-
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

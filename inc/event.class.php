@@ -30,7 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi;
 
+use \Ajax;
+use \CommonDBTM;
+use \Html;
+use \Session;
+use \Toolbox;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -427,4 +433,9 @@ class Event extends CommonDBTM {
              '<span class="b">'.$nb_login.'</span>', $date);
    }
 
+}
+
+// For compatibility
+if (!class_exists('Event', false)) {
+   class_alias('Glpi\\Event', 'Event');
 }

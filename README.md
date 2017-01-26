@@ -31,17 +31,17 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB (or MySQL < 5.7)
-* PHP 5.5 or higher
+* PHP 5.6 or higher
 * Mandatory PHP extensions:
     - json
     - mbstring
     - mysqli
     - session
+    - gd (picture generation)
+    - curl (CAS authentication)
 
 * Recommended PHP extensions (to enable optional features)
-    - curl (CAS authentication)
     - domxml (CAS authentication)
-    - gd (picture generation)
     - imap (mail collector and users authentication)
     - ldap (users authentication)
     - openssl (encrypted communication)

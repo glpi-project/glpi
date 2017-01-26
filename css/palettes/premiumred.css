@@ -35,7 +35,7 @@
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #A2291F; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #A2291F;
 }
 
 #display-login {
@@ -106,9 +106,9 @@ ul#menu ul li a {
 
 /* ====== BUTTONS ====== */
 
-input.submit, 
+input.submit,
 span.vsubmit, a.vsubmit,
-.ui-widget-content span.vsubmit, a.vsubmit, 
+.ui-widget-content span.vsubmit, a.vsubmit,
 #BackToTop {
    color: #FFF;
    background-color: #FB6356;
@@ -118,8 +118,8 @@ span.vsubmit, a.vsubmit,
    text-decoration: underline;
 }
 
-input.submit:hover, 
-a.vsubmit:hover, 
+input.submit:hover,
+a.vsubmit:hover,
 #BackToTop:hover {
    background-color: #FB6356;
 }

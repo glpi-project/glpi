@@ -38,9 +38,9 @@ function displayUsage() {
 $args = [ 'host' => 'localhost', 'pass' => ''];
 
 if ($_SERVER['argc']>1) {
-   for ($i=1 ; $i<count($_SERVER['argv']) ; $i++) {
-      $it           = explode("=",$argv[$i],2);
-      $it[0]        = preg_replace('/^--/','',$it[0]);
+   for ($i=1; $i<count($_SERVER['argv']); $i++) {
+      $it           = explode("=", $argv[$i], 2);
+      $it[0]        = preg_replace('/^--/', '', $it[0]);
       $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }

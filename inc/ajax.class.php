@@ -280,19 +280,32 @@ class Ajax {
     * @param $type                     itemtype for active tab
     * @param $ID                       ID of element for active tab (default 0)
     * @param $orientation              orientation of tabs (default vertical may also be horizontal)
+    * @param array $options Display options
     *
     * @return nothing
    **/
-   static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type='', $ID=0, $orientation='vertical') {
+   static function createTabs(
+      $tabdiv_id='tabspanel',
+      $tabdivcontent_id='tabcontent',
+      $tabs=array(),
+      $type='',
+      $ID=0,
+      $orientation='vertical',
+      $options = []
+   ) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
 
+      $mainclass = '';
+      if (isset($options['main_class'])) {
+         $mainclass = " {$options['main_class']}";
+      }
+
       $rand = mt_rand();
       if (count($tabs) > 0) {
-         echo "<div id='tabs$rand' class='center $orientation'>";
+         echo "<div id='tabs$rand' class='center$mainclass $orientation'>";
          if (CommonGLPI::isLayoutWithMain()
              && !CommonGLPI::isLayoutExcludedPage()) {
             $orientation = 'horizontal';
@@ -317,8 +330,6 @@ class Ajax {
          }
          echo "</ul>";
          echo "</div>";
-         echo "<div id='loadingtabs$rand' class='invisible'>".
-              "<div class='loadingindicator'>".__s('Loading...')."</div></div>";
          $js = "
          forceReload$rand = false;
          $('#tabs$rand').tabs({
@@ -329,9 +340,25 @@ class Ajax {
                    && !forceReload$rand) {
                   event.preventDefault();
                } else {
-                  ui.panel.html($('#loadingtabs$rand').html());
                   forceReload$rand = false;
-                }
+                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
+                  ui.panel.html(_loader);
+
+                  ui.jqXHR.complete(function() {
+                     $('#loadingtabs').remove();
+                  });
+
+                  ui.jqXHR.error(function(e) {
+                     console.log(e);
+                     ui.panel.html(
+                        '<div class=\'error\'><h3>" .
+                        __('An error occured loading contents!')  . "</h3><p>" .
+                        __('Please check GLPI logs or contact your administrator.')  .
+                        "<br/>" . __('or') . " <a href=\'#\' onclick=\'return reloadTab()\'>" . __('try to reload')  . "</a></p></div>'
+                     );
+                  });
+               }
+
                var newIndex = ui.tab.parent().children().index(ui.tab);
                $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
                   { itemtype: '$type', id: '$ID', tab: newIndex });

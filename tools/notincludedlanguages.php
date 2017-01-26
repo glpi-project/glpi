@@ -29,11 +29,10 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-
-/** @file
-* @brief Get all po files not used in GLPI
-* @since version 0.84
-*/
+/**
+ * @brief Get all po files not used in GLPI
+ * @since version 0.84
+ */
 
 include ('../inc/includes.php');
 
@@ -50,12 +49,11 @@ $dir   = opendir(GLPI_ROOT.'/locales');
 $files = array();
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")) {
-       if (preg_match("/(.*)\.mo$/i",$file,$reg)) {
+      if (preg_match("/(.*)\.mo$/i", $file, $reg)) {
          $lang = $reg[1];
          if (!isset($CFG_GLPI['languages'][$lang])) {
             echo $lang." is missing\n";
          }
-       }
+      }
    }
 }
-?>

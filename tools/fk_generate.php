@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 include ('../inc/includes.php');
 
 $DB->query("SET FOREIGN_KEY_CHECKS = '0';");
@@ -46,7 +45,7 @@ while ($t=$DB->fetch_array($result)) {
 $relations = getDbRelations();
 
 $query = array();
-foreach ( $relations as $totable => $rels) {
+foreach ($relations as $totable => $rels) {
    foreach ($rels as $fromtable => $fromfield) {
 
       if ($fromtable[0]=="_") {
@@ -89,4 +88,3 @@ foreach ($query as $table => $constraints) {
 
 $DB->query("SET FOREIGN_KEY_CHECKS = 1;");
 
-?>
