@@ -288,8 +288,15 @@ class Ajax {
     *
     * @return nothing
    **/
-   static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type='', $ID=0, $orientation='vertical', $options) {
+   static function createTabs(
+      $tabdiv_id='tabspanel',
+      $tabdivcontent_id='tabcontent',
+      $tabs=array(),
+      $type='',
+      $ID=0,
+      $orientation='vertical',
+      $options = []
+   ) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
