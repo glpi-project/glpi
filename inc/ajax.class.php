@@ -334,8 +334,6 @@ class Ajax {
          }
          echo "</ul>";
          echo "</div>";
-         echo "<div id='loadingtabs$rand' class='invisible'>".
-              "<div class='loadingindicator'>".__s('Loading...')."</div></div>";
          $js = "
          forceReload$rand = false;
          $('#tabs$rand').tabs({
@@ -346,9 +344,25 @@ class Ajax {
                    && !forceReload$rand) {
                   event.preventDefault();
                } else {
-                  ui.panel.html($('#loadingtabs$rand').html());
                   forceReload$rand = false;
-                }
+                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
+                  ui.panel.html(_loader);
+
+                  ui.jqXHR.complete(function() {
+                     $('#loadingtabs').remove();
+                  });
+
+                  ui.jqXHR.error(function(e) {
+                     console.log(e);
+                     ui.panel.html(
+                        '<div class=\'error\'><h3>" .
+                        __('An error occured loading contents!')  . "</h3><p>" .
+                        __('Please check GLPI logs or contact your administrator.')  .
+                        "<br/>" . __('or') . " <a href=\'#\' onclick=\'return reloadTab()\'>" . __('try to reload')  . "</a></p></div>'
+                     );
+                  });
+               }
+
                var newIndex = ui.tab.parent().children().index(ui.tab);
                $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
                   { itemtype: '$type', id: '$ID', tab: newIndex });

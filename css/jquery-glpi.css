@@ -94,16 +94,27 @@ html .ui-autocomplete {
    height: 100px;
 }
 
-.loadingindicator {
+.loadingindicator,
+.ui-widget-content .error {
    -moz-border-radius: 10px;
    -webkit-border-radius: 10px;
    -o-border-radius: 10px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+   border-radius: 10px;
    max-width: 350px;
    margin : auto;
+   border-width: 1px;
+   border-style: solid;
+   padding: .2em;
 }
 
+.ui-widget-content .error {
+   border-color: red;
+}
+
+.loadingindicator {
+   border-color: #CC9900;
+   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+}
 /* SELECT2 */
 
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
