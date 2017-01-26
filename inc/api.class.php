@@ -1920,8 +1920,8 @@ abstract class API extends CommonGLPI {
       global $CFG_GLPI;
 
       self::header(true, __("API Documentation"));
-      echo Html::css($CFG_GLPI['root_doc']."/lib/prism/prism.css");
-      echo Html::script($CFG_GLPI['root_doc']."/lib/prism/prism.js");
+      echo Html::css("lib/prism/prism.css");
+      echo Html::script("lib/prism/prism.js");
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);
