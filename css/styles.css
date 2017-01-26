@@ -439,7 +439,8 @@ input[type="file"] {
 
 input.submit,
 span.vsubmit, a.vsubmit,
-#BackToTop {
+#BackToTop,
+#see_debug {
    padding: 5px;
    cursor:pointer;
    height: auto;
@@ -2353,6 +2354,20 @@ a.icon_nav_move:hover img {
    height: 18px;
 }
 
+#c_preference #debug_icon {
+   display: inline-block;
+   width: 18px;
+   height: 18px;
+}
+
+#c_preference #debug_icon.debugon {
+   background: url("../pics/debug-on.png");
+}
+
+#c_preference #debug_icon.debugoff {
+   background: url("../pics/debug-off.png");
+}
+
 #c_preference a {
    text-decoration: none;
    font-size: 0.9em;
@@ -2840,11 +2855,26 @@ a.copyright {
    word-break: break-all;
 }
 
-.see_debug {
+#see_debug {
+   display: inline-block;
    position: fixed;
-   bottom: 5px;
+   bottom: 35px;
    right: 10px;
    cursor: pointer;
+   background: #1b2f62 url('../pics/debug-off.png') 50% 50% no-repeat;
+   overflow: hidden;
+   width: 18px;
+   height: 18px;
+   text-indent: 50px;
+   line-height: 20px;
+   z-index: 99; /* Behind debug panel */
+}
+#see_debug.wbttop {
+   right: 40px;
+}
+
+#see_debug:hover {
+   background: #1b2f62 url('../pics/debug-on.png') 50% 50% no-repeat;
 }
 
 .debug .ui-tabs {
@@ -3992,6 +4022,10 @@ input[type=checkbox].toggle_comments:checked ~ ul {
       float: none;
       width: 100%;
       margin-bottom: 10px;
+   }
+
+   #c_preference #debug_mode {
+      display: none;
    }
 }
 

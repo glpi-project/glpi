@@ -162,7 +162,7 @@ html .ui-autocomplete {
    margin:auto;
 }
 
-#BackToTop {
+#BackToTop, #see_debug {
    display:none;
    padding: 5px;
    width: 17px;
