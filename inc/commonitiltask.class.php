@@ -224,7 +224,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
-      if ($CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          $options = array('task_id'             => $this->fields["id"],
                            // Force is_private with data / not available
                           'is_private'          => $this->isPrivate(),
@@ -358,7 +358,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                $item->update($input2);
             }
 
-            if ($CFG_GLPI["use_mailing"]) {
+            if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
                $options = array('task_id'    => $this->fields["id"],
                                 'is_private' => $this->isPrivate());
                NotificationEvent::raiseEvent('update_task', $item, $options);
@@ -437,7 +437,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          PlanningRecall::manageDatas($this->input['_planningrecall']);
       }
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned($this->fields["users_id_tech"], $this->fields["begin"],

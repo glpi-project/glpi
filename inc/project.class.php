@@ -236,7 +236,7 @@ class Project extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      if ($CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          // Read again project to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent("update", $this);
@@ -251,7 +251,7 @@ class Project extends CommonDBTM {
       if (isset($this->input["_oldID"])) {
          ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
       }
-      if ($CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          // Clean reload of the project
          $this->getFromDB($this->fields['id']);
 
@@ -279,8 +279,15 @@ class Project extends CommonDBTM {
 
 
    function pre_deleteItem() {
+      global $CFG_GLPI;
 
-      NotificationEvent::raiseEvent('delete', $this);
+      $donotif = $CFG_GLPI["use_mailing"];
+      if (isset($this->input['_disablenotif'])) {
+         $donotif = false;
+      }
+      if( $donotif ) {
+         NotificationEvent::raiseEvent('delete', $this);
+      }
       return true;
    }
 

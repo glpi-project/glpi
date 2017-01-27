@@ -521,8 +521,15 @@ class Ticket extends CommonITILObject {
 
 
    function pre_deleteItem() {
+      global $CFG_GLPI;
 
-      NotificationEvent::raiseEvent('delete', $this);
+      $donotif = $CFG_GLPI["use_mailing"];
+      if (isset($this->input['_disablenotif'])) {
+         $donotif = false;
+      }
+      if( $donotif ) {
+         NotificationEvent::raiseEvent('delete', $this);
+      }
       return true;
    }
 
@@ -1795,7 +1802,7 @@ class Ticket extends CommonITILObject {
       $this->manageValidationAdd($this->input);
 
       // Processing Email
-      if ($CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          // Clean reload of the ticket
          $this->getFromDB($this->fields['id']);
 

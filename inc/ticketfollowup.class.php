@@ -218,6 +218,12 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function post_deleteFromDB() {
+      global $CFG_GLPI;
+
+      $donotif = $CFG_GLPI["use_mailing"];
+      if (isset($this->input['_disablenotif'])) {
+         $donotif = false;
+      }
 
       $job = new Ticket();
       $job->getFromDB($this->fields["tickets_id"]);
@@ -230,10 +236,12 @@ class TicketFollowup  extends CommonDBTM {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('followup_id' => $this->fields["id"],
-                        // Force is_private with data / not available
-                       'is_private'  => $this->fields['is_private']);
-      NotificationEvent::raiseEvent('delete_followup', $job, $options);
+      if( $donotif ) {
+         $options = array('followup_id' => $this->fields["id"],
+                           // Force is_private with data / not available
+                          'is_private'  => $this->fields['is_private']);
+         NotificationEvent::raiseEvent('delete_followup', $job, $options);
+      }
    }
 
 
@@ -265,7 +273,8 @@ class TicketFollowup  extends CommonDBTM {
          $job->updateDateMod($this->fields["tickets_id"]);
 
          if (count($this->updates)) {
-            if ($CFG_GLPI["use_mailing"]
+            if (!isset($this->input['_disablenotif']) 
+                && $CFG_GLPI["use_mailing"]
                 && (in_array("content", $this->updates)
                     || isset($this->input['_need_send_mail']))) {
 
@@ -373,7 +382,7 @@ class TicketFollowup  extends CommonDBTM {
       // Add document if needed, without notification
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"], false,
                                           $this->input["users_id"]);

@@ -112,7 +112,7 @@ class Problem_Ticket extends CommonDBRelation{
    function post_addItem() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
       if ($donotif) {
          $problem = new Problem();
@@ -132,7 +132,7 @@ class Problem_Ticket extends CommonDBRelation{
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
       if ($donotif) {
          $problem = new Problem();
