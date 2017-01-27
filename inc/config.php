@@ -61,7 +61,6 @@ function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG
    //Database connection
    DBConnection::establishDBConnection($USEDBREPLICATE, $DBCONNECTION_REQUIRED);
 
-
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
    // *************************************************************************
@@ -120,7 +119,7 @@ function checkDBConfig() {
       Session::loadLanguage();
       // no translation
       if (!isCommandLine()) {
-         Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
+         Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
          echo "<p>Error: GLPI seems to not be configured properly.</p>";
          echo "<p>config_db.php file is missing.</p>";
@@ -180,7 +179,7 @@ function readGlpiConfig() {
 function applyGlpiConfig($current_config) {
    global $CFG_GLPI;
 
-   $CFG_GLPI = array_merge($CFG_GLPI,$current_config);
+   $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
 
    if (isset($CFG_GLPI['priority_matrix'])) {
       $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
@@ -198,12 +197,12 @@ function applyGlpiConfig($current_config) {
          $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
          $prof->cleanProfile();
          $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-      }
+   }
 
-         // Path for icon of document type (web mode only)
-         if (isset($CFG_GLPI["root_doc"])) {
-            $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
-         }
+   // Path for icon of document type (web mode only)
+   if (isset($CFG_GLPI["root_doc"])) {
+      $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+   }
 }
 
 function setDebugMode() {
