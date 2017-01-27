@@ -279,6 +279,7 @@ class APIClient extends CommonDBTM {
    }
 
    /**
+    * Get log methods
     *
     * @return array
     */
