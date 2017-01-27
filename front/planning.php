@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -85,6 +85,7 @@ if (isset($_GET['checkavailability'])) {
                $ismine = true;
             } else {
                $entities = Profile_User::getUserEntitiesForRight($user->getID(),
+                                                                 Planning::$rightname,
                                                                  Planning::READGROUP);
                $groups   = Group_User::getUserGroups($user->getID());
                foreach ($groups as $group) {
@@ -100,7 +101,9 @@ if (isset($_GET['checkavailability'])) {
          // If not mine check global right
          if (!$ismine) {
             // First check user
-            $entities = Profile_User::getUserEntitiesForRight($user->getID(), Planning::READALL);
+            $entities = Profile_User::getUserEntitiesForRight($user->getID(),
+                                                              Planning::$rightname,
+                                                              Planning::READALL);
             if ($_GET["uID"]) {
                $userentities = Profile_User::getUserEntities($user->getID());
                $intersect    = array_intersect($entities, $userentities);
