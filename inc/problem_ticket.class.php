@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -123,7 +123,7 @@ class Problem_Ticket extends CommonDBRelation{
    function post_addItem() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
 //       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
 //          $donotif = false;
@@ -146,7 +146,7 @@ class Problem_Ticket extends CommonDBRelation{
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
 //       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
 //          $donotif = false;
@@ -179,7 +179,7 @@ class Problem_Ticket extends CommonDBRelation{
                return true;
             }
             return false;
-            
+
          case "solveticket" :
             $problem = new Problem();
             $input = $ma->getInput();
@@ -239,7 +239,7 @@ class Problem_Ticket extends CommonDBRelation{
                }
             }
             return;
-            
+
          case 'solveticket' :
             $input  = $ma->getInput();
             $ticket = new Ticket();
@@ -346,7 +346,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                                           'Delete permanently'),
                                                                   __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                                     => __('Solve tickets'),
-                                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task' 
+                                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'
                                                                     => __('Add a new task')),
                                       'extraparams'      => array('problems_id' => $problem->getID()),
                                       'width'            => 1000,

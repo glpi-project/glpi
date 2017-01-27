@@ -288,7 +288,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
 //       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
 //          $donotif = false;
