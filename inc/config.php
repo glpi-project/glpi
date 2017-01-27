@@ -51,6 +51,13 @@ loadGlpiConfig((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
       (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0),
       (isset($TRY_OLD_CONFIG_FIRST) ? 1 : 0));
 
+/**
+ * Load GLPI configuration. Dies on failures.
+ *
+ * @param integer $USEDBREPLICATE  use databasse replicate if set to 1
+ * @param integer $DBCONNECTION_REQUIRED requires database connection if set to 1
+ * @param integer $TRY_OLD_CONFIG_FIRST try old GLPI configuration first if set to 1
+ */
 function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG_FIRST) {
    global $CFG_GLPI;
 
@@ -112,6 +119,9 @@ function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG
    checkGlpiVersion();
 }
 
+/**
+ * Check if the dataébase configuration exists. Dies if it does not.
+ */
 function checkDBConfig() {
    global $CFG_GLPI;
 
@@ -137,6 +147,11 @@ function checkDBConfig() {
    }
 }
 
+/**
+ * Read the configuration data from old GLPI schema
+ *
+ * @return string[]
+ */
 function readOldGlpiConfig() {
    $config_object  = new Config();
    $config_object->forceTable('glpi_config');
@@ -157,6 +172,11 @@ function readOldGlpiConfig() {
    return $current_config;
 }
 
+/**
+ * Read the configuration from current schema
+ *
+ * @return string[]
+ */
 function readGlpiConfig() {
    $config_object  = new Config();
 
@@ -176,6 +196,11 @@ function readGlpiConfig() {
    return $current_config;
 }
 
+/**
+ * Initialize configuration global vars
+ *
+ * @param string[] $current_config GLPI configuration from database
+ */
 function applyGlpiConfig($current_config) {
    global $CFG_GLPI;
 
@@ -205,6 +230,9 @@ function applyGlpiConfig($current_config) {
    }
 }
 
+/**
+ * Configure debug mode
+ */
 function setDebugMode() {
    global $CFG_GLPI;
 
@@ -221,6 +249,9 @@ function setDebugMode() {
    Toolbox::setDebugMode();
 }
 
+/**
+ * Initialize session from configuration data
+ */
 function applyGlpiConfigToSession() {
    global $CFG_GLPI;
 
@@ -231,6 +262,9 @@ function applyGlpiConfigToSession() {
    }
 }
 
+/**
+ * Show maintenance mode and dies if maintenance mode is enabled
+ */
 function checkMaintenanceMode() {
    global $CFG_GLPI;
 
@@ -263,6 +297,9 @@ function checkMaintenanceMode() {
    }
 }
 
+/**
+ * Ensure the version of GLPI matches the version found in the database. Dies if not.
+ */
 function checkGlpiVersion() {
    global $CFG_GLPI;
 
