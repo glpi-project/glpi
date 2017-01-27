@@ -1867,7 +1867,7 @@ class Html {
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
            "<span class='invisible'>Logo</span></a></div>";
 
-      // Les pr??f??rences + lien d??connexion
+      // Preferences + logout link
       echo "<div id='c_preference'>";
       echo "<div class='sep'></div>";
       echo "</div>";

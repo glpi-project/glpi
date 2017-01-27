@@ -30,18 +30,313 @@
 */
 /* ################--------------- GLPI CSS style MOD and HACK for IE  ---------------#################### */
 
-img {
-   behavior: url("../css/win_png.htc");
+
+/* ===== LOGIN ===== */
+
+#firstboxlogin  {
+   background-color: #F1F3F5;
+}
+
+#logo_login {
+   background-color: #EAEAEC;
+   background: url(../../pics/logos/logo-GLPI-250-black.png) center no-repeat ;
+}
+
+#display-login {
+   color: #FFF;
+}
+
+#text-login {
+   background-color: #D9E0F6;
+   color: #FFF;
 }
 
 
-div#c_ssmenu1 ul li {
-   margin-top:4px;
+/* ====== GENERAL ====== */
+
+a, a:link, .ui-widget-content a {
+    color : #90A2CB;
+}
+
+.main_form tr.headerRow th {
+   color: #F9FDFF;
+}
+
+body {
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   font-size: 12px;
+   background:  #F7F7F7;
+}
+
+#footer {
+   font-size: 9px;
+   color: #000;
+   background-color: #D9E0F6;
+   padding: 6px;
+   height: 18px;
+   padding: 5px;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #FFFFFF;
+   height: 20px;
+}
+
+#c_preference a {
+   color: #2B2987;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #C7DBF5;
+   color: #0;
+}
+
+#header #c_logo {
+   position: absolute;
+   z-index: 1000;
+   //width: 199px;
+   //height: 78px;
+   float: left;
+   //margin-top: -10px;
+   //padding-top: 8px;
+   background: url(../../pics/logos/logo-GLPI-100-black.png) 0 0 no-repeat;
+}
+
+/* ====== gestion des menus centraux ====== */
+
+#menu {
+    margin: 3px;
+   border: 3px solid white;
+   text-transform:uppercase;
+}
+
+#menu1 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #8EE0FF;
+    margin: 2px;
+}
+#menu2 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #64CBEE;
+    margin: 2px;
+}
+#menu3 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #0692DA;
+    margin: 2px;
+}
+#menu4 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #066FA5;
+    margin: 2px;
+}
+#menu5 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #1A61C1;
+    margin: 2px;
+}
+#menu6 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #184F9A;
+    margin: 2px;
+}
+#menu7 {
+   background-color: #F1F3F5;
+   border-bottom : 4px solid #002C7C;
+    margin: 2px;
 }
 
 
-#contenu-nullHeader {
-   background-image:none;
-   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod='crop', src='../pics/null-header.png');
-   zoom:1;
+ul#menu a.itemP, ul#menu a.itemP1 {
+   font-size: 14px;
+   padding: -8 0;
+   color: #0;
+
+}
+
+ul#menu > li {
+   float: left;
+   width: 145px;
+   height: 38px;
+   margin-top: -16px;
+   padding-top: 8px;
+   box-sizing: border-box;
+}
+
+ul#menu > li.active,
+ul.ssmenu li.active {
+   background-color: #CFD8E0;
+}
+
+ul#menu > li:hover {
+   background-color: #B6CCE0;
+}
+
+ul#menu ul li a:hover {
+   background: #EAEAEC;
+}
+
+ul#menu ul li a {
+   color: #0;
+}
+
+#c_menu {
+   background-color: #FFFFFF;
+    border: 3px solid white;
+
+}
+
+#c_menu ul#menu {
+}
+
+/* bug IE8 d'affichage sur le bckgroung transparent.
+  on force le style pour IE 8 */
+
+ul#menu ul.ssmenu {
+   top:5px;
+   left: 0px;
+    width: 144px;
+    border: 1px solid #CCCCDD;
+     background: #FEFEFF;
+   -moz-box-shadow: 0px 0px 0px 0px #BCB6B3;
+   -webkit-box-shadow: 0px 0px 0px 0px #BCB6B3;
+   box-shadow: 0px 2px 2px 1px #BCB6B3;
+    opacity: 0.9;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)"; // first!
+    filter: alpha(opacity=90);                    // second!
+}
+
+/* ====== HAUT A DROITE RECHERCHE - LOGOUT ====== */
+
+#c_preference {
+   height: 20px;
+   text-align: left;
+   margin-right: 5px;
+   top: 4px;
+   font-size: 0.9em;
+   float: right;
+}
+
+#c_preference #logout_icon {
+    background: url("../../pics/logout_black.png");
+}
+
+#c_preference #bookmark_icon {
+background: url("../../pics/bookmark_black.png");
+//display: none;
+}
+#c_preference #help_icon {
+background: url("../../pics/help_black.png");
+    display: none;
+}
+#c_preference #preferences_icon {
+background-image: url("../../pics/preferences_black.png") no-repeat;
+    display: none;
+}
+#menu_all_button {
+background: url("../../pics/menu_all_black.png") no-repeat;}
+
+
+/* ==== menu chemin de fer sous le logo  ==== */
+
+.breadcrumb_item {
+  background-color: #F2F2F2; // modifier pour IE8 vs bootstrap
+}
+
+#c_ssmenu2 {
+   margin-top: 0px;
+   min-height: 10px;
+   padding: 10px 0;
+   height: 40px;
+   box-sizing: border-box;
+   background-color: #FFF;
+}
+
+#c_ssmenu2  a.here {
+   font-size:10px;
+}
+
+.breadcrumb_item {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+    min-height: auto !important;
+    font-family: "OpenSans",Arial, Helvetica, sans-serif;
+   height: 22px;
+   position: relative;
+}
+.breadcrumb_item:before {
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: -2;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 17px;
+   margin-top: -17px;
+   z-index: 20;
+}
+
+.breadcrumb_item:after {I
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: 0;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 14px;
+   margin-top: -14px;
+   z-index: 20;
+   margin-left: -1px;
+}
+
+.breadcrumb_item:not(:nth-of-type(1)) {
+   padding-left: 20px !important;
+}
+
+
+/*Select dans IE8*/
+
+.select2-container .select2-choice > .select2-chosen {
+   min-width: 100%;
+   position: relative;
+   display: inline-block;
+   float: right;
+   overflow: visible;
+   text-indent: .5em;
+   background-color: inherit;
+   margin-right: 0;
+   padding-right: 26px;
+   box-sizing: border-box;
+   text-align: center\9;/*IE8*/
+}
+
+.select2-container .select2-choice > .select2-chosen:before {
+  content: '';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  background-color: inherit;
+  z-index: 2;
+  left: -.5em;
+  height: 26px;
+  margin-top: -2px;
+   text-align: center\9;/*IE8*/
+}
+
+/* ====== BUTTONS ====== */
+
+a.vsubmit,
+.vsubmit a {
+   color: #8f5a0a;
+}
+
+#BackToTop {
+   background-color: #1B2F62;
+   color: #fff;
 }
