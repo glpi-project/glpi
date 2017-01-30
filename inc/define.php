@@ -35,14 +35,21 @@
 * @brief
 */
 
+if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
+   require_once GLPI_CONFIG_DIR . '/local_define.php';
+}
+
 // Current version of GLPI
 define("GLPI_VERSION", "9.2");
 define("GLPI_SCHEMA_VERSION", "9.2");
 define('GLPI_MIN_PHP', '5.6.0');
 define('GLPI_YEAR', '2016');
-define("GLPI_DEMO_MODE", "0");
-
-define("GLPI_USE_CSRF_CHECK", "1");
+if (!defined('GLPI_DEMO_MODE')) {
+   define('GLPI_DEMO_MODE', '0');
+}
+if (!defined('GLPI_USE_CSRF_CHECK')) {
+   define('GLPI_USE_CSRF_CHECK', '1');
+}
 define("GLPI_CSRF_EXPIRES", "7200");
 define("GLPI_CSRF_MAX_TOKENS", "100");
 
