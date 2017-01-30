@@ -4353,7 +4353,7 @@ CREATE TABLE `glpi_notifications` (
 
 INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','1','2010-02-16 16:41:39',NULL);
+INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','0','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39',NULL);
@@ -4409,6 +4409,13 @@ INSERT INTO `glpi_notifications` VALUES ('55','New Project Task','0','ProjectTas
 INSERT INTO `glpi_notifications` VALUES ('56','Update Project Task','0','ProjectTask','update','mail','22','','1','1','2014-06-18 08:02:09',NULL);
 INSERT INTO `glpi_notifications` VALUES ('57','Delete Project Task','0','ProjectTask','delete','mail','22','','1','1','2014-06-18 08:02:09',NULL);
 INSERT INTO `glpi_notifications` VALUES ('58','Request Unlock Items','0','ObjectLock','unlock','mail','23','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('59','New user in requesters','0','Ticket','requester_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('60','New group in requesters','0','Ticket','requester_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('61','New user in observers','0','Ticket','observer_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('62','New group in observers','0','Ticket','observer_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('63','New user in assignees','0','Ticket','assign_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('64','New group in assignees','0','Ticket','assign_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('65','New supplier in assignees','0','Ticket','assign_supplier','mail','4','','1','1','2016-02-08 16:57:46',NULL);
 
 ### Dump table glpi_notificationtargets
 
@@ -4544,6 +4551,13 @@ INSERT INTO `glpi_notificationtargets` VALUES ('120','31','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('121','1','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('122','32','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('123','19','1','58');
+INSERT INTO `glpi_notificationtargets` VALUES ('124','3','1','59');
+INSERT INTO `glpi_notificationtargets` VALUES ('125','13','1','60');
+INSERT INTO `glpi_notificationtargets` VALUES ('126','21','1','61');
+INSERT INTO `glpi_notificationtargets` VALUES ('127','20','1','62');
+INSERT INTO `glpi_notificationtargets` VALUES ('128','2','1','63');
+INSERT INTO `glpi_notificationtargets` VALUES ('129','23','1','64');
+INSERT INTO `glpi_notificationtargets` VALUES ('130','8','1','65');
 
 ### Dump table glpi_notificationtemplates
 

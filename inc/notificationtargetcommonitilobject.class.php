@@ -54,6 +54,27 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $this->options['sendprivate'] = true;
    }
 
+   /**
+    * Get events related to Itil Object
+    *
+    * @since 9.2
+    *
+    * @return array of events (event key => event label)
+   **/
+   function getEvents() {
+
+      $events = array('requester_user'    => __('New user in requesters'),
+                      'requester_group'   => __('New group in requesters'),
+                      'observer_user'     => __('New user in observers'),
+                      'observer_group'    => __('New group in observers'),
+                      'assign_user'       => __('New user in assignees'),
+                      'assign_group'      => __('New group in assignees'),
+                      'assign_supplier'   => __('New supplier in assignees'));
+
+      asort($events);
+      return $events;
+   }
+
 
    /**
     * Add linked users to the notified users list

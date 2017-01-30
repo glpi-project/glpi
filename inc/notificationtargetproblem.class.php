@@ -62,6 +62,8 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                       'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
                       'delete'         => __('Deleting a problem'));
+
+      $events = array_merge($events, parent::getEvents());
       asort($events);
       return $events;
    }
