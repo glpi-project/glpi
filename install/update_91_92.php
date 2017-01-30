@@ -591,6 +591,44 @@ function update91to92() {
    $migration->addKey("glpi_tickettasks", "groups_id_tech");
    $migration->migrationOneTable('glpi_tasktemplates');
 
+   // #1735 - Add new notifications
+   $notification       = new Notification;
+   $notificationtarget = new NotificationTarget;
+   $new_notifications  = [
+      'requester_user'  => ['label'      => 'New user in requesters',
+                            'targets_id' => Notification::AUTHOR],
+      'requester_group' => ['label'      => 'New group in requesters',
+                            'targets_id' => Notification::REQUESTER_GROUP],
+      'observer_user'   => ['label'      => 'New user in observers',
+                            'targets_id' => Notification::OBSERVER],
+      'observer_group'  => ['label'      => 'New group in observers',
+                            'targets_id' => Notification::OBSERVER_GROUP],
+      'assign_user'     => ['label'      => 'New user in assignees',
+                            'targets_id' => Notification::ASSIGN_TECH],
+      'assign_group'    => ['label'      => 'New group in assignees',
+                            'targets_id' => Notification::ITEM_TECH_GROUP_IN_CHARGE],
+      'assign_supplier' => ['label'      => 'New supplier in assignees',
+                            'targets_id' => Notification::SUPPLIER],
+   ];
+
+   foreach ($new_notifications as $event => $notif_options) {
+      $notifications_id = $notification->add([
+         'name'                     => $notif_options['label'],
+         'itemtype'                 => 'Ticket',
+         'event'                    => $event,
+         'mode'                     => 'mail',
+         'notificationtemplates_id' => 0,
+         'is_recursive'             => 1,
+         'is_active'                => 0,
+      ]);
+
+      $notificationtarget->add([
+         'items_id'         => $notif_options['targets_id'],
+         'type'             => 1,
+         'notifications_id' => $notifications_id,
+      ]);
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

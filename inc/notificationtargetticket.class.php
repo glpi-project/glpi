@@ -244,6 +244,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'recall'            => __('Automatic reminders of SLAs'),
                       'satisfaction'      => __('Satisfaction survey'),
                       'replysatisfaction' => __('Satisfaction survey answer'));
+
+      $events = array_merge($events, parent::getEvents());
       asort($events);
       return $events;
    }
