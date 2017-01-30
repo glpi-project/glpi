@@ -47,18 +47,20 @@ Session::start();
 
 Config::detectRootDoc();
 
-loadGlpiConfig((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-      (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0),
-      (isset($TRY_OLD_CONFIG_FIRST) ? 1 : 0));
+loadGlpiConfig((isset($USEDBREPLICATE) ? true : false),
+      (isset($DBCONNECTION_REQUIRED) ? true : false),
+      (isset($TRY_OLD_CONFIG_FIRST) ? true : false));
 
 /**
  * Load GLPI configuration. Dies on failures.
  *
- * @param integer $USEDBREPLICATE  use databasse replicate if set to 1
- * @param integer $DBCONNECTION_REQUIRED requires database connection if set to 1
- * @param integer $TRY_OLD_CONFIG_FIRST try old GLPI configuration first if set to 1
+ * @param boolean $usedbreplicate        use databasse replicate or not
+ * @param boolean $dbconnection_required requires database connection or not
+ * @param boolean $try_old_config_first  try old GLPI configuration first or not
+ *
+ * @return void
  */
-function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG_FIRST) {
+function loadGlpiConfig($usedbreplicate, $dbconnection_required, $try_old_config_first) {
    global $CFG_GLPI;
 
    checkDBConfig();
@@ -66,7 +68,7 @@ function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
    //Database connection
-   DBConnection::establishDBConnection($USEDBREPLICATE, $DBCONNECTION_REQUIRED);
+   DBConnection::establishDBConnection($usedbreplicate, $dbconnection_required);
 
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
@@ -82,7 +84,7 @@ function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG
    $current_config = array();
 
    if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
-       && ($TRY_OLD_CONFIG_FIRST == 1 // index case
+       && ($try_old_config_first // index case
            || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
 
       if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
@@ -120,7 +122,9 @@ function loadGlpiConfig($USEDBREPLICATE, $DBCONNECTION_REQUIRED, $TRY_OLD_CONFIG
 }
 
 /**
- * Check if the dataébase configuration exists. Dies if it does not.
+ * Check if the database configuration exists. Dies if it does not.
+ *
+ * @return void
  */
 function checkDBConfig() {
    global $CFG_GLPI;
@@ -200,6 +204,8 @@ function readGlpiConfig() {
  * Initialize configuration global vars
  *
  * @param string[] $current_config GLPI configuration from database
+ *
+ * @return void
  */
 function applyGlpiConfig($current_config) {
    global $CFG_GLPI;
@@ -232,6 +238,8 @@ function applyGlpiConfig($current_config) {
 
 /**
  * Configure debug mode
+ *
+ * @return void
  */
 function setDebugMode() {
    global $CFG_GLPI;
@@ -251,6 +259,8 @@ function setDebugMode() {
 
 /**
  * Initialize session from configuration data
+ *
+ * @return void
  */
 function applyGlpiConfigToSession() {
    global $CFG_GLPI;
@@ -264,6 +274,8 @@ function applyGlpiConfigToSession() {
 
 /**
  * Show maintenance mode and dies if maintenance mode is enabled
+ *
+ * @return void
  */
 function checkMaintenanceMode() {
    global $CFG_GLPI;
@@ -299,6 +311,8 @@ function checkMaintenanceMode() {
 
 /**
  * Ensure the version of GLPI matches the version found in the database. Dies if not.
+ *
+ * @return void
  */
 function checkGlpiVersion() {
    global $CFG_GLPI;
