@@ -102,7 +102,7 @@ function update91to92() {
    }
 
    // Issue #1250 - Add decimal to monitor size
-   $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2)');
+   $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2) NOT NULL DEFAULT "0"');
 
    //Make software license type a tree dropdown
    $migration->addField("glpi_softwarelicensetypes", "softwarelicensetypes_id", "integer");
