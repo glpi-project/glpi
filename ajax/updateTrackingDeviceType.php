@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,7 +42,9 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkRight("ticket", UPDATE);
-Item_Ticket::dropdownMyDevices($_POST["userID"], $_POST["entity_restrict"]);
+$entitysons = array_intersect( getSonsOf(Entity::getTable(), $_POST["entity_restrict"] ),
+                               $_SESSION["glpiactiveentities"] );
+Item_Ticket::dropdownMyDevices($_POST["userID"], $entitysons);
 
 Html::ajaxFooter();
 ?>
