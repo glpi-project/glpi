@@ -53,7 +53,10 @@ class DeviceMotherboard extends CommonDevice {
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'chipset',
                                      'label' => __('Chipset'),
-                                     'type'  => 'text')));
+                                     'type'  => 'text'),
+                              array('name'  => 'devicemotherboardmodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue')));
    }
 
 
@@ -66,6 +69,14 @@ class DeviceMotherboard extends CommonDevice {
          'field'              => 'chipset',
          'name'               => __('Chipset'),
          'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_devicemotherboardmodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
       ];
 
       return $tab;

@@ -66,7 +66,10 @@ class DeviceGraphicCard extends CommonDevice {
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
                                                                                     NULL, false),
-                                     'type'  => 'registeredIDChooser')));
+                                     'type'  => 'registeredIDChooser'),
+                               array('name'  => 'devicecasegraphiccardmodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue')));
    }
 
 
@@ -86,6 +89,14 @@ class DeviceGraphicCard extends CommonDevice {
          'table'              => 'glpi_interfacetypes',
          'field'              => 'name',
          'name'               => __('Interface'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => 'glpi_devicegraphiccardmodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
          'datatype'           => 'dropdown'
       ];
 

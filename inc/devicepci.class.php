@@ -62,8 +62,25 @@ class DevicePci extends CommonDevice {
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
                                                                                     NULL, false),
-                                     'type'  => 'registeredIDChooser')));
+                                     'type'  => 'registeredIDChooser'),
+                         array('name'  => 'devicenetworkcardmodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue')));
    }
 
+   function getSearchOptionsNew() {
+
+      $tab                 = parent::getSearchOptionsNew();
+
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => 'glpi_devicepcimodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
+      ];
+
+      return $tab;
+   }
 
 }

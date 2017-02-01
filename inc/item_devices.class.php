@@ -110,9 +110,20 @@ class Item_Devices extends CommonDBRelation {
       $tab = parent::getSearchOptionsNew();
 
       foreach (static::getSpecificities() as $field => $attributs) {
+         switch ($field) {
+            case 'states_id':
+               $table = 'glpi_states';
+               break;
+            case 'locations_id':
+               $table = 'glpi_locations';
+               break;
+            default:
+               $table = $this->getTable();
+         }
+
          $newtab = [
             'id'                 => $attributs['id'],
-            'table'              => $this->getTable(),
+            'table'              => $table,
             'field'              => $field,
             'name'               => $attributs['long name'],
             'massiveaction'      => true
@@ -161,6 +172,26 @@ class Item_Devices extends CommonDBRelation {
                          'short name' => __('bus ID'),
                          'size'       => 10,
                          'id'         => 11);
+
+         case 'otherserial':
+            return array('long name'  => __('Inventory number'),
+                         'short name' => __('Inventory number'),
+                         'size'       => 20,
+                         'id'         => 12);
+
+         case 'locations_id':
+            return array('long name'  => __('Location'),
+                         'short name' => __('Location'),
+                         'size'       => 20,
+                         'id'         => 13,
+                         'datatype'   => 'dropdown');
+
+         case 'states_id':
+            return array('long name'  => __('Status'),
+                         'short name' => __('Status'),
+                         'size'       => 20,
+                         'id'         => 14,
+                         'datatype'   => 'dropdown');
       }
       return array();
    }
@@ -645,7 +676,16 @@ class Item_Devices extends CommonDBRelation {
 
          foreach ($this->getSpecificities() as $field => $attributs) {
             if (!empty($link[$field])) {
-               $content = $link[$field];
+               switch ($field) {
+                  case 'states_id':
+                     $content = Dropdown::getDropdownName("glpi_states", $link[$field]);
+                     break;
+                  case 'locations_id':
+                     $content = Dropdown::getDropdownName("glpi_locations", $link[$field]);
+                     break;
+                  default:
+                     $content = $link[$field];
+               }
             } else {
                $content = '';
             }
@@ -952,6 +992,7 @@ class Item_Devices extends CommonDBRelation {
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
 
       return $ong;
    }
@@ -994,7 +1035,20 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "<td>".$attributs['long name']."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, $field, array('size' => $attributs['size']));
+         switch ($field) {
+            case 'locations_id':
+               Location::dropdown(array('value'  => $this->fields["locations_id"],
+                                        'entity' => $this->fields["entities_id"]));
+               break;
+            case 'states_id':
+               State::dropdown(array('value'     => $this->fields["states_id"],
+                                     'entity'    => $this->fields["entities_id"],
+                                     //'condition' => "`is_visible_computer`"
+                                     ));
+               break;
+            default:
+               Html::autocompletionTextField($this, $field, array('size' => $attributs['size']));
+         }
          echo "</td>";
          $even ++;
          if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {

@@ -564,15 +564,38 @@ class Contract_Item extends CommonDBRelation{
          }
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
+            $itemtype_2 = null;
+            $itemtable_2 = null;
+
             $query     = "SELECT `$itemtable`.*,
                                  `glpi_contracts_items`.`id` AS IDD,
-                                 `glpi_entities`.`id` AS entity
-                          FROM `glpi_contracts_items`,
+                                 `glpi_entities`.`id` AS entity";
+
+            if ($item instanceof Item_Devices) {
+               $itemtype_2 = $itemtype::$itemtype_2;
+               $itemtable_2 = $itemtype_2::getTable();
+               $namefield = 'name_device';
+               $query .= ", `$itemtable_2`.`designation` AS $namefield";
+            } else {
+               $namefield = $item->getNameField();
+               $namefield = "`$itemtable`.`$namefield`";
+            }
+
+            $query .= " FROM `glpi_contracts_items`,
                                `$itemtable`";
             if ($itemtype != 'Entity') {
                $query .= " LEFT JOIN `glpi_entities`
                                  ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
             }
+
+            if ($item instanceof Item_Devices) {
+               $id_2 = $itemtype_2::getIndexName();
+               $fid_2 = $itemtype::$items_id_2;
+
+               $query .= " LEFT JOIN `$itemtable_2`
+                           ON (`$itemtable`.`$fid_2` = `$itemtable_2`.`$id_2`)";
+            }
+
             $query .= " WHERE `$itemtable`.`id` = `glpi_contracts_items`.`items_id`
                               AND `glpi_contracts_items`.`itemtype` = '$itemtype'
                               AND `glpi_contracts_items`.`contracts_id` = '$instID'";
@@ -581,8 +604,8 @@ class Contract_Item extends CommonDBRelation{
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
             $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
-                                                 $item->maybeRecursive())."
-                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
+                                                 $item->maybeRecursive()) ."
+                      ORDER BY `glpi_entities`.`completename`, $namefield";
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
@@ -692,7 +715,12 @@ class Contract_Item extends CommonDBRelation{
             $prem = true;
             $nb   = count($datas);
             foreach ($datas as $id => $objdata) {
-               $name = $objdata["name"];
+               $item = new $itemtype();
+               if ($item instanceof Item_Devices) {
+                  $name = $objdata["name_device"];
+               } else {
+                  $name = $objdata["name"];
+               }
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $objdata["id"]);
@@ -707,7 +735,6 @@ class Contract_Item extends CommonDBRelation{
                   echo "</td>";
                }
                if ($prem) {
-                  $item     = new $itemtype();
                   $typename = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
                          ($nb  >1 ? sprintf(__('%1$s: %2$s'), $typename, $nb): $typename)."</td>";

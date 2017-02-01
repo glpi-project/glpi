@@ -709,7 +709,7 @@ class Dropdown {
    /**
     * Get Yes No string
     *
-    * @param $value Yes No value
+    * @param mixed $value Yes No value
     *
     * @return string
    **/
@@ -822,6 +822,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'ContactType'          => _n('Contact type', 'Contact types',
                                               Session::getPluralNumber()),
+                 'DeviceGenericType'    => _n('Generic device type', 'Generic device types',
+                                              Session::getPluralNumber()),
                  'DeviceMemoryType'     => _n('Memory type', 'Memory types',
                                               Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
@@ -858,8 +860,36 @@ class Dropdown {
                                                'Peripheral models',
                                                Session::getPluralNumber()),
                  'PhoneModel'            =>  _n('Phone model', 'Phone models',
-                                                Session::getPluralNumber())
-             ),
+                                                Session::getPluralNumber()),
+
+                  // Devices models :
+                  'DeviceCaseModel'          => _n('Device case model',
+                                                   'Device case models', Session::getPluralNumber()),
+                  'DeviceControlModel'       => _n('Device control model',
+                                                   'Device control models', Session::getPluralNumber()),
+                  'DeviceDriveModel'         => _n('Device drive model',
+                                                   'Device drive models', Session::getPluralNumber()),
+                  'DeviceGenericModel'       => _n('Device generic model',
+                                                   'Device generic models', Session::getPluralNumber()),
+                  'DeviceGraphicCardModel'   => _n('Device graphic card model',
+                                                   'Device graphic card models', Session::getPluralNumber()),
+                  'DeviceHardDriveModel'     => _n('Device hard drive model',
+                                                   'Device hard drive models', Session::getPluralNumber()),
+                  'DeviceMemoryModel'        => _n('Device memory model',
+                                                   'Device memory models', Session::getPluralNumber()),
+                  'DeviceMotherBoardModel'   => _n('Device mother board model',
+                                                   'Device mother board models', Session::getPluralNumber()),
+                  'DeviceNetworkCardModel'   => _n('Device network card model',
+                                                   'Device network card models', Session::getPluralNumber()),
+                  'DevicePciModel'           => _n('Other component model',
+                                                   'Other component models', Session::getPluralNumber()),
+                  'DevicePowerSupplyModel'   => _n('Device power supply model',
+                                                   'Device power supply models', Session::getPluralNumber()),
+                  'DeviceProcessorModel'     => _n('Device processor model',
+                                                   'Device processor models', Session::getPluralNumber()),
+                  'DeviceSoundCardModel'     => _n('Device sound card model',
+                                                   'Device sound card models', Session::getPluralNumber()),
+               ),
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => array(
                  'VirtualMachineType'   => _n('Virtualization system',

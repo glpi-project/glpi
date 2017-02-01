@@ -59,6 +59,9 @@ class Item_DeviceGraphicCard extends Item_Devices {
                                      'size'       => 10,
                                      'id'         => 20),
                    'serial' => parent::getSpecificities('serial'),
+                   'otherserial' => parent::getSpecificities('otherserial'),
+                   'locations_id' => parent::getSpecificities('locations_id'),
+                   'states_id' => parent::getSpecificities('states_id'),
                    'busID'  => parent::getSpecificities('busID'));
    }
 }

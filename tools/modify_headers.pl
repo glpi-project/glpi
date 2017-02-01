@@ -116,7 +116,7 @@ sub do_file{
 
     # If we haven't found an header on the file, report it
     if($status eq '') {
-        print "Unable to found an header on $file. Please add it manually\n";
+        print "Unable to found an header on $file - please add it manually\n";
         #exit 1;
     }
 }

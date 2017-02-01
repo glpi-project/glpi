@@ -64,7 +64,10 @@ class DeviceProcessor extends CommonDevice {
                                      'type'  => 'integer'),
                                array('name'  => 'nbthreads_default',
                                      'label' => __('Number of threads'),
-                                     'type'  => 'integer')
+                                     'type'  => 'integer'),
+                               array('name'  => 'deviceprocessormodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue')
                            ));
    }
 
@@ -102,6 +105,14 @@ class DeviceProcessor extends CommonDevice {
          'field'              => 'nbthreads_default',
          'name'               => __('Number of threads'),
          'datatype'           => 'integer'
+      ];
+
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => 'glpi_deviceprocessormodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
       ];
 
       return $tab;

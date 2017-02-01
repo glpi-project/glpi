@@ -241,6 +241,159 @@ function update91to92() {
       }
    }
 
+   // add fields on every item_device tables
+   $tables = [
+      'glpi_items_devicecases',
+      'glpi_items_devicecontrols',
+      'glpi_items_devicedrives',
+      'glpi_items_devicegraphiccards',
+      'glpi_items_deviceharddrives',
+      'glpi_items_devicememories',
+      'glpi_items_devicemotherboards',
+      'glpi_items_devicenetworkcards',
+      'glpi_items_devicepcis',
+      'glpi_items_devicepowersupplies',
+      'glpi_items_deviceprocessors',
+      'glpi_items_devicesoundcards'
+   ];
+
+   //add serial, location and state on each devices items
+   foreach ($tables as $table) {
+      $migration->addField($table, "otherserial", "varchar(255) NULL DEFAULT NULL");
+      $migration->addKey($table, 'otherserial');
+
+      $migration->addField($table, "locations_id", "int(11) NOT NULL DEFAULT '0'");
+      $migration->addKey($table, 'locations_id');
+
+      $migration->addField($table, "states_id", "int(11) NOT NULL DEFAULT '0'");
+      $migration->addKey($table, 'states_id');
+   }
+
+   // Create tables :
+   $tables = [
+      'glpi_devicecasemodels',
+      'glpi_devicecontrolmodels',
+      'glpi_devicedrivemodels',
+      'glpi_devicegraphiccardmodels',
+      'glpi_deviceharddrivemodels',
+      'glpi_devicememorymodels',
+      'glpi_devicemotherboardmodels',
+      'glpi_devicenetworkcardmodels',
+      'glpi_devicepcimodels',
+      'glpi_devicepowersupplymodels',
+      'glpi_deviceprocessormodels',
+      'glpi_devicesoundcardmodels',
+      'glpi_devicegenericmodels'
+   ];
+
+   foreach ($tables as $table) {
+      if (!TableExists($table)) {
+         $query = "CREATE TABLE `$table` (
+                      `id` INT(11) NOT NULL AUTO_INCREMENT,
+                      `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                      `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+                      `product_number` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                      PRIMARY KEY (`id`),
+                      INDEX `name` (`name`),
+                      INDEX `product_number` (`product_number`)
+                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE='utf8_unicode_ci'";
+         $DB->queryOrDie($query, "9.2 add model tables for devices");
+      }
+   }
+
+   // Add a field in glpi_device* tables :
+   $tables = [
+      'glpi_devicecases'         => 'devicecasemodels_id',
+      'glpi_devicecontrols'      => 'devicecontrolmodels_id',
+      'glpi_devicedrives'        => 'devicedrivemodels_id',
+      'glpi_devicegraphiccards'  => 'devicegraphiccardmodels_id',
+      'glpi_deviceharddrives'    => 'deviceharddrivemodels_id',
+      'glpi_devicememories'      => 'devicememorymodels_id',
+      'glpi_devicemotherboards'  => 'devicemotherboardmodels_id',
+      'glpi_devicenetworkcards'  => 'devicenetworkcardmodels_id',
+      'glpi_devicepcis'          => 'devicepcimodels_id',
+      'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
+      'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
+      'glpi_devicesoundcards'    => 'devicesoundcardmodels_id',
+      'glpi_devicegenerics'      => 'devicegenericmodels_id'
+   ];
+
+   foreach ($tables as $table => $field) {
+      $migration->addField($table, $field, 'int');
+      $migration->addKey($table, $field);
+   }
+
+   if (!TableExists('glpi_devicegenerics')) {
+      $query = "CREATE TABLE `glpi_devicegenerics` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `devicegenerictypes_id` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `devicegenericmodels_id` int(11) DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `designation` (`designation`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `devicegenerictypes_id` (`devicegenerictypes_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `states_id` (`states_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`),
+                  KEY `devicegenericmodels_id` (`devicegenericmodels_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->queryOrDie($query, "9.2 add table glpi_devicegenerics");
+   }
+
+   if (!TableExists('glpi_items_devicegenerics')) {
+      $query = "CREATE TABLE `glpi_items_devicegenerics` (
+                   `id` INT(11) NOT NULL AUTO_INCREMENT,
+                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `devicegenerics_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
+                   `entities_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `locations_id` INT(11) NOT NULL DEFAULT '0',
+                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   PRIMARY KEY (`id`),
+                   INDEX `computers_id` (`items_id`),
+                   INDEX `devicegenerics_id` (`devicegenerics_id`),
+                   INDEX `is_deleted` (`is_deleted`),
+                   INDEX `is_dynamic` (`is_dynamic`),
+                   INDEX `entities_id` (`entities_id`),
+                   INDEX `is_recursive` (`is_recursive`),
+                   INDEX `serial` (`serial`),
+                   INDEX `item` (`itemtype`, `items_id`),
+                   INDEX `otherserial` (`otherserial`)
+                )
+                COLLATE='utf8_unicode_ci'
+                ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_items_devicegenerics");
+   }
+
+   if (!TableExists('glpi_devicegenerictypes')) {
+      $query = "CREATE TABLE `glpi_devicegenerictypes` (
+                  `id` INT(11) NOT NULL AUTO_INCREMENT,
+                  `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                  `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+                   PRIMARY KEY (`id`),
+                   INDEX `name` (`name`)
+                )
+                COLLATE='utf8_unicode_ci' ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_devicegenerictypes");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

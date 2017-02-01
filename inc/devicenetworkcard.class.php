@@ -72,6 +72,9 @@ class DeviceNetworkCard extends CommonDevice {
                                array('name'  => 'bandwidth',
                                      'label' => __('Flow'),
                                      'type'  => 'text'),
+                               array('name'  => 'devicenetworkcardmodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue'),
                                array('name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
@@ -98,6 +101,14 @@ class DeviceNetworkCard extends CommonDevice {
          'field'              => 'bandwidth',
          'name'               => __('Flow'),
          'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_devicenetworkcardmodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
       ];
 
       return $tab;
