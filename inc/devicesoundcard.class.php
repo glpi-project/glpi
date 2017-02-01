@@ -61,7 +61,10 @@ class DeviceSoundCard extends CommonDevice {
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
                                                                                     NULL, false),
-                                     'type'  => 'registeredIDChooser')));
+                                     'type'  => 'registeredIDChooser'),
+                               array('name'  => 'devicesoundcardmodels_id',
+                                     'label' => __('Model'),
+                                     'type'  => 'dropdownValue')));
    }
 
 
@@ -74,6 +77,14 @@ class DeviceSoundCard extends CommonDevice {
          'field'              => 'type',
          'name'               => __('Type'),
          'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_devicesoundcardmodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
       ];
 
       return $tab;

@@ -182,7 +182,11 @@ $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'Networ
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense');
 
 $CFG_GLPI["project_asset_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
+                                                  'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
+                                                  'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
+                                                  'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric');
 
 
 $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
@@ -197,7 +201,12 @@ $CFG_GLPI["consumables_types"]            = array('Group', 'User');
 
 $CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project',
-                                                  'Software', 'SoftwareLicense');
+                                                  'Software', 'SoftwareLicense', 'Item_DevicePowerSupply',
+                                                  'Item_DevicePci', 'Item_DeviceCase', 'Item_DeviceGraphicCard',
+                                                  'Item_DeviceMotherBoard', 'Item_DeviceNetworkCard',
+                                                  'Item_DeviceSoundCard', 'Item_DeviceControl',
+                                                  'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
+                                                  'Item_DeviceProcessor', 'Item_DeviceGeneric');
 
 $CFG_GLPI["directconnect_types"]          = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
@@ -260,10 +269,10 @@ $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'Networ
                                                   'NetworkPortDialup',   'NetworkPortLocal',
                                                   'NetworkPortFiberchannel');
 
-$CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
-                                  'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
-                                  'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
-                                  'DevicePci', 'DeviceCase', 'DevicePowerSupply');
+$CFG_GLPI['device_types']                 = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
+                                                  'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
+                                                  'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
+                                                  'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric');
 
 $CFG_GLPI["itemdevices_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer');

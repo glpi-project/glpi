@@ -61,6 +61,9 @@ class DeviceMemory extends CommonDevice {
                                      'unit'  => __('MHz')),
                                array('name'  => 'devicememorytypes_id',
                                      'label' => __('Type'),
+                                     'type'  => 'dropdownValue'),
+                               array('name'  => 'devicememorymodels_id',
+                                     'label' => __('Model'),
                                      'type'  => 'dropdownValue')));
    }
 
@@ -89,6 +92,14 @@ class DeviceMemory extends CommonDevice {
          'table'              => 'glpi_devicememorytypes',
          'field'              => 'name',
          'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_devicememorymodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
          'datatype'           => 'dropdown'
       ];
 

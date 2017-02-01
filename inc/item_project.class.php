@@ -203,15 +203,15 @@ class Item_Project extends CommonDBRelation{
 
             $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
                                                  $item->maybeRecursive())."
-                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
+                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`".$itemtype::getNameField()."`";
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
-               $name = $data["name"];
+               $name = $data[$itemtype::getNameField()];
                if ($_SESSION["glpiis_ids_visible"]
-                   || empty($data["name"])) {
+                   || empty($data[$itemtype::getNameField()])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                }
                $link     = $item::getFormURLWithID($data['id']);

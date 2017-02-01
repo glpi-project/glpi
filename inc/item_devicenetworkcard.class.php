@@ -61,6 +61,9 @@ class Item_DeviceNetworkCard extends Item_Devices {
                                      'id'         => 20,
                                      'datatype'   => 'mac'),
                    'serial' => parent::getSpecificities('serial'),
+                   'otherserial' => parent::getSpecificities('otherserial'),
+                   'locations_id' => parent::getSpecificities('locations_id'),
+                   'states_id' => parent::getSpecificities('states_id'),
                    'busID'  => parent::getSpecificities('busID'));
    }
 
