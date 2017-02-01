@@ -223,6 +223,24 @@ function update91to92() {
       "9.2 update set users_id on glpi_documents_items"
    );
 
+   //add product number
+   $product_types = [
+      'Computer',
+      'Printer',
+      'NetworkEquipment',
+      'Phone',
+      'Peripheral',
+      'Monitor'
+   ];
+
+   foreach ($product_types as $type) {
+      if (class_exists($type.'Model')) {
+         $table = getTableForItemType($type.'Model');
+         $migration->addField($table, 'product_number', 'string');
+         $migration->addKey($table, 'product_number');
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
