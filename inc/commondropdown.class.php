@@ -135,9 +135,17 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * Return Additional Fields for this type
+    *
+    * @return array
    **/
    function getAdditionalFields() {
-      return array();
+      if (FieldExists($this->getTable(), 'product_number')) {
+         return array(array('name' => 'product_number',
+                            'type' => 'text',
+                            'label' => __('Product Number')));
+      } else {
+         return [];
+      }
    }
 
 
@@ -437,6 +445,15 @@ abstract class CommonDropdown extends CommonDBTM {
          'massiveaction'     => false,
          'datatype'          => 'number'
       ];
+
+      if (FieldExists($this->getTable(), 'product_number')) {
+         $tab[] = [
+            'id'  => '3',
+            'table'  => $this->getTable(),
+            'field'  => 'product_number',
+            'name'   => __('Product number')
+         ];
+      }
 
       $tab[] = [
          'id'                => '16',
