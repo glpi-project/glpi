@@ -1252,12 +1252,14 @@ class Html {
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
             if (is_array($files)) {
                foreach ($files as $file) {
-                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                  $file_name = explode( '?', $file);
+                  if (file_exists(GLPI_ROOT."/plugins/$plugin/".$file_name[0])) {
                      echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
                   }
                }
             } else {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
+               $files_name = explode( '?', $files);
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/".$files_name[0])) {
                   echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
                }
             }
