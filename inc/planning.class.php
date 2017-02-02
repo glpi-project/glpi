@@ -2080,7 +2080,7 @@ class Planning extends CommonGLPI {
       echo "<tr class='noHover'>";
       echo "<td class='planning_on_central'>";
       self::showPlanning(false);
-      echo "<br /></td></tr>";
+      echo "</td></tr>";
       echo "</table>";
    }
 
