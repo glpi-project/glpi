@@ -3768,6 +3768,10 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    margin-left: 20px;
 }
 
+.fc-view-container *, .fc-view-container *::before, .fc-view-container *::after {
+   min-height: 1em; /** Ensure no event message is displayed well */
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
