@@ -37,7 +37,7 @@ class ComputerTest extends DbTestCase {
    /**
     * @covers Computer::post_updateItem
     */
-   public function testTypeName() {
+   public function testUpdate() {
       global $CFG_GLPI;
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
@@ -70,6 +70,27 @@ class ComputerTest extends DbTestCase {
       $this->assertTrue($computer->update($in));
       $this->assertTrue($computer->getFromDB($computer->getID()));
       $this->assertTrue($printer->getFromDB($printer->getID()));
+      unset($in['id']);
+      foreach ($in as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation occurs
+         $this->assertEquals($v, $printer->getField($k), $k);
+      }
+
+      //reset values
+      $in = ['id'           => $computer->getField('id'),
+             'contact'      => '',
+             'contact_num'  => '',
+             'users_id'     => 0,
+             'groups_id'    => 0,
+             'states_id'    => 0,
+             'locations_id' => 0,
+      ];
+      $this->assertTrue($computer->update($in));
+      $this->assertTrue($computer->getFromDB($computer->getID()));
+      $this->assertTrue($printer->getFromDB($printer->getID()));
+      unset($in['id']);
       foreach ($in as $k => $v) {
          // Check the computer new values
          $this->assertEquals($v, $computer->getField($k), $k);
@@ -94,11 +115,93 @@ class ComputerTest extends DbTestCase {
       $this->assertTrue($computer->update($in2));
       $this->assertTrue($computer->getFromDB($computer->getID()));
       $this->assertTrue($printer->getFromDB($printer->getID()));
+      unset($in2['id']);
       foreach ($in2 as $k => $v) {
          // Check the computer new values
          $this->assertEquals($v, $computer->getField($k), $k);
          // Check the printer and test propagation DOES NOT occurs
          $this->assertEquals($in[$k], $printer->getField($k), $k);
+      }
+
+      // Restore state
+      $computer->update($savecomp);
+      // Restore configuration
+      $CFG_GLPI = $saveconf;
+
+      //update devices
+      $cpu = new DeviceProcessor();
+      $cpuid = $cpu->add(
+         [
+            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+            'frequence'    => '1700'
+         ]
+      );
+
+      $this->assertGreaterThan(0, $cpuid, 'CPU has not been created!');
+
+      $link = new Item_DeviceProcessor();
+      $linkid = $link->add(
+         [
+            'items_id'              => $computer->getID(),
+            'itemtype'              => Computer::getType(),
+            'deviceprocessors_id'   => $cpuid,
+            'locations_id'          => $computer->getField('locations_id'),
+            'status_id'             => $computer->getField('status_id'),
+         ]
+      );
+
+      $this->assertGreaterThan(0, $linkid, 'CPU has not been attached to computer!');
+
+      // Change the computer
+      $CFG_GLPI['state_autoupdate_mode']  = -1;
+      $CFG_GLPI['is_location_autoupdate'] = 1;
+      $in = ['id'           => $computer->getField('id'),
+             'states_id'    => $this->getUniqueInteger(),
+             'locations_id' => $this->getUniqueInteger(),
+      ];
+      $this->assertTrue($computer->update($in));
+      $this->assertTrue($computer->getFromDB($computer->getID()));
+      $this->assertTrue($link->getFromDB($link->getID()));
+      unset($in['id']);
+      foreach ($in as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation occurs
+         $this->assertEquals($v, $link->getField($k), $k);
+      }
+
+      //reset
+      $in = ['id'           => $computer->getField('id'),
+             'states_id'    => 0,
+             'locations_id' => 0,
+      ];
+      $this->assertTrue($computer->update($in));
+      $this->assertTrue($computer->getFromDB($computer->getID()));
+      $this->assertTrue($link->getFromDB($link->getID()));
+      unset($in['id']);
+      foreach ($in as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation occurs
+         $this->assertEquals($v, $link->getField($k), $k);
+      }
+
+      // Change the computer again
+      $CFG_GLPI['state_autoupdate_mode']  = 0;
+      $CFG_GLPI['is_location_autoupdate'] = 0;
+      $in2 = ['id'          => $computer->getField('id'),
+             'states_id'    => $this->getUniqueInteger(),
+             'locations_id' => $this->getUniqueInteger(),
+      ];
+      $this->assertTrue($computer->update($in2));
+      $this->assertTrue($computer->getFromDB($computer->getID()));
+      $this->assertTrue($link->getFromDB($link->getID()));
+      unset($in2['id']);
+      foreach ($in2 as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation DOES NOT occurs
+         $this->assertEquals($in[$k], $link->getField($k), $k);
       }
 
       // Restore state
