@@ -54,7 +54,7 @@ class ProjectTask extends CommonDBChild {
    static public $items_id     = 'projects_id';
 
    protected $team             = array();
-   static $rightname           = 'project';
+   static $rightname           = 'projecttask';
    protected $usenotepad       = true;
 
    public $can_be_translated   = true;
@@ -71,8 +71,8 @@ class ProjectTask extends CommonDBChild {
 
    static function canView() {
 
-      return (Session::haveRightsOr(self::$rightname, array(Project::READALL, Project::READMY))
-              || Session::haveRight('projecttask', ProjectTask::READMY));
+      return (Session::haveRightsOr('project', array(Project::READALL, Project::READMY))
+              || Session::haveRight(self::$rightname, ProjectTask::READMY));
    }
 
 
@@ -88,8 +88,8 @@ class ProjectTask extends CommonDBChild {
       }
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
-         return (Session::haveRight(self::$rightname, Project::READALL)
-                 || (Session::haveRight(self::$rightname, Project::READMY)
+         return (Session::haveRight('project', Project::READALL)
+                 || (Session::haveRight('project', Project::READMY)
                      && (($project->fields["users_id"] === Session::getLoginUserID())
                          || $project->isInTheManagerGroup()
                          || $project->isInTheTeam()))
@@ -102,7 +102,7 @@ class ProjectTask extends CommonDBChild {
 
 
    static function canCreate() {
-      return (Session::haveRight(self::$rightname, UPDATE));
+      return (Session::haveRight('project', UPDATE));
    }
 
 
@@ -125,7 +125,7 @@ class ProjectTask extends CommonDBChild {
       }
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
-         return (Session::haveRight(self::$rightname, UPDATE)
+         return (Session::haveRight('project', UPDATE)
                  || (Session::haveRight(self::$rightname, self::UPDATEMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
