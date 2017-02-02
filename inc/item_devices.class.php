@@ -1061,4 +1061,44 @@ class Item_Devices extends CommonDBRelation {
       return true;
    }
 
+   /**
+    * Prepare input data for adding the relation
+    *
+    * Overloaded to manage autoupdate feature
+    *
+    * @param array $input array of datas used to add the item
+    *
+    * @return the modified $input array
+    *
+   **/
+   function prepareInputForAdd($input) {
+      global $DB, $CFG_GLPI;
+
+      $computer = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+
+      if ($CFG_GLPI["is_location_autoupdate"]
+         && ($computer->fields['locations_id'] != $input['locations_id'])
+         ||!isset($input['locations_id'])
+      ) {
+         $input['locations_id'] = $computer->fields['locations_id'];
+      }
+
+      if (($CFG_GLPI["state_autoupdate_mode"] < 0)
+         && ($computer->fields['states_id'] != $input['states_id']
+         || !isset($input['states_id']))
+      ) {
+
+         $input['states_id'] = $computer->fields['states_id'];
+      }
+
+      if (($CFG_GLPI["state_autoupdate_mode"] > 0)
+         && ($input['states_id'] != $CFG_GLPI["state_autoupdate_mode"]
+         || !isset($input['states_id']))
+      ) {
+
+         $input['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+      }
+
+      return parent::prepareInputForAdd($input);
+   }
 }
