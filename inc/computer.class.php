@@ -248,12 +248,10 @@ class Computer extends CommonDBTM {
          }
          // Update users and groups of attached items
          if ($this->updates[$i] == 'users_id'
-             && $this->fields['users_id']
              && $CFG_GLPI['is_user_autoupdate']) {
             $changes['users_id'] = $this->fields['users_id'];
          }
          if ($this->updates[$i] == 'groups_id'
-             && $this->fields['groups_id']
              && $CFG_GLPI['is_group_autoupdate']) {
             $changes['groups_id'] = $this->fields['groups_id'];
          }
@@ -264,7 +262,6 @@ class Computer extends CommonDBTM {
          }
          // Update loction of attached items
          if ($this->updates[$i] == 'locations_id'
-             && $this->fields['locations_id']
              && $CFG_GLPI['is_location_autoupdate']) {
             $changes['locations_id'] = $this->fields['locations_id'];
          }
