@@ -146,7 +146,7 @@ class ComputerTest extends DbTestCase {
             'itemtype'              => Computer::getType(),
             'deviceprocessors_id'   => $cpuid,
             'locations_id'          => $computer->getField('locations_id'),
-            'status_id'             => $computer->getField('status_id'),
+            'states_id'             => $computer->getField('status_id'),
          ]
       );
 
@@ -202,6 +202,103 @@ class ComputerTest extends DbTestCase {
          $this->assertEquals($v, $computer->getField($k), $k);
          // Check the printer and test propagation DOES NOT occurs
          $this->assertEquals($in[$k], $link->getField($k), $k);
+      }
+
+      // Restore state
+      $computer->update($savecomp);
+      // Restore configuration
+      $CFG_GLPI = $saveconf;
+   }
+
+   /**
+    * Checks that newly created links inherits locations, status, and so on
+    *
+    * @return void
+    */
+   public function testCreateLinks() {
+      global $CFG_GLPI;
+
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $savecomp = $computer->fields;
+      $saveconf = $CFG_GLPI;
+
+      $CFG_GLPI['is_contact_autoupdate']  = 1;
+      $CFG_GLPI['is_user_autoupdate']     = 1;
+      $CFG_GLPI['is_group_autoupdate']    = 1;
+      $CFG_GLPI['state_autoupdate_mode']  = -1;
+      $CFG_GLPI['is_location_autoupdate'] = 1;
+
+      // Change the computer
+      $in = ['id'           => $computer->getField('id'),
+             'contact'      => $this->getUniqueString(),
+             'contact_num'  => $this->getUniqueString(),
+             'users_id'     => $this->getUniqueInteger(),
+             'groups_id'    => $this->getUniqueInteger(),
+             'states_id'    => $this->getUniqueInteger(),
+             'locations_id' => $this->getUniqueInteger(),
+      ];
+      $this->assertTrue($computer->update($in));
+      $this->assertTrue($computer->getFromDB($computer->getID()));
+
+      $printer = new Printer();
+      $pid = $printer->add(
+         [
+            'name'         => 'A test printer',
+            'entities_id'  => $computer->getField('entities_id')
+         ]
+      );
+
+      $this->assertGreaterThan(0, $pid, 'Printer has not been created!');
+
+      // Create the link
+      $link = new Computer_Item();
+      $in2 = ['computers_id' => $computer->getField('id'),
+             'itemtype'     => $printer->getType(),
+             'items_id'     => $printer->getID(),
+      ];
+      $this->assertGreaterThan(0, $link->add($in2));
+
+      $this->assertTrue($printer->getFromDB($printer->getID()));
+      unset($in['id']);
+      foreach ($in as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation occurs
+         $this->assertEquals($v, $printer->getField($k), $k);
+      }
+
+      //create devices
+      $cpu = new DeviceProcessor();
+      $cpuid = $cpu->add(
+         [
+            'designation'  => 'Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz',
+            'frequence'    => '1700'
+         ]
+      );
+
+      $this->assertGreaterThan(0, $cpuid, 'CPU has not been created!');
+
+      $link = new Item_DeviceProcessor();
+      $linkid = $link->add(
+         [
+            'items_id'              => $computer->getID(),
+            'itemtype'              => Computer::getType(),
+            'deviceprocessors_id'   => $cpuid
+         ]
+      );
+
+      $this->assertGreaterThan(0, $linkid, 'CPU has not been attached to computer!');
+
+      $in3 = ['states_id'    => $in['states_id'],
+              'locations_id' => $in['locations_id'],
+      ];
+
+      $this->assertTrue($link->getFromDB($link->getID()));
+      foreach ($in3 as $k => $v) {
+         // Check the computer new values
+         $this->assertEquals($v, $computer->getField($k), $k);
+         // Check the printer and test propagation occurs
+         $this->assertEquals($v, $link->getField($k), $k);
       }
 
       // Restore state
