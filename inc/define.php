@@ -199,14 +199,16 @@ $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Ch
 
 $CFG_GLPI["consumables_types"]            = array('Group', 'User');
 
-$CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Project',
-                                                  'Software', 'SoftwareLicense', 'Item_DevicePowerSupply',
-                                                  'Item_DevicePci', 'Item_DeviceCase', 'Item_DeviceGraphicCard',
+$CFG_GLPI["itemdevices"]                  = array('Item_DevicePowerSupply', 'Item_DevicePci',
+                                                  'Item_DeviceCase', 'Item_DeviceGraphicCard',
                                                   'Item_DeviceMotherBoard', 'Item_DeviceNetworkCard',
                                                   'Item_DeviceSoundCard', 'Item_DeviceControl',
                                                   'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
                                                   'Item_DeviceProcessor', 'Item_DeviceGeneric');
+
+$CFG_GLPI["contract_types"]               = array_merge(array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Project',
+                                                  'Software', 'SoftwareLicense'), $CFG_GLPI['itemdevices']);
 
 $CFG_GLPI["directconnect_types"]          = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 

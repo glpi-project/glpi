@@ -57,7 +57,23 @@ function update91to92() {
       'glpi_businesscriticities',
       'glpi_knowbaseitems_items',
       'glpi_knowbaseitems_revisions',
-      'glpi_knowbaseitems_comments'
+      'glpi_knowbaseitems_comments',
+      'glpi_devicecasemodels',
+      'glpi_devicecontrolmodels',
+      'glpi_devicedrivemodels',
+      'glpi_devicegraphiccardmodels',
+      'glpi_deviceharddrivemodels',
+      'glpi_devicememorymodels',
+      'glpi_devicemotherboardmodels',
+      'glpi_devicenetworkcardmodels',
+      'glpi_devicepcimodels',
+      'glpi_devicepowersupplymodels',
+      'glpi_deviceprocessormodels',
+      'glpi_devicesoundcardmodels',
+      'glpi_devicegenericmodels',
+      'glpi_devicegenerics',
+      'glpi_items_devicegenerics',
+      'glpi_devicegenerictypes'
    );
 
    foreach ($newtables as $new_table) {

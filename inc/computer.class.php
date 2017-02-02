@@ -269,15 +269,17 @@ class Computer extends CommonDBTM {
             $changes['locations_id'] = $this->fields['locations_id'];
          }
       }
-      // Propagates the changes to linked item
+
       if (count($changes)) {
          $update_done = false;
-         foreach (['Monitor', 'Peripheral', 'Phone', 'Printer'] as $t) {
+
+         // Propagates the changes to linked items
+         foreach ($CFG_GLPI['directconnect_types'] as $type) {
             $crit = ['FIELDS'       => ['items_id'],
-                     'itemtype'     => $t,
+                     'itemtype'     => $type,
                      'computers_id' => $this->fields["id"],
                      'is_deleted'   => 0];
-            $item      = new $t();
+            $item      = new $type();
             foreach ($DB->request('glpi_computers_items', $crit) as $data) {
                $tID = $data['items_id'];
                $item->getFromDB($tID);
@@ -289,6 +291,34 @@ class Computer extends CommonDBTM {
                }
             }
          }
+
+         //fields that are not present for devices
+         unset($changes['groups_id']);
+         unset($changes['users_id']);
+         unset($changes['contact_num']);
+         unset($changes['contact']);
+
+         if (count($changes) > 0) {
+            // Propagates the changes to linked devices
+            foreach ($CFG_GLPI['itemdevices'] as $device) {
+               $item = new $device();
+               $crit = [
+                  'FIELDS'       => 'id',
+                  'itemtype'     => self::getType(),
+                  'items_id'     => $this->fields["id"],
+                  'is_deleted'   => 0
+               ];
+               foreach ($DB->request($item::getTable(), $crit) as $data) {
+                  $tID = $data['id'];
+                  $item->getFromDB($tID);
+                  $changes['id'] = $item->getField('id');
+                  if ($item->update($changes)) {
+                     $update_done = true;
+                  }
+               }
+            }
+         }
+
          if ($update_done) {
             if (isset($changes['contact']) || isset($changes['contact_num'])) {
                Session::addMessageAfterRedirect(
