@@ -4096,6 +4096,10 @@ td.diff del {
    text-decoration: none;
 }
 
+.fc-view-container *, .fc-view-container *::before, .fc-view-container *::after {
+   min-height: 1em; /** Ensure no event message is displayed well */
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
