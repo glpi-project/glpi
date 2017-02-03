@@ -66,14 +66,4 @@ class Item_DeviceNetworkCard extends Item_Devices {
                    'states_id' => parent::getSpecificities('states_id'),
                    'busID'  => parent::getSpecificities('busID'));
    }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function itemAffinity() {
-      global $CFG_GLPI;
-      return $CFG_GLPI["itemdevicenetworkcard_types"];
-   }
-
 }

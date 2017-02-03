@@ -48,16 +48,6 @@ class Item_DevicePowerSupply extends Item_Devices {
 
    static protected $notable = false;
 
-
-   /**
-    * @since version 0.85
-   **/
-   static function itemAffinity() {
-      global $CFG_GLPI;
-      return $CFG_GLPI["itemdevicepowersupply_types"];
-   }
-
-
    /**
     * @since version 0.85
    **/

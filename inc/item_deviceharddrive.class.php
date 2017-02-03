@@ -48,10 +48,6 @@ class Item_DeviceHardDrive extends Item_Devices {
 
    static protected $notable = false;
 
-   static function itemAffinity() {
-      return array('Computer', 'Peripheral');
-   }
-
    /**
     * @since version 0.85
    **/
