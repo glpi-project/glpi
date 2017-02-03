@@ -100,7 +100,8 @@ sub do_file{
 			if ($_ =~ m/$format\/\*\*/){
 				$status="BEGIN";
 				##### ADD NEW HEADERS
-				open(HEADER_FILE,"HEADER");
+				my $dirname = dirname(__FILE__);
+				open(HEADER_FILE,"$dirname/HEADER");
 				@headers=<HEADER_FILE>;
 				foreach (@headers){
 					print TMP_FILE $format;
