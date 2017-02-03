@@ -39,7 +39,7 @@ do_dir("$dirname/..");
 
 sub do_dir{
 local ($dir)=@_;
-print "Entering $dir\n";
+#print "Entering $dir\n";
 
 opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n";
 foreach (readdir(DIRHANDLE)){
@@ -69,11 +69,11 @@ closedir DIRHANDLE;
 
 sub do_file{
 	local ($file, $format)=@_;
-    if($format ne "") {
-        print $file." (Using specific comment " . $format . ")\n";
-    } else {
-        print $file."\n";
-    }
+    #if($format ne "") {
+    #    print $file." (Using specific comment " . $format . ")\n";
+    #} else {
+    #    print $file."\n";
+    #}
 
 	### DELETE HEADERS
 	open(INIT_FILE,$file);
@@ -116,7 +116,7 @@ sub do_file{
 
     # If we haven't found an header on the file, report it
     if($status eq '') {
-        print "Unable to found an header on $file. Please add it manually";
-        exit 1;
+        print "Unable to found an header on $file. Please add it manually\n";
+        #exit 1;
     }
 }
