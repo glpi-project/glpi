@@ -30,7 +30,11 @@
 #  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 #  * ---------------------------------------------------------------------
 # */
-do_dir("..");
+
+use File::Basename;
+my $dirname = dirname(__FILE__);
+
+do_dir("$dirname/..");
 
 
 sub do_dir{
