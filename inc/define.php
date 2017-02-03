@@ -284,14 +284,18 @@ $CFG_GLPI["itemdevices_types"]            = array('Computer', 'NetworkEquipment'
 
 $CFG_GLPI["itemdevices_itemaffinity"]     = array('Computer');
 
-$CFG_GLPI["itemdevicesmemory_types"]      = array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
+$CFG_GLPI["itemdevicememory_types"]       = array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
 
 $CFG_GLPI["itemdevicepowersupply_types"]  = array('Computer', 'NetworkEquipment');
 
 $CFG_GLPI["itemdevicenetworkcard_types"]  = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
 
+$CFG_GLPI['itemdeviceharddrive_types']    = array('Computer', 'Peripheral');
 
 $CFG_GLPI['itemdevicebattery_types']      = array('Computer', 'Peripheral', 'Phone');
+
+$CFG_GLPI['itemdevicegeneric_types']      = array('*');
+
 
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem',
                                                   'Contract', 'Crontask', 'DBConnection',

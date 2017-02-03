@@ -200,8 +200,11 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get the items on which this Item_Device can be attached. For instance, a computer can have
     * any kind of device. Conversely, a soundcard does not concern a NetworkEquipment
+    * A configuration entry is automatically checked in $CFG_GLPI (must be the name of
+    * the class, lowercase, without "_" with extra "_types" at the end; for example
+    * "itemdevicesoundcard_types").
     *
-    * Should be overloaded by Item_Device*
+    * Alternatively, it could be overloaded from subclasses
     *
     * @since version 0.85
     *
@@ -209,6 +212,12 @@ class Item_Devices extends CommonDBRelation {
    **/
    static function itemAffinity() {
       global $CFG_GLPI;
+
+      $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
+      if (isset($CFG_GLPI[$conf_param])) {
+         return $CFG_GLPI[$conf_param];
+      }
+
       return $CFG_GLPI["itemdevices_itemaffinity"];
    }
 
@@ -256,7 +265,7 @@ class Item_Devices extends CommonDBRelation {
       if (!isset($_SESSION['glpi_item_device_affinities'][$itemtype])) {
          $afffinities = array();
          foreach ($_SESSION['glpi_item_device_affinities'][''] as $item_id => $item_device) {
-            if (in_array($itemtype, $item_device::itemAffinity())) {
+            if (in_array($itemtype, $item_device::itemAffinity()) || in_array('*', $item_device::itemAffinity())) {
                $afffinities[$item_id] = $item_device;
             }
          }
