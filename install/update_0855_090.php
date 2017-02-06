@@ -84,7 +84,7 @@ function update0855to090() {
 
    // clean unused parameter
    $migration->dropField("glpi_users", "dropdown_chars_limit");
-   Config::deleteConfigurationValues('core', array(-'name' => 'dropdown_chars_limit'));
+   Config::deleteConfigurationValues('core', array('name' => 'dropdown_chars_limit'));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
