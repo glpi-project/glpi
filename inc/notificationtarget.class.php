@@ -473,7 +473,7 @@ class NotificationTarget extends CommonDBChild {
          }
          // It is a GLPI user :
          $notificationoption['usertype'] = self::GLPI_USER;
-         if ($user->fields['authtype'] == Auth::LDAP)
+         if ($user->fields['authtype'] == Auth::LDAP
              || Auth::isAlternateAuth($user->fields['authtype'])
              || (($user->fields['authtype'] == Auth::NOT_YET_AUTHENTIFIED)
                  && Auth::isAlternateAuth(Auth::checkAlternateAuthSystems()))) {
