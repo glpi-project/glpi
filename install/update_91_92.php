@@ -55,7 +55,9 @@ function update91to92() {
    // not table created during the migration
    $newtables     = array(
       'glpi_businesscriticities',
-      'glpi_knowbaseitems_items'
+      'glpi_knowbaseitems_items',
+      'glpi_knowbaseitems_revisions',
+      'glpi_knowbaseitems_comments'
    );
 
    foreach ($newtables as $new_table) {
