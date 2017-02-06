@@ -691,8 +691,10 @@ class MailCollector  extends CommonDBTM {
             if (($cc != $head['from'])
                 && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
                 && (($tmp = User::getOrImportByEmail($cc)) > 0)) {
-               $tkt['_additional_observers'][] = array('users_id'         => $tmp,
-                                                       'use_notification' => 1);
+               $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
+               $tkt['_users_id_observer'][$nb] = $tmp;
+               $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
+               $tkt['_users_id_observer_notif']['alternative_email'][$nb] = $cc;
             }
          }
       }
@@ -702,8 +704,10 @@ class MailCollector  extends CommonDBTM {
             if (($to != $head['from'])
                 && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
                 && (($tmp = User::getOrImportByEmail($to)) > 0)) {
-               $tkt['_additional_observers'][] = array('users_id'         => $tmp,
-                                                       'use_notification' => 1);
+                   $nb = (isset($tkt['_users_id_observer']) ? count($tkt['_users_id_observer']) : 0);
+                   $tkt['_users_id_observer'][$nb] = $tmp;
+                   $tkt['_users_id_observer_notif']['use_notification'][$nb] = 1;
+                   $tkt['_users_id_observer_notif']['alternative_email'][$nb] = $to;
             }
          }
       }
