@@ -3899,10 +3899,11 @@ class Html {
     * @param $name               name of the html textarea to use
     * @param $rand       rand    of the html textarea to use (if empty no image paste system)(default '')
     * @param $display    boolean display or get js script (true by default)
+    * @param $readonly   boolean editor will be readonly or not
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true) {
+   static function initEditorSystem($name, $rand='', $display=true, $readonly=false) {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
@@ -3912,7 +3913,10 @@ class Html {
             $language = "en_GB";
          }
       }
-
+      $readonlyjs = "readonly: false";
+      if( $readonly ){
+         $readonlyjs = "readonly: true";
+      }
       Html::scriptStart();
       $js = "tinyMCE.init({
          language: '$language',
@@ -3931,6 +3935,7 @@ class Html {
             'code fullscreen textcolor colorpicker'
          ],
          toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+         $readonlyjs
       });
    ";
 
