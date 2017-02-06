@@ -3839,10 +3839,11 @@ class Html {
     * @param $name               name of the html textarea to use
     * @param $rand       rand    of the html textarea to use (if empty no image paste system)(default '')
     * @param $display    boolean display or get js script (true by default)
+    * @param $readonly   boolean editor will be readonly or not
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true) {
+   static function initEditorSystem($name, $rand='', $display=true, $readonly=false) {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
@@ -3851,6 +3852,11 @@ class Html {
          if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
             $language = "en_GB";
          }
+      }
+
+      $readonlyjs = "readonly: false";
+      if ($readonly) {
+         $readonlyjs = "readonly: true";
       }
 
       // init tinymce
@@ -3879,6 +3885,7 @@ class Html {
                   : '',
             ],
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+            $readonlyjs
          });
       });";
 
@@ -3916,16 +3923,17 @@ class Html {
     *
     * @since version 9.2
     *
-    * @param $name       name of textarea
-    * @param $content    content to convert in html
-    * @param $rand       string used for randomize tinymce dom id
+    * @param string  $name     name of textarea
+    * @param string  $content  content to convert in html
+    * @param string  $rand     used for randomize tinymce dom id
+    * @param boolean $readonly true will set editor in readonly mode
     *
     * @return $content
    **/
-   static function setRichTextContent($name, $content, $rand) {
+   static function setRichTextContent($name, $content, $rand, $readonly = false) {
 
       // Init html editor
-      Html::initEditorSystem($name, $rand);
+      Html::initEditorSystem($name, $rand, true, $readonly);
 
       // Neutralize non valid HTML tags
       $content = html::clean($content, false, 1);

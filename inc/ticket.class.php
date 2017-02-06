@@ -4390,54 +4390,29 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td colspan='3'>";
-      if (!$ID
-          || $canupdate_descr) { // Admin =oui on autorise la modification de la description
-         echo $tt->getBeginHiddenFieldValue('content');
-         $rand       = mt_rand();
-         $rand_text  = mt_rand();
-         $rows       = 6;
-         $content_id = "content$rand";
 
-         if ($CFG_GLPI["use_rich_text"]) {
+      echo $tt->getBeginHiddenFieldValue('content');
+      $rand       = mt_rand();
+      $rand_text  = mt_rand();
+      $rows       = 6;
+      $content_id = "content$rand";
+
+      if ($CFG_GLPI["use_rich_text"]) {
             $this->fields["content"] = Html::setRichTextContent($content_id,
                                                                 $this->fields["content"],
-                                                                $rand);
-            $rows = 10;
-         } else {
-            $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
-         }
-
-         echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
-                $this->fields["content"]."</textarea></div>";
-         echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
-         echo $tt->getEndHiddenFieldValue('content', $this);
-
+                                                                $rand,
+                                                                !$canupdate_descr);
+         $rows = 10;
       } else {
-
-         $rand       = mt_rand();
-         $rand_text  = mt_rand();
-         $rows       = 6;
-         $content_id = "content$rand";
-
-         if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = Html::setRichTextContent($content_id,
-                                                                $this->fields["content"],
-                                                                $rand);
-            $rows = 10;
-
-            echo "<div id='content$rand_text'>";
-            echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
-               $this->fields["content"]."</textarea></div>";
-
-            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
-            echo $tt->getEndHiddenFieldValue('content', $this);
-
-         } else {
-            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
-            echo nl2br(Html::Clean($content));
-         }
+         $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
       }
+
+      echo "<div id='content$rand_text'>";
+      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+               $this->fields["content"]."</textarea></div>";
+      echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
+      echo $tt->getEndHiddenFieldValue('content', $this);
+
       echo "</td>";
       echo "</tr>";
 
