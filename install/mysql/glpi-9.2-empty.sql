@@ -2693,6 +2693,7 @@ CREATE TABLE `glpi_infocoms` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `decommission_date` datetime DEFAULT NULL,
+  `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),
@@ -2702,7 +2703,8 @@ CREATE TABLE `glpi_infocoms` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `businesscriticities_id` (`businesscriticities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6835,17 +6837,17 @@ CREATE TABLE `glpi_softwarelicenses` (
 DROP TABLE IF EXISTS `glpi_softwarelicensetypes`;
 CREATE TABLE `glpi_softwarelicensetypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `softwarelicensetypes_id` int(11) NOT NULL DEFAULT '0',
-  `completename` text COLLATE utf8_unicode_ci,
   `level` int(11) NOT NULL DEFAULT '0',
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
@@ -6853,7 +6855,7 @@ CREATE TABLE `glpi_softwarelicensetypes` (
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_softwarelicensetypes` VALUES ('1', '0', '1', 'OEM','',NULL,NULL, '0', 'OEM', '0',NULL,NULL);
+INSERT INTO `glpi_softwarelicensetypes` VALUES ('1', 'OEM', '', NULL, NULL, '0', '0', NULL, NULL, '0', '1', 'OEM');
 
 ### Dump table glpi_softwares
 
@@ -7103,7 +7105,6 @@ CREATE TABLE `glpi_taskcategories` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `completename` text COLLATE utf8_unicode_ci,
   `comment` text COLLATE utf8_unicode_ci,
@@ -7114,16 +7115,17 @@ CREATE TABLE `glpi_taskcategories` (
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
