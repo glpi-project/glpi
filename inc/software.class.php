@@ -268,7 +268,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Technician in charge of the hardware') . "</td><td>";
+      echo "<td>" . __('Technician in charge of the software') . "</td><td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
@@ -279,7 +279,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
+      echo "<td>".__('Group in charge of the software')."</td>";
       echo "<td>";
       Group::dropdown(array('name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
@@ -521,7 +521,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician in charge of the hardware'),
+         'name'               => __('Technician in charge of the software'),
          'datatype'           => 'dropdown',
          'right'              => 'own_ticket'
       ];
@@ -531,7 +531,7 @@ class Software extends CommonDBTM {
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
-         'name'               => __('Group in charge of the hardware'),
+         'name'               => __('Group in charge of the software'),
          'condition'          => '`is_assign`',
          'datatype'           => 'dropdown'
       ];
