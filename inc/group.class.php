@@ -632,6 +632,7 @@ class Group extends CommonTreeDropdown {
             if ($itemtype != 'Consumable') {
                $restrict[$itemtype] .= getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',
                                                                   $item->maybeRecursive());
+            }
          }
          if ($item->maybeTemplate()) {
             $restrict[$itemtype] .= " AND NOT `is_template`";
