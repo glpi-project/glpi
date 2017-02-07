@@ -142,7 +142,7 @@ class Group extends CommonTreeDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Group::canUpdate()) {
+      if (!$withtemplate && self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
@@ -771,26 +771,39 @@ class Group extends CommonTreeDropdown {
 
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
+         foreach ($datas as $data) {
+            if (!($item = getItemForItemtype($data['itemtype']))) {
+               continue;
+            }
+         }
+         if ($item->canUpdate($data['items_id'])
+             || ($item->canView($data['items_id'])
+                 && self::canUpdate())) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            echo Html::hidden('field', array('value'                 => $field,
+                                             'data-glpicore-ma-tags' => 'common'));
 
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         echo Html::hidden('field', array('value'                 => $field,
-                                          'data-glpicore-ma-tags' => 'common'));
-
-         $massiveactionparams = array('num_displayed'    => $nb,
-                           'check_itemtype'   => 'Group',
-                           'check_items_id'   => $ID,
-                           'container'        => 'mass'.__CLASS__.$rand,
-                           'extraparams'      => array('is_tech' => $tech,
-                                                       'massive_action_fields' => array('field')),
-                           'specific_actions' => array(__CLASS__.
-                                                       MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                       'changegroup' => __('Move')) );
-         Html::showMassiveActions($massiveactionparams);
-
+            $massiveactionparams = array('num_displayed'    => $nb,
+                                         'check_itemtype'   => 'Group',
+                                         'check_items_id'   => $ID,
+                                         'container'        => 'mass'.__CLASS__.$rand,
+                                         'extraparams'      => array('is_tech' => $tech,
+                                                                  'massive_action_fields' => array('field')),
+                                         'specific_actions' => array(__CLASS__.
+                                                                    MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                                    'changegroup' => __('Move')) );
+            Html::showMassiveActions($massiveactionparams);
+         }
          echo "<table class='tab_cadre_fixehov'>";
          $header_begin  = "<tr><th width='10'>";
-         $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         if ($item->canUpdate($data['items_id'])
+             || ($item->canView($data['items_id'])
+                 && self::canUpdate())) {
+            $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         } else {
+            $header_top = $header_bottom = '';
+         }
          $header_end    = '</th>';
 
          $header_end .= "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
@@ -810,7 +823,9 @@ class Group extends CommonTreeDropdown {
                continue;
             }
             echo "<tr class='tab_bg_1'><td>";
-            if ($item->canEdit($data['items_id'])) {
+            if ($item->canUpdate($data['items_id'])
+                || ($item->canView($data['items_id'])
+                    && self::canUpdate())) {
                Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);
             }
             echo "</td><td>".$item->getTypeName(1);
@@ -838,8 +853,12 @@ class Group extends CommonTreeDropdown {
       }
 
       if ($nb) {
-         $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($massiveactionparams);
+         if ($item->canUpdate($data['items_id'])
+             || ($item->canView($data['items_id'])
+                 && self::canUpdate())) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+         }
       }
       Html::closeForm();
 
