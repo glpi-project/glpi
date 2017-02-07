@@ -1722,24 +1722,24 @@ class Html {
       echo "$(function() {
                var bttop = false;
                BackToTop({
-               text : '^',
-               class: 'vsubmit',
-               autoShow : true,
-               timeEffect : 100,
-               autoShowOffset : '0',
-               appearMethod : '',
-               effectScroll : 'linear',
-               callback: function(e) {
-                  if (e == 'on' && bttop == false) {
-                     $('#see_debug').attr('class', 'wbttop');
-                     bttop = true;
-                  } else if (e == 'off' && bttop == true) {
-                     $('#see_debug').removeAttr('class');
-                     bttop = false;
+                  'text' : '^',
+                  'class': 'vsubmit',
+                  'autoShow' : true,
+                  'timeEffect' : 100,
+                  'autoShowOffset' : '0',
+                  'appearMethod' : '',
+                  'effectScroll' : 'linear',
+                  'callback': function(e) {
+                     if (e == 'on' && bttop == false) {
+                        $('#see_debug').attr('class', 'wbttop');
+                        bttop = true;
+                     } else if (e == 'off' && bttop == true) {
+                        $('#see_debug').removeAttr('class');
+                        bttop = false;
+                     }
                   }
-               }
-            });
-         });";
+               });
+            });";
       echo Html::scriptEnd();
 
       // call static function callcron() every 5min
