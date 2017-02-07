@@ -158,7 +158,7 @@ function update91to92() {
                  `name` text COLLATE utf8_unicode_ci,
                  `answer` longtext COLLATE utf8_unicode_ci,
                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `users_id` int(11) NOT NULL,
+                 `users_id` int(11) NOT NULL DEFAULT '0',
                  `date_creation` datetime DEFAULT NULL,
                  PRIMARY KEY (`id`),
                  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
@@ -187,8 +187,8 @@ function update91to92() {
       }
    }
 
-   $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATE");
-   $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATE");
+   $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATETIME");
+   $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATETIME");
 
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item comments'));
    if (!TableExists('glpi_knowbaseitems_comments')) {
@@ -213,6 +213,7 @@ function update91to92() {
 
    // add kb category to task categories
    $migration->addField("glpi_taskcategories", "knowbaseitemcategories_id", "integer");
+   $migration->addKey("glpi_taskcategories", "knowbaseitemcategories_id");
 
    // #1476 - Add users_id on glpi_documents_items
    $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => TRUE]);
