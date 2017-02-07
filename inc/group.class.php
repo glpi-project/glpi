@@ -614,6 +614,7 @@ class Group extends CommonTreeDropdown {
       // Count the total of item
       $nb  = array();
       $tot = 0;
+      $join = $select = '';
       foreach ($types as $itemtype) {
          $nb[$itemtype] = 0;
          if (!($item = getItemForItemtype($itemtype))) {
@@ -628,14 +629,26 @@ class Group extends CommonTreeDropdown {
          $restrict[$itemtype] = $grprestrict;
 
          if ($item->isEntityAssign()) {
-            $restrict[$itemtype] .= getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',
-                                                               $item->maybeRecursive());
+            if ($itemtype != 'Consumable') {
+               $restrict[$itemtype] .= getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',
+                                                                  $item->maybeRecursive());
          }
          if ($item->maybeTemplate()) {
             $restrict[$itemtype] .= " AND NOT `is_template`";
          }
          if ($item->maybeDeleted()) {
             $restrict[$itemtype] .= " AND NOT `is_deleted`";
+         }
+
+         if ($itemtype == 'Consumable') {
+            $select = "`glpi_consumableitems`.";
+            $join                 = " LEFT JOIN `glpi_consumableitems`
+                                       ON `glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`";
+            $restrict[$itemtype] .= " AND `itemtype` = 'Group'
+                                      AND `consumableitems_id` IN (SELECT `id`
+                                                                   FROM `glpi_consumableitems` ".
+                                                                   getEntitiesRestrictRequest("WHERE",
+                                                                           "glpi_consumableitems",'','',true).")";
          }
 
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
@@ -653,11 +666,14 @@ class Group extends CommonTreeDropdown {
             // No need to read
             $start -= $nb[$itemtype];
          } else {
-            $query = "SELECT `id`
+
+            $query = "SELECT $select`id`
                       FROM `".$item->getTable()."`
+                      $join
                       WHERE ".$restrict[$itemtype]."
                       ORDER BY `name`
                       LIMIT $start,$max";
+
             foreach ($DB->request($query) as $data) {
                $res[] = array('itemtype' => $itemtype,
                               'items_id' => $data['id']);
@@ -732,6 +748,9 @@ class Group extends CommonTreeDropdown {
       $datas = array();
       if ($type) {
          $types = array($type);
+      }
+      if ($type == 'Consumable') {
+         $field = 'items_id';
       }
       $start  = (isset($_GET['start']) ? intval($_GET['start']) : 0);
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
