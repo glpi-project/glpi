@@ -10,6 +10,7 @@ env:
 
 before_script:
   - composer self-update
+  - rm -f composer.lock
   - composer install --optimize-autoloader --ignore-platform-reqs
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
