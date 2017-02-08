@@ -196,6 +196,13 @@ class SearchTest extends DbTestCase {
                                                                 'field'      => '8',
                                                                 'searchtype' => 'notequals',
                                                                 'value'      => 0)));
+      $data = $this->doSearch('User', $search_params);
+
+      // check for sql error (data key missing or empty)
+      $this->assertArrayHasKey('data', $data, $data['last_errors']);
+      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      //expecting one result
+      $this->assertEquals(1, $data['data']['totalcount']);
    }
 
 

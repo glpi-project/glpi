@@ -56,6 +56,12 @@ class DbFunctionTest extends DbTestCase {
                    array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'));
    }
 
+   public function dataTableForeignKey() {
+
+      return array(array('glpi_computers', 'computers_id'),
+                   array('glpi_users', 'users_id'),
+                   array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'));
+   }
 
    /**
     * @covers ::getForeignKeyFieldForTable
@@ -68,13 +74,10 @@ class DbFunctionTest extends DbTestCase {
 
    /**
     * @covers ::isForeignKeyField
-    * @dataProvider dataTableKey
+    * @dataProvider dataTableForeignKey
    **/
    public function testIsForeignKeyFieldBase($table, $key) {
-
-      if ($key) {
-         $this->assertTrue(isForeignKeyField($key));
-      }
+      $this->assertTrue(isForeignKeyField($key));
    }
 
 
@@ -92,13 +95,10 @@ class DbFunctionTest extends DbTestCase {
 
    /**
     * @covers ::getTableNameForForeignKeyField
-    * @dataProvider dataTableKey
+    * @dataProvider dataTableForeignKey
    **/
    public function testGetTableNameForForeignKeyField($table, $key) {
-
-      if ($key) {
-         $this->assertEquals($table, getTableNameForForeignKeyField($key));
-      }
+      $this->assertEquals($table, getTableNameForForeignKeyField($key));
    }
 
 
