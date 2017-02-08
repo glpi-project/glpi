@@ -2284,7 +2284,7 @@ class Search {
       if ($plug = isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addSelect';
          if (function_exists($function)) {
-            $out = $function($itemtype,$ID,$num);
+            $out = $function($itemtype, $ID, $num);
             if (!empty($out)) {
                return $out;
             }
@@ -4731,7 +4731,7 @@ class Search {
                $plug     = $matches[1];
                $function = 'plugin_'.$plug.'_giveItem';
                if (function_exists($function)) {
-                  $out = $function($itemtype,$ID,$data,$num);
+                  $out = $function($itemtype, $ID, $data, $num);
                   if (!empty($out)) {
                      return $out;
                   }

@@ -10,7 +10,9 @@ env:
 
 before_script:
   - composer self-update
-  - composer install -o
+  - sed -e '/"php":/d' -i composer.json
+  - rm -f composer.lock
+  - composer install --optimize-autoloader
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
@@ -18,7 +20,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/phpunit --verbose
-  - vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:

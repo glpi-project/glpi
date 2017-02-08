@@ -26,7 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-abstract class APIBaseClass extends PHPUnit_Framework_TestCase {
+abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
    abstract protected function query($resource      = "",
                                      $params        = [],
                                      $expected_code = 200);
