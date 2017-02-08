@@ -32,7 +32,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 
 /* Test for inc/html.class.php */
 
-class HtmlTest extends PHPUnit_Framework_TestCase {
+class HtmlTest extends PHPUnit\Framework\TestCase {
 
    /**
     * @covers Html::convDate

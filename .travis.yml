@@ -5,14 +5,16 @@ env:
 
 before_script:
   - composer self-update
-  - composer install -o
+  - sed -e '/"php":/d' -i composer.json
+  - rm -f composer.lock
+  - composer install --optimize-autoloader
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
 
 script:
   - mysql -u root -e 'select version();'
-  - phpunit --verbose
+  - vendor/bin/phpunit --verbose
 
 matrix:
   include:

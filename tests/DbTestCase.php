@@ -32,7 +32,7 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
-class DbTestCase extends PHPUnit_Framework_TestCase {
+class DbTestCase extends PHPUnit\Framework\TestCase {
 
    protected function setUp() {
       global $DB;

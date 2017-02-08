@@ -32,7 +32,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 
 /* Test for inc/html.class.php */
 
-class ToolboxTest extends PHPUnit_Framework_TestCase {
+class ToolboxTest extends PHPUnit\Framework\TestCase {
 
    /**
     * @covers Toolbox::getRandomString
