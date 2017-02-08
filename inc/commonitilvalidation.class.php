@@ -1266,7 +1266,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[UPDATE],  $values[READ]);
+      unset($values[UPDATE], $values[READ]);
 
       $values[self::VALIDATE]  = __('Validate');
 

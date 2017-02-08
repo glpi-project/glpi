@@ -20,7 +20,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/phpunit --verbose
-  - vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./
+  - if [[ $PHP = 5.6 ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
