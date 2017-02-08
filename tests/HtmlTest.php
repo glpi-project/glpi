@@ -32,7 +32,7 @@
 
 /* Test for inc/html.class.php */
 
-class HtmlTest extends PHPUnit_Framework_TestCase {
+class HtmlTest extends PHPUnit\Framework\TestCase {
 
    /**
     * @covers Html::convDate

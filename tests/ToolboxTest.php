@@ -32,7 +32,7 @@
 
 /* Test for inc/html.class.php */
 
-class ToolboxTest extends PHPUnit_Framework_TestCase {
+class ToolboxTest extends PHPUnit\Framework\TestCase {
 
    /**
     * @covers Toolbox::getRandomString

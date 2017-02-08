@@ -32,7 +32,7 @@
 
 /* Test for inc/session.class.php */
 
-class SessionTest extends PHPUnit_Framework_TestCase {
+class SessionTest extends PHPUnit\Framework\TestCase {
 
    /**
     * @covers Session::addMessageAfterRedirect
