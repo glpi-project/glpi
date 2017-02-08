@@ -30,7 +30,7 @@
 
 use GuzzleHttp\Exception\ClientException;
 
-class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
+class APIXmlrpcTest extends PHPUnit\Framework\TestCase {
    protected $http_client;
    protected $base_uri = "";
 

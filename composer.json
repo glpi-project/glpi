@@ -35,7 +35,8 @@
         "true/punycode": "^2.1"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "~5"
+        "guzzlehttp/guzzle": "~5",
+        "phpunit/phpunit": "^4.8 || ^5.7 || ^6.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
