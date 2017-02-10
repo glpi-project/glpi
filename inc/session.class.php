@@ -1122,7 +1122,9 @@ class Session {
       global $CURRENTCSRFTOKEN;
 
       if (empty($CURRENTCSRFTOKEN)) {
-         $CURRENTCSRFTOKEN = md5(uniqid(rand(), TRUE));
+         do {
+            $CURRENTCSRFTOKEN = md5(uniqid(rand(), TRUE));
+         } while ($CURRENTCSRFTOKEN == '');
       }
 
       if (!isset($_SESSION['glpicsrftokens'])) {
