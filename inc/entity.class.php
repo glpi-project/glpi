@@ -1137,7 +1137,7 @@ class Entity extends CommonTreeDropdown {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</div";
+         echo "</div>";
          Html::closeForm();
       }
 
