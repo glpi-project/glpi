@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015-2017 Teclib'.
@@ -33,5 +32,11 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new DeviceBattery();
+if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
+   throw new \RuntimeException(
+      'Missing or incorrect device type called!'
+   );
+}
+
+$dropdown = new $_GET['itemtype'];
 include (GLPI_ROOT . "/front/dropdown.common.php");
