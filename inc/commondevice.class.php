@@ -519,4 +519,23 @@ abstract class CommonDevice extends CommonDropdown {
       parent::post_updateItem($history);
    }
 
+   static function getFormURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/device.form.php?itemtype=$itemtype";
+
+      return $link;
+   }
+
+   static function getSearchURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/device.php?itemtype=$itemtype";
+
+      return $link;
+   }
 }
