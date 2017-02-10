@@ -101,7 +101,7 @@ abstract class CommonDevice extends CommonDropdown {
       $menu = array();
       if (self::canView()) {
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
-         $menu['page']  = '/front/device.php';
+         $menu['page']  = '/front/devices.php';
 
          $dps = Dropdown::getDeviceItemTypes();
 
