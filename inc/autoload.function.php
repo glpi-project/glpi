@@ -299,7 +299,7 @@ function glpi_autoload($classname) {
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      die("Security die. trying to load an forbidden class name");
+      die("Security die. trying to load a forbidden class name");
    }
 
    $dir = GLPI_ROOT . "/inc/";
