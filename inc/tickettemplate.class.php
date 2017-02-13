@@ -188,15 +188,15 @@ class TicketTemplate extends CommonDropdown {
                      $ticket->getSearchOptionIDByField('field', 'global_validation',
                                                        'glpi_tickets')   => 'global_validation',
 
-                     4                                                   => '_users_id_requester',
-                     71                                                  => '_groups_id_requester',
-                     5                                                   => '_users_id_assign',
-                     8                                                   => '_groups_id_assign',
+                                                       4                 => '_users_id_requester',
+                                                       71                => '_groups_id_requester',
+                                                       5                 => '_users_id_assign',
+                                                       8                 => '_groups_id_assign',
                      $ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_suppliers') => '_suppliers_id_assign',
 
-                     66                                                  => '_users_id_observer',
-                     65                                                  => '_groups_id_observer',
+                                                       66                => '_users_id_observer',
+                                                       65                => '_groups_id_observer',
              );
 
          if ($withtypeandcategory) {
@@ -225,6 +225,11 @@ class TicketTemplate extends CommonDropdown {
          $allowed_fields[$withtypeandcategory][$withitemtype]
                [$ticket->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
+
+         // Add TicketTask (from task templates)
+         $allowed_fields[$withtypeandcategory][$withitemtype]
+               [$ticket->getSearchOptionIDByField('field', 'name',
+                                                  TaskTemplate::getTable())] = '_tasktemplates_id';
       }
 
       return $allowed_fields[$withtypeandcategory][$withitemtype];
@@ -243,6 +248,10 @@ class TicketTemplate extends CommonDropdown {
          switch ($ID) {
             case -2 :
                $tab[-2] = __('Approval request');
+               break;
+
+            case 175 :
+               $tab[175] = CommonITILTask::getTypeName();
                break;
 
             default :
