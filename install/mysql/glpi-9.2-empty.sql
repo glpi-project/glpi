@@ -663,6 +663,7 @@ CREATE TABLE `glpi_changetasks` (
   `content` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
@@ -673,7 +674,8 @@ CREATE TABLE `glpi_changetasks` (
   KEY `date_mod` (`date_mod`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
-  KEY `taskcategories_id` (`taskcategories_id`)
+  KEY `taskcategories_id` (`taskcategories_id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5760,6 +5762,7 @@ CREATE TABLE `glpi_problemtasks` (
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `state` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
@@ -5770,7 +5773,8 @@ CREATE TABLE `glpi_problemtasks` (
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `state` (`state`),
-  KEY `taskcategories_id` (`taskcategories_id`)
+  KEY `taskcategories_id` (`taskcategories_id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7498,13 +7502,20 @@ CREATE TABLE `glpi_tasktemplates` (
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `state` int(11) NOT NULL DEFAULT '0',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_private` (`is_private`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7713,6 +7724,7 @@ CREATE TABLE `glpi_tickettasks` (
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `date_mod` (`date_mod`),
@@ -7724,7 +7736,8 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `begin` (`begin`),
-  KEY `end` (`end`)
+  KEY `end` (`end`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

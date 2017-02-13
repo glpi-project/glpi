@@ -569,6 +569,28 @@ function update91to92() {
       $query = "UPDATE `glpi_softwarelicenses` SET `completename`=`name`";
       $DB->queryOrDie($query, "9.2 copy name to completename for software licenses");
    }
+
+   // add template key to itiltasks
+   $migration->addField("glpi_tickettasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_tickettasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_tickettasks');
+   $migration->addField("glpi_problemtasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_problemtasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_problemtasks');
+   $migration->addField("glpi_changetasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_changetasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_changetasks');
+
+   // add missing fields to tasktemplate
+   $migration->addField("glpi_tasktemplates", "state", "integer");
+   $migration->addField("glpi_tasktemplates", "is_private", "bool");
+   $migration->addField("glpi_tasktemplates", "users_id_tech", "integer");
+   $migration->addField("glpi_tasktemplates", "groups_id_tech", "integer");
+   $migration->addKey("glpi_tickettasks", "is_private");
+   $migration->addKey("glpi_tickettasks", "users_id_tech");
+   $migration->addKey("glpi_tickettasks", "groups_id_tech");
+   $migration->migrationOneTable('glpi_tasktemplates');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -163,6 +163,20 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
 
    /**
+    * Return fields who doesn't need to be used for this part of template
+    *
+    * @since 9.2
+    *
+    * @return array the excluded fields (keys and values are equals)
+    */
+   static function getExcludedFields() {
+      return [
+         175 => 175, // ticket's tasks
+      ];
+   }
+
+
+   /**
     * Print the mandatory fields
     *
     * @since version 0.83
@@ -184,6 +198,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $ttm               = new self();
       $used              = $ttm->getMandatoryFields($ID);
       $fields            = $tt->getAllowedFieldsNames(true);
+      $fields            = array_diff_key($fields, self::getExcludedFields());
       $simplified_fields = $tt->getSimplifiedInterfaceFields();
       $both_interfaces   = sprintf(__('%1$s + %2$s'), __('Simplified interface'), __
                                    ('Standard interface'));

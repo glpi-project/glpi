@@ -1743,6 +1743,28 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Add tasks in tasktemplates if defined in tickettemplate
+      if (isset($this->input['_tasktemplates_id'])
+          && is_array($this->input['_tasktemplates_id'])
+          && count($this->input['_tasktemplates_id'])) {
+         $tasktemplate = new TaskTemplate;
+         $tickettask   = new TicketTask;
+         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
+            $tasktemplate->getFromDB($tasktemplates_id);
+            $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
+                              'content'           => $tasktemplate->fields['content'],
+                              'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],
+                              'actiontime'        => $tasktemplate->fields['actiontime'],
+                              'state'             => $tasktemplate->fields['state'],
+                              'tickets_id'        => $this->fields['id'],
+                              'is_private'        => $tasktemplate->fields['is_private'],
+                              'users_id_tech'     => $tasktemplate->fields['users_id_tech'],
+                              'groups_id_tech'    => $tasktemplate->fields['groups_id_tech'],
+                              '_disablenotif'     => true
+                              ]);
+         }
+      }
+
       if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
          foreach ($this->input['items_id'] as $itemtype => $items) {
@@ -3558,6 +3580,7 @@ class Ticket extends CommonITILObject {
                     'users_id_validate'         => array(),
                     'type'                      => $type,
                     '_documents_id'             => array(),
+                    '_tasktemplates_id'         => array(),
                     '_filename'                 => array(),
                     '_tag_filename'             => array());
    }
@@ -3906,6 +3929,11 @@ class Ticket extends CommonITILObject {
                 $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
          if (isset($options['_projecttasks_id'])) {
             echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
+         }
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
          }
       }
       echo "<div class='spaced' id='tabsbody'>";

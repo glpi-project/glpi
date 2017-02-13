@@ -59,16 +59,29 @@ class TaskTemplate extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'taskcategories_id',
+      return array(array('name'  => 'content',
+                         'label' => __('Content'),
+                         'type'  => 'textarea'),
+                   array('name'  => 'taskcategories_id',
                          'label' => __('Task category'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
+                   array('name'  => 'state',
+                         'label' => __('Status'),
+                         'type'  => 'state'),
+                   array('name'  => 'is_private',
+                         'label' => __('Private'),
+                         'type'  => 'bool'),
                    array('name'  => 'actiontime',
                          'label' => __('Duration'),
                          'type'  => 'actiontime'),
-                   array('name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'textarea'));
+                   array('name'  => 'users_id_tech',
+                         'label' => __('By'),
+                         'type'  => 'users_id_tech'),
+                   array('name'  => 'groups_id_tech',
+                         'label' => __('Group'),
+                         'type'  => 'groups_id_tech'),
+                  );
    }
 
 
@@ -102,6 +115,23 @@ class TaskTemplate extends CommonDropdown {
    function displaySpecificTypeField($ID, $field=array()) {
 
       switch ($field['type']) {
+         case 'state' :
+            Planning::dropdownState("state", $this->fields["state"]);
+            break;
+         case 'users_id_tech' :
+            User::dropdown(['name'   => "users_id_tech",
+                            'right'  => "own_ticket",
+                            'value'  => $this->fields["users_id_tech"],
+                            'entity' => $this->fields["entities_id"],
+            ]);
+            break;
+         case 'groups_id_tech' :
+            Group::dropdown(['name'     => "groups_id_tech",
+                            'condition' => "is_task",
+                            'value'     => $this->fields["groups_id_tech"],
+                            'entity'    => $this->fields["entities_id"],
+            ]);
+            break;
          case 'actiontime' :
             $toadd = array();
             for ($i=9; $i<=100; $i++) {

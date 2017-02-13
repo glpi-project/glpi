@@ -199,9 +199,24 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $ticket = new Ticket();
       $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'));
+                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'),
+                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
+                     );
 
       return $fields;
+   }
+
+   /**
+    * Return fields who doesn't need to be used for this part of template
+    *
+    * @since 9.2
+    *
+    * @return array the excluded fields (keys and values are equals)
+    */
+   static function getExcludedFields() {
+      return [
+         -2 => -2, // validation request
+      ];
    }
 
 
@@ -227,6 +242,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $canedit       = $tt->canEdit($ID);
 
       $fields        = $tt->getAllowedFieldsNames(true, true);
+      $fields        = array_diff_key($fields, self::getExcludedFields());
       $searchOption  = Search::getOptions('Ticket');
       $ticket        = new Ticket();
       $rand          = mt_rand();
@@ -260,8 +276,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields    += $fields;
 
-            // Force validation request as used
-            $used[-2] = -2;
             // Unset multiple items
             $multiple = self::getMultiplePredefinedValues();
             foreach ($multiple as $val) {
