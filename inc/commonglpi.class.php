@@ -437,7 +437,7 @@ class CommonGLPI {
             // get tabs and loop over
             $ong = $item->defineAllTabs(array('withtemplate' => $withtemplate));
 
-            if (self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+            if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
                //on classical and vertical split; the main tab is always displayed
                array_shift($ong);
             }
