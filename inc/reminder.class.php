@@ -248,7 +248,7 @@ class Reminder extends CommonDBTM {
                   return true;
                }
                // Restrict to entities
-               if (Session::haveAccessToEntity($profiles['entities_id'], $profile['is_recursive'])) {
+               if (Session::haveAccessToEntity($profile['entities_id'], $profile['is_recursive'])) {
                   return true;
                }
             }
