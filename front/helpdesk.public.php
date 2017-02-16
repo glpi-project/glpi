@@ -90,6 +90,7 @@ if (!Session::haveRight('ticket', CREATE)
 
 Session::checkHelpdeskAccess();
 
+Plugin::doHook('display_central');
 
 if (isset($_GET['create_ticket'])) {
    Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
