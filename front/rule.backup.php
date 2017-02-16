@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -56,13 +56,13 @@ if ($action != "export") {
 
 switch ($action) {
    case "preview_import":
-      $rulecollection->checkGlobal(CREATE);
+      $rulecollection->checkGlobal(UPDATE);
       if (RuleCollection::previewImportRules()) {
          break;
       }
 
    case "import":
-      $rulecollection->checkGlobal(CREATE);
+      $rulecollection->checkGlobal(UPDATE);
       RuleCollection::displayImportRulesForm();
       break;
 
@@ -85,7 +85,7 @@ switch ($action) {
       break;
 
    case "process_import":
-      $rulecollection->checkGlobal(CREATE);
+      $rulecollection->checkGlobal(UPDATE);
       RuleCollection::processImportRules();
       Html::back();
       break;
