@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceProcessorModel
-class DeviceProcessorModel extends CommonDropdown {
+class DeviceProcessorModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

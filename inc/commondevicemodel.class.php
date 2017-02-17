@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: devicegenericmodel.form.php 22656 2014-02-12 16:15:25Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
@@ -31,8 +30,30 @@
 * @brief
 */
 
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-include ('../inc/includes.php');
+/// Class DeviceBatteryModel
+abstract class CommonDeviceModel extends CommonDropdown {
 
-$dropdown = new DeviceGenericModel();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+   static function getFormURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
+
+      return $link;
+   }
+
+   static function getSearchURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
+
+      return $link;
+   }
+}

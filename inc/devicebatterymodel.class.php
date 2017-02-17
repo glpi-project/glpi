@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceBatteryModel
-class DeviceBatteryModel extends CommonDropdown {
+class DeviceBatteryModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 
