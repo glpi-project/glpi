@@ -1086,8 +1086,8 @@ class Item_Devices extends CommonDBRelation {
       $computer = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
 
       if ($CFG_GLPI["is_location_autoupdate"]
-         && ($computer->fields['locations_id'] != $input['locations_id'])
-         ||!isset($input['locations_id'])
+         && (!isset($input['locations_id']) ||
+         $computer->fields['locations_id'] != $input['locations_id'])
       ) {
          $input['locations_id'] = $computer->fields['locations_id'];
       }
