@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceMemoryType
-class DeviceMemoryType extends CommonDropdown {
+class DeviceMemoryType extends CommonDeviceType {
 
 
    static function getTypeName($nb=0) {

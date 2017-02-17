@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceCaseType (Interface is a reserved keyword)
-class DeviceCaseType extends CommonDropdown {
+class DeviceCaseType extends CommonDeviceType {
 
 
    static function getTypeName($nb=0) {
