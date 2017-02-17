@@ -2,13 +2,9 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2017 Teclib'.
-
- http://glpi-project.org
-
- based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
+ http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -30,7 +26,33 @@
  --------------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+/** @file
+* @brief
+*/
 
-$dropdown = new DevicebatteryType();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+abstract class CommonDeviceType extends CommonDropdown {
+
+   static function getFormURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/devicetype.form.php?itemtype=$itemtype";
+
+      return $link;
+   }
+
+   static function getSearchURL($full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $itemtype = get_called_class();
+      $link = "$dir/front/devicetype.php?itemtype=$itemtype";
+
+      return $link;
+   }
+}

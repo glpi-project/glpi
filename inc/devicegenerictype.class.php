@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceGenericType
-class DeviceGenericType extends CommonDropdown {
+class DeviceGenericType extends CommonDeviceType {
 
    static function getTypeName($nb=0) {
       return _n('Generic type', 'Generic types', $nb); //TODO : add this to locales (if don't exist)
