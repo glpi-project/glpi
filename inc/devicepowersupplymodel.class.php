@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DevicePowerSupplyModel
-class DevicePowerSupplyModel extends CommonDropdown {
+class DevicePowerSupplyModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

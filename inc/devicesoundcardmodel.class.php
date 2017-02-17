@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceSoundCardModel
-class DeviceSoundCardModel extends CommonDropdown {
+class DeviceSoundCardModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

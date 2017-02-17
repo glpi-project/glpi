@@ -36,12 +36,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceCaseModel
-class DeviceCaseModel extends CommonDropdown {
+class DeviceCaseModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 
 
    static function getTypeName($nb=0) {
-      return _n('Device harddrive model', 'Device harddrive models', $nb);
+      return _n('Device case model', 'Device case models', $nb);
    }
 }
