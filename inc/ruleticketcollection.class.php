@@ -112,9 +112,11 @@ class RuleTicketCollection extends RuleCollection {
       // Get groups of users
       if (isset($input['_users_id_requester'])) {
          if (!is_array($input['_users_id_requester'])) {
-            $input['_users_id_requester'] = array($input['_users_id_requester']);
+            $requesters = array($input['_users_id_requester']);
+         } else {
+            $requesters = $input['_users_id_requester'];
          }
-         foreach ($input['_users_id_requester'] as $uid) {
+         foreach ($requesters as $uid) {
             foreach (Group_User::getUserGroups($uid) as $g) {
                $input['_groups_id_of_requester'][$g['id']] = $g['id'];
             }
