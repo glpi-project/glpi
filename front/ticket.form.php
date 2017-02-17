@@ -187,6 +187,11 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
    unset($_REQUEST['id']);
+   // alternative email must be empty for create ticket
+   unset($_REQUEST['_users_id_requester_notif']['alternative_email']);
+   unset($_REQUEST['_users_id_observer_notif']['alternative_email']);
+   unset($_REQUEST['_users_id_assign_notif']['alternative_email']);
+   unset($_REQUEST['_suppliers_id_assign_notif']['alternative_email']);
    // Add a ticket from item : format data
    if (isset($_REQUEST['_add_fromitem'])
        && isset($_REQUEST['itemtype'])
