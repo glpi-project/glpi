@@ -5102,6 +5102,9 @@ class Html {
     *    - pasteZone           string   DOM ID of the paste zone
     *    - dropZone            string   DOM ID of the drop zone
     *    - rand                string   already computed rand value
+    *    - display             boolean  display or return the generated html
+    *
+    * @return mixed          the html if display paremeter is false or true
    **/
    static function file($options=array()) {
       global $CFG_GLPI;
