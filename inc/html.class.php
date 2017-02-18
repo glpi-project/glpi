@@ -2785,8 +2785,9 @@ class Html {
     *    - confirm          : string of confirm message before massive action
     *    - item             : CommonDBTM object that has to be passed to the actions
     *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
+    *    - display          : display or return the generated html (default true)
     *
-    * @return nothing
+    * @return bool|string     the html if display parameter is false, or true
    **/
    static function showMassiveActions($options=array()) {
       global $CFG_GLPI;
@@ -2811,7 +2812,8 @@ class Html {
       $p['display_arrow']     = true;
       $p['title']             = _n('Action', 'Actions', Session::getPluralNumber());
       $p['item']              = false;
-      $p['tag_to_send']      = 'common';
+      $p['tag_to_send']       = 'common';
+      $p['display']           = true;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2856,25 +2858,26 @@ class Html {
 
       $identifier = md5($url.serialize($p['extraparams']).$p['rand']);
       $max        = Toolbox::get_max_input_vars();
+      $out = '';
 
       if (($p['num_displayed'] >= 0)
           && ($max > 0)
           && ($max < ($p['num_displayed']+10))) {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-            echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
-                  "<td><span class='b'>";
-            echo __('Selection too large, massive action disabled.')."</span>";
+            $out .= "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
+                    "<td><span class='b'>";
+            $out .= __('Selection too large, massive action disabled.')."</span>";
             if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-               echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+               $out .= "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
             }
-            echo "</td></tr></table>";
+            $out .= "</td></tr></table>";
          }
       } else {
          // Create Modal window on top
          if ($p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-            echo "<div id='massiveactioncontent$identifier'></div>";
+                $out .= "<div id='massiveactioncontent$identifier'></div>";
 
             if (!empty($p['tag_to_send'])) {
                $js_modal_fields  = "            var items = $('";
@@ -2901,28 +2904,35 @@ class Html {
                                           'height'          => $p['height'],
                                           'js_modal_fields' => $js_modal_fields));
          }
-         echo "<table class='tab_glpi' width='$width'><tr>";
+         $out .= "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
-            echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
+            $out .= "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                    ($p['ontop']?'-top':'').".png' alt=''></td>";
          }
-         echo "<td width='100%' class='left'>";
-         echo "<a class='vsubmit' ";
+         $out .= "<td width='100%' class='left'>";
+         $out .= "<a class='vsubmit' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
-            echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
+            $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
-            echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
+            $out .= "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
-         echo " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
-         echo $p['title']."</a>";
-         echo "</td>";
+         $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
+         $out .= $p['title']."</a>";
+         $out .= "</td>";
 
-         echo "</tr></table>";
+         $out .= "</tr></table>";
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
             $_SESSION['glpimassiveactionselected'] = array();
          }
+      }
+
+      if ($p['display']) {
+         echo $out;
+         return true;
+      } else {
+         return $out;
       }
    }
 
