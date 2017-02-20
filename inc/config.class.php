@@ -1520,7 +1520,7 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       $ext = (PHP_MAJOR_VERSION < 7 ? 'APCu' : 'apcu-bc');
-      if (function_exists('apc_fetch')) {
+      if (function_exists('apc_fetch') && ini_get('apc.enabled')) {
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion('apc') . "</td>
                <td></td>
