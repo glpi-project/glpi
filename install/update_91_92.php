@@ -338,8 +338,7 @@ function update91to92() {
       'glpi_devicepcis'          => 'devicepcimodels_id',
       'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
       'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
-      'glpi_devicesoundcards'    => 'devicesoundcardmodels_id',
-      'glpi_devicegenerics'      => 'devicegenericmodels_id'
+      'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'
    ];
 
    foreach ($tables as $table => $field) {
