@@ -1545,20 +1545,16 @@ class Config extends CommonDBTM {
               ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          // Hits
-         if ($stat == false) {
-            echo "<tr><td>" . __('The apc_cache is not activated') . "</td></tr>";
-         } else {
-            $hits = $stat['num_hits'];
-            $miss = $stat['num_misses'];
-            $max  = $hits+$miss;
-            $rate = round(100 * $hits / ($hits + $miss));
-            echo "<tr><td>" . __('Hits rate') . "</td>
-                  <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-            Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                         'forcepadding' => false));
-            echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-                            ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
-         }
+         $hits = $stat['num_hits'];
+         $miss = $stat['num_misses'];
+         $max  = $hits+$miss;
+         $rate = round(100 * $hits / ($hits + $miss));
+         echo "<tr><td>" . __('Hits rate') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
