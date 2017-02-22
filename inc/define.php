@@ -273,11 +273,11 @@ $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'Networ
                                                   'NetworkPortDialup',   'NetworkPortLocal',
                                                   'NetworkPortFiberchannel');
 
-$CFG_GLPI['device_types']                 = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
-                                                  'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
-                                                  'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
-                                                  'DevicePci', 'DeviceCase', 'DevicePowerSupply',
-                                                  'DeviceGeneric', 'DeviceBattery', 'DeviceFirmware');
+$CFG_GLPI['device_types']                 = array('DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
+                                                  'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
+                                                  'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
+                                                  'DeviceSoundCard', 'DeviceControl', 'DevicePci',
+                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric');
 
 $CFG_GLPI["itemdevices_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer');
