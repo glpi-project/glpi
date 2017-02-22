@@ -1535,15 +1535,15 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      $ext = (PHP_MAJOR_VERSION < 7 ? 'APCu' : 'apcu-bc');
-      if (function_exists('apc_fetch') && ini_get('apc.enabled')) {
+      $ext = 'APCu';
+      if (function_exists('apcu_fetch') && ini_get('apc.enabled')) {
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion('apc') . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
 
-         $info = apc_sma_info(true);
-         $stat = apc_cache_info('user', true);
+         $info = apcu_sma_info(true);
+         $stat = apcu_cache_info(true);
          // echo "<tr><td><pre>Info:".print_r($info, true)."Stat:".print_r($stat, true)."</pre></td></tr>";
 
          // Memory

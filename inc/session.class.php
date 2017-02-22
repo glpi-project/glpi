@@ -576,7 +576,7 @@ class Session {
       }
       try {
          $TRANSLATE = new Zend\I18n\Translator\Translator;
-         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
+         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apcu'));
          $TRANSLATE->setCache($cache);
       } catch (Exception $e) {
          $TRANSLATE = new Zend\I18n\Translator\Translator;
