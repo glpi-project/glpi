@@ -292,7 +292,7 @@ $CFG_GLPI["itemdevicenetworkcard_types"]  = array('Computer', 'NetworkEquipment'
 
 $CFG_GLPI['itemdeviceharddrive_types']    = array('Computer', 'Peripheral');
 
-$CFG_GLPI['itemdevicebattery_types']      = array('Computer', 'Peripheral', 'Phone');
+$CFG_GLPI['itemdevicebattery_types']      = array('Computer', 'Peripheral', 'Phone', 'Printer');
 
 $CFG_GLPI['itemdevicefirmware_types']     = array('Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer');
 
