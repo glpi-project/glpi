@@ -116,7 +116,7 @@ class DeviceFirmware extends CommonDevice {
       switch ($itemtype) {
          case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('DeviceFirmware_type', __('Type'), $super, $father);
+            $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
             break;
       }
    }
