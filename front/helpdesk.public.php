@@ -90,7 +90,6 @@ if (!Session::haveRight('ticket', CREATE)
 
 Session::checkHelpdeskAccess();
 
-Plugin::doHook('display_central');
 
 if (isset($_GET['create_ticket'])) {
    Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
@@ -102,6 +101,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table class='tab_cadre_postonly'><tr class='noHover'>";
    echo "<td class='top' width='50%'><br>";
    echo "<table class='central'>";
+   Plugin::doHook('display_central');
    if (Session::haveRight('ticket', CREATE)) {
       echo "<tr class='noHover'><td class='top'>";
       Ticket::showCentralCount(true);
