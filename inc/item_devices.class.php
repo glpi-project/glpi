@@ -1033,7 +1033,7 @@ class Item_Devices extends CommonDBRelation {
       }
       echo "</td>";
 
-      echo "<td>".__('Device')."</td>";
+      echo "<td>"._n('Component', 'Components', 1)."</td>";
       echo "<td>".$device->getLink()."</td>";
       echo "</tr>";
       $even = 0;
