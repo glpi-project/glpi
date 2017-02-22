@@ -2895,14 +2895,15 @@ class Html {
                $js_modal_fields = "";
             }
 
-            Ajax::createModalWindow('massiveaction_window'.$identifier,
-                                    $url,
-                                    array('title'           => $p['title'],
-                                          'container'       => 'massiveactioncontent'.$identifier,
-                                          'extraparams'     => $p['extraparams'],
-                                          'width'           => $p['width'],
-                                          'height'          => $p['height'],
-                                          'js_modal_fields' => $js_modal_fields));
+            $out .= Ajax::createModalWindow('massiveaction_window'.$identifier,
+                                            $url,
+                                            array('title'           => $p['title'],
+                                                  'container'       => 'massiveactioncontent'.$identifier,
+                                                  'extraparams'     => $p['extraparams'],
+                                                  'width'           => $p['width'],
+                                                  'height'          => $p['height'],
+                                                  'js_modal_fields' => $js_modal_fields,
+                                                  'display'         => false));
          }
          $out .= "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
