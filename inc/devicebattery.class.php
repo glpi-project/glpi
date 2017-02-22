@@ -53,11 +53,6 @@ class DeviceBattery extends CommonDevice {
                'type'  => 'dropdownValue'
             ],
             [
-               'name'   => 'manufacturing_date',
-               'label'  => __('Manufacturing date'),
-               'type'   => 'date'
-            ],
-            [
                'name'   => 'capacity',
                'label'  => __('Capacity'),
                'type'   => 'text',
