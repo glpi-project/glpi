@@ -1,3 +1,4 @@
+
 <?php
 /**
  * ---------------------------------------------------------------------
@@ -1383,6 +1384,234 @@ class Stat extends CommonGLPI {
                            divisor: 10,
                            fillHoles: false
                         }),
+                        axisX: {
+                           labelOffset: {
+                              x: -" . mb_strlen($labels[0]) * 7  . "
+                           }
+                        }";
+
+      if ($param['legend'] === true || $param['tooltip'] === true) {
+         $out .= ", plugins: [";
+         if ($param['legend'] === true) {
+            $out .= "Chartist.plugins.legend()";
+         }
+         if ($param['tooltip'] === true) {
+            $out .= ($param['legend'] === true ? ',' : '') . "Chartist.plugins.tooltip()";
+         }
+         $out .= "]";
+      }
+
+      $out .= "});";
+
+      if ($param['animate'] === true) {
+                  $out .= "
+                     chart_$slug.on('draw', function(data) {
+                        if(data.type === 'line' || data.type === 'area') {
+                           data.element.animate({
+                              d: {
+                                 begin: 300 * data.index,
+                                 dur: 500,
+                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                                 to: data.path.clone().stringify(),
+                                 easing: Chartist.Svg.Easing.easeOutQuint
+                              }
+                           });
+                        }
+                     });
+                  });";
+      }
+      $out .="</script>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
+   }
+
+   /**
+    * Display bar graph
+    *
+    * @param string   $title  Graph title
+    * @param string[] $labels Labels to display
+    * @param array    $series Series data. An array of the form:
+    *                 [
+    *                    ['name' => 'a name', 'data' => []],
+    *                    ['name' => 'another name', 'data' => []]
+    *                 ]
+    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param boolean  $display  Whether to display directly; defauts to true
+    *
+    * @return void
+    */
+   public function displayBarGraph($title, $labels, $series, $options = null, $display = true) {
+
+      $param = [
+         'width'   => 900,
+         'height'  => 300,
+         'tooltip' => true,
+         'legend'  => true,
+         'animate' => true
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      $slug = str_replace('-', '_', Toolbox::slugify($title));
+      $this->checkEmptyLabels($labels);
+      $out = "<h2 class='center'>$title</h2>";
+      $out .= "<div id='$slug' class='chart'></div>";
+      Html::requireJs('charts');
+      $out .= "<script type='text/javascript'>
+                  $(function() {
+                     var chart_$slug = new Chartist.Bar('#$slug', {
+                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
+                        series: [";
+
+      $first = true;
+      foreach ($series as $serie) {
+         if ($first === true) {
+            $first = false;
+         } else {
+            $out .= ",\n";
+         }
+         if (isset($serie['name'])) {
+            $out .= "{'name': '{$serie['name']}', 'data': [" . implode(', ', $serie['data']) . "]}";
+         } else {
+            $out .= "[" . implode(', ', $serie['data']) . "]";
+         }
+      }
+
+      $out .= "
+                        ]
+                     }, {
+                        seriesBarDistance: 10,
+                        low: 0,
+                        showArea: true,
+                        width: '{$param['width']}',
+                        height: '{$param['height']}',
+                        fullWidth: true,
+                        lineSmooth: Chartist.Interpolation.simple({
+                           divisor: 10,
+                           fillHoles: false
+                        }),
+                        axisX: {
+                           labelOffset: {
+                              x: -" . mb_strlen($labels[0]) * 7  . "
+                           }
+                        }";
+
+      if ($param['legend'] === true || $param['tooltip'] === true) {
+         $out .= ", plugins: [";
+         if ($param['legend'] === true) {
+            $out .= "Chartist.plugins.legend()";
+         }
+         if ($param['tooltip'] === true) {
+            $out .= ($param['legend'] === true ? ',' : '') . "Chartist.plugins.tooltip()";
+         }
+         $out .= "]";
+      }
+
+      $out .= "});";
+
+      if ($param['animate'] === true) {
+                  $out .= "
+                     chart_$slug.on('draw', function(data) {
+                        if(data.type === 'bar' || data.type === 'area') {
+                           data.element.animate({
+                              d: {
+                                 begin: 300 * data.index,
+                                 dur: 500,
+                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                                 to: data.path.clone().stringify(),
+                                 easing: Chartist.Svg.Easing.easeOutQuint
+                              }
+                           });
+                        }
+                     });
+                  });";
+      }
+      $out .="</script>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
+   }
+
+   /**
+    * Display stacked bar graph
+    *
+    * @param string   $title  Graph title
+    * @param string[] $labels Labels to display
+    * @param array    $series Series data. An array of the form:
+    *                 [
+    *                    ['name' => 'a name', 'data' => []],
+    *                    ['name' => 'another name', 'data' => []]
+    *                 ]
+    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param boolean  $display  Whether to display directly; defauts to true
+    *
+    * @return void
+    */
+   public function displayStackedBarGraph($title, $labels, $series, $options = null, $display = true) {
+
+      $param = [
+         'width'   => 900,
+         'height'  => 300,
+         'tooltip' => true,
+         'legend'  => true,
+         'animate' => true
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      $slug = str_replace('-', '_', Toolbox::slugify($title));
+      $this->checkEmptyLabels($labels);
+      $out = "<h2 class='center'>$title</h2>";
+      $out .= "<div id='$slug' class='chart'></div>";
+      Html::requireJs('charts');
+      $out .= "<script type='text/javascript'>
+                  $(function() {
+                     var chart_$slug = new Chartist.Bar('#$slug', {
+                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
+                        series: [";
+
+      $first = true;
+      foreach ($series as $serie) {
+         if ($first === true) {
+            $first = false;
+         } else {
+            $out .= ",\n";
+         }
+         if (isset($serie['name'])) {
+            $out .= "{'name': '{$serie['name']}', 'data': [" . implode(', ', $serie['data']) . "]}";
+         } else {
+            $out .= "[" . implode(', ', $serie['data']) . "]";
+         }
+      }
+
+      $out .= "
+                        ]
+                     }, {
+                        low: 0,
+                        showArea: true,
+                        width: '{$param['width']}',
+                        height: '{$param['height']}',
+                        fullWidth: true,
+                        lineSmooth: Chartist.Interpolation.simple({
+                           divisor: 10,
+                           fillHoles: false
+                        }),
+                        stackBars: true,
                         axisX: {
                            labelOffset: {
                               x: -" . mb_strlen($labels[0]) * 7  . "
