@@ -2046,7 +2046,7 @@ class Dropdown {
 
       if ($params['value']
           && empty($params['withtemplate'])) {
-         _e('Global management');
+         echo __('Global management');
 
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;";

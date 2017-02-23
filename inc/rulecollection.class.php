@@ -1702,7 +1702,7 @@ class RuleCollection extends CommonDBTM {
                   break;
 
                case 2 :
-                  _e('Inactive');
+                  echo __('Inactive');
                   break;
             }
 

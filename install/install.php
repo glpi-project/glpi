@@ -115,7 +115,7 @@ function acceptLicense() {
    echo "<label for='agree' class='radio'>";
    echo "<input type='radio' name='install' id='agree' value='License'>";
    echo "<span class='outer'><span class='inner'></span></span>";
-   _e('I have read and ACCEPT the terms of the license written above.');
+   echo __('I have read and ACCEPT the terms of the license written above.');
    echo " </label>";
 
    echo "<label for='disagree' class='radio'>";
@@ -288,7 +288,7 @@ function step3($host, $user, $password, $update) {
          echo "<p>";
          echo "<label class='radio'>";
          echo "<input type='radio' name='databasename' value='0'>";
-         _e('Create a new database or use an existing one:');
+         echo __('Create a new database or use an existing one:');
          echo "<span class='outer'><span class='inner'></span></span>";
          echo "&nbsp;<input type='text' name='newdatabasename'>";
          echo " </label>";
@@ -373,7 +373,7 @@ function step4 ($databasename, $newdatabasename) {
       $DB_selected = $link->select_db($databasename);
 
       if (!$DB_selected) {
-         _e('Impossible to use the database:');
+         echo __('Impossible to use the database:');
          echo "<br>".sprintf(__('The server answered: %s'), $link->error);
          prev_form($host, $user, $password);
 
@@ -484,7 +484,7 @@ function update1($DBname) {
       include_once(GLPI_ROOT ."/install/update.php");
 
    } else { // can't create config_db file
-      _e("Can't create the database connection file, please verify file permissions.");
+      echo __("Can't create the database connection file, please verify file permissions.");
       echo "<h3>".__('Do you want to continue?')."</h3>";
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";

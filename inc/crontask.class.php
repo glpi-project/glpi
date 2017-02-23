@@ -517,7 +517,7 @@ class CronTask extends CommonDBTM{
       echo "</td><td>".__('Last run')."</td><td>";
 
       if (empty($this->fields['lastrun'])) {
-         _e('Never');
+         echo __('Never');
       } else {
          echo Html::convDateTime($this->fields['lastrun']);
          echo "&nbsp;";
@@ -547,7 +547,7 @@ class CronTask extends CommonDBTM{
       if ($tmpstate != self::STATE_WAITING) {
          echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
-         _e('As soon as possible');
+         echo __('As soon as possible');
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $h    = date('H', $next);
@@ -1120,7 +1120,7 @@ class CronTask extends CommonDBTM{
             echo "</table>";
 
          } else { // Not found
-            _e('No item found');
+            echo __('No item found');
          }
       } // Query
       Html::printAjaxPager(__('Last run list'), $start, $number);
@@ -1202,7 +1202,7 @@ class CronTask extends CommonDBTM{
             echo "</table>";
 
          } else { // Not found
-            _e('No item found');
+            echo __('No item found');
          }
       } // Query
 

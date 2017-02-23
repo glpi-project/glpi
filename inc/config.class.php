@@ -1509,7 +1509,7 @@ class Config extends CommonDBTM {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
             echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
-            _e('Reset');
+            echo __('Reset');
             echo "</a></td></tr>\n";
          }
       } else {
@@ -1559,7 +1559,7 @@ class Config extends CommonDBTM {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
             echo "<a class='vsubmit' href='config.form.php?reset_apcu=1'>";
-            _e('Reset');
+            echo __('Reset');
             echo "</a></td></tr>\n";
          }
       } else {

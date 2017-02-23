@@ -423,7 +423,7 @@ class Problem_Ticket extends CommonDBRelation{
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>";
-         _e('Create a problem from this ticket');
+         echo __('Create a problem from this ticket');
          echo "</a>";
 
          echo "</td></tr></table>";

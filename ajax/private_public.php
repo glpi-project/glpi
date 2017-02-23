@@ -65,7 +65,7 @@ if (isset($_POST['is_private'])) {
          echo "<table width='100%'>";
          echo "<tr><td>";
          echo "<input type='hidden' name='is_private' value='0'>\n";
-         _e('Public');
+         echo __('Public');
          echo "</td><td>";
          Entity::dropdown(array('value' => $val));
          echo "</td><td>". __('Child entities')."</td><td>";

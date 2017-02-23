@@ -1153,7 +1153,7 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                // -1 = life
                if ($ic->fields["warranty_duration"] == -1) {
-                  _e('Lifelong');
+                  echo __('Lifelong');
                } else {
                   printf(_n('%d month', '%d months', $ic->fields["warranty_duration"]),
                          $ic->fields["warranty_duration"]);

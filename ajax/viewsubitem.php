@@ -55,7 +55,7 @@ if (($item = getItemForItemtype($_POST['type']))
       $item->showForm($_POST["id"], array('parent' => $parent));
 
    } else {
-      _e('Access denied');
+      echo __('Access denied');
    }
 }
 

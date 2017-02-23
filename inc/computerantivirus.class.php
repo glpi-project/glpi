@@ -254,7 +254,7 @@ class ComputerAntivirus extends CommonDBChild {
          if ($ID && $this->fields['is_dynamic']) {
             Plugin::doHook("autoinventory_information", $this);
          } else {
-            _e('No');
+            echo __('No');
          }
          echo "</td>";
       } else {
@@ -330,7 +330,7 @@ class ComputerAntivirus extends CommonDBChild {
          echo "<div class='center firstbloc'>".
                "<a class='vsubmit' href='computerantivirus.form.php?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
-         _e('Add an antivirus');
+         echo __('Add an antivirus');
          echo "</a></div>\n";
       }
 

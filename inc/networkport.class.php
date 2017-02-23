@@ -539,7 +539,7 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
          echo "<tr class='tab_bg_2'><td class='center'>\n";
-         _e('Network port type to be added');
+         echo __('Network port type to be added');
          echo "&nbsp;";
 
          $instantiations = array();
@@ -553,7 +553,7 @@ class NetworkPort extends CommonDBChild {
 
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
-         _e('Add several ports');
+         echo __('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "<td>\n";
          echo "<input type='submit' name='create' value=\""._sx('button', 'Add')."\" class='submit'>\n";

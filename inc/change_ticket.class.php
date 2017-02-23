@@ -378,7 +378,7 @@ class Change_Ticket extends CommonDBRelation{
          echo "</td><td>";
          if (Session::haveRight('change', CREATE)) {
             echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
-            _e('Create a change from this ticket');
+            echo __('Create a change from this ticket');
             echo "</a>";
          }
          echo "</td></tr></table>";

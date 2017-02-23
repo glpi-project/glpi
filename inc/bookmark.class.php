@@ -310,7 +310,7 @@ class Bookmark extends CommonDBTM {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       } else {
-         _e('New item');
+         echo __('New item');
       }
       echo "</th></tr>";
 
@@ -328,9 +328,9 @@ class Bookmark extends CommonDBTM {
                                            $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
-            _e('Private');
+            echo __('Private');
          } else {
-            _e('Public');
+            echo __('Public');
          }
       }
       echo "</td></tr>";
@@ -767,7 +767,7 @@ class Bookmark extends CommonDBTM {
          }
       } else {
          echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
-         _e('You have not recorded any bookmarks yet');
+         echo __('You have not recorded any bookmarks yet');
          echo "</td></tr></table>";
       }
       Html::closeForm();

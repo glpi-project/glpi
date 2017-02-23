@@ -700,9 +700,9 @@ class KnowbaseItem extends CommonDBVisible {
       } else {
          echo "<td colspan='2'>";
          if ($this->fields["is_faq"]) {
-            _e('This item is part of the FAQ');
+            echo __('This item is part of the FAQ');
          } else {
-            _e('This item is not part of the FAQ');
+            echo __('This item is not part of the FAQ');
          }
          echo "</td>";
       }

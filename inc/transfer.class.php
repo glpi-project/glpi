@@ -3534,7 +3534,7 @@ class Transfer extends CommonDBTM {
          echo "</td><td class='tab_bg_2 top'>";
 
          if (countElementsInTable('glpi_transfers') == 0) {
-            _e('No item found');
+            echo __('No item found');
          } else {
             $params = array('id' => '__VALUE__');
             Ajax::updateItemOnSelectEvent("dropdown_id$rand", "transfer_form",
@@ -3549,7 +3549,7 @@ class Transfer extends CommonDBTM {
          echo '</table>';
 
       } else {
-         _e('No selected element or badly defined operation');
+         echo __('No selected element or badly defined operation');
       }
    }
 

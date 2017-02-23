@@ -63,11 +63,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])
             $params['toadd'] = array(-1 => __('No restriction'));
          }
          echo "<table class='tab_format'><tr><td>";
-         _e('Entity');
+         echo __('Entity');
          echo "</td><td>";
          Entity::dropdown($params);
          echo "</td><td>";
-         _e('Child entities');
+         echo __('Child entities');
          echo "</td><td>";
          Dropdown::showYesNo($prefix.'is_recursive'.$suffix);
          echo "</td></tr></table>";

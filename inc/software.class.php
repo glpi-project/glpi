@@ -980,7 +980,7 @@ class Software extends CommonDBTM {
          Html::closeForm();
 
       } else {
-         _e('No item found');
+         echo __('No item found');
       }
 
       echo "</div>";

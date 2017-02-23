@@ -491,7 +491,7 @@ class Lock {
                            'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
                            'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()));
 
-            _e('Select the type of the item that must be unlock');
+            echo __('Select the type of the item that must be unlock');
             echo "<br><br>\n";
 
             Dropdown::showFromArray('attached_item', $types,

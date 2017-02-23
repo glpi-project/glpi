@@ -2352,7 +2352,7 @@ class CommonDBTM extends CommonGLPI {
 
          } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
             echo "<input type='hidden' name='is_template' value='1'>\n";
-            _e('Template name');
+            echo __('Template name');
             Html::autocompletionTextField($this, "template_name", array('size' => 25));
          } else if ($this->isNewID($ID)) {
             $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
