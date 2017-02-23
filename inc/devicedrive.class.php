@@ -71,7 +71,7 @@ class DeviceDrive extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_writer',
          'name'               => __('Writing ability'),
          'datatype'           => 'bool'
@@ -79,7 +79,7 @@ class DeviceDrive extends CommonDevice {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'speed',
          'name'               => __('Speed'),
          'datatype'           => 'string'

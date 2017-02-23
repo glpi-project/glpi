@@ -83,7 +83,7 @@ class BlacklistedMailContent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'content',
          'name'               => __('Content'),
          'datatype'           => 'text',

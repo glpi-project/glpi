@@ -76,7 +76,7 @@ class DeviceControl extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_raid',
          'name'               => __('RAID'),
          'datatype'           => 'bool'

@@ -151,7 +151,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '74',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_incident',
          'name'               => __('Visible for an incident'),
          'datatype'           => 'bool'
@@ -159,7 +159,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '75',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_request',
          'name'               => __('Visible for a request'),
          'datatype'           => 'bool'
@@ -167,7 +167,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '76',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_problem',
          'name'               => __('Visible for a problem'),
          'datatype'           => 'bool'
@@ -175,7 +175,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '85',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_change',
          'name'               => __('Visible for a change'),
          'datatype'           => 'bool'
@@ -183,7 +183,7 @@ class ITILCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_helpdeskvisible',
          'name'               => __('Visible in the simplified interface'),
          'datatype'           => 'bool'

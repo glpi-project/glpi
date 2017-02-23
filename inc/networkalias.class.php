@@ -387,7 +387,7 @@ class NetworkAlias extends FQDNLabel {
          $order = "alias";
       }
 
-      $number = countElementsInTable($alias->getTable(), ['fqdns_id' => $item->getID() ]);
+      $number = countElementsInTable($alias::getTable(), ['fqdns_id' => $item->getID() ]);
 
       echo "<br><div class='center'>";
 
@@ -466,12 +466,12 @@ class NetworkAlias extends FQDNLabel {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'NetworkName' :
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable($this::getTable(),
                                             ['networknames_id' => $item->getID() ]);
                   break;
 
                case 'FQDN' :
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable($this::getTable(),
                                             ['fqdns_id' => $item->getID() ]);
             }
          }

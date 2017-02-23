@@ -81,7 +81,7 @@ class Contract_Item extends CommonDBRelation{
          return false;
       }
       if (($contract->fields['max_links_allowed'] > 0)
-          && (countElementsInTable($this->getTable(),
+          && (countElementsInTable($this::getTable(),
                                   ['contracts_id'=> $this->input['contracts_id']])
                 >= $contract->fields['max_links_allowed'])) {
          return false;
@@ -151,7 +151,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -160,7 +160,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'items_id',
          'name'               => __('Associated item ID'),
          'massiveaction'      => false,
@@ -170,7 +170,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,
@@ -208,13 +208,13 @@ class Contract_Item extends CommonDBRelation{
          $itemt = getItemForItemtype($data['itemtype']);
 
          $query = "SELECT COUNT(*) AS cpt
-                   FROM `glpi_contracts_items`, `".$itemt->getTable()."`
+                   FROM `glpi_contracts_items`, `".$itemt::getTable()."`
                    WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
                          AND `glpi_contracts_items`.`itemtype` = '".$data['itemtype']."'
-                         AND `".$itemt->getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
+                         AND `".$itemt::getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
 
          if ($itemt->maybeTemplate()) {
-            $query .= " AND NOT `".$itemt->getTable()."`.`is_template`";
+            $query .= " AND NOT `".$itemt::getTable()."`.`is_template`";
          }
 
          foreach ($DB->request($query) as $row) {

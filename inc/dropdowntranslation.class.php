@@ -295,7 +295,7 @@ class DropdownTranslation extends CommonDBChild {
          }
 
          $query = "SELECT `id`
-                   FROM `".$item->getTable()."`
+                   FROM `".$item::getTable()."`
                    WHERE `$foreignKey` = '".$item->getID()."'";
 
          foreach ($DB->request($query) as $tmp) {

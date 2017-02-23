@@ -232,7 +232,7 @@ switch ($_GET["type"]) {
       $val1 = $_GET["id"];
       $val2 = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
-         $device_table = $item->getTable();
+         $device_table = $item::getTable();
          $values       = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
                                         $_GET["champ"]);
 
@@ -250,7 +250,7 @@ switch ($_GET["type"]) {
       $val1  = $_GET["id"];
       $val2  = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
-         $table  = $item->getTable();
+         $table  = $item::getTable();
          $values = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
                                   $_GET["champ"]);
          $title  = sprintf(__('%1$s: %2$s'),

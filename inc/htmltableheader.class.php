@@ -114,7 +114,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
          if (!isset($this->itemtypes[$item->getType()])) {
             throw new Exception('Implementation error: type mismatch between header and cell');
          }
-         $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
+         $this::getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
       }
    }
 

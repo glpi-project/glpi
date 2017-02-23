@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    if ($group->isUsed()
          && empty($_POST["forcepurge"])) {
       Html::header($group->getTypeName(1), $_SERVER['PHP_SELF'], "admin", "group",
-      str_replace('glpi_', '', $group->getTable()));
+      str_replace('glpi_', '', $group::getTable()));
 
       $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       Html::footer();

@@ -371,7 +371,7 @@ class NetworkPortInstantiation extends CommonDBChild {
          $netport = new $netporttype();
 
          $query = "SELECT `id`
-                   FROM `".$netport->getTable()."`
+                   FROM `".$netport::getTable()."`
                    WHERE `mac` $relation ";
 
          foreach ($DB->request($query) as $element) {

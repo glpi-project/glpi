@@ -75,7 +75,7 @@ class SolutionTemplate extends CommonDropdown {
          'id'                 => '4',
          'name'               => __('Content'),
          'field'              => 'content',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'datatype'           => 'text',
          'htmltext'           => true
       ];

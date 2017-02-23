@@ -100,7 +100,7 @@ class Plugin extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDir($dir) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`directory` = '$dir'");
+      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`directory` = '$dir'");
    }
 
 
@@ -855,7 +855,7 @@ class Plugin extends CommonDBTM {
    function unactivateAll() {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
+      $query = "UPDATE `".$this::getTable()."`
                 SET `state` = ".self::NOTACTIVATED."
                 WHERE `state` = ".self::ACTIVATED;
       $DB->query($query);

@@ -435,7 +435,7 @@ class SLT extends CommonDBChild {
             $field = 'slts_tto_id';
             break;
       }
-      return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
+      return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this::getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
    }
 
 
@@ -676,7 +676,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -685,7 +685,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -694,7 +694,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'number_time',
          'name'               => __('Time'),
          'datatype'           => 'specific',
@@ -705,7 +705,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'end_of_working_day',
          'name'               => __('End of working day'),
          'datatype'           => 'bool',
@@ -714,7 +714,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'type',
          'name'               => __('Type'),
          'datatype'           => 'specific'
@@ -730,7 +730,7 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

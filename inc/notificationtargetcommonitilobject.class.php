@@ -940,18 +940,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas["##$objettype.numberoflogs##"] = count($datas['log']);
 
          // Get unresolved items
-         $restrict = "`".$item->getTable()."`.`status`
+         $restrict = "`".$item::getTable()."`.`status`
                         NOT IN ('".implode("', '", array_merge($item->getSolvedStatusArray(),
                                                                $item->getClosedStatusArray())
                                           )."'
                                )";
 
          if ($item->maybeDeleted()) {
-            $restrict .= " AND `".$item->getTable()."`.`is_deleted` = '0' ";
+            $restrict .= " AND `".$item::getTable()."`.`is_deleted` = '0' ";
          }
 
          $datas["##$objettype.numberofunresolved##"]
-               = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict);
+               = countElementsInTableForEntity($item::getTable(), $this->getEntity(), $restrict);
 
          // Document
          $query = "SELECT `glpi_documents`.*
@@ -1045,7 +1045,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
          $restrict .= " ORDER BY `date_mod` DESC, `id` ASC";
 
-         $tasks          = getAllDatasFromTable($taskobj->getTable(), $restrict);
+         $tasks          = getAllDatasFromTable($taskobj::getTable(), $restrict);
          $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();

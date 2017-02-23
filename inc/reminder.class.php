@@ -311,7 +311,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Title'),
          'datatype'           => 'itemlink',
@@ -331,7 +331,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'state',
          'name'               => __('Status'),
          'datatype'           => 'specific',
@@ -341,7 +341,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'text',
          'name'               => __('Description'),
          'massiveaction'      => false,
@@ -351,7 +351,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'begin_view_date',
          'name'               => __('Visibility start date'),
          'datatype'           => 'datetime'
@@ -359,7 +359,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'end_view_date',
          'name'               => __('Visibility end date'),
          'datatype'           => 'datetime'
@@ -367,7 +367,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_planned',
          'name'               => __('Planning'),
          'datatype'           => 'bool',
@@ -376,7 +376,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'begin',
          'name'               => __('Planning start date'),
          'datatype'           => 'datetime'
@@ -384,7 +384,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'end',
          'name'               => __('Planning end date'),
          'datatype'           => 'datetime'
@@ -392,7 +392,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -401,7 +401,7 @@ class Reminder extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',

@@ -226,7 +226,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          switch ($item->getType()) {
             case 'NetworkPort' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable($this::getTable(),
                                              ["networkports_id" => $item->getID()]);
                }
                return self::createTabEntry(Vlan::getTypeName(), $nb);

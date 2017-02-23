@@ -189,7 +189,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'mac',
          'datatype'           => 'mac',
          'name'               => __('MAC'),
@@ -198,7 +198,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'type',
          'name'               => __('Ethernet port type'),
          'massiveaction'      => false,
@@ -207,7 +207,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'speed',
          'name'               => __('Ethernet port speed'),
          'massiveaction'      => false,

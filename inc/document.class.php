@@ -161,7 +161,7 @@ class Document extends CommonDBTM {
       if (!empty($this->fields["filepath"])) {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
-             && (countElementsInTable($this->getTable(),
+             && (countElementsInTable($this::getTable(),
                                      ['sha1sum' => $this->fields["sha1sum"] ]) <= 1)) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
@@ -271,7 +271,7 @@ class Document extends CommonDBTM {
          // Check if already upload in the current entity
          $crit = array('sha1sum'=>$input['sha1sum'],
                        'entities_id'=>$input['entities_id']);
-         foreach ($DB->request($this->getTable(), $crit) as $data) {
+         foreach ($DB->request($this::getTable(), $crit) as $data) {
             $link=$this->getFormURL();
             Session::addMessageAfterRedirect(__('"A document with that filename has already been attached to another record.').
                "&nbsp;: <a href=\"".$link."?id=".
@@ -539,8 +539,8 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sha1sum` = '$sum'
-                                     AND `".$this->getTable()."`.`entities_id` = '$entity'");
+      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`sha1sum` = '$sum'
+                                     AND `".$this::getTable()."`.`entities_id` = '$entity'");
    }
 
 
@@ -763,7 +763,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -772,7 +772,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -781,7 +781,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'filename',
          'name'               => __('File'),
          'massiveaction'      => false,
@@ -790,7 +790,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'link',
          'name'               => __('Web Link'),
          'datatype'           => 'weblink'
@@ -798,7 +798,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string'
@@ -807,7 +807,7 @@ class Document extends CommonDBTM {
       if ($CFG_GLPI['use_rich_text']) {
          $tab[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => $this::getTable(),
             'field'              => 'tag',
             'name'               => __('Tag'),
             'datatype'           => 'text',
@@ -834,7 +834,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -842,7 +842,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -851,7 +851,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -860,7 +860,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'sha1sum',
          'name'               => sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')),
          'massiveaction'      => false,
@@ -869,7 +869,7 @@ class Document extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

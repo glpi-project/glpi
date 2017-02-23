@@ -139,9 +139,9 @@ class NotificationTarget extends CommonDBChild {
    **/
    function getFromDBForTarget($notifications_id, $type, $ID) {
 
-      if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`notifications_id` = '$notifications_id'
-                                  AND `".$this->getTable()."`.`items_id` = '$ID'
-                                  AND `".$this->getTable()."`.`type` = '$type'")) {
+      if ($this->getFromDBByQuery("WHERE `".$this::getTable()."`.`notifications_id` = '$notifications_id'
+                                  AND `".$this::getTable()."`.`items_id` = '$ID'
+                                  AND `".$this::getTable()."`.`type` = '$type'")) {
          return true;
       }
       return false;
@@ -1144,7 +1144,7 @@ class NotificationTarget extends CommonDBChild {
 
             case 'Notification' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable($this::getTable(),
                                              ['notifications_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

@@ -190,7 +190,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                $restrict .= " AND (`is_private` = '0'
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
-            $nb = countElementsInTable($this->getTable(), $restrict);
+            $nb = countElementsInTable($this::getTable(), $restrict);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -550,7 +550,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'datatype'           => 'text'
@@ -567,7 +567,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'datetime'
@@ -576,7 +576,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => $this::getTable(),
             'field'              => 'is_private',
             'name'               => __('Public followup'),
             'datatype'           => 'bool'
@@ -594,7 +594,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'actiontime',
          'name'               => __('Total duration'),
          'datatype'           => 'actiontime',
@@ -603,7 +603,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'state',
          'name'               => __('Status'),
          'datatype'           => 'specific'
@@ -915,7 +915,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
             $groups = implode("','", $_SESSION['glpigroups']);
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
+            $ASSIGN = "`".$item::getTable()."`.`users_id_tech`
                            IN (SELECT DISTINCT `users_id`
                                FROM `glpi_groups_users`
                                INNER JOIN `glpi_groups`
@@ -924,29 +924,29 @@ abstract class CommonITILTask  extends CommonDBTM {
                                      AND `glpi_groups`.`is_assign`)
                                      AND ";
          } else { // Only personal ones
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
+            $ASSIGN = "`".$item::getTable()."`.`users_id_tech` = '$who'
                        AND ";
          }
 
       } else {
          if ($who > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
+            $ASSIGN = "`".$item::getTable()."`.`users_id_tech` = '$who'
                        AND ";
          }
          if ($who_group > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT `users_id`
+            $ASSIGN = "`".$item::getTable()."`.`users_id_tech` IN (SELECT `users_id`
                                                                    FROM `glpi_groups_users`
                                                                    WHERE `groups_id` = '$who_group')
                                                                          AND ";
          }
          if ($whogroup > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`groups_id_tech` = '$whogroup'
+            $ASSIGN = "`".$item::getTable()."`.`groups_id_tech` = '$whogroup'
                        AND ";
          }
 
       }
       if (empty($ASSIGN)) {
-         $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
+         $ASSIGN = "`".$item::getTable()."`.`users_id_tech`
                         IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
                             FROM `glpi_profiles`
                             LEFT JOIN `glpi_profiles_users`
@@ -959,27 +959,27 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $DONE_EVENTS = '';
       if (!$options['display_done_events']) {
-         $DONE_EVENTS = "(`".$item->getTable()."`.`state` = ".Planning::TODO."
-                          OR (`".$item->getTable()."`.`state` = ".Planning::INFO."
-                              AND `".$item->getTable()."`.`end` > NOW()))
+         $DONE_EVENTS = "(`".$item::getTable()."`.`state` = ".Planning::TODO."
+                          OR (`".$item::getTable()."`.`state` = ".Planning::INFO."
+                              AND `".$item::getTable()."`.`end` > NOW()))
                          AND ";
       }
 
       $addrestrict = '';
       if ($parentitem->maybeDeleted()) {
-         $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
+         $addrestrict = 'AND NOT `'.$parentitem::getTable().'`.`is_deleted`';
       }
 
-      $query = "SELECT `".$item->getTable()."`.*
-                FROM `".$item->getTable()."`
-                INNER JOIN `".$parentitem->getTable()."`
-                  ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)
+      $query = "SELECT `".$item::getTable()."`.*
+                FROM `".$item::getTable()."`
+                INNER JOIN `".$parentitem::getTable()."`
+                  ON (`".$parentitem::getTable()."`.`id` = `".$item::getTable()."`.`".$parentitem->getForeignKeyField()."`)
                 WHERE $ASSIGN
                       $DONE_EVENTS
-                      '$begin' < `".$item->getTable()."`.`end`
-                      AND '$end' > `".$item->getTable()."`.`begin`
+                      '$begin' < `".$item::getTable()."`.`end`
+                      AND '$end' > `".$item::getTable()."`.`begin`
                       $addrestrict
-                ORDER BY `".$item->getTable()."`.`begin`";
+                ORDER BY `".$item::getTable()."`.`begin`";
 
       $result = $DB->query($query);
 
@@ -1636,7 +1636,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       $query = "SELECT `id`, `date`
-                FROM `".$this->getTable()."`
+                FROM `".$this::getTable()."`
                 WHERE `".$item->getForeignKeyField()."` = '$tID'
                       $RESTRICT
                 ORDER BY `date` DESC";

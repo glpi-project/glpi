@@ -796,7 +796,7 @@ class KnowbaseItem extends CommonDBVisible {
    function addToFaq() {
       global $DB;
 
-      $DB->query("UPDATE `".$this->getTable()."`
+      $DB->query("UPDATE `".$this::getTable()."`
                   SET `is_faq` = '1'
                   WHERE `id` = '".$this->fields['id']."'");
 
@@ -1599,7 +1599,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -1616,7 +1616,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'datetime',
@@ -1625,7 +1625,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Subject'),
          'datatype'           => 'text'
@@ -1633,7 +1633,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'answer',
          'name'               => __('Content'),
          'datatype'           => 'text',
@@ -1642,7 +1642,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_faq',
          'name'               => __('FAQ item'),
          'datatype'           => 'bool'
@@ -1650,7 +1650,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'view',
          'name'               => _n('View', 'Views', Session::getPluralNumber()),
          'datatype'           => 'integer',
@@ -1659,7 +1659,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Visibility start date'),
          'datatype'           => 'datetime'
@@ -1667,7 +1667,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'end_date',
          'name'               => __('Visibility end date'),
          'datatype'           => 'datetime'
@@ -1675,7 +1675,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -1703,7 +1703,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

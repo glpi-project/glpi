@@ -173,7 +173,7 @@ class Profile extends CommonDBTM {
       }
 
       if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
+         $query = "UPDATE ". $this::getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
@@ -199,7 +199,7 @@ class Profile extends CommonDBTM {
       unset($this->profileRight);
 
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
+         $query = "UPDATE ". $this::getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
@@ -1480,7 +1480,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -1489,7 +1489,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -1498,7 +1498,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -1507,7 +1507,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'interface',
          'name'               => __("Profile's interface"),
          'massiveaction'      => false,
@@ -1517,7 +1517,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_default',
          'name'               => __('Default profile'),
          'datatype'           => 'bool',
@@ -1526,7 +1526,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '118',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'create_ticket_on_login',
          'name'               => __('Ticket creation form on login'),
          'datatype'           => 'bool'
@@ -1534,7 +1534,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -2226,7 +2226,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'helpdesk_hardware',
          'name'               => __('Link with items for the creation of tickets'),
          'massiveaction'      => false,
@@ -2235,7 +2235,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '87',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'helpdesk_item_type',
          'name'               => __('Associable items to a ticket'),
          'massiveaction'      => false,
@@ -2256,7 +2256,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '100',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'ticket_status',
          'name'               => __('Life cycle of tickets'),
          'nosearch'           => true,
@@ -2266,7 +2266,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '110',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'problem_status',
          'name'               => __('Life cycle of problems'),
          'nosearch'           => true,
@@ -2290,7 +2290,7 @@ class Profile extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '111',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'change_status',
          'name'               => __('Life cycle of changes'),
          'nosearch'           => true,

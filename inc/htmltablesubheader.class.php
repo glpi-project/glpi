@@ -81,7 +81,7 @@ class HTMLTableSubHeader extends HTMLTableHeader {
 
 
    protected function getTable() {
-      return $this->header->getTable();
+      return $this->header::getTable();
    }
 
 

@@ -1632,7 +1632,7 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
                                                      'items_id'      => $networknames_id),
                                                "version", "name", "binary");
 
-      $migration->insertInTable($IPaddress->getTable(), $input);
+      $migration->insertInTable($IPaddress::getTable(), $input);
 
    } else { // Don't add the NetworkName if the address is not valid
       addNetworkPortMigrationError($items_id, 'invalid_address');
@@ -1715,7 +1715,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
             }
          }
       }
-      $migration->insertInTable($port->getTable(), $input);
+      $migration->insertInTable($port::getTable(), $input);
    }
 }
 
@@ -1847,7 +1847,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
          $domainName = $domain['name'];
          // We ensure that domains have at least 1 dote to be sure it is not a Windows workgroup
          if ((strpos($domainName, '.') !== false) && (FQDN::checkFQDN($domainName))) {
-            $migration->insertInTable($fqdn->getTable(),
+            $migration->insertInTable($fqdn::getTable(),
                                       array('entities_id' => 0,
                                             'name'        => $domainName,
                                             'fqdn'        => $domainName,
@@ -2000,7 +2000,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       $data['items_id'], $preparedInput['error']);
                }
             }
-            $migration->insertInTable($network->getTable(), $input);
+            $migration->insertInTable($network::getTable(), $input);
          } else if (isset($preparedInput['error'])) {
             $query = "SELECT id, items_id, itemtype
                       FROM origin_glpi_networkports

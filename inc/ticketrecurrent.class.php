@@ -235,7 +235,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -251,7 +251,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Start date'),
          'datatype'           => 'datetime'
@@ -259,7 +259,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'datetime'
@@ -267,7 +267,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'periodicity',
          'name'               => __('Periodicity'),
          'datatype'           => 'specific'
@@ -275,7 +275,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'create_before',
          'name'               => __('Preliminary creation'),
          'datatype'           => 'timestamp'

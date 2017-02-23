@@ -190,7 +190,7 @@ class NetworkName extends FQDNLabel {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtype',
@@ -199,7 +199,7 @@ class NetworkName extends FQDNLabel {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'items_id',
          'name'               => __('ID'),
          'datatype'           => 'integer',
@@ -408,7 +408,7 @@ class NetworkName extends FQDNLabel {
 
       if ($networkPortID > 0) {
          $query = "SELECT `id`
-                   FROM `".$name->getTable()."`
+                   FROM `".$name::getTable()."`
                    WHERE `itemtype` = 'NetworkPort'
                    AND `items_id` = '$networkPortID'
                    AND `is_deleted` = '0'";

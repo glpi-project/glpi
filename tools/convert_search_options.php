@@ -101,7 +101,7 @@ function display($array, $table, $pad = 20, $tab = '         ') {
          switch ($k) {
             case 'table':
                if ($v == $table) {
-                  $v = '$this->getTable()';
+                  $v = '$this::getTable()';
                } else {
                   $v = "'$v'";
                }
@@ -138,14 +138,14 @@ $commonopts = $commondbtm->getSearchOptions();
 $item = new $itemtype();
 $opts = $item->getSearchOptions();
 
-$commonopts[1]['table'] = $item->getTable();
+$commonopts[1]['table'] = $item::getTable();
 //do not proceed if item class does not define its own getSearchOptions method
 if ($opts != $commonopts) {
-   convert($opts, $item->getTable());
+   convert($opts, $item::getTable());
 }
 
 //handle getSearchOptionsToAdd
 if (method_exists($item, 'getSearchOptionsToAdd')) {
    echo "\n\nFOR GETSEARCHOPTIONSTOADD\n\n";
-   convert($item->getSearchOptionsToAdd(), $item->getTable());
+   convert($item->getSearchOptionsToAdd(), $item::getTable());
 }

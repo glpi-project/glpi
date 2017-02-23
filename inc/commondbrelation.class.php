@@ -282,7 +282,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,

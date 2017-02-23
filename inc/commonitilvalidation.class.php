@@ -794,7 +794,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       $query = "SELECT *
-                FROM `".$this->getTable()."`
+                FROM `".$this::getTable()."`
                 WHERE `".static::$items_id."` = '".$item->getField('id')."'";
 
       $query .= " ORDER BY submission_date DESC";
@@ -1011,7 +1011,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment_submission',
          'name'               => __('Request comments'),
          'datatype'           => 'text'
@@ -1019,7 +1019,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment_validation',
          'name'               => __('Approval comments'),
          'datatype'           => 'text'
@@ -1027,7 +1027,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'status',
          'name'               => __('Status'),
          'searchtype'         => 'equals',
@@ -1036,7 +1036,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'submission_date',
          'name'               => __('Request date'),
          'datatype'           => 'datetime'
@@ -1044,7 +1044,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'validation_date',
          'name'               => __('Approval date'),
          'datatype'           => 'datetime'

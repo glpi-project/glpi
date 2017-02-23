@@ -78,7 +78,7 @@ class Vlan extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'tag',
          'name'               => __('ID TAG'),
          'datatype'           => 'number',

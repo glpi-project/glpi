@@ -77,7 +77,7 @@ class DeviceProcessor extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'frequency_default',
          'name'               => __('Frequency by default'),
          'datatype'           => 'string'
@@ -85,7 +85,7 @@ class DeviceProcessor extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'frequence',
          'name'               => __('Frequency'),
          'datatype'           => 'string'
@@ -93,7 +93,7 @@ class DeviceProcessor extends CommonDevice {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'nbcores_default',
          'name'               => __('Number of cores'),
          'datatype'           => 'integer'
@@ -101,7 +101,7 @@ class DeviceProcessor extends CommonDevice {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'nbthreads_default',
          'name'               => __('Number of threads'),
          'datatype'           => 'integer'

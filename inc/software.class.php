@@ -456,7 +456,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -465,7 +465,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -476,7 +476,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -492,7 +492,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -501,7 +501,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -556,7 +556,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '61',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_helpdesk_visible',
          'name'               => __('Associable to a ticket'),
          'datatype'           => 'bool'
@@ -564,7 +564,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '63',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_valid',
                               //TRANS: Indicator to know is all licenses of the software are valids
          'name'               => __('Valid licenses'),
@@ -609,7 +609,7 @@ class Software extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool',

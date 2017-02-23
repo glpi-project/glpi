@@ -37,7 +37,7 @@ class AlertTest extends DbTestCase {
    public function testAddDelete() {
 
       $alert = new Alert();
-      $nb    = countElementsInTable($alert->getTable());
+      $nb    = countElementsInTable($alert::getTable());
       $comp  = getItemByTypeName('Computer', '_test_pc01');
       $date  = '2016-09-01 12:34:56';
 
@@ -49,7 +49,7 @@ class AlertTest extends DbTestCase {
          'date'     => $date,
       ]);
       $this->assertGreaterThan(0, $id);
-      $this->assertGreaterThan($nb, countElementsInTable($alert->getTable()));
+      $this->assertGreaterThan($nb, countElementsInTable($alert::getTable()));
 
       // Getters
       $this->assertFalse(Alert::alertExists($comp->getType(), $comp->getID(), Alert::NOTICE));
@@ -62,7 +62,7 @@ class AlertTest extends DbTestCase {
 
       // Delete
       $this->assertTrue($alert->clear($comp->getType(), $comp->getID(), Alert::END));
-      $this->assertEquals($nb, countElementsInTable($alert->getTable()));
+      $this->assertEquals($nb, countElementsInTable($alert::getTable()));
 
       // Still true, nothing to delete but no error
       $this->assertTrue($alert->clear($comp->getType(), $comp->getID(), Alert::END));

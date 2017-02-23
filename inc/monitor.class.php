@@ -388,7 +388,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -397,7 +397,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -433,7 +433,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string'
@@ -441,7 +441,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string'
@@ -449,7 +449,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string'
@@ -457,7 +457,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string'
@@ -483,7 +483,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -492,7 +492,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -501,7 +501,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -509,7 +509,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'size',
          'name'               => __('Size'),
          'datatype'           => 'decimal'
@@ -517,7 +517,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '41',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_micro',
          'name'               => __('Microphone'),
          'datatype'           => 'bool'
@@ -525,7 +525,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '42',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_speaker',
          'name'               => __('Speakers'),
          'datatype'           => 'bool'
@@ -533,7 +533,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '43',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_subd',
          'name'               => __('Sub-D'),
          'datatype'           => 'bool'
@@ -541,7 +541,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '44',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_bnc',
          'name'               => __('BNC'),
          'datatype'           => 'bool'
@@ -549,7 +549,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '45',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_dvi',
          'name'               => __('DVI'),
          'datatype'           => 'bool'
@@ -557,7 +557,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '46',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_pivot',
          'name'               => __('Pivot'),
          'datatype'           => 'bool'
@@ -565,7 +565,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '47',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_hdmi',
          'name'               => __('HDMI'),
          'datatype'           => 'bool'
@@ -573,7 +573,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '48',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'have_displayport',
          'name'               => __('DisplayPort'),
          'datatype'           => 'bool'
@@ -618,7 +618,7 @@ class Monitor extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '82',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_global',
          'name'               => __('Global management'),
          'datatype'           => 'bool',

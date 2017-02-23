@@ -156,7 +156,7 @@ class RuleCriteria extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'criteria',
          'name'               => __('Name'),
          'massiveaction'      => false,
@@ -166,7 +166,7 @@ class RuleCriteria extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'condition',
          'name'               => __('Condition'),
          'massiveaction'      => false,
@@ -176,7 +176,7 @@ class RuleCriteria extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'pattern',
          'name'               => __('Reason'),
          'massiveaction'      => false,
@@ -317,7 +317,7 @@ class RuleCriteria extends CommonDBChild {
       global $DB;
 
       $sql = "SELECT *
-              FROM `".$this->getTable()."`
+              FROM `".$this::getTable()."`
               WHERE `".static::$items_id."` = '$ID'
               ORDER BY `id`";
 

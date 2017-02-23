@@ -62,10 +62,10 @@ class Supplier_Ticket extends CommonITILActor {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->getTable()."`
+                FROM `".$this::getTable()."`
                 LEFT JOIN `glpi_suppliers`
-                      ON (`".$this->getTable()."`.`suppliers_id` = `glpi_suppliers`.`id`)
-                WHERE `".$this->getTable()."`.`tickets_id` = '".$items_id."'
+                      ON (`".$this::getTable()."`.`suppliers_id` = `glpi_suppliers`.`id`)
+                WHERE `".$this::getTable()."`.`tickets_id` = '".$items_id."'
                       AND `glpi_suppliers`.`email` = '$email'";
 
       foreach ($DB->request($query) as $data) {

@@ -1132,7 +1132,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'datatype'           => 'text'
@@ -1149,7 +1149,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'datetime'
@@ -1157,7 +1157,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_private',
          'name'               => __('Private'),
          'datatype'           => 'bool'

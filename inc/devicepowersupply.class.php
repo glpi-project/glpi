@@ -68,7 +68,7 @@ class DevicePowerSupply extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'is_atx',
          'name'               => __('ATX'),
          'datatype'           => 'bool'
@@ -76,7 +76,7 @@ class DevicePowerSupply extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => $this::getTable(),
          'field'              => 'power',
          'name'               => __('Power'),
          'datatype'           => 'string'
