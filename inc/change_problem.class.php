@@ -164,7 +164,7 @@ class Change_Problem extends CommonDBRelation{
          echo "</td><td>";
          if (Session::haveRight('change', CREATE)) {
             echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
-            _e('Create a change from this problem');
+            echo __('Create a change from this problem');
             echo "</a>";
          }
          echo "</td></tr></table>";

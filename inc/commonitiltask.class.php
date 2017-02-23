@@ -1243,7 +1243,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   echo $groupname;
                }
             } else {
-               _e('None');
+               echo __('None');
             }
          } else {
             echo "<table width='100%'>";
@@ -1556,7 +1556,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                echo "<div id='viewplan$rand_text'></div>\n";
             }
          } else {
-            _e('None');
+            echo __('None');
          }
       }
 

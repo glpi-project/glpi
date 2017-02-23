@@ -236,7 +236,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static function displayRecursiveItems(array $recursiveItems, $elementToDisplay) {
 
       if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
-         _e('Item not linked to an object');
+         echo __('Item not linked to an object');
          return;
       }
 

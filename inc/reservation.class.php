@@ -278,15 +278,15 @@ class Reservation extends CommonDBChild {
       echo "<br><div class='center'>";
       switch ($type) {
          case "date" :
-            _e('Error in entering dates. The starting date is later than the ending date');
+            echo __('Error in entering dates. The starting date is later than the ending date');
             break;
 
          case "is_res" :
-            _e('The required item is already reserved for this timeframe');
+            echo __('The required item is already reserved for this timeframe');
             break;
 
          default :
-            _e("Unknown error");
+            echo __("Unknown error");
       }
 
       echo "<br><a href='reservation.php?reservationitems_id=$ID'>".__('Back to planning')."</a>";
@@ -1073,7 +1073,7 @@ class Reservation extends CommonDBChild {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."'>".__('Current and future reservations')."</a>";
          } else {
-            _e('Current and future reservations');
+            echo __('Current and future reservations');
          }
          echo "</th></tr>\n";
 
@@ -1121,7 +1121,7 @@ class Reservation extends CommonDBChild {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".__('Past reservations')."</a>";
          } else {
-            _e('Past reservations');
+            echo __('Past reservations');
          }
          echo "</th></tr>\n";
 

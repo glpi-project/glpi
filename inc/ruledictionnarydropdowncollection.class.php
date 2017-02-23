@@ -141,7 +141,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
       // Model check : need to check using manufacturer extra data
       if (strpos($this->item_table, 'models') === false) {
-         _e('Error replaying rules');
+         echo __('Error replaying rules');
          return false;
       }
 

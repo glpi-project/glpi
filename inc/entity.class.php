@@ -1812,7 +1812,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";
-      _e('Financial and administrative information');
+      echo __('Financial and administrative information');
       echo "</th>";
       echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
       $default_value = $entity->fields['use_infocoms_alert'];
@@ -2094,7 +2094,7 @@ class Entity extends CommonTreeDropdown {
          $calendar = new Calendar();
          $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
          if (!$cid) {
-            _e('24/7');
+            echo __('24/7');
          } else if ($calendar->getFromDB($cid)) {
             echo $calendar->getLink();
          }
@@ -2206,7 +2206,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
-            _e('Disabled');
+            echo __('Disabled');
          } else {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],

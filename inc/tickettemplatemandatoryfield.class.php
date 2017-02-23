@@ -270,7 +270,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                if (in_array($data['num'], $simplified_fields)) {
                   echo $both_interfaces;
                } else {
-                  _e('Standard interface');
+                  echo __('Standard interface');
                }
                echo "</td>";
                echo "</tr>";

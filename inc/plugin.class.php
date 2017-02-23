@@ -438,7 +438,7 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::NOTUPDATED :
-                  _e('To update');
+                  echo __('To update');
                   break;
 
                case self::TOBECONFIGURED :
@@ -451,7 +451,7 @@ class Plugin extends CommonDBTM {
 
                case self::TOBECLEANED :
                default:
-                  _e('Error / to clean');
+                  echo __('Error / to clean');
                   break;
             }
             echo "</td>";
@@ -470,10 +470,10 @@ class Plugin extends CommonDBTM {
             echo "<td>";
             if (isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                 && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
-               _e('Yes');
+               echo __('Yes');
             } else {
                echo "<span class='red b'>";
-               _e('No');
+               echo __('No');
                echo "</span>";
             }
             echo "</td>";
@@ -582,7 +582,7 @@ class Plugin extends CommonDBTM {
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                       || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
-                     _e('Not CSRF compliant');
+                     echo __('Not CSRF compliant');
                   } else if (function_exists($function) && $function()) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'activate'),
                                           _x('button', 'Enable'), array('id' => $ID));

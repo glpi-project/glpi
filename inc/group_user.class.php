@@ -177,7 +177,7 @@ class Group_User extends CommonDBRelation{
                    class='submit'>";
 
          } else {
-            _e('None');
+            echo __('None');
          }
 
          echo "</td></tr>";

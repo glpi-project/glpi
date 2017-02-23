@@ -152,7 +152,7 @@ class NetworkName extends FQDNLabel {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."</td><td>";
-      _e('IP network is not included in the database. However, you can see current available networks.');
+      echo __('IP network is not included in the database. However, you can see current available networks.');
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
       IPNetwork::showIPNetworkProperties($this->getEntityID());
@@ -698,7 +698,7 @@ class NetworkName extends FQDNLabel {
          echo "<tr class='tab_bg_1'><td class='right'>";
          echo "<input type='hidden' name='items_id' value='$items_id'>\n";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
-         _e('Not associated');
+         echo __('Not associated');
          echo "</td><td class='left'>";
          self::dropdown(array('name'      => 'addressID',
                               'condition' => '`items_id`=0'));

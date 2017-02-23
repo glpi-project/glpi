@@ -868,7 +868,7 @@ class CommonGLPI {
          }
 
          if (!$glpilisttitle) {
-            $glpilisttitle = _e('List');
+            $glpilisttitle = echo __('List');
          }
          echo "<td><a href=\"".$glpilisturl."\" title='$glpilisttitle'>";
          echo Toolbox::substr($glpilisttitle, 0, 100)."...";
@@ -1028,7 +1028,7 @@ class CommonGLPI {
          if ($glpilisttitle) {
             echo $glpilisttitle;
          } else {
-            _e('List');
+            echo __('List');
          }
          echo "</a></li>";
 

@@ -1017,7 +1017,7 @@ class Change extends CommonITILObject {
                echo "<table class='tab_cadre_fixe'>";
                echo "<tr class='tab_bg_1'><th>".__('Last changes')."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               _e('Child groups');
+               echo __('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
                                    array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
             } else {
@@ -1126,7 +1126,7 @@ class Change extends CommonITILObject {
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='$colspan'>";
-         _e('Changes on linked items');
+         echo __('Changes on linked items');
 
          echo "</th></tr>";
          if ($number > 0) {

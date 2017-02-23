@@ -148,7 +148,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
-      _e('Email text body');
+      echo __('Email text body');
       echo "<br>".__('(leave the field empty for a generation from HTML)');
       echo "</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_text' >".$this->fields["content_text"];
@@ -156,7 +156,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      _e('Email HTML body');
+      echo __('Email HTML body');
       echo "</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
       echo "</textarea>";
@@ -227,7 +227,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                echo $CFG_GLPI['languages'][$data['language']][0];
 
             } else {
-               _e('Default translation');
+               echo __('Default translation');
             }
 
             echo "</a></td></tr>";

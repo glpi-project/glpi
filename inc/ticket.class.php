@@ -3931,7 +3931,7 @@ class Ticket extends CommonITILObject {
             printf(__('The ticket will be added in the entity %s'),
                    Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
          } else {
-            _e('New ticket');
+            echo __('New ticket');
          }
       }
       echo "</th></tr>";
@@ -3944,7 +3944,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
       } else {
-         _e('Opening date');
+         echo __('Opening date');
       }
       echo $tt->getEndHiddenFieldText('date');
       echo "</th>";
@@ -3968,7 +3968,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Time to own'), $tt->getMandatoryMark('time_to_own'));
       } else {
-         _e('Time to own');
+         echo __('Time to own');
       }
       echo $tt->getEndHiddenFieldText('time_to_own');
       echo "</th>";
@@ -3980,7 +3980,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('due_date'));
       } else {
-         _e('Time to resolve');
+         echo __('Time to resolve');
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
@@ -4192,7 +4192,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         _e('Approval');
+         echo __('Approval');
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";
@@ -4372,7 +4372,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
          if (empty($this->fields["name"])) {
-            _e('Without title');
+            echo __('Without title');
          } else {
             echo $this->fields["name"];
          }
@@ -6239,7 +6239,7 @@ class Ticket extends CommonITILObject {
                                       array('link' => $userdata['link']));
                echo "</span>";
             } else {
-               _e("Requester");
+               echo __("Requester");
             }
             echo "</div>"; // h_user
          }
@@ -6424,7 +6424,7 @@ class Ticket extends CommonITILObject {
          if ((!isset($item_i['users_id_recipient'])
                || ($item_i['users_id_recipient'] == 0))
                && ($dem == 0)) {
-            _e("Requester");
+            echo __("Requester");
          } else {
             if (isset($item_i['users_id_recipient'])
                   && ($item_i['users_id_recipient'] != 0)) {

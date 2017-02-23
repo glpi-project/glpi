@@ -189,7 +189,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
          echo "</td><td width='20%'>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?_projecttasks_id=$ID'>";
-         _e('Create a ticket from this task');
+         echo __('Create a ticket from this task');
          echo "</a>";
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";

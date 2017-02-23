@@ -713,7 +713,7 @@ class RSSFeed extends CommonDBVisible {
       $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
       echo "<div class='firstbloc'>";
       if (!$feed || $feed->error()) {
-         _e('Error retrieving RSS feed');
+         echo __('Error retrieving RSS feed');
          $this->setError(true);
       } else {
          $this->setError(false);

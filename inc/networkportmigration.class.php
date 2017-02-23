@@ -215,9 +215,9 @@ class NetworkPortMigration extends CommonDBChild {
             printf(__('Network port information conflicting with %s'), $network->getLink());
          } else {
             if (!isset($address) || !isset($netmask)) {
-               _e('Invalid address or netmask');
+               echo __('Invalid address or netmask');
             } else {
-               _e('No conflicting network');
+               echo __('No conflicting network');
             }
             echo "&nbsp;<a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>" .
                   __('you may have to add a network')."</a>";
@@ -249,7 +249,7 @@ class NetworkPortMigration extends CommonDBChild {
             echo "<a href='".$networkPort->getLinkURL()."'>".
                    __('Add a correct IP to the network port') . "</a>";
          } else {
-            _e('Unknown network port');
+            echo __('Unknown network port');
          }
          echo "</td></tr>\n";
       }
@@ -306,7 +306,7 @@ class NetworkPortMigration extends CommonDBChild {
             $row = $DB->fetch_assoc($result);
             echo $row['name'];
          } else {
-            _e('Unknown interface');
+            echo __('Unknown interface');
          }
       }
       echo "</$interface_cell>";

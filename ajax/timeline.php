@@ -77,7 +77,7 @@ switch ($_POST['action']) {
             Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent,
                                                                         'tickets_id' => $_POST["tickets_id"]));
          } else {
-            _e('Access denied');
+            echo __('Access denied');
          }
       } else if ($_POST['type'] == "Solution") {
          $ticket = new Ticket;

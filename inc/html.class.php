@@ -4072,7 +4072,7 @@ class Html {
          }
          echo "</table>";
       } else {
-         _e('Empty array');
+         echo __('Empty array');
       }
    }
 
