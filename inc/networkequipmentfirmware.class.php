@@ -45,6 +45,6 @@ class NetworkEquipmentFirmware extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return __('Firmware');
+      return _n('Firmware', 'Firmwares', $nb);
    }
 }

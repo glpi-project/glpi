@@ -376,7 +376,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Firmware')."</td>";
+      echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
       echo "<td>";
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
@@ -504,7 +504,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[11]['table']          = 'glpi_networkequipmentfirmwares';
       $tab[11]['field']          = 'name';
-      $tab[11]['name']           = __('Firmware');
+      $tab[11]['name']           = _n('Firmware', 'Firmwares', 1);
       $tab[11]['datatype']       = 'dropdown';
 
       $tab[14]['table']          = $this->getTable();
