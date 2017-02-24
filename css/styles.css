@@ -2440,12 +2440,11 @@ a.icon_nav_move:hover img {
 
 ul#menu a.itemP, ul#menu a.itemP1 {
    display: block;
-   width: 100%;
    text-align: center;
    text-decoration: none;
    font-size: 13px;
    white-space: nowrap;
-   padding:7px 0;
+   padding:7px 1em;
 }
 
 ul#menu ul.ssmenu {
@@ -2508,15 +2507,14 @@ ul#menu ul li a {
 }
 
 ul#menu > li {
-   float: left;
-   width: 135px;
+   display: inline-block;
+   min-width: 135px;
    height: 30px;
-   box-sizing: border-box;
 }
 
 ul#menu ul.ssmenu {
-   position: relative;
-   width: 135px;
+   position: absolute;
+   min-width: 135px;
    z-index: 200;
 }
 
