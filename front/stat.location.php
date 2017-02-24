@@ -163,24 +163,26 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       $count = 0;
-      $cleandata = [];
+      $labels = [];
+      $series = [];
       foreach ($data['opened'] as $key => $val) {
          if ($val > 0) {
             $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey] = $val;
+            $labels[] = $newkey;
+            $series[] = ['name' => $newkey, 'data' => $val];
             $count += $val;
          }
       }
 
-      if (count($cleandata)) {
+      if (count($series)) {
          $stat->displayPieGraph(
             sprintf(
                __('Opened %1$s (%2$s)'),
                Ticket::getTypeName(Session::getPluralNumber()),
                $count
             ),
-            array_keys($cleandata),
-            $cleandata
+            $labels,
+            $series
          );
       }
    }
@@ -188,95 +190,100 @@ if (!$_GET['showgraph']) {
    if (isset($data['solved']) && is_array($data['solved'])) {
       $count = 0;
       $cleandata = [];
+      $labels = [];
+      $series = [];
       foreach ($data['solved'] as $key => $val) {
          if ($val > 0) {
-            $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey] = $val;
+            $labels[] = $newkey;
+            $series[] = ['name' => $newkey, 'data' => $val];
             $count += $val;
          }
       }
 
-      if (count($cleandata)) {
+      if (count($series)) {
          $stat->displayPieGraph(
             sprintf(
                __('Solved %1$s (%2$s)'),
                Ticket::getTypeName(Session::getPluralNumber()),
                $count
             ),
-            array_keys($cleandata),
-            $cleandata
+               $labels,
+               $series
          );
       }
    }
 
    if (isset($data['late']) && is_array($data['late'])) {
       $count = 0;
-      $cleandata = [];
+      $labels = [];
+      $series = [];
       foreach ($data['late'] as $key => $val) {
          if ($val > 0) {
-            $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey] = $val;
+            $labels[] = $newkey;
+            $series[] = ['name' => $newkey, 'data' => $val];
             $count += $val;
          }
       }
 
-      if (count($cleandata)) {
+      if (count($series)) {
          $stat->displayPieGraph(
             sprintf(
                __('Late solved %1$s (%2$s)'),
                Ticket::getTypeName(Session::getPluralNumber()),
                $count
             ),
-            array_keys($cleandata),
-            $cleandata
+            $labels,
+            $series
          );
       }
    }
 
    if (isset($data['closed']) && is_array($data['closed'])) {
       $count = 0;
-      $cleandata = [];
+      $labels = [];
+      $series = [];
       foreach ($data['closed'] as $key => $val) {
          if ($val > 0) {
-            $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey]=$val;
+            $labels[] = $newkey;
+            $series[] = ['name' => $newkey, 'data' => $val];
             $count += $val;
          }
       }
 
-      if (count($cleandata)) {
+      if (count($series)) {
          $stat->displayPieGraph(
             sprintf(
                 __('Closed %1$s (%2$s)'),
                Ticket::getTypeName(Session::getPluralNumber()),
                $count
             ),
-            array_keys($cleandata),
-            $cleandata
+            $labels,
+            $series
          );
       }
    }
 
    if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
       $count = 0;
-      $cleandata = [];
+      $labels = [];
+      $series = [];
       foreach ($data['opensatisfaction'] as $key => $val) {
          if ($val > 0) {
-            $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey] = $val;
+            $labels[] = $newkey;
+            $series[] = ['name' => $newkey, 'data' => $val];
             $count += $val;
          }
       }
 
-      if (count($cleandata)) {
+      if (count($series)) {
          $stat->displayPieGraph(
             sprintf(
                 __('%1$s satisfaction survey (%2$s)'),
                Ticket::getTypeName(Session::getPluralNumber()),
                $count
             ),
-            array_keys($cleandata),
-            $cleandata
+            $labels,
+            $series
          );
       }
    }
