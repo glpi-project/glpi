@@ -3420,6 +3420,15 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
+
+         if (empty($user['comment'])) {
+            $user['comment'] = sprintf(
+               __('Show %1$s'),
+               mb_strtolower(
+                  self::getTypeName(Session::getPluralNumber())
+               )
+            );
+         }
          $output .= "&nbsp;".Html::showToolTip($user["comment"],
                                       array('contentid' => $comment_id,
                                             'display'   => false,

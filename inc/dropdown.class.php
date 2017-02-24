@@ -200,6 +200,14 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
+         if (empty($comment)) {
+            $comment = sprintf(
+               __('Show %1$s'),
+               mb_strtolower(
+                  $item::getTypeName(Session::getPluralNumber())
+               )
+            );
+         }
          $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
