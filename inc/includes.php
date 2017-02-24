@@ -90,7 +90,8 @@ if (isset($_REQUEST)) {
 }
 if (isset($_FILES)) {
    foreach ($_FILES as &$file) {
-      $file['name'] = Toolbox::sanitize($file['name']);
+      $file['name'] = Toolbox::addslashes_deep($file['name']);
+      $file['name'] = Toolbox::clean_cross_side_scripting_deep($file['name']);
    }
 }
 
