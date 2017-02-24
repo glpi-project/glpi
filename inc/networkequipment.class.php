@@ -375,7 +375,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
+      echo "<td>"._n('Firmware', 'Firmware', 1)."</td>";
       echo "<td>";
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
@@ -556,7 +556,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '11',
          'table'              => 'glpi_networkequipmentfirmwares',
          'field'              => 'name',
-         'name'               => _n('Firmware', 'Firmwares', 1),
+         'name'               => _n('Firmware', 'Firmware', 1),
          'datatype'           => 'dropdown'
       ];
 

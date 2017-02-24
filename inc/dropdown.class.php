@@ -950,7 +950,7 @@ class Dropdown {
                  'NetworkInterface'         => _n('Network interface',
                                                   'Network interfaces',
                                                   Session::getPluralNumber()),
-                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares',
+                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmware',
                                                   Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
