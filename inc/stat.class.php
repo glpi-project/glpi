@@ -1323,7 +1323,7 @@ class Stat extends CommonGLPI {
     *                    ['name' => 'a name', 'data' => []],
     *                    ['name' => 'another name', 'data' => []]
     *                 ]
-    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param string[] $options  array of options
     * @param boolean  $display  Whether to display directly; defauts to true
     *
     * @return void
@@ -1438,7 +1438,7 @@ class Stat extends CommonGLPI {
     *                    ['name' => 'a name', 'data' => []],
     *                    ['name' => 'another name', 'data' => []]
     *                 ]
-    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param string[] $options  array of options
     * @param boolean  $display  Whether to display directly; defauts to true
     *
     * @return void
@@ -1552,7 +1552,7 @@ class Stat extends CommonGLPI {
     *                    ['name' => 'a name', 'data' => []],
     *                    ['name' => 'another name', 'data' => []]
     *                 ]
-    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param string[] $options  array of options
     * @param boolean  $display  Whether to display directly; defauts to true
     *
     * @return void
