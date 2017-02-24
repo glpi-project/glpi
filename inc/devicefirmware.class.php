@@ -39,7 +39,7 @@ class DeviceFirmware extends CommonDevice {
    static protected $forward_entity_to = array('Item_DeviceFirmware', 'Infocom');
 
    static function getTypeName($nb=0) {
-      return _n('Firmware', 'Firmwares', $nb);
+      return __('Firmware');
    }
 
 
