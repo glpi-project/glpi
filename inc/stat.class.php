@@ -1520,13 +1520,13 @@ class Stat extends CommonGLPI {
       if ($param['animate'] === true) {
                   $out .= "
                      chart_$slug.on('draw', function(data) {
-                        if(data.type === 'bar' || data.type === 'area') {
+                        if(data.type === 'bar') {
                            data.element.animate({
-                              d: {
+                              y2: {
                                  begin: 300 * data.index,
                                  dur: 500,
-                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                                 to: data.path.clone().stringify(),
+                                 from: data.y1,
+                                 to: data.y2,
                                  easing: Chartist.Svg.Easing.easeOutQuint
                               }
                            });
@@ -1634,13 +1634,14 @@ class Stat extends CommonGLPI {
       if ($param['animate'] === true) {
                   $out .= "
                      chart_$slug.on('draw', function(data) {
-                        if(data.type === 'line' || data.type === 'area') {
+                        if(data.type === 'bar') {
+                           debugger
                            data.element.animate({
-                              d: {
+                              y2: {
                                  begin: 300 * data.index,
                                  dur: 500,
-                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                                 to: data.path.clone().stringify(),
+                                 from: data.y1,
+                                 to: data.y2,
                                  easing: Chartist.Svg.Easing.easeOutQuint
                               }
                            });
