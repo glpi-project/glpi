@@ -1593,7 +1593,7 @@ class Html {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            echo "<a href='$link' class='itemP' title='{$data['title']}'>".self::getMenuText($data['title'])."</a>";
+            echo "<a href='$link' class='itemP' title='{$data['title']}'>{$data['title']}</a>";
             echo "<ul class='ssmenu'>";
 
 
@@ -1957,7 +1957,7 @@ class Html {
 
          foreach ($links as $name => $link) {
             echo "<li id='menu$i'>";
-            echo "<a href='$link' title=\"".$name."\" class='itemP'>".self::getMenuText($name)."</a>";
+            echo "<a href='$link' title=\"".$name."\" class='itemP'>{$name}</a>";
             echo "</li>";
             $i++;
          }
@@ -2125,7 +2125,7 @@ class Html {
       foreach ($menu as $menu_item) {
          echo "<li id='".$menu_item['id']."'>";
          echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
-                "title=\"".$menu_item['title']."\" class='itemP'>".self::getMenuText($menu_item['title'])."</a>";
+                "title=\"".$menu_item['title']."\" class='itemP'>{$menu_item['title']}</a>";
          echo "</li>";
       }
 
@@ -5844,18 +5844,4 @@ class Html {
       return $message;
    }
 
-   /**
-    * Get text for menu, shortened if needed
-    *
-    * @param string $text Menu text
-    *
-    * @return string
-    */
-   static public function getMenuText($text) {
-      if (Toolbox::strlen($text) > 14) {
-         $text = Toolbox::substr($text, 0, 14)."...";
-      }
-      return $text;
-   }
 }
-
