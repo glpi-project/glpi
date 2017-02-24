@@ -9797,11 +9797,11 @@ msgstr ""
 #: inc/networkequipmentfirmware.class.php:48 inc/phone.class.php:296
 #: inc/phone.class.php:473
 msgid "Firmware"
-msgid_plural "Firmwares"
+msgid_plural "Firmware"
 msgstr[0] "Firmware"
-msgstr[1] "Firmwares"
-msgstr[2] "Firmwares"
-msgstr[3] "Firmwares"
+msgstr[1] "Firmware"
+msgstr[2] "Firmware"
+msgstr[3] "Firmware"
 
 #: inc/dropdown.class.php:899 inc/netpoint.class.php:62
 #: inc/netpoint.class.php:274 inc/netpoint.class.php:288

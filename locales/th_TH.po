@@ -9291,8 +9291,8 @@ msgstr "เครือข่าย"
 #: inc/networkequipmentfirmware.class.php:48 inc/phone.class.php:296
 #: inc/phone.class.php:473
 msgid "Firmware"
-msgid_plural "Firmwares"
-msgstr[0] "Firmwares"
+msgid_plural "Firmware"
+msgstr[0] "Firmware"
 
 #: inc/dropdown.class.php:906 inc/netpoint.class.php:62
 #: inc/netpoint.class.php:274 inc/netpoint.class.php:288

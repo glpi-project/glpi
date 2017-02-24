@@ -49,7 +49,7 @@ class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBChild
    static public $itemtype  = 'Software';
-   static public $items_id  = 'softwares_id';
+   static public $items_id  = 'software_id';
 
 
    static function getTypeName($nb=0) {
@@ -84,7 +84,7 @@ class SoftwareVersion extends CommonDBChild {
    function getPreAdditionalInfosForName() {
 
       $soft = new Software();
-      if ($soft->getFromDB($this->fields['softwares_id'])) {
+      if ($soft->getFromDB($this->fields['software_id'])) {
          return $soft->getName();
       }
       return '';
@@ -97,7 +97,7 @@ class SoftwareVersion extends CommonDBChild {
     * @param $ID        integer  Id of the version or the template to print
     * @param $options   array    of possible options:
     *     - target form target
-    *     - softwares_id ID of the software for add process
+    *     - software_id ID of the software for add process
     *
     * @return true if displayed  false if item not found or not right to display
     *
@@ -107,9 +107,9 @@ class SoftwareVersion extends CommonDBChild {
 
       if ($ID > 0) {
          $this->check($ID, READ);
-         $softwares_id = $this->fields['softwares_id'];
+         $software_id = $this->fields['software_id'];
       } else {
-         $softwares_id = $options['softwares_id'];
+         $software_id = $options['software_id'];
          $this->check(-1, CREATE, $options);
       }
 
@@ -118,10 +118,10 @@ class SoftwareVersion extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', Session::getPluralNumber())."</td>";
       echo "<td>";
       if ($this->isNewID($ID)) {
-         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
+         echo "<input type='hidden' name='software_id' value='$software_id'>";
       }
-      echo "<a href='software.form.php?id=".$softwares_id."'>".
-             Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
+      echo "<a href='software.form.php?id=".$software_id."'>".
+             Dropdown::getDropdownName("glpi_software", $software_id)."</a>";
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -196,7 +196,7 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @param $options array of possible options:
     *    - name          : string / name of the select (default is softwareversions_id)
-    *    - softwares_id  : integer / ID of the software (mandatory)
+    *    - software_id  : integer / ID of the software (mandatory)
     *    - value         : integer / value of the selected version
     *    - used          : array / already used items
     *
@@ -205,8 +205,8 @@ class SoftwareVersion extends CommonDBChild {
    static function dropdownForOneSoftware($options=array()) {
       global $CFG_GLPI, $DB;
 
-      //$softwares_id,$value=0
-      $p['softwares_id']          = 0;
+      //$software_id,$value=0
+      $p['software_id']          = 0;
       $p['value']                 = 0;
       $p['name']                  = 'softwareversions_id';
       $p['used']                  = array();
@@ -227,7 +227,7 @@ class SoftwareVersion extends CommonDBChild {
                               `glpi_states`.`name` AS sname
                 FROM `glpi_softwareversions`
                 LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-                WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
+                WHERE `glpi_softwareversions`.`software_id` = '".$p['software_id']."'
                       $where
                 ORDER BY `name`";
       $result = $DB->query($query);
@@ -262,18 +262,18 @@ class SoftwareVersion extends CommonDBChild {
    static function showForSoftware(Software $soft) {
       global $DB, $CFG_GLPI;
 
-      $softwares_id = $soft->getField('id');
+      $software_id = $soft->getField('id');
 
-      if (!$soft->can($softwares_id, READ)) {
+      if (!$soft->can($software_id, READ)) {
          return false;
       }
-      $canedit = $soft->canEdit($softwares_id);
+      $canedit = $soft->canEdit($software_id);
 
       echo "<div class='spaced'>";
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
+         echo "<a class='vsubmit' href='softwareversion.form.php?software_id=$software_id'>".
                 _x('button', 'Add a version')."</a>";
          echo "</div>";
       }
@@ -282,7 +282,7 @@ class SoftwareVersion extends CommonDBChild {
                        `glpi_states`.`name` AS sname
                 FROM `glpi_softwareversions`
                 LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                WHERE `softwares_id` = '$softwares_id'
+                WHERE `software_id` = '$software_id'
                 ORDER BY `name`";
 
       Session::initNavigateListItems('SoftwareVersion',
@@ -338,7 +338,7 @@ class SoftwareVersion extends CommonDBChild {
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(), "softwares_id = '".$item->getID()."'");
+                  $nb = countElementsInTable($this->getTable(), "software_id = '".$item->getID()."'");
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }

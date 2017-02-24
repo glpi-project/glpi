@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")) {
 
 Session::checkRight("software", UPDATE);
 
-if ($_POST['softwares_id'] > 0) {
+if ($_POST['software_id'] > 0) {
    if (!isset($_POST['value'])) {
       $_POST['value'] = 0;
    }
@@ -63,7 +63,7 @@ if ($_POST['softwares_id'] > 0) {
                              `glpi_states`.`name` AS sname
              FROM `glpi_softwareversions`
              LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-             WHERE `glpi_softwareversions`.`softwares_id` = '".$_POST['softwares_id']."'
+             WHERE `glpi_softwareversions`.`software_id` = '".$_POST['software_id']."'
                    $where
              ORDER BY `name`";
    $result = $DB->query($query);

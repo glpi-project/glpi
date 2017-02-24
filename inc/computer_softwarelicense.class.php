@@ -117,8 +117,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
                   SoftwareLicense::dropdown(array('condition'
-                                                    => "`glpi_softwarelicenses`.`softwares_id`
-                                                         = '".$input['options']['move']['softwares_id']."'",
+                                                    => "`glpi_softwarelicenses`.`software_id`
+                                                         = '".$input['options']['move']['software_id']."'",
                                                   'used'
                                                     => $input['options']['move']['used']));
                   echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
@@ -245,11 +245,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get number of installed licenses of a software
     *
-    * @param $softwares_id software ID
+    * @param $software_id software ID
     *
     * @return number of installations
    **/
-   static function countForSoftware($softwares_id) {
+   static function countForSoftware($software_id) {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
@@ -259,7 +259,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                           = `glpi_computers_softwarelicenses`.`softwarelicenses_id`)
                 INNER JOIN `glpi_computers`
                       ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_softwarelicenses`.`softwares_id` = '$softwares_id'
+                WHERE `glpi_softwarelicenses`.`software_id` = '$software_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
                       AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'" .
@@ -431,7 +431,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        `glpi_groups`.`name` AS groupe,
                        `glpi_softwarelicenses`.`name` AS lname,
                        `glpi_softwarelicenses`.`id` AS lID,
-                       `glpi_softwarelicenses`.`softwares_id` AS softid
+                       `glpi_softwarelicenses`.`software_id` AS softid
                 FROM `glpi_computers_softwarelicenses`
                 INNER JOIN `glpi_softwarelicenses`
                      ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
@@ -471,14 +471,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
                // Options to update license
                $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
-               $massiveactionparams['extraparams']['options']['move']['softwares_id']
-                                                                   = $license->fields['softwares_id'];
+               $massiveactionparams['extraparams']['options']['move']['software_id']
+                                                                   = $license->fields['software_id'];
 
                Html::showMassiveActions($massiveactionparams);
             }
 
             $soft       = new Software();
-            $soft->getFromDB($license->fields['softwares_id']);
+            $soft->getFromDB($license->fields['software_id']);
             $showEntity = ($license->isRecursive());
             $linkUser   = User::canView();
 
@@ -706,12 +706,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * count number of licenses for a software
     **/
-   static function countLicenses($softwares_id) {
+   static function countLicenses($software_id) {
       global $DB;
 
       $query = "SELECT COUNT(*)
                 FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id' " .
+                WHERE `software_id` = '$software_id' " .
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses');
 
       $result = $DB->query($query);

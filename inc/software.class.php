@@ -120,7 +120,7 @@ class Software extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       if (isset($input['is_update']) && !$input['is_update']) {
-         $input['softwares_id'] = 0;
+         $input['software_id'] = 0;
       }
       return $input;
    }
@@ -129,7 +129,7 @@ class Software extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (isset($input['is_update']) && !$input['is_update']) {
-         $input['softwares_id'] = 0;
+         $input['software_id'] = 0;
       }
 
       if (isset($input["id"]) && ($input["id"] > 0)) {
@@ -176,7 +176,7 @@ class Software extends CommonDBTM {
       // Delete all licenses
       $query2 = "SELECT `id`
                  FROM `glpi_softwarelicenses`
-                 WHERE `softwares_id` = '".$this->fields['id']."'";
+                 WHERE `software_id` = '".$this->fields['id']."'";
 
       if ($result2 = $DB->query($query2)) {
          if ($DB->numrows($result2)) {
@@ -217,7 +217,7 @@ class Software extends CommonDBTM {
       if ($soft->getFromDB($ID)) {
          $valid = 1;
          if (countElementsInTable('glpi_softwarelicenses',
-                                  "`softwares_id`='$ID' AND NOT `is_valid`") > 0) {
+                                  "`software_id`='$ID' AND NOT `is_valid`") > 0) {
             $valid = 0;
          }
          if ($valid != $soft->fields['is_valid']) {
@@ -308,7 +308,7 @@ class Software extends CommonDBTM {
       echo "<td>" . __('Upgrade') . "</td><td>";
       Dropdown::showYesNo("is_update", $this->fields['is_update']);
       echo "&nbsp;" . __('from') . "&nbsp;";
-      Software::dropdown(array('value' => $this->fields["softwares_id"]));
+      Software::dropdown(array('value' => $this->fields["software_id"]));
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
@@ -613,14 +613,14 @@ class Software extends CommonDBTM {
 
       // Make a select box
       $rand  = mt_rand();
-      $where = getEntitiesRestrictRequest('', 'glpi_softwares','entities_id',
+      $where = getEntitiesRestrictRequest('', 'glpi_software','entities_id',
                                           $entity_restrict, true);
       $rand = Dropdown::show('Software', array('condition' => $where));
 
-      $paramsselsoft = array('softwares_id' => '__VALUE__',
+      $paramsselsoft = array('software_id' => '__VALUE__',
                              'myname'       => $myname);
 
-      Ajax::updateItemOnSelectEvent("dropdown_softwares_id$rand", "show_".$myname.$rand,
+      Ajax::updateItemOnSelectEvent("dropdown_software_id$rand", "show_".$myname.$rand,
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",
                                     $paramsselsoft);
 
@@ -645,30 +645,30 @@ class Software extends CommonDBTM {
       $where = getEntitiesRestrictRequest(' AND', 'glpi_softwarelicenses', 'entities_id',
                                           $entity_restrict, true);
 
-      $query = "SELECT DISTINCT `glpi_softwares`.`id`,
-                              `glpi_softwares`.`name`
-                FROM `glpi_softwares`
+      $query = "SELECT DISTINCT `glpi_software`.`id`,
+                              `glpi_software`.`name`
+                FROM `glpi_software`
                 INNER JOIN `glpi_softwarelicenses`
-                     ON (`glpi_softwares`.`id` = `glpi_softwarelicenses`.`softwares_id`)
-                WHERE `glpi_softwares`.`is_deleted` = '0'
-                      AND `glpi_softwares`.`is_template` = '0'
+                     ON (`glpi_software`.`id` = `glpi_softwarelicenses`.`software_id`)
+                WHERE `glpi_software`.`is_deleted` = '0'
+                      AND `glpi_software`.`is_template` = '0'
                       $where
-                ORDER BY `glpi_softwares`.`name`";
+                ORDER BY `glpi_software`.`name`";
       $result = $DB->query($query);
       $values = array();
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $softwares_id          = $data["id"];
-            $values[$softwares_id] = $data["name"];
+            $software_id          = $data["id"];
+            $values[$software_id] = $data["name"];
          }
       }
-      $rand = Dropdown::showFromArray('softwares_id', $values, array('display_emptychoice' => true));
+      $rand = Dropdown::showFromArray('software_id', $values, array('display_emptychoice' => true));
 
-      $paramsselsoft = array('softwares_id'    => '__VALUE__',
+      $paramsselsoft = array('software_id'    => '__VALUE__',
                              'entity_restrict' => $entity_restrict,
                              'myname'          => $myname);
 
-      Ajax::updateItemOnSelectEvent("dropdown_softwares_id$rand", "show_".$myname.$rand,
+      Ajax::updateItemOnSelectEvent("dropdown_software_id$rand", "show_".$myname.$rand,
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownSoftwareLicense.php",
                                     $paramsselsoft);
 
@@ -739,12 +739,12 @@ class Software extends CommonDBTM {
          $manufacturer_id = Dropdown::import('Manufacturer', array('name' => $manufacturer));
       }
 
-      $query_search = "SELECT `glpi_softwares`.`id`, `glpi_softwares`.`is_deleted`
-                       FROM `glpi_softwares`
+      $query_search = "SELECT `glpi_software`.`id`, `glpi_software`.`is_deleted`
+                       FROM `glpi_software`
                        WHERE `name` = '$name'
                              AND `manufacturers_id` = '$manufacturer_id'
                              AND `is_template` = '0' ".
-                             getEntitiesRestrictRequest('AND', 'glpi_softwares',
+                             getEntitiesRestrictRequest('AND', 'glpi_software',
                                                         'entities_id', $entity,true);
 
       $result_search = $DB->query($query_search);
@@ -826,7 +826,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Show softwares candidates to be merged with the current
+    * Show software candidates to be merged with the current
     *
     * @return nothing
    **/
@@ -838,16 +838,16 @@ class Software extends CommonDBTM {
       $rand = mt_rand();
 
       echo "<div class='center'>";
-      $sql = "SELECT `glpi_softwares`.`id`,
-                     `glpi_softwares`.`name`,
+      $sql = "SELECT `glpi_software`.`id`,
+                     `glpi_software`.`name`,
                      `glpi_entities`.`completename` AS entity
-              FROM `glpi_softwares`
-              LEFT JOIN `glpi_entities` ON (`glpi_softwares`.`entities_id` = `glpi_entities`.`id`)
-              WHERE (`glpi_softwares`.`id` != '$ID'
-                     AND `glpi_softwares`.`name` = '".addslashes($this->fields["name"])."'
-                     AND `glpi_softwares`.`is_deleted` = '0'
-                     AND `glpi_softwares`.`is_template` = '0' " .
-                         getEntitiesRestrictRequest('AND', 'glpi_softwares','entities_id',
+              FROM `glpi_software`
+              LEFT JOIN `glpi_entities` ON (`glpi_software`.`entities_id` = `glpi_entities`.`id`)
+              WHERE (`glpi_software`.`id` != '$ID'
+                     AND `glpi_software`.`name` = '".addslashes($this->fields["name"])."'
+                     AND `glpi_software`.`is_deleted` = '0'
+                     AND `glpi_software`.`is_template` = '0' " .
+                         getEntitiesRestrictRequest('AND', 'glpi_software','entities_id',
                                                     getSonsOf("glpi_entities",
                                                               $this->fields["entities_id"]),
                                                               false).")
@@ -897,7 +897,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * Merge softwares with current
+    * Merge software with current
     *
     * @param $item array of software ID to be merged
     *
@@ -917,7 +917,7 @@ class Software extends CommonDBTM {
       $item = array_keys($item);
 
       // Search for software version
-      $req = $DB->request("glpi_softwareversions", array("softwares_id" => $item));
+      $req = $DB->request("glpi_softwareversions", array("software_id" => $item));
       $i   = 0;
 
       if ($nb = $req->numrows()) {
@@ -925,7 +925,7 @@ class Software extends CommonDBTM {
             $found = false;
 
             foreach ($DB->request("glpi_softwareversions",
-                                  array("softwares_id" => $ID,
+                                  array("software_id" => $ID,
                                         "name"         => $from["name"])) as $dest) {
                // Update version ID on License
                $sql = "UPDATE `glpi_softwarelicenses`
@@ -954,7 +954,7 @@ class Software extends CommonDBTM {
             } else {
                // Move version to destination software
                $sql = "UPDATE `glpi_softwareversions`
-                       SET `softwares_id` = '$ID',
+                       SET `software_id` = '$ID',
                            `entities_id` = '".$this->getField('entities_id')."'
                        WHERE `id` = '".$from["id"]."'";
             }
@@ -968,8 +968,8 @@ class Software extends CommonDBTM {
 
       // Move software license
       $sql = "UPDATE `glpi_softwarelicenses`
-              SET `softwares_id` = '$ID'
-              WHERE `softwares_id` IN (".implode(",",$item).")";
+              SET `software_id` = '$ID'
+              WHERE `software_id` IN (".implode(",",$item).")";
 
       if ($DB->query($sql)) {
          $i++;

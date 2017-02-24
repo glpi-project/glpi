@@ -110,7 +110,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Retrieve an item from the database with datas associated (hardwares)
+    * Retrieve an item from the database with datas associated (hardware)
     *
     * @param $ID                    ID of the item to get
     * @param $purecontent  boolean  true : nothing change / false : convert to HTML display

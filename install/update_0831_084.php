@@ -408,9 +408,9 @@ function update0831to084() {
 
 
    /// create new index for search
-   $migration->addKey("glpi_softwarelicenses", array('softwares_id', 'expire'),
-                      'softwares_id_expire');
-   $migration->dropKey("glpi_softwarelicenses", 'softwares_id');
+   $migration->addKey("glpi_softwarelicenses", array('software_id', 'expire'),
+                      'software_id_expire');
+   $migration->dropKey("glpi_softwarelicenses", 'software_id');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
@@ -1082,7 +1082,7 @@ function update0831to084() {
    $migration->changeField('glpi_profiles', 'rule_ocs', 'rule_import', 'char');
 
    $migration->changeField('glpi_rulecacheprinters', 'ignore_ocs_import', 'ignore_import', 'char');
-   $migration->changeField('glpi_rulecachesoftwares', 'ignore_ocs_import', 'ignore_import', 'char');
+   $migration->changeField('glpi_rulecachesoftware', 'ignore_ocs_import', 'ignore_import', 'char');
 
    $migration->dropField('glpi_configs', 'use_ocs_mode');
 

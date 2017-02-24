@@ -471,7 +471,7 @@ function update0681to07() {
    }
 
 
-   // Add ticket_tco for hardwares
+   // Add ticket_tco for hardware
    $tco_tbl = array(SOFTWARE_TYPE   => 'glpi_software',
                     COMPUTER_TYPE   => 'glpi_computers',
                     PRINTER_TYPE    => 'glpi_printers',
@@ -1811,8 +1811,8 @@ function update0681to07() {
                   `clean_contacts` tinyint(4) NOT NULL default '0',
                   `keep_contracts` tinyint(4) NOT NULL default '0',
                   `clean_contracts` tinyint(4) NOT NULL default '0',
-                  `keep_softwares` tinyint(4) NOT NULL default '0',
-                  `clean_softwares` tinyint(4) NOT NULL default '0',
+                  `keep_software` tinyint(4) NOT NULL default '0',
+                  `clean_software` tinyint(4) NOT NULL default '0',
                   `keep_documents` tinyint(4) NOT NULL default '0',
                   `clean_documents` tinyint(4) NOT NULL default '0',
                   `keep_cartridges_type` tinyint(4) NOT NULL default '0',

@@ -1466,7 +1466,7 @@ class Stat extends CommonGLPI {
          if ($output_type == Search::HTML_OUTPUT) {
             Html::printPager($start, $numrows, $target,
                              "date1=".$date1."&amp;date2=".$date2.
-                                 "&amp;type=hardwares&amp;start=$start",
+                                 "&amp;type=hardware&amp;start=$start",
                              'Stat');
             echo "<div class='center'>";
          }

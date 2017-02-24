@@ -96,7 +96,7 @@ $options['clean_supplier']=1;
 $options['keep_contact']=1;
 $options['clean_contact']=1;
 
-// Softwares : 0 : delete 1 : keep
+// Software : 0 : delete 1 : keep
 $options['keep_software']=1;
 $options['clean_software']=1;
 

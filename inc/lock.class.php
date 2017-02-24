@@ -145,8 +145,8 @@ class Lock {
                     FROM `glpi_computers_softwareversions` AS csv
                     LEFT JOIN `glpi_softwareversions` AS sv
                        ON (`csv`.`softwareversions_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
+                    LEFT JOIN `glpi_software` AS s
+                       ON (`sv`.`software_id` = `s`.`id`)
                     WHERE `csv`.`is_deleted` = '1'
                           AND `csv`.`is_dynamic` = '1'
                           AND `csv`.`computers_id` = '$ID'";
@@ -175,8 +175,8 @@ class Lock {
                     FROM `glpi_computers_softwarelicenses` AS csv
                     LEFT JOIN `glpi_softwarelicenses` AS sv
                        ON (`csv`.`softwarelicenses_id` = `sv`.`id`)
-                    LEFT JOIN `glpi_softwares` AS s
-                       ON (`sv`.`softwares_id` = `s`.`id`)
+                    LEFT JOIN `glpi_software` AS s
+                       ON (`sv`.`software_id` = `s`.`id`)
                     WHERE `csv`.`is_deleted` = '1'
                           AND `csv`.`is_dynamic` = '1'
                           AND `csv`.`computers_id` = '$ID'";

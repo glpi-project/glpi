@@ -42,8 +42,8 @@ Session::checkRight("software", READ);
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["softwares_id"])) {
-   $_GET["softwares_id"] = "";
+if (!isset($_GET["software_id"])) {
+   $_GET["software_id"] = "";
 }
 
 $version = new SoftwareVersion();
@@ -52,18 +52,18 @@ if (isset($_POST["add"])) {
     $version->check(-1, CREATE,$_POST);
 
    if ($newID = $version->add($_POST)) {
-      Event::log($_POST['softwares_id'], "software", 4, "inventory",
+      Event::log($_POST['software_id'], "software", 4, "inventory",
                  //TRANS: %s is the user login, %2$s is the version id
                  sprintf(__('%1$s adds the version %2$s'), $_SESSION["glpiname"], $newID));
       Html::redirect($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
-                     $version->fields['softwares_id']);
+                     $version->fields['software_id']);
    }
    Html::back();
 
 } else if (isset($_POST["purge"])) {
    $version->check($_POST['id'], PURGE);
    $version->delete($_POST, 1);
-   Event::log($version->fields['softwares_id'], "software", 4, "inventory",
+   Event::log($version->fields['software_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the version id
               sprintf(__('%1$s purges the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $version->redirectToList();
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
    $version->check($_POST['id'], UPDATE);
 
    $version->update($_POST);
-   Event::log($version->fields['softwares_id'], "software", 4, "inventory",
+   Event::log($version->fields['software_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the version id
               sprintf(__('%1$s updates the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    Html::back();
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SoftwareVersion::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
    $version->display(array('id'           => $_GET["id"],
-                           'softwares_id' => $_GET["softwares_id"]));
+                           'software_id' => $_GET["software_id"]));
    Html::footer();
 }
 ?>

@@ -476,12 +476,12 @@ function update0782to080() {
 
       $query = "UPDATE `glpi_softwareversions`,
                         (SELECT `id`, `operatingsystems_id`
-                         FROM `glpi_softwares`) AS SOFT
+                         FROM `glpi_software`) AS SOFT
                 SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
-                WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
-      $DB->queryOrDie($query, "0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions");
+                WHERE `glpi_softwareversions`.`software_id` = `SOFT`.`id` ";
+      $DB->queryOrDie($query, "0.80 transfer operatingsystems_id from glpi_software to glpi_softwareversions");
 
-      $migration->dropField("glpi_softwares", "operatingsystems_id");
+      $migration->dropField("glpi_software", "operatingsystems_id");
    }
 
 

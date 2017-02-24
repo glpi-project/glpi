@@ -469,7 +469,7 @@ if ($item instanceof CommonTreeDropdown) {
             $where .= " OR `namet`.`value` ".$search;
          }
          if ($_POST['itemtype'] == "SoftwareLicense") {
-            $where .= " OR `glpi_softwares`.`name` ".$search;
+            $where .= " OR `glpi_software`.`name` ".$search;
          }
          // Also search by id
          if ($displaywith && in_array('id', $_POST['displaywith'])) {
@@ -509,11 +509,11 @@ if ($item instanceof CommonTreeDropdown) {
 
       case "SoftwareLicense" :
          $query = "SELECT `$table`.*,
-                          CONCAT(`glpi_softwares`.`name`,' - ',`glpi_softwarelicenses`.`name`)
+                          CONCAT(`glpi_software`.`name`,' - ',`glpi_softwarelicenses`.`name`)
                               AS $field
                    FROM `$table`
-                   LEFT JOIN `glpi_softwares`
-                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                   LEFT JOIN `glpi_software`
+                        ON (`glpi_softwarelicenses`.`software_id` = `glpi_software`.`id`)
                    $where";
          break;
 
