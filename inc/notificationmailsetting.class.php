@@ -216,6 +216,13 @@ class NotificationMailSetting extends CommonDBTM {
 
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_2'>";
+         echo "<td >" . __('SMTP Max Delivery Retries') . "</td>";
+         echo "<td><input type='text' name='smtp_max_retries' size='5' value='" .
+                    ($CFG_GLPI["smtp_max_retries"]?: 30) . "'></td>";
+
+         echo "</tr>";
+
       } else {
          echo "<td colspan='2'></td></tr>";
       }

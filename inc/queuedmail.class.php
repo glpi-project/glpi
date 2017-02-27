@@ -459,6 +459,25 @@ class QueuedMail extends CommonDBTM {
 
          if (!$mmail->Send()) {
             Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
+
+            if (isset($CFG_GLPI['smtp_max_retries'])) {
+               $retries = $CFG_GLPI['smtp_max_retries'] - $this->fields['sent_try'];
+               Toolbox::logInFile("mail",
+                                sprintf(__('%1$s. Message: %2$s, Error: %3$s'),
+                                         sprintf(__('Warning: an email was undeliverable to %s with %d retries remaining'),
+                                                 $this->fields['recipient'], $retries),
+                                         $this->fields['name'],
+                                         $mmail->ErrorInfo."\n"));
+
+               if ($retries <= 0) {
+                  Toolbox::logInFile("mail",
+                                  sprintf(__('%1$s: %2$s'),
+                                           sprintf(__('Fatal error: giving up delivery of email to %s'),
+                                                   $this->fields['recipient']),
+                                           $this->fields['name']."\n"));
+                  $this->delete(array('id' => $this->fields['id']));
+               }
+            }
             $mmail->ClearAddresses();
             $this->update(array('id'        => $this->fields['id'],
                                 'sent_try' => $this->fields['sent_try']+1));
