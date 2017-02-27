@@ -609,4 +609,28 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          unlink(GLPI_TMP_DIR . '/' . $fake_file);
       }
    }
+
+   /**
+    * @covers Html::getCopyrightMessage()
+    */
+   public function manageRefreshPage() {
+      $message = Html::manageRefreshPage();
+
+      $text ="<script type=\"text/javascript\">\n";
+      $text.="setInterval(\"window.location.reload()\",".
+            (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
+      $text.="</script>\n";
+
+      $this->assertEquals($message, $text);
+
+      $message = Html::manageRefreshPage(3);
+
+      $text ="<script type=\"text/javascript\">\n";
+      $text.="setInterval(\"window.location.reload()\",".
+            (60000 * 3).");\n";
+      $text.="</script>\n";
+
+      $this->assertEquals($message, $text);
+   }
+
 }

@@ -6038,4 +6038,24 @@ class Html {
       }
       return $prefix . $url;
    }
+
+   /**
+   * Add the HTML code to refresh the current page at a define interval of time
+   * @param timer the time (in minute) to refresh the page
+   * @return void
+   */
+   static public function manageRefreshPage($timer = false) {
+      if (!$timer) {
+         $timer = $_SESSION['glpirefresh_ticket_list'];
+      }
+      $text = "";
+      if ($timer > 0) {
+         // Refresh automatique  sur tracking.php
+         $text.="<script type=\"text/javascript\">\n";
+         $text.="setInterval(\"window.location.reload()\",".
+               (60000 * $timer).");\n";
+         $text.="</script>\n";
+      }
+      return $text;
+   }
 }
