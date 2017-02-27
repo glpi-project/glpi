@@ -437,7 +437,8 @@ function update0905to91() {
          $migration->migrationOneTable($table);
       }
 
-      if (!FieldExists($table, 'date_creation')) {
+      if (TableExists($table)
+          && !FieldExists($table, 'date_creation')) {
          $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
 
          //Add date_creation field
