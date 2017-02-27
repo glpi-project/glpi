@@ -427,7 +427,8 @@ function update0905to91() {
    foreach ($types as $type) {
       $table = getTableForItemType($type);
 
-      if (!FieldExists($table, 'date_mod')) {
+      if (TableExists($table)
+          && !FieldExists($table, 'date_mod')) {
          $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
 
          //Add date_mod field if it doesn't exists
