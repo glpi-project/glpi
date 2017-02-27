@@ -3094,9 +3094,14 @@ class Html {
          }
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
-      $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js       = "\$(function() {\$('#$field_id').spectrum({preferredFormat: 'hex'})});";
-      $output  .= Html::scriptBlock($js);
+      $output   = "<input type='color' id='$field_id' name='$name' value='".$p['value']."'>";
+      $output  .= Html::scriptBlock("$(function() {
+         $('#$field_id').spectrum({
+            preferredFormat: 'hex',
+            showInput: true,
+            showInitial: true
+         });
+      });");
 
       if ($p['display']) {
          echo $output;
