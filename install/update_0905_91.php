@@ -460,7 +460,8 @@ function update0905to91() {
    $item_num     = 0;
    $itemtype_num = 0;
    foreach ($searchOption as $num => $option) {
-      if (is_array($option)) {
+      if (is_array($option)
+          && isset($option['field'])) {
          if ($option['field'] == 'items_id') {
             $item_num = $num;
          } else if ($option['field'] == 'itemtype') {
