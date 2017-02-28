@@ -70,10 +70,14 @@ $sort = array();
 $group = 'N/A';
 
 foreach ($opts as $ref => $opt) {
-   if (is_array($opt)) {
+   if (isset($opt['field'])) {
       $sort[$ref] = $group . " / " . $opt['name'];
    } else {
-      $group = $opt;
+      if (is_array($opt)) {
+         $group = $opt['name'];
+      } else {
+         $group = $opt;
+      }
    }
 }
 ksort($sort);
