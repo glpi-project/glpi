@@ -950,7 +950,10 @@ class CommonDBTM extends CommonGLPI {
       $label = $this->getNameID($options);
       $title = '';
       if (!preg_match('/title=/', $p['linkoption'])) {
-         $title = $label;
+         $thename = $this->getName(['complete' => true]);
+         if ($thename != NOT_AVAILABLE) {
+            $title = ' title="' . htmlentities($thename, ENT_NOQUOTES, 'utf-8') . '"';
+         }
       }
 
       return "<a ".$p['linkoption']." href='$link' $title>$label</a>";
