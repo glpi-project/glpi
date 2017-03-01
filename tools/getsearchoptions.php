@@ -48,14 +48,19 @@ if (isset($_SERVER['argv'])) {
    }
 }
 
-if (isset($_GET['help'])) {
+function help () {
    echo "\nUsage : php getsearchoptions.php --type=<itemtype> [ --lang=<locale> ]\n\n";
+}
+
+if (isset($_GET['help'])) {
+   help();
    exit (0);
 }
 
 include ('../inc/includes.php');
 
 if (!isset($_GET['type'])) {
+   help();
    die("** mandatory option 'type' is missing\n");
 }
 if (!class_exists($_GET['type'])) {
