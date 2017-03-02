@@ -150,4 +150,105 @@ class TicketTest extends PHPUnit\Framework\TestCase {
       }
    }
 
+   public function testTasksFromTemplate() {
+      // 1- create a task category
+      $taskcat    = new TaskCategory;
+      $taskcat_id = $taskcat->add([
+         'name' => 'my task cat',
+      ]);
+      $this->assertFalse($taskcat->isNewItem());
+
+      // 2- create some task templates
+      $tasktemplate = new TaskTemplate;
+      $ttA_id          = $tasktemplate->add([
+         'name'              => 'my task template A',
+         'content'           => 'my task template A',
+         'taskcategories_id' => $taskcat_id,
+         'actiontime'        => 60,
+         'is_private'        => true,
+         'users_id_tech'     => 2,
+         'groups_id_tech'    => 0,
+         'state'             => Planning::INFO,
+      ]);
+      $this->assertFalse($tasktemplate->isNewItem());
+      $ttB_id          = $tasktemplate->add([
+         'name'              => 'my task template B',
+         'content'           => 'my task template B',
+         'taskcategories_id' => $taskcat_id,
+         'actiontime'        => 120,
+         'is_private'        => false,
+         'users_id_tech'     => 2,
+         'groups_id_tech'    => 0,
+         'state'             => Planning::TODO,
+      ]);
+      $this->assertFalse($tasktemplate->isNewItem());
+
+      // 3 - create a ticket template with the task templates in predefined fields
+      $tickettemplate    = new TicketTemplate;
+      $tickettemplate_id = $tickettemplate->add([
+         'name' => 'my ticket template',
+      ]);
+      $this->assertFalse($tickettemplate->isNewItem());
+      $ttp = new TicketTemplatePredefinedField();
+      $ttp->add([
+         'tickettemplates_id' => $tickettemplate_id,
+         'num'                => '175',
+         'value'              => $ttA_id,
+      ]);
+      $this->assertFalse($ttp->isNewItem());
+      $ttp->add([
+         'tickettemplates_id' => $tickettemplate_id,
+         'num'                => '175',
+         'value'              => $ttB_id,
+      ]);
+      $this->assertFalse($ttp->isNewItem());
+
+      // 4 - create a ticket category using the ticket template
+      $itilcat    = new ITILCategory;
+      $itilcat_id = $itilcat->add([
+         'name'                        => 'my itil category',
+         'tickettemplates_id_incident' => $tickettemplate_id,
+         'tickettemplates_id_demand'   => $tickettemplate_id,
+         'is_incident'                 => true,
+         'is_request'                  => true,
+      ]);
+      $this->assertFalse($itilcat->isNewItem());
+
+      // 5 - create a ticket using the ticket category
+      $ticket     = new Ticket;
+      $tickets_id = $ticket->add([
+         'name'                => 'test task template',
+         'content'             => 'test task template',
+         'itilcategories_id'   => $itilcat_id,
+         '_tickettemplates_id' => $tickettemplate_id,
+         '_tasktemplates_id'   => [$ttA_id, $ttB_id],
+      ]);
+      $this->assertFalse($ticket->isNewItem());
+
+      // 6 - check creation of the tasks
+      $tickettask = new TicketTask;
+      $found_tasks = $tickettask->find("`tickets_id` = $tickets_id");
+
+      // 6.1 -> check first task
+      $taskA = array_shift($found_tasks);
+      $this->assertEquals('my task template A', $taskA['content']);
+      $this->assertEquals($taskcat_id, $taskA['taskcategories_id']);
+      $this->assertEquals(60, $taskA['actiontime']);
+      $this->assertEquals(1, $taskA['is_private']);
+      $this->assertEquals(2, $taskA['users_id_tech']);
+      $this->assertEquals(0, $taskA['groups_id_tech']);
+      $this->assertEquals(Planning::INFO, $taskA['state']);
+
+      // 6.2 -> check second task
+      $taskB = array_shift($found_tasks);
+      $this->assertEquals('my task template B', $taskB['content']);
+      $this->assertEquals($taskcat_id, $taskB['taskcategories_id']);
+      $this->assertEquals(120, $taskB['actiontime']);
+      $this->assertEquals(0, $taskB['is_private']);
+      $this->assertEquals(2, $taskB['users_id_tech']);
+      $this->assertEquals(0, $taskB['groups_id_tech']);
+      $this->assertEquals(Planning::TODO, $taskB['state']);
+   }
 }
+
+
