@@ -617,7 +617,7 @@ class Ticket extends CommonITILObject {
                 && $item->fields['status'] == self::CLOSED) {
                $ong[3] = __('Satisfaction');
             }
-            if ($item->canUpdate()) {
+            if ($item->canView()) {
                $ong[4] = __('Statistics');
             }
             return $ong;

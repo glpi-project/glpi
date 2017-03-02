@@ -4442,7 +4442,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
-      if (!$this->canUpdate()
+      if (!$this->canView()
           || !isset($this->fields['id'])) {
          return false;
       }
