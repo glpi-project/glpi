@@ -2314,7 +2314,7 @@ abstract class API extends CommonGLPI {
     *
     * @return string
     */
-   protected function getHttpBodyStream() {
+   protected function getHttpBody() {
       return file_get_contents('php://input');
    }
 }
