@@ -1752,6 +1752,8 @@ class Config extends CommonDBTM {
       }
       echo "\n";
 
+      self::checkExtensions(true);
+
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
 
@@ -2082,9 +2084,118 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Check for needed extensions
+    *
+    * @param boolean $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK
+   **/
+   static function checkExtensions($fordebug=false) {
+      global $CFG_GLPI;
+
+      $extensions_to_check = [
+         'mysqli'   => [
+            'required'  => true
+         ],
+         'ctype'    => [
+            'required'  => true,
+            'function'  => 'ctype_digit',
+         ],
+         'fileinfo' => [
+            'required'  => true,
+            'class'     => 'finfo'
+         ],
+         'json'     => [
+            'required'  => true,
+            'function'  => 'json_encode'
+         ],
+         'mbstring' => [
+            'required'  => true,
+         ],
+         'zlib'     => [
+            'required'  => true,
+         ],
+         'curl'      => [
+            'required'  => true,
+         ],
+         'gd'       => [
+            'required'  => false,
+         ],
+         'ldap'       => [
+            'required'  => false,
+         ],
+         'imap'       => [
+            'required'  => false,
+         ]
+      ];
+
+      $error = 0;
+
+      //check for PHP extensions
+      foreach ($extensions_to_check as $ext => $params) {
+         $success = true;
+
+         if (isset($params['function'])) {
+            if (!function_exists($params['function'])) {
+                $success = false;
+            }
+         } else if (isset($param['class'])) {
+            if (!class_exists($params['class'])) {
+               $success = false;
+            }
+         } else {
+            if (!extension_loaded($ext)) {
+               $success = false;
+            }
+         }
+
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+         }
+         if ($success) {
+            $msg = sprintf(__('%s extension is installed'), $ext);
+            if ($fordebug) {
+               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                              alt=\"\">$msg\n";
+            } else {
+               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                              alt=\"$msg\"
+                              title=\"$msg\"></td>";
+            }
+         } else {
+            if (isset($params['required']) && $params['required'] === true) {
+               if ($error < 2) {
+                  $error = 2;
+               }
+               if ($fordebug) {
+                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\">" . sprintf(__('%s extension is missing'), $ext) . "\n";
+               } else {
+                  echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
+               }
+            } else {
+               if ($error < 1) {
+                  $error = 1;
+               }
+               if ($fordebug) {
+                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . sprintf(__('%s extension is not present'), $ext) . "\n";
+               } else {
+                  echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
+               }
+            }
+         }
+         if (!$fordebug) {
+            echo "</tr>";
+         }
+      }
+
+      return $error;
+   }
+
+
+   /**
     * Check Write Access to needed directories
     *
-    * @param $fordebug boolean display for debug (no html, no gettext required) (false by default)
+    * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/
