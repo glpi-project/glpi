@@ -3222,7 +3222,8 @@ a.copyright {
 }
 
 .timeline_history .h_content.edited {
-   max-width: 60%;
+   max-width: inherit;
+   width: 69%;
    text-align: center;
 }
 
