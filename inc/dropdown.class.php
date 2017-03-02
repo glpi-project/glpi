@@ -2183,7 +2183,7 @@ class Dropdown {
     *
     * @param $onchange  String   optional, for ajax (default '')
    **/
-   static function showListLimit($onchange='') {
+   static function showListLimit($onchange='', $display=true) {
       global $CFG_GLPI;
 
       if (isset($_SESSION['glpilist_limit'])) {
@@ -2221,7 +2221,8 @@ class Dropdown {
       ksort($values);
       return self::showFromArray('glpilist_limit', $values,
                                  array('on_change' => $onchange,
-                                       'value'     => $list_limit));
+                                       'value'     => $list_limit,
+                                       'display'   => $display));
    }
 
 }

@@ -3953,10 +3953,11 @@ class Html {
     * @param $start              from witch item we start
     * @param $numrows            total items
     * @param $additional_info    Additional information to display (default '')
+    * @param $display            display if true, return the pager if false
     *
-    * @return nothing (print a pager)
+    * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info='') {
+   static function printAjaxPager($title, $start, $numrows, $additional_info='', $display=true) {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -3985,49 +3986,57 @@ class Html {
          $back = $start-$list_limit;
       }
 
+      $out = '';
       // Print it
-      echo "<div><table class='tab_cadre_pager'>";
+      $out .= "<div><table class='tab_cadre_pager'>";
       if (!empty($title)) {
-         echo "<tr><th colspan='6'>$title</th></tr>";
+         $out .= "<tr><th colspan='6'>$title</th></tr>";
       }
-      echo "<tr>\n";
+      $out .= "<tr>\n";
 
       // Back and fast backward button
       if (!$start == 0) {
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
                 "\" title=\"".__s('Start')."\" class='pointer'></a></th>";
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                 "\" title=\"".__s('Previous')."\" class='pointer'></th>";
       }
 
-      echo "<td width='50%' class='tab_bg_2'>";
-      self::printPagerForm();
-      echo "</td>";
+      $out .= "<td width='50%' class='tab_bg_2'>";
+      $out .= self::printPagerForm('', false);
+      $out .= "</td>";
       if (!empty($additional_info)) {
-         echo "<td class='tab_bg_2'>";
-         echo $additional_info;
-         echo "</td>";
+         $out .= "<td class='tab_bg_2'>";
+         $out .= $additional_info;
+         $out .= "</td>";
       }
       // Print the "where am I?"
-      echo "<td width='50%' class='tab_bg_2 b'>";
+      $out .= "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
-      echo "</td>\n";
+      $out .= sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+      $out .= "</td>\n";
 
       // Forward and fast forward button
       if ($forward < $numrows) {
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                 "\" title=\"".__s('Next')."\" class='pointer'></a></th>";
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
                 "\" title=\"".__s('End')."\" class='pointer'></a></th>";
       }
 
       // End pager
-      echo "</tr></table></div>";
+      $out .= "</tr></table></div>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+
+      return $out;
    }
 
 
@@ -4226,25 +4235,33 @@ class Html {
    /**
     * Display the list_limit combo choice
     *
-    * @param $action page would be posted when change the value (URL + param) (default '')
+    * @param $action    page would be posted when change the value (URL + param) (default '')
+    * @param $display   display the pager form if true, return it if false
     *
     * ajax Pager will be displayed if empty
     *
-    * @return nothing (print a combo)
+    * @return void|string
    **/
-   static function printPagerForm($action="") {
+   static function printPagerForm($action="", $display=true) {
 
+      $out = '';
       if ($action) {
-         echo "<form method='POST' action=\"$action\">";
-         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
-         Dropdown::showListLimit("submit()");
+         $out .= "<form method='POST' action=\"$action\">";
+         $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
+         $out .= Dropdown::showListLimit("submit()", $display);
 
       } else {
-         echo "<form method='POST' action =''>\n";
-         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
-         Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
+         $out .= "<form method='POST' action =''>\n";
+         $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
+         $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)", $display);
       }
-      Html::closeForm();
+      $out .= Html::closeForm($display);
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
    }
 
 
