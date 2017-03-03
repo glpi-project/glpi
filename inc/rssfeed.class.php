@@ -331,7 +331,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -351,7 +351,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'url',
          'name'               => __('URL'),
          'datatype'           => 'string',
@@ -360,7 +360,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool',
@@ -369,7 +369,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_error',
          'name'               => __('Error'),
          'datatype'           => 'bool',
@@ -378,7 +378,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'max_items',
          'name'               => __('Number of items displayed'),
          'datatype'           => 'number',
@@ -391,7 +391,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -399,7 +399,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'refresh_rate',
          'name'               => __('Refresh rate'),
          'datatype'           => 'timestamp',
@@ -419,7 +419,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -428,7 +428,7 @@ class RSSFeed extends CommonDBVisible {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',

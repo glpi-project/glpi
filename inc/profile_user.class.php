@@ -849,7 +849,7 @@ class Profile_User extends CommonDBRelation {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -858,7 +858,7 @@ class Profile_User extends CommonDBRelation {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_dynamic',
          'name'               => __('Dynamic'),
          'datatype'           => 'bool',
@@ -895,7 +895,7 @@ class Profile_User extends CommonDBRelation {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool',
@@ -940,7 +940,7 @@ class Profile_User extends CommonDBRelation {
       if (!$withtemplate) {
          $nb = 0;
          $query_nb = "SELECT COUNT(*) as cpt
-                      FROM `".$static::getTable()."`
+                      FROM `".static::getTable()."`
                       LEFT JOIN glpi_users
                         ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                       WHERE `glpi_users`.`is_deleted` = '0' ";
@@ -976,7 +976,7 @@ class Profile_User extends CommonDBRelation {
 
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($static::getTable(),
+                  $nb = countElementsInTable(static::getTable(),
                                              ['users_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Authorization', 'Authorizations',

@@ -446,7 +446,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function countActiveObjectsForUser($users_id) {
 
       $linkclass = new $this->userlinkclass();
-      $itemtable = $static::getTable();
+      $itemtable = static::getTable();
       $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass::getTable();
@@ -477,7 +477,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function countActiveObjectsForTech($users_id) {
 
       $linkclass = new $this->userlinkclass();
-      $itemtable = $static::getTable();
+      $itemtable = static::getTable();
       $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass::getTable();
@@ -508,7 +508,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function countActiveObjectsForTechGroup($groups_id) {
 
       $linkclass = new $this->grouplinkclass();
-      $itemtable = $static::getTable();
+      $itemtable = static::getTable();
       $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass::getTable();
@@ -539,7 +539,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function countActiveObjectsForSupplier($suppliers_id) {
 
       $linkclass = new $this->supplierlinkclass();
-      $itemtable = $static::getTable();
+      $itemtable = static::getTable();
       $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass::getTable();
@@ -2595,7 +2595,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Title'),
          'datatype'           => 'itemlink',
@@ -2606,7 +2606,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $newtab = [
          'id'                 => '21',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'massiveaction'      => false,
@@ -2620,7 +2620,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -2629,7 +2629,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'status',
          'name'               => __('Status'),
          'searchtype'         => 'equals',
@@ -2638,7 +2638,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'urgency',
          'name'               => __('Urgency'),
          'searchtype'         => 'equals',
@@ -2647,7 +2647,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'impact',
          'name'               => __('Impact'),
          'searchtype'         => 'equals',
@@ -2656,7 +2656,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'priority',
          'name'               => __('Priority'),
          'searchtype'         => 'equals',
@@ -2665,7 +2665,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date',
          'name'               => __('Opening date'),
          'datatype'           => 'datetime',
@@ -2674,7 +2674,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'closedate',
          'name'               => __('Closing date'),
          'datatype'           => 'datetime',
@@ -2683,7 +2683,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'due_date',
          'name'               => __('Time to resolve'),
          'datatype'           => 'datetime',
@@ -2694,7 +2694,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '151',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'due_date',
          'name'               => __('Time to resolve + Progress'),
          'massiveaction'      => false,
@@ -2704,7 +2704,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '82',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_late',
          'name'               => __('Time to resolve exceedeed'),
          'datatype'           => 'bool',
@@ -2719,7 +2719,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'solvedate',
          'name'               => __('Resolution date'),
          'datatype'           => 'datetime',
@@ -2728,7 +2728,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -2761,7 +2761,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '45',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'actiontime',
          'name'               => __('Total duration'),
          'datatype'           => 'timestamp',
@@ -2815,7 +2815,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'solution',
          'name'               => _n('Solution', 'Solutions', 1),
          'datatype'           => 'text',
@@ -2837,7 +2837,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '154',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'solve_delay_stat',
          'name'               => __('Resolution time'),
          'datatype'           => 'timestamp',
@@ -2847,7 +2847,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '152',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'close_delay_stat',
          'name'               => __('Closing time'),
          'datatype'           => 'timestamp',
@@ -2857,7 +2857,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '153',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'waiting_duration',
          'name'               => __('Waiting time'),
          'datatype'           => 'timestamp',
@@ -4265,7 +4265,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Force date mod and lastupdater
-         $query = "UPDATE `".$static::getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
          // set last updater if interactive user
@@ -4304,7 +4304,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $tot += $sum;
          }
       }
-      $query2 = "UPDATE `".$static::getTable()."`
+      $query2 = "UPDATE `".static::getTable()."`
                  SET `actiontime` = '$tot'
                  WHERE `id` = '$ID'";
 
@@ -4535,17 +4535,17 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id, `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$linktable`
-                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$static::getTable()."`.`id`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".static::getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."')
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
@@ -4578,15 +4578,15 @@ abstract class CommonITILObject extends CommonDBTM {
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `glpi_users`
-                     ON (`glpi_users`.`id` = `".$static::getTable()."`.`users_id_recipient`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                     ON (`glpi_users`.`id` = `".static::getTable()."`.`users_id_recipient`)
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
@@ -4620,17 +4620,17 @@ abstract class CommonITILObject extends CommonDBTM {
       $linktable = $linkclass::getTable();
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$linktable`
-                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$static::getTable()."`.`id`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".static::getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."')
                 LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`completename`";
@@ -4672,17 +4672,17 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $query = "SELECT DISTINCT `glpi_users`.`$field`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 INNER JOIN `$linktable`
-                  ON (`".$static::getTable()."`.`id` = `$linktable`.`".$this->getForeignKeyField()."`)
+                  ON (`".static::getTable()."`.`id` = `$linktable`.`".$this->getForeignKeyField()."`)
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
                 LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1)||!empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .=" ORDER BY `glpi_users`.`$field`";
@@ -4712,13 +4712,13 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `priority`
-                FROM `".$static::getTable()."`
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                FROM `".static::getTable()."`
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `priority`";
@@ -4749,13 +4749,13 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `urgency`
-                FROM `".$static::getTable()."`
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                FROM `".static::getTable()."`
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `urgency`";
@@ -4787,13 +4787,13 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `impact`
-                FROM `".$static::getTable()."`
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                FROM `".static::getTable()."`
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `impact`";
@@ -4824,14 +4824,14 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `requesttypes_id`
-                FROM `".$static::getTable()."`
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                FROM `".static::getTable()."`
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`",
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`",
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY `requesttypes_id`";
@@ -4862,13 +4862,13 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `solutiontypes_id`
-                FROM `".$static::getTable()."`
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                FROM `".static::getTable()."`
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `solutiontypes_id`";
@@ -4905,18 +4905,18 @@ abstract class CommonITILObject extends CommonDBTM {
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$linktable`
-                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$static::getTable()."`.`id`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".static::getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1)||!empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`",
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`",
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
@@ -4954,9 +4954,9 @@ abstract class CommonITILObject extends CommonDBTM {
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$tasktable`
-                  ON (`".$static::getTable()."`.`id` = `$tasktable`.`".$this->getForeignKeyField()."`)
+                  ON (`".static::getTable()."`.`id` = `$tasktable`.`".$this->getForeignKeyField()."`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `$tasktable`.`users_id`)
                 LEFT JOIN `glpi_profiles_users`
                   ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
@@ -4964,13 +4964,13 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
                 LEFT JOIN `glpi_profilerights`
                   ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`",
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`",
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .="     AND `glpi_profilerights`.`name` = 'ticket'
@@ -5010,19 +5010,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$linktable`
-                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$static::getTable()."`.`id`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".static::getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_suppliers`
                      ON (`glpi_suppliers`.`id` = `$linktable`.`suppliers_id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`",
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`",
                                            $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`",
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
       $query .= " ORDER BY name";
@@ -5055,17 +5055,17 @@ abstract class CommonITILObject extends CommonDBTM {
       $linktable = $linkclass::getTable();
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `$linktable`
-                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$static::getTable()."`.`id`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".static::getTable()."`.`id`
                       AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."')
                 LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
-                WHERE NOT `".$static::getTable()."`.`is_deleted` ".
-                      getEntitiesRestrictRequest("AND", $static::getTable());
+                WHERE NOT `".static::getTable()."`.`is_deleted` ".
+                      getEntitiesRestrictRequest("AND", static::getTable());
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`".$static::getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$static::getTable()."`.`closedate`", $date1,
+         $query .= " AND (".getDateRequest("`".static::getTable()."`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`".static::getTable()."`.`closedate`", $date1,
                                               $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`completename`";

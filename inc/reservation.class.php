@@ -240,7 +240,7 @@ class Reservation extends CommonDBChild {
          $ID_where = " `id` <> '".$this->fields["id"]."' AND ";
       }
       $query = "SELECT *
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE $ID_where
                       `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
                       AND '".$this->fields["begin"]."' < `end`

@@ -118,7 +118,7 @@ class Item_Devices extends CommonDBRelation {
                $table = 'glpi_locations';
                break;
             default:
-               $table = $static::getTable();
+               $table = static::getTable();
          }
 
          $newtab = [
@@ -612,25 +612,25 @@ class Item_Devices extends CommonDBRelation {
          $where = "";
          if (!empty($peer_type)) {
             $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."`
-                        ON (`".$static::getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
-                            AND `".$static::getTable()."`.`itemtype` = '$peer_type')";
+                        ON (`".static::getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
+                            AND `".static::getTable()."`.`itemtype` = '$peer_type')";
             $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
          }
 
-         $query = "SELECT `".$static::getTable()."`.*
-                   FROM `".$static::getTable()."`
+         $query = "SELECT `".static::getTable()."`.*
+                   FROM `".static::getTable()."`
                    $leftjoin
                    WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
-                         AND `".$static::getTable()."`.`itemtype` = '$peer_type'
-                         AND `".$static::getTable()."`.`is_deleted` = '0'
+                         AND `".static::getTable()."`.`itemtype` = '$peer_type'
+                         AND `".static::getTable()."`.`is_deleted` = '0'
                          $where
-                   ORDER BY `".$static::getTable()."`.`itemtype`, `".$static::getTable()."`.`$fk`";
+                   ORDER BY `".static::getTable()."`.`itemtype`, `".static::getTable()."`.`$fk`";
 
       } else {
          $fk = $this->getDeviceForeignKey();
 
          $query = "SELECT *
-                   FROM `".$static::getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `itemtype` = '".$item->getType()."'
                          AND `items_id` = '".$item->getID()."'
                          AND `is_deleted` = '0'

@@ -65,7 +65,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'version',
          'name'               => __('IP version'),
          'massiveaction'      => false,
@@ -74,7 +74,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'address',
          'name'               => IPAddress::getTypeName(1),
          'massiveaction'      => false,
@@ -83,7 +83,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'netmask',
          'name'               => IPNetmask::getTypeName(1),
          'massiveaction'      => false,
@@ -92,7 +92,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'gateway',
          'name'               => __('Gateway'),
          'massiveaction'      => false,
@@ -101,7 +101,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'addressable',
          'name'               => __('Addressable network'),
          'datatype'           => 'bool'

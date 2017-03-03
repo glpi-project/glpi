@@ -161,7 +161,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `" . $static::getTable() . "`.`" . $this->getIndexName() .
+      return $this->getFromDBByQuery("WHERE `" . static::getTable() . "`.`" . $this->getIndexName() .
                                      "` = '" . Toolbox::cleanInteger($ID) . "' LIMIT 1");
    }
 
@@ -185,8 +185,8 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $query = "SELECT `".$static::getTable()."`.*
-                FROM `".$static::getTable()."`
+      $query = "SELECT `".static::getTable()."`.*
+                FROM `".static::getTable()."`
                 $query";
 
       if ($result = $DB->query($query)) {
@@ -249,7 +249,7 @@ class CommonDBTM extends CommonGLPI {
       // Make new database object and fill variables
 
       $query = "SELECT *
-                FROM `".$static::getTable()."`";
+                FROM `".static::getTable()."`";
 
       if (!empty($condition)) {
          $query .= " WHERE $condition";
@@ -295,7 +295,7 @@ class CommonDBTM extends CommonGLPI {
       global $DB;
 
       //make an empty database object
-      $table = $static::getTable();
+      $table = static::getTable();
 
       if (!empty($table) &&
           ($fields = $DB->list_fields($table))) {
@@ -354,7 +354,7 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
-            $query  = "UPDATE `".$static::getTable()."`
+            $query  = "UPDATE `".static::getTable()."`
                        SET `".$field."`";
 
             if ($this->fields[$field]=="NULL") {
@@ -402,7 +402,7 @@ class CommonDBTM extends CommonGLPI {
       if ($nb_fields > 0) {
          // Build query
          $query = "INSERT
-                   INTO `".$static::getTable()."` (";
+                   INTO `".static::getTable()."` (";
 
          $i = 0;
          foreach ($this->fields as $key => $val) {
@@ -467,7 +467,7 @@ class CommonDBTM extends CommonGLPI {
             $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
          }
 
-         $query = "UPDATE `".$static::getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_deleted`='0' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
 
@@ -504,7 +504,7 @@ class CommonDBTM extends CommonGLPI {
          $this->cleanRelationTable();
 
          $query = "DELETE
-                   FROM `".$static::getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `id` = '".$this->fields['id']."'";
          if ($result = $DB->query($query)) {
             $this->post_deleteFromDB();
@@ -518,7 +518,7 @@ class CommonDBTM extends CommonGLPI {
             $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
          }
 
-         $query = "UPDATE `".$static::getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_deleted`='1' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
          $this->cleanDBonMarkDeleted();
@@ -561,10 +561,10 @@ class CommonDBTM extends CommonGLPI {
       global $DB, $CFG_GLPI;
 
       $RELATION = getDbRelations();
-      if (isset($RELATION[$static::getTable()])) {
+      if (isset($RELATION[static::getTable()])) {
          $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
 
-         foreach ($RELATION[$static::getTable()] as $tablename => $field) {
+         foreach ($RELATION[static::getTable()] as $tablename => $field) {
             if ($tablename[0] != '_') {
 
                $itemtype = getItemTypeForTable($tablename);
@@ -840,7 +840,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->input && is_array($this->input)) {
          $this->fields = array();
-         $table_fields = $DB->list_fields($static::getTable());
+         $table_fields = $DB->list_fields(static::getTable());
 
          // fill array for add
          foreach ($this->input as $key => $val) {
@@ -905,7 +905,7 @@ class CommonDBTM extends CommonGLPI {
                }
                // For unit test (workaround for MyIsam without transaction)
                if (isset($DB->objcreated) && is_array($DB->objcreated)) {
-                  $DB->objcreated[$static::getTable()][] = $this->fields['id'];
+                  $DB->objcreated[static::getTable()][] = $this->fields['id'];
                }
                return $this->fields['id'];
             }
@@ -1112,7 +1112,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   // Compare item
                   $ischanged = true;
-                  $searchopt = $this->getSearchOptionByField('field', $key, $static::getTable());
+                  $searchopt = $this->getSearchOptionByField('field', $key, static::getTable());
                   if (isset($searchopt['datatype'])) {
                      switch ($searchopt['datatype']) {
                         case 'string' :
@@ -1875,16 +1875,16 @@ class CommonDBTM extends CommonGLPI {
       $RELATION  = getDbRelations();
 
       if ($this instanceof CommonTreeDropdown) {
-         $f = getForeignKeyFieldForTable($static::getTable());
+         $f = getForeignKeyFieldForTable(static::getTable());
 
-         if (countElementsInTable($static::getTable(),
+         if (countElementsInTable(static::getTable(),
                                   [ $f => $ID, 'NOT' => [ 'entities_id' => $entities ]]) > 0) {
             return false;
          }
       }
 
-      if (isset($RELATION[$static::getTable()])) {
-         foreach ($RELATION[$static::getTable()] as $tablename => $field) {
+      if (isset($RELATION[static::getTable()])) {
+         foreach ($RELATION[static::getTable()] as $tablename => $field) {
             if ($tablename[0] != '_') {
 
                $itemtype = getItemTypeForTable($tablename);
@@ -1941,7 +1941,7 @@ class CommonDBTM extends CommonGLPI {
                            }
                         }
 
-                     } else if (($othertable != $static::getTable())
+                     } else if (($othertable != static::getTable())
                               && isset($rel[$tablename])) {
 
                         // Search for another N->N Relation
@@ -3287,7 +3287,7 @@ class CommonDBTM extends CommonGLPI {
 
       $tab[] = [
          'id'            => 1,
-         'table'         => $static::getTable(),
+         'table'         => static::getTable(),
          'field'         => 'name',
          'name'          => __('Name'),
          'datatype'      => 'itemlink',
@@ -3798,7 +3798,7 @@ class CommonDBTM extends CommonGLPI {
                               && ($this->input[$field] > 0)))
                       && !Fieldblacklist::isFieldBlacklisted(get_class($this), $entities_id, $field,
                                                              $this->input[$field])) {
-                     $where .= " AND `".$static::getTable()."`.`$field` = '".$this->input[$field]."'";
+                     $where .= " AND `".static::getTable()."`.`$field` = '".$this->input[$field]."'";
                   } else {
                      $continue = false;
                   }
@@ -3810,7 +3810,7 @@ class CommonDBTM extends CommonGLPI {
                   if ($fields['is_recursive']) {
                      $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                   }
-                  $where_global = getEntitiesRestrictRequest(" AND", $static::getTable(), '',
+                  $where_global = getEntitiesRestrictRequest(" AND", static::getTable(), '',
                                                              $entities);
 
                   $tmp = clone $this;
@@ -3820,10 +3820,10 @@ class CommonDBTM extends CommonGLPI {
 
                   //If update, exclude ID of the current object
                   if (!$add) {
-                     $where .= " AND `".$static::getTable()."`.`id` NOT IN (".$this->input['id'].") ";
+                     $where .= " AND `".static::getTable()."`.`id` NOT IN (".$this->input['id'].") ";
                   }
 
-                  if (countElementsInTable($static::getTable(), "1 $where $where_global") > 0) {
+                  if (countElementsInTable(static::getTable(), "1 $where $where_global") > 0) {
                      if ($p['unicity_error_message']
                          || $p['add_event_on_duplicate']) {
                         $message = array();
@@ -3894,7 +3894,7 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($crit) && (count($crit) > 0)) {
          $crit['FIELDS'] = 'id';
          $ok = true;
-         foreach ($DB->request($static::getTable(), $crit) as $row) {
+         foreach ($DB->request(static::getTable(), $crit) as $row) {
             if (!$this->delete($row, $force, $history)) {
                $ok = false;
             }
@@ -3983,7 +3983,7 @@ class CommonDBTM extends CommonGLPI {
             }
          } else { // Get if field name is passed
             $searchoptions = $this->getSearchOptionByField('field', $field_id_or_search_options,
-                                                           $static::getTable());
+                                                           static::getTable());
          }
       }
 
@@ -4090,7 +4090,7 @@ class CommonDBTM extends CommonGLPI {
                   return "&nbsp;";
 
                case "itemlink" :
-                  if ($searchoptions['table'] == $static::getTable()) {
+                  if ($searchoptions['table'] == static::getTable()) {
                      break;
                   }
 
@@ -4210,7 +4210,7 @@ class CommonDBTM extends CommonGLPI {
             }
          } else { // Get if field name is passed
             $searchoptions = $this->getSearchOptionByField('field', $field_id_or_search_options,
-                                                           $static::getTable());
+                                                           static::getTable());
          }
       }
       if (count($searchoptions)) {

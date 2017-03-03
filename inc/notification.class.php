@@ -334,7 +334,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -343,7 +343,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'event',
          'name'               => _n('Event', 'Events', 1),
          'massiveaction'      => false,
@@ -355,7 +355,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'mode',
          'name'               => __('Notification method'),
          'massiveaction'      => false,
@@ -376,7 +376,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtypename',
@@ -386,7 +386,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -394,7 +394,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -411,7 +411,7 @@ class Notification extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

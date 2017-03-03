@@ -73,7 +73,7 @@ class Item_Problem extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
-      if (countElementsInTable($static::getTable(), ['problems_id' => $input['problems_id'],
+      if (countElementsInTable(static::getTable(), ['problems_id' => $input['problems_id'],
                                                   'itemtype'    => $input['itemtype'],
                                                   'items_id'    => $input['items_id']])>0) {
          return false;

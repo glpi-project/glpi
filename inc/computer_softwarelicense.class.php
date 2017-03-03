@@ -78,7 +78,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,

@@ -72,7 +72,7 @@ class Change_Item extends CommonDBRelation{
       }
 
       // Avoid duplicate entry
-      if (countElementsInTable($static::getTable(), ['changes_id' => $input['changes_id'],
+      if (countElementsInTable(static::getTable(), ['changes_id' => $input['changes_id'],
                                                   'itemtype' => $input['itemtype'],
                                                   'items_id' => $input['items_id']])>0) {
          return false;

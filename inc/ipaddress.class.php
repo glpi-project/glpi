@@ -568,7 +568,7 @@ class IPAddress extends CommonDBChild {
       if (!empty($itemtype)
           && ($items_id > 0)) {
          $query = "SELECT `id`
-                   FROM `".$static::getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `items_id` = '$items_id'
                          AND `itemtype` = '$itemtype'
                          AND `name` = '$address'";
@@ -731,7 +731,7 @@ class IPAddress extends CommonDBChild {
       if (!empty($itemtype)
           && ($items_id > 0)) {
          $query = "SELECT `id`
-                   FROM `".$static::getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `items_id` = '$items_id'
                          AND `itemtype` = '$itemtype'";
 

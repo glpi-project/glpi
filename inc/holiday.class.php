@@ -72,7 +72,7 @@ class Holiday extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Start'),
          'datatype'           => 'date'
@@ -80,7 +80,7 @@ class Holiday extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End'),
          'datatype'           => 'date'
@@ -88,7 +88,7 @@ class Holiday extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_perpetual',
          'name'               => __('Recurrent'),
          'datatype'           => 'bool'

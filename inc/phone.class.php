@@ -386,7 +386,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -395,7 +395,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -431,7 +431,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string'
@@ -439,7 +439,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string'
@@ -447,7 +447,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string'
@@ -455,7 +455,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string'
@@ -463,7 +463,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'number_line',
          'name'               => _x('quantity', 'Number of lines'),
          'datatype'           => 'string'
@@ -489,7 +489,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -498,7 +498,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -507,7 +507,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -515,7 +515,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'brand',
          'name'               => __('Brand'),
          'datatype'           => 'string'
@@ -531,7 +531,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '32',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'firmware',
          'name'               => __('Firmware'),
          'datatype'           => 'string'
@@ -567,7 +567,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '43',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_headset',
          'name'               => __('Headset'),
          'datatype'           => 'bool'
@@ -575,7 +575,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '44',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_hp',
          'name'               => __('Speaker'),
          'datatype'           => 'bool'
@@ -592,7 +592,7 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '82',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_global',
          'name'               => __('Global management'),
          'datatype'           => 'bool',

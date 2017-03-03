@@ -204,7 +204,7 @@ class Calendar_Holiday extends CommonDBRelation {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($static::getTable(), ['calendars_id' => $item->getID()]);
+                  $nb = countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Close time', 'Close times', Session::getPluralNumber()),
                                             $nb);

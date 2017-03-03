@@ -148,7 +148,7 @@ class Group extends CommonTreeDropdown {
             case 'Group' :
                $ong = array();
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($static::getTable(),
+                  $nb = countElementsInTable(static::getTable(),
                                              ['groups_id' => $item->getID()]);
                }
                $ong[4] = self::createTabEntry(__('Child groups'), $nb);
@@ -255,7 +255,7 @@ class Group extends CommonTreeDropdown {
       self::dropdown(array('value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
                            'entity' => $this->fields['entities_id'],
-                           'used'   => (($ID > 0) ? getSonsOf($static::getTable(), $ID) : array())));
+                           'used'   => (($ID > 0) ? getSonsOf(static::getTable(), $ID) : array())));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -440,7 +440,7 @@ class Group extends CommonTreeDropdown {
       if (AuthLdap::useAuthLdap()) {
          $tab[] = [
             'id'                 => '3',
-            'table'              => $static::getTable(),
+            'table'              => static::getTable(),
             'field'              => 'ldap_field',
             'name'               => __('Attribute of the user containing its groups'),
             'datatype'           => 'string'
@@ -448,7 +448,7 @@ class Group extends CommonTreeDropdown {
 
          $tab[] = [
             'id'                 => '4',
-            'table'              => $static::getTable(),
+            'table'              => static::getTable(),
             'field'              => 'ldap_value',
             'name'               => __('Attribute value'),
             'datatype'           => 'text'
@@ -456,7 +456,7 @@ class Group extends CommonTreeDropdown {
 
          $tab[] = [
             'id'                 => '5',
-            'table'              => $static::getTable(),
+            'table'              => static::getTable(),
             'field'              => 'ldap_group_dn',
             'name'               => __('Group DN'),
             'datatype'           => 'text'
@@ -465,7 +465,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_requester',
          'name'               => __('Requester'),
          'datatype'           => 'bool'
@@ -473,7 +473,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_assign',
          'name'               => __('Assigned to'),
          'datatype'           => 'bool'
@@ -481,7 +481,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_manager',
          'name'               => __('Can be manager'),
          'datatype'           => 'bool'
@@ -489,7 +489,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_notify',
          'name'               => __('Can be notified'),
          'datatype'           => 'bool'
@@ -497,7 +497,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_itemgroup',
          'name'               => sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -505,7 +505,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_usergroup',
          'name'               => sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -553,7 +553,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '72',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_task',
          'name'               => __('Can be in charge of a task'),
          'datatype'           => 'bool'

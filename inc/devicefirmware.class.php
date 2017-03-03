@@ -78,7 +78,7 @@ class DeviceFirmware extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'date'

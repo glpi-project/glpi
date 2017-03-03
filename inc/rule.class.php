@@ -691,7 +691,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -700,7 +700,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'ranking',
          'name'               => __('Position'),
          'datatype'           => 'number',
@@ -709,7 +709,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'description',
          'name'               => __('Description'),
          'datatype'           => 'text'
@@ -717,7 +717,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'match',
          'name'               => __('Logical operator'),
          'datatype'           => 'specific',
@@ -726,7 +726,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -734,7 +734,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -751,7 +751,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool',
@@ -760,7 +760,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -769,7 +769,7 @@ class Rule extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -2693,12 +2693,12 @@ class Rule extends CommonDBTM {
       /// TODO : not working for SLALevels : no sub_type
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
-      $query = "SELECT `".$static::getTable()."`.`id`
+      $query = "SELECT `".static::getTable()."`.`id`
                 FROM `".getTableForItemType($this->ruleactionclass)."`,
-                     `".$static::getTable()."`
+                     `".static::getTable()."`
                 WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field."
-                           = `".$static::getTable()."`.`id`
-                      AND `".$static::getTable()."`.`sub_type` = '".get_class($this)."'";
+                           = `".static::getTable()."`.`id`
+                      AND `".static::getTable()."`.`sub_type` = '".get_class($this)."'";
 
       foreach ($crit as $field => $value) {
          $query .= " AND `".getTableForItemType($this->ruleactionclass)."`.`$field` = '$value'";

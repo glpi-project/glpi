@@ -190,7 +190,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                $restrict .= " AND (`is_private` = '0'
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
-            $nb = countElementsInTable($static::getTable(), $restrict);
+            $nb = countElementsInTable(static::getTable(), $restrict);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -550,7 +550,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'datatype'           => 'text'
@@ -567,7 +567,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'datetime'
@@ -576,7 +576,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          $tab[] = [
             'id'                 => '4',
-            'table'              => $static::getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_private',
             'name'               => __('Public followup'),
             'datatype'           => 'bool'
@@ -594,7 +594,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'actiontime',
          'name'               => __('Total duration'),
          'datatype'           => 'actiontime',
@@ -603,7 +603,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'state',
          'name'               => __('Status'),
          'datatype'           => 'specific'
@@ -1636,7 +1636,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       $query = "SELECT `id`, `date`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE `".$item->getForeignKeyField()."` = '$tID'
                       $RESTRICT
                 ORDER BY `date` DESC";

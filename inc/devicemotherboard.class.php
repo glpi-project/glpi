@@ -65,7 +65,7 @@ class DeviceMotherboard extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'chipset',
          'name'               => __('Chipset'),
          'datatype'           => 'string'

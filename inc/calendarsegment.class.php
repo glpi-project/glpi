@@ -413,7 +413,7 @@ class CalendarSegment extends CommonDBChild {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($static::getTable(),
+                  $nb = countElementsInTable(static::getTable(),
                                              ['calendars_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

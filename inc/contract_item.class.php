@@ -81,7 +81,7 @@ class Contract_Item extends CommonDBRelation{
          return false;
       }
       if (($contract->fields['max_links_allowed'] > 0)
-          && (countElementsInTable($static::getTable(),
+          && (countElementsInTable(static::getTable(),
                                   ['contracts_id'=> $this->input['contracts_id']])
                 >= $contract->fields['max_links_allowed'])) {
          return false;
@@ -151,7 +151,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -160,7 +160,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'items_id',
          'name'               => __('Associated item ID'),
          'massiveaction'      => false,
@@ -170,7 +170,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,

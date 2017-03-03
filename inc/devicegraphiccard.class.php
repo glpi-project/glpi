@@ -78,7 +78,7 @@ class DeviceGraphicCard extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'memory_default',
          'name'               => __('Memory by default'),
          'datatype'           => 'string'

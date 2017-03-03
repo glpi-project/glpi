@@ -139,7 +139,7 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return array
    **/
    function getAdditionalFields() {
-      if (FieldExists($static::getTable(), 'product_number')) {
+      if (FieldExists(static::getTable(), 'product_number')) {
          return array(array('name' => 'product_number',
                             'type' => 'text',
                             'label' => __('Product Number')));
@@ -345,11 +345,11 @@ abstract class CommonDropdown extends CommonDBTM {
                } else {
                   $restrict = $this->getEntityID();
                }
-               Dropdown::show(getItemTypeForTable($static::getTable()),
+               Dropdown::show(getItemTypeForTable(static::getTable()),
                               array('value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],
                                     'entity' => $restrict,
-                                    'used'   => ($ID>0 ? getSonsOf($static::getTable(), $ID)
+                                    'used'   => ($ID>0 ? getSonsOf(static::getTable(), $ID)
                                                        : array())));
                break;
 
@@ -430,7 +430,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $tab[] = [
          'id'                => '1',
-         'table'             => $static::getTable(),
+         'table'             => static::getTable(),
          'field'             => 'name',
          'name'              => __('Name'),
          'datatype'          => 'itemlink',
@@ -439,17 +439,17 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $tab[] = [
          'id'                => '2',
-         'table'             => $static::getTable(),
+         'table'             => static::getTable(),
          'field'             => 'id',
          'name'              => __('ID'),
          'massiveaction'     => false,
          'datatype'          => 'number'
       ];
 
-      if (FieldExists($static::getTable(), 'product_number')) {
+      if (FieldExists(static::getTable(), 'product_number')) {
          $tab[] = [
             'id'  => '3',
-            'table'  => $static::getTable(),
+            'table'  => static::getTable(),
             'field'  => 'product_number',
             'name'   => __('Product number')
          ];
@@ -457,7 +457,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $tab[] = [
          'id'                => '16',
-         'table'             => $static::getTable(),
+         'table'             => static::getTable(),
          'field'             => 'comment',
          'name'              => __('Comments'),
          'datatype'          => 'text'
@@ -477,7 +477,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this->maybeRecursive()) {
          $tab[] = [
             'id'             => '86',
-            'table'          => $static::getTable(),
+            'table'          => static::getTable(),
             'field'          => 'is_recursive',
             'name'           => __('Child entities'),
             'datatype'       => 'bool'
@@ -487,7 +487,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this->isField('date_mod')) {
          $tab[] = [
             'id'             => '19',
-            'table'          => $static::getTable(),
+            'table'          => static::getTable(),
             'field'          => 'date_mod',
             'name'           => __('Last update'),
             'datatype'       => 'datetime',
@@ -498,7 +498,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this->isField('date_creation')) {
          $tab[] = [
             'id'             => '121',
-            'table'          => $static::getTable(),
+            'table'          => static::getTable(),
             'field'          => 'date_creation',
             'name'           => __('Creation date'),
             'datatype'       => 'datetime',
@@ -523,8 +523,8 @@ abstract class CommonDropdown extends CommonDBTM {
       $ID = $this->fields['id'];
 
       $RELATION = getDbRelations();
-      if (isset($RELATION[$static::getTable()])) {
-         foreach ($RELATION[$static::getTable()] as $tablename => $field) {
+      if (isset($RELATION[static::getTable()])) {
+         foreach ($RELATION[static::getTable()] as $tablename => $field) {
             if ($tablename[0] != '_') {
                if (!is_array($field)) {
                   $query = "SELECT COUNT(*) AS cpt
@@ -607,15 +607,15 @@ abstract class CommonDropdown extends CommonDBTM {
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
          $fk = $this->getForeignKeyField();
-         Dropdown::show(getItemTypeForTable($static::getTable()),
+         Dropdown::show(getItemTypeForTable(static::getTable()),
                         array('name'   => '_replace_by',
                               'value'  => $this->fields[$fk],
                               'entity' => $this->getEntityID(),
-                              'used'   => getSonsOf($static::getTable(), $ID),
+                              'used'   => getSonsOf(static::getTable(), $ID),
                               'width'   => '100%'));
 
       } else {
-         Dropdown::show(getItemTypeForTable($static::getTable()),
+         Dropdown::show(getItemTypeForTable(static::getTable()),
                         array('name'   => '_replace_by',
                               'entity' => $this->getEntityID(),
                               'used'   => array($ID)));
@@ -643,11 +643,11 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if (!empty($input["name"])) {
          $query = "SELECT `id`
-                   FROM `".$static::getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `name` = '".$input["name"]."'";
 
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ', $static::getTable(), '',
+            $query .= getEntitiesRestrictRequest(' AND ', static::getTable(), '',
                                                  $input['entities_id'], $this->maybeRecursive());
          }
          $query .= " LIMIT 1";
@@ -726,7 +726,7 @@ abstract class CommonDropdown extends CommonDBTM {
          }
       }
       /*
-      switch ($static::getTable()) {
+      switch (static::getTable()) {
          case "glpi_computermodels" :
          case "glpi_monitormodels" :
          case "glpi_printermodels" :

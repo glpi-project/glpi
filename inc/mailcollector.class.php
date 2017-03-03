@@ -339,7 +339,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -348,7 +348,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -356,7 +356,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'host',
          'name'               => __('Connection string'),
          'massiveaction'      => false,
@@ -365,7 +365,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'login',
          'name'               => __('Login'),
          'massiveaction'      => false,
@@ -374,7 +374,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'filesize_max',
          'name'               => __('Maximum size of each file imported by the mails receiver'),
          'datatype'           => 'integer'
@@ -382,7 +382,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -390,7 +390,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -399,7 +399,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'accepted',
          'name'               => __('Accepted mail archive folder (optional)'),
          'datatype'           => 'string'
@@ -407,7 +407,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'refused',
          'name'               => __('Refused mail archive folder (optional)'),
          'datatype'           => 'string'
@@ -415,7 +415,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'errors',
          'name'               => __('Connection errors'),
          'datatype'           => 'integer'
@@ -1769,11 +1769,11 @@ class MailCollector  extends CommonDBTM {
       global $CFG_GLPI;
 
       $buttons = array();
-      if (countElementsInTable($static::getTable())) {
+      if (countElementsInTable(static::getTable())) {
          $buttons["notimportedemail.php"] = __('List of not imported emails');
       }
 
-      $errors  = getAllDatasFromTable($static::getTable(), '`errors` > 0');
+      $errors  = getAllDatasFromTable(static::getTable(), '`errors` > 0');
       $message = '';
       if (count($errors)) {
          $servers = array();

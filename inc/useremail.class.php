@@ -220,7 +220,7 @@ class UserEmail  extends CommonDBChild {
       }
 
       // First email is default
-      if (countElementsInTable($static::getTable(), ['users_id' => $input['users_id']]) == 0) {
+      if (countElementsInTable(static::getTable(), ['users_id' => $input['users_id']]) == 0) {
          $input['is_default'] = 1;
       }
 
@@ -246,7 +246,7 @@ class UserEmail  extends CommonDBChild {
       // if default is set : unsed others for the users
       if (in_array('is_default', $this->updates)
           && ($this->input["is_default"] == 1)) {
-         $query = "UPDATE ". $static::getTable()."
+         $query = "UPDATE ". static::getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'";
@@ -262,7 +262,7 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : unset others for the users
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
-         $query = "UPDATE ". $static::getTable()."
+         $query = "UPDATE ". static::getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'";
@@ -279,7 +279,7 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : set default to another one
       if ($this->fields["is_default"] == 1) {
-         $query = "UPDATE `". $static::getTable()."`
+         $query = "UPDATE `". static::getTable()."`
                    SET `is_default` = '1'
                    WHERE `id` <> '".$this->fields['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'

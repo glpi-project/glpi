@@ -236,7 +236,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -245,7 +245,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
@@ -254,7 +254,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '34',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'ref',
          'name'               => __('Reference'),
          'datatype'           => 'string'
@@ -278,7 +278,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
          'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
@@ -343,7 +343,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'alarm_threshold',
          'name'               => __('Alert threshold'),
          'datatype'           => 'number',
@@ -354,7 +354,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

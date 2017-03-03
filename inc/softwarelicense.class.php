@@ -490,7 +490,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -500,7 +500,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -512,7 +512,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string'
@@ -520,7 +520,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'number',
          'name'               => __('Number'),
          'datatype'           => 'number',
@@ -564,7 +564,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'expire',
          'name'               => __('Expiration'),
          'datatype'           => 'date'
@@ -572,7 +572,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_valid',
          'name'               => __('Valid'),
          'datatype'           => 'bool'
@@ -598,7 +598,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -661,7 +661,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -669,7 +669,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '162',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'massiveaction'      => false,

@@ -73,7 +73,7 @@ class DeviceSoundCard extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'type',
          'name'               => __('Type'),
          'datatype'           => 'string'

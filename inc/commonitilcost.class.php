@@ -68,7 +68,7 @@ abstract class CommonITILCost extends CommonDBChild {
           && static::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable($static::getTable(),
+            $nb = countElementsInTable(static::getTable(),
                                        [$item->getForeignKeyField() => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -99,7 +99,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Title'),
          'searchtype'         => 'contains',
@@ -109,7 +109,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -118,7 +118,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -126,7 +126,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Begin date'),
          'datatype'           => 'datetime'
@@ -134,7 +134,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'datetime'
@@ -142,7 +142,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'actiontime',
          'name'               => __('Duration'),
          'datatype'           => 'timestamp'
@@ -150,7 +150,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'cost_time',
          'name'               => __('Time cost'),
          'datatype'           => 'decimal'
@@ -158,7 +158,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'cost_fixed',
          'name'               => __('Fixed cost'),
          'datatype'           => 'decimal'
@@ -166,7 +166,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'cost_material',
          'name'               => __('Material cost'),
          'datatype'           => 'decimal'
@@ -333,7 +333,7 @@ abstract class CommonITILCost extends CommonDBChild {
       global $DB;
 
       $query = "SELECT SUM(`actiontime`)
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE `".static::$items_id."` = '$items_id'";
 
       if ($result = $DB->query($query)) {
@@ -353,7 +353,7 @@ abstract class CommonITILCost extends CommonDBChild {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE `".static::$items_id."` = '$items_id'
                 ORDER BY 'end_date' DESC, `id` DESC";
 

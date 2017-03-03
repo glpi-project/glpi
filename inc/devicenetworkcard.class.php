@@ -89,7 +89,7 @@ class DeviceNetworkCard extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'mac_default',
          'name'               => __('MAC address by default'),
          'datatype'           => 'mac'
@@ -97,7 +97,7 @@ class DeviceNetworkCard extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'bandwidth',
          'name'               => __('Flow'),
          'datatype'           => 'string'
@@ -130,7 +130,7 @@ class DeviceNetworkCard extends CommonDevice {
       }
 
       $query = "SELECT `id`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE `designation` = '" . $input['designation'] . "'";
 
       if (isset($input["bandwidth"])) {

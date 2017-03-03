@@ -75,8 +75,8 @@ class NetworkPortMigration extends CommonDBChild {
          }
       }
 
-      if (countElementsInTable($static::getTable()) == 0) {
-         $query = "DROP TABLE `".$static::getTable()."`";
+      if (countElementsInTable(static::getTable()) == 0) {
+         $query = "DROP TABLE `".static::getTable()."`";
          $DB->query($query);
       }
 
@@ -412,7 +412,7 @@ class NetworkPortMigration extends CommonDBChild {
       foreach (self::getMotives() as $motive => $name) {
          $tab[] = [
             'id'                 => $optionIndex,
-            'table'              => $static::getTable(),
+            'table'              => static::getTable(),
             'field'              => $motive,
             'name'               => $name,
             'datatype'           => 'bool'
@@ -423,7 +423,7 @@ class NetworkPortMigration extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'ip',
          'datatype'           => 'ip',
          'name'               => IPAddress::getTypeName(1)
@@ -431,7 +431,7 @@ class NetworkPortMigration extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'netmask',
          'datatype'           => 'string',
          'name'               => IPNetmask::getTypeName(1)
@@ -439,7 +439,7 @@ class NetworkPortMigration extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'subnet',
          'datatype'           => 'string',
          'name'               => __('Network address')
@@ -447,7 +447,7 @@ class NetworkPortMigration extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'gateway',
          'datatype'           => 'string',
          'name'               => IPAddress::getTypeName(1)

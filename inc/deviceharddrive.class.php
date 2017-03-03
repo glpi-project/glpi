@@ -76,7 +76,7 @@ class DeviceHardDrive extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'capacity_default',
          'name'               => __('Capacity by default'),
          'datatype'           => 'string'
@@ -84,7 +84,7 @@ class DeviceHardDrive extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'rpm',
          'name'               => __('Rpm'),
          'datatype'           => 'string'
@@ -92,7 +92,7 @@ class DeviceHardDrive extends CommonDevice {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'cache',
          'name'               => __('Cache'),
          'datatype'           => 'string'

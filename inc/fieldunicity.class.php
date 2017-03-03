@@ -312,7 +312,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -321,7 +321,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
@@ -330,7 +330,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'fields',
          'name'               => __('Unique fields'),
          'massiveaction'      => false,
@@ -340,7 +340,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,
@@ -350,7 +350,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'action_refuse',
          'name'               => __('Record into the database denied'),
          'datatype'           => 'bool'
@@ -358,7 +358,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'action_notify',
          'name'               => __('Send a notification'),
          'datatype'           => 'bool'
@@ -366,7 +366,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -374,7 +374,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -382,7 +382,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '30',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool',

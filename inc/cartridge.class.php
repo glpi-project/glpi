@@ -231,7 +231,7 @@ class Cartridge extends CommonDBChild {
    function backToStock(array $input, $history=1) {
       global $DB;
 
-      $query = "UPDATE `".$static::getTable()."`
+      $query = "UPDATE `".static::getTable()."`
                 SET `date_out` = NULL,
                     `date_use` = NULL,
                     `printers_id` = '0'
@@ -261,7 +261,7 @@ class Cartridge extends CommonDBChild {
 
       // Get first unused cartridge
       $query = "SELECT `id`
-                FROM `".$static::getTable()."`
+                FROM `".static::getTable()."`
                 WHERE (`cartridgeitems_id` = '$tID'
                        AND `date_use` IS NULL)";
       $result = $DB->query($query);
@@ -269,7 +269,7 @@ class Cartridge extends CommonDBChild {
       if ($DB->numrows($result)>0) {
          $cID = $DB->result($result, 0, 0);
          // Mise a jour cartouche en prenant garde aux insertion multiples
-         $query = "UPDATE `".$static::getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `date_use` = '".date("Y-m-d")."',
                        `printers_id` = '$pID'
                    WHERE (`id`='$cID'
@@ -310,7 +310,7 @@ class Cartridge extends CommonDBChild {
             $toadd .= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
          }
 
-         $query = "UPDATE`".$static::getTable()."`
+         $query = "UPDATE`".static::getTable()."`
                    SET `date_out` = '".date("Y-m-d")."'
                        $toadd
                    WHERE `id`='$ID'";

@@ -100,7 +100,7 @@ class Blacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'value',
          'name'               => __('Value'),
          'datatype'           => 'text'
@@ -108,7 +108,7 @@ class Blacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $static::getTable(),
+         'table'              => static::getTable(),
          'field'              => 'type',
          'name'               => _n('Type', 'Types', 1),
          'searchtype'         => ['equals', 'notequals'],
