@@ -5873,14 +5873,14 @@ class Search {
             // Header
             foreach ($SYLK_HEADER as $num => $val) {
                $out .= "F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
-               $out .= "C;N;K\"".self::sylk_clean($val)."\"\n";
+               $out .= "C;N;K\"$val\"\n";
                $out .= "\n";
             }
             // Datas
             foreach ($SYLK_ARRAY as $row => $tab) {
                foreach ($tab as $num => $val) {
                   $out .= "F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
-                  $out .= "C;N;K\"".self::sylk_clean($val)."\"\n";
+                  $out .= "C;N;K\"$val\"\n";
                }
             }
             $out.= "E\n";
