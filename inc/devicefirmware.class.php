@@ -171,9 +171,9 @@ class DeviceFirmware extends CommonDevice {
    function getImportCriteria() {
 
       return [
-         'designation'              => 'equal',
          'devicefirmwaretypes_id'   => 'equal',
-         'manufacturers_id'         => 'equal'
+         'manufacturers_id'         => 'equal',
+         'version'                  => 'equal'
       ];
    }
 }
