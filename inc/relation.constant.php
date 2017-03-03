@@ -155,6 +155,15 @@ $RELATION = array("glpi_authldaps"
                   "glpi_devicesoundcards"
                         => array('glpi_items_devicesoundcards' => 'devicesoundcards_id'),
 
+                  "glpi_devicebatteries"
+                        => array('glpi_items_devicebatteries' => 'devicebatteries_id'),
+
+                  "glpi_devicefirmwares"
+                        => array('glpi_items_devicefirmwares' => 'devicefirmwares_id'),
+
+                  "glpi_devicemotherboards"
+                        => array('glpi_items_devicegenerics' => 'devicegenerics_id'),
+
                   "glpi_documentcategories"
                         => array('glpi_configs'             => 'documentcategories_id_forticket',
                                  'glpi_documents'           => 'documentcategories_id',
@@ -326,6 +335,9 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_deviceprocessors'    => 'manufacturers_id',
                                  'glpi_devicememories'      => 'manufacturers_id',
                                  'glpi_devicesoundcards'    => 'manufacturers_id',
+                                 'glpi_devicefiremwares'    => 'manufacturers_id',
+                                 'glpi_devicebatteries'     => 'manufacturers_id',
+                                 'glpi_devicegenerics'      => 'manufacturers_id',
                                  'glpi_monitors'            => 'manufacturers_id',
                                  'glpi_networkequipments'   => 'manufacturers_id',
                                  'glpi_peripherals'         => 'manufacturers_id',
@@ -655,4 +667,3 @@ $RELATION = array("glpi_authldaps"
 //                                            'glpi_networknames'    => array('items_id', 'itemtype'),
                                            ),
                 );
-

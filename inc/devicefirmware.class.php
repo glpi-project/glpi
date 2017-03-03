@@ -55,7 +55,7 @@ class DeviceFirmware extends CommonDevice {
             ],
             [
                'name'   => 'date',
-               'label'  => __('Date'),
+               'label'  => __('Installation date'),
                'type'   => 'text'
             ],
             [
@@ -80,7 +80,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => __('Installation date'),
          'datatype'           => 'date'
       ];
 
@@ -100,6 +100,13 @@ class DeviceFirmware extends CommonDevice {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_devicefirmwares',
+         'field'              => 'version',
+         'name'               => __('Version'),
+      ];
+
       return $tab;
    }
 
@@ -117,6 +124,8 @@ class DeviceFirmware extends CommonDevice {
          case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
+            $base->addHeader('version', __('Version'), $super, $father);
+            $base->addHeader('date', __('Installation date'), $super, $father);
             break;
       }
    }
@@ -139,6 +148,18 @@ class DeviceFirmware extends CommonDevice {
                   $row->getHeaderByName('devicefirmware_type'),
                   Dropdown::getDropdownName("glpi_devicefirmwaretypes",
                   $this->fields["devicefirmwaretypes_id"]),
+                  $father
+               );
+            }
+            $row->addCell(
+               $row->getHeaderByName('version'), $this->fields["version"],
+               $father
+               );
+
+            if ($this->fields["date"]) {
+               $row->addCell(
+                  $row->getHeaderByName('date'),
+                  Html::convDate($this->fields["date"]),
                   $father
                );
             }
