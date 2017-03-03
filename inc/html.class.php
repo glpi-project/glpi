@@ -443,14 +443,23 @@ class Html {
     * Redirection hack
     *
     * @param $dest string: Redirection destination
+    * @param $http_response_code string: Forces the HTTP response code to the specified value
     *
     * @return nothing
    **/
-   static function redirect($dest) {
+   static function redirect($dest, $http_response_code = 302) {
 
       $toadd = '';
       $dest = addslashes($dest);
-      if (!strpos($dest, "?")) {
+
+      if (!headers_sent() && !Toolbox::isAjax()) {
+          header("Location: $dest", true, $http_response_code);
+          exit();
+      }
+
+      if (strpos($dest, "?") !== false) {
+         $toadd = '&tokonq='.Toolbox::getRandomString(5);
+      } else {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }
 
@@ -483,20 +492,8 @@ class Html {
       if (!empty($params)) {
          $dest .= '&'.$params;
       }
-      $toadd = '';
-      if (!strpos($dest, "?")) {
-         $toadd = '&tokonq='.Toolbox::getRandomString(5);
-      }
 
-      echo "<script type='text/javascript'>
-            NomNav = navigator.appName;
-            if (NomNav=='Konqueror') {
-               window.location='".$dest.$toadd."';
-            } else {
-               window.location='".$dest."';
-            }
-         </script>";
-      exit();
+      self::redirect($dest);
    }
 
 
