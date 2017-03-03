@@ -861,7 +861,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($this->checkUnicity(true, $options)) {
-            if ($this->addToDB()) {
+            if ($this->addToDB() !== false) {
                $this->post_addItem();
                $this->addMessageOnAddAction();
 
