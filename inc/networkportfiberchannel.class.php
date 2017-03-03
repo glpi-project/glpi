@@ -189,7 +189,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mac',
          'datatype'           => 'mac',
          'name'               => __('MAC'),
@@ -198,7 +198,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'wwn',
          'name'               => __('World Wide Name'),
          'massiveaction'      => false
@@ -206,7 +206,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'speed',
          'name'               => __('Fiber channel port speed'),
          'massiveaction'      => false,

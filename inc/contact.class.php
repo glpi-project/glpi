@@ -288,7 +288,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Last Name'),
          'datatype'           => 'itemlink',
@@ -297,7 +297,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'firstname',
          'name'               => __('First Name'),
          'datatype'           => 'string'
@@ -305,7 +305,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -314,7 +314,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone',
          'name'               => __('Phone'),
          'datatype'           => 'string'
@@ -322,7 +322,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string'
@@ -330,7 +330,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string'
@@ -338,7 +338,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'fax',
          'name'               => __('Fax'),
          'datatype'           => 'string'
@@ -346,7 +346,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email'
@@ -354,7 +354,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '82',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'address',
          'name'               => __('Address')
       ];
@@ -362,14 +362,14 @@ class Contact extends CommonDBTM{
       $tab[] = [
          'id'                 => '83',
          'datatype'           => 'string',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'postcode',
          'name'               => __('Postal code')
       ];
 
       $tab[] = [
          'id'                 => '84',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'town',
          'name'               => __('City'),
          'datatype'           => 'string'
@@ -377,7 +377,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '85',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'state',
          'name'               => __('State'),
          'datatype'           => 'string'
@@ -385,7 +385,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '87',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string'
@@ -426,7 +426,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -443,7 +443,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -451,7 +451,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -460,7 +460,7 @@ class Contact extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',

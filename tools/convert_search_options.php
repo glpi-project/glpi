@@ -101,7 +101,7 @@ function display($array, $table, $pad = 20, $tab = '         ') {
          switch ($k) {
             case 'table':
                if ($v == $table) {
-                  $v = '$this::getTable()';
+                  $v = '$static::getTable()';
                } else {
                   $v = "'$v'";
                }

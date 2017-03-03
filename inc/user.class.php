@@ -409,7 +409,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyName($name) {
-      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`name` = '$name'");
+      return $this->getFromDBByQuery("WHERE `".$static::getTable()."`.`name` = '$name'");
    }
 
 
@@ -423,7 +423,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDn($user_dn) {
-      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`user_dn` = '$user_dn'");
+      return $this->getFromDBByQuery("WHERE `".$static::getTable()."`.`user_dn` = '$user_dn'");
    }
 
 
@@ -438,7 +438,7 @@ class User extends CommonDBTM {
    function getFromDBbyEmail($email, $condition) {
 
       $request = "LEFT JOIN `glpi_useremails`
-                     ON (`glpi_useremails`.`users_id` = `".$this::getTable()."`.`id`)
+                     ON (`glpi_useremails`.`users_id` = `".$static::getTable()."`.`id`)
                   WHERE `glpi_useremails`.`email` = '$email'";
 
       if (!empty($condition)) {
@@ -501,7 +501,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyToken($token) {
-      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`personal_token` = '$token'");
+      return $this->getFromDBByQuery("WHERE `".$static::getTable()."`.`personal_token` = '$token'");
    }
 
 
@@ -520,7 +520,7 @@ class User extends CommonDBTM {
 
       // Check if user does not exists
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `name` = '".$input['name']."'";
       $result = $DB->query($query);
 
@@ -1768,7 +1768,7 @@ class User extends CommonDBTM {
       global $DB;
 
       if (!empty($this->fields["name"])) {
-         $query = "UPDATE `".$this::getTable()."`
+         $query = "UPDATE `".$static::getTable()."`
                    SET `password` = ''
                    WHERE `name` = '" . $this->fields["name"] . "'";
          $DB->query($query);
@@ -2380,7 +2380,7 @@ class User extends CommonDBTM {
       if (($key = array_search('name', $this->updates)) !== false) {
          /// Check if user does not exists
          $query = "SELECT *
-                   FROM `".$this::getTable()."`
+                   FROM `".$static::getTable()."`
                    WHERE `name` = '".$this->input['name']."'
                          AND `id` <> '".$this->input['id']."';";
          $result = $DB->query($query);
@@ -2572,7 +2572,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Login'),
          'datatype'           => 'itemlink',
@@ -2582,7 +2582,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -2591,7 +2591,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '34',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'realname',
          'name'               => __('Last Name'),
          'datatype'           => 'string'
@@ -2599,7 +2599,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'firstname',
          'name'               => __('First Name'),
          'datatype'           => 'string'
@@ -2622,7 +2622,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -2630,7 +2630,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone',
          'name'               => __('Phone'),
          'datatype'           => 'string'
@@ -2638,7 +2638,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone2',
          'name'               => __('Phone 2'),
          'datatype'           => 'string'
@@ -2646,7 +2646,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mobile',
          'name'               => __('Mobile phone'),
          'datatype'           => 'string'
@@ -2672,7 +2672,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'last_login',
          'name'               => __('Last login'),
          'datatype'           => 'datetime',
@@ -2681,7 +2681,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'authtype',
          'name'               => __('Authentication'),
          'massiveaction'      => false,
@@ -2720,7 +2720,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -2728,7 +2728,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'language',
          'name'               => __('Language'),
          'datatype'           => 'language',
@@ -2738,7 +2738,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -2747,7 +2747,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -2775,7 +2775,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'user_dn',
          'name'               => __('User DN'),
          'massiveaction'      => false,
@@ -2784,7 +2784,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'registration_number',
          'name'               => __('Administrative number'),
          'datatype'           => 'string'
@@ -2792,7 +2792,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_sync',
          'datatype'           => 'datetime',
          'name'               => __('Last synchronization'),
@@ -2801,7 +2801,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_deleted_ldap',
          'name'               => __('Deleted user in LDAP directory'),
          'datatype'           => 'bool',
@@ -2863,7 +2863,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '62',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Begin date'),
          'datatype'           => 'datetime'
@@ -2871,7 +2871,7 @@ class User extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '63',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'datetime'

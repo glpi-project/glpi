@@ -79,7 +79,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'ext',
          'name'               => __('Extension'),
          'datatype'           => 'string'
@@ -87,7 +87,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'icon',
          'name'               => __('Icon'),
          'massiveaction'      => false,
@@ -96,7 +96,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mime',
          'name'               => __('MIME type'),
          'datatype'           => 'string'
@@ -104,7 +104,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_uploadable',
          'name'               => __('Authorized upload'),
          'datatype'           => 'bool'

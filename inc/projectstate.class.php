@@ -74,7 +74,7 @@ class ProjectState extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'color',
          'name'               => __('Color'),
          'datatype'           => 'color'
@@ -82,7 +82,7 @@ class ProjectState extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_finished',
          'name'               => __('Finished state'),
          'datatype'           => 'bool'

@@ -190,7 +190,7 @@ class NetworkName extends FQDNLabel {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtype',
@@ -199,7 +199,7 @@ class NetworkName extends FQDNLabel {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'items_id',
          'name'               => __('ID'),
          'datatype'           => 'integer',

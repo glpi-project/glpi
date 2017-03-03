@@ -127,7 +127,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Title'),
          'searchtype'         => 'contains',
@@ -137,7 +137,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -146,7 +146,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -154,7 +154,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Begin date'),
          'datatype'           => 'datetime'
@@ -162,7 +162,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'datetime'
@@ -170,7 +170,7 @@ class ContractCost extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'cost',
          'name'               => __('Cost'),
          'datatype'           => 'decimal'
@@ -257,7 +257,7 @@ class ContractCost extends CommonDBChild {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `contracts_id` = '$contracts_id'
                 ORDER BY 'end_date' DESC, `id` DESC";
 

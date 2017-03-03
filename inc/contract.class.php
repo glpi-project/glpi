@@ -636,7 +636,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -645,7 +645,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -654,7 +654,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'num',
          'name'               => _x('phone', 'Number'),
          'datatype'           => 'string'
@@ -670,7 +670,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Start date'),
          'datatype'           => 'date',
@@ -679,7 +679,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'duration',
          'name'               => __('Duration'),
          'datatype'           => 'number',
@@ -689,7 +689,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -698,7 +698,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -707,7 +707,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'date_delay',
@@ -723,7 +723,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'notice',
          'name'               => __('Notice'),
          'datatype'           => 'number',
@@ -733,7 +733,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'periodicity',
          'name'               => __('Periodicity'),
          'massiveaction'      => false,
@@ -753,7 +753,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'billing',
          'name'               => __('Invoice period'),
          'massiveaction'      => false,
@@ -773,7 +773,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'accounting_number',
          'name'               => __('Account number'),
          'datatype'           => 'string'
@@ -781,7 +781,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'renewal',
          'name'               => __('Renewal'),
          'massiveaction'      => false,
@@ -791,7 +791,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'expire',
          'name'               => __('Expiration'),
          'datatype'           => 'date_delay',
@@ -807,7 +807,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'expire_notice',
          'name'               => __('Expiration date + notice'),
          'datatype'           => 'date_delay',
@@ -824,7 +824,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -841,7 +841,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '59',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'alert',
          'name'               => __('Email alarms'),
          'datatype'           => 'specific',
@@ -850,7 +850,7 @@ class Contract extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

@@ -2030,17 +2030,17 @@ class Ticket extends CommonITILObject {
       $result = array();
 
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 LEFT JOIN `glpi_items_tickets`
-                  ON (`".$this::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
+                  ON (`".$static::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
                 WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
                       AND `glpi_items_tickets`.`items_id` = '$items_id'
-                      AND (`".$this::getTable()."`.`status`
+                      AND (`".$static::getTable()."`.`status`
                               NOT IN ('".implode("', '", array_merge($this->getSolvedStatusArray(),
                                                                      $this->getClosedStatusArray())
                                                 )."')
-                            OR (`".$this::getTable()."`.`solvedate` IS NOT NULL
-                                AND ADDDATE(`".$this::getTable()."`.`solvedate`, INTERVAL $days DAY)
+                            OR (`".$static::getTable()."`.`solvedate` IS NOT NULL
+                                AND ADDDATE(`".$static::getTable()."`.`solvedate`, INTERVAL $days DAY)
                                             > NOW()))";
 
       foreach ($DB->request($query) as $tick) {
@@ -2065,12 +2065,12 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT COUNT(*) AS cpt
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 LEFT JOIN `glpi_items_tickets`
-                   ON (`".$this::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
+                   ON (`".$static::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
                 WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
                 AND `glpi_items_tickets`.`items_id` = '$items_id'
-                AND `".$this::getTable()."`.`status`
+                AND `".$static::getTable()."`.`status`
                    NOT IN ('".implode("', '",
                             array_merge($this->getSolvedStatusArray(),
                                         $this->getClosedStatusArray())
@@ -2098,15 +2098,15 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT COUNT(*) AS cpt
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 LEFT JOIN `glpi_items_tickets`
-                   ON (`".$this::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
+                   ON (`".$static::getTable()."`.`id` = `glpi_items_tickets`.`tickets_id`)
                 WHERE `glpi_items_tickets`.`itemtype` = '$itemtype'
                 AND `glpi_items_tickets`.`items_id` = '$items_id'
-                AND `".$this::getTable()."`.`solvedate` IS NOT NULL
-                AND ADDDATE(`".$this::getTable()."`.`solvedate`,
+                AND `".$static::getTable()."`.`solvedate` IS NOT NULL
+                AND ADDDATE(`".$static::getTable()."`.`solvedate`,
                            INTERVAL $days DAY) > NOW()
-                AND `".$this::getTable()."`.`status`
+                AND `".$static::getTable()."`.`status`
                      IN ('".implode("', '",
                                     array_merge($this->getSolvedStatusArray(),
                                                 $this->getClosedStatusArray())
@@ -2275,7 +2275,7 @@ class Ticket extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '155',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'time_to_own',
          'name'               => __('Time to own'),
          'datatype'           => 'datetime',
@@ -2286,7 +2286,7 @@ class Ticket extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '158',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'time_to_own',
          'name'               => __('Time to own + Progress'),
          'massiveaction'      => false,
@@ -2313,7 +2313,7 @@ class Ticket extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'type',
          'name'               => __('Type'),
          'searchtype'         => 'equals',
@@ -2628,7 +2628,7 @@ class Ticket extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '150',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'takeintoaccount_delay_stat',
          'name'               => __('Take into account time'),
          'datatype'           => 'timestamp',

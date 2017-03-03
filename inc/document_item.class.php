@@ -101,7 +101,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       // Avoid duplicate entry
-      if (countElementsInTable($this::getTable(),
+      if (countElementsInTable($static::getTable(),
                               ['documents_id' => $input['documents_id'],
                                'itemtype'     => $input['itemtype'],
                                'items_id'     => $input['items_id']]) > 0) {
@@ -137,7 +137,7 @@ class Document_Item extends CommonDBRelation{
 
          if (isset($tt->mandatory['_documents_id'])) {
             // refuse delete if only one document
-            if (countElementsInTable($this::getTable(),
+            if (countElementsInTable($static::getTable(),
                                     ['items_id' => $this->fields['items_id'],
                                      'itemtype' => 'Ticket' ]) == 1) {
                $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),

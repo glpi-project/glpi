@@ -1008,7 +1008,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'type'               => 'text',
@@ -1018,7 +1018,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -1027,7 +1027,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'logical_number',
          'name'               => __('Port number'),
          'datatype'           => 'integer'
@@ -1035,7 +1035,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mac',
          'name'               => __('MAC address'),
          'datatype'           => 'mac'
@@ -1043,7 +1043,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'instantiation_type',
          'name'               => __('Network port type'),
          'datatype'           => 'itemtypename',
@@ -1061,7 +1061,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -1069,7 +1069,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtype',
@@ -1078,7 +1078,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'items_id',
          'name'               => __('ID'),
          'datatype'           => 'integer',

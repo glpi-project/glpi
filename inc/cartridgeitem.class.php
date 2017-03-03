@@ -279,7 +279,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -288,7 +288,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -297,7 +297,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '34',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'ref',
          'name'               => __('Reference'),
          'datatype'           => 'string'
@@ -321,7 +321,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => '_virtual',
          'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
          'datatype'           => 'specific',
@@ -402,7 +402,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'alarm_threshold',
          'name'               => __('Alert threshold'),
          'datatype'           => 'number',
@@ -413,7 +413,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

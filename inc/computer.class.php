@@ -647,7 +647,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -656,7 +656,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false, // implicit field is id

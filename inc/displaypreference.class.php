@@ -64,7 +64,7 @@ class DisplayPreference extends CommonDBTM {
       global $DB;
 
       $query = "SELECT MAX(`rank`)
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `itemtype` = '".$input["itemtype"]."'
                       AND `users_id` = '".$input["users_id"]."'";
       $result = $DB->query($query);
@@ -156,7 +156,7 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `itemtype` = '".$input["itemtype"]."'
                       AND `users_id` = '0'";
       $result = $DB->query($query);
@@ -205,14 +205,14 @@ class DisplayPreference extends CommonDBTM {
 
       // Get current item
       $query = "SELECT `rank`
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `id` = '".$input['id']."'";
       $result = $DB->query($query);
       $rank1  = $DB->result($result, 0, 0);
 
       // Get previous or next item
       $query = "SELECT `id`, `rank`
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `itemtype` = '".$input['itemtype']."'
                       AND `users_id` = '".$input["users_id"]."'";
 
@@ -236,12 +236,12 @@ class DisplayPreference extends CommonDBTM {
       $ID2    = $DB->result($result, 0, "id");
 
       // Update items
-      $query = "UPDATE `".$this::getTable()."`
+      $query = "UPDATE `".$static::getTable()."`
                 SET `rank` = '$rank2'
                 WHERE `id` = '".$input['id']."'";
       $DB->query($query);
 
-      $query = "UPDATE `".$this::getTable()."`
+      $query = "UPDATE `".$static::getTable()."`
                 SET `rank` = '$rank1'
                 WHERE `id` = '$ID2'";
       $DB->query($query);
@@ -274,7 +274,7 @@ class DisplayPreference extends CommonDBTM {
       echo "<div class='center' id='tabsbody' >";
       // Defined items
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '$IDuser'
                 ORDER BY `rank`";
@@ -443,7 +443,7 @@ class DisplayPreference extends CommonDBTM {
       echo "<div class='center' id='tabsbody' >";
       // Defined items
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '$IDuser'
                 ORDER BY `rank`";

@@ -117,8 +117,8 @@ class ReservationItem extends CommonDBChild {
    **/
    function getFromDBbyItem($itemtype, $ID) {
 
-      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`itemtype` = '$itemtype'
-                                            AND `".$this::getTable()."`.`items_id` = '$ID'");
+      return $this->getFromDBByQuery("WHERE `".$static::getTable()."`.`itemtype` = '$itemtype'
+                                            AND `".$static::getTable()."`.`items_id` = '$ID'");
    }
 
 
@@ -138,7 +138,7 @@ class ReservationItem extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -146,7 +146,7 @@ class ReservationItem extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -180,7 +180,7 @@ class ReservationItem extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => '_virtual',
          'name'               => __('Planning'),
          'datatype'           => 'specific',

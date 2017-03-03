@@ -187,7 +187,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       if ($step != "add") { // Because there is no old sons of new node
          // First, get all my current direct sons (old ones) that are not new potential sons
          $query = "SELECT `id`
-                   FROM `".$this::getTable()."`
+                   FROM `".$static::getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '".$this->getID()."'
                          AND `id` NOT IN ('".implode("', '", $potentialSons)."')";
          $oldSons = array();
@@ -195,7 +195,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
-            $query = "UPDATE `".$this::getTable()."`
+            $query = "UPDATE `".$static::getTable()."`
                       SET `".$this->getForeignKeyField()."` = '$oldParent'
                       WHERE `id` IN ('".implode("', '", $oldSons)."')";
             $DB->query($query);
@@ -209,7 +209,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
          // And, get all direct sons of my new Father that must be attached to me (ie : that are
          // potential sons
          $query = "SELECT `id`
-                   FROM `".$this::getTable()."`
+                   FROM `".$static::getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '$newParent'
                          AND `id` IN ('".implode("', '", $potentialSons)."')";
          $newSons = array();
@@ -217,7 +217,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $newSons[] = $newSon["id"];
          }
          if (count($newSons) > 0) { // Then make them pointing to me
-            $query = "UPDATE `".$this::getTable()."`
+            $query = "UPDATE `".$static::getTable()."`
                       SET `".$this->getForeignKeyField()."` = '".$this->getID()."'
                       WHERE `id` IN ('".implode("', '", $newSons)."')";
             $DB->query($query);

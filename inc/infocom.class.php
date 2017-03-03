@@ -240,8 +240,8 @@ class Infocom extends CommonDBChild {
    **/
    function getFromDBforDevice ($itemtype, $ID) {
 
-      if ($this->getFromDBByQuery("WHERE `".$this::getTable()."`.`items_id` = '$ID'
-                                  AND `".$this::getTable()."`.`itemtype` = '$itemtype'")) {
+      if ($this->getFromDBByQuery("WHERE `".$static::getTable()."`.`items_id` = '$ID'
+                                  AND `".$static::getTable()."`.`itemtype` = '$itemtype'")) {
          return true;
       }
       $this->getEmpty();
@@ -1542,7 +1542,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -1551,7 +1551,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'buy_date',
          'name'               => __('Date of purchase'),
          'datatype'           => 'date'
@@ -1559,7 +1559,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'use_date',
          'name'               => __('Startup date'),
          'datatype'           => 'date'
@@ -1567,7 +1567,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'delivery_date',
          'name'               => __('Delivery date'),
          'datatype'           => 'date',
@@ -1576,7 +1576,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'order_date',
          'name'               => __('Order date'),
          'datatype'           => 'date',
@@ -1585,7 +1585,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '25',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'warranty_date',
          'name'               => __('Start date of warranty'),
          'datatype'           => 'date',
@@ -1594,7 +1594,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '27',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'inventory_date',
          'name'               => __('Date of last physical inventory'),
          'datatype'           => 'date',
@@ -1603,7 +1603,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '28',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'decommission_date',
          'name'               => __('Decommission date'),
          'datatype'           => 'date',
@@ -1612,7 +1612,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'warranty_duration',
          'name'               => __('Warranty duration'),
          'datatype'           => 'number',
@@ -1625,7 +1625,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'warranty_info',
          'name'               => __('Warranty information'),
          'datatype'           => 'string'
@@ -1633,7 +1633,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'warranty_value',
          'name'               => __('Warranty extension value'),
          'datatype'           => 'decimal'
@@ -1649,7 +1649,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'order_number',
          'name'               => __('Order number'),
          'datatype'           => 'string'
@@ -1657,7 +1657,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'delivery_number',
          'name'               => __('Delivery form'),
          'datatype'           => 'string'
@@ -1665,7 +1665,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'immo_number',
          'name'               => __('Immobilization number'),
          'datatype'           => 'string'
@@ -1673,7 +1673,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'value',
          'name'               => _x('price', 'Value'),
          'datatype'           => 'decimal'
@@ -1681,7 +1681,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'sink_time',
          'name'               => __('Amortization duration'),
          'datatype'           => 'number',
@@ -1691,7 +1691,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'sink_type',
          'name'               => __('Amortization type'),
          'datatype'           => 'specific',
@@ -1700,7 +1700,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -1708,7 +1708,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'sink_coeff',
          'name'               => __('Amortization coefficient'),
          'datatype'           => 'decimal'
@@ -1716,7 +1716,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'bill',
          'name'               => __('Invoice number'),
          'datatype'           => 'string'
@@ -1732,7 +1732,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtype',
@@ -1741,7 +1741,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'items_id',
          'name'               => __('ID'),
          'datatype'           => 'integer',
@@ -1750,7 +1750,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'alert',
          'name'               => __('Alarms on financial and administrative information'),
          'datatype'           => 'integer'
@@ -1767,7 +1767,7 @@ class Infocom extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

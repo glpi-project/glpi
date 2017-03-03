@@ -810,7 +810,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -819,7 +819,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
@@ -828,7 +828,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'host',
          'name'               => __('Server'),
          'datatype'           => 'string'
@@ -836,7 +836,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'port',
          'name'               => __('Port'),
          'datatype'           => 'integer'
@@ -844,7 +844,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'basedn',
          'name'               => __('BaseDN'),
          'datatype'           => 'string'
@@ -852,7 +852,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'condition',
          'name'               => __('Connection filter'),
          'datatype'           => 'text'
@@ -860,7 +860,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_default',
          'name'               => __('Default server'),
          'datatype'           => 'bool',
@@ -869,7 +869,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'login_field',
          'name'               => __('Login field'),
          'massiveaction'      => false,
@@ -878,7 +878,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'realname_field',
          'name'               => __('Surname'),
          'massiveaction'      => false,
@@ -887,7 +887,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'firstname_field',
          'name'               => __('First Name'),
          'massiveaction'      => false,
@@ -896,7 +896,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone_field',
          'name'               => __('Phone'),
          'massiveaction'      => false,
@@ -905,7 +905,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'phone2_field',
          'name'               => __('Phone 2'),
          'massiveaction'      => false,
@@ -914,7 +914,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mobile_field',
          'name'               => __('Mobile phone'),
          'massiveaction'      => false,
@@ -923,7 +923,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'title_field',
          'name'               => _x('person', 'Title'),
          'massiveaction'      => false,
@@ -932,7 +932,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'category_field',
          'name'               => __('Category'),
          'massiveaction'      => false,
@@ -941,7 +941,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -949,7 +949,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'email1_field',
          'name'               => __('Email'),
          'massiveaction'      => false,
@@ -958,7 +958,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '25',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'email2_field',
          'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2'),
          'massiveaction'      => false,
@@ -967,7 +967,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '26',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'email3_field',
          'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3'),
          'massiveaction'      => false,
@@ -976,7 +976,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '27',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'email4_field',
          'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4'),
          'massiveaction'      => false,
@@ -985,7 +985,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'use_dn',
          'name'               => __('Use DN in the search'),
          'datatype'           => 'bool',
@@ -994,7 +994,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -1003,7 +1003,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -1012,7 +1012,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'language_field',
          'name'               => __('Language'),
          'massiveaction'      => false,
@@ -1021,7 +1021,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'group_field',
          'name'               => __('User attribute containing its groups'),
          'massiveaction'      => false,
@@ -1030,7 +1030,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'group_condition',
          'name'               => __('Filter to search in groups'),
          'massiveaction'      => false,
@@ -1039,7 +1039,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'group_member_field',
          'name'               => __('Group attribute containing its users'),
          'massiveaction'      => false,
@@ -1048,7 +1048,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'group_search_type',
          'datatype'           => 'specific',
          'name'               => __('Search type'),
@@ -1057,7 +1057,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '30',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -3105,7 +3105,7 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       if (in_array('is_default', $this->updates) && $this->input["is_default"]==1) {
-         $query = "UPDATE `". $this::getTable()."`
+         $query = "UPDATE `". $static::getTable()."`
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
@@ -3116,7 +3116,7 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
-         $query = "UPDATE ". $this::getTable()."
+         $query = "UPDATE ". $static::getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);

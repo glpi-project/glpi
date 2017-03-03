@@ -90,7 +90,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,
@@ -100,7 +100,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'field',
          'name'               => __('Field'),
          'massiveaction'      => false,
@@ -112,7 +112,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'value',
          'name'               => __('Value'),
          'datatype'           => 'specific',

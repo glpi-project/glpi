@@ -71,7 +71,7 @@ class RuleRightParameter extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'value',
          'name'               => _n('Criterion', 'Criteria', 1),
          'datatype'           => 'string'

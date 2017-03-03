@@ -477,7 +477,7 @@ class Problem extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '60',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'impactcontent',
          'name'               => __('Impacts'),
          'massiveaction'      => false,
@@ -486,7 +486,7 @@ class Problem extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '61',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'causecontent',
          'name'               => __('Causes'),
          'massiveaction'      => false,
@@ -495,7 +495,7 @@ class Problem extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '62',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'symptomcontent',
          'name'               => __('Symptoms'),
          'massiveaction'      => false,

@@ -131,7 +131,7 @@ class Project extends CommonDBTM {
             case __CLASS__ :
                $ong    = array();
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this::getTable(),
+                  $nb = countElementsInTable($static::getTable(),
                                              [$this->getForeignKeyField() => $item->getID()]);
                }
                $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
@@ -379,7 +379,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -389,7 +389,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -398,7 +398,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'code',
          'name'               => __('Code'),
          'massiveaction'      => false,
@@ -407,7 +407,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Father'),
          'datatype'           => 'itemlink',
@@ -419,7 +419,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'massiveaction'      => false,
@@ -428,7 +428,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'priority',
          'name'               => __('Priority'),
          'searchtype'         => 'equals',
@@ -453,7 +453,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -462,7 +462,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'percent_done',
          'name'               => __('Percent done'),
          'datatype'           => 'number',
@@ -474,7 +474,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'show_on_global_gantt',
          'name'               => __('Show on global GANTT'),
          'datatype'           => 'bool'
@@ -502,7 +502,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'plan_start_date',
          'name'               => __('Planned start date'),
          'datatype'           => 'datetime'
@@ -510,7 +510,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'plan_end_date',
          'name'               => __('Planned end date'),
          'datatype'           => 'datetime'
@@ -518,7 +518,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => '_virtual_planned_duration',
          'name'               => __('Planned duration'),
          'datatype'           => 'specific',
@@ -529,7 +529,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'real_start_date',
          'name'               => __('Real start date'),
          'datatype'           => 'datetime'
@@ -537,7 +537,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'real_end_date',
          'name'               => __('Real end date'),
          'datatype'           => 'datetime'
@@ -545,7 +545,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => '_virtual_effective_duration',
          'name'               => __('Effective duration'),
          'datatype'           => 'specific',
@@ -556,7 +556,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -564,7 +564,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -573,7 +573,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -590,7 +590,7 @@ class Project extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -842,7 +842,7 @@ class Project extends CommonDBTM {
       $rand = mt_rand();
 
       $query = "SELECT *
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE `".$this->getForeignKeyField()."` = '$ID'";
       if ($result = $DB->query($query)) {
          $numrows = $DB->numrows($result);

@@ -71,7 +71,7 @@ class TaskCategory extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'

@@ -279,7 +279,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_computer',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -287,7 +287,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '22',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_softwareversion',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
                                      SoftwareVersion::getTypeName(Session::getPluralNumber())),
@@ -296,7 +296,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '23',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_monitor',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -304,7 +304,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_printer',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -312,7 +312,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '25',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_peripheral',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -320,7 +320,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '26',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_phone',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
@@ -328,7 +328,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '27',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_networkequipment',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
                                      NetworkEquipment::getTypeName(Session::getPluralNumber())),
@@ -337,7 +337,7 @@ class State extends CommonTreeDropdown {
 
       $tab[] = [
          'id'                 => '28',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_visible_softwarelicense',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
                                      SoftwareLicense::getTypeName(Session::getPluralNumber())),

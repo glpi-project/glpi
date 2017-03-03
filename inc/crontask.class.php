@@ -132,8 +132,8 @@ class CronTask extends CommonDBTM{
    **/
    function getFromDBbyName($itemtype, $name) {
 
-      return $this->getFromDBByQuery("WHERE `".$this::getTable()."`.`name` = '$name'
-                                            AND `".$this::getTable()."`.`itemtype` = '$itemtype'");
+      return $this->getFromDBByQuery("WHERE `".$static::getTable()."`.`name` = '$name'
+                                            AND `".$static::getTable()."`.`itemtype` = '$itemtype'");
    }
 
 
@@ -219,7 +219,7 @@ class CronTask extends CommonDBTM{
          pcntl_signal(SIGTERM, [$this, 'signal']);
       }
 
-      $query = "UPDATE `".$this::getTable()."`
+      $query = "UPDATE `".$static::getTable()."`
                 SET `state` = '".self::STATE_RUNNING."',
                     `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
                 WHERE `id` = '".$this->fields['id']."'
@@ -281,7 +281,7 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id'])) {
          return false;
       }
-      $query = "UPDATE `".$this::getTable()."`
+      $query = "UPDATE `".$static::getTable()."`
                 SET `state` = '".$this->fields['state']."'
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` = '".self::STATE_RUNNING."'";
@@ -358,7 +358,7 @@ class CronTask extends CommonDBTM{
       // First core ones
       $query = "SELECT *,
                        LOCATE('Plugin',itemtype) AS ISPLUGIN
-                FROM `".$this::getTable()."`
+                FROM `".$static::getTable()."`
                 WHERE (`itemtype` NOT LIKE 'Plugin%'";
 
       if (count($_SESSION['glpi_plugins'])) {
@@ -1314,7 +1314,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -1323,7 +1323,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -1332,7 +1332,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'description',
          'name'               => __('Description'),
          'nosearch'           => true,
@@ -1344,7 +1344,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'state',
          'name'               => __('Status'),
          'searchtype'         => ['equals', 'notequals'],
@@ -1354,7 +1354,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'mode',
          'name'               => __('Run mode'),
          'datatype'           => 'specific',
@@ -1363,7 +1363,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'frequency',
          'name'               => __('Run frequency'),
          'datatype'           => 'timestamp',
@@ -1372,7 +1372,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'lastrun',
          'name'               => __('Last run'),
          'datatype'           => 'datetime',
@@ -1381,7 +1381,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Item type'),
          'massiveaction'      => false,
@@ -1391,7 +1391,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -1399,7 +1399,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'hourmin',
          'name'               => __('Begin hour of run period'),
          'datatype'           => 'integer',
@@ -1409,7 +1409,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'hourmax',
          'name'               => __('End hour of run period'),
          'datatype'           => 'integer',
@@ -1419,7 +1419,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'logs_lifetime',
          'name'               => __('Number of days this action logs are stored'),
          'datatype'           => 'integer',
@@ -1433,7 +1433,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -1442,7 +1442,7 @@ class CronTask extends CommonDBTM{
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',

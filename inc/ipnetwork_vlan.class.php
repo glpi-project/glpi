@@ -220,7 +220,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
          switch ($item->getType()) {
             case 'IPNetwork' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  countElementsInTable($this::getTable(),
+                  $nb =  countElementsInTable($static::getTable(),
                                               ['ipnetworks_id' => $item->getID()]);
                }
                return self::createTabEntry(Vlan::getTypeName(), $nb);

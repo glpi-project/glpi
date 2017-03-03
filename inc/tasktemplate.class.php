@@ -92,7 +92,7 @@ class TaskTemplate extends CommonDropdown {
          'id'                 => '4',
          'name'               => __('Content'),
          'field'              => 'content',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'datatype'           => 'text',
          'htmltext'           => true
       ];

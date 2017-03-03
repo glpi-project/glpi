@@ -204,7 +204,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $comp = new Computer();
       if ($comp->getFromDB($computers_id)) {
-         $query = "UPDATE `".$this::getTable()."`
+         $query = "UPDATE `".$static::getTable()."`
                    SET `is_template_computer` = '".$comp->getField('is_template')."',
                        `is_deleted_computer` = '".$comp->getField('is_deleted')."'
                    WHERE `computers_id` = '$computers_id';";

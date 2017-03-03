@@ -284,7 +284,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'language',
          'name'               => __('Language'),
          'datatype'           => 'language',
@@ -293,7 +293,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'subject',
          'name'               => __('Subject'),
          'massiveaction'      => false,
@@ -302,7 +302,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'content_html',
          'name'               => __('Email HTML body'),
          'datatype'           => 'text',
@@ -312,7 +312,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'content_text',
          'name'               => __('Email text body'),
          'datatype'           => 'text',
@@ -411,7 +411,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          switch ($item->getType()) {
             case 'NotificationTemplate' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this::getTable(),
+                  $nb = countElementsInTable($static::getTable(),
                                              ['notificationtemplates_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

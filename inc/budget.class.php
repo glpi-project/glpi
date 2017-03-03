@@ -195,7 +195,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -204,7 +204,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -213,7 +213,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -222,7 +222,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -239,7 +239,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'begin_date',
          'name'               => __('Start date'),
          'datatype'           => 'date'
@@ -247,7 +247,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'end_date',
          'name'               => __('End date'),
          'datatype'           => 'date'
@@ -255,7 +255,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'value',
          'name'               => _x('price', 'Value'),
          'datatype'           => 'decimal'
@@ -263,7 +263,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -280,7 +280,7 @@ class Budget extends CommonDropdown{
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

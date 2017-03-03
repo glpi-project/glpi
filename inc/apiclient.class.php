@@ -76,7 +76,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink'
@@ -84,7 +84,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -93,7 +93,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -101,7 +101,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'dolog_method',
          'name'               => __('Log connections'),
          'datatype'           => 'specific'
@@ -114,7 +114,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'ipv4_range_start',
          'name'               => __('IPv4 address range')." - ".__("Start"),
          'datatype'           => 'specific'
@@ -122,7 +122,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'ipv4_range_end',
          'name'               => __('IPv4 address range')." - ".__("End"),
          'datatype'           => 'specific'
@@ -130,7 +130,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'ipv6',
          'name'               => __('IPv6 address'),
          'datatype'           => 'text'
@@ -138,7 +138,7 @@ class APIClient extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this::getTable(),
+         'table'              => $static::getTable(),
          'field'              => 'app_token',
          'name'               => __('Application token'),
          'massiveaction'      => false,
