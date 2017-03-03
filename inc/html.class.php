@@ -4255,7 +4255,7 @@ class Html {
          $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
          $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)", false);
       }
-      $out .= Html::closeForm($display);
+      $out .= Html::closeForm(false);
 
       if ($display) {
          echo $out;
