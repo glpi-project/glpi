@@ -122,9 +122,8 @@ Session::start();
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 $_SESSION['glpilanguage']  = (in_array('--fr', $_SERVER['argv']) ? 'fr_FR' : 'en_GB');
 
-Session::loadLanguage();
-
 $DB = new DB();
+Session::loadLanguage();
 if (!$DB->connected) {
    die("No DB connection\n");
 }
