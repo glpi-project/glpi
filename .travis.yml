@@ -15,6 +15,7 @@ before_script:
   - composer install --optimize-autoloader
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
+  - php tools/cliupdate.php
   - php -S localhost:8088 tests/router.php &>/dev/null &
 
 script:
