@@ -708,7 +708,7 @@ class Bookmark extends CommonDBTM {
             echo "<td>";
             if ($canedit) {
                echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
-                      $this->fields["id"]."\" alt='"._sx('button', 'Update')."'>".
+                      $this->fields["id"]."\" title='"._sx('button', 'Update')."'>".
                       $this->fields["name"]."</a>";
             } else {
                echo $this->fields["name"];
@@ -723,7 +723,7 @@ class Bookmark extends CommonDBTM {
                if (is_null($this->fields['IS_DEFAULT'])) {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
-                         __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
+                         __s('Not default search')."\" title=\"".__s('Not default search')."\">".
                          "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_record.png\" class='pointer'></a>";
                } else {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
@@ -738,7 +738,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                       $CFG_GLPI["root_doc"]."/pics/puce-up.png");
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -748,7 +748,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                       $CFG_GLPI["root_doc"]."/pics/puce-down.png");
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
