@@ -4099,6 +4099,17 @@ td.diff del {
    min-height: 1em; /** Ensure no event message is displayed well */
 }
 
+.loadingindicator {
+   background:  #fff url(../pics/spinner.48.gif) no-repeat center .5em;
+   padding: 60px .5em .5em;
+   text-align: center;
+   box-shadow: 1px 1px 12px #747474;
+   border-radius: 10px;
+   max-width: 350px;
+   margin : auto;
+   border: none;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
