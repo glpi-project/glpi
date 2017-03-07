@@ -1267,7 +1267,8 @@ class Html {
 
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                                             'ReservationItem', 'Report', 'MigrationCleaner');
+                                             'ReservationItem', 'Report', 'MigrationCleaner',
+                                             'SavedSearch');
 
       $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
       $menu['plugins']['types']      = array();
@@ -1455,11 +1456,17 @@ class Html {
 
       /// Bookmark load
       echo "<li id='bookmark_link'>";
-      Ajax::createIframeModalWindow('loadbookmark',
-                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
+      Ajax::createSlidePanel(
+         'showSavedSearches',
+         [
+            'title'     => __('Saved searches'),
+            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
+            'icon'      => '/pics/menu_config.png',
+            'icon_url'  => SavedSearch::getSearchURL(),
+            'icon_txt'  => __('Manage saved searches')
+         ]
+      );
+      echo "<a href='#' id='showSavedSearchesLink'>";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
              "\"  class='button-icon'></span>";
       echo "</a></li>";
@@ -1968,11 +1975,14 @@ class Html {
 
       /// Bookmark load
       echo "<li id='bookmark_link'>";
-      Ajax::createIframeModalWindow('loadbookmark',
-                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
+      Ajax::createSlidePanel(
+         'showSavedSearches',
+         [
+            'title'  => __('Saved searches'),
+            'url'    => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show'
+         ]
+      );
+      echo "<a href='#' id='showSavedSearchesLink'>";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
              "\"  class='button-icon'></span>";
       echo "</a></li>";

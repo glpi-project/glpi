@@ -331,7 +331,7 @@ class User extends CommonDBTM {
          $DB->query($query);
 
          $query = "DELETE
-                   FROM `glpi_bookmarks_users`
+                   FROM `glpi_savedsearches_users`
                    WHERE `users_id` = '".$this->fields['id']."'";
          $DB->query($query);
       }
@@ -344,13 +344,13 @@ class User extends CommonDBTM {
 
       // Delete private bookmark
       $query = "DELETE
-                FROM `glpi_bookmarks`
+                FROM `glpi_savedsearches`
                 WHERE `users_id` = '".$this->fields['id']."'
                       AND `is_private` = '1'";
       $DB->query($query);
 
       // Set no user to public bookmark
-      $query = "UPDATE `glpi_bookmarks`
+      $query = "UPDATE `glpi_savedsearches`
                 SET `users_id` = '0'
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);

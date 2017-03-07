@@ -49,8 +49,8 @@ $RELATION = array("glpi_authldaps"
                   "glpi_autoupdatesystems"
                         => array('glpi_computers' => 'autoupdatesystems_id'),
 
-                  "glpi_bookmarks"
-                        => array('glpi_bookmarks_users' => 'bookmarks_id'),
+                  "glpi_savedsearches"
+                        => array('glpi_savedsearches_users' => 'savedsearches_id'),
 
                   "glpi_budgets"
                         => array('glpi_infocoms' => 'budgets_id'),
@@ -178,7 +178,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_networkequipments' => 'domains_id'),
 
                   "glpi_entities"
-                        => array('glpi_bookmarks'                       => 'entities_id',
+                        => array('glpi_savedsearches'                   => 'entities_id',
                                  'glpi_budgets'                         => 'entities_id',
                                  'glpi_calendars'                       => 'entities_id',
                                  '_glpi_calendarsegments'               => 'entities_id',
@@ -605,8 +605,8 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_users' => 'usercategories_id'),
 
                   "glpi_users"
-                        => array('glpi_bookmarks'                 => 'users_id',
-                                 'glpi_bookmarks_users'           => 'users_id',
+                        => array('glpi_savedsearches'             => 'users_id',
+                                 'glpi_savedsearches_users'       => 'users_id',
                                  'glpi_cartridgeitems'            => 'users_id_tech',
                                  'glpi_changes'                   => array('users_id_recipient',
                                                                            'users_id_lastupdater'),

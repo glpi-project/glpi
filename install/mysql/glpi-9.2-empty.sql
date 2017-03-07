@@ -206,13 +206,13 @@ INSERT INTO `glpi_blacklists` VALUES ('2','1','localhost','127.0.0.1',NULL,NULL,
 INSERT INTO `glpi_blacklists` VALUES ('3','1','zero IP','0.0.0.0',NULL,NULL,NULL);
 INSERT INTO `glpi_blacklists` VALUES ('4','2','empty MAC','',NULL,NULL,NULL);
 
-### Dump table glpi_bookmarks
+### Dump table glpi_savedsearches
 
-DROP TABLE IF EXISTS `glpi_bookmarks`;
-CREATE TABLE `glpi_bookmarks` (
+DROP TABLE IF EXISTS `glpi_savedsearches`;
+CREATE TABLE `glpi_savedsearches` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php BOOKMARK_* constant',
+  `type` int(11) NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `is_private` tinyint(1) NOT NULL DEFAULT '1',
@@ -220,27 +220,31 @@ CREATE TABLE `glpi_bookmarks` (
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `query` text COLLATE utf8_unicode_ci,
+  `last_execution_time` int(11) DEFAULT NULL,
+  `do_count` tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants',
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `itemtype` (`itemtype`),
   KEY `entities_id` (`entities_id`),
   KEY `users_id` (`users_id`),
   KEY `is_private` (`is_private`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `last_execution_time` (`last_execution_time`),
+  KEY `do_count` (`do_count`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_bookmarks_users
+### Dump table glpi_savedsearches_users
 
-DROP TABLE IF EXISTS `glpi_bookmarks_users`;
-CREATE TABLE `glpi_bookmarks_users` (
+DROP TABLE IF EXISTS `glpi_savedsearches_users`;
+CREATE TABLE `glpi_savedsearches_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `bookmarks_id` int(11) NOT NULL DEFAULT '0',
+  `savedsearches_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`),
-  KEY `bookmarks_id` (`bookmarks_id`)
+  KEY `savedsearches_id` (`savedsearches_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2291,6 +2295,11 @@ INSERT INTO `glpi_displaypreferences` VALUES ('256','SoftwareLicense','3','2','0
 INSERT INTO `glpi_displaypreferences` VALUES ('257','SoftwareLicense','10','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('258','SoftwareLicense','162','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('259','SoftwareLicense','5','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('260','SavedSearch','8','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('261','SavedSearch','9','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('262','SavedSearch','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('263','SavedSearch','10','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('264','SavedSearch','11','1','0');
 
 ### Dump table glpi_documentcategories
 

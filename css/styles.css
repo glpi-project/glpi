@@ -41,10 +41,11 @@ body {
    margin: 0;
    padding: 0;
    background:  #f8f7f3;
-
+   position: relative;
 }
 
 body.iframed {
+   margin-top: 1em;
    overflow-x: hidden;
    background: inherit;
 }
@@ -4103,11 +4104,120 @@ td.diff del {
    background:  #fff url(../pics/spinner.48.gif) no-repeat center .5em;
    padding: 60px .5em .5em;
    text-align: center;
-   box-shadow: 1px 1px 12px #747474;
-   border-radius: 10px;
    max-width: 350px;
    margin : auto;
    border: none;
+}
+
+.small {
+   width: 1%;
+}
+
+/** "slide panel" component */
+
+.slidepanel {
+   z-index: 100;
+   position: absolute;
+   width: 30em;
+   max-width: 40%;
+   background: white;
+   top: 0;
+   min-height: 100vh;
+   height: calc(100% - 28px); /* Without footer */
+   border: none;
+}
+
+.drag {
+   display: inline-block;
+   height: 18px;
+   padding-right: 1em;
+   cursor: move;
+}
+
+.slidepanel .header {
+   border-bottom: 1px solid #ccc;
+   min-height: 2.4em;
+}
+
+.slidepanel .header > h3 {
+   margin: 0;
+   padding-top: .3em;
+   text-align: center;
+}
+
+.slidepanel .header .icon {
+   margin-top: .5em;
+   margin-right: .5em;
+}
+
+.slidepanel .contents {
+   clear: both;
+}
+
+.layout_lefttab .slidepanel .new_form_tabs .ui-tabs-nav,
+.slidepanel .ui-tabs {
+   width: auto;
+}
+
+.slidepanel.onleft {
+   left: 0;
+   border-right: 1px solid #ccc;
+}
+.slidepanel.onleft .close {
+   float: right;
+}
+
+.slidepanel.onleft .icon {
+   float: left;
+}
+
+.slidepanel.onright {
+   right: 0;
+   border-left: 1px solid #ccc;
+}
+.slidepanel.onright .close {
+   float: left;
+}
+
+.slidepanel.onright .icon {
+   float:right;
+}
+
+.slidepanel .tab_cadre_fixehov {
+   box-shadow: none;
+}
+
+.slidepanel .default {
+   display: inline-block;
+   width: 18px;
+   height: 18px;
+}
+
+/** end "slide panel" component */
+
+/** Badges */
+a.savedsearchlink {
+   display: block;
+   padding: .2em 0;
+}
+span.count {
+   border-radius: 10px;
+   display: inline-block;
+   text-align: center;
+   padding: .2em .5em;
+   float: right;
+}
+
+span.count img {
+   vertical-align: -10%;
+}
+/** End badges */
+
+.primary {
+   /* Primary color elements (white on blue BG) designed to be overridden from palettes */
+   /* Colors are same as #c_menu */
+   background: #3A5693;
+   color: white;
 }
 
 @media screen and (max-width: 900px) {

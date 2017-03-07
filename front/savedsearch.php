@@ -35,17 +35,19 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+   include ('../inc/includes.php');
 }
 
-class Bookmark_User extends CommonDBRelation {
+Html::header(__('Saved searches'), $_SERVER['PHP_SELF'], true);
 
-   public $auto_message_on_action = false;
+$savedsearch = new SavedSearch();
 
-   static public $itemtype_1          = 'Bookmark';
-   static public $items_id_1          = 'bookmarks_id';
-
-   static public $itemtype_2          = 'User';
-   static public $items_id_2          = 'users_id';
-
+if (isset($_GET['action']) && $_GET["action"] == "load"
+   && isset($_GET["id"]) && ($_GET["id"] > 0)) {
+   $savedsearch->check($_GET["id"], READ);
+   $savedsearch->load($_GET["id"]);
+   return;
 }
+
+Search::show('SavedSearch');
+Html::footer();

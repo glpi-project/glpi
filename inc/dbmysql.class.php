@@ -62,6 +62,8 @@ class DBmysql {
    // Is connected to the DB ?
    public $connected          = false;
 
+   //to calculate execution time
+   public $execution_time          = false;
 
    /**
     * Constructor / Connect to the MySQL Database
@@ -157,6 +159,9 @@ class DBmysql {
           && $CFG_GLPI["debug_sql"]) {
          $SQL_TOTAL_REQUEST++;
          $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
+      }
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+         && $CFG_GLPI["debug_sql"] || $this->execution_time === true) {
          $TIMER                                    = new Timer();
          $TIMER->start();
       }
@@ -183,6 +188,8 @@ class DBmysql {
           && $CFG_GLPI["debug_sql"]) {
          $TIME                                   = $TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
+      } else if ($this->execution_time === true) {
+         $this->execution_time = $TIMER->getTime(0, true);
       }
       return $res;
    }

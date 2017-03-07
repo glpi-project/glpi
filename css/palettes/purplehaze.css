@@ -167,3 +167,10 @@ a.vsubmit:hover {
 #footer .right a {
   color: #fff;
 }
+
+.primary {
+   /* Primary color elements (white on blue BG) designed to be overridden from palettes */
+   /* Colors are same as #c_menu */
+   background: #564B7F;
+   color: white;
+}

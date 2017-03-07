@@ -913,6 +913,9 @@ class Search {
          }
       }
 
+      if (isset($data['search']['savedsearches_id'])) {
+         $DBread->execution_time = true;
+      }
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
@@ -920,9 +923,19 @@ class Search {
             $res = $DBread->fetch_assoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 8194304;");
-               $result = $DBread->query($data['sql']['search']);
+               $DBread->execution_time = true;
+               if (isset($data['search']['savedsearches_id'])) {
+                  $result = $DBread->query($data['sql']['search']);
+               }
             }
          }
+      }
+
+      if (isset($data['search']['savedsearches_id'])) {
+         SavedSearch::updateExecutionTime(
+            (int)$data['search']['savedsearches_id'],
+            $DBread->execution_time
+         );
       }
 
       if ($result) {
@@ -1897,7 +1910,11 @@ class Search {
       if ($p['showbookmark'] || $p['showreset']) {
          echo "<td>";
          if ($p['showbookmark']) {
-            Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
+            //TODO: change that!
+            Ajax::createIframeModalWindow('loadbookmark',
+                                    SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
+                                    array('title'         => __('Load a bookmark')));
+            SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
          }
 
          if ($p['showreset']) {
@@ -2903,6 +2920,14 @@ class Search {
             }
             break;
 
+      }
+
+      //Check in current item if a specific where is defined
+      if (method_exists($itemtype, 'addWhere')) {
+         $out = $itemtype::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val);
+         if (!empty($out)) {
+            return $out;
+         }
       }
 
       // Plugin can override core definition for its type
@@ -5099,8 +5124,8 @@ class Search {
               && !isset($params["reset"])
               && !isset($_SESSION['glpisearch'][$itemtype]))) {
 
-         $query = "SELECT `bookmarks_id`
-                   FROM `glpi_bookmarks_users`
+         $query = "SELECT `savedsearches_id`
+                   FROM `glpi_savedsearches_users`
                    WHERE `users_id`='".Session::getLoginUserID()."'
                          AND `itemtype` = '$itemtype'";
          if ($result = $DB->query($query)) {
@@ -5109,7 +5134,7 @@ class Search {
                // Set session variable
                $_SESSION['glpisearch'][$itemtype] = array();
                // Load bookmark on main window
-               $bookmark = new Bookmark();
+               $bookmark = new SavedSearch();
                // Only get datas for bookmarks
                if ($forcebookmark) {
                   $params = $bookmark->getParameters($IDtoload);

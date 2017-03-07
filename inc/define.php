@@ -417,3 +417,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'preference'=> ['colorpicker'],
 ];
+
+//Maximum time, in miliseconds a saved search should not exeed
+//so we count it on display (using automatic mode).
+$CFG_GLPI['max_time_for_count'] = 200;

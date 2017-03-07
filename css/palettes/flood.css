@@ -136,3 +136,10 @@ a.vsubmit:hover,
 .breadcrumb_item:nth-of-type(3):after {
    border-left-color: #F4D4AD;
 }
+
+.primary {
+   /* Primary color elements (white on blue BG) designed to be overridden from palettes */
+   /* Colors are same as #c_menu */
+   background: #008B8D;
+   color: white;
+}
