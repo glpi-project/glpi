@@ -709,14 +709,16 @@ class Bookmark extends CommonDBTM {
             if ($canedit) {
                echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
                       $this->fields["id"]."\" title='"._sx('button', 'Update')."'>".
-                      $this->fields["name"]."</a>";
+                      $this->fields["name"]."</a><span class='count'></span>";
             } else {
                echo $this->fields["name"];
             }
             echo "</td>";
 
-            echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
+            echo "<td style='white-space: nowrap;'><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
                        $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
+            echo "&nbsp;<a href=\"".$CFG_GLPI['root_doc']."/ajax/bookmark.php?action=count&amp;id=".
+                       $this->fields["id"]."\" class='vsubmit countBookmarks'>".__('Count')."</a>";
             echo "</td>";
             echo "<td class='center'>";
             if ($this->fields['type'] == self::SEARCH) {
@@ -765,6 +767,29 @@ class Bookmark extends CommonDBTM {
             $massiveactionparams['forcecreate'] = true;
             Html::showMassiveActions($massiveactionparams);
          }
+
+         $js = "$(function() {
+            $('.countBookmarks').on('click', function(e) {
+               e.preventDefault();
+               var _this = $(this);
+               var _dest = _this.closest('tr').find('span.count');
+               $.ajax({
+                  url: _this.attr('href'),
+                  beforeSend: function() {
+                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                     _dest.append(_img);
+                  },
+                  success: function(res) {
+                     _dest.html(' (' + res.count + ')');
+                  },
+                  complete: function() {
+                     $('#loading').remove();
+                  }
+               });
+            });
+         });";
+         echo Html::scriptBlock($js);
+
       } else {
          echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
          echo __('You have not recorded any bookmarks yet');
