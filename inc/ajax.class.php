@@ -116,6 +116,104 @@ class Ajax {
       }
    }
 
+   /**
+    * Create a side slide panel
+    *
+    * @param string $name    name of the js object
+    * @param array  $options Possible options:
+    *          - title       Title to display
+    *          - position    position (either left or right - defaults to right)
+    *          - display     display or get string? (default true)
+    *          - icon        Path to aditional icon
+    *          - icon_url    Link for aditional icon
+    *          - icon_txt    Alternative text and title for aditional icon_
+    *
+    * @return void|string (see $options['display'])
+    */
+   static function createSlidePanel($name, $options = []) {
+      global $CFG_GLPI;
+
+      $param = [
+         'title'     => '',
+         'position'  => 'right',
+         'url'       => '',
+         'display'   => true,
+         'icon'      => false,
+         'icon_url'  => false,
+         'icon_txt'  => false
+      ];
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            if (isset($param[$key])) {
+               $param[$key] = $val;
+            }
+         }
+      }
+
+      $out  =  "<script type='text/javascript'>\n";
+      $out .= "$(function() {";
+      $out .= "$('<div id=\'$name\' class=\'slidepanel on{$param['position']}\'><div class=\"header\">" .
+         "<button type=\'button\' class=\'close ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close\' title=\'". __('Close') . "\'><span class=\'ui-button-icon-primary ui-icon ui-icon-closethick\'></span><span class=\'ui-button-text\'>". __('Close') ."</span></button>";
+
+      if ($param['icon']) {
+         $icon = "<img class=\'icon\' src=\'{$CFG_GLPI['root_doc']}{$param['icon']}\' alt=\'{$param['icon_txt']}\' title=\'{$param['icon_txt']}\'/>";
+         if ($param['icon_url']) {
+            $out .= "<a href=\'{$param['icon_url']}\'>$icon</a>";
+         } else {
+            $out .= $icon;
+         }
+      }
+
+      if ($param['title'] != '') {
+         $out .= "<h3>{$param['title']}</h3>";
+      }
+
+      $out .= "</div><div class=\'contents\'></div></div>')
+         .hide()
+         .appendTo('body');\n";
+      $out .= "$('#{$name} .close').on('click', function() {
+         $('#$name').hide(
+            'slow',
+            function () {
+               $(this).find('.contents').empty();
+            }
+         );
+       });\n";
+      $out .= "$('#{$name}Link').on('click', function() {
+         $('#$name').show(
+            'slow',
+            function() {
+               _load$name();
+            }
+         );
+      });\n";
+      $out .= "});";
+      if ($param['url'] != null) {
+         $out .= "var _load$name = function() {
+            $.ajax({
+               url: '{$param['url']}',
+               beforeSend: function() {
+                  var _loader = $('<div id=\'loadingslide\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
+                  $('#$name .contents').html(_loader);
+               },
+               complete: function() {
+                  $('#loadingslide').remove();
+               },
+               success: function(res) {
+                  $('#$name .contents').html(res);
+               }
+            });
+         };\n";
+      }
+      $out .= "</script>";
+
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
+   }
 
    /**
     * Create fixed modal window

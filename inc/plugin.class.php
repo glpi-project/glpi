@@ -972,7 +972,7 @@ class Plugin extends CommonDBTM {
                           35 => "MailCollector",
                           36 => "Rule",
                           37 => "Transfer",
-                          38 => "Bookmark",
+                          38 => "SavedSearch",
                           39 => "SoftwareVersion",
                           40 => "Plugin",
                           41 => "ComputerDisk",

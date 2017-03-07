@@ -30,47 +30,39 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+include ('../inc/includes.php');
+
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
 
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
 
-/**
- *  Timer class for debug and some other cases
- */
-class Timer {
-
-   //! Timer value
-   public $timer=0;
-
-
-   /**
-    * Start the Timer
-    *
-    * @return true
-    */
-   function start () {
-
-      $this->timer = microtime(true);
-      return true;
-   }
-
-
-   /**
-    * Get the current time of the timer
-    *
-    * @param integer $decimals Number of decimal of the result (default 3)
-    * @param boolean $raw      Get raw time
-    *
-    * @return time past from start
-   **/
-   function getTime ($decimals=3, $raw = false) {
-      $elapsed = microtime(true) - $this->timer;
-      if ($raw === true) {
-         return $elapsed * 1000;
-      } else {
-         // $decimals will set the number of decimals you want for your milliseconds.
-         return number_format($elapsed, $decimals, '.', ' ');
+$savedsearch = new SavedSearch();
+if (isset($_POST["add"])) {
+   //Add a new saved search
+   $savedsearch->check(-1, CREATE, $_POST);
+   if ($newID = $savedsearch->add($_POST)) {
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($savedsearch->getFormURL()."?id=".$newID);
       }
    }
+   Html::back();
+} else if (isset($_POST["delete"])) {
+   // delete a saved search
+   $savedsearch->check($_POST['id'], DELETE);
+   $ok = $savedsearch->delete($_POST, 1);
+   $savedsearch->redirectToList();
+} else if (isset($_POST["update"])) {
+   //update a saved search
+   $savedsearch->check($_POST['id'], UPDATE);
+   $savedsearch->update($_POST);
+   Html::back();
+} else {//print computer information
+   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearches");
+   //show computer form to add
+   $savedsearch->display(['id' => $_GET["id"]]);
+   Html::footer();
 }

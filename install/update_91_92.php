@@ -79,7 +79,9 @@ function update91to92() {
       'glpi_devicebatterytypes',
       'glpi_devicefirmwares',
       'glpi_items_devicefirmwares',
-      'glpi_devicefirmwaretypes'
+      'glpi_devicefirmwaretypes',
+      'glpi_savedsearches',
+      'glpi_savedsearches_users'
    );
 
    foreach ($newtables as $new_table) {
@@ -632,6 +634,39 @@ function update91to92() {
    /************** Auto login **************/
    Config::setConfigurationValues('core', array('login_remember_time'    => 604800,
                                                 'login_remember_default' => 1));
+
+   if (TableExists('glpi_bookmarks')) {
+      $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
+
+      $migration->addField("glpi_savedsearches", "last_execution_time", "int(11) NULL DEFAULT NULL");
+      $migration->addKey("glpi_savedsearches", 'last_execution_time');
+
+      $migration->addField("glpi_savedsearches", "do_count", "tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants'");
+      $migration->addKey("glpi_savedsearches", 'do_count');
+
+      //ensure do_count is set to AUTO
+      $migration->addPostQuery('UPDATE glpi_savedsearches SET do_count = ' . SavedSearch::COUNT_AUTO);
+      $migration->addPostQuery('UPDATE glpi_savedsearches SET entities_id = 0 WHERE entities_id = -1');
+   }
+
+   if (TableExists('glpi_bookmarks_users')) {
+      $migration->renameTable("glpi_bookmarks_users", "glpi_savedsearches_users");
+      $migration->changeField('glpi_savedsearches_users', 'bookmarks_id', 'savedsearches_id', 'int(11) NOT NULL DEFAULT "0"');
+   }
+
+   //TRANS: %s is the table or item to migrate
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
+
+   $ADDTODISPLAYPREF['SavedSearch'] = array(8, 9, 3, 10, 11);
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $query = "REPLACE INTO `glpi_displaypreferences`
+                           (`itemtype` ,`num` ,`rank` ,`users_id`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0')";
+         $DB->query($query);
+      }
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

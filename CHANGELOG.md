@@ -21,6 +21,7 @@ new whole window
 #### Changes
 
 - `CommonDBTM::getTable()` signature has changed
+- `Bookmark` has been renamed to `SavedSearch`
 
 #### Deprecated
 
@@ -28,6 +29,8 @@ The following methods have been deprecated:
 
 - `_e()`
 - `_ex()`
+- `Bookmark::mark_default()`
+- `Bookmark::unmark_default()`
 
 #### Removals
 
@@ -42,5 +45,7 @@ The following methods have been dropped:
 - `DBMysql::field_flags()`
 - `Toolbox::get_magic_quotes_runtime`
 - `Toolbox::get_magic_quotes_gpc`
+- `Bookmark::changeBookmarkOrder()`
+- `Bookmark::moveBookmark()`
 
 For older entries, please check [GLPI website](http://glpi-project.org).

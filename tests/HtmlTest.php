@@ -358,7 +358,8 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'KnowbaseItem',
          'ReservationItem',
          'Report',
-         'MigrationCleaner'
+         'MigrationCleaner',
+         'SavedSearch'
       ];
       $this->assertEquals('Tools', $menu['tools']['title']);
       $this->assertEquals($expected, $menu['tools']['types']);

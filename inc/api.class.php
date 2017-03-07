@@ -1066,8 +1066,8 @@ abstract class API extends CommonGLPI {
                                              false,
                                              true);
 
-         if ($item instanceof Bookmark) {
-            $where.= " OR ".$itemtype::getTable().".entities_id = -1";
+         if ($item instanceof SavedSearch) {
+            $where.= " OR ".$itemtype::getTable().".is_private = 1";
          }
 
          $where.= ")";
