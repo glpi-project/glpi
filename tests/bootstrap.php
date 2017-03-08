@@ -99,12 +99,12 @@ function loadDataset() {
             'name'        => '_test_softver_1',
             'entities_id' => '_test_root_entity',
             'is_recursive' => 1,
-            'softwares_id' => '_test_soft',
+            'software_id' => '_test_soft',
          ], [
             'name'        => '_test_softver_2',
             'entities_id' => '_test_root_entity',
             'is_recursive' => 1,
-            'softwares_id' => '_test_soft',
+            'software_id' => '_test_soft',
          ]
       ], 'Printer' => [
          [

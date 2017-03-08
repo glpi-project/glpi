@@ -2291,7 +2291,7 @@ function generate_entity($ID_entity) {
                                'networks_id'                   => $networkID,
                                'networkequipmenttypes_id'      => mt_rand(1,$MAX['type_networking']),
                                'networkequipmentmodels_id'     => mt_rand(1,$MAX['model_networking']),
-                               'networkequipmentfirmwares_id'  => mt_rand(1,$MAX['firmware']),
+                               'networkequipmentfirmware_id'  => mt_rand(1,$MAX['firmware']),
                                'manufacturers_id'              => mt_rand(1,$MAX['enterprises']),
                                'mac'                           => getNextMAC(),
                                'ip'                            => $infoIP["ip"],
@@ -2838,7 +2838,7 @@ function generate_entity($ID_entity) {
 
    $LAST["peripherals"] = getMaxItem("glpi_peripherals");
 
-   $FIRST["software"]   = getMaxItem("glpi_softwares")+1;
+   $FIRST["software"]   = getMaxItem("glpi_software")+1;
 
    // Ajout logiciels + licences associees a divers PCs
    $items = array(array("Open'Office", "1.1.4", "2.0", "2.0.1"),
@@ -2910,7 +2910,7 @@ function generate_entity($ID_entity) {
          $versID = $softvers->add(toolbox::addslashes_deep(
                                   array('entities_id'          => $ID_entity,
                                         'is_recursive'         => $recursive,
-                                        'softwares_id'         => $softID,
+                                        'software_id'         => $softID,
                                         'name'                 => $version,
                                         'comment'              => "comment '$version",
                                         'states_id'            => (mt_rand(0,100)<$percent['state']
@@ -2944,7 +2944,7 @@ function generate_entity($ID_entity) {
          $licID = $softlic->add(toolbox::addslashes_deep(
                                 array('entities_id'               => $ID_entity,
                                       'is_recursive'              => $recursive,
-                                      'softwares_id'              => $softID,
+                                      'software_id'              => $softID,
                                       'number'                    => $nbused,
                                       'softwarelicensetypes_id'   => mt_rand(1,$MAX['licensetype']),
                                       'name'                      => "license '$j",
@@ -2966,6 +2966,6 @@ function generate_entity($ID_entity) {
          }
       }
    }
-   $LAST["software"] = getMaxItem("glpi_softwares");
+   $LAST["software"] = getMaxItem("glpi_software");
 }
 ?>

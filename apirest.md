@@ -403,7 +403,7 @@ $ curl -X POST \
   * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
   * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
-  * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
+  * *with_software*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
   * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
@@ -701,7 +701,7 @@ $ curl -X GET \
   * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
   * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
-  * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
+  * *with_software*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
   * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
   * *with_infocoms*: Retrieve financial and administrative informations. Optional.
@@ -833,7 +833,7 @@ $ curl -X GET \
          ```
 
   * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).
+                                 A meta search is a link with another itemtype (ex: Computer with software).
       Each meta-criterion object must provide:
         * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
         * *itemtype*: second itemtype to link.

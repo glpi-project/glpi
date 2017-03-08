@@ -9467,9 +9467,9 @@ msgstr "Netwerken"
 #: inc/networkequipmentfirmware.class.php:48 inc/phone.class.php:296
 #: inc/phone.class.php:473
 msgid "Firmware"
-msgid_plural "Firmwares"
+msgid_plural "Firmware"
 msgstr[0] "Firmware"
-msgstr[1] "Firmwares"
+msgstr[1] "Firmware"
 
 #: inc/dropdown.class.php:906 inc/netpoint.class.php:62
 #: inc/netpoint.class.php:274 inc/netpoint.class.php:288

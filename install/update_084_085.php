@@ -1518,7 +1518,7 @@ function update084to085() {
    $migration->dropTable('glpi_rulecacheprintermodels');
    $migration->dropTable('glpi_rulecacheprinters');
    $migration->dropTable('glpi_rulecacheprintertypes');
-   $migration->dropTable('glpi_rulecachesoftwares');
+   $migration->dropTable('glpi_rulecachesoftware');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_rules'));
 
@@ -2418,7 +2418,7 @@ function update084to085() {
                               'glpi_contracts', 'glpi_documents', 'glpi_entities',
                               'glpi_monitors', 'glpi_networkequipments', 'glpi_peripherals',
                               'glpi_phones', 'glpi_printers', 'glpi_problems', 'glpi_projects',
-                              'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers');
+                              'glpi_projecttasks', 'glpi_software', 'glpi_suppliers');
 
       foreach ($notepad_tables as $t) {
          // Migrate data
@@ -2682,17 +2682,17 @@ function update084to085() {
       $_SESSION['glpishowallentities'] = $savesession;
    }
 
-   if ($migration->addField("glpi_softwares", "is_valid", "bool", array("value" => 1))) {
-      $migration->migrationOneTable("glpi_softwares");
+   if ($migration->addField("glpi_software", "is_valid", "bool", array("value" => 1))) {
+      $migration->migrationOneTable("glpi_software");
 
-      $querys = "SELECT `glpi_softwares`.`id`
-                 FROM `glpi_softwares`
+      $querys = "SELECT `glpi_software`.`id`
+                 FROM `glpi_software`
                  LEFT JOIN `glpi_softwarelicenses`
-                     ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                     ON (`glpi_softwarelicenses`.`software_id` = `glpi_software`.`id`)
                  WHERE `glpi_softwarelicenses`.`is_valid` = 0";
 
       foreach ($DB->request($querys) AS $datas) {
-         $querys2 = "UPDATE `glpi_softwares`
+         $querys2 = "UPDATE `glpi_software`
                      SET `is_valid` = 0
                      WHERE `id` = '".$datas['id']."'";
 

@@ -47,7 +47,7 @@ $softcatrule = new RuleSoftwareCategoryCollection();
 $soft        = new Software();
 
 $query = "SELECT `id`, `softwarecategories_id`
-          FROM `glpi_softwares`";
+          FROM `glpi_software`";
 
 if ($result=$DB->query($query)) {
    if ($DB->numrows($result)>0) {

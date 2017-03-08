@@ -857,8 +857,8 @@ class Search {
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
-                  $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
-                  $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_software`.`serial`", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_software`.`otherserial`", "''", $tmpquery);
                }
                $QUERY .= $tmpquery;
             }
@@ -2430,7 +2430,7 @@ class Search {
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
+               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_software`.`name`, ' - ',
                                                      `$table$addtable2`.`$field`, '".self::SHORTSEP."',
                                                      `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
@@ -2443,7 +2443,7 @@ class Search {
          case "glpi_softwarelicenses.comment" :
          case "glpi_softwareversions.comment" :
             if ($meta) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
+               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_software`.`name`, ' - ',
                                                      `$table$addtable2`.`$field`,'".self::SHORTSEP."',
                                                      `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
@@ -2457,7 +2457,7 @@ class Search {
 
          case "glpi_states.name" :
             if ($meta && ($meta_type == 'Software')) {
-               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
+               return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_software`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
                                                      `$table$addtable2`.`$field`, '".self::SHORTSEP."',
                                                      `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
@@ -3895,12 +3895,12 @@ class Search {
                            $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
                               ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$complexjoin$to_type`.`id`)
-                           $LINK `glpi_softwares`
-                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
+                           $LINK `glpi_software`
+                              ON (`glpi_softwareversions_$complexjoin$to_type`.`software_id`
+                                       = `glpi_software`.`id`)
                            LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
-                              ON (`glpi_softwares`.`id`
-                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
+                              ON (`glpi_software`.`id`
+                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`software_id`".
                                   getEntitiesRestrictRequest(' AND',
                                                              "glpi_softwarelicenses_$complexjoin$to_type",
                                                              '', '', true).") ";
@@ -3976,8 +3976,8 @@ class Search {
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
-                              ON (`glpi_softwareversions_$to_type`.`softwares_id`
-                                       = `glpi_softwares`.`id`)
+                              ON (`glpi_softwareversions_$to_type`.`software_id`
+                                       = `glpi_software`.`id`)
                            $LINK `glpi_computers_softwareversions`
                                     AS `glpi_computers_softwareversions_$to_type`
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`

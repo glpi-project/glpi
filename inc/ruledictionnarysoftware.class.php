@@ -81,7 +81,7 @@ class RuleDictionnarySoftware extends Rule {
 
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = _n('Software', 'Software', 1);
-      $criterias['name']['table']         = 'glpi_softwares';
+      $criterias['name']['table']         = 'glpi_software';
 
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = __('Publisher');
@@ -118,7 +118,7 @@ class RuleDictionnarySoftware extends Rule {
       $actions['manufacturer']['force_actions'] = array('append_regex_result', 'assign','regex_result');
 
       $actions['is_helpdesk_visible']['name']   = __('Associable to a ticket');
-      $actions['is_helpdesk_visible']['table']  = 'glpi_softwares';
+      $actions['is_helpdesk_visible']['table']  = 'glpi_software';
       $actions['is_helpdesk_visible']['type']   = 'yesno';
 
       $actions['new_entities_id']['name']       = __('Entity');

@@ -121,21 +121,21 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
       if (count($items) == 0) {
          //Select all the differents software
-         $sql = "SELECT DISTINCT `glpi_softwares`.`name`,
+         $sql = "SELECT DISTINCT `glpi_software`.`name`,
                         `glpi_manufacturers`.`name` AS manufacturer,
-                        `glpi_softwares`.`manufacturers_id` AS manufacturers_id,
-                        `glpi_softwares`.`entities_id` AS entities_id,
-                        `glpi_softwares`.`is_helpdesk_visible` AS helpdesk
-                 FROM `glpi_softwares`
+                        `glpi_software`.`manufacturers_id` AS manufacturers_id,
+                        `glpi_software`.`entities_id` AS entities_id,
+                        `glpi_software`.`is_helpdesk_visible` AS helpdesk
+                 FROM `glpi_software`
                  LEFT JOIN `glpi_manufacturers`
-                     ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
+                     ON (`glpi_manufacturers`.`id` = `glpi_software`.`manufacturers_id`)";
 
          // Do not replay on dustbin and templates
-         $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
-                        AND `glpi_softwares`.`is_template` = '0' ";
+         $sql .= "WHERE `glpi_software`.`is_deleted` = '0'
+                        AND `glpi_software`.`is_template` = '0' ";
 
          if (isset($params['manufacturer']) && $params['manufacturer']) {
-            $sql .= " AND `glpi_softwares`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
+            $sql .= " AND `glpi_software`.`manufacturers_id` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
             $sql .= " LIMIT " . intval($offset) . ",999999999";
@@ -173,9 +173,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                     && ($res_rule['manufacturer'] != $input['manufacturer']))) {
 
                $IDs = array();
-               //Find all the softwares in the database with the same name and manufacturer
+               //Find all the software in the database with the same name and manufacturer
                $sql = "SELECT `id`
-                       FROM `glpi_softwares`
+                       FROM `glpi_software`
                        WHERE `name` = '" . $input["name"] . "'
                              AND `manufacturers_id` = '" . $input["manufacturers_id"] . "'";
                $res_soft = $DB->query($sql);
@@ -185,8 +185,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                   while ($result = $DB->fetch_assoc($res_soft)) {
                      $IDs[] = $result["id"];
                   }
-                  //Replay dictionnary on all the softwares
-                  $this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
+                  //Replay dictionnary on all the software
+                  $this->replayDictionnaryOnSoftwareByID($IDs, $res_rule);
                }
             }
             $i++;
@@ -205,7 +205,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          }
 
       } else {
-         $this->replayDictionnaryOnSoftwaresByID($items);
+         $this->replayDictionnaryOnSoftwareByID($items);
          return true;
       }
 
@@ -218,14 +218,14 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
 
    /**
-    * Replay dictionnary on several softwares
+    * Replay dictionnary on several software
     *
     * @param $IDs       array of software IDs to replay
     * @param $res_rule  array of rule results
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule=array()) {
+   function replayDictionnaryOnSoftwareByID(array $IDs, $res_rule=array()) {
       global $DB;
 
       $new_softs  = array();
@@ -236,7 +236,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                                         `gs`.`name` AS name,
                                         `gs`.`entities_id` AS entities_id,
                                         `gm`.`name` AS manufacturer
-                                 FROM `glpi_softwares` AS gs
+                                 FROM `glpi_software` AS gs
                                  LEFT JOIN `glpi_manufacturers` AS gm
                                        ON (`gs`.`manufacturers_id` = `gm`.`id`)
                                  WHERE `gs`.`is_template` = '0'
@@ -263,7 +263,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Replay dictionnary on one software
     *
-    * @param &$new_softs      array containing new softwares already computed
+    * @param &$new_softs      array containing new software already computed
     * @param $res_rule        array of rule results
     * @param $ID                    ID of the software
     * @param $entity                working entity ID
@@ -339,7 +339,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       //Get all the different versions for a software
       $result = $DB->query("SELECT *
                             FROM `glpi_softwareversions`
-                            WHERE `softwares_id` = '$ID'");
+                            WHERE `software_id` = '$ID'");
 
       while ($version = $DB->fetch_assoc($result)) {
          $input["version"] = addslashes($version["name"]);
@@ -360,7 +360,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
 
    /**
-    * Delete a list of softwares
+    * Delete a list of software
     *
     * @param $soft_ids array containing replay software need to be dustbined
    **/
@@ -372,14 +372,14 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          //Try to delete all the software that are not used anymore
          // (which means that don't have version associated anymore)
          $res_countsoftinstall
-            = $DB->query("SELECT `glpi_softwares`.`id`,
-                                 COUNT(`glpi_softwareversions`.`softwares_id`) AS `cpt`
-                          FROM `glpi_softwares`
+            = $DB->query("SELECT `glpi_software`.`id`,
+                                 COUNT(`glpi_softwareversions`.`software_id`) AS `cpt`
+                          FROM `glpi_software`
                           LEFT JOIN `glpi_softwareversions`
-                              ON `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
-                          WHERE `glpi_softwares`.`id` IN (".implode(",", $soft_ids).")
+                              ON `glpi_softwareversions`.`software_id` = `glpi_software`.`id`
+                          WHERE `glpi_software`.`id` IN (".implode(",", $soft_ids).")
                                 AND `is_deleted` = '0'
-                          GROUP BY `glpi_softwares`.`id`
+                          GROUP BY `glpi_software`.`id`
                           HAVING `cpt` = '0'
                           ORDER BY `cpt`");
 
@@ -413,7 +413,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             //Transfer versions from old software to new software for a specific version
             $DB->query("UPDATE `glpi_softwareversions`
                         SET `name` = '$new_version',
-                            `softwares_id` = '$new_software_id'
+                            `software_id` = '$new_software_id'
                         WHERE `id` = '$version_id'");
          } else {
             // Delete software can be in double after update
@@ -464,8 +464,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       //Transfer licenses to new software if needed
       if ($ID != $new_software_id) {
          $DB->query("UPDATE `glpi_softwarelicenses`
-                     SET `softwares_id` = '$new_software_id'
-                     WHERE `softwares_id` = '$ID'");
+                     SET `software_id` = '$new_software_id'
+                     WHERE `software_id` = '$ID'");
       }
    }
 
@@ -483,7 +483,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       //Check if the version exists
       $sql = "SELECT *
               FROM `glpi_softwareversions`
-              WHERE `softwares_id` = '$software_id'
+              WHERE `software_id` = '$software_id'
                     AND `name` = '$version'";
       $res_version = $DB->query($sql);
       return (!$DB->numrows($res_version) ? -1 : $DB->result($res_version, 0, "id"));

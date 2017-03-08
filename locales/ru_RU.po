@@ -9824,7 +9824,7 @@ msgstr "Сетевая структура"
 #: inc/networkequipmentfirmware.class.php:48 inc/phone.class.php:296
 #: inc/phone.class.php:473
 msgid "Firmware"
-msgid_plural "Firmwares"
+msgid_plural "Firmware"
 msgstr[0] "Прошивка"
 msgstr[1] "Прошивки"
 msgstr[2] "Прошивок"

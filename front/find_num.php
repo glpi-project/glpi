@@ -136,7 +136,7 @@ if (isset($_POST["send"])) {
    }
 
    $query = "SELECT `name`, `id`
-             FROM `glpi_softwares`
+             FROM `glpi_software`
              WHERE `is_template` = '0'
                    AND `is_deleted` = '0'
                    AND (`name` LIKE '%".$_POST["NomContact"]."%' )

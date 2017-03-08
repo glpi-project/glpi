@@ -493,7 +493,7 @@ class Document_Item extends CommonDBRelation{
                      }
 
                      if ($itemtype == 'SoftwareLicense') {
-                        $soft->getFromDB($data['softwares_id']);
+                        $soft->getFromDB($data['software_id']);
                         $data["name"] = sprintf(__('%1$s - %2$s'), $data["name"],
                                                 $soft->fields['name']);
                      }

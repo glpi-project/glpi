@@ -2080,7 +2080,7 @@ msgstr "Billede kræver en minimum højde"
 
 #: front/find_num.php:78
 msgid "Search the ID of your hardware"
-msgstr "Søg på dit hardwares ID"
+msgstr "Søg på dit hardware ID"
 
 #: front/find_num.php:87 inc/authldap.class.php:2831 inc/knowbase.class.php:70
 #: inc/knowbaseitem.class.php:904 inc/planning.class.php:369
@@ -9462,7 +9462,7 @@ msgstr "Netværk"
 #: inc/networkequipmentfirmware.class.php:48 inc/phone.class.php:296
 #: inc/phone.class.php:473
 msgid "Firmware"
-msgid_plural "Firmwares"
+msgid_plural "Firmware"
 msgstr[0] "Firmware"
 msgstr[1] "Firmware"
 

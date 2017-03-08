@@ -107,8 +107,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
          break;
 
       case 'SoftwareLicense' :
-         $query .= " INNER JOIN `glpi_softwares`
-                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`) ".
+         $query .= " INNER JOIN `glpi_software`
+                        ON (`glpi_softwarelicenses`.`software_id` = `glpi_software`.`id`) ".
                      getEntitiesRestrictRequest("WHERE","glpi_softwarelicenses");
          break;
    }

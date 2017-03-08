@@ -266,7 +266,7 @@ function update07to071() {
                 ADD `category_on_software_delete` INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->queryOrDie($query, "0.71 add category_on_software_delete in glpi_config");
 
-      //Create a software category for softwares to be deleted by the dictionary
+      //Create a software category for software to be deleted by the dictionary
       $result = $DB->query("SELECT `ID`
                             FROM `glpi_dropdown_software_category`
                             WHERE `name` = 'FUSION'");

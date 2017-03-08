@@ -69,7 +69,7 @@ if (isset($_GET["dictionnary"])) {
 } else {
    echo "Usage : php -q -f compute_dictionnary.php dictionnary=<option>  [ manufacturer=ID ]\n";
    echo "Options values :\n";
-   echo "RuleDictionnarySoftware : softwares\n";
+   echo "RuleDictionnarySoftware : software\n";
    echo "RuleDictionnaryManufacturer : manufacturers\n";
    echo "RuleDictionnaryPrinter : printers\n";
 

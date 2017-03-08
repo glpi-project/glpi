@@ -77,7 +77,7 @@ class SoftwareLicense extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
 
-      if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
+      if (!isset($this->fields['software_id']) || !$this->fields['software_id']) {
             Session::addMessageAfterRedirect(__("Please select a software for this license"), true,
                                              ERROR, true);
             return false;
@@ -170,7 +170,7 @@ class SoftwareLicense extends CommonDBTM {
    function post_addItem() {
       global $CFG_GLPI;
       $itemtype = 'Software';
-      $dupid    = $this->fields["softwares_id"];
+      $dupid    = $this->fields["software_id"];
 
       if (isset($this->input["_duplicate_license"])) {
          $itemtype = 'SoftwareLicense';
@@ -179,7 +179,7 @@ class SoftwareLicense extends CommonDBTM {
 
       // Add infocoms if exists for the licence
       Infocom::cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
-      Software::updateValidityIndicator($this->fields["softwares_id"]);
+      Software::updateValidityIndicator($this->fields["software_id"]);
    }
 
    /**
@@ -189,7 +189,7 @@ class SoftwareLicense extends CommonDBTM {
    function post_updateItem($history=1) {
 
       if (in_array("is_valid", $this->updates)) {
-         Software::updateValidityIndicator($this->fields["softwares_id"]);
+         Software::updateValidityIndicator($this->fields["software_id"]);
       }
    }
 
@@ -199,7 +199,7 @@ class SoftwareLicense extends CommonDBTM {
     * @see CommonDBTM::post_deleteFromDB()
    **/
    function post_deleteFromDB() {
-      Software::updateValidityIndicator($this->fields["softwares_id"]);
+      Software::updateValidityIndicator($this->fields["software_id"]);
    }
 
 
@@ -211,7 +211,7 @@ class SoftwareLicense extends CommonDBTM {
    function getPreAdditionalInfosForName() {
 
       $soft = new Software();
-      if ($soft->getFromDB($this->fields['softwares_id'])) {
+      if ($soft->getFromDB($this->fields['software_id'])) {
          return $soft->getName();
       }
       return '';
@@ -240,24 +240,24 @@ class SoftwareLicense extends CommonDBTM {
     * @param $ID        integer  Id of the version or the template to print
     * @param $options   array    of possible options:
     *     - target form target
-    *     - softwares_id ID of the software for add process
+    *     - software_id ID of the software for add process
     *
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      $softwares_id = -1;
-      if (isset($options['softwares_id'])) {
-         $softwares_id = $options['softwares_id'];
+      $software_id = -1;
+      if (isset($options['software_id'])) {
+         $software_id = $options['software_id'];
       }
 
       if ($ID < 0) {
          // Create item
-         $this->fields['softwares_id'] = $softwares_id;
+         $this->fields['software_id'] = $software_id;
          $this->fields['number']       = 1;
          $soft                         = new Software();
-         if ($soft->getFromDB($softwares_id)
+         if ($soft->getFromDB($software_id)
              && in_array($_SESSION['glpiactive_entity'], getAncestorsOf('glpi_entities',
                                                                         $soft->getEntityID()))) {
             $options['entities_id'] = $soft->getEntityID();
@@ -285,17 +285,17 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".Software::getTypeName(1)."</td>";
       echo "<td>";
       if ($ID > 0) {
-         $softwares_id = $this->fields["softwares_id"];
-         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-         echo "<a href='software.form.php?id=".$softwares_id."'>".
-                Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
+         $software_id = $this->fields["software_id"];
+         echo "<input type='hidden' name='software_id' value='$software_id'>";
+         echo "<a href='software.form.php?id=".$software_id."'>".
+                Dropdown::getDropdownName("glpi_software", $software_id)."</a>";
       } else {
          Dropdown::show('Software',
                         array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
                               'entity'      => $_SESSION['glpiactive_entity'],
                               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                               'on_change'   => 'this.form.submit()',
-                              'value'       => $softwares_id));
+                              'value'       => $software_id));
       }
 
       echo "</td>";
@@ -387,7 +387,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".__('Version in use')."</td>";
       echo "<td>";
       SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_use",
-                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'software_id' => $this->fields["software_id"],
                                                     'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td></tr>";
 
@@ -395,7 +395,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
       SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
-                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'software_id' => $this->fields["software_id"],
                                                     'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td></tr>\n";
 
@@ -442,8 +442,8 @@ class SoftwareLicense extends CommonDBTM {
    function maybeRecursive () {
 
       $soft = new Software();
-      if (isset($this->fields["softwares_id"])
-          && $soft->getFromDB($this->fields["softwares_id"])) {
+      if (isset($this->fields["software_id"])
+          && $soft->getFromDB($this->fields["software_id"])) {
          return $soft->isRecursive();
       }
       return false;
@@ -531,7 +531,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[9]['name']            = __('Valid');
       $tab[9]['datatype']        = 'bool';
 
-      $tab[10]['table']           = 'glpi_softwares';
+      $tab[10]['table']           = 'glpi_software';
       $tab[10]['field']           = 'name';
       $tab[10]['name']            = __('Software');
       $tab[10]['datatype']        = 'itemlink';
@@ -699,7 +699,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
    /**
-    * Cron action on softwares : alert on expired licences
+    * Cron action on software : alert on expired licences
     *
     * @param $task to log, if NULL display (default NULL)
     *
@@ -722,10 +722,10 @@ class SoftwareLicense extends CommonDBTM {
          $before = Entity::getUsedConfig('send_licenses_alert_before_delay', $entity);
          // Check licenses
          $query = "SELECT `glpi_softwarelicenses`.*,
-                          `glpi_softwares`.`name` AS softname
+                          `glpi_software`.`name` AS softname
                    FROM `glpi_softwarelicenses`
-                   INNER JOIN `glpi_softwares`
-                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                   INNER JOIN `glpi_software`
+                        ON (`glpi_softwarelicenses`.`software_id` = `glpi_software`.`id`)
                    LEFT JOIN `glpi_alerts`
                         ON (`glpi_softwarelicenses`.`id` = `glpi_alerts`.`items_id`
                             AND `glpi_alerts`.`itemtype` = 'SoftwareLicense'
@@ -734,9 +734,9 @@ class SoftwareLicense extends CommonDBTM {
                          AND `glpi_softwarelicenses`.`expire` IS NOT NULL
                          AND DATEDIFF(`glpi_softwarelicenses`.`expire`,
                                       CURDATE()) < '$before'
-                         AND `glpi_softwares`.`is_template` = '0'
-                         AND `glpi_softwares`.`is_deleted` = '0'
-                         AND `glpi_softwares`.`entities_id` = '".$entity."'";
+                         AND `glpi_software`.`is_template` = '0'
+                         AND `glpi_software`.`is_deleted` = '0'
+                         AND `glpi_software`.`entities_id` = '".$entity."'";
 
          $message = "";
          $items   = array();
@@ -820,16 +820,16 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Get number of licensesof a software
     *
-    * @param $softwares_id software ID
+    * @param $software_id software ID
     *
     * @return number of licenses
    **/
-   static function countForSoftware($softwares_id) {
+   static function countForSoftware($software_id) {
       global $DB;
 
       $query = "SELECT `id`
                 FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id'
+                WHERE `software_id` = '$software_id'
                       AND `number` = '-1' " .
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
@@ -841,7 +841,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $query = "SELECT SUM(`number`)
                 FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id'
+                WHERE `software_id` = '$software_id'
                       AND `number` > '0' " .
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
@@ -861,11 +861,11 @@ class SoftwareLicense extends CommonDBTM {
    static function showForSoftware(Software $software) {
       global $DB, $CFG_GLPI;
 
-      $softwares_id  = $software->getField('id');
+      $software_id  = $software->getField('id');
       $license       = new self();
       $computer      = new Computer();
 
-      if (!$software->can($softwares_id, READ)) {
+      if (!$software->can($software_id, READ)) {
          return false;
       }
 
@@ -908,7 +908,7 @@ class SoftwareLicense extends CommonDBTM {
 
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",
-                                     "glpi_softwarelicenses.softwares_id = $softwares_id " .
+                                     "glpi_softwarelicenses.software_id = $software_id " .
                                           getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses',
                                                                      '', '', true));
       echo "<div class='spaced'>";
@@ -920,7 +920,7 @@ class SoftwareLicense extends CommonDBTM {
 
       if ($canedit) {
          echo "<div class='center firstbloc'>";
-         echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+         echo "<a class='vsubmit' href='softwarelicense.form.php?software_id=$software_id'>".
                 _x('button', 'Add a license')."</a>";
          echo "</div>";
       }
@@ -941,7 +941,7 @@ class SoftwareLicense extends CommonDBTM {
                 LEFT JOIN `glpi_softwarelicensetypes`
                      ON (`glpi_softwarelicensetypes`.`id`
                           = `glpi_softwarelicenses`.`softwarelicensetypes_id`)
-                WHERE (`glpi_softwarelicenses`.`softwares_id` = '$softwares_id') " .
+                WHERE (`glpi_softwarelicenses`.`software_id` = '$software_id') " .
                        getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) ."
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
@@ -961,8 +961,8 @@ class SoftwareLicense extends CommonDBTM {
                            => array('options'
                                      => array('glpi_softwareversions.name'
                                                => array('condition'
-                                                         => "`glpi_softwareversions`.`softwares_id`
-                                                                  = $softwares_id"),
+                                                         => "`glpi_softwareversions`.`software_id`
+                                                                  = $software_id"),
                                               'glpi_softwarelicenses.name'
                                                => array('itemlink_as_string' => true))));
 
@@ -1099,7 +1099,7 @@ class SoftwareLicense extends CommonDBTM {
       return array('id'           => __('ID'),
                    'serial'       => __('Serial number'),
                    'entities_id'  => __('Entity'),
-                   'softwares_id' => _n('Software', 'Software', 1));
+                   'software_id' => _n('Software', 'Software', 1));
    }
 
 

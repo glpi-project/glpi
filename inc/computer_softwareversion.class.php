@@ -118,7 +118,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $input = $ma->getInput();
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
-                  $options = array('softwares_id' => $input['options']['move']['softwares_id']);
+                  $options = array('software_id' => $input['options']['move']['software_id']);
                   if (isset($input['options']['move']['used'])) {
                      $options['used'] = $input['options']['move']['used'];
                   }
@@ -250,11 +250,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Get number of installed versions of a software
     *
-    * @param $softwares_id software ID
+    * @param $software_id software ID
     *
     * @return number of installations
    **/
-   static function countForSoftware($softwares_id) {
+   static function countForSoftware($software_id) {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
@@ -264,7 +264,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                               = `glpi_computers_softwareversions`.`softwareversions_id`)
                 INNER JOIN `glpi_computers`
                       ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
+                WHERE `glpi_softwareversions`.`software_id` = '$software_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'" .
@@ -287,7 +287,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return nothing
    **/
    static function showForSoftware(Software $software) {
-      self::showInstallations($software->getField('id'), 'softwares_id');
+      self::showInstallations($software->getField('id'), 'software_id');
    }
 
 
@@ -307,7 +307,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Show installations of a software
     *
     * @param $searchID  value of the ID to search
-    * @param $crit      to search : softwares_id (software) or id (version)
+    * @param $crit      to search : software_id (software) or id (version)
     *
     * @return nothing
    **/
@@ -332,7 +332,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           'username,compname' => __('User'),
                           'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
                           'date_instal'       => __('Installation date'));
-      if ($crit != "softwares_id") {
+      if ($crit != "software_id") {
          unset($refcolumns['vername']);
       }
 
@@ -354,7 +354,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $sort = "`".implode("` $order,`",$tmp)."`";
 
       } else {
-         if ($crit == "softwares_id") {
+         if ($crit == "software_id") {
             $sort = "`entity` $order, `version`, `compname`";
          } else {
             $sort = "`entity` $order, `compname`";
@@ -362,7 +362,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Total Number of events
-      if ($crit == "softwares_id") {
+      if ($crit == "software_id") {
          // Software ID
          $query_number = "SELECT COUNT(*) AS cpt
                           FROM `glpi_computers_softwareversions`
@@ -372,7 +372,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           INNER JOIN `glpi_computers`
                               ON (`glpi_computers_softwareversions`.`computers_id`
                                     = `glpi_computers`.`id`)
-                          WHERE `glpi_softwareversions`.`softwares_id` = '$searchID'" .
+                          WHERE `glpi_softwareversions`.`software_id` = '$searchID'" .
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'
@@ -421,7 +421,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_users`.`firstname` AS userfirstname,
                        `glpi_softwareversions`.`name` AS version,
                        `glpi_softwareversions`.`id` AS vID,
-                       `glpi_softwareversions`.`softwares_id` AS sID,
+                       `glpi_softwareversions`.`software_id` AS sID,
                        `glpi_softwareversions`.`name` AS vername,
                        `glpi_entities`.`completename` AS entity,
                        `glpi_locations`.`completename` AS location,
@@ -451,9 +451,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       if ($result = $DB->query($query)) {
          if ($data = $DB->fetch_assoc($result)) {
-            $softwares_id  = $data['sID'];
+            $software_id  = $data['sID'];
             $soft          = new Software();
-            $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+            $showEntity    = ($soft->getFromDB($software_id) && $soft->isRecursive());
             $linkUser      = User::canView();
             $title         = $soft->fields["name"];
 
@@ -486,8 +486,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                           => _x('button', 'Move'),
                                     'purge' => _x('button', 'Delete permanently')));
                // Options to update version
-               $massiveactionparams['extraparams']['options']['move']['softwares_id'] = $softwares_id;
-               if ($crit=='softwares_id') {
+               $massiveactionparams['extraparams']['options']['move']['software_id'] = $software_id;
+               if ($crit=='software_id') {
                   $massiveactionparams['extraparams']['options']['move']['used'] = array();
                } else {
                   $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
@@ -540,7 +540,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   echo "</td>";
                }
 
-               if ($crit == "softwares_id") {
+               if ($crit == "software_id") {
                   echo "<td><a href='softwareversion.form.php?id=".$data['vID']."'>".
                         $data['version']."</a></td>";
                }
@@ -683,7 +683,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $where        = '';
       if ($crit > -1) {
-         $where = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
+         $where = " AND `glpi_software`.`softwarecategories_id` = $crit";
       }
 
       $add_dynamic  = '';
@@ -691,15 +691,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
 
-      $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
-                       `glpi_softwares`.`name` AS softname,
+      $query = "SELECT `glpi_software`.`softwarecategories_id`,
+                       `glpi_software`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
                        $add_dynamic
                        `glpi_states`.`name` AS state,
                        `glpi_softwareversions`.`id` AS verid,
-                       `glpi_softwareversions`.`softwares_id`,
+                       `glpi_softwareversions`.`software_id`,
                        `glpi_softwareversions`.`name` AS version,
-                       `glpi_softwares`.`is_valid` AS softvalid,
+                       `glpi_software`.`is_valid` AS softvalid,
                        `glpi_computers_softwareversions`.`date_install` AS dateinstall
                 FROM `glpi_computers_softwareversions`
                 LEFT JOIN `glpi_softwareversions`
@@ -707,8 +707,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            = `glpi_softwareversions`.`id`)
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-                LEFT JOIN `glpi_softwares`
-                     ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
+                LEFT JOIN `glpi_software`
+                     ON (`glpi_softwareversions`.`software_id` = `glpi_software`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
                       $where
@@ -817,7 +817,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $licids = self::softsByCategory($data, $computers_id, $withtemplate,
                                                $canedit, false);
             }
-            Session::addToNavigateListItems('Software', $data["softwares_id"]);
+            Session::addToNavigateListItems('Software', $data["software_id"]);
 
             foreach ($licids as $licid) {
                Session::addToNavigateListItems('SoftwareLicense', $licid);
@@ -857,15 +857,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       // Affected licenses NOT installed
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_computers_softwarelicenses`.`id` AS linkID,
-                       `glpi_softwares`.`name` AS softname,
+                       `glpi_software`.`name` AS softname,
                        `glpi_softwareversions`.`name` AS version,
                        `glpi_states`.`name` AS state
                 FROM `glpi_softwarelicenses`
                 LEFT JOIN `glpi_computers_softwarelicenses`
                       ON (`glpi_computers_softwarelicenses`.softwarelicenses_id
                               = `glpi_softwarelicenses`.`id`)
-                INNER JOIN `glpi_softwares`
-                      ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
+                INNER JOIN `glpi_software`
+                      ON (`glpi_softwarelicenses`.`software_id` = `glpi_software`.`id`)
                 LEFT JOIN `glpi_softwareversions`
                       ON (`glpi_softwarelicenses`.`softwareversions_id_use`
                               = `glpi_softwareversions`.`id`
@@ -970,9 +970,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          echo "<td class='center b'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".
-                        $data['softwares_id']."'>";
+                        $data['software_id']."'>";
          echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
-                                                         $data["softname"], $data['softwares_id'])
+                                                         $data["softname"], $data['software_id'])
                                                : $data["softname"]);
          echo "</a></td>";
          echo "<td>" . $data["state"] . "</td>";
@@ -1073,9 +1073,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "<td class='center b'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['software_id']."'>";
       echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
-                                                      $data["softname"], $data['softwares_id'])
+                                                      $data["softname"], $data['software_id'])
                                             : $data["softname"]);
       echo "</a></td>";
       echo "<td>" . $data["state"] . "</td>";

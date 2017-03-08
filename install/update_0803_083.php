@@ -987,9 +987,9 @@ function update0803to083() {
                         array('after' => "users_id_tech"));
    $migration->addKey('glpi_printers', 'groups_id_tech');
 
-   $migration->addField('glpi_softwares', 'groups_id_tech', "integer",
+   $migration->addField('glpi_software', 'groups_id_tech', "integer",
                         array('after' => "users_id_tech"));
-   $migration->addKey('glpi_softwares', 'groups_id_tech');
+   $migration->addKey('glpi_software', 'groups_id_tech');
 
    $migration->addField('glpi_cartridgeitems', 'groups_id_tech', "integer",
                         array('after' => "users_id_tech"));
@@ -1071,8 +1071,8 @@ function update0803to083() {
 
 
    //Software dictionary update
-   $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
-   $migration->addField("glpi_rulecachesoftwares", "new_entities_id", "string");
+   $migration->addField("glpi_rulecachesoftware", "entities_id", "string");
+   $migration->addField("glpi_rulecachesoftware", "new_entities_id", "string");
    $migration->addField("glpi_entitydatas", "entities_id_software", 'integer',
                         array('value' => '-2'));
 

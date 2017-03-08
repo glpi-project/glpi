@@ -474,7 +474,7 @@ class Supplier extends CommonDBTM {
             if (($itemtype == 'SoftwareLicense')
                 && ($nb > $_SESSION['glpilist_limit'])) {
                $linktype  = 'Software';
-               $linkfield = 'softwares_id';
+               $linkfield = 'software_id';
             }
             $link_item = new $linktype();
 

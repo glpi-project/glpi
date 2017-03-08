@@ -42,8 +42,8 @@ if (!isset($_REQUEST["id"])) {
    $_REQUEST["id"] = "";
 }
 
-if (!isset($_REQUEST["softwares_id"])) {
-   $_REQUEST["softwares_id"] = "";
+if (!isset($_REQUEST["software_id"])) {
+   $_REQUEST["software_id"] = "";
 }
 if (!isset($_REQUEST["withtemplate"])) {
    $_REQUEST["withtemplate"] = "";
@@ -53,7 +53,7 @@ $license = new SoftwareLicense();
 if (isset($_POST["add"])) {
    $license->check(-1, CREATE,$_POST);
    if ($newID = $license->add($_POST)) {
-      Event::log($_POST['softwares_id'], "software", 4, "inventory",
+      Event::log($_POST['software_id'], "software", 4, "inventory",
                  //TRANS: %s is the user login, %2$s is the license id
                  sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID));
       if ($_SESSION['glpibackcreated']) {
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $license->check($_POST['id'], DELETE);
    $license->delete($_POST, 0);
-   Event::log($license->fields['softwares_id'], "software", 4, "inventory",
+   Event::log($license->fields['software_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the license id
               sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $license->redirectToList();
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $license->check($_POST['id'], PURGE);
    $license->delete($_POST, 1);
-   Event::log($license->fields['softwares_id'], "software", 4, "inventory",
+   Event::log($license->fields['software_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the license id
               sprintf(__('%1$s purges the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $license->redirectToList();
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    $license->check($_POST['id'], UPDATE);
 
    $license->update($_POST);
-   Event::log($license->fields['softwares_id'], "software", 4, "inventory",
+   Event::log($license->fields['software_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the license id
               sprintf(__('%1$s updates the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    Html::back();

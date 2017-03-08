@@ -71,12 +71,12 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                                        ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
          }
          if ($val == 'SoftwareLicense') {
-            $deleted_field       = "`glpi_softwares`.`is_deleted`";
+            $deleted_field       = "`glpi_software`.`is_deleted`";
             $location_field      = "''";
-            $add_leftjoin        = "LEFT JOIN `glpi_softwares`
-                                       ON (`glpi_softwares`.`id`
-                                                      = `glpi_softwarelicenses`.`softwares_id`)";
-            $template_condition  = "`glpi_softwares`.`is_template` = '0'";
+            $add_leftjoin        = "LEFT JOIN `glpi_software`
+                                       ON (`glpi_software`.`id`
+                                                      = `glpi_softwarelicenses`.`software_id`)";
+            $template_condition  = "`glpi_software`.`is_template` = '0'";
          }
 
 

@@ -1887,10 +1887,10 @@ CREATE TABLE `glpi_netpoints` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_networkequipmentfirmwares
+### Dump table glpi_networkequipmentfirmware
 
-DROP TABLE IF EXISTS `glpi_networkequipmentfirmwares`;
-CREATE TABLE `glpi_networkequipmentfirmwares` (
+DROP TABLE IF EXISTS `glpi_networkequipmentfirmware`;
+CREATE TABLE `glpi_networkequipmentfirmware` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
@@ -1932,7 +1932,7 @@ CREATE TABLE `glpi_networkequipments` (
   `networks_id` int(11) NOT NULL default '0',
   `networkequipmenttypes_id` int(11) NOT NULL default '0',
   `networkequipmentmodels_id` int(11) NOT NULL default '0',
-  `networkequipmentfirmwares_id` int(11) NOT NULL default '0',
+  `networkequipmentfirmware_id` int(11) NOT NULL default '0',
   `manufacturers_id` int(11) NOT NULL default '0',
   `is_deleted` tinyint(1) NOT NULL default '0',
   `is_template` tinyint(1) NOT NULL default '0',
@@ -1948,7 +1948,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
   KEY `domains_id` (`domains_id`),
-  KEY `networkequipmentfirmwares_id` (`networkequipmentfirmwares_id`),
+  KEY `networkequipmentfirmware_id` (`networkequipmentfirmware_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),
@@ -3383,10 +3383,10 @@ CREATE TABLE `glpi_rulecacheprintertypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_rulecachesoftwares
+### Dump table glpi_rulecachesoftware
 
-DROP TABLE IF EXISTS `glpi_rulecachesoftwares`;
-CREATE TABLE `glpi_rulecachesoftwares` (
+DROP TABLE IF EXISTS `glpi_rulecachesoftware`;
+CREATE TABLE `glpi_rulecachesoftware` (
   `id` int(11) NOT NULL auto_increment,
   `old_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -3490,7 +3490,7 @@ INSERT INTO `glpi_softwarecategories` VALUES ('1','FUSION',NULL);
 DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int(11) NOT NULL auto_increment,
-  `softwares_id` int(11) NOT NULL default '0',
+  `software_id` int(11) NOT NULL default '0',
   `entities_id` int(11) NOT NULL default '0',
   `is_recursive` tinyint(1) NOT NULL default '0',
   `number` int(11) NOT NULL default '0',
@@ -3511,7 +3511,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `softwareversions_id_buy` (`softwareversions_id_buy`),
   KEY `computers_id` (`computers_id`),
   KEY `entities_id` (`entities_id`),
-  KEY `softwares_id` (`softwares_id`),
+  KEY `software_id` (`software_id`),
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`),
   KEY `softwareversions_id_use` (`softwareversions_id_use`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3530,10 +3530,10 @@ CREATE TABLE `glpi_softwarelicensetypes` (
 
 INSERT INTO `glpi_softwarelicensetypes` VALUES ('1','OEM','');
 
-### Dump table glpi_softwares
+### Dump table glpi_software
 
-DROP TABLE IF EXISTS `glpi_softwares`;
-CREATE TABLE `glpi_softwares` (
+DROP TABLE IF EXISTS `glpi_software`;
+CREATE TABLE `glpi_software` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
   `is_recursive` tinyint(1) NOT NULL default '0',
@@ -3543,7 +3543,7 @@ CREATE TABLE `glpi_softwares` (
   `users_id_tech` int(11) NOT NULL default '0',
   `operatingsystems_id` int(11) NOT NULL default '0',
   `is_update` tinyint(1) NOT NULL default '0',
-  `softwares_id` int(11) NOT NULL default '0',
+  `software_id` int(11) NOT NULL default '0',
   `manufacturers_id` int(11) NOT NULL default '0',
   `is_deleted` tinyint(1) NOT NULL default '0',
   `is_template` tinyint(1) NOT NULL default '0',
@@ -3568,7 +3568,7 @@ CREATE TABLE `glpi_softwares` (
   KEY `locations_id` (`locations_id`),
   KEY `operatingsystems_id` (`operatingsystems_id`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `softwares_id` (`softwares_id`),
+  KEY `software_id` (`software_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3581,13 +3581,13 @@ CREATE TABLE `glpi_softwareversions` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
   `is_recursive` tinyint(1) NOT NULL default '0',
-  `softwares_id` int(11) NOT NULL default '0',
+  `software_id` int(11) NOT NULL default '0',
   `states_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
-  KEY `softwares_id` (`softwares_id`),
+  KEY `software_id` (`software_id`),
   KEY `states_id` (`states_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)

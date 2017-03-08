@@ -918,19 +918,19 @@ class Item_Ticket extends CommonDBRelation{
             // Software
             if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $query = "SELECT DISTINCT `glpi_softwareversions`.`name` AS version,
-                                `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
-                         FROM `glpi_computers_softwareversions`, `glpi_softwares`,
+                                `glpi_software`.`name` AS name, `glpi_software`.`id`
+                         FROM `glpi_computers_softwareversions`, `glpi_software`,
                               `glpi_softwareversions`
                          WHERE `glpi_computers_softwareversions`.`softwareversions_id` =
                                    `glpi_softwareversions`.`id`
-                               AND `glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`
+                               AND `glpi_softwareversions`.`software_id` = `glpi_software`.`id`
                                AND ".str_replace("XXXX",
                                                  "`glpi_computers_softwareversions`.`computers_id`",
                                                  $search_computer)."
-                               AND `glpi_softwares`.`is_helpdesk_visible` = '1' ".
-                               getEntitiesRestrictRequest("AND","glpi_softwares","",
+                               AND `glpi_software`.`is_helpdesk_visible` = '1' ".
+                               getEntitiesRestrictRequest("AND","glpi_software","",
                                                           $entity_restrict)."
-                         ORDER BY `glpi_softwares`.`name`";
+                         ORDER BY `glpi_software`.`name`";
                $devices = array();
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {

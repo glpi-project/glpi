@@ -340,7 +340,7 @@ function update0905to91() {
    }
 
 
-   /************** Installation date for softwares *************/
+   /************** Installation date for software *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 

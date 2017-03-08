@@ -399,7 +399,7 @@ abstract class API extends CommonGLPI {
     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_components':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':   Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_software':   Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
     *    - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
     *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
@@ -424,7 +424,7 @@ abstract class API extends CommonGLPI {
                        'get_sha1'          => false,
                        'with_components'   => false,
                        'with_disks'        => false,
-                       'with_softwares'    => false,
+                       'with_software'    => false,
                        'with_connections'  => false,
                        'with_networkports' => false,
                        'with_infocoms'     => false,
@@ -496,32 +496,32 @@ abstract class API extends CommonGLPI {
          }
       }
 
-      // retrieve computer softwares
-      if (isset($params['with_softwares'])
-          && $params['with_softwares']
+      // retrieve computer software
+      if (isset($params['with_software'])
+          && $params['with_software']
           && $itemtype == "Computer") {
-         $fields['_softwares'] = array();
+         $fields['_software'] = array();
          if (!Software::canView()) {
-            $fields['_softwares'] = self::arrayRightError();
+            $fields['_software'] = self::arrayRightError();
          } else {
-            $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
-                             `glpi_softwares`.`id` AS softwares_id,
+            $query = "SELECT `glpi_software`.`softwarecategories_id`,
+                             `glpi_software`.`id` AS software_id,
                              `glpi_softwareversions`.`id` AS softwareversions_id,
                              `glpi_computers_softwareversions`.`is_dynamic`,
                              `glpi_softwareversions`.`states_id`,
-                             `glpi_softwares`.`is_valid`
+                             `glpi_software`.`is_valid`
                       FROM `glpi_computers_softwareversions`
                       LEFT JOIN `glpi_softwareversions`
                            ON (`glpi_computers_softwareversions`.`softwareversions_id`
                                  = `glpi_softwareversions`.`id`)
-                      LEFT JOIN `glpi_softwares`
-                           ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
+                      LEFT JOIN `glpi_software`
+                           ON (`glpi_softwareversions`.`software_id` = `glpi_software`.`id`)
                       WHERE `glpi_computers_softwareversions`.`computers_id` = '$id'
                             AND `glpi_computers_softwareversions`.`is_deleted` = '0'
-                      ORDER BY `glpi_softwares`.`name`, `glpi_softwareversions`.`name`";
+                      ORDER BY `glpi_software`.`name`, `glpi_softwareversions`.`name`";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $fields['_softwares'][] = $data;
+                  $fields['_software'][] = $data;
                }
             }
          }
@@ -1089,7 +1089,7 @@ abstract class API extends CommonGLPI {
     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_components':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_software':    Only for Computer, retrieve the associated software installations. Optionnal.
     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
     *    - 'with_networkports': Retrieve all network connections and advanced network informations. Optionnal.
     *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
@@ -1250,7 +1250,7 @@ abstract class API extends CommonGLPI {
     *    - 'metacriteria' (optionnal): array of metacriterion object to filter search.
     *                                  Optionnal.
     *                                  A meta search is a link with another itemtype
-    *                                  (ex: Computer with softwares).
+    *                                  (ex: Computer with software).
     *         Each metacriterion object must provide :
     *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
     *            - itemtype: second itemtype to link.

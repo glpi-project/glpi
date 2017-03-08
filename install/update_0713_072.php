@@ -253,7 +253,7 @@ function update0713to072() {
       $query = "UPDATE `glpi_infocoms`
                 SET `device_type` = '9999'
                 WHERE `device_type` = '".SOFTWARELICENSE_TYPE."'";
-      $DB->queryOrDie($query, "0.72 prepare infocoms for update softwares");
+      $DB->queryOrDie($query, "0.72 prepare infocoms for update software");
 
       // Foreach software
       $query_softs = "SELECT *
