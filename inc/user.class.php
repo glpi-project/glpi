@@ -1290,12 +1290,13 @@ class User extends CommonDBTM {
                    && ($v[$i][$field]['count'] > 0)) {
 
                   unset($v[$i][$field]['count']);
+                  foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)" ;
+                  }
                   $query = "SELECT `id`
                             FROM `glpi_groups`
                             WHERE `ldap_field` = '$field'
-                                  AND `ldap_value`
-                                       IN ('".implode("', '",
-                                                      Toolbox::addslashes_deep($v[$i][$field]))."')";
+                                  AND (".implode(" OR ", $lgroups).")";
 
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][] = $group['id'];
