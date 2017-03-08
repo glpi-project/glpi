@@ -1291,7 +1291,7 @@ class User extends CommonDBTM {
 
                   unset($v[$i][$field]['count']);
                   foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
-                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)" ;
+                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)";
                   }
                   $query = "SELECT `id`
                             FROM `glpi_groups`
