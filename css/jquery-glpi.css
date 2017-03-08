@@ -124,7 +124,6 @@ html .ui-autocomplete {
    height: 100px;
 }
 
-.loadingindicator,
 .ui-widget-content .error {
    -moz-border-radius: 10px;
    -webkit-border-radius: 10px;
@@ -141,10 +140,6 @@ html .ui-autocomplete {
    border-color: red;
 }
 
-.loadingindicator {
-   border-color: #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-}
 /* SELECT2 */
 
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
