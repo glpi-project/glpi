@@ -6214,9 +6214,8 @@ class Ticket extends CommonITILObject {
          }
 
          //display solution in middle
-         if (($timeline_index == 0)
-             && ($item['type'] == "Solution")
-             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
+         if (($item['type'] == "Solution")
+              && in_array($this->fields["status"], [CommonITILObject::SOLVED, CommonITILObject::CLOSED])) {
             $user_position.= ' middle';
          }
 
