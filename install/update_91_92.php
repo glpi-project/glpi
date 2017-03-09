@@ -668,6 +668,19 @@ function update91to92() {
       }
    }
 
+   if (countElementsInTable('glpi_logs', 'entities_id=0') < 2000000) {
+      //add index only if this sounds... possible.
+      $migration->addKey("glpi_logs", "id_search_option");
+   } else {
+      //Just display a Warning to the user.
+      $migration->displayWarning(
+         "An index must be added in the 'id_search_option' field " .
+         "of the 'glpi_logs table'; but your gpi_logs table is " .
+         "too huge. You'll have to add it on your database."
+      );
+
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
