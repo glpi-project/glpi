@@ -200,6 +200,14 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
+         if (empty($comment)) {
+            $comment = sprintf(
+               __('Show %1$s'),
+               mb_strtolower(
+                  $item::getTypeName(Session::getPluralNumber())
+               )
+            );
+         }
          $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
@@ -950,7 +958,7 @@ class Dropdown {
                  'NetworkInterface'         => _n('Network interface',
                                                   'Network interfaces',
                                                   Session::getPluralNumber()),
-                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares',
+                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmware',
                                                   Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
@@ -2046,7 +2054,7 @@ class Dropdown {
 
       if ($params['value']
           && empty($params['withtemplate'])) {
-         _e('Global management');
+         echo __('Global management');
 
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;";
@@ -2175,7 +2183,7 @@ class Dropdown {
     *
     * @param $onchange  String   optional, for ajax (default '')
    **/
-   static function showListLimit($onchange='') {
+   static function showListLimit($onchange='', $display=true) {
       global $CFG_GLPI;
 
       if (isset($_SESSION['glpilist_limit'])) {
@@ -2213,7 +2221,8 @@ class Dropdown {
       ksort($values);
       return self::showFromArray('glpilist_limit', $values,
                                  array('on_change' => $onchange,
-                                       'value'     => $list_limit));
+                                       'value'     => $list_limit,
+                                       'display'   => $display));
    }
 
 }

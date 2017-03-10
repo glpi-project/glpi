@@ -30,15 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-// class Central
 /**
  * Migration Class
  *
@@ -61,7 +56,7 @@ class Migration {
    const POST_QUERY = 'post';
 
    /**
-    * @param integer $ver number of new version of GLPI
+    * @param integer $ver Version number
    **/
    function __construct($ver) {
 
@@ -69,13 +64,12 @@ class Migration {
       $this->setVersion($ver);
    }
 
-
    /**
-    * Set versions
+    * Set version
     *
     * @since version 0.84
     *
-    * @param integer $ver number of new version
+    * @param integer $ver Version number
     *
     * @return void
    **/
@@ -88,7 +82,7 @@ class Migration {
 
 
    /**
-    * Add new message div
+    * Add new message
     *
     * @since version 0.84
     *
@@ -107,7 +101,7 @@ class Migration {
 
 
    /**
-    * Flush previous display message in log file
+    * Flush previous displayed message in log file
     *
     * @since version 0.84
     *
@@ -205,7 +199,7 @@ class Migration {
    /**
     * Define field's format
     *
-    * @param string  $type          can be bool, string, integer, date, datatime, text, longtext,
+    * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
     * @param string  $default_value new field's default value,
     *                               if a specific default value needs to be used
     * @param boolean $nodefault     No default value (false by default)

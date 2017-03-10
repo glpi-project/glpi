@@ -452,7 +452,7 @@ class MassiveAction {
             foreach ($keys as $itemtype) {
                $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
             }
-            _e('Select the type of the item on which applying this action')."<br>\n";
+            echo __('Select the type of the item on which applying this action')."<br>\n";
 
             $rand = Dropdown::showFromArray('specialize_itemtype', $itemtypes);
             echo "<br><br>";

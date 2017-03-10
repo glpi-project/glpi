@@ -338,8 +338,7 @@ function update91to92() {
       'glpi_devicepcis'          => 'devicepcimodels_id',
       'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
       'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
-      'glpi_devicesoundcards'    => 'devicesoundcardmodels_id',
-      'glpi_devicegenerics'      => 'devicegenericmodels_id'
+      'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'
    ];
 
    foreach ($tables as $table => $field) {
@@ -424,7 +423,6 @@ function update91to92() {
                   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                  `manufacturing_date` date DEFAULT NULL,
                   `voltage` varchar(3) DEFAULT NULL,
                   `capacity` varchar(3) DEFAULT NULL,
                   `devicebatterytypes_id` int(11) NOT NULL DEFAULT '0',
@@ -452,6 +450,7 @@ function update91to92() {
                   `items_id` int(11) NOT NULL DEFAULT '0',
                   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `devicebatteries_id` int(11) NOT NULL DEFAULT '0',
+                  `manufacturing_date` date DEFAULT NULL,
                   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -560,6 +559,79 @@ function update91to92() {
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('2','UEFI',NULL,NULL,NULL);");
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('3','Firmware',NULL,NULL,NULL);");
    }
+
+   //Father/son for Software licenses
+   $migration->addField("glpi_softwarelicenses", "softwarelicenses_id", "integer");
+   $new = $migration->addField("glpi_softwarelicenses", "completename", "text");
+   $migration->addField("glpi_softwarelicenses", "level", "integer");
+   $migration->executeMigration();
+   if ($new) {
+      $query = "UPDATE `glpi_softwarelicenses` SET `completename`=`name`";
+      $DB->queryOrDie($query, "9.2 copy name to completename for software licenses");
+   }
+
+   // add template key to itiltasks
+   $migration->addField("glpi_tickettasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_tickettasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_tickettasks');
+   $migration->addField("glpi_problemtasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_problemtasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_problemtasks');
+   $migration->addField("glpi_changetasks", "tasktemplates_id", "integer");
+   $migration->addKey("glpi_changetasks", "tasktemplates_id");
+   $migration->migrationOneTable('glpi_changetasks');
+
+   // add missing fields to tasktemplate
+   $migration->addField("glpi_tasktemplates", "state", "integer");
+   $migration->addField("glpi_tasktemplates", "is_private", "bool");
+   $migration->addField("glpi_tasktemplates", "users_id_tech", "integer");
+   $migration->addField("glpi_tasktemplates", "groups_id_tech", "integer");
+   $migration->addKey("glpi_tickettasks", "is_private");
+   $migration->addKey("glpi_tickettasks", "users_id_tech");
+   $migration->addKey("glpi_tickettasks", "groups_id_tech");
+   $migration->migrationOneTable('glpi_tasktemplates');
+
+   // #1735 - Add new notifications
+   $notification       = new Notification;
+   $notificationtarget = new NotificationTarget;
+   $new_notifications  = [
+      'requester_user'  => ['label'      => 'New user in requesters',
+                            'targets_id' => Notification::AUTHOR],
+      'requester_group' => ['label'      => 'New group in requesters',
+                            'targets_id' => Notification::REQUESTER_GROUP],
+      'observer_user'   => ['label'      => 'New user in observers',
+                            'targets_id' => Notification::OBSERVER],
+      'observer_group'  => ['label'      => 'New group in observers',
+                            'targets_id' => Notification::OBSERVER_GROUP],
+      'assign_user'     => ['label'      => 'New user in assignees',
+                            'targets_id' => Notification::ASSIGN_TECH],
+      'assign_group'    => ['label'      => 'New group in assignees',
+                            'targets_id' => Notification::ITEM_TECH_GROUP_IN_CHARGE],
+      'assign_supplier' => ['label'      => 'New supplier in assignees',
+                            'targets_id' => Notification::SUPPLIER],
+   ];
+
+   foreach ($new_notifications as $event => $notif_options) {
+      $notifications_id = $notification->add([
+         'name'                     => $notif_options['label'],
+         'itemtype'                 => 'Ticket',
+         'event'                    => $event,
+         'mode'                     => 'mail',
+         'notificationtemplates_id' => 0,
+         'is_recursive'             => 1,
+         'is_active'                => 0,
+      ]);
+
+      $notificationtarget->add([
+         'items_id'         => $notif_options['targets_id'],
+         'type'             => 1,
+         'notifications_id' => $notifications_id,
+      ]);
+   }
+
+   /************** Auto login **************/
+   Config::setConfigurationValues('core', array('login_remember_time'    => 604800,
+                                                'login_remember_default' => 1));
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

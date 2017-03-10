@@ -1385,7 +1385,7 @@ class Problem extends CommonITILObject {
                echo "<table class='tab_cadre_fixe'>";
                echo "<tr class='tab_bg_1'><th>".__('Last problems')."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               _e('Child groups');
+               echo __('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
                                    array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
             } else {
@@ -1493,7 +1493,7 @@ class Problem extends CommonITILObject {
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='$colspan'>";
-         _e('Problems on linked items');
+         echo __('Problems on linked items');
 
          echo "</th></tr>";
          if ($number > 0) {

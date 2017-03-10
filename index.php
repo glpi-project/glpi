@@ -65,8 +65,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $_GET["noAUTO"] = $_GET["noCAS"];
    }
 
+   if (!isset($_GET["noAUTO"])) {
+      Auth::redirectIfAuthenticated();
+   }
    Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
-   Auth::redirectIfAuthenticated();
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -107,6 +109,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $_SESSION['namfield'] = $namfield = uniqid('fielda');
    $_SESSION['pwdfield'] = $pwdfield = uniqid('fieldb');
+   $_SESSION['rmbfield'] = $rmbfield = uniqid('fieldc');
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
@@ -127,6 +130,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
+   if ($CFG_GLPI["login_remember_time"]) {
+      echo '<p class="login_input">
+            <label for="login_remember">
+                   <input type="checkbox" name="'.$rmbfield.'" id="login_remember"
+                   '.($CFG_GLPI['login_remember_default']?'checked="checked"':'').' />
+            '.__('Remember me').'</label>
+            </p>';
+   }
    echo '<p class="login_input">
          <input type="submit" name="submit" value="'._sx('button', 'Post').'" class="submit" />
          </p>';
@@ -150,21 +161,21 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<div class='error'>";
    echo "<noscript><p>";
-   _e('You must activate the JavaScript function of your browser');
+   echo __('You must activate the JavaScript function of your browser');
    echo "</p></noscript>";
 
    if (isset($_GET['error']) && isset($_GET['redirect'])) {
       switch ($_GET['error']) {
          case 1 : // cookie error
-            _e('You must accept cookies to reach this application');
+            echo __('You must accept cookies to reach this application');
             break;
 
          case 2 : // GLPI_SESSION_DIR not writable
-            _e('Checking write permissions for session files');
+            echo __('Checking write permissions for session files');
             break;
 
          case 3 :
-            _e('Invalid use of session ID');
+            echo __('Invalid use of session ID');
             break;
       }
    }

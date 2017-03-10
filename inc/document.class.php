@@ -1234,11 +1234,11 @@ class Document extends CommonDBTM {
          if (count($uploaded_files)) {
             Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
-            _e('No file available');
+            echo __('No file available');
          }
 
       } else {
-         _e("Upload directory doesn't exist");
+         echo __("Upload directory doesn't exist");
       }
    }
 

@@ -904,7 +904,7 @@ class Cartridge extends CommonDBChild {
                           ".($installok?'':'disabled')." class='submit'>";
 
          } else {
-            _e('No cartridge available');
+            echo __('No cartridge available');
          }
 
          echo "</td></tr>";

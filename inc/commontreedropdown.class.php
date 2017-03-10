@@ -523,7 +523,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       switch ($ma->getAction()) {
          case 'move_under' :
             $itemtype = $ma->getItemType(true);
-            _e('As child of');
+            echo __('As child of');
             Dropdown::show($itemtype, array('name'     => 'parent',
                                             'comments' => 0,
                                             'entity'   => $_SESSION['glpiactive_entity']));

@@ -443,14 +443,23 @@ class Html {
     * Redirection hack
     *
     * @param $dest string: Redirection destination
+    * @param $http_response_code string: Forces the HTTP response code to the specified value
     *
     * @return nothing
    **/
-   static function redirect($dest) {
+   static function redirect($dest, $http_response_code = 302) {
 
       $toadd = '';
       $dest = addslashes($dest);
-      if (!strpos($dest, "?")) {
+
+      if (!headers_sent() && !Toolbox::isAjax()) {
+          header("Location: $dest", true, $http_response_code);
+          exit();
+      }
+
+      if (strpos($dest, "?") !== false) {
+         $toadd = '&tokonq='.Toolbox::getRandomString(5);
+      } else {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }
 
@@ -483,20 +492,8 @@ class Html {
       if (!empty($params)) {
          $dest .= '&'.$params;
       }
-      $toadd = '';
-      if (!strpos($dest, "?")) {
-         $toadd = '&tokonq='.Toolbox::getRandomString(5);
-      }
 
-      echo "<script type='text/javascript'>
-            NomNav = navigator.appName;
-            if (NomNav=='Konqueror') {
-               window.location='".$dest.$toadd."';
-            } else {
-               window.location='".$dest."';
-            }
-         </script>";
-      exit();
+      self::redirect($dest);
    }
 
 
@@ -1516,7 +1513,7 @@ class Html {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            echo "<a href='$link' class='itemP' title='{$data['title']}'>".self::getMenuText($data['title'])."</a>";
+            echo "<a href='$link' class='itemP' title='{$data['title']}'>{$data['title']}</a>";
             echo "<ul class='ssmenu'>";
 
             // list menu item
@@ -1880,7 +1877,7 @@ class Html {
 
          foreach ($links as $name => $link) {
             echo "<li id='menu$i'>";
-            echo "<a href='$link' title=\"".$name."\" class='itemP'>".self::getMenuText($name)."</a>";
+            echo "<a href='$link' title=\"".$name."\" class='itemP'>{$name}</a>";
             echo "</li>";
             $i++;
          }
@@ -2053,7 +2050,7 @@ class Html {
       foreach ($menu as $menu_item) {
          echo "<li id='".$menu_item['id']."'>";
          echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
-                "title=\"".$menu_item['title']."\" class='itemP'>".self::getMenuText($menu_item['title'])."</a>";
+                "title=\"".$menu_item['title']."\" class='itemP'>{$menu_item['title']}</a>";
          echo "</li>";
       }
 
@@ -2785,8 +2782,9 @@ class Html {
     *    - confirm          : string of confirm message before massive action
     *    - item             : CommonDBTM object that has to be passed to the actions
     *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
+    *    - display          : display or return the generated html (default true)
     *
-    * @return nothing
+    * @return bool|string     the html if display parameter is false, or true
    **/
    static function showMassiveActions($options=array()) {
       global $CFG_GLPI;
@@ -2811,7 +2809,8 @@ class Html {
       $p['display_arrow']     = true;
       $p['title']             = _n('Action', 'Actions', Session::getPluralNumber());
       $p['item']              = false;
-      $p['tag_to_send']      = 'common';
+      $p['tag_to_send']       = 'common';
+      $p['display']           = true;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2856,25 +2855,26 @@ class Html {
 
       $identifier = md5($url.serialize($p['extraparams']).$p['rand']);
       $max        = Toolbox::get_max_input_vars();
+      $out = '';
 
       if (($p['num_displayed'] >= 0)
           && ($max > 0)
           && ($max < ($p['num_displayed']+10))) {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-            echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
-                  "<td><span class='b'>";
-            echo __('Selection too large, massive action disabled.')."</span>";
+            $out .= "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
+                    "<td><span class='b'>";
+            $out .= __('Selection too large, massive action disabled.')."</span>";
             if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-               echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+               $out .= "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
             }
-            echo "</td></tr></table>";
+            $out .= "</td></tr></table>";
          }
       } else {
          // Create Modal window on top
          if ($p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
-            echo "<div id='massiveactioncontent$identifier'></div>";
+                $out .= "<div id='massiveactioncontent$identifier'></div>";
 
             if (!empty($p['tag_to_send'])) {
                $js_modal_fields  = "            var items = $('";
@@ -2892,37 +2892,45 @@ class Html {
                $js_modal_fields = "";
             }
 
-            Ajax::createModalWindow('massiveaction_window'.$identifier,
-                                    $url,
-                                    array('title'           => $p['title'],
-                                          'container'       => 'massiveactioncontent'.$identifier,
-                                          'extraparams'     => $p['extraparams'],
-                                          'width'           => $p['width'],
-                                          'height'          => $p['height'],
-                                          'js_modal_fields' => $js_modal_fields));
+            $out .= Ajax::createModalWindow('massiveaction_window'.$identifier,
+                                            $url,
+                                            array('title'           => $p['title'],
+                                                  'container'       => 'massiveactioncontent'.$identifier,
+                                                  'extraparams'     => $p['extraparams'],
+                                                  'width'           => $p['width'],
+                                                  'height'          => $p['height'],
+                                                  'js_modal_fields' => $js_modal_fields,
+                                                  'display'         => false));
          }
-         echo "<table class='tab_glpi' width='$width'><tr>";
+         $out .= "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
-            echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
+            $out .= "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                    ($p['ontop']?'-top':'').".png' alt=''></td>";
          }
-         echo "<td width='100%' class='left'>";
-         echo "<a class='vsubmit' ";
+         $out .= "<td width='100%' class='left'>";
+         $out .= "<a class='vsubmit' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
-            echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
+            $out .= self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          } else {
-            echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
+            $out .= "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
-         echo " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
-         echo $p['title']."</a>";
-         echo "</td>";
+         $out .= " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
+         $out .= $p['title']."</a>";
+         $out .= "</td>";
 
-         echo "</tr></table>";
+         $out .= "</tr></table>";
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
             $_SESSION['glpimassiveactionselected'] = array();
          }
+      }
+
+      if ($p['display']) {
+         echo $out;
+         return true;
+      } else {
+         return $out;
       }
    }
 
@@ -3083,9 +3091,14 @@ class Html {
          }
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
-      $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js       = "\$(function() {\$('#$field_id').spectrum({preferredFormat: 'hex'})});";
-      $output  .= Html::scriptBlock($js);
+      $output   = "<input type='color' id='$field_id' name='$name' value='".$p['value']."'>";
+      $output  .= Html::scriptBlock("$(function() {
+         $('#$field_id').spectrum({
+            preferredFormat: 'hex',
+            showInput: true,
+            showInitial: true
+         });
+      });");
 
       if ($p['display']) {
          echo $output;
@@ -3823,10 +3836,11 @@ class Html {
     * @param $name               name of the html textarea to use
     * @param $rand       rand    of the html textarea to use (if empty no image paste system)(default '')
     * @param $display    boolean display or get js script (true by default)
+    * @param $readonly   boolean editor will be readonly or not
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true) {
+   static function initEditorSystem($name, $rand='', $display=true, $readonly=false) {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
@@ -3835,6 +3849,11 @@ class Html {
          if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
             $language = "en_GB";
          }
+      }
+
+      $readonlyjs = "readonly: false";
+      if ($readonly) {
+         $readonlyjs = "readonly: true";
       }
 
       // init tinymce
@@ -3863,6 +3882,7 @@ class Html {
                   : '',
             ],
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
+            $readonlyjs
          });
       });";
 
@@ -3900,16 +3920,17 @@ class Html {
     *
     * @since version 9.2
     *
-    * @param $name       name of textarea
-    * @param $content    content to convert in html
-    * @param $rand       string used for randomize tinymce dom id
+    * @param string  $name     name of textarea
+    * @param string  $content  content to convert in html
+    * @param string  $rand     used for randomize tinymce dom id
+    * @param boolean $readonly true will set editor in readonly mode
     *
     * @return $content
    **/
-   static function setRichTextContent($name, $content, $rand) {
+   static function setRichTextContent($name, $content, $rand, $readonly = false) {
 
       // Init html editor
-      Html::initEditorSystem($name, $rand);
+      Html::initEditorSystem($name, $rand, true, $readonly);
 
       // Neutralize non valid HTML tags
       $content = html::clean($content, false, 1);
@@ -3929,10 +3950,11 @@ class Html {
     * @param $start              from witch item we start
     * @param $numrows            total items
     * @param $additional_info    Additional information to display (default '')
+    * @param $display            display if true, return the pager if false
     *
-    * @return nothing (print a pager)
+    * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info='') {
+   static function printAjaxPager($title, $start, $numrows, $additional_info='', $display=true) {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -3961,49 +3983,57 @@ class Html {
          $back = $start-$list_limit;
       }
 
+      $out = '';
       // Print it
-      echo "<div><table class='tab_cadre_pager'>";
+      $out .= "<div><table class='tab_cadre_pager'>";
       if (!empty($title)) {
-         echo "<tr><th colspan='6'>$title</th></tr>";
+         $out .= "<tr><th colspan='6'>$title</th></tr>";
       }
-      echo "<tr>\n";
+      $out .= "<tr>\n";
 
       // Back and fast backward button
       if (!$start == 0) {
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
                 "\" title=\"".__s('Start')."\" class='pointer'></a></th>";
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
+         $out .= "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                 "\" title=\"".__s('Previous')."\" class='pointer'></th>";
       }
 
-      echo "<td width='50%' class='tab_bg_2'>";
-      self::printPagerForm();
-      echo "</td>";
+      $out .= "<td width='50%' class='tab_bg_2'>";
+      $out .= self::printPagerForm('', false);
+      $out .= "</td>";
       if (!empty($additional_info)) {
-         echo "<td class='tab_bg_2'>";
-         echo $additional_info;
-         echo "</td>";
+         $out .= "<td class='tab_bg_2'>";
+         $out .= $additional_info;
+         $out .= "</td>";
       }
       // Print the "where am I?"
-      echo "<td width='50%' class='tab_bg_2 b'>";
+      $out .= "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
-      echo "</td>\n";
+      $out .= sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+      $out .= "</td>\n";
 
       // Forward and fast forward button
       if ($forward < $numrows) {
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                 "\" title=\"".__s('Next')."\" class='pointer'></a></th>";
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
+         $out .= "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
                 "\" title=\"".__s('End')."\" class='pointer'></a></th>";
       }
 
       // End pager
-      echo "</tr></table></div>";
+      $out .= "</tr></table></div>";
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+
+      return $out;
    }
 
 
@@ -4061,7 +4091,7 @@ class Html {
          }
          echo "</table>";
       } else {
-         _e('Empty array');
+         echo __('Empty array');
       }
    }
 
@@ -4202,25 +4232,33 @@ class Html {
    /**
     * Display the list_limit combo choice
     *
-    * @param $action page would be posted when change the value (URL + param) (default '')
+    * @param $action    page would be posted when change the value (URL + param) (default '')
+    * @param $display   display the pager form if true, return it if false
     *
     * ajax Pager will be displayed if empty
     *
-    * @return nothing (print a combo)
+    * @return void|string
    **/
-   static function printPagerForm($action="") {
+   static function printPagerForm($action="", $display=true) {
 
+      $out = '';
       if ($action) {
-         echo "<form method='POST' action=\"$action\">";
-         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
-         Dropdown::showListLimit("submit()");
+         $out .= "<form method='POST' action=\"$action\">";
+         $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
+         $out .= Dropdown::showListLimit("submit()", false);
 
       } else {
-         echo "<form method='POST' action =''>\n";
-         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
-         Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
+         $out .= "<form method='POST' action =''>\n";
+         $out .= "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
+         $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)", false);
       }
-      Html::closeForm();
+      $out .= Html::closeForm(false);
+
+      if ($display) {
+         echo $out;
+         return;
+      }
+      return $out;
    }
 
 
@@ -5101,6 +5139,9 @@ class Html {
     *    - pasteZone           string   DOM ID of the paste zone
     *    - dropZone            string   DOM ID of the drop zone
     *    - rand                string   already computed rand value
+    *    - display             boolean  display or return the generated html (default true)
+    *
+    * @return void|string   the html if display parameter is false
    **/
    static function file($options=array()) {
       global $CFG_GLPI;
@@ -5811,20 +5852,6 @@ class Html {
    }
 
    /**
-    * Get text for menu, shortened if needed
-    *
-    * @param string $text Menu text
-    *
-    * @return string
-    */
-   static public function getMenuText($text) {
-      if (Toolbox::strlen($text) > 14) {
-         $text = Toolbox::substr($text, 0, 14)."...";
-      }
-      return $text;
-   }
-
-   /**
     * A a required javascript lib
     *
     * @param string|array $name Either a know name, or an array defining lib
@@ -6010,5 +6037,34 @@ class Html {
          $prefix .= '/';
       }
       return $prefix . $url;
+   }
+
+   /**
+    * Add the HTML code to refresh the current page at a define interval of time
+    *
+    * @param int|false   $timer    The time (in minute) to refresh the page
+    * @param string|null $callback A javascript callback function to execute on timer
+    *
+    * @return string
+    */
+   static public function manageRefreshPage($timer = false, $callback = null) {
+      if (!$timer) {
+         $timer = $_SESSION['glpirefresh_ticket_list'];
+      }
+
+      if ($callback === null) {
+         $callback = 'window.location.reload()';
+      }
+
+      $text = "";
+      if ($timer > 0) {
+         // Refresh automatique  sur tracking.php
+         $text.="<script type=\"text/javascript\">\n";
+         $text.="setInterval($callback,".
+               (60000 * $timer).");\n";
+         $text.="</script>\n";
+      }
+
+      return $text;
    }
 }

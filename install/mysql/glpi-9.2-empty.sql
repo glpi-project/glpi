@@ -663,6 +663,7 @@ CREATE TABLE `glpi_changetasks` (
   `content` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
@@ -673,7 +674,8 @@ CREATE TABLE `glpi_changetasks` (
   KEY `date_mod` (`date_mod`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
-  KEY `taskcategories_id` (`taskcategories_id`)
+  KEY `taskcategories_id` (`taskcategories_id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1145,6 +1147,8 @@ INSERT INTO `glpi_configs` VALUES ('167','core','enable_api','0');
 INSERT INTO `glpi_configs` VALUES ('168','core','enable_api_login_credentials','0');
 INSERT INTO `glpi_configs` VALUES ('169','core','enable_api_login_external_token','1');
 INSERT INTO `glpi_configs` VALUES ('170','core','url_base_api','http://localhost/glpi/api');
+INSERT INTO `glpi_configs` VALUES ('171','core','login_remember_time','604800');
+INSERT INTO `glpi_configs` VALUES ('172','core','login_remember_default','1');
 
 
 ### Dump table glpi_consumableitems
@@ -4351,7 +4355,7 @@ CREATE TABLE `glpi_notifications` (
 
 INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','1','2010-02-16 16:41:39',NULL);
+INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','0','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39',NULL);
 INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39',NULL);
@@ -4407,6 +4411,13 @@ INSERT INTO `glpi_notifications` VALUES ('55','New Project Task','0','ProjectTas
 INSERT INTO `glpi_notifications` VALUES ('56','Update Project Task','0','ProjectTask','update','mail','22','','1','1','2014-06-18 08:02:09',NULL);
 INSERT INTO `glpi_notifications` VALUES ('57','Delete Project Task','0','ProjectTask','delete','mail','22','','1','1','2014-06-18 08:02:09',NULL);
 INSERT INTO `glpi_notifications` VALUES ('58','Request Unlock Items','0','ObjectLock','unlock','mail','23','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('59','New user in requesters','0','Ticket','requester_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('60','New group in requesters','0','Ticket','requester_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('61','New user in observers','0','Ticket','observer_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('62','New group in observers','0','Ticket','observer_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('63','New user in assignees','0','Ticket','assign_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('64','New group in assignees','0','Ticket','assign_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('65','New supplier in assignees','0','Ticket','assign_supplier','mail','4','','1','1','2016-02-08 16:57:46',NULL);
 
 ### Dump table glpi_notificationtargets
 
@@ -4542,6 +4553,13 @@ INSERT INTO `glpi_notificationtargets` VALUES ('120','31','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('121','1','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('122','32','1','57');
 INSERT INTO `glpi_notificationtargets` VALUES ('123','19','1','58');
+INSERT INTO `glpi_notificationtargets` VALUES ('124','3','1','59');
+INSERT INTO `glpi_notificationtargets` VALUES ('125','13','1','60');
+INSERT INTO `glpi_notificationtargets` VALUES ('126','21','1','61');
+INSERT INTO `glpi_notificationtargets` VALUES ('127','20','1','62');
+INSERT INTO `glpi_notificationtargets` VALUES ('128','2','1','63');
+INSERT INTO `glpi_notificationtargets` VALUES ('129','23','1','64');
+INSERT INTO `glpi_notificationtargets` VALUES ('130','8','1','65');
 
 ### Dump table glpi_notificationtemplates
 
@@ -5760,6 +5778,7 @@ CREATE TABLE `glpi_problemtasks` (
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `state` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
@@ -5770,7 +5789,8 @@ CREATE TABLE `glpi_problemtasks` (
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `state` (`state`),
-  KEY `taskcategories_id` (`taskcategories_id`)
+  KEY `taskcategories_id` (`taskcategories_id`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7134,6 +7154,9 @@ DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `softwares_id` int(11) NOT NULL DEFAULT '0',
+  `softwarelicenses_id` int(11) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `number` int(11) NOT NULL DEFAULT '0',
@@ -7495,13 +7518,20 @@ CREATE TABLE `glpi_tasktemplates` (
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `state` int(11) NOT NULL DEFAULT '0',
+  `is_private` tinyint(1) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_private` (`is_private`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7710,6 +7740,7 @@ CREATE TABLE `glpi_tickettasks` (
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
+  `tasktemplates_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `date_mod` (`date_mod`),
@@ -7721,7 +7752,8 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `begin` (`begin`),
-  KEY `end` (`end`)
+  KEY `end` (`end`),
+  KEY `tasktemplates_id` (`tasktemplates_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -8158,7 +8190,6 @@ CREATE TABLE `glpi_devicebatteries` (
   `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-  `manufacturing_date` date DEFAULT NULL,
   `voltage` varchar(3) DEFAULT NULL,
   `capacity` varchar(3) DEFAULT NULL,
   `devicebatterytypes_id` int(11) NOT NULL DEFAULT '0',
@@ -8186,6 +8217,7 @@ CREATE TABLE `glpi_items_devicebatteries` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `devicebatteries_id` int(11) NOT NULL DEFAULT '0',
+  `manufacturing_date` date DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',

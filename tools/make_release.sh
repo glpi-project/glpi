@@ -59,23 +59,6 @@ git checkout-index -a -f --prefix=/tmp/glpi/
 echo "Move to this directory";
 cd /tmp/glpi;
 
-
-echo "Delete bigdumps and older sql files";
-\rm install/mysql/glpi-0.3*;
-\rm install/mysql/glpi-0.4*;
-\rm install/mysql/glpi-0.5*;
-\rm install/mysql/glpi-0.6*;
-\rm install/mysql/glpi-0.7-*;
-\rm install/mysql/glpi-0.71*;
-\rm install/mysql/glpi-0.72*;
-\rm install/mysql/glpi-0.78*;
-\rm install/mysql/glpi-0.80*;
-\rm install/mysql/glpi-0.83*;
-\rm install/mysql/glpi-0.84*;
-\rm install/mysql/glpi-0.85*;
-\rm install/mysql/glpi-0.90*;
-\rm install/mysql/irm*;
-
 echo "Retrieve PHP vendor"
 composer install --no-dev --optimize-autoloader --prefer-dist --quiet
 
@@ -95,6 +78,9 @@ echo "Clean PHP vendor"
 
 echo "Minify stylesheets and javascripts"
 $INIT_PWD/vendor/bin/robo minify --load-from tools
+
+echo "Compile locale files"
+./tools/locale/update_mo.pl
 
 echo "Delete various scripts and directories"
 \rm -rf tools;

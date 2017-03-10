@@ -525,13 +525,13 @@ class NetworkPortInstantiation extends CommonDBChild {
                                  => 'updateNetworkPortForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
             } else {
-                _e('No network card available');
+                echo __('No network card available');
             }
          } else {
-            _e('Equipment without network card');
+            echo __('Equipment without network card');
          }
       } else {
-         _e('Item not linked to an object');
+         echo __('Item not linked to an object');
       }
       echo "</td>";
    }
@@ -571,7 +571,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                     $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
                                     $netport->fields["itemtype"]);
       } else {
-         _e('item not linked to an object');
+         echo __('item not linked to an object');
       }
       echo "</td>";
    }

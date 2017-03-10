@@ -163,6 +163,20 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    /**
+    * Return fields who doesn't need to be used for this part of template
+    *
+    * @since 9.2
+    *
+    * @return array the excluded fields (keys and values are equals)
+    */
+   static function getExcludedFields() {
+      return [
+         175 => 175, // ticket's tasks (template)
+      ];
+   }
+
+
+   /**
     * Print the hidden fields
     *
     * @since version 0.83
@@ -186,6 +200,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       $canedit = $tt->canEdit($ID);
       $fields  = $tt->getAllowedFieldsNames(false);
+      $fields  = array_diff_key($fields, self::getExcludedFields());
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_tickettemplatehiddenfields`.*

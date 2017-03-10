@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DevicePciModel
-class DevicePciModel extends CommonDropdown {
+class DevicePciModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

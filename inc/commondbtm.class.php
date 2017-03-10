@@ -861,7 +861,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($this->checkUnicity(true, $options)) {
-            if ($this->addToDB()) {
+            if ($this->addToDB() !== false) {
                $this->post_addItem();
                $this->addMessageOnAddAction();
 
@@ -950,7 +950,10 @@ class CommonDBTM extends CommonGLPI {
       $label = $this->getNameID($options);
       $title = '';
       if (!preg_match('/title=/', $p['linkoption'])) {
-         $title = $label;
+         $thename = $this->getName(['complete' => true]);
+         if ($thename != NOT_AVAILABLE) {
+            $title = ' title="' . htmlentities($thename, ENT_NOQUOTES, 'utf-8') . '"';
+         }
       }
 
       return "<a ".$p['linkoption']." href='$link' $title>$label</a>";
@@ -2352,7 +2355,7 @@ class CommonDBTM extends CommonGLPI {
 
          } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
             echo "<input type='hidden' name='is_template' value='1'>\n";
-            _e('Template name');
+            echo __('Template name');
             Html::autocompletionTextField($this, "template_name", array('size' => 25));
          } else if ($this->isNewID($ID)) {
             $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);

@@ -415,6 +415,22 @@ class Config extends CommonDBTM {
                                     'readonly' => !$CFG_GLPI["lock_use_lock_item"]));
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Auto Login').
+           "</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>". __('Time to allow "Remember Me"').
+           "</td><td>";
+      Dropdown::showTimeStamp('login_remember_time', array('value' => $CFG_GLPI["login_remember_time"],
+                                                     'emptylabel'   => __('Disabled'),
+                                                     'min'   => 0,
+                                                     'max'   => MONTH_TIMESTAMP * 2,
+                                                     'step'  => DAY_TIMESTAMP,
+                                                     'toadd' => array(HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12)));
+      echo "<td>" . __("Default state of checkbox") . "</td><td>";
+      Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"]);
+      echo "</td>";
+      echo "</td></tr>";
+
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
@@ -1509,7 +1525,7 @@ class Config extends CommonDBTM {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
             echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
-            _e('Reset');
+            echo __('Reset');
             echo "</a></td></tr>\n";
          }
       } else {
@@ -1519,15 +1535,15 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      $ext = (PHP_MAJOR_VERSION < 7 ? 'APCu' : 'apcu-bc');
-      if (function_exists('apc_fetch')) {
+      $ext = 'APCu';
+      if (function_exists('apcu_fetch') && ini_get('apc.enabled')) {
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion('apc') . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
 
-         $info = apc_sma_info(true);
-         $stat = apc_cache_info('user', true);
+         $info = apcu_sma_info(true);
+         $stat = apcu_cache_info(true);
          // echo "<tr><td><pre>Info:".print_r($info, true)."Stat:".print_r($stat, true)."</pre></td></tr>";
 
          // Memory
@@ -1545,25 +1561,21 @@ class Config extends CommonDBTM {
               ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          // Hits
-         if ($stat == false) {
-            echo "<tr><td>" . __('The apc_cache is not activated') . "</td></tr>";
-         } else {
-            $hits = $stat['num_hits'];
-            $miss = $stat['num_misses'];
-            $max  = $hits+$miss;
-            $rate = round(100 * $hits / ($hits + $miss));
-            echo "<tr><td>" . __('Hits rate') . "</td>
-                  <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-            Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                         'forcepadding' => false));
-            echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-                            ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
-         }
+         $hits = $stat['num_hits'];
+         $miss = $stat['num_misses'];
+         $max  = $hits+$miss;
+         $rate = round(100 * $hits / ($hits + $miss));
+         echo "<tr><td>" . __('Hits rate') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
             echo "<a class='vsubmit' href='config.form.php?reset_apcu=1'>";
-            _e('Reset');
+            echo __('Reset');
             echo "</a></td></tr>\n";
          }
       } else {
@@ -1755,6 +1767,8 @@ class Config extends CommonDBTM {
          echo "$key: $val\n\t";
       }
       echo "\n";
+
+      self::checkExtensions(true);
 
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
@@ -2086,9 +2100,118 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Check for needed extensions
+    *
+    * @param boolean $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK
+   **/
+   static function checkExtensions($fordebug=false) {
+      global $CFG_GLPI;
+
+      $extensions_to_check = [
+         'mysqli'   => [
+            'required'  => true
+         ],
+         'ctype'    => [
+            'required'  => true,
+            'function'  => 'ctype_digit',
+         ],
+         'fileinfo' => [
+            'required'  => true,
+            'class'     => 'finfo'
+         ],
+         'json'     => [
+            'required'  => true,
+            'function'  => 'json_encode'
+         ],
+         'mbstring' => [
+            'required'  => true,
+         ],
+         'zlib'     => [
+            'required'  => true,
+         ],
+         'curl'      => [
+            'required'  => true,
+         ],
+         'gd'       => [
+            'required'  => false,
+         ],
+         'ldap'       => [
+            'required'  => false,
+         ],
+         'imap'       => [
+            'required'  => false,
+         ]
+      ];
+
+      $error = 0;
+
+      //check for PHP extensions
+      foreach ($extensions_to_check as $ext => $params) {
+         $success = true;
+
+         if (isset($params['function'])) {
+            if (!function_exists($params['function'])) {
+                $success = false;
+            }
+         } else if (isset($param['class'])) {
+            if (!class_exists($params['class'])) {
+               $success = false;
+            }
+         } else {
+            if (!extension_loaded($ext)) {
+               $success = false;
+            }
+         }
+
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+         }
+         if ($success) {
+            $msg = sprintf(__('%s extension is installed'), $ext);
+            if ($fordebug) {
+               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                              alt=\"\">$msg\n";
+            } else {
+               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                              alt=\"$msg\"
+                              title=\"$msg\"></td>";
+            }
+         } else {
+            if (isset($params['required']) && $params['required'] === true) {
+               if ($error < 2) {
+                  $error = 2;
+               }
+               if ($fordebug) {
+                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\">" . sprintf(__('%s extension is missing'), $ext) . "\n";
+               } else {
+                  echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
+               }
+            } else {
+               if ($error < 1) {
+                  $error = 1;
+               }
+               if ($fordebug) {
+                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . sprintf(__('%s extension is not present'), $ext) . "\n";
+               } else {
+                  echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
+               }
+            }
+         }
+         if (!$fordebug) {
+            echo "</tr>";
+         }
+      }
+
+      return $error;
+   }
+
+
+   /**
     * Check Write Access to needed directories
     *
-    * @param $fordebug boolean display for debug (no html, no gettext required) (false by default)
+    * @param boolean $fordebug display for debug (no html, no gettext required) (false by default)
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/

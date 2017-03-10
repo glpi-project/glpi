@@ -427,7 +427,8 @@ function update0905to91() {
    foreach ($types as $type) {
       $table = getTableForItemType($type);
 
-      if (!FieldExists($table, 'date_mod')) {
+      if (TableExists($table)
+          && !FieldExists($table, 'date_mod')) {
          $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
 
          //Add date_mod field if it doesn't exists
@@ -436,7 +437,8 @@ function update0905to91() {
          $migration->migrationOneTable($table);
       }
 
-      if (!FieldExists($table, 'date_creation')) {
+      if (TableExists($table)
+          && !FieldExists($table, 'date_creation')) {
          $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
 
          //Add date_creation field
@@ -458,7 +460,8 @@ function update0905to91() {
    $item_num     = 0;
    $itemtype_num = 0;
    foreach ($searchOption as $num => $option) {
-      if (is_array($option)) {
+      if (is_array($option)
+          && isset($option['field'])) {
          if ($option['field'] == 'items_id') {
             $item_num = $num;
          } else if ($option['field'] == 'itemtype') {

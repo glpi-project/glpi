@@ -3695,7 +3695,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
-         _e('Requester');
+         echo __('Requester');
       }
       $rand_requester      = -1;
       $candeleterequester  = false;
@@ -3800,7 +3800,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
-         _e('Watcher');
+         echo __('Watcher');
       }
       $rand_observer       = -1;
       $candeleteobserver   = false;
@@ -3892,7 +3892,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$is_hidden['_users_id_assign']
           || !$is_hidden['_groups_id_assign']
           || !$is_hidden['_suppliers_id_assign']) {
-         _e('Assigned to');
+         echo __('Assigned to');
       }
       $rand_assign      = -1;
       $candeleteassign  = false;
@@ -4442,7 +4442,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
-      if (!$this->canUpdate()
+      if (!$this->canView()
           || !isset($this->fields['id'])) {
          return false;
       }

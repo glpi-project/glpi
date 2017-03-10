@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceGraphicCardModel
-class DeviceGraphicCardModel extends CommonDropdown {
+class DeviceGraphicCardModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

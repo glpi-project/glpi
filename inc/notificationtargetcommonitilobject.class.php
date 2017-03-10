@@ -54,6 +54,27 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $this->options['sendprivate'] = true;
    }
 
+   /**
+    * Get events related to Itil Object
+    *
+    * @since 9.2
+    *
+    * @return array of events (event key => event label)
+   **/
+   function getEvents() {
+
+      $events = array('requester_user'    => __('New user in requesters'),
+                      'requester_group'   => __('New group in requesters'),
+                      'observer_user'     => __('New user in observers'),
+                      'observer_group'    => __('New group in observers'),
+                      'assign_user'       => __('New user in assignees'),
+                      'assign_group'      => __('New group in assignees'),
+                      'assign_supplier'   => __('New supplier in assignees'));
+
+      asort($events);
+      return $events;
+   }
+
 
    /**
     * Add linked users to the notified users list
@@ -704,8 +725,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {
-         $datas["##$objettype.entity##"]      = $entity->getField('completename');
-         $datas["##$objettype.shortentity##"] = $entity->getField('name');
+         $datas["##$objettype.entity##"]          = $entity->getField('completename');
+         $datas["##$objettype.shortentity##"]     = $entity->getField('name');
+         $datas["##$objettype.entity.phone##"]    = $entity->getField('phonenumber');
+         $datas["##$objettype.entity.fax##"]      = $entity->getField('fax');
+         $datas["##$objettype.entity.website##"]  = $entity->getField('website');
+         $datas["##$objettype.entity.email##"]    = $entity->getField('email');
+         $datas["##$objettype.entity.address##"]  = $entity->getField('address');
+         $datas["##$objettype.entity.postcode##"] = $entity->getField('postcode');
+         $datas["##$objettype.entity.town##"]     = $entity->getField('town');
+         $datas["##$objettype.entity.state##"]    = $entity->getField('state');
+         $datas["##$objettype.entity.country##"]  = $entity->getField('country');
       }
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
@@ -778,6 +808,45 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             }
          }
          $datas["##$objettype.authors##"] = implode(', ', $users);
+      }
+
+      $datas["##$objettype.suppliers##"] = '';
+      $datas['suppliers']              = [];
+      if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
+         $suppliers = [];
+         foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $tmpspplier) {
+            $sid      = $tmpspplier['suppliers_id'];
+            $supplier = new Supplier();
+            if ($sid
+                && $supplier->getFromDB($sid)) {
+               $suppliers[] = $supplier->getName();
+
+               $tmp = [];
+               $tmp['##supplier.id##']       = $sid;
+               $tmp['##supplier.name##']     = $supplier->getName();
+               $tmp['##supplier.email##']    = $supplier->getField('email');
+               $tmp['##supplier.phone##']    = $supplier->getField('phonenumber');
+               $tmp['##supplier.fax##']      = $supplier->getField('fax');
+               $tmp['##supplier.website##']  = $supplier->getField('website');
+               $tmp['##supplier.email##']    = $supplier->getField('email');
+               $tmp['##supplier.address##']  = $supplier->getField('address');
+               $tmp['##supplier.postcode##'] = $supplier->getField('postcode');
+               $tmp['##supplier.town##']     = $supplier->getField('town');
+               $tmp['##supplier.state##']    = $supplier->getField('state');
+               $tmp['##supplier.country##']  = $supplier->getField('country');
+               $tmp['##supplier.comments##'] = $supplier->getField('comment');
+
+               $tmp['##supplier.type##'] = '';
+               if ($supplier->getField('suppliertypes_id')) {
+                  $tmp['##supplier.type##']
+                     = Dropdown::getDropdownName('glpi_suppliertypes',
+                                                 $supplier->getField('suppliertypes_id'));
+               }
+
+               $datas['suppliers'][] = $tmp;
+            }
+         }
+         $datas["##$objettype.suppliers##"] = implode(', ', $suppliers);
       }
 
       $datas["##$objettype.openbyuser##"] = '';
@@ -1037,7 +1106,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       return $datas;
    }
 
-
    function getTags() {
 
       $itemtype  = $this->obj->getType();
@@ -1070,6 +1138,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.email'                      => _n('Email', 'Emails', 1),
                     'author.title'                      => _x('person', 'Title'),
                     'author.category'                   => __('Category'),
+                    $objettype.'.suppliers'             => _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+                    'supplier.id'                       => __('Supplier ID'),
+                    'supplier.name'                     => __('Supplier'),
+                    'supplier.phone'                    => __('Phone'),
+                    'supplier.fax'                      => __('Fax'),
+                    'supplier.website'                  => __('Website'),
+                    'supplier.email'                    => __('Email'),
+                    'supplier.address'                  => __('Address'),
+                    'supplier.postcode'                 => __('Postal code'),
+                    'supplier.town'                     => __('City'),
+                    'supplier.state'                    => _x('location', 'State'),
+                    'supplier.country'                  => __('Country'),
+                    'supplier.comments'                 => _n('Comment', 'Comments', 2),
+                    'supplier.type'                     => __('Third party type'),
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
@@ -1123,6 +1205,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'task.end'                          => __('End date'),
                     'task.status'                       => __('Status'),
                     $objettype.'.numberoftasks'         => _x('quantity', 'Number of tasks'),
+                    $objettype.'.entity.phone'          => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Phone')),
+                    $objettype.'.entity.fax'            => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Fax')),
+                    $objettype.'.entity.website'        => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Website')),
+                    $objettype.'.entity.email'          => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Email')),
+                    $objettype.'.entity.address'        => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Address')),
+                    $objettype.'.entity.postcode'       => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Postal code')),
+                    $objettype.'.entity.town'           => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('City')),
+                    $objettype.'.entity.state'          => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), _x('location', 'State')),
+                    $objettype.'.entity.country'        => sprintf(__('%1$s (%2$s)'),
+                                                                   __('Entity'), __('Country')),
                    );
 
       foreach ($tags as $tag => $label) {
@@ -1133,10 +1233,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('log'      => __('Historical'),
-                    'tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
-                    'costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
-                    'authors'  => _n('Requester', 'Requesters', Session::getPluralNumber()));
+      $tags = array('log'       => __('Historical'),
+                    'tasks'     => _n('Task', 'Tasks', Session::getPluralNumber()),
+                    'costs'     => _n('Cost', 'Costs', Session::getPluralNumber()),
+                    'authors'   => _n('Requester', 'Requesters', Session::getPluralNumber()),
+                    'suppliers' => _n('Supplier', 'Suppliers', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -1219,9 +1320,5 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                    'lang'           => false,
                                    'allowed_values' => $label['allowed_values']));
       }
-
    }
-
-
 }
-

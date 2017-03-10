@@ -194,7 +194,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
          Session::loadLanguage();
          if (isCommandLine()) {
-            _e('Service is down for maintenance. It will be back shortly.');
+            echo __('Service is down for maintenance. It will be back shortly.');
             echo "\n";
 
          } else {
@@ -202,7 +202,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             echo "<div class='center'>";
 
             echo "<p class='red'>";
-            _e('Service is down for maintenance. It will be back shortly.');
+            echo __('Service is down for maintenance. It will be back shortly.');
             echo "</p>";
             if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
                echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
@@ -220,7 +220,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Session::loadLanguage();
 
       if (isCommandLine()) {
-         _e('The version of the database is not compatible with the version of the installed files. An update is necessary.');
+         echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.');
          echo "\n";
 
       } else {

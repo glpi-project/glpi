@@ -35,13 +35,25 @@
 */
 
 if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ] [ --fr ]\n");
+   die("usage: ".$_SERVER['argv'][0]."  [ --force ] [ --optimize ] [ --lang=xx_XX ] [ --config-dir=/path/relative/to/script ]\n");
 }
 
 chdir(__DIR__);
 
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
+}
+
+if ($_SERVER['argc']>1) {
+   for ($i=1; $i<count($_SERVER['argv']); $i++) {
+      $it           = explode("=", $argv[$i], 2);
+      $it[0]        = preg_replace('/^--/', '', $it[0]);
+      $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
+   }
+}
+
+if (isset($args['config-dir'])) {
+   define("GLPI_CONFIG_DIR", $args['config-dir']);
 }
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
@@ -119,12 +131,11 @@ if (is_writable(GLPI_SESSION_DIR)) {
 Session::start();
 
 // Init debug variable
+$_SESSION = ['glpilanguage' => (isset($args['lang']) ? $args['lang'] : 'en_GB')];
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-$_SESSION['glpilanguage']  = (in_array('--fr', $_SERVER['argv']) ? 'fr_FR' : 'en_GB');
-
-Session::loadLanguage();
 
 $DB = new DB();
+Session::loadLanguage();
 if (!$DB->connected) {
    die("No DB connection\n");
 }
@@ -357,7 +368,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    $migration->displayWarning("\nMigration Done.");
 
-} else if (in_array('--force', $_SERVER['argv'])) {
+} else if (isset($args['force'])) {
 
    include_once("../install/update_91_92.php");
    update91to92();
@@ -369,7 +380,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 }
 
 
-if (in_array('--optimize', $_SERVER['argv'])) {
+if (isset($args['optimize'])) {
 
    DBmysql::optimize_tables($migration);
    $migration->displayWarning("Optimize done.");

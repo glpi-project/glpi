@@ -238,7 +238,7 @@ class APIXmlrpc extends API {
       $parameters = array();
       $resource = "";
 
-      $parameters = xmlrpc_decode_request(trim($this->getHttpBodyStream()),
+      $parameters = xmlrpc_decode_request(trim($this->getHttpBody()),
                                           $resource,
                                           'UTF-8');
 
@@ -270,16 +270,16 @@ class APIXmlrpc extends API {
     *
     * @param mixed   $response          string message or array of data to send
     * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array   $aditionnalheaders headers to send with http response (must be an array(key => value))
+    * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
     *
     * @return void
     */
-   protected function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
+   protected function returnResponse($response, $httpcode = 200, $additionalheaders = array()) {
       if (empty($httpcode)) {
          $httpcode = 200;
       }
 
-      foreach ($aditionnalheaders as $key => $value) {
+      foreach ($additionalheaders as $key => $value) {
          header("$key: $value");
       }
 

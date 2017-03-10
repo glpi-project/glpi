@@ -171,7 +171,7 @@ class ComputerDisk extends CommonDBChild {
          if ($ID && $this->fields['is_dynamic']) {
             Plugin::doHook("autoinventory_information", $this);
          } else {
-            _e('No');
+            echo __('No');
          }
          echo "</td>";
       } else {
@@ -239,7 +239,7 @@ class ComputerDisk extends CommonDBChild {
          echo "<div class='center firstbloc'>".
                "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
-         _e('Add a volume');
+         echo __('Add a volume');
          echo "</a></div>\n";
       }
 

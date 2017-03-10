@@ -1290,12 +1290,13 @@ class User extends CommonDBTM {
                    && ($v[$i][$field]['count'] > 0)) {
 
                   unset($v[$i][$field]['count']);
+                  foreach (Toolbox::addslashes_deep($v[$i][$field]) as $lgroup) {
+                     $lgroups[] = "('".$lgroup."' LIKE `ldap_value`)";
+                  }
                   $query = "SELECT `id`
                             FROM `glpi_groups`
                             WHERE `ldap_field` = '$field'
-                                  AND `ldap_value`
-                                       IN ('".implode("', '",
-                                                      Toolbox::addslashes_deep($v[$i][$field]))."')";
+                                  AND (".implode(" OR ", $lgroups).")";
 
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][] = $group['id'];
@@ -2103,12 +2104,12 @@ class User extends CommonDBTM {
       echo "<table class='tab_glpi left' width='100%'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b' width='20%'>";
-      _e('Name');
+      echo __('Name');
       echo "</td><td width='30%'>";
       echo getUserName($userid);
       echo "</td>";
       echo "<td class='b'  width='20%'>";
-      _e('Phone');
+      echo __('Phone');
       echo "</td><td width='30%'>";
       echo $user->getField('phone');
       echo "</td>";
@@ -2116,12 +2117,12 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
-      _e('Phone 2');
+      echo __('Phone 2');
       echo "</td><td>";
       echo $user->getField('phone2');
       echo "</td>";
       echo "<td class='b'>";
-      _e('Mobile phone');
+      echo __('Mobile phone');
       echo "</td><td>";
       echo $user->getField('mobile');
       echo "</td>";
@@ -2129,7 +2130,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
-      _e('Location');
+      echo __('Location');
       echo "</td><td>";
       echo Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
       echo "</td>";
@@ -3420,6 +3421,15 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
+
+         if (empty($user['comment'])) {
+            $user['comment'] = sprintf(
+               __('Show %1$s'),
+               mb_strtolower(
+                  self::getTypeName(Session::getPluralNumber())
+               )
+            );
+         }
          $output .= "&nbsp;".Html::showToolTip($user["comment"],
                                       array('contentid' => $comment_id,
                                             'display'   => false,
@@ -3976,7 +3986,7 @@ class User extends CommonDBTM {
          Html::closeForm();
 
       } else {
-         _e('Your password reset request has expired or is invalid. Please renew it.');
+         echo __('Your password reset request has expired or is invalid. Please renew it.');
       }
       echo "</div>";
    }
@@ -4032,7 +4042,7 @@ class User extends CommonDBTM {
 
                $input['id'] = $this->fields['id'];
                if (Config::validatePassword($input["password"]) && $this->update($input)) {
-                  _e('Reset password successful.');
+                  echo __('Reset password successful.');
                   $input2['password_forget_token']      = '';
                   $input2['password_forget_token_date'] = NULL;
                   $input2['id']                         = $this->fields['id'];
@@ -4043,15 +4053,15 @@ class User extends CommonDBTM {
                }
 
             } else {
-               _e('Your password reset request has expired or is invalid. Please renew it.');
+               echo __('Your password reset request has expired or is invalid. Please renew it.');
             }
 
          } else {
-            _e("The authentication method configuration doesn't allow you to change your password.");
+            echo __("The authentication method configuration doesn't allow you to change your password.");
          }
 
       } else {
-         _e('Email address not found.');
+         echo __('Email address not found.');
       }
 
       echo "<br>";
@@ -4091,17 +4101,17 @@ class User extends CommonDBTM {
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
                QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
-               _e('An email has been sent to your email address. The email contains information for reset your password.');
+               echo __('An email has been sent to your email address. The email contains information for reset your password.');
             } else {
-               _e('Invalid email address');
+               echo __('Invalid email address');
             }
 
          } else {
-            _e("The authentication method configuration doesn't allow you to change your password.");
+            echo __("The authentication method configuration doesn't allow you to change your password.");
          }
 
       } else {
-         _e('Email address not found.');
+         echo __('Email address not found.');
       }
       echo "<br>";
       echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
@@ -4139,11 +4149,11 @@ class User extends CommonDBTM {
             if (is_array($info)) {
                Html::printCleanArray($info);
             } else {
-               _e('No item to display');
+               echo __('No item to display');
             }
 
          } else {
-            _e('Connection failed');
+            echo __('Connection failed');
          }
 
          echo "</td></tr>\n";

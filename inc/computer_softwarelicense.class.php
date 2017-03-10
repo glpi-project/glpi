@@ -574,7 +574,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             }
 
          } else { // Not found
-            _e('No item found');
+            echo __('No item found');
          }
       } // Query
       Html::printAjaxPager(__('Affected computers'), $start, $number);

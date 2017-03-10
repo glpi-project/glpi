@@ -701,7 +701,7 @@ class Document_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_1'>";
 
          echo "<td class='center'>";
-         _e('Heading');
+         echo __('Heading');
          echo "</td><td width='20%'>";
          DocumentCategory::dropdown(array('entity' => $entities));
          echo "</td>";

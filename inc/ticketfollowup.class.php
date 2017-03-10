@@ -879,9 +879,9 @@ class TicketFollowup  extends CommonDBTM {
                     "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id'].
                                               "$rand();'>";
                if ($reopen_case) {
-                  _e('Reopen the ticket');
+                  echo __('Reopen the ticket');
                } else {
-                  _e('Add a new followup');
+                  echo __('Add a new followup');
                }
                echo "</a></div>\n";
             }

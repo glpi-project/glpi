@@ -244,40 +244,6 @@ class Ajax {
 
 
    /**
-    * Input text used as search system in ajax system
-    *
-    * @deprecated since version 0.85
-    *
-    * @param string  $id   ID of the ajax item
-    * @param integer $size size of the input text field (default 4)
-    *
-    * @return string
-    */
-   static function displaySearchTextForDropdown($id, $size=4) {
-      echo self::getSearchTextForDropdown($id, $size);
-   }
-
-
-   /**
-    * Input text used as search system in ajax system
-    *
-    * @deprecated since version 0.85
-    *
-    * @since version 0.84
-    *
-    * @param string  $id   ID of the ajax item
-    * @param integer $size size of the input text field (default 4)
-    *
-    * @return string
-    */
-   static function getSearchTextForDropdown($id, $size=4) {
-      //TRANS: %s is the character used as wildcard in ajax search
-      return "<input title=\"" . sprintf(__s('Search (%s for all)'), '*') .
-              "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
-   }
-
-
-   /**
     *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
     *
     * @param string  $tabdiv_id        ID of the div containing the tabs (default 'tabspanel')

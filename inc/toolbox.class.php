@@ -47,34 +47,6 @@ if (!defined('GLPI_ROOT')) {
 class Toolbox {
 
    /**
-    * Wrapper for get_magic_quotes_runtime - deprecated
-    *
-    * @since version 0.83
-    * @deprecated in 0.90.1
-    *
-    * @return boolean
-   **/
-   static function get_magic_quotes_runtime() {
-
-      return 0;
-   }
-
-
-   /**
-    * Wrapper for get_magic_quotes_gpc - deprecated
-    *
-    * @since version 0.83
-    * @deprecated in 0.90.1
-    *
-    * @return boolean
-   **/
-   static function get_magic_quotes_gpc() {
-
-      return 0;
-   }
-
-
-   /**
     * Wrapper for max_input_vars
     *
     * @since version 0.84
@@ -954,80 +926,9 @@ class Toolbox {
       }
       echo "</tr>";
 
-      $extensions_to_check = [
-         'mysqli'   => [
-            'required'  => true
-         ],
-         'ctype'    => [
-            'required'  => true,
-            'function'  => 'ctype_digit',
-         ],
-         'fileinfo' => [
-            'required'  => true,
-            'class'     => 'finfo'
-         ],
-         'json'     => [
-            'required'  => true,
-            'function'  => 'json_encode'
-         ],
-         'mbstring' => [
-            'required'  => true,
-         ],
-         'zlib'     => [
-            'required'  => true,
-         ],
-         'curl'      => [
-            'required'  => true,
-         ],
-         'gd'       => [
-            'required'  => false,
-         ],
-         'ldap'       => [
-            'required'  => false,
-         ],
-         'imap'       => [
-            'required'  => false,
-         ]
-      ];
-
-      //check for PHP extensions
-      foreach ($extensions_to_check as $ext => $params) {
-         $success = true;
-
-         if (isset($params['function'])) {
-            if (!function_exists($params['function'])) {
-                $success = false;
-            }
-         } else if (isset($param['class'])) {
-            if (!class_exists($params['class'])) {
-               $success = false;
-            }
-         } else {
-            if (!extension_loaded($ext)) {
-               $success = false;
-            }
-         }
-
-         echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
-         if ($success) {
-             $msg = sprintf(__('%s extension is installed'), $ext);
-            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
-                    alt=\"$msg\"
-                    title=\"$msg\"></td>";
-         } else {
-            if (isset($params['required']) && $params['required'] === true) {
-               if ($error < 2) {
-                  $error = 2;
-               }
-               echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
-            } else {
-               if ($error < 1) {
-                  $error = 1;
-               }
-               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
-            }
-         }
-         echo "</tr>";
+      $suberr = Config::checkExtensions();
+      if ($suberr > $error) {
+         $error = $suberr;
       }
 
       // memory test
@@ -1699,6 +1600,15 @@ class Toolbox {
          $msgerr = __('No data available on the web site');
       }
       return $content;
+   }
+
+   /**
+    * Returns whether this is an AJAX (XMLHttpRequest) request.
+    *
+    * @return boolean whether this is an AJAX (XMLHttpRequest) request.
+    */
+   static function isAjax() {
+      return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
    }
 
 

@@ -36,5 +36,14 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new DeviceControl();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+Session::checkRight("device", READ);
+
+Html::header(_n('Component', 'Components', 2), $_SERVER['PHP_SELF'], "config", "commondevice");
+echo "<div class='center'>";
+
+$optgroup = Dropdown::getDeviceItemTypes();
+Dropdown::showItemTypeMenu(_n('Component', 'Components', 2), $optgroup);
+Dropdown::showItemTypeList($optgroup);
+
+echo "</div>";
+Html::footer();

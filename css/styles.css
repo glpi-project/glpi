@@ -2191,6 +2191,11 @@ a.icon_nav_move:hover img {
    box-shadow:0 0 3px #FFA500;
 }
 
+#boxlogin label {
+   color: #FFF;
+   font-size: 1.2em;
+}
+
 #boxlogin input:-webkit-autofill {
    box-shadow: 0 0 0px 1000px white inset;
 }
@@ -2432,22 +2437,19 @@ a.icon_nav_move:hover img {
 #c_menu ul#menu {
    height: 30px;
    list-style: none;
-   padding: 8px 0;
    font-size: 13px;
    box-sizing: border-box;
    margin: 0 auto;
-   /*width: 1000px;*/
    display: inline-block;
 }
 
 ul#menu a.itemP, ul#menu a.itemP1 {
    display: block;
-   height: 100%;
-   width: 100%;
    text-align: center;
    text-decoration: none;
    font-size: 13px;
    white-space: nowrap;
+   padding:7px 1em;
 }
 
 ul#menu ul.ssmenu {
@@ -2510,17 +2512,14 @@ ul#menu ul li a {
 }
 
 ul#menu > li {
-   float: left;
-   width: 135px;
+   display: inline-block;
+   min-width: 135px;
    height: 30px;
-   margin-top: -8px;
-   padding-top: 8px;
-   box-sizing: border-box;
 }
 
 ul#menu ul.ssmenu {
-   position: relative;
-   width: 135px;
+   position: absolute;
+   min-width: 135px;
    z-index: 200;
 }
 
@@ -3228,7 +3227,8 @@ a.copyright {
 }
 
 .timeline_history .h_content.edited {
-   max-width: 60%;
+   max-width: inherit;
+   width: 69%;
    text-align: center;
 }
 
@@ -4097,6 +4097,17 @@ td.diff del {
 
 .fc-view-container *, .fc-view-container *::before, .fc-view-container *::after {
    min-height: 1em; /** Ensure no event message is displayed well */
+}
+
+.loadingindicator {
+   background:  #fff url(../pics/spinner.48.gif) no-repeat center .5em;
+   padding: 60px .5em .5em;
+   text-align: center;
+   box-shadow: 1px 1px 12px #747474;
+   border-radius: 10px;
+   max-width: 350px;
+   margin : auto;
+   border: none;
 }
 
 @media screen and (max-width: 900px) {

@@ -52,10 +52,6 @@ class Group_User extends CommonDBRelation{
    static $itemtype_2                 = 'Group';
    static $items_id_2                 = 'groups_id';
 
-   static public $logs_for_item_1     = false;
-
-
-
    /**
     * @param $users_id
     * @param $condition    (default '')
@@ -177,7 +173,7 @@ class Group_User extends CommonDBRelation{
                    class='submit'>";
 
          } else {
-            _e('None');
+            echo __('None');
          }
 
          echo "</td></tr>";

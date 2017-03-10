@@ -152,7 +152,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          if ($ID && $this->fields['is_dynamic']) {
             Plugin::doHook("autoinventory_information", $this);
          } else {
-            _e('No');
+            echo __('No');
          }
          echo "</td>";
       } else {
@@ -309,7 +309,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($canedit) {
          echo "<div class='center firstbloc'>".
                 "<a class='vsubmit' href='computervirtualmachine.form.php?computers_id=$ID'>";
-         _e('Add a virtual machine');
+         echo __('Add a virtual machine');
          echo "</a></div>\n";
       }
 

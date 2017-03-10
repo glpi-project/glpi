@@ -617,7 +617,7 @@ class Ticket extends CommonITILObject {
                 && $item->fields['status'] == self::CLOSED) {
                $ong[3] = __('Satisfaction');
             }
-            if ($item->canUpdate()) {
+            if ($item->canView()) {
                $ong[4] = __('Statistics');
             }
             return $ong;
@@ -1740,6 +1740,28 @@ class Ticket extends CommonITILObject {
             $pt->add(array('projecttasks_id' => $this->input['_projecttasks_id'],
                            'tickets_id'      => $this->fields['id'],
                            /*'_no_notif'   => true*/));
+         }
+      }
+
+      // Add tasks in tasktemplates if defined in tickettemplate
+      if (isset($this->input['_tasktemplates_id'])
+          && is_array($this->input['_tasktemplates_id'])
+          && count($this->input['_tasktemplates_id'])) {
+         $tasktemplate = new TaskTemplate;
+         $tickettask   = new TicketTask;
+         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
+            $tasktemplate->getFromDB($tasktemplates_id);
+            $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
+                              'content'           => $tasktemplate->fields['content'],
+                              'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],
+                              'actiontime'        => $tasktemplate->fields['actiontime'],
+                              'state'             => $tasktemplate->fields['state'],
+                              'tickets_id'        => $this->fields['id'],
+                              'is_private'        => $tasktemplate->fields['is_private'],
+                              'users_id_tech'     => $tasktemplate->fields['users_id_tech'],
+                              'groups_id_tech'    => $tasktemplate->fields['groups_id_tech'],
+                              '_disablenotif'     => true
+                              ]);
          }
       }
 
@@ -3558,6 +3580,7 @@ class Ticket extends CommonITILObject {
                     'users_id_validate'         => array(),
                     'type'                      => $type,
                     '_documents_id'             => array(),
+                    '_tasktemplates_id'         => array(),
                     '_filename'                 => array(),
                     '_tag_filename'             => array());
    }
@@ -3907,6 +3930,11 @@ class Ticket extends CommonITILObject {
          if (isset($options['_projecttasks_id'])) {
             echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
          }
+         if (isset($this->fields['_tasktemplates_id'])) {
+            foreach ($this->fields['_tasktemplates_id'] as $tasktemplates_id) {
+               echo "<input type='hidden' name='_tasktemplates_id[]' value='$tasktemplates_id'>";
+            }
+         }
       }
       echo "<div class='spaced' id='tabsbody'>";
 
@@ -3931,7 +3959,7 @@ class Ticket extends CommonITILObject {
             printf(__('The ticket will be added in the entity %s'),
                    Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
          } else {
-            _e('New ticket');
+            echo __('New ticket');
          }
       }
       echo "</th></tr>";
@@ -3944,7 +3972,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Opening date'), $tt->getMandatoryMark('date'));
       } else {
-         _e('Opening date');
+         echo __('Opening date');
       }
       echo $tt->getEndHiddenFieldText('date');
       echo "</th>";
@@ -3968,7 +3996,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Time to own'), $tt->getMandatoryMark('time_to_own'));
       } else {
-         _e('Time to own');
+         echo __('Time to own');
       }
       echo $tt->getEndHiddenFieldText('time_to_own');
       echo "</th>";
@@ -3980,7 +4008,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('due_date'));
       } else {
-         _e('Time to resolve');
+         echo __('Time to resolve');
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
@@ -4192,7 +4220,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $tt->getBeginHiddenFieldText('global_validation');
-         _e('Approval');
+         echo __('Approval');
          echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";
@@ -4372,7 +4400,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
          if (empty($this->fields["name"])) {
-            _e('Without title');
+            echo __('Without title');
          } else {
             echo $this->fields["name"];
          }
@@ -4390,54 +4418,29 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td colspan='3'>";
-      if (!$ID
-          || $canupdate_descr) { // Admin =oui on autorise la modification de la description
-         echo $tt->getBeginHiddenFieldValue('content');
-         $rand       = mt_rand();
-         $rand_text  = mt_rand();
-         $rows       = 6;
-         $content_id = "content$rand";
 
-         if ($CFG_GLPI["use_rich_text"]) {
+      echo $tt->getBeginHiddenFieldValue('content');
+      $rand       = mt_rand();
+      $rand_text  = mt_rand();
+      $rows       = 6;
+      $content_id = "content$rand";
+
+      if ($CFG_GLPI["use_rich_text"]) {
             $this->fields["content"] = Html::setRichTextContent($content_id,
                                                                 $this->fields["content"],
-                                                                $rand);
-            $rows = 10;
-         } else {
-            $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
-         }
-
-         echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
-                $this->fields["content"]."</textarea></div>";
-         echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
-         echo $tt->getEndHiddenFieldValue('content', $this);
-
+                                                                $rand,
+                                                                !$canupdate_descr);
+         $rows = 10;
       } else {
-
-         $rand       = mt_rand();
-         $rand_text  = mt_rand();
-         $rows       = 6;
-         $content_id = "content$rand";
-
-         if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = Html::setRichTextContent($content_id,
-                                                                $this->fields["content"],
-                                                                $rand);
-            $rows = 10;
-
-            echo "<div id='content$rand_text'>";
-            echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
-               $this->fields["content"]."</textarea></div>";
-
-            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
-            echo $tt->getEndHiddenFieldValue('content', $this);
-
-         } else {
-            $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
-            echo nl2br(Html::Clean($content));
-         }
+         $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
       }
+
+      echo "<div id='content$rand_text'>";
+      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+               $this->fields["content"]."</textarea></div>";
+      echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
+      echo $tt->getEndHiddenFieldValue('content', $this);
+
       echo "</td>";
       echo "</tr>";
 
@@ -6211,9 +6214,8 @@ class Ticket extends CommonITILObject {
          }
 
          //display solution in middle
-         if (($timeline_index == 0)
-             && ($item['type'] == "Solution")
-             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
+         if (($item['type'] == "Solution")
+              && in_array($this->fields["status"], [CommonITILObject::SOLVED, CommonITILObject::CLOSED])) {
             $user_position.= ' middle';
          }
 
@@ -6239,7 +6241,7 @@ class Ticket extends CommonITILObject {
                                       array('link' => $userdata['link']));
                echo "</span>";
             } else {
-               _e("Requester");
+               echo __("Requester");
             }
             echo "</div>"; // h_user
          }
@@ -6424,7 +6426,7 @@ class Ticket extends CommonITILObject {
          if ((!isset($item_i['users_id_recipient'])
                || ($item_i['users_id_recipient'] == 0))
                && ($dem == 0)) {
-            _e("Requester");
+            echo __("Requester");
          } else {
             if (isset($item_i['users_id_recipient'])
                   && ($item_i['users_id_recipient'] != 0)) {

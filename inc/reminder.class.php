@@ -1066,7 +1066,7 @@ class Reminder extends CommonDBVisible {
             $restrict_user = "`glpi_reminders`.`users_id` <> '$users_id'";
          }
 
-         $query = "SELECT `glpi_reminders`.*
+         $query = "SELECT DISTINCT `glpi_reminders`.*
                    FROM `glpi_reminders` ".
                    self::addVisibilityJoins()."
                    WHERE $restrict_user

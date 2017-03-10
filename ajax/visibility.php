@@ -92,7 +92,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
                                 'value'  => $_SESSION['glpiactive_entity'],
                                 'name'   => $prefix.'entities_id'.$suffix));
          echo "</td><td>";
-         _e('Child entities');
+         echo __('Child entities');
          echo "</td><td>";
          Dropdown::showYesNo($prefix.'is_recursive'.$suffix);
          echo "</td>";

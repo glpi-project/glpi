@@ -1515,24 +1515,25 @@ abstract class API extends CommonGLPI {
       $item     = new $itemtype;
 
       if (is_object($input)) {
-         $input = array($input);
+         $input = [$input];
          $isMultiple = false;
       } else {
          $isMultiple = true;
       }
 
       if (is_array($input)) {
-         $idCollection = array();
+         $idCollection = [];
          $failed       = 0;
+         $index        = 0;
          foreach ($input as $object) {
-            $object = self::inputObjectToArray($object);
+            $object      = self::inputObjectToArray($object);
+            $current_res = [];
+
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
                $failed++;
-               $idCollection[] = array(
-                           'id' => false,
-                           'message' => __("You don't have permission to perform this action.")
-               );
+               $current_res = ['id'      => false,
+                               'message' => __("You don't have permission to perform this action.")];
             } else {
                // add missing entity
                if (!isset($object['entities_id'])) {
@@ -1545,9 +1546,21 @@ abstract class API extends CommonGLPI {
                if ($new_id === false) {
                   $failed++;
                }
-               $idCollection[] = array('id' => $new_id, 'message' => $this->getGlpiLastMessage());
+               $current_res = ['id'      => $new_id,
+                               'message' => $this->getGlpiLastMessage()];
             }
+
+            // attach fileupload answer
+            if (isset($params['upload_result'])
+                && isset($params['upload_result'][$index])) {
+               $current_res['upload_result'] = $params['upload_result'][$index];
+            }
+
+            // append current result to final collection
+            $idCollection[] = $current_res;
+            $index++;
          }
+
          if ($isMultiple) {
             if ($failed == count($input)) {
                $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
@@ -1610,30 +1623,31 @@ abstract class API extends CommonGLPI {
       $item     = new $itemtype;
 
       if (is_object($input)) {
-         $input = array($input);
+         $input = [$input];
          $isMultiple = false;
       } else {
          $isMultiple = true;
       }
 
       if (is_array($input)) {
-         $idCollection = array();
+         $idCollection = [];
          $failed       = 0;
+         $index        = 0;
          foreach ($input as $object) {
+            $current_res = [];
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => false, 'message' => __("Item not found"));
+                  $current_res = [$object->id => false,
+                                  'message'   => __("Item not found")];
                   continue;
                }
 
                //check rights
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
-                  $idCollection[] = array(
-                        $object->id => false,
-                        'message' => __("You don't have permission to perform this action.")
-                  );
+                  $current_res = [$object->id => false,
+                                 'message'    => __("You don't have permission to perform this action.")];
                } else {
                   //update item
                   $object = Toolbox::sanitize((array)$object);
@@ -1641,9 +1655,21 @@ abstract class API extends CommonGLPI {
                   if ($update_return === false) {
                      $failed++;
                   }
-                  $idCollection[] = array($item->fields["id"] => $update_return, 'message' => $this->getGlpiLastMessage());
+                  $current_res = [$item->fields["id"] => $update_return,
+                                  'message'           => $this->getGlpiLastMessage()];
                }
+
             }
+
+            // attach fileupload answer
+            if (isset($params['upload_result'])
+                && isset($params['upload_result'][$index])) {
+               $current_res['upload_result'] = $params['upload_result'][$index];
+            }
+
+            // append current result to final collection
+            $idCollection[] = $current_res;
+            $index++;
          }
          if ($isMultiple) {
             if ($failed == count($input)) {
@@ -2288,7 +2314,7 @@ abstract class API extends CommonGLPI {
     *
     * @return string
     */
-   protected function getHttpBodyStream() {
+   protected function getHttpBody() {
       return file_get_contents('php://input');
    }
 }

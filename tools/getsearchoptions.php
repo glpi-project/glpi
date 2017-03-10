@@ -48,14 +48,19 @@ if (isset($_SERVER['argv'])) {
    }
 }
 
-if (isset($_GET['help'])) {
+function help () {
    echo "\nUsage : php getsearchoptions.php --type=<itemtype> [ --lang=<locale> ]\n\n";
+}
+
+if (isset($_GET['help'])) {
+   help();
    exit (0);
 }
 
 include ('../inc/includes.php');
 
 if (!isset($_GET['type'])) {
+   help();
    die("** mandatory option 'type' is missing\n");
 }
 if (!class_exists($_GET['type'])) {
@@ -70,10 +75,14 @@ $sort = array();
 $group = 'N/A';
 
 foreach ($opts as $ref => $opt) {
-   if (is_array($opt)) {
+   if (isset($opt['field'])) {
       $sort[$ref] = $group . " / " . $opt['name'];
    } else {
-      $group = $opt;
+      if (is_array($opt)) {
+         $group = $opt['name'];
+      } else {
+         $group = $opt;
+      }
    }
 }
 ksort($sort);

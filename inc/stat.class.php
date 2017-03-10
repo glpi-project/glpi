@@ -673,7 +673,7 @@ class Stat extends CommonGLPI {
          echo Search::showFooter($output_type);
 
       } else {
-         _e('No statistics are available');
+         echo __('No statistics are available');
       }
 
       if ($output_type == Search::HTML_OUTPUT) { // HTML display
@@ -1354,10 +1354,12 @@ class Stat extends CommonGLPI {
          } else {
             $out .= ",\n";
          }
+         $serieData = implode(', ', $serie['data']);
          if (isset($serie['name'])) {
-            $out .= "{'name': '{$serie['name']}', 'data': [" . implode(', ', $serie['data']) . "]}";
+            $serieLabel = Toolbox::addslashes_deep($serie['name']);
+            $out .= "{'name': '$serieLabel', 'data': [$serieData]}";
          } else {
-            $out .= "[" . implode(', ', $serie['data']) . "]";
+            $out .= "[$serieData]";
          }
       }
 
@@ -1444,15 +1446,16 @@ class Stat extends CommonGLPI {
                         series: [";
 
       $first = true;
-      foreach ($series as $label => $serie) {
+      foreach ($series as $serie) {
          if ($first === true) {
             $first = false;
          } else {
             $out .= ",\n";
          }
 
-         $label = Toolbox::addslashes_deep($label);
-         $out .= "{'meta': '{$label}', 'value': '{$serie}'}";
+         $serieLabel = Toolbox::addslashes_deep($serie['name']);
+         $serieData = $serie['data'];
+         $out .= "{'meta': '$serieLabel', 'value': '$serieData'}";
       }
 
       $out .= "

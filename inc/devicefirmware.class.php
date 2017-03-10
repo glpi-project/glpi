@@ -39,7 +39,7 @@ class DeviceFirmware extends CommonDevice {
    static protected $forward_entity_to = array('Item_DeviceFirmware', 'Infocom');
 
    static function getTypeName($nb=0) {
-      return _n('Firmware', 'Firmwares', $nb);
+      return _n('Firmware', 'Firmware', $nb);
    }
 
 
@@ -55,7 +55,7 @@ class DeviceFirmware extends CommonDevice {
             ],
             [
                'name'   => 'date',
-               'label'  => __('Date'),
+               'label'  => __('Installation date'),
                'type'   => 'text'
             ],
             [
@@ -80,7 +80,7 @@ class DeviceFirmware extends CommonDevice {
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'date',
-         'name'               => __('Date'),
+         'name'               => __('Installation date'),
          'datatype'           => 'date'
       ];
 
@@ -100,6 +100,13 @@ class DeviceFirmware extends CommonDevice {
          'datatype'           => 'dropdown'
       ];
 
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_devicefirmwares',
+         'field'              => 'version',
+         'name'               => __('Version'),
+      ];
+
       return $tab;
    }
 
@@ -116,7 +123,9 @@ class DeviceFirmware extends CommonDevice {
       switch ($itemtype) {
          case 'Computer' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('DeviceFirmware_type', __('Type'), $super, $father);
+            $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
+            $base->addHeader('version', __('Version'), $super, $father);
+            $base->addHeader('date', __('Installation date'), $super, $father);
             break;
       }
    }
@@ -142,6 +151,18 @@ class DeviceFirmware extends CommonDevice {
                   $father
                );
             }
+            $row->addCell(
+               $row->getHeaderByName('version'), $this->fields["version"],
+               $father
+               );
+
+            if ($this->fields["date"]) {
+               $row->addCell(
+                  $row->getHeaderByName('date'),
+                  Html::convDate($this->fields["date"]),
+                  $father
+               );
+            }
 
             break;
       }
@@ -150,9 +171,9 @@ class DeviceFirmware extends CommonDevice {
    function getImportCriteria() {
 
       return [
-         'designation'              => 'equal',
          'devicefirmwaretypes_id'   => 'equal',
-         'manufacturers_id'         => 'equal'
+         'manufacturers_id'         => 'equal',
+         'version'                  => 'equal'
       ];
    }
 }

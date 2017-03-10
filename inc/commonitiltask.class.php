@@ -824,6 +824,24 @@ abstract class CommonITILTask  extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => '175',
+         'table'              => TaskTemplate::getTable(),
+         'field'              => 'name',
+         'linkfield'          => 'tasktemplates_id',
+         'name'               => __('Task template'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
+
       return $tab;
    }
 
@@ -1243,7 +1261,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   echo $groupname;
                }
             } else {
-               _e('None');
+               echo __('None');
             }
          } else {
             echo "<table width='100%'>";
@@ -1328,9 +1346,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td rowspan='$rowspan' style='width:100px'>".__('Description')."</td>";
       echo "<td rowspan='$rowspan' style='width:65%' id='content$rand_text'>";
 
-      $rand_text = mt_rand();
-      $content_id = "content$rand";
-
+      $rand_text  = mt_rand();
+      $content_id = "content$rand_text";
       $cols       = 90;
       $rows       = 6;
       if ($CFG_GLPI["use_rich_text"]) {
@@ -1353,7 +1370,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td style='width:100px'>"._n('Task template', 'Task templates', 1)."</td><td>";
-      TaskTemplate::dropdown(array('value'     => 0,
+      TaskTemplate::dropdown(array('value'     => $this->fields['tasktemplates_id'],
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
                                    'on_change' => 'tasktemplate_update(this.value)'));
@@ -1361,19 +1378,30 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</tr>";
       echo Html::scriptBlock('
          function tasktemplate_update(value) {
-            jQuery.ajax({
+            $.ajax({
                url: "' . $CFG_GLPI["root_doc"] . '/ajax/task.php",
                type: "POST",
                data: {
                   tasktemplates_id: value
                }
-            }).done(function(datas) {
-               datas.taskcategories_id = isNaN(parseInt(datas.taskcategories_id)) ? 0 : parseInt(datas.taskcategories_id);
-               datas.actiontime = isNaN(parseInt(datas.actiontime)) ? 0 : parseInt(datas.actiontime);
+            }).done(function(data) {
+               var taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                  ? 0
+                  : parseInt(data.taskcategories_id);
+               var actiontime = isNaN(parseInt(data.actiontime))
+                  ? 0
+                  : parseInt(data.actiontime);
 
-               $("#task' . $rand_text . '").html(datas.content);
-               $("#dropdown_taskcategories_id' . $rand_type . '").select2("val", parseInt(datas.taskcategories_id));
-               $("#dropdown_actiontime' . $rand_time . '").select2("val", parseInt(datas.actiontime));
+               // set textarea content
+               $("#content'.$rand_text.'").html(data.content);
+               // set also tinmyce (if enabled)
+               if (tasktinymce = tinymce.get("content'.$rand_text.'")) {
+                  tasktinymce.setContent(data.content);
+               }
+               // set category
+               $("#dropdown_taskcategories_id'.$rand_type.'").select2("val", taskcategories_id);
+               // set action time
+               $("#dropdown_actiontime'.$rand_time.'").select2("val", actiontime);
             });
          }
       ');
@@ -1556,7 +1584,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                echo "<div id='viewplan$rand_text'></div>\n";
             }
          } else {
-            _e('None');
+            echo __('None');
          }
       }
 

@@ -97,7 +97,7 @@ function isPluginItemType($classname) {
 
 
 /**
- * For translation
+ * Translate a string
  *
  * @since 0.84
  *
@@ -122,7 +122,7 @@ function __($str, $domain='glpi') {
 
 
 /**
- * For translation
+ * Translate a string and escape HTML entities
  *
  * @since 0.84
  *
@@ -137,7 +137,7 @@ function __s($str, $domain='glpi') {
 
 
 /**
- * For translation
+ * Translate a contextualized string and escape HTML entities
  *
  * @since 0.84
  *
@@ -153,22 +153,25 @@ function _sx($ctx, $str, $domain='glpi') {
 
 
 /**
- * to delete echo in translation
+ * Display (echo) a translation
  *
  * @since 0.84
  *
  * @param string $str    String to translate
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
+ * @deprecated since 9.2; will be removed in the future.
+ *
  * @return void
  */
 function _e($str, $domain='glpi') {
+   Toolbox::logDebug('_e() method is deprecated');
    echo __($str, $domain);
 }
 
 
 /**
- * For translation
+ * Pluralized translation
  *
  * @since 0.84
  *
@@ -187,7 +190,7 @@ function _n($sing, $plural, $nb, $domain='glpi') {
 
 
 /**
- * For translation
+ * Pluralized translation with HTML entities escaped
  *
  * @since 0.84
  *
@@ -204,7 +207,7 @@ function _sn($sing, $plural, $nb, $domain='glpi') {
 
 
 /**
- * For context in translation
+ * Contextualized translation
  *
  * @since 0.84
  *
@@ -229,7 +232,7 @@ function _x($ctx, $str, $domain='glpi') {
 
 
 /**
- * Echo for context in translation
+ * Display (echo) a contextualized translation
  *
  * @since 0.84
  *
@@ -237,10 +240,12 @@ function _x($ctx, $str, $domain='glpi') {
  * @param string $str    to translated
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
+ * @deprecated since 9.2; will be removed in the future.
+ *
  * @return string
  */
 function _ex($ctx, $str, $domain='glpi') {
-
+   Toolbox::logDebug('_ex() method is deprecated');
    // simulate pgettext
    $msg   = $ctx."\004".$str;
    $trans = __($msg, $domain);
@@ -254,7 +259,7 @@ function _ex($ctx, $str, $domain='glpi') {
 
 
 /**
- * For context in plural translation
+ * Pluralized contextualized translation
  *
  * @since 0.84
  *

@@ -354,20 +354,6 @@ class DBmysql {
       return $finfo[$nb]->name;
    }
 
-   /**
-    * Get flags of a field of a mysql result
-    *
-    * @deprecated BUGGY FUNCTION : param $field isn't used. Consider with precaution results... !
-    *
-    * @param mysqli_result $result MySQL result handler
-    * @param string        $field  Field name
-    *
-    * @return mixed flags of the field
-    */
-   function field_flags($result, $field) {
-      $finfo = $result->fetch_fields();
-      return $finfo[$nb]->flags;
-   }
 
    /**
     * List tables in database
@@ -1084,13 +1070,14 @@ class DBmysqlIterator implements Iterator {
    /**
     * Get next result
     *
-    * @deprecated
-    *
     * @see nextAssoc()
+    *
+    * @deprecated since 9.2; will be removed in the future.
     *
     * @return mixed
     */
    public function next() {
+      Toolbox::logDebug('DBmysql::next() method is deprecated');
       return $this->nextAssoc();
    }
 

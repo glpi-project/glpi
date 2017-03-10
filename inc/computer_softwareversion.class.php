@@ -598,7 +598,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
          } else { // Not found
-            _e('No item found');
+            echo __('No item found');
          }
       } // Query
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);

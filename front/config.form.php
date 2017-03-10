@@ -57,7 +57,7 @@ if (!empty($_GET['reset_opcache'])) {
 }
 if (!empty($_GET['reset_apcu'])) {
    $config->checkGlobal(UPDATE);
-   if (apc_clear_cache('user')) {
+   if (apcu_clear_cache()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));

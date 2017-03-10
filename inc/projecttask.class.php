@@ -431,7 +431,7 @@ class ProjectTask extends CommonDBChild {
 
       echo "</td>";
       echo "<td>";
-      _e('Milestone');
+      echo __('Milestone');
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"]);
@@ -865,7 +865,7 @@ class ProjectTask extends CommonDBChild {
                 action='".Toolbox::getItemTypeFormURL('ProjectTask')."'>";
          $projet = $item->fields['projects_id'];
          echo "<a href='".Toolbox::getItemTypeFormURL('ProjectTask')."?projecttasks_id=$ID&amp;projects_id=$projet'>";
-         _e('Create a sub task from this task of project');
+         echo __('Create a sub task from this task of project');
          echo "</a>";
          Html::closeForm();
          echo "</div>";

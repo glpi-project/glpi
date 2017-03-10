@@ -324,7 +324,7 @@ class Budget extends CommonDropdown{
       Html::printPagerForm();
       echo "</th><th colspan='4'>";
       if ($DB->numrows($result) == 0) {
-         _e('No associated item');
+         echo __('No associated item');
       } else {
          echo _n('Associated item', 'Associated items', $DB->numrows($result));
       }

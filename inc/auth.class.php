@@ -73,6 +73,7 @@ class Auth extends CommonGLPI {
    const CAS      = 5;
    const X509     = 6;
    const API      = 7;
+   const COOKIE   = 8;
    const NOT_YET_AUTHENTIFIED = 0;
 
 
@@ -117,7 +118,6 @@ class Auth extends CommonGLPI {
 
             $menu['options']['settings']['title']       = __('Setup');
             $menu['options']['settings']['page']        = '/front/auth.settings.php';
-
       }
       if (count($menu)) {
          return $menu;
@@ -126,7 +126,10 @@ class Auth extends CommonGLPI {
    }
 
    /**
-    * Is the user exists in the DB
+    * Check user existence in DB
+    *
+    * @var DBmysql $DB
+    *
     * @param array $options conditions : array('name'=>'glpi')
     *                                    or array('email' => 'test at test.com')
     *
@@ -138,33 +141,23 @@ class Auth extends CommonGLPI {
    function userExists($options=array()) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_users`
-                LEFT JOIN `glpi_useremails` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
-                WHERE ";
-      $first = true;
-      foreach ($options as $key => $value) {
-         if ($first) {
-            $first = false;
-         } else {
-            $query .= " AND ";
-         }
-         $query.=" `$key`='$value'";
-      }
-
-      $result = $DB->query($query);
-      if ($DB->numrows($result) == 0) {
+      $result = $DB->request('glpi_users',
+         ['AND' => [$options],
+         'JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users' => 'id',
+                                                     'glpi_useremails' => 'users_id']]]]);
+      // Check if there is a row
+      if ($result->numrows() == 0) {
          $this->addToError(__('Incorrect username or password'));
          return 0;
-
       } else {
-         $pwd = $DB->result($result, 0, "password");
+         // Get the first result...
+         $row = $result->nextObject();
 
-         if (empty($pwd)) {
+         // Check if we have a password...
+         if (empty($row->password)) {
             //If the user has an LDAP DN, then store it in the Auth object
-            $user_dn = $DB->result($result, 0, "user_dn");
-            if ($user_dn) {
-               $this->user_dn = $user_dn;
+            if ($row->user_dn) {
+               $this->user_dn = $row->user_dn;
             }
             return 2;
 
@@ -330,10 +323,11 @@ class Auth extends CommonGLPI {
     * If not found or can't connect to DB updates the instance variable err
     * with an eventual error message
     *
+    * @var DBmysql $DB
     * @param string $name     User Login
     * @param string $password User Password
     *
-    * @return boolean : user in GLPI DB with the right password
+    * @return boolean user in GLPI DB with the right password
     */
    function connection_db($name, $password) {
       global $DB;
@@ -344,39 +338,31 @@ class Auth extends CommonGLPI {
          return false;
       }
 
-      $query = "SELECT `id`,`password`
-                FROM `glpi_users`
-                WHERE `name` = '" . $name . "'";
-      $result = $DB->query($query);
+      // SQL query
+      $result = $DB->request('glpi_users', ['FIELDS' => ['id', 'password'], 'name' => $name]);
 
-      if (!$result) {
-         $this->addToError(__('Incorrect username or password'));
-         return false;
-      }
-      if ($result) {
-         if ($DB->numrows($result) == 1) {
-            $password_db = $DB->result($result, 0, "password");
+      // Have we a result ?
+      if ($result->numrows() == 1) {
+         $row = $result->nextObject();
+         $password_db = $row->password;
 
-            if (self::checkPassword($password, $password_db)) {
-
-               // Update password if needed
-               if (self::needRehash($password_db)) {
-                  $input['id']        = $DB->result($result, 0, "id");
-                  // Set glpiID to allow passwod update
-                  $_SESSION['glpiID'] = $input['id'];
-                  $input['password']  = $password;
-                  $input['password2'] = $password;
-                  $user               = new User();
-                  $user->update($input);
-               }
-               return true;
+         if (self::checkPassword($password, $password_db)) {
+            // Update password if needed
+            if (self::needRehash($password_db)) {
+               $input['id'] = $row->id;
+               // Set glpiID to allow password update
+               $_SESSION['glpiID'] = $input['id'];
+               $input['password'] = $password;
+               $input['password2'] = $password;
+               $user = new User();
+               $user->update($input);
             }
+            return true;
          }
+      } else {
          $this->addToError(__('Incorrect username or password'));
          return false;
       }
-      $this->addToError("#".$DB->errno().": ".$DB->error());
-      return false;
    }
 
    /**
@@ -495,6 +481,34 @@ class Auth extends CommonGLPI {
                $this->addToError(__("Login with external token disabled"));
             }
             break;
+         case self::COOKIE:
+            $cookie_name = session_name() . '_rememberme';
+            $cookie_path = ini_get('session.cookie_path');
+
+            if ($CFG_GLPI["login_remember_time"]) {
+               $data = json_decode($_COOKIE[$cookie_name], true);
+               if (count($data) === 2) {
+                  list ($cookie_id, $cookie_token) = $data;
+
+                  $token = User::getPersonalToken($cookie_id);
+
+                  if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
+                     $user = new User();
+                     $user->getFromDB($cookie_id); //true if $token is not false
+                     $this->user->fields['name'] = $user->fields['name'];
+                     return true;
+                  } else {
+                     $this->addToError(__("Invalid cookie data"));
+                  }
+               }
+            } else {
+               $this->addToError(__("Auto login disabled"));
+            }
+
+            //Remove cookie to allow new login
+            setcookie($cookie_name, '', time() - 3600, $cookie_path);
+            unset($_COOKIE[$cookie_name]);
+            break;
       }
       return false;
    }
@@ -553,7 +567,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean (success)
    */
-   function Login($login_name, $login_password, $noauto=false) {
+   function Login($login_name, $login_password, $noauto=false, $remember_me = false) {
       global $DB, $CFG_GLPI;
 
       $this->getAuthMethods();
@@ -800,6 +814,33 @@ class Auth extends CommonGLPI {
          $_SESSION["noAUTO"] = 1;
       }
 
+      if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
+         $token = false;
+         if (!empty($this->user->fields['personal_token'])) {
+            $token = $this->user->fields['personal_token'];
+         } else {
+            $token = User::getPersonalToken($this->user->fields['id']);
+         }
+
+         if ($token) {
+            //Cookie name (Allow multiple GLPI)
+            $cookie_name = session_name() . '_rememberme';
+            //Cookie session path
+            $cookie_path = ini_get('session.cookie_path');
+
+            $hash = Auth::getPasswordHash($token);
+
+            $data = json_encode([
+                $this->user->fields['id'],
+                $hash,
+            ]);
+
+            //Send cookie to browser
+            setcookie($cookie_name, $data, time() + $CFG_GLPI['login_remember_time'], $cookie_path);
+            $_COOKIE[$cookie_name] = $data;
+         }
+      }
+
       return $this->auth_succeded;
    }
 
@@ -1007,7 +1048,7 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API));
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE));
    }
 
    /**
@@ -1068,6 +1109,16 @@ class Auth extends CommonGLPI {
       if (!empty($_REQUEST['user_token'])) {
          return self::API;
       }
+
+      $cookie_name = session_name() . '_rememberme';
+      if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
+         if ($redirect) {
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
+         } else {
+            return self::COOKIE;
+         }
+      }
+
       return false;
    }
 
@@ -1133,12 +1184,14 @@ class Auth extends CommonGLPI {
             case self::LDAP :
                //Look it the auth server still exists !
                // <- Bad idea : id not exists unable to change anything
-               $sql = "SELECT `name`
-                       FROM `glpi_authldaps`
-                       WHERE `id` = '" . $user->getField('auths_id') . "'
-                             AND `is_active` = 1";
-               $result = $DB->query($sql);
-               if ($DB->numrows($result) > 0) {
+               // SQL query
+               $result = $DB->request([
+                   'SELECT' => 'name',
+                   'FROM' => 'glpi_authldaps',
+                   'WHERE' => ['id' => $user->getField('auths_id'), 'is_active' => 1],
+               ]);
+
+               if ($result->numrows() > 0) {
                   echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                   echo "<input type='hidden' name='id' value='".$user->getID()."'>";
                   echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .

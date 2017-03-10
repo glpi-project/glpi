@@ -346,14 +346,32 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
-      // Check object status and update it if needed
-      if (!isset($this->input['_from_object'])) {
-         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
-            if (in_array($item->fields["status"], $item->getNewStatusArray())
-                && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))) {
-               $item->update(array('id'     => $item->getID(),
-                                   'status' => CommonITILObject::ASSIGNED));
+      if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
+         // Check object status and update it if needed
+         if (!isset($this->input['_from_object'])
+             && in_array($item->fields["status"], $item->getNewStatusArray())
+             && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))) {
+            $item->update(array('id'     => $item->getID(),
+                                'status' => CommonITILObject::ASSIGNED));
+         }
+
+         // raise notification for this actor addition
+         if (!isset($this->input['_disablenotif'])) {
+            $string_type = "";
+            switch ($this->input['type']) {
+               case self::REQUESTER:
+                  $string_type = "requester";
+                  break;
+               case self::OBSERVER:
+                  $string_type = "observer";
+                  break;
+               case self::ASSIGN:
+                  $string_type = "assign";
+                  break;
             }
+            // example for event: assign_group
+            $event = $string_type."_".strtolower($this::$itemtype_2);
+            NotificationEvent::raiseEvent($event, $item);
          }
       }
 

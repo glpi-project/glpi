@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DeviceHardDriveModel
-class DeviceHardDriveModel extends CommonDropdown {
+class DeviceHardDriveModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 

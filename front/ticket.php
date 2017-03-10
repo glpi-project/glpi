@@ -44,13 +44,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }
 
-if ($_SESSION['glpirefresh_ticket_list'] > 0) {
-   // Refresh automatique  sur tracking.php
-   echo "<script type=\"text/javascript\">\n";
-   echo "setInterval(\"window.location.reload()\",".
-         (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
-   echo "</script>\n";
-}
+echo Html::manageRefreshPage();
 
 Search::show('Ticket');
 
@@ -59,3 +53,4 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 } else {
    Html::footer();
 }
+

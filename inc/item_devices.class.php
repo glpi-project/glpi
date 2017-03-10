@@ -399,7 +399,7 @@ class Item_Devices extends CommonDBRelation {
                                                 '__RAND__'));
          $delete_all_column->setHTMLClass('center');
       } else {
-         $delete_all_column = NULL;
+         $delete_all_column = null;
       }
 
       $column_label    = ($is_device ? _n('Item', 'Items', Session::getPluralNumber()) : __('Type of component'));
@@ -422,7 +422,7 @@ class Item_Devices extends CommonDBRelation {
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
       } else {
-         $delete_column = NULL;
+         $delete_column = null;
       }
 
       $table_options = array('canedit' => $canedit,
@@ -523,10 +523,10 @@ class Item_Devices extends CommonDBRelation {
     * @param $dynamic_column
    **/
    function getTableGroup(CommonDBTM $item, HTMLTableMain $table, array $options,
-                          HTMLTableSuperHeader $delete_all_column,
+                          HTMLTableSuperHeader $delete_all_column = null,
                           HTMLTableSuperHeader $common_column,
                           HTMLTableSuperHeader $specific_column,
-                          HTMLTableSuperHeader $delete_column, $dynamic_column) {
+                          HTMLTableSuperHeader $delete_column = null, $dynamic_column) {
       global $DB;
 
       $is_device = ($item instanceof CommonDevice);
@@ -1033,7 +1033,7 @@ class Item_Devices extends CommonDBRelation {
       }
       echo "</td>";
 
-      echo "<td>".__('Device')."</td>";
+      echo "<td>"._n('Component', 'Components', 1)."</td>";
       echo "<td>".$device->getLink()."</td>";
       echo "</tr>";
       $even = 0;

@@ -361,7 +361,7 @@ class APIRest extends API {
       }
 
       // now how about PUT/POST bodies? These override what we got from GET
-      $body = trim($this->getHttpBodyStream());
+      $body = trim($this->getHttpBody());
       if (strlen($body) > 0 && $this->verb == "GET") {
          // GET method requires an empty body
          $this->returnError("GET Request should not have json payload (http body)", 400,
@@ -407,6 +407,14 @@ class APIRest extends API {
             $parameters[$field] = $value;
          }
          $this->format = "json";
+
+         // move files into _tmp folder
+         $parameters['upload_result'] = [];
+         foreach ($_FILES as $filename => $files) {
+            $parameters['upload_result'][]
+               = GLPIUploadHandler::uploadFiles(['name'           => $filename,
+                                                 'print_response' => false]);
+         }
 
       } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
          parse_str($body, $postvars);
@@ -473,17 +481,17 @@ class APIRest extends API {
     * @param string  $response          message or array of data to send
     * @param integer $httpcode          http code (default 200)
     *                                   (see: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array   $aditionnalheaders headers to send with http response (must be an array(key => value))
+    * @param array   $additionalheaders headers to send with http response (must be an array(key => value))
     *
     * @return void
     */
-   public function returnResponse($response, $httpcode=200, $aditionnalheaders=array()) {
+   public function returnResponse($response, $httpcode=200, $additionalheaders=array()) {
 
       if (empty($httpcode)) {
          $httpcode = 200;
       }
 
-      foreach ($aditionnalheaders as $key => $value) {
+      foreach ($additionalheaders as $key => $value) {
          header("$key: $value");
       }
 

@@ -1,11 +1,14 @@
 <?php
 /*
- * @version $Id: devicesoundcardmodel.php 22656 2014-02-12 16:15:25Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2017 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -27,12 +30,13 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 include ('../inc/includes.php');
 
-$dropdown = new DeviceSoundCardModel();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
+   throw new \RuntimeException(
+      'Missing or incorrect device type called!'
+   );
+}
+
+$dropdown = new $_GET['itemtype'];
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
