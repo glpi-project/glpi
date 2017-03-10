@@ -798,7 +798,7 @@ class RuleCollection extends CommonDBTM {
     * @return nothing (display)
    **/
    static function titleBackup() {
-      global $CFG_GLPI, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $buttons = array();
       $title   = "";
