@@ -39,6 +39,7 @@ then
 		echo GLPI_VERSION;
 	')
 	apigen generate \
+      --access-levels=public,protected,private \
 		--todo \
 		--deprecated \
 		--tree \
