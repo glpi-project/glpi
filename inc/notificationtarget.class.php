@@ -148,12 +148,6 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   // Temporary hack for this class since 0.84
-   static function getTable() {
-      return 'glpi_notificationtargets';
-   }
-
-
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *

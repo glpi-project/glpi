@@ -67,9 +67,8 @@ class RuleCollection extends CommonDBTM {
    /// Tab orientation : horizontal or vertical
    public $taborientation = 'horizontal';
 
-   // Temproray hack for this class
-   static function getTable() {
-      return 'glpi_rules';
+   static function getTable($classname = null) {
+      return parent::getTable('Rule');
    }
 
 

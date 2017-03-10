@@ -46,12 +46,6 @@ class RuleMailCollector extends Rule {
    public $can_sort  = true;
 
 
-   // Temproray hack for this class in 0.84
-   static function getTable() {
-      return 'glpi_rules';
-   }
-
-
    /**
     * @see Rule::maxActionsCount()
    **/
