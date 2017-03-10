@@ -98,8 +98,8 @@ class Rule extends CommonDBTM {
 
 
    // Temproray hack for this class
-   static function getTable() {
-      return 'glpi_rules';
+   static function getTable($classname = null) {
+      return parent::getTable(__CLASS__);
    }
 
 

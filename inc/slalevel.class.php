@@ -58,11 +58,6 @@ class SlaLevel extends RuleTicket {
       // Override in order not to use glpi_rules table.
    }
 
-   // Temporary hack for this class in 0.84
-   static function getTable() {
-      return 'glpi_slalevels';
-   }
-
 
    /**
     * @since version 0.85
