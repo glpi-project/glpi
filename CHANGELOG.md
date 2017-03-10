@@ -16,4 +16,23 @@ The present file will list all changes made to the project; according to the
 new whole window
 - Reviewed all richtext editor (tinymce) and their upload parts, now more simpler and intuitive
 
+### API changes
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `_e()`
+- `_ex()`
+- `CommonDBTM::next()`
+
+#### Removals
+
+The following methods have been dropped:
+
+- `CommonGLPI::addDivForTabs()`
+- `CommonGLPI::showTabs()`
+- `CommonGLPI::showNavigationHeaderOld()`
+- `CommonGLPI::show()`
+
 For older entries, please check [GLPI website](http://glpi-project.org).

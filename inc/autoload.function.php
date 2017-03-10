@@ -165,7 +165,7 @@ function _sx($ctx, $str, $domain='glpi') {
  * @return void
  */
 function _e($str, $domain='glpi') {
-   Toolbox::logDebug('_e() method is depracated');
+   Toolbox::logDebug('_e() method is deprecated');
    echo __($str, $domain);
 }
 
@@ -245,7 +245,7 @@ function _x($ctx, $str, $domain='glpi') {
  * @return string
  */
 function _ex($ctx, $str, $domain='glpi') {
-   Toolbox::logDebug('_ex() method is depracated');
+   Toolbox::logDebug('_ex() method is deprecated');
    // simulate pgettext
    $msg   = $ctx."\004".$str;
    $trans = __($msg, $domain);
