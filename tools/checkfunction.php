@@ -46,7 +46,6 @@ $obsoleted = array(
    'addMessageAfterRedirect'           =>  'Session::addMessageAfterRedirect',
    'addslashes_deep'                   =>  'Toolbox::addslashes_deep',
    'addToNavigateListItems'            =>  'Session::addToNavigateListItems',
-   'ajaxDisplaySearchTextForDropdown'  =>  'Ajax::displaySearchTextForDropdown',
    'ajaxFooter'                        =>  'Html::ajaxFooter',
    'ajaxUpdateItem'                    =>  'Ajax::updateItem' ,
    'ajaxUpdateItemJsCode'              =>  'Ajax::updateItemJsCode',

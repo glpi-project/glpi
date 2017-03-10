@@ -34,5 +34,7 @@ The following methods have been dropped:
 - `CommonGLPI::showTabs()`
 - `CommonGLPI::showNavigationHeaderOld()`
 - `CommonGLPI::show()`
+- `Ajax::displaySearchTextForDropdown()`
+- `Ajax::getSearchTextForDropdown()`
 
 For older entries, please check [GLPI website](http://glpi-project.org).
