@@ -37,5 +37,7 @@ The following methods have been dropped:
 - `Ajax::displaySearchTextForDropdown()`
 - `Ajax::getSearchTextForDropdown()`
 - `DBMysql::field_flags()`
+- `Toolbox::get_magic_quotes_runtime`
+- `Toolbox::get_magic_quotes_gpc`
 
 For older entries, please check [GLPI website](http://glpi-project.org).

@@ -47,34 +47,6 @@ if (!defined('GLPI_ROOT')) {
 class Toolbox {
 
    /**
-    * Wrapper for get_magic_quotes_runtime - deprecated
-    *
-    * @since version 0.83
-    * @deprecated in 0.90.1
-    *
-    * @return boolean
-   **/
-   static function get_magic_quotes_runtime() {
-
-      return 0;
-   }
-
-
-   /**
-    * Wrapper for get_magic_quotes_gpc - deprecated
-    *
-    * @since version 0.83
-    * @deprecated in 0.90.1
-    *
-    * @return boolean
-   **/
-   static function get_magic_quotes_gpc() {
-
-      return 0;
-   }
-
-
-   /**
     * Wrapper for max_input_vars
     *
     * @since version 0.84
