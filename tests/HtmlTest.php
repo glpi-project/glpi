@@ -611,26 +611,52 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
    }
 
    /**
-    * @covers Html::getCopyrightMessage()
+    * @covers Html::manageRefreshPage()
+    *
+    * @return void
     */
-   public function manageRefreshPage() {
+   public function testManageRefreshPage() {
+      //no session refresh, no args => no timer
+      if (isset($_SESSION['glpirefresh_ticket_list'])) {
+         unset($_SESSION['glpirefresh_ticket_list']);
+      }
+
+      $expected = '';
+      $message = Html::manageRefreshPage();
+      $this->assertEquals($expected, $message, 'Timer empty');
+
+      //Set session refresh to one minute
+      $_SESSION['glpirefresh_ticket_list'] = 1;
+      $expected = "<script type=\"text/javascript\">\n";
+      $expected .= "setInterval(window.location.reload(),".
+            (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
+      $expected .= "</script>\n";
       $message = Html::manageRefreshPage();
 
-      $text ="<script type=\"text/javascript\">\n";
-      $text.="setInterval(\"window.location.reload()\",".
+      $this->assertEquals($expected, $message, 'Timer set to one minute from session');
+
+      $expected = "<script type=\"text/javascript\">\n";
+      $expected .= "setInterval(function() {\$('#mydiv').remove();},".
             (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
-      $text.="</script>\n";
+      $expected .= "</script>\n";
+      $message = Html::manageRefreshPage(false, 'function() {$(\'#mydiv\').remove();}');
 
-      $this->assertEquals($message, $text);
+      $this->assertEquals($expected, $message, 'Timer set to one minute from session with callback');
 
+      $expected ="<script type=\"text/javascript\">\n";
+      $expected .= "setInterval(window.location.reload(),".
+            (60000 * 3).");\n";
+      $expected .= "</script>\n";
       $message = Html::manageRefreshPage(3);
 
-      $text ="<script type=\"text/javascript\">\n";
-      $text.="setInterval(\"window.location.reload()\",".
+      $this->assertEquals($expected, $message, 'Timer set to 3 minutes from args');
+
+      $expected = "<script type=\"text/javascript\">\n";
+      $expected .= "setInterval(function() {\$('#mydiv').remove();},".
             (60000 * 3).");\n";
-      $text.="</script>\n";
+      $expected .= "</script>\n";
+      $message = Html::manageRefreshPage(3, 'function() {$(\'#mydiv\').remove();}');
 
-      $this->assertEquals($message, $text);
+      $this->assertEquals($expected, $message, 'Timer set to 3 minutes from args minute with callback');
    }
-
 }
