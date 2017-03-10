@@ -105,20 +105,26 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Return the table used to stor this object
+    * Return the table used to store this object
+    *
+    * @param string $classname Force class (to avoid late_binding on inheritance)
     *
     * @return string
    **/
-   static function getTable() {
+   static function getTable($classname = null) {
       if (static::$notable) {
          return '';
       }
 
-      if (empty($_SESSION['glpi_table_of'][get_called_class()])) {
-         $_SESSION['glpi_table_of'][get_called_class()] = getTableForItemType(get_called_class());
+      if ($classname === null) {
+         $classname = get_called_class();
       }
 
-      return $_SESSION['glpi_table_of'][get_called_class()];
+      if (empty($_SESSION['glpi_table_of'][$classname])) {
+         $_SESSION['glpi_table_of'][$classname] = getTableForItemType($classname);
+      }
+
+      return $_SESSION['glpi_table_of'][$classname];
    }
 
 
