@@ -18,6 +18,10 @@ new whole window
 
 ### API changes
 
+#### Changes
+
+- `CommonDBTM::getTable()` signature has changed
+
 #### Deprecated
 
 The following methods have been deprecated:
