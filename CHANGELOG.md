@@ -36,5 +36,6 @@ The following methods have been dropped:
 - `CommonGLPI::show()`
 - `Ajax::displaySearchTextForDropdown()`
 - `Ajax::getSearchTextForDropdown()`
+- `DBMysql::field_flags()`
 
 For older entries, please check [GLPI website](http://glpi-project.org).
