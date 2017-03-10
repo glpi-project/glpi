@@ -45,6 +45,7 @@ body {
 }
 
 body.iframed {
+   margin-top: 1em;
    overflow-x: hidden;
    background: inherit;
 }
