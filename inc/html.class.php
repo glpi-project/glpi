@@ -6027,22 +6027,31 @@ class Html {
    }
 
    /**
-   * Add the HTML code to refresh the current page at a define interval of time
-   * @param timer the time (in minute) to refresh the page
-   * @return void
-   */
-   static public function manageRefreshPage($timer = false) {
+    * Add the HTML code to refresh the current page at a define interval of time
+    *
+    * @param int|false   $timer    The time (in minute) to refresh the page
+    * @param string|null $callback A javascript callback function to execute on timer
+    *
+    * @return string
+    */
+   static public function manageRefreshPage($timer = false, $callback = null) {
       if (!$timer) {
          $timer = $_SESSION['glpirefresh_ticket_list'];
       }
+
+      if ($callback === null) {
+         $callback = 'window.location.reload()';
+      }
+
       $text = "";
       if ($timer > 0) {
          // Refresh automatique  sur tracking.php
          $text.="<script type=\"text/javascript\">\n";
-         $text.="setInterval(\"window.location.reload()\",".
+         $text.="setInterval($callback,".
                (60000 * $timer).");\n";
          $text.="</script>\n";
       }
+
       return $text;
    }
 }
