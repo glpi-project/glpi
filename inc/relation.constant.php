@@ -264,7 +264,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_phones'               => array('groups_id_tech', 'groups_id'),
                                  'glpi_printers'             => array('groups_id_tech', 'groups_id'),
                                  'glpi_projects'             => 'groups_id',
-                                 'glpi_softwares'            => array('groups_id_tech', 'groups_id')),
+                                 'glpi_softwares'            => array('groups_id_tech', 'groups_id'),
+                                 'glpi_softwarelicenses'     => array('groups_id_tech', 'groups_id')),
 
                   "glpi_holidays"
                         => array('glpi_calendars_holidays' => 'holidays_id',),
@@ -298,7 +299,8 @@ $RELATION = array("glpi_authldaps"
                         => array('_glpi_links_itemtypes' => 'links_id'),
 
                   "glpi_locations"
-                        => array('glpi_cartridgeitems'    => 'locations_id',
+                        => array('glpi_budgets'           => 'locations_id',
+                                 'glpi_cartridgeitems'    => 'locations_id',
                                  'glpi_consumableitems'   => 'locations_id',
                                  'glpi_computers'         => 'locations_id',
                                  'glpi_locations'         => 'locations_id',
@@ -309,6 +311,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_phones'            => 'locations_id',
                                  'glpi_printers'          => 'locations_id',
                                  'glpi_softwares'         => 'locations_id',
+                                 'glpi_softwarelicenses'  => 'locations_id',
+                                 'glpi_tickets'           => 'locations_id',
                                  'glpi_users'             => 'locations_id'),
 
                   "glpi_manufacturers"
@@ -332,7 +336,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_peripherals'         => 'manufacturers_id',
                                  'glpi_phones'              => 'manufacturers_id',
                                  'glpi_printers'            => 'manufacturers_id',
-                                 'glpi_softwares'           => 'manufacturers_id'),
+                                 'glpi_softwares'           => 'manufacturers_id',
+                                 'glpi_softwarelicenses'    => 'manufacturers_id'),
 
                   "glpi_monitormodels"
                         => array('glpi_monitors' => 'monitormodels_id'),
@@ -513,6 +518,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_peripherals'       => 'states_id',
                                  'glpi_phones'            => 'states_id',
                                  'glpi_printers'          => 'states_id',
+                                 'glpi_softwarelicenses'  => 'states_id',
                                  'glpi_softwareversions'  => 'states_id',
                                  'glpi_states'            => 'states_id'),
 
@@ -620,6 +626,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_reminders_users'           => 'users_id',
                                  'glpi_reservations'              => 'users_id',
                                  'glpi_softwares'                 => array('users_id_tech', 'users_id'),
+                                 'glpi_softwarelicenses'          => array('users_id_tech', 'users_id'),
                                  'glpi_ticketfollowups'           => 'users_id',
                                  'glpi_tickets'                   => array('users_id_recipient',
                                                                      'users_id_lastupdater'),
