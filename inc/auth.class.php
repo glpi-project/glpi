@@ -151,13 +151,13 @@ class Auth extends CommonGLPI {
          return 0;
       } else {
          // Get the first result...
-         $row = $result->nextObject();
+         $row = $result->next();
 
          // Check if we have a password...
-         if (empty($row->password)) {
+         if (empty($row['password'])) {
             //If the user has an LDAP DN, then store it in the Auth object
-            if ($row->user_dn) {
-               $this->user_dn = $row->user_dn;
+            if ($row['user_dn']) {
+               $this->user_dn = $row['user_dn'];
             }
             return 2;
 
@@ -343,13 +343,13 @@ class Auth extends CommonGLPI {
 
       // Have we a result ?
       if ($result->numrows() == 1) {
-         $row = $result->nextObject();
-         $password_db = $row->password;
+         $row = $result->next();
+         $password_db = $row['password'];
 
          if (self::checkPassword($password, $password_db)) {
             // Update password if needed
             if (self::needRehash($password_db)) {
-               $input['id'] = $row->id;
+               $input['id'] = $row['id'];
                // Set glpiID to allow password update
                $_SESSION['glpiID'] = $input['id'];
                $input['password'] = $password;

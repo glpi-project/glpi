@@ -1055,40 +1055,15 @@ class DBmysqlIterator implements Iterator {
    }
 
    /**
-    * Return next row of query results [FETCH_ASSOC]
+    * Return next row of query results
     *
     * @return string[]|null fetch_assoc() of first results row
     */
-   public function nextAssoc() {
+   public function next() {
       if (!$this->res) {
          return false;
       }
       $this->row = $this->conn->fetch_assoc($this->res);
-      return $this->row;
-   }
-
-   /**
-    * Get next result
-    *
-    * @see nextAssoc()
-    * Mandatory to keep, see http://php.net/iterator
-    *
-    * @return mixed
-    */
-   public function next() {
-      return $this->nextAssoc();
-   }
-
-   /**
-    * OOP - Next row of query result
-    *
-    * @return object
-   */
-   public function nextObject() {
-      if (!$this->res) {
-         return false;
-      }
-      $this->row = $this->conn->fetch_object($this->res);
       return $this->row;
    }
 
