@@ -1071,13 +1071,11 @@ class DBmysqlIterator implements Iterator {
     * Get next result
     *
     * @see nextAssoc()
-    *
-    * @deprecated since 9.2; will be removed in the future.
+    * Mandatory to keep, see http://php.net/iterator
     *
     * @return mixed
     */
    public function next() {
-      Toolbox::logDebug('DBmysql::next() method is deprecated');
       return $this->nextAssoc();
    }
 

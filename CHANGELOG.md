@@ -24,7 +24,6 @@ The following methods have been deprecated:
 
 - `_e()`
 - `_ex()`
-- `CommonDBTM::next()`
 
 #### Removals
 
