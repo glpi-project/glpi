@@ -208,6 +208,51 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Generator to browse object from an iterator
+    *
+    * @since 9.2
+    *
+    * @param DBmysqlIterator $iter
+    *
+    * return CommonDBTM
+    */
+   public static function getFromIter(DBmysqlIterator $iter) {
+      $item = new static;
+
+      foreach ($iter as $id => $row) {
+         if ($item->getFromDB($id)) {
+            yield $item;
+         }
+      }
+   }
+
+
+   /**
+    * Get an object using some criteria
+    *
+    * @since 9.2
+    *
+    * @param Array  $crit   search criteria
+    *
+    * return boolean
+    */
+   public function getFromDBByCrit(Array $crit) {
+      global $DB;
+
+      $crit = ['SELECT' => 'id',
+               'FROM'   => $this->getTable(),
+               'WHERE'  => $crit];
+
+      $iter = $DB->request($crit);
+      if ($iter->numrows()==1) {
+         $row = $iter->next();
+         return $this->getFromDB($row['id']);
+      }
+      return false;
+   }
+
+
+   /**
     * Get the identifier of the current item
     *
     * @return integer ID

@@ -307,4 +307,36 @@ class ComputerTest extends DbTestCase {
       $CFG_GLPI = $saveconf;
    }
 
+   /**
+    * @covers Computer::getFromIter()
+    *
+    * @return void
+    */
+   public function testGetFromIter() {
+      global $DB;
+
+      $iter = $DB->request(['SELECT' => 'id',
+                            'FROM'   => 'glpi_computers']);
+      $prev = false;
+      foreach (Computer::getFromIter($iter) as $comp) {
+         $this->assertInstanceOf('Computer', $comp);
+         $this->assertArrayHasKey('name', $comp->fields);
+         $this->assertNotEquals($prev, $comp->fields['name']);
+         $prev = $comp->fields['name'];
+      }
+      $this->assertTrue((bool)$prev); // we are retrieve something
+   }
+
+   /**
+    * @covers Computer::getFromDbByCrit()
+    *
+    * @return void
+    */
+   public function testGetFromDbByCrit() {
+      global $DB;
+
+      $comp = new Computer();
+      $this->assertTrue($comp->getFromDBByCrit(['name' => '_test_pc01']));
+      $this->assertEquals('_test_pc01', $comp->getField('name'));
+   }
 }
