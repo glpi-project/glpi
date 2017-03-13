@@ -53,6 +53,7 @@ chdir(GLPI_ROOT);
 
 if (isset($args['tests'])) {
    define("GLPI_CONFIG_DIR", GLPI_ROOT . "/tests");
+   @mkdir(GLPI_CONFIG_DIR . '/files/_log', 0775, true);
 }
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
