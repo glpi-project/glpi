@@ -1395,19 +1395,21 @@ class Project extends CommonDBTM {
 
          echo "<div class='gantt'></div>";
          $js = "
-                           $('.gantt').gantt({
-                                 source: ".json_encode($data).",
-                                 navigate: 'scroll',
-                                 maxScale: 'months',
-                                 itemsPerPage: 20,
-                                 months: ".json_encode($months).",
-                                 dow: ".json_encode($dow).",
-                                 onItemClick: function(data) {
-                                 //    alert('Item clicked - show some details');
-                                 },
-                                 onAddClick: function(dt, rowId) {
-                                 //    alert('Empty space clicked - add an item!');
-                                 },
+                           $(function() {
+                              $('.gantt').gantt({
+                                    source: ".json_encode($data).",
+                                    navigate: 'scroll',
+                                    maxScale: 'months',
+                                    itemsPerPage: 20,
+                                    months: ".json_encode($months).",
+                                    dow: ".json_encode($dow).",
+                                    onItemClick: function(data) {
+                                    //    alert('Item clicked - show some details');
+                                    },
+                                    onAddClick: function(dt, rowId) {
+                                    //    alert('Empty space clicked - add an item!');
+                                    },
+                              });
                            });";
          echo Html::scriptBlock($js);
       } else {
