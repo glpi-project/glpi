@@ -212,9 +212,9 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 9.2
     *
-    * @param DBmysqlIterator $iter
+    * @param DBmysqlIterator $iter Iterator instance
     *
-    * return CommonDBTM
+    * @return CommonDBTM
     */
    public static function getFromIter(DBmysqlIterator $iter) {
       $item = new static;
@@ -232,9 +232,9 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 9.2
     *
-    * @param Array  $crit   search criteria
+    * @param Array $crit search criteria
     *
-    * return boolean
+    * @return boolean|array
     */
    public function getFromDBByCrit(Array $crit) {
       global $DB;
