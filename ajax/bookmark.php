@@ -44,7 +44,7 @@ $itemtype = $params['itemtype'];
 if ($_GET['action'] == 'count') {
    $search = new Search();
    $data = $search->prepareDatasForSearch($itemtype, $params);
-   //$data['search']['no_search'] = true;
+   $data['search']['sort'] = ['2'];
    $search->constructSQL($data);
    $search->constructDatas($data);
 
