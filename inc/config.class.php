@@ -944,6 +944,7 @@ class Config extends CommonDBTM {
       $userpref  = false;
       $url       = Toolbox::getItemTypeFormURL(__CLASS__);
 
+      $canedit = Config::canUpdate();
       if (array_key_exists('last_login',$data)) {
          $userpref = true;
          if ($data["id"] === Session::getLoginUserID()) {
@@ -952,7 +953,10 @@ class Config extends CommonDBTM {
             $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
          }
       }
+
+      if($canedit || $userpref) {
          echo "<form name='form' action='$url' method='post'>";
+      }
 
       // Only set id for user prefs
       if ($userpref) {
@@ -1310,10 +1314,12 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
+      if ($canedit || $userpref) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
+      }
 
       echo "</table></div>";
       Html::closeForm();
