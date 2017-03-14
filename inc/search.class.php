@@ -431,6 +431,8 @@ class Search {
       }
       $WHERE  = "";
       $HAVING = "";
+      //store fields using HAVING; used for the count query
+      $HAVINGFIELDS = [];
 
       // Add search conditions
       // If there is search items
@@ -464,6 +466,7 @@ class Search {
                      $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'],
                                                  $criteria['field'], $criteria['searchtype'],
                                                  $criteria['value'], 0, $item_num);
+                     $HAVINGFIELDS[] = $criteria['field'];
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
@@ -620,6 +623,7 @@ class Search {
                   $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
                                              $metacriteria['field'], $metacriteria['searchtype'],
                                              $metacriteria['value'], 1, $metanum);
+                  $HAVINGFIELDS[] = $metacriteria['field'];
                } else { // Meta Where Search
                   $LINK = " ";
                   $NOT  = 0;
@@ -680,14 +684,6 @@ class Search {
          $LIMIT = " LIMIT ".$data['search']['start'].", ".$data['search']['list_limit'];
       }
 
-      $COUNTSELECT = "SELECT ";
-      // Force group by for all the type -> need to count only on table ID
-      if (!isset($searchopt[1]['forcegroupby'])) {
-         $COUNTSELECT .= " COUNT(1)AS count";
-      } else {
-         $COUNTSELECT .= " COUNT(DISTINCT `$itemtable`.`id`) AS count";
-      }
-
       $numrows = 0;
 
       // If export_all reset LIMIT condition
@@ -706,8 +702,22 @@ class Search {
 
       if (!empty($HAVING)) {
          $HAVING = ' HAVING '.$HAVING;
+      } else {
+         //well... reset havingfields.
+         $HAVINGFIELDS = [];
       }
 
+      $COUNTSELECT = "SELECT ";
+      // Force group by for all the type -> need to count only on table ID
+      if (!isset($searchopt[1]['forcegroupby'])) {
+         $COUNTSELECT .= " COUNT(1)AS count";
+      } else {
+         $COUNTSELECT .= " COUNT(DISTINCT `$itemtable`.`id`) AS count";
+      }
+
+      if (count($HAVINGFIELDS) > 0) {
+         $COUNTSELECT .= ', ' . implode(', ', $HAVINGFIELDS);
+      }
 
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
