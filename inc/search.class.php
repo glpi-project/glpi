@@ -891,8 +891,10 @@ class Search {
 
       if ($result) {
          $result_num = $DBread->query($data['sql']['count']);
-         $row = $DBread->fetch_assoc($result_num);
-         $data['data']['totalcount'] = $row['count'];
+         $data['data']['totalcount'] = 0;
+         while ($row = $DBread->fetch_assoc($result_num)) {
+            $data['data']['totalcount'] += $row['count'];
+         };
 
          // Search case
          $data['data']['begin'] = $data['search']['start'];
