@@ -3920,6 +3920,11 @@ class Html {
       Html::scriptStart();
       $js = "tinyMCE.init({
          language: '$language',
+         setup: function (editor) {
+            editor.on('SaveContent', function (contentEvent) {
+            	contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
+            })
+         },
          browser_spellcheck: true,
          mode: 'exact',
          elements: '$name',
