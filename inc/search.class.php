@@ -465,8 +465,7 @@ class Search {
                      $item_num = array_search($criteria['field'], $data['tocompute']);
                      $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'],
                                                  $criteria['field'], $criteria['searchtype'],
-                                                 $criteria['value'], 0, $item_num);
-                     $HAVINGFIELDS[] = $criteria['field'];
+                                                 $criteria['value'], 0, $item_num, $HAVINGFIELDS);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
@@ -622,8 +621,7 @@ class Search {
                   }
                   $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
                                              $metacriteria['field'], $metacriteria['searchtype'],
-                                             $metacriteria['value'], 1, $metanum);
-                  $HAVINGFIELDS[] = $metacriteria['field'];
+                                             $metacriteria['value'], 1, $metanum, $HAVINGFIELDS);
                } else { // Meta Where Search
                   $LINK = " ";
                   $NOT  = 0;
@@ -707,18 +705,6 @@ class Search {
          $HAVINGFIELDS = [];
       }
 
-      $COUNTSELECT = "SELECT ";
-      // Force group by for all the type -> need to count only on table ID
-      if (!isset($searchopt[1]['forcegroupby'])) {
-         $COUNTSELECT .= " COUNT(1)AS count";
-      } else {
-         $COUNTSELECT .= " COUNT(DISTINCT `$itemtable`.`id`) AS count";
-      }
-
-      if (count($HAVINGFIELDS) > 0) {
-         $COUNTSELECT .= ', ' . implode(', ', $HAVINGFIELDS);
-      }
-
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
          $first = true;
@@ -737,9 +723,8 @@ class Search {
                if ($data['itemtype'] == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
-                              $WHERE;
-
-                  $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                              $WHERE.
+                              " AND `$ctable`.`id` IS NOT NULL ";
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
@@ -751,12 +736,19 @@ class Search {
                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
                   }
 
-                  $tmpquery.= $GROUPBY.
-                              $HAVING;
+                  $tmpquery .= $GROUPBY . $HAVING;
 
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
-                  $tmpquery = str_replace($data['itemtype'], $ctype, $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        $CFG_GLPI["union_search_type"][$data['itemtype']],
+                        $data['itemtype']
+                     ],
+                     [
+                        $ctable,
+                        $ctype
+                     ],
+                     $tmpquery
+                  );
 
                } else {// Ref table case
                   $reftable = getTableForItemType($data['itemtype']);
@@ -766,31 +758,53 @@ class Search {
                                       `$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
+
                   if ($data['item']->maybeDeleted()) {
-                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
-                                                `is_deleted`",
-                                             "`$reftable`.`is_deleted`", $tmpquery);
+                     $tmpquery = str_replace(
+                        "`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.`is_deleted`",
+                        "`$reftable`.`is_deleted`",
+                        $tmpquery
+                     );
                   }
 
                   $replace = "FROM `$reftable`"."
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
                                      AND `$reftable`.`itemtype` = '$ctype')";
-                  $tmpquery = str_replace("FROM `".
-                                             $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
-                                          $replace, $tmpquery);
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        "FROM `" . $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
+                        $CFG_GLPI["union_search_type"][$data['itemtype']]
+                     ],
+                     [
+                        $replace,
+                        $ctable
+                     ],
+                     $tmpquery
+                  );
                }
-               $tmpquery = str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('', $ctable, '', '',
-                                                                  $citem->maybeRecursive()),
-                                       $tmpquery);
+               $tmpquery = str_replace(
+                  "ENTITYRESTRICT",
+                  getEntitiesRestrictRequest(
+                     '',
+                     $ctable,
+                     '',
+                     '',
+                     $citem->maybeRecursive()
+                  ),
+                  $tmpquery
+               );
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
-                  $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
-                  $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        "`glpi_softwares`.`serial`",
+                        "`glpi_softwares`.`otherserial`"
+                     ],
+                     ["''", "''"],
+                     $tmpquery
+                  );
                }
                $QUERY .= $tmpquery;
             }
@@ -799,6 +813,7 @@ class Search {
             echo self::showError($data['display_type']);
             return;
          }
+         $COUNTQUERY = preg_replace('/^SELECT.+FROM/s', 'SELECT COUNT(1) AS count FROM', $QUERY);
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']].".", "", $ORDER) .
                    $LIMIT;
       } else {
@@ -809,6 +824,12 @@ class Search {
                   $HAVING.
                   $ORDER.
                   $LIMIT;
+
+         $COUNTSELECT = "SELECT COUNT(DISTINCT `$itemtable`.`id`) AS count";
+         if (count($HAVINGFIELDS) > 0) {
+            $COUNTSELECT .= ', ' . implode(', ', $HAVINGFIELDS);
+         }
+
          $COUNTQUERY = $COUNTSELECT .
                         $FROM.
                         $WHERE.
@@ -1862,13 +1883,15 @@ class Search {
     *
     * @return select string
    **/
-   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num) {
+   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num, &$HAVINGFIELDS) {
 
       $searchopt  = &self::getOptions($itemtype);
       $table      = $searchopt[$ID]["table"];
       $field      = $searchopt[$ID]["field"];
 
       $NAME = "ITEM_";
+
+      $HAVINGFIELDS[] = "`$field` AS `ITEM_$num`";
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
