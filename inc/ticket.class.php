@@ -4332,7 +4332,7 @@ class Ticket extends CommonITILObject {
                $this->fields["content"]."</textarea></div>";
       echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
       echo $tt->getEndHiddenFieldValue('content', $this);
-      
+
       echo "</td>";
       echo "</tr>";
 
@@ -5212,7 +5212,8 @@ class Ticket extends CommonITILObject {
                $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
                                    OR (`glpi_tickets_users`.`tickets_id` = '".$item->getID()."'
                                        AND `glpi_tickets_users`.`users_id`
-                                            = '".Session::getLoginUserID()."'))";
+                                            = '".Session::getLoginUserID()."')
+                                   OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
             }
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
