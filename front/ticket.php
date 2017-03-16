@@ -46,12 +46,12 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 
 if ($_SESSION['glpirefresh_ticket_list'] > 0) {
    // Refresh automatique  sur tracking.php
-    echo "<script type=\"text/javascript\">\n";
-    echo "setTimeout(function(){ \n".
-        "window.location.href = window.location.href; }, \n".
+   echo "<script type=\"text/javascript\">\n";
+   echo "setTimeout(function(){ \n".
+        "window.location.reload(); }, \n".
         (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
 
-    echo "</script>\n";
+   echo "</script>\n";
 }
 
 Search::show('Ticket');
