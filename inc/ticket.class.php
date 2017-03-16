@@ -5302,7 +5302,7 @@ class Ticket extends CommonITILObject {
                                    OR (`glpi_tickets_users`.`tickets_id` = '".$item->getID()."'
                                        AND `glpi_tickets_users`.`users_id`
                                             = '".Session::getLoginUserID()."')
-                                   OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
+                                   OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups'])."))";
             }
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
