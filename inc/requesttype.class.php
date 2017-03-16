@@ -79,7 +79,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_helpdesk_default',
          'name'               => __('Default for tickets'),
          'datatype'           => 'bool',
@@ -88,7 +88,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '182',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_followup_default',
          'name'               => __('Default for followups'),
          'datatype'           => 'bool',
@@ -97,7 +97,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_mail_default',
          'name'               => __('Default for mail recipients'),
          'datatype'           => 'bool',
@@ -106,7 +106,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '183',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_mailfollowup_default',
          'name'               => __('Default for followup mail recipients'),
          'datatype'           => 'bool',
@@ -115,7 +115,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -123,7 +123,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '180',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_ticketheader',
          'name'               => __('Request source visible for tickets'),
          'datatype'           => 'bool'
@@ -131,7 +131,7 @@ class RequestType extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '181',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_ticketfollowup',
          'name'               => __('Request source visible for followups'),
          'datatype'           => 'bool'
@@ -145,28 +145,28 @@ class RequestType extends CommonDropdown {
       global $DB;
 
       if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_helpdesk_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
 
       if (isset($this->input["is_followup_default"]) && $this->input["is_followup_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_followup_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
 
       if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_mail_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
 
       if (isset($this->input["is_mailfollowup_default"]) && $this->input["is_mailfollowup_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `is_mailfollowup_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
@@ -183,7 +183,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_helpdesk_default', $this->updates)) {
 
          if ($this->input["is_helpdesk_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
+            $query = "UPDATE `".static::getTable()."`
                       SET `is_helpdesk_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
@@ -196,7 +196,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_followup_default', $this->updates)) {
 
          if ($this->input["is_followup_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
+            $query = "UPDATE `".static::getTable()."`
                       SET `is_followup_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
@@ -209,7 +209,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_mail_default', $this->updates)) {
 
          if ($this->input["is_mail_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
+            $query = "UPDATE `".static::getTable()."`
                       SET `is_mail_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
@@ -222,7 +222,7 @@ class RequestType extends CommonDropdown {
       if (in_array('is_mailfollowup_default', $this->updates)) {
 
          if ($this->input["is_mailfollowup_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
+            $query = "UPDATE `".static::getTable()."`
                       SET `is_mailfollowup_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);

@@ -490,7 +490,7 @@ class SlaLevel extends RuleTicket {
          switch ($item->getType()) {
             case 'SLT' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  countElementsInTable($this->getTable(), ['slts_id' => $item->getID()]);
+                  $nb =  countElementsInTable(static::getTable(), ['slts_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }

@@ -161,7 +161,7 @@ class QueuedMail extends CommonDBTM {
                    AND `entities_id` = '".$input['entities_id']."'
                    AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
                    AND `recipient` = '".$input['recipient']."'";
-         foreach ($DB->request($this->getTable(), $query) as $data) {
+         foreach ($DB->request(static::getTable(), $query) as $data) {
             $this->delete(array('id' => $data['id']), 1);
          }
       }
@@ -180,7 +180,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Subject'),
          'datatype'           => 'itemlink',
@@ -189,7 +189,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -198,7 +198,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'create_time',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -207,7 +207,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'send_time',
          'name'               => __('Expected send date'),
          'datatype'           => 'datetime',
@@ -216,7 +216,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'sent_time',
          'name'               => __('Send date'),
          'datatype'           => 'datetime',
@@ -225,7 +225,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'sender',
          'name'               => __('Sender email'),
          'datatype'           => 'text',
@@ -234,7 +234,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'sendername',
          'name'               => __('Sender name'),
          'datatype'           => 'string',
@@ -243,7 +243,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'recipient',
          'name'               => __('Recipient email'),
          'datatype'           => 'string',
@@ -252,7 +252,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'recipientname',
          'name'               => __('Recipient name'),
          'datatype'           => 'string',
@@ -261,7 +261,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'replyto',
          'name'               => __('Reply-to email'),
          'datatype'           => 'string',
@@ -270,7 +270,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'replytoname',
          'name'               => __('Reply-to name'),
          'datatype'           => 'string',
@@ -279,7 +279,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'headers',
          'name'               => __('Additional headers'),
          'datatype'           => 'specific',
@@ -288,7 +288,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'body_html',
          'name'               => __('Email HTML body'),
          'datatype'           => 'text',
@@ -298,7 +298,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'body_text',
          'name'               => __('Email text body'),
          'datatype'           => 'text',
@@ -307,7 +307,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'messageid',
          'name'               => __('Message ID'),
          'datatype'           => 'string',
@@ -316,7 +316,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'sent_try',
          'name'               => __('Number of tries of sent'),
          'datatype'           => 'integer',
@@ -325,7 +325,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '20',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtype',
@@ -334,7 +334,7 @@ class QueuedMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'items_id',
          'name'               => __('Associated item ID'),
          'massiveaction'      => false,

@@ -50,7 +50,7 @@ if (!isset($_GET['itemtype']) || !($item = getItemForItemtype($_GET['itemtype'])
 }
 
 $item->getEmpty();
-$table = $item->getTable();
+$table = $item::getTable();
 // Security
 if (!isset($item->fields[$_GET['field']]) || !$item->canView()) {
    exit();

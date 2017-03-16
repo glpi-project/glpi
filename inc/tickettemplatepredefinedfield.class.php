@@ -114,7 +114,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
          $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `".static::$items_id."` = '".$this->fields['tickettemplates_id']."'
                          AND `num` = '$items_id_id'";
 
@@ -135,7 +135,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
           && Session::haveRight("tickettemplate", READ)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable($this->getTable(),
+            $nb = countElementsInTable(static::getTable(),
                                        ['tickettemplates_id' => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -165,7 +165,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       global $DB;
 
       $sql = "SELECT *
-              FROM `".$this->getTable()."`
+              FROM `".static::getTable()."`
               WHERE `".static::$items_id."` = '$ID'
               ORDER BY `id`";
       $result = $DB->query($sql);

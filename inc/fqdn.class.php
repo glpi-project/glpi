@@ -200,7 +200,7 @@ class FQDN extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'fqdn',
          'name'               => __('FQDN'),
          'datatype'           => 'string'

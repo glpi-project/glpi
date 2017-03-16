@@ -140,7 +140,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'mac',
          'name'               => __('MAC'),
          'massiveaction'      => false,
@@ -149,7 +149,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'mode',
          'name'               => __('Wifi mode'),
          'massiveaction'      => false,
@@ -158,7 +158,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'version',
          'name'               => __('Wifi protocol version'),
          'massiveaction'      => false

@@ -125,7 +125,7 @@ class Item_Ticket extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(), ['tickets_id' => $input['tickets_id'],
+      if (countElementsInTable(static::getTable(), ['tickets_id' => $input['tickets_id'],
                                                    'itemtype'   => $input['itemtype'],
                                                    'items_id'   => $input['items_id']]) > 0) {
          return false;
@@ -1195,7 +1195,7 @@ class Item_Ticket extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'items_id',
          'name'               => _n('Associated element', 'Associated elements', 2),
          'datatype'           => 'specific',
@@ -1206,7 +1206,7 @@ class Item_Ticket extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '131',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => _n('Associated item type', 'Associated item types', 2),
          'datatype'           => 'itemtypename',

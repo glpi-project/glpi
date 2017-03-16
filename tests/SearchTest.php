@@ -217,7 +217,7 @@ class SearchTest extends DbTestCase {
 
       $displaypref = new DisplayPreference();
       // save table glpi_displaypreferences
-      $dp = getAllDatasFromTable($displaypref->getTable());
+      $dp = getAllDatasFromTable($displaypref::getTable());
       foreach ($dp as $line) {
          $displaypref->delete($line, true);
       }
@@ -260,7 +260,7 @@ class SearchTest extends DbTestCase {
                $number++;
             }
          }
-         $this->assertEquals($number, countElementsInTable($displaypref->getTable(),
+         $this->assertEquals($number, countElementsInTable($displaypref::getTable(),
                  "`itemtype`='".$itemtype."' AND `users_id`=0"));
 
          // do a search query
@@ -275,10 +275,10 @@ class SearchTest extends DbTestCase {
       }
       // restore displaypreference table
       /// TODO: review, this can't work.
-      foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
+      foreach (getAllDatasFromTable($displaypref::getTable()) as $line) {
          $displaypref->delete($line, true);
       }
-      $this->assertEquals(0, countElementsInTable($displaypref->getTable()));
+      $this->assertEquals(0, countElementsInTable($displaypref::getTable()));
       foreach ($dp as $input) {
          $displaypref->add($input);
       }

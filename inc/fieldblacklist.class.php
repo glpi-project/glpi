@@ -90,7 +90,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,
@@ -100,7 +100,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'field',
          'name'               => __('Field'),
          'massiveaction'      => false,
@@ -112,7 +112,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'value',
          'name'               => __('Value'),
          'datatype'           => 'specific',
@@ -325,7 +325,7 @@ class Fieldblacklist extends CommonDropdown {
 
       if ($target = getItemForItemtype($itemtype)) {
          $criteria = array();
-         foreach ($DB->list_fields($target->getTable()) as $field) {
+         foreach ($DB->list_fields($target::getTable()) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
             // MoYo : do not know why  this part ?

@@ -86,7 +86,7 @@ class Transfer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -95,7 +95,7 @@ class Transfer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -104,7 +104,7 @@ class Transfer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

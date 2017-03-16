@@ -74,7 +74,7 @@ class DeviceBattery extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'capacity',
          'name'               => __('Capacity'),
          'datatype'           => 'string'
@@ -82,7 +82,7 @@ class DeviceBattery extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'voltage',
          'name'               => __('Voltage'),
          'datatype'           => 'string'

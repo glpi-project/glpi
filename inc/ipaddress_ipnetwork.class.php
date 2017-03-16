@@ -62,7 +62,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       global $DB;
 
       $linkObject    = new self();
-      $linkTable     = $linkObject->getTable();
+      $linkTable     = $linkObject::getTable();
       $ipnetworks_id = $network->getID();
 
       // First, remove all links of the current Network

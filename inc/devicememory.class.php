@@ -73,7 +73,7 @@ class DeviceMemory extends CommonDevice {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'size_default',
          'name'               => __('Size by default'),
          'datatype'           => 'string'
@@ -81,7 +81,7 @@ class DeviceMemory extends CommonDevice {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'frequence',
          'name'               => __('Frequency'),
          'datatype'           => 'string'

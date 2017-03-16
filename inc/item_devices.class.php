@@ -118,7 +118,7 @@ class Item_Devices extends CommonDBRelation {
                $table = 'glpi_locations';
                break;
             default:
-               $table = $this->getTable();
+               $table = static::getTable();
          }
 
          $newtab = [
@@ -612,25 +612,25 @@ class Item_Devices extends CommonDBRelation {
          $where = "";
          if (!empty($peer_type)) {
             $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."`
-                        ON (`".$this->getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
-                            AND `".$this->getTable()."`.`itemtype` = '$peer_type')";
+                        ON (`".static::getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
+                            AND `".static::getTable()."`.`itemtype` = '$peer_type')";
             $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
          }
 
-         $query = "SELECT `".$this->getTable()."`.*
-                   FROM `".$this->getTable()."`
+         $query = "SELECT `".static::getTable()."`.*
+                   FROM `".static::getTable()."`
                    $leftjoin
                    WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
-                         AND `".$this->getTable()."`.`itemtype` = '$peer_type'
-                         AND `".$this->getTable()."`.`is_deleted` = '0'
+                         AND `".static::getTable()."`.`itemtype` = '$peer_type'
+                         AND `".static::getTable()."`.`is_deleted` = '0'
                          $where
-                   ORDER BY `".$this->getTable()."`.`itemtype`, `".$this->getTable()."`.`$fk`";
+                   ORDER BY `".static::getTable()."`.`itemtype`, `".static::getTable()."`.`$fk`";
 
       } else {
          $fk = $this->getDeviceForeignKey();
 
          $query = "SELECT *
-                   FROM `".$this->getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `itemtype` = '".$item->getType()."'
                          AND `items_id` = '".$item->getID()."'
                          AND `is_deleted` = '0'
@@ -943,7 +943,7 @@ class Item_Devices extends CommonDBRelation {
          if ($link) {
             if ($unaffect) {
                $query = "SELECT `id`
-                         FROM `".$link->getTable()."`
+                         FROM `".$link::getTable()."`
                          WHERE `itemtype` = '$itemtype'
                                AND `items_id` = '$items_id'";
                $input = array('items_id' => 0,

@@ -460,7 +460,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                               = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id'));
                }
 
-               $modeltable = getSingular($hardware->getTable())."models";
+               $modeltable = getSingular($hardware::getTable())."models";
                $modelfield = getForeignKeyFieldForTable($modeltable);
 
                if ($hardware->isField($modelfield)) {

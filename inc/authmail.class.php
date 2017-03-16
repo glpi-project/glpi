@@ -93,7 +93,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -102,7 +102,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
@@ -111,7 +111,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'host',
          'name'               => __('Server'),
          'datatype'           => 'string'
@@ -119,7 +119,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'connect_string',
          'name'               => __('Connection string'),
          'massiveaction'      => false,
@@ -128,7 +128,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
@@ -136,7 +136,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -145,7 +145,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

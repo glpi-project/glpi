@@ -86,7 +86,7 @@ class Dropdown {
          return false;
       }
 
-      $table = $item->getTable();
+      $table = $item::getTable();
 
       $params['name']                 = $item->getForeignKeyField();
       $params['value']                = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');

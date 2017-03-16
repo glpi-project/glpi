@@ -421,7 +421,7 @@ class Change extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '60',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'impactcontent',
          'name'               => __('Impact'),
          'massiveaction'      => false,
@@ -430,7 +430,7 @@ class Change extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '61',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'controlistcontent',
          'name'               => __('Control list'),
          'massiveaction'      => false,
@@ -439,7 +439,7 @@ class Change extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '62',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'rolloutplancontent',
          'name'               => __('Deployment plan'),
          'massiveaction'      => false,
@@ -448,7 +448,7 @@ class Change extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '63',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'backoutplancontent',
          'name'               => __('Backup plan'),
          'massiveaction'      => false,
@@ -457,7 +457,7 @@ class Change extends CommonITILObject {
 
       $tab[] = [
          'id'                 => '67',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'checklistcontent',
          'name'               => __('Checklist'),
          'massiveaction'      => false,

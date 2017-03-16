@@ -5454,7 +5454,7 @@ class Search {
             $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
          } else {
             if ($item = getItemForItemtype($itemtype)) {
-               $itemtable = $item->getTable();
+               $itemtable = $item::getTable();
             }
          }
 

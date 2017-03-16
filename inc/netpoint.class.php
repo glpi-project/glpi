@@ -176,11 +176,11 @@ class Netpoint extends CommonDropdown {
 
       if (!empty($input["name"])) {
          $query = "SELECT `id`
-                   FROM `".$this->getTable()."`
+                   FROM `".static::getTable()."`
                    WHERE `name` = '".$input["name"]."'
                          AND `locations_id` = '".(isset($input["locations_id"])
                                                       ?$input["locations_id"]:0)."'".
-                         getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
+                         getEntitiesRestrictRequest(' AND ', static::getTable(), '',
                                                     $input['entities_id'], $this->maybeRecursive());
 
          // Check twin :
@@ -225,7 +225,7 @@ class Netpoint extends CommonDropdown {
          switch ($item->getType()) {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  countElementsInTable($this->getTable(),
+                  $nb =  countElementsInTable(static::getTable(),
                                               ['locations_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

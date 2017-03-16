@@ -119,7 +119,7 @@ class Consumable extends CommonDBChild {
    function backToStock(array $input, $history=1) {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
+      $query = "UPDATE `".static::getTable()."`
                 SET `date_out` = NULL
                 WHERE `id` = '".$input["id"]."'";
 
@@ -162,7 +162,7 @@ class Consumable extends CommonDBChild {
       if (!empty($itemtype)
           && ($items_id > 0)) {
 
-         $query = "UPDATE `".$this->getTable()."`
+         $query = "UPDATE `".static::getTable()."`
                    SET `date_out` = '".date("Y-m-d")."',
                        `itemtype` = '$itemtype',
                        `items_id` = '$items_id'

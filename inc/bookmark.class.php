@@ -581,21 +581,21 @@ class Bookmark extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT `".$this->getTable()."`.*,
+      $query = "SELECT `".static::getTable()."`.*,
                        `glpi_bookmarks_users`.`id` AS IS_DEFAULT
-                FROM `".$this->getTable()."`
+                FROM `".static::getTable()."`
                 LEFT JOIN `glpi_bookmarks_users`
-                  ON (`".$this->getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
-                      AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`
+                  ON (`".static::getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
+                      AND `".static::getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`
                       AND `glpi_bookmarks_users`.`users_id` = '".Session::getLoginUserID()."')
                 WHERE ";
 
       if ($is_private) {
-         $query .= "(`".$this->getTable()."`.`is_private`='1'
-                     AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."') ";
+         $query .= "(`".static::getTable()."`.`is_private`='1'
+                     AND `".static::getTable()."`.`users_id`='".Session::getLoginUserID()."') ";
       } else {
-         $query .= "(`".$this->getTable()."`.`is_private`='0' ".
-                     getEntitiesRestrictRequest("AND", $this->getTable(), "", "", true) . ")";
+         $query .= "(`".static::getTable()."`.`is_private`='0' ".
+                     getEntitiesRestrictRequest("AND", static::getTable(), "", "", true) . ")";
       }
 
       $query .= " ORDER BY `itemtype`, `name`";

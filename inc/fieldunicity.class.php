@@ -312,7 +312,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -321,7 +321,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'datatype'           => 'number',
@@ -330,7 +330,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'fields',
          'name'               => __('Unique fields'),
          'massiveaction'      => false,
@@ -340,7 +340,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'massiveaction'      => false,
@@ -350,7 +350,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'action_refuse',
          'name'               => __('Record into the database denied'),
          'datatype'           => 'bool'
@@ -358,7 +358,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'action_notify',
          'name'               => __('Send a notification'),
          'datatype'           => 'bool'
@@ -366,7 +366,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -374,7 +374,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -382,7 +382,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '30',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool',
@@ -550,7 +550,7 @@ class FieldUnicity extends CommonDropdown {
          $fields_string = implode(',', $fields);
 
          if ($item->maybeTemplate()) {
-            $where_template = " AND `".$item->getTable()."`.`is_template` = '0'";
+            $where_template = " AND `".$item::getTable()."`.`is_template` = '0'";
          } else {
             $where_template = "";
          }
@@ -565,8 +565,8 @@ class FieldUnicity extends CommonDropdown {
          }
          $query = "SELECT $fields_string,
                           COUNT(*) AS cpt
-                   FROM `".$item->getTable()."`
-                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',', $entities).")
+                   FROM `".$item::getTable()."`
+                   WHERE `".$item::getTable()."`.`entities_id` IN (".implode(',', $entities).")
                          $where_template
                          $where_fields_string
                    GROUP BY $fields_string

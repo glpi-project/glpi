@@ -149,11 +149,11 @@ class Log extends CommonDBTM {
 
             } else if (($val2['linkfield'] == $key)
                 || (($key == $val2['field'])
-                    && ($val2['table'] == $item->getTable()))) {
+                    && ($val2['table'] == $item::getTable()))) {
                // Linkfield or standard field not massive action enable
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
-               if ($val2['table'] == $item->getTable()) {
+               if ($val2['table'] == $item::getTable()) {
                   $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                } else {
                   // other cases; link field -> get data from dropdown
@@ -323,7 +323,7 @@ class Log extends CommonDBTM {
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
-      $itemtable = $item->getTable();
+      $itemtable = $item::getTable();
 
       $SEARCHOPTION = Search::getOptions($itemtype);
 

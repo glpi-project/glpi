@@ -153,7 +153,7 @@ class RuleAction extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'action_type',
          'name'               => self::getTypeName(1),
          'massiveaction'      => false,
@@ -163,7 +163,7 @@ class RuleAction extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'field',
          'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
          'massiveaction'      => false,
@@ -173,7 +173,7 @@ class RuleAction extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'value',
          'name'               => __('Value'),
          'massiveaction'      => false,
@@ -303,7 +303,7 @@ class RuleAction extends CommonDBChild {
       global $DB;
 
       $sql = "SELECT *
-              FROM `".$this->getTable()."`
+              FROM `".static::getTable()."`
               WHERE `".static::$items_id."` = '$ID'
               ORDER BY `id`";
       $result = $DB->query($sql);
@@ -453,7 +453,7 @@ class RuleAction extends CommonDBChild {
 
          $actions = array();
          $res     = $DB->query("SELECT `field`
-                                FROM `".$this->getTable()."`
+                                FROM `".static::getTable()."`
                                 WHERE `".static::$items_id."` = '".$rules_id."'");
 
          while ($action = $DB->fetch_assoc($res)) {

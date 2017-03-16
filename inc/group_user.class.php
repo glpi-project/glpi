@@ -614,7 +614,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -623,7 +623,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_dynamic',
          'name'               => __('Dynamic'),
          'datatype'           => 'bool',
@@ -651,7 +651,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_manager',
          'name'               => __('Manager'),
          'datatype'           => 'bool'
@@ -659,7 +659,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_userdelegate',
          'name'               => __('Delegatee'),
          'datatype'           => 'bool'
@@ -693,7 +693,7 @@ class Group_User extends CommonDBRelation{
             case 'User' :
                if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable($this->getTable(),
+                     $nb = countElementsInTable(static::getTable(),
                                                ['users_id' => $item->getID()]);
                   }
                   return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);

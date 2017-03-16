@@ -57,7 +57,7 @@ class SlaLevel_Ticket extends CommonDBTM {
       $query = "LEFT JOIN `glpi_slalevels`
                      ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
-                WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
+                WHERE `".static::getTable()."`.`tickets_id` = '$ID'
                       AND `glpi_slts`.`type` = '$sltType'
                 LIMIT 1";
 

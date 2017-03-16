@@ -208,7 +208,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'designation',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -225,7 +225,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -233,7 +233,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -242,7 +242,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -417,7 +417,7 @@ abstract class CommonDevice extends CommonDropdown {
       }
 
       $query = "SELECT `id`
-                FROM `".$this->getTable()."`
+                FROM `".static::getTable()."`
                 WHERE ".  implode(" AND ", $where);
 
       $result = $DB->query($query);

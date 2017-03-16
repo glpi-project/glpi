@@ -57,7 +57,7 @@ if (isset($_POST["entity_restrict"])
 if (!($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
-$table = $item->getTable();
+$table = $item::getTable();
 $datas = array();
 
 $displaywith = false;

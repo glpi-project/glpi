@@ -135,7 +135,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'from',
          'name'               => __('From email header'),
          'massiveaction'      => false,
@@ -144,7 +144,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'to',
          'name'               => __('To email header'),
          'massiveaction'      => false,
@@ -153,7 +153,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'subject',
          'name'               => __('Subject email header'),
          'massiveaction'      => false,
@@ -170,7 +170,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'messageid',
          'name'               => __('Message-ID email header'),
          'massiveaction'      => false,
@@ -188,7 +188,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'reason',
          'name'               => __('Reason of rejection'),
          'datatype'           => 'specific',
@@ -197,7 +197,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date',
          'name'               => __('Date'),
          'datatype'           => 'datetime',

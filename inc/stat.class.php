@@ -224,7 +224,7 @@ class Stat extends CommonGLPI {
          default :
             if (($item = getItemForItemtype($type))
                 && ($item instanceof CommonDevice)) {
-               $device_table = $item->getTable();
+               $device_table = $item::getTable();
 
                //select devices IDs (table row)
                $query = "SELECT `id`, `designation`
@@ -698,22 +698,22 @@ class Stat extends CommonGLPI {
       if (!$item = getItemForItemtype($itemtype)) {
          return;
       }
-      $table          = $item->getTable();
+      $table          = $item::getTable();
       $fkfield        = $item->getForeignKeyField();
 
       if (!($userlinkclass = getItemForItemtype($item->userlinkclass))) {
          return;
       }
-      $userlinktable  = $userlinkclass->getTable();
+      $userlinktable  = $userlinkclass::getTable();
       if (!$grouplinkclass = getItemForItemtype($item->grouplinkclass)) {
          return;
       }
-      $grouplinktable = $grouplinkclass->getTable();
+      $grouplinktable = $grouplinkclass::getTable();
 
       if (!($supplierlinkclass = getItemForItemtype($item->supplierlinkclass))) {
          return;
       }
-      $supplierlinktable = $supplierlinkclass->getTable();
+      $supplierlinktable = $supplierlinkclass::getTable();
 
       $tasktable      = getTableForItemType($item->getType().'Task');
 

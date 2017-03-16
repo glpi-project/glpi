@@ -503,7 +503,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -512,7 +512,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -548,7 +548,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string'
@@ -556,7 +556,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string'
@@ -564,7 +564,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string'
@@ -572,7 +572,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string'
@@ -598,7 +598,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -607,7 +607,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -616,7 +616,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -624,7 +624,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '42',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_serial',
          'name'               => __('Serial'),
          'datatype'           => 'bool'
@@ -632,7 +632,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '43',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_parallel',
          'name'               => __('Parallel'),
          'datatype'           => 'bool'
@@ -640,7 +640,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '44',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_usb',
          'name'               => __('USB'),
          'datatype'           => 'bool'
@@ -648,7 +648,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '45',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_ethernet',
          'name'               => __('Ethernet'),
          'datatype'           => 'bool'
@@ -656,7 +656,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '46',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'have_wifi',
          'name'               => __('Wifi'),
          'datatype'           => 'bool'
@@ -664,7 +664,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'memory_size',
          'name'               => __('Memory'),
          'datatype'           => 'string'
@@ -672,7 +672,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'init_pages_counter',
          'name'               => __('Initial page counter'),
          'datatype'           => 'number',
@@ -681,7 +681,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'last_pages_counter',
          'name'               => __('Current counter of pages'),
          'datatype'           => 'number'
@@ -689,7 +689,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
          'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
@@ -785,7 +785,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '82',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_global',
          'name'               => __('Global management'),
          'datatype'           => 'bool',
@@ -794,7 +794,7 @@ class Printer  extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

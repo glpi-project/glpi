@@ -150,7 +150,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -159,7 +159,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'itemtype',
          'name'               => __('Type'),
          'datatype'           => 'itemtypename',
@@ -169,7 +169,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'

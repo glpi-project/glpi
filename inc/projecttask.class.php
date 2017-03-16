@@ -599,7 +599,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -617,7 +617,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Father'),
          'datatype'           => 'dropdown',
@@ -630,7 +630,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '21',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'content',
          'name'               => __('Description'),
          'massiveaction'      => false,
@@ -655,7 +655,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '15',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date',
          'name'               => __('Opening date'),
          'datatype'           => 'datetime',
@@ -664,7 +664,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -673,7 +673,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'percent_done',
          'name'               => __('Percent done'),
          'datatype'           => 'number',
@@ -694,7 +694,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'plan_start_date',
          'name'               => __('Planned start date'),
          'datatype'           => 'datetime'
@@ -702,7 +702,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'plan_end_date',
          'name'               => __('Planned end date'),
          'datatype'           => 'datetime'
@@ -710,7 +710,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '9',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'real_start_date',
          'name'               => __('Real start date'),
          'datatype'           => 'datetime'
@@ -718,7 +718,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'real_end_date',
          'name'               => __('Real end date'),
          'datatype'           => 'datetime'
@@ -726,7 +726,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'planned_duration',
          'name'               => __('Planned duration'),
          'datatype'           => 'timestamp',
@@ -739,7 +739,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '17',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'effective_duration',
          'name'               => __('Effective duration'),
          'datatype'           => 'timestamp',
@@ -752,7 +752,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -760,7 +760,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '18',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_milestone',
          'name'               => __('Milestone'),
          'datatype'           => 'bool'
@@ -776,7 +776,7 @@ class ProjectTask extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
@@ -993,14 +993,14 @@ class ProjectTask extends CommonDBChild {
          switch ($item->getType()) {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable(static::getTable(),
                                             ['projects_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
             case __CLASS__ :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
+                  $nb = countElementsInTable(static::getTable(),
                                             ['projecttasks_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);

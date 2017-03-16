@@ -194,7 +194,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                                                    $item2->getField('groups_id'));
                      }
 
-                     $modeltable = getSingular($item2->getTable())."models";
+                     $modeltable = getSingular($item2::getTable())."models";
                      $modelfield = getForeignKeyFieldForTable($modeltable);
 
                      if ($item2->isField($modelfield)) {

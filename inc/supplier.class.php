@@ -228,7 +228,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '1',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'itemlink',
@@ -237,7 +237,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '2',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'id',
          'name'               => __('ID'),
          'massiveaction'      => false,
@@ -246,7 +246,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '3',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'address',
          'name'               => __('Address'),
          'datatype'           => 'text'
@@ -254,7 +254,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '10',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'fax',
          'name'               => __('Fax'),
          'datatype'           => 'string'
@@ -262,7 +262,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'town',
          'name'               => __('City'),
          'datatype'           => 'string'
@@ -270,7 +270,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '14',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'postcode',
          'name'               => __('Postal code'),
          'datatype'           => 'string'
@@ -278,7 +278,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '12',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'state',
          'name'               => _x('location', 'State'),
          'datatype'           => 'string'
@@ -286,7 +286,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '13',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'country',
          'name'               => __('Country'),
          'datatype'           => 'string'
@@ -294,7 +294,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '4',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'website',
          'name'               => __('Website'),
          'datatype'           => 'weblink'
@@ -302,7 +302,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'phonenumber',
          'name'               => __('Phone'),
          'datatype'           => 'string'
@@ -310,7 +310,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'email',
          'name'               => _n('Email', 'Emails', 1),
          'datatype'           => 'email'
@@ -326,7 +326,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -335,7 +335,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
@@ -372,7 +372,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -389,7 +389,7 @@ class Supplier extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '86',
-         'table'              => $this->getTable(),
+         'table'              => static::getTable(),
          'field'              => 'is_recursive',
          'name'               => __('Child entities'),
          'datatype'           => 'bool'

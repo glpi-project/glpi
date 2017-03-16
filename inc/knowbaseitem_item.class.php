@@ -317,7 +317,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
-      $itemtable = $item->getTable();
+      $itemtable = $item::getTable();
 
       if ($item::getType() == KnowbaseItem::getType()) {
          $id_field = 'glpi_knowbaseitems_items.knowbaseitems_id';
@@ -330,11 +330,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
          }
       } else {
          $id_field = 'glpi_knowbaseitems_items.items_id';
-         $where = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
+         $where = getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
          $where[] = ['glpi_knowbaseitems_items.itemtype' => $item::getType()];
          if (count($where)) {
-            $options['FROM'][] = $item->getTable();
-            $where[] = ['glpi_knowbaseitems_items.items_id' => '`' . $item->getTable() . '`.`id`'];
+            $options['FROM'][] = $item::getTable();
+            $where[] = ['glpi_knowbaseitems_items.items_id' => '`' . $item::getTable() . '`.`id`'];
          }
       }
 
