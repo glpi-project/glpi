@@ -193,10 +193,12 @@ $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'C
                                                   'SoftwareLicense', 'Supplier','User'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense'];
+                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+                                                  'Certificate'];
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense'];
+                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+                                                  'Certificate'];
 
 $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
@@ -204,7 +206,8 @@ $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEqui
                                                   'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
                                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceBattery', 'DeviceFirmware'];
+                                                  'DeviceBattery', 'DeviceFirmware',
+                                                  'Certificate'];
 
 
 $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change', 'Computer',
@@ -213,7 +216,8 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Problem', 'Project', 'ProjectTask',
                                                   'Reminder', 'Software', 'Line',
-                                                  'SoftwareLicense', 'Supplier', 'Ticket','User'];
+                                                  'SoftwareLicense', 'Supplier', 'Ticket','User',
+                                                  'Certificate'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
 
@@ -228,49 +232,49 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-                                                  'Software', 'SoftwareLicense'], $CFG_GLPI['itemdevices']);
+                                                  'Software', 'SoftwareLicense', 'Certificate'], $CFG_GLPI['itemdevices']);
 
-$CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer', 'Certificate'];
 
 $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Computer',
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Line'];
+                                                  'Line', 'Certificate'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
 
 $CFG_GLPI["linkuser_types"]               = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense'];
+                                                  'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI["linkgroup_types"]              = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense'];
+                                                  'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI["linkuser_tech_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense'];
+                                                  'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI["linkgroup_tech_types"]         = ['Computer', 'Consumable', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense'];
+                                                  'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
                                                   'Computer', 'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'SoftwareLicense',
-                                                  'Ticket', 'User'];
+                                                  'Ticket', 'User', 'Certificate'];
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Line'];
+                                                  'SoftwareLicense', 'Line', 'Certificate'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'User'];
+                                                  'Printer', 'Software', 'Supplier', 'User', 'Certificate'];
 
 $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
                                                   'MonitorModel', 'MonitorType',
@@ -356,7 +360,7 @@ $CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
                                                   'Printer', 'Software', 'SoftwareLicense',
                                                   'Ticket', 'Problem', 'Change',
                                                   'User', 'Group', 'Project', 'Supplier',
-                                                  'Budget'];
+                                                  'Budget', 'Certificate'];
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
@@ -405,7 +409,7 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
-                                           'SoftwareLicense'];
+                                           'SoftwareLicense', 'Certificate'];
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Computer_SoftwareLicense',
                                            'Computer_SoftwareVersion', 'ComputerDisk', 'ComputerVirtualMachine',
@@ -417,7 +421,10 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Peripheral', 'Phone', 'Printer',
                                            'Problem', 'Project', 'Software',
                                            'SoftwareLicense', 'Supplier',
-                                           'Ticket'];
+                                           'Ticket', 'Certificate'];
+$CFG_GLPI["certificate_types"]     = ['Computer', 'Monitor',
+                                      'NetworkEquipment', 'Peripheral',
+                                      'Phone', 'Printer', 'Software', 'User'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [
