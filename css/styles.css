@@ -121,6 +121,10 @@ sup {
    float: left;
 }
 
+.nofloat {
+   float: none!important;
+}
+
 .center-h {
    margin:auto;
 }
@@ -4333,6 +4337,8 @@ span.count {
    padding: .2em .5em;
    float: right;
    margin-top: -0.2em;
+   margin-left: .5em;
+   font-weight: bold;
 }
 
 span.count img {

@@ -311,7 +311,7 @@ $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'Co
                                                   'FieldUnicity', 'Infocom', 'MailCollector',
                                                   'ObjectLock', 'PlanningRecall', 'Problem',
                                                   'Project', 'ProjectTask', 'Reservation',
-                                                  'SoftwareLicense', 'Ticket', 'User');
+                                                  'SoftwareLicense', 'Ticket', 'User', 'SavedSearch_Alert');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 

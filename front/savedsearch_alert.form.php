@@ -32,41 +32,54 @@
 
 include ('../inc/includes.php');
 
+Session::checkCentralAccess();
+
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-
-if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+if (!isset($_GET["savedsearches_id"])) {
+   $_GET["savedsearches_id"] = "";
 }
 
-$savedsearch = new SavedSearch();
+$alert = new SavedSearch_Alert();
 if (isset($_POST["add"])) {
-   //Add a new saved search
-   $savedsearch->check(-1, CREATE, $_POST);
-   if ($newID = $savedsearch->add($_POST)) {
+   $alert->check(-1, CREATE, $_POST);
+
+   if ($newID = $alert->add($_POST)) {
+      Event::log($_POST['savedsearches_id'], "savedsearches", 4, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds an alert'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($savedsearch->getFormURL()."?id=".$newID);
+         Html::redirect($alert->getFormURL()."?id=".$newID);
       }
    }
    Html::back();
-} else if (isset($_POST["delete"])) {
-   // delete a saved search
-   $savedsearch->check($_POST['id'], DELETE);
-   $ok = $savedsearch->delete($_POST, 1);
-   $savedsearch->redirectToList();
+
+} else if (isset($_POST["purge"])) {
+   $alert->check($_POST["id"], PURGE);
+
+   if ($alert->delete($_POST, 1)) {
+      Event::log($alert->fields['savedsearches_id'], "savedsearches", 4, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an alert'), $_SESSION["glpiname"]));
+   }
+   $search = new SavedSearch();
+   $search->getFromDB($alert->fields['savedsearches_id']);
+   Html::redirect(Toolbox::getItemTypeFormURL('SavedSearch').'?id='.$alert->fields['savedsearches_id']);
+
 } else if (isset($_POST["update"])) {
-   //update a saved search
-   $savedsearch->check($_POST['id'], UPDATE);
-   $savedsearch->update($_POST);
+   $alert->check($_POST["id"], UPDATE);
+
+   if ($alert->update($_POST)) {
+      Event::log($alert->fields['savedsearches_id'], "savedsearches", 4, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates an alert'), $_SESSION["glpiname"]));
+   }
    Html::back();
-} else if (isset($_GET['create_notif'])) {
-   $savedsearch->check($_GET['id'], UPDATE);
-   $savedsearch->createNotif();
-   Html::back();
-} else {//print computer information
+
+} else {
    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearch");
-   //show computer form to add
-   $savedsearch->display(['id' => $_GET["id"]]);
+   $alert->display(array('id'           => $_GET["id"],
+                        'savedsearches_id' => $_GET["savedsearches_id"]));
    Html::footer();
 }
