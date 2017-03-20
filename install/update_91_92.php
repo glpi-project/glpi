@@ -79,7 +79,8 @@ function update91to92() {
       'glpi_devicebatterytypes',
       'glpi_devicefirmwares',
       'glpi_items_devicefirmwares',
-      'glpi_devicefirmwaretypes'
+      'glpi_devicefirmwaretypes',
+      'glpi_savedsearches_alerts'
    );
 
    $has_backups = $migration->backupTables($newtables);
@@ -654,6 +655,26 @@ function update91to92() {
       $migration->changeField('glpi_savedsearches_users', 'bookmarks_id', 'savedsearches_id', 'int(11) NOT NULL DEFAULT "0"');
    }
 
+   if (!TableExists('glpi_savedsearches_alerts')) {
+      $query = "CREATE TABLE `glpi_savedsearches_alerts` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `savedsearches_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+                  `operator` tinyint(1) NOT NULL,
+                  `value` int(11) NOT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `is_active` (`is_active`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`),
+                  UNIQUE KEY `unicity` (`savedsearches_id`,`operator`, `value`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_savedsearches_alerts");
+   }
+
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
@@ -680,7 +701,7 @@ function update91to92() {
       );
    }
 
-   // cron task
+   // count cron task
    if (!countElementsInTable('glpi_crontasks',
                              "`itemtype`='SavedSearch' AND `name`='countAll'")) {
       $query = "INSERT INTO `glpi_crontasks`
@@ -688,7 +709,62 @@ function update91to92() {
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('SavedSearch', 'countAll', 604800, NULL, 0, 1, 3,
                         0, 24, 10, NULL, NULL, NULL); ";
-      $DB->queryOrDie($query, "9.1 Add countAll SavedSearch cron task");
+      $DB->queryOrDie($query, "9.2 Add countAll SavedSearch cron task");
+   }
+
+   // alerts cron task
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='SavedSearch_Alert' AND `name`='savedsearchesalerts'")) {
+       $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('SavedSearch_Alert', 'savedsearchesalerts', 86400, NULL, 0, 1, 3,
+                        0, 24, 10, NULL, NULL, NULL); ";
+      $DB->queryOrDie($query, "9.2 Add saved searches alerts cron task");
+   }
+
+   if (!countElementsInTable('glpi_notifications',
+                             "`itemtype`='SavedSearch_Alert'")) {
+      $query = "INSERT INTO `glpi_notifications` VALUES (null,'Saved searches','0','SavedSearch_Alert','alert','mail','24','','1','1','2016-02-08 16:57:46',NULL);";
+      $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
+      $notid = $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtargets` VALUES (null,'19','1','$notid');";
+      $DB->queryOrDie($query, "9.2 Add saved search alerts notification targets");
+
+      $query = "INSERT INTO `glpi_notificationtemplates`
+                     (`name`, `itemtype`, `date_mod`)
+               VALUES ('Saved searches alerts', 'SavedSearch_Alert', NOW())";
+      $DB->queryOrDie($query, "9.2 Add saved search alerts notification template");
+      $notid = $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                           (`notificationtemplates_id`, `language`,
+                              `subject`,
+                              `content_text`,
+                              `content_html`)
+                     VALUES ($notid, '', '##savedsearch.action## ##savedsearch.name##',
+                     '##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
+
+##savedsearch.message##
+
+##lang.savedsearch.url##
+##savedsearch.url##
+
+Regards,',
+                     '&lt;table&gt;
+                     &lt;tbody&gt;
+                     &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
+                     &lt;tr&gt;&lt;td colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.message##&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                     &lt;tr&gt;
+                     &lt;td&gt;##lang.savedsearch.url##&lt;/td&gt;
+                     &lt;td&gt;##savedsearch.url##&lt;/td&gt;
+                     &lt;/tr&gt;
+                     &lt;/tbody&gt;
+                     &lt;/table&gt;
+                     &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;')";
+
+      $DB->queryOrDie($query, "9.2 add saved searches alerts notification translation");
    }
 
    if ($has_backups) {
