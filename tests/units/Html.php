@@ -366,7 +366,7 @@ class Html extends atoum {
          'Entity',
          'Rule',
          'Profile',
-         'QueuedMail',
+         'QueuedNotification',
          'Backup',
          'Event'
       ];

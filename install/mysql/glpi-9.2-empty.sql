@@ -1018,7 +1018,7 @@ INSERT INTO `glpi_configs` VALUES ('4','core','list_limit','15');
 INSERT INTO `glpi_configs` VALUES ('5','core','list_limit_max','50');
 INSERT INTO `glpi_configs` VALUES ('6','core','url_maxlength','30');
 INSERT INTO `glpi_configs` VALUES ('7','core','event_loglevel','5');
-INSERT INTO `glpi_configs` VALUES ('8','core','use_mailing','0');
+INSERT INTO `glpi_configs` VALUES ('8','core','notifications_mailing','0');
 INSERT INTO `glpi_configs` VALUES ('9','core','admin_email','admsys@localhost');
 INSERT INTO `glpi_configs` VALUES ('10','core','admin_email_name','');
 INSERT INTO `glpi_configs` VALUES ('11','core','admin_reply','');
@@ -1177,6 +1177,11 @@ INSERT INTO `glpi_configs` VALUES ('169','core','enable_api_login_external_token
 INSERT INTO `glpi_configs` VALUES ('170','core','url_base_api','http://localhost/glpi/api');
 INSERT INTO `glpi_configs` VALUES ('171','core','login_remember_time','604800');
 INSERT INTO `glpi_configs` VALUES ('172','core','login_remember_default','1');
+INSERT INTO `glpi_configs` VALUES ('173','core','use_notifications','0');
+INSERT INTO `glpi_configs` VALUES ('174','core','notifications_ajax','0');
+INSERT INTO `glpi_configs` VALUES ('175','core','notifications_ajax_check_interval', '5');
+INSERT INTO `glpi_configs` VALUES ('176','core','notifications_ajax_sound', NULL);
+INSERT INTO `glpi_configs` VALUES ('177','core','notifications_ajax_icon_url', '/pics/glpi.png');
 
 
 ### Dump table glpi_consumableitems
@@ -1500,8 +1505,8 @@ INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,
 INSERT INTO `glpi_crontasks` VALUES ('19','Crontask','watcher','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('20','TicketRecurrent','ticketrecurrent','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('21','PlanningRecall','planningrecall','300',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('22','QueuedMail','queuedmail','60','50','1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('23','QueuedMail','queuedmailclean','86400','30','1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('22','QueuedNotification','queuednotification','60','50','1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('23','QueuedNotification','queuednotificationclean','86400','30','1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('24','Crontask','temp','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('25','MailCollector','mailgateerror','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
@@ -4371,8 +4376,6 @@ CREATE TABLE `glpi_notifications` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `mode` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
@@ -4385,76 +4388,159 @@ CREATE TABLE `glpi_notifications` (
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `notificationtemplates_id` (`notificationtemplates_id`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','0','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('7','Update Followup','0','Ticket','update_followup','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('8','Update Task','0','Ticket','update_task','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('9','Delete Followup','0','Ticket','delete_followup','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('10','Delete Task','0','Ticket','delete_task','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('11','Resolve ticket','0','Ticket','solved','mail','4','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('12','Ticket Validation','0','Ticket','validation','mail','7','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('13','New Reservation','0','Reservation','new','mail','2','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('14','Update Reservation','0','Reservation','update','mail','2','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('15','Delete Reservation','0','Reservation','delete','mail','2','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('16','Alert Reservation','0','Reservation','alert','mail','3','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('17','Contract Notice','0','Contract','notice','mail','12','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('18','Contract End','0','Contract','end','mail','12','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('19','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('20','Cartridges','0','CartridgeItem','alert','mail','8','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('21','Consumables','0','ConsumableItem','alert','mail','9','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('22','Infocoms','0','Infocom','alert','mail','10','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('23','Software Licenses','0','SoftwareLicense','alert','mail','11','','1','1','2010-02-16 16:41:39',NULL);
-INSERT INTO `glpi_notifications` VALUES ('24','Ticket Recall','0','Ticket','recall','mail','4','','1','1','2011-03-04 11:35:13',NULL);
-INSERT INTO `glpi_notifications` VALUES ('25','Password Forget','0','User','passwordforget','mail','13','','1','1','2011-03-04 11:35:13',NULL);
-INSERT INTO `glpi_notifications` VALUES ('26','Ticket Satisfaction','0','Ticket','satisfaction','mail','14','','1','1','2011-03-04 11:35:15',NULL);
-INSERT INTO `glpi_notifications` VALUES ('27','Item not unique','0','FieldUnicity','refuse','mail','15','','1','1','2011-03-04 11:35:16',NULL);
-INSERT INTO `glpi_notifications` VALUES ('28','Crontask Watcher','0','Crontask','alert','mail','16','','1','1','2011-03-04 11:35:16',NULL);
-INSERT INTO `glpi_notifications` VALUES ('29','New Problem','0','Problem','new','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('30','Update Problem','0','Problem','update','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('31','Resolve Problem','0','Problem','solved','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('32','Add Task','0','Problem','add_task','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('33','Update Task','0','Problem','update_task','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('34','Delete Task','0','Problem','delete_task','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('35','Close Problem','0','Problem','closed','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('36','Delete Problem','0','Problem','delete','mail','17','','1','1','2011-12-06 09:48:33',NULL);
-INSERT INTO `glpi_notifications` VALUES ('37','Ticket Validation Answer','0','Ticket','validation_answer','mail','7','','1','1','2014-01-15 14:35:24',NULL);
-INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Contract','periodicity','mail','12','','1','1','2014-01-15 14:35:24',NULL);
-INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2014-01-15 14:35:24',NULL);
-INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2014-01-15 14:35:24',NULL);
-INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2014-01-15 14:35:26',NULL);
-INSERT INTO `glpi_notifications` VALUES ('42','New Change','0','Change','new','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('43','Update Change','0','Change','update','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('44','Resolve Change','0','Change','solved','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('45','Add Task','0','Change','add_task','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('46','Update Task','0','Change','update_task','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('47','Delete Task','0','Change','delete_task','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('48','Close Change','0','Change','closed','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('49','Delete Change','0','Change','delete','mail','19','','1','1','2014-06-18 08:02:07',NULL);
-INSERT INTO `glpi_notifications` VALUES ('50','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2014-06-18 08:02:08',NULL);
-INSERT INTO `glpi_notifications` VALUES ('51','Receiver errors','0','MailCollector','error','mail','20','','1','1','2014-06-18 08:02:08',NULL);
-INSERT INTO `glpi_notifications` VALUES ('52','New Project','0','Project','new','mail','21','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('53','Update Project','0','Project','update','mail','21','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('54','Delete Project','0','Project','delete','mail','21','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('55','New Project Task','0','ProjectTask','new','mail','22','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('56','Update Project Task','0','ProjectTask','update','mail','22','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('57','Delete Project Task','0','ProjectTask','delete','mail','22','','1','1','2014-06-18 08:02:09',NULL);
-INSERT INTO `glpi_notifications` VALUES ('58','Request Unlock Items','0','ObjectLock','unlock','mail','23','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('59','New user in requesters','0','Ticket','requester_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('60','New group in requesters','0','Ticket','requester_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('61','New user in observers','0','Ticket','observer_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('62','New group in observers','0','Ticket','observer_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('63','New user in assignees','0','Ticket','assign_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('64','New group in assignees','0','Ticket','assign_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('65','New supplier in assignees','0','Ticket','assign_supplier','mail','4','','1','1','2016-02-08 16:57:46',NULL);
-INSERT INTO `glpi_notifications` VALUES ('66','Saved searches','0','SavedSearch_Alert','alert','mail','24','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES(1, 'Alert Tickets not closed', 0, 'Ticket', 'alertnotclosed', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(2, 'New Ticket', 0, 'Ticket', 'new', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(3, 'Update Ticket', 0, 'Ticket', 'update', '', 1, 0, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(4, 'Close Ticket', 0, 'Ticket', 'closed', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(5, 'Add Followup', 0, 'Ticket', 'add_followup', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(6, 'Add Task', 0, 'Ticket', 'add_task', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(7, 'Update Followup', 0, 'Ticket', 'update_followup', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(8, 'Update Task', 0, 'Ticket', 'update_task', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(9, 'Delete Followup', 0, 'Ticket', 'delete_followup', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(10, 'Delete Task', 0, 'Ticket', 'delete_task', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(11, 'Resolve ticket', 0, 'Ticket', 'solved', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(12, 'Ticket Validation', 0, 'Ticket', 'validation', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(13, 'New Reservation', 0, 'Reservation', 'new', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(14, 'Update Reservation', 0, 'Reservation', 'update', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(15, 'Delete Reservation', 0, 'Reservation', 'delete', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(16, 'Alert Reservation', 0, 'Reservation', 'alert', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(17, 'Contract Notice', 0, 'Contract', 'notice', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(18, 'Contract End', 0, 'Contract', 'end', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(19, 'MySQL Synchronization', 0, 'DBConnection', 'desynchronization', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(20, 'Cartridges', 0, 'CartridgeItem', 'alert', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(21, 'Consumables', 0, 'ConsumableItem', 'alert', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(22, 'Infocoms', 0, 'Infocom', 'alert', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(23, 'Software Licenses', 0, 'SoftwareLicense', 'alert', '', 1, 1, '2010-02-16 16:41:39', NULL);
+INSERT INTO `glpi_notifications` VALUES(24, 'Ticket Recall', 0, 'Ticket', 'recall', '', 1, 1, '2011-03-04 11:35:13', NULL);
+INSERT INTO `glpi_notifications` VALUES(25, 'Password Forget', 0, 'User', 'passwordforget', '', 1, 1, '2011-03-04 11:35:13', NULL);
+INSERT INTO `glpi_notifications` VALUES(26, 'Ticket Satisfaction', 0, 'Ticket', 'satisfaction', '', 1, 1, '2011-03-04 11:35:15', NULL);
+INSERT INTO `glpi_notifications` VALUES(27, 'Item not unique', 0, 'FieldUnicity', 'refuse', '', 1, 1, '2011-03-04 11:35:16', NULL);
+INSERT INTO `glpi_notifications` VALUES(28, 'Crontask Watcher', 0, 'Crontask', 'alert', '', 1, 1, '2011-03-04 11:35:16', NULL);
+INSERT INTO `glpi_notifications` VALUES(29, 'New Problem', 0, 'Problem', 'new', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(30, 'Update Problem', 0, 'Problem', 'update', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(31, 'Resolve Problem', 0, 'Problem', 'solved', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(32, 'Add Task', 0, 'Problem', 'add_task', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(33, 'Update Task', 0, 'Problem', 'update_task', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(34, 'Delete Task', 0, 'Problem', 'delete_task', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(35, 'Close Problem', 0, 'Problem', 'closed', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(36, 'Delete Problem', 0, 'Problem', 'delete', '', 1, 1, '2011-12-06 09:48:33', NULL);
+INSERT INTO `glpi_notifications` VALUES(37, 'Ticket Validation Answer', 0, 'Ticket', 'validation_answer', '', 1, 1, '2014-01-15 14:35:24', NULL);
+INSERT INTO `glpi_notifications` VALUES(38, 'Contract End Periodicity', 0, 'Contract', 'periodicity', '', 1, 1, '2014-01-15 14:35:24', NULL);
+INSERT INTO `glpi_notifications` VALUES(39, 'Contract Notice Periodicity', 0, 'Contract', 'periodicitynotice', '', 1, 1, '2014-01-15 14:35:24', NULL);
+INSERT INTO `glpi_notifications` VALUES(40, 'Planning recall', 0, 'PlanningRecall', 'planningrecall', '', 1, 1, '2014-01-15 14:35:24', NULL);
+INSERT INTO `glpi_notifications` VALUES(41, 'Delete Ticket', 0, 'Ticket', 'delete', '', 1, 1, '2014-01-15 14:35:26', NULL);
+INSERT INTO `glpi_notifications` VALUES(42, 'New Change', 0, 'Change', 'new', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(43, 'Update Change', 0, 'Change', 'update', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(44, 'Resolve Change', 0, 'Change', 'solved', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(45, 'Add Task', 0, 'Change', 'add_task', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(46, 'Update Task', 0, 'Change', 'update_task', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(47, 'Delete Task', 0, 'Change', 'delete_task', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(48, 'Close Change', 0, 'Change', 'closed', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(49, 'Delete Change', 0, 'Change', 'delete', '', 1, 1, '2014-06-18 08:02:07', NULL);
+INSERT INTO `glpi_notifications` VALUES(50, 'Ticket Satisfaction Answer', 0, 'Ticket', 'replysatisfaction', '', 1, 1, '2014-06-18 08:02:08', NULL);
+INSERT INTO `glpi_notifications` VALUES(51, 'Receiver errors', 0, 'MailCollector', 'error', '', 1, 1, '2014-06-18 08:02:08', NULL);
+INSERT INTO `glpi_notifications` VALUES(52, 'New Project', 0, 'Project', 'new', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(53, 'Update Project', 0, 'Project', 'update', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(54, 'Delete Project', 0, 'Project', 'delete', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(55, 'New Project Task', 0, 'ProjectTask', 'new', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(56, 'Update Project Task', 0, 'ProjectTask', 'update', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(57, 'Delete Project Task', 0, 'ProjectTask', 'delete', '', 1, 1, '2014-06-18 08:02:09', NULL);
+INSERT INTO `glpi_notifications` VALUES(58, 'Request Unlock Items', 0, 'ObjectLock', 'unlock', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(59, 'New user in requesters', 0, 'Ticket', 'requester_user', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(60, 'New group in requesters', 0, 'Ticket', 'requester_group', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(61, 'New user in observers', 0, 'Ticket', 'observer_user', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(62, 'New group in observers', 0, 'Ticket', 'observer_group', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(63, 'New user in assignees', 0, 'Ticket', 'assign_user', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(64, 'New group in assignees', 0, 'Ticket', 'assign_group', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(65, 'New supplier in assignees', 0, 'Ticket', 'assign_supplier', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(66, 'Saved searches', 0, 'SavedSearch_Alert', 'alert', '', 1, 1, '2016-02-08 16:57:46', NULL);
+
+
+### Dump table glpi_notifications_notificationtemplates
+
+DROP TABLE IF EXISTS `glpi_notifications_notificationtemplates`;
+CREATE TABLE `glpi_notifications_notificationtemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `notifications_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
+  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`notifications_id`, `mode`, `notificationtemplates_id`),
+  KEY `notifications_id` (`notifications_id`),
+  KEY `notificationtemplates_id` (`notificationtemplates_id`),
+  KEY `mode` (`mode`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(1, '1', 'mailing', 6);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(2, '2', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(3, '3', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(4, '4', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(5, '5', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(6, '6', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(7, '7', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(8, '8', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(9, '9', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(10, '10', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(11, '11', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(12, '12', 'mailing', 7);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(13, '13', 'mailing', 2);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(14, '14', 'mailing', 2);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(15, '15', 'mailing', 2);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(16, '16', 'mailing', 3);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(17, '17', 'mailing', 12);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(18, '18', 'mailing', 12);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(19, '19', 'mailing', 1);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(20, '20', 'mailing', 8);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(21, '21', 'mailing', 9);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(22, '22', 'mailing', 10);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(23, '23', 'mailing', 11);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(24, '24', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(25, '25', 'mailing', 13);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(26, '26', 'mailing', 14);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(27, '27', 'mailing', 15);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(28, '28', 'mailing', 16);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(29, '29', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(30, '30', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(31, '31', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(32, '32', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(33, '33', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(34, '34', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(35, '35', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(36, '36', 'mailing', 17);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(37, '37', 'mailing', 7);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(38, '38', 'mailing', 12);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(39, '39', 'mailing', 12);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(40, '40', 'mailing', 18);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(41, '41', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(42, '42', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(43, '43', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(44, '44', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(45, '45', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(46, '46', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(47, '47', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(48, '48', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(49, '49', 'mailing', 19);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(50, '50', 'mailing', 14);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(51, '51', 'mailing', 20);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(52, '52', 'mailing', 21);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(53, '53', 'mailing', 21);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(54, '54', 'mailing', 21);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(55, '55', 'mailing', 22);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(56, '56', 'mailing', 22);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(57, '57', 'mailing', 22);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(58, '58', 'mailing', 23);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(59, '59', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(60, '60', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(61, '61', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(62, '62', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(63, '63', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(64, '64', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(65, '65', 'mailing', 4);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(66, '66', 'mailing', 24);
+
 
 ### Dump table glpi_notificationtargets
 
@@ -5874,7 +5960,7 @@ INSERT INTO `glpi_profilerights` VALUES ('7','1','peripheral','0');
 INSERT INTO `glpi_profilerights` VALUES ('8','1','cartridge','0');
 INSERT INTO `glpi_profilerights` VALUES ('9','1','consumable','0');
 INSERT INTO `glpi_profilerights` VALUES ('10','1','phone','0');
-INSERT INTO `glpi_profilerights` VALUES ('734','6','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('734','6','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('12','1','contact_enterprise','0');
 INSERT INTO `glpi_profilerights` VALUES ('13','1','document','0');
 INSERT INTO `glpi_profilerights` VALUES ('14','1','contract','0');
@@ -5941,7 +6027,7 @@ INSERT INTO `glpi_profilerights` VALUES ('101','2','peripheral','33');
 INSERT INTO `glpi_profilerights` VALUES ('102','2','cartridge','33');
 INSERT INTO `glpi_profilerights` VALUES ('103','2','consumable','33');
 INSERT INTO `glpi_profilerights` VALUES ('104','2','phone','33');
-INSERT INTO `glpi_profilerights` VALUES ('733','5','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('733','5','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('106','2','contact_enterprise','33');
 INSERT INTO `glpi_profilerights` VALUES ('107','2','document','33');
 INSERT INTO `glpi_profilerights` VALUES ('108','2','contract','33');
@@ -6012,7 +6098,7 @@ INSERT INTO `glpi_profilerights` VALUES ('195','3','peripheral','127');
 INSERT INTO `glpi_profilerights` VALUES ('196','3','cartridge','127');
 INSERT INTO `glpi_profilerights` VALUES ('197','3','consumable','127');
 INSERT INTO `glpi_profilerights` VALUES ('198','3','phone','127');
-INSERT INTO `glpi_profilerights` VALUES ('732','4','queuedmail','31');
+INSERT INTO `glpi_profilerights` VALUES ('732','4','queuednotification','31');
 INSERT INTO `glpi_profilerights` VALUES ('200','3','contact_enterprise','127');
 INSERT INTO `glpi_profilerights` VALUES ('201','3','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('202','3','contract','127');
@@ -6153,7 +6239,7 @@ INSERT INTO `glpi_profilerights` VALUES ('383','5','peripheral','0');
 INSERT INTO `glpi_profilerights` VALUES ('384','5','cartridge','0');
 INSERT INTO `glpi_profilerights` VALUES ('385','5','consumable','0');
 INSERT INTO `glpi_profilerights` VALUES ('386','5','phone','0');
-INSERT INTO `glpi_profilerights` VALUES ('731','3','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('731','3','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('388','5','contact_enterprise','0');
 INSERT INTO `glpi_profilerights` VALUES ('389','5','document','0');
 INSERT INTO `glpi_profilerights` VALUES ('390','5','contract','0');
@@ -6224,7 +6310,7 @@ INSERT INTO `glpi_profilerights` VALUES ('477','6','peripheral','127');
 INSERT INTO `glpi_profilerights` VALUES ('478','6','cartridge','127');
 INSERT INTO `glpi_profilerights` VALUES ('479','6','consumable','127');
 INSERT INTO `glpi_profilerights` VALUES ('480','6','phone','127');
-INSERT INTO `glpi_profilerights` VALUES ('730','2','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('730','2','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('482','6','contact_enterprise','96');
 INSERT INTO `glpi_profilerights` VALUES ('483','6','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('484','6','contract','96');
@@ -6295,7 +6381,7 @@ INSERT INTO `glpi_profilerights` VALUES ('571','7','peripheral','127');
 INSERT INTO `glpi_profilerights` VALUES ('572','7','cartridge','127');
 INSERT INTO `glpi_profilerights` VALUES ('573','7','consumable','127');
 INSERT INTO `glpi_profilerights` VALUES ('574','7','phone','127');
-INSERT INTO `glpi_profilerights` VALUES ('729','1','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('729','1','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('576','7','contact_enterprise','96');
 INSERT INTO `glpi_profilerights` VALUES ('577','7','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('578','7','contract','96');
@@ -6327,7 +6413,7 @@ INSERT INTO `glpi_profilerights` VALUES ('610','7','backup','0');
 INSERT INTO `glpi_profilerights` VALUES ('611','7','ticket','259103');
 INSERT INTO `glpi_profilerights` VALUES ('615','7','followup','13335');
 INSERT INTO `glpi_profilerights` VALUES ('616','7','task','13329');
-INSERT INTO `glpi_profilerights` VALUES ('735','7','queuedmail','0');
+INSERT INTO `glpi_profilerights` VALUES ('735','7','queuednotification','0');
 INSERT INTO `glpi_profilerights` VALUES ('628','7','planning','2049');
 INSERT INTO `glpi_profilerights` VALUES ('710','3','taskcategory','31');
 INSERT INTO `glpi_profilerights` VALUES ('703','3','netpoint','31');
@@ -6395,7 +6481,7 @@ INSERT INTO `glpi_profilerights` VALUES ('787','8','problem','1185');
 INSERT INTO `glpi_profilerights` VALUES ('788','8','profile','129');
 INSERT INTO `glpi_profilerights` VALUES ('789','8','project','1185');
 INSERT INTO `glpi_profilerights` VALUES ('790','8','projecttask','1');
-INSERT INTO `glpi_profilerights` VALUES ('791','8','queuedmail','1');
+INSERT INTO `glpi_profilerights` VALUES ('791','8','queuednotification','1');
 INSERT INTO `glpi_profilerights` VALUES ('792','8','reminder_public','129');
 INSERT INTO `glpi_profilerights` VALUES ('793','8','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('794','8','reservation','1');
@@ -6761,10 +6847,10 @@ CREATE TABLE `glpi_projecttypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_queuedmails
+### Dump table glpi_queuednotifications
 
-DROP TABLE IF EXISTS `glpi_queuedmails`;
-CREATE TABLE `glpi_queuedmails` (
+DROP TABLE IF EXISTS `glpi_queuednotifications`;
+CREATE TABLE `glpi_queuednotifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `items_id` int(11) NOT NULL DEFAULT '0',
@@ -6787,6 +6873,7 @@ CREATE TABLE `glpi_queuedmails` (
   `body_text` longtext COLLATE utf8_unicode_ci,
   `messageid` text COLLATE utf8_unicode_ci,
   `documents` text COLLATE utf8_unicode_ci,
+  `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),
@@ -6794,7 +6881,8 @@ CREATE TABLE `glpi_queuedmails` (
   KEY `sent_try` (`sent_try`),
   KEY `create_time` (`create_time`),
   KEY `send_time` (`send_time`),
-  KEY `sent_time` (`sent_time`)
+  KEY `sent_time` (`sent_time`),
+  KEY `mode` (`mode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

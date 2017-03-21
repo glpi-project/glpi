@@ -59,7 +59,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /// From CommonDBTM
-   public $mailqueueonaction = true;
+   public $notificationqueueonaction = true;
 
    const MATRIX_FIELD         = '';
    const URGENCY_MASK_FIELD   = '';
@@ -631,7 +631,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (!empty($this->userlinkclass)) {
                      if (isset($input['_itil_requester']['alternative_email'])
                          && $input['_itil_requester']['alternative_email']
-                         && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
+                         && !NotificationMailing::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
 
                         $input['_itil_requester']['alternative_email'] = '';
                         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
@@ -687,7 +687,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (!empty($this->userlinkclass)) {
                      if (isset($input['_itil_observer']['alternative_email'])
                          && $input['_itil_observer']['alternative_email']
-                         && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
+                         && !NotificationMailing::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
 
                         $input['_itil_observer']['alternative_email'] = '';
                         Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
@@ -2326,7 +2326,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $tmpname = Dropdown::getDropdownName($supplier->getTable(), $k, 1);
                Html::showToolTip($tmpname['comment']);
 
-               if ($CFG_GLPI['use_mailing']) {
+               if ($CFG_GLPI['notifications_mailing']) {
                   $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
                   '<br>';
 
@@ -3268,7 +3268,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $userdata;
             }
 
-            if ($CFG_GLPI['use_mailing']) {
+            if ($CFG_GLPI['notifications_mailing']) {
                $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
                        '<br>';
 
@@ -3278,7 +3278,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $uemail = $user->getDefaultEmail();
                   }
                   $text .= sprintf(__('%1$s: %2$s'), __('Email'), $uemail);
-                  if (!NotificationMail::isUserAddressValid($uemail)) {
+                  if (!NotificationMailing::isUserAddressValid($uemail)) {
                      $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
                }
@@ -3454,7 +3454,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $params['_user_index'] = $options['_user_index'];
       }
 
-      if ($CFG_GLPI['use_mailing']) {
+      if ($CFG_GLPI['notifications_mailing']) {
          $paramscomment
             = array('value' => '__VALUE__',
                     'field' => "_users_id_".$typename."_notif",
@@ -3537,7 +3537,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if ($CFG_GLPI['use_mailing']) {
+      if ($CFG_GLPI['notifications_mailing']) {
          echo "<div id='notif_".$typename."_$rand'>";
          echo "</div>";
 
@@ -3578,7 +3578,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       'value'       => $options["_suppliers_id_assign"],
                       'rand'        => $rand);
 
-      if ($CFG_GLPI['use_mailing']) {
+      if ($CFG_GLPI['notifications_mailing']) {
          $paramscomment = array('value'       => '__VALUE__',
                                 'field'       => "_suppliers_id_assign_notif",
                                 'allow_email' => true,
@@ -3626,7 +3626,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "});</script>";
       }
 
-      if ($CFG_GLPI['use_mailing']) {
+      if ($CFG_GLPI['notifications_mailing']) {
          echo "<div id='notif_assign_$rand'>";
          echo "</div>";
 

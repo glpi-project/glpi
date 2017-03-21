@@ -39,19 +39,30 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- *  NotificationMail class implements the NotificationInterface
+ *  NotificationMailing class implements the NotificationInterface
 **/
-class NotificationMail implements NotificationInterface {
+class NotificationMailing implements NotificationInterface {
+
+   /**
+    * Check data
+    *
+    * @param mixed $value   The data to check (may differ for every notification mode)
+    * @param array $options Optionnal special options (may be needed)
+    *
+    * @return boolean
+   **/
+   static function check($value, $options = []) {
+      return self::isUserAddressValid($value, $options);
+   }
 
    /**
     * Determine if email is valid
     *
-    * @param $address         email to check
-    * @param $options   array of options used (by default 'checkdns'=>false)
+    * @param string $address email to check
+    * @param array  $options options used (by default 'checkdns'=>false)
     *     - checkdns :check dns entry
     *
     * @return boolean
-    * from http://www.linuxjournal.com/article/9585
    **/
    static function isUserAddressValid($address, $options=array('checkdns'=>false)) {
       $isValid = \PHPMailer::ValidateAddress($address);
@@ -78,22 +89,31 @@ class NotificationMail implements NotificationInterface {
       // For exchange
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"], false);
-      $mmail->AddAddress($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
+
+      $text = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $recipient = $CFG_GLPI['admin_email'];
+      if (defined('GLPI_FORCE_MAIL')) {
+         //force recipient to configured email address
+         $recipient = GLPI_FORCE_MAIL;
+         //add original email addess to message body
+         $text .= "\n" . sprintf(__('Orignal email address was %1$s'), $CFG_GLPI['admin_email']);
+      }
+
+      $mmail->AddAddress($recipient, $CFG_GLPI["admin_email_name"]);
       $mmail->Subject = "[GLPI] ".__('Mail test');
-      $mmail->Body    = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $mmail->Body    = $text;
 
       if (!$mmail->Send()) {
          Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false,
                                           ERROR);
+         return false;
       } else {
          Session::addMessageAfterRedirect(__('Test email sent to administrator'));
+         return true;
       }
    }
 
 
-   /**
-    * @param $options   array
-   **/
    function sendNotification($options=array()) {
 
       $data = array();
@@ -131,11 +151,13 @@ class NotificationMail implements NotificationInterface {
          $data['documents'] = $options['documents'];
       }
 
-      $mailqueue = new QueuedMail();
+      $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
-      if (!$mailqueue->add(Toolbox::addslashes_deep($data))) {
-         $senderror = true;
-         Session::addMessageAfterRedirect(__('Error inserting email to queue'), true);
+      $queue = new QueuedNotification();
+
+      if (!$queue->add(Toolbox::addslashes_deep($data))) {
+         Session::addMessageAfterRedirect(__('Error inserting email to queue'), true, ERROR);
+         return false;
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
          Toolbox::logInFile("mail",
@@ -147,5 +169,4 @@ class NotificationMail implements NotificationInterface {
 
       return true;
    }
-
 }

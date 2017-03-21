@@ -38,7 +38,7 @@ use \DbTestCase;
 
 class NotificationTargetTicket extends DbTestCase {
 
-   public function testgetDatasForObject() {
+   public function testgetDataForObject() {
       global $CFG_GLPI;
 
       $tkt = getItemByTypeName('Ticket', '_ticket01');
@@ -77,7 +77,7 @@ class NotificationTargetTicket extends DbTestCase {
          ->isIdenticalTo($expected);
 
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
-      // test of the getDatasForObject for default language en_GB
+      // test of the getDataForObject for default language en_GB
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
       $expected = [
                      [
@@ -107,7 +107,7 @@ class NotificationTargetTicket extends DbTestCase {
 
       $this->array($ret['tasks'])->isIdenticalTo($expected);
 
-      // test of the getDatasForObject for default language fr_FR
+      // test of the getDataForObject for default language fr_FR
       $CFG_GLPI['translate_dropdowns'] = 1;
       $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
       $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);

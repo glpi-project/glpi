@@ -1137,6 +1137,10 @@ class Html {
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
       echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
+      if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
+         Html::requireJs('notifications_ajax');
+      }
+
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
          $jslibs = [];
@@ -1296,7 +1300,7 @@ class Html {
 
       $menu['admin']['title']        = __('Administration');
       $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
-                                             'Profile', 'QueuedMail', 'Backup', 'Event');
+                                             'Profile', 'QueuedNotification', 'Backup', 'Event');
 
       $menu['config']['title']       = __('Setup');
       $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
@@ -5992,6 +5996,9 @@ class Html {
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js';
             break;
+         case 'notifications_ajax';
+            $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
+            break;
          case 'fuzzy':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy/fuzzy-min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
@@ -6069,6 +6076,19 @@ class Html {
             'root_doc': '".$CFG_GLPI["root_doc"]."',
          };
       ");
+
+      if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
+         $options = [
+            'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
+            'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
+            'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false)
+         ];
+         $js = "$(function() {
+            notifications_ajax = new GLPINotificationsAjax(". json_encode($options) . ");
+            notifications_ajax.start();
+         });";
+         echo Html::scriptBlock($js);
+      }
 
       // add Ajax display message after redirect
       Html::displayAjaxMessageAfterRedirect();

@@ -32,16 +32,24 @@
 
 /** @file
 * @brief
-* @since version 0.85
 */
-
 
 include ('../inc/includes.php');
 
-Session::checkRight("queuedmail", READ);
+Session::checkRight("config", UPDATE);
+$notificationajax = new NotificationAjaxSetting();
 
-Html::header(QueuedMail::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuedmail");
+if (!empty($_POST["test_ajax_send"])) {
+   NotificationAjax::testNotification();
+   Html::back();
+} else if (!empty($_POST["update"])) {
+   $config = new Config();
+   $config->update($_POST);
+   Html::back();
+}
 
-Search::show('QueuedMail');
+Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
+
+$notificationajax->display(array('id' => 1));
 
 Html::footer();

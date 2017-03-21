@@ -50,19 +50,13 @@ class NotificationTargetInfocom extends NotificationTarget {
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=array()) {
 
       $events                                 = $this->getAllEvents();
 
-      $this->datas['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
-      $this->datas['##infocom.action##']      = $events[$event];
+      $this->data['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
          $tmp = array();
@@ -77,13 +71,13 @@ class NotificationTargetInfocom extends NotificationTarget {
                                                         $item['itemtype']."_".
                                                           $item['items_id']."_Infocom");
          }
-         $this->datas['infocoms'][] = $tmp;
+         $this->data['infocoms'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }

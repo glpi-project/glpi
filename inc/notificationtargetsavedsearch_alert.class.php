@@ -143,7 +143,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
                                 'email'    => $user->getDefaultEmail(),
                                 'language' => $user->getField('language'),
                                 'usertype' => $usertype);
-                  $this->addToAddressesList($data);
+                  $this->addToRecipientsList($data);
             }
       }
    }

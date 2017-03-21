@@ -395,7 +395,7 @@ class ConsumableItem extends CommonDBTM {
 
       $cron_status = 1;
 
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["use_notifications"]) {
          $message = array();
          $items   = array();
          $alert   = new Alert();

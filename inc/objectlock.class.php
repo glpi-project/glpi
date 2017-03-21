@@ -195,7 +195,7 @@ class ObjectLock extends CommonDBTM {
       $useremail     = new UserEmail();
       $showAskUnlock = $useremail->getFromDBByQuery(" WHERE users_id = ".$this->fields['users_id']."
                                                             AND is_default = 1 ")
-                       && ($CFG_GLPI['use_mailing'] == 1);
+                       && ($CFG_GLPI['notifications_mailing'] == 1);
 
       $completeUserName = formatUserName(0, $user->fields['name'], $user->fields['realname'],
                                          $user->fields['firstname']);

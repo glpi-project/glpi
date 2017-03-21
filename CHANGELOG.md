@@ -12,6 +12,8 @@ The present file will list all changes made to the project; according to the
 - Load minified CSS and JS files (core and plugins) that are generated on release
 - Link beetween software licenses
 - Alerts on saved searches
+- Add ajax browsers notifications in addition to emails
+- Plugins can now add new notifications types (xmpp, sms, telegram, ...) to be used along with standard notifications
 
 ### Changed
 - Display knowledge base category items in tickets using a popup instead of a
@@ -29,6 +31,9 @@ new whole window
 - `Bookmark` has been renamed to `SavedSearch`
 - Update to latest jsTree plugin
 - `RuleDictionnarySoftwareCollection::versionExists()` signature has changed
+- `NotificationTemplate::getDataToSend()` signature has changed
+- `QueuedMail` has been renamed to `QueuedNotification`
+- `CommonDBTM::mailqueueonaction` has been renamed to `CommonDBTM::notificationqueueonaction`
 
 #### Deprecated
 
@@ -40,6 +45,9 @@ The following methods have been deprecated:
 - `Bookmark::unmark_default()`
 - `User::getUniquePersonalToken()`
 - `User::getPersonalToken()`
+- `NotificationTarget*::get*Address()`
+- many `NotificationTarget*::get*()`
+- `QueuedMail::sendMailById()`
 
 #### Removals
 

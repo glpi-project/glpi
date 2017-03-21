@@ -96,7 +96,7 @@ class Reservation extends CommonDBChild {
               || Session::haveRight("reservation", DELETE))) {
 
          // Processing Email
-         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             NotificationEvent::raiseEvent("delete", $this);
          }
       }
@@ -148,7 +148,7 @@ class Reservation extends CommonDBChild {
       global $CFG_GLPI;
 
       if (count($this->updates)
-          && $CFG_GLPI["use_mailing"]
+          && $CFG_GLPI["use_notifications"]
           && !isset($this->input['_disablenotif'])) {
          NotificationEvent::raiseEvent("update", $this);
          //$mail = new MailingResa($this,"update");
@@ -191,7 +191,7 @@ class Reservation extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          NotificationEvent::raiseEvent("new", $this);
       }
 

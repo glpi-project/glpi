@@ -52,20 +52,14 @@ class NotificationTargetConsumableItem extends NotificationTarget {
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=array()) {
 
       $events                                    = $this->getAllEvents();
 
-      $this->datas['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                              $options['entities_id']);
-      $this->datas['##lang.consumable.entity##'] = __('Entity');
-      $this->datas['##consumable.action##']      = $events[$event];
+      $this->data['##lang.consumable.entity##'] = __('Entity');
+      $this->data['##consumable.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $consumable) {
          $tmp                             = array();
@@ -74,13 +68,13 @@ class NotificationTargetConsumableItem extends NotificationTarget {
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
          $tmp['##consumable.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
                                                              "ConsumableItem_".$id);
-         $this->datas['consumables'][] = $tmp;
+         $this->data['consumables'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }

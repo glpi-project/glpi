@@ -431,7 +431,7 @@ class Auth extends CommonGLPI {
                $sslattributes[$key] = $val;
             }
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
-                && NotificationMail::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
+                && NotificationMailing::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && self::isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
 
                $restrict = false;

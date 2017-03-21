@@ -506,21 +506,23 @@ class NotificationTemplate extends CommonDBTM {
 
 
    /**
-    * @param $target              NotificationTarget object
-    * @param $tid          string template computed id
-    * @param $user_infos   array
-    * @param $options      array
+    * @param NotificationTarget $target     Target instance
+    * @param string             $tid        template computed id
+    * @param mixed              $to         Recipient
+    * @param array              $user_infos Extra user infos
+    * @param array              $options    Options
+    *
+    * @return array
    **/
-   function getDataToSend(NotificationTarget $target, $tid, array $user_infos, array $options) {
+   function getDataToSend(NotificationTarget $target, $tid, $to, array $user_infos, array $options) {
 
       $language   = $user_infos['language'];
-      $user_email = $user_infos['email'];
       $user_name  = $user_infos['username'];
 
       $sender     = $target->getSender($options);
       $replyto    = $target->getReplyTo($options);
 
-      $mailing_options['to']          = $user_email;
+      $mailing_options['to']          = $to;
       $mailing_options['toname']      = $user_name;
       $mailing_options['from']        = $sender['email'];
       $mailing_options['fromname']    = $sender['name'];

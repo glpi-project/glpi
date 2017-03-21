@@ -313,8 +313,6 @@ $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'Co
                                                   'Project', 'ProjectTask', 'Reservation',
                                                   'SoftwareLicense', 'Ticket', 'User', 'SavedSearch_Alert');
 
-$CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
-
 $CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservation_types",
                                                   'AllAssets'       => "asset_types");
 
@@ -380,7 +378,7 @@ $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "common.tabs.php",
                                            "transfer.form.php",
                                            "entity.form.php",
-                                           "queuedmail.form.php");
+                                           "queuednotification.form.php");
 
 $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Contract', 'Document',
                                            'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',

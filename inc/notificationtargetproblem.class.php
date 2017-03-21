@@ -69,86 +69,83 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
    }
 
 
-   /**
-    * @see NotificationTargetCommonITILObject::getDatasForObject()
-   **/
-   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDataForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
 
-      // Common ITIL datas
-      $datas                         = parent::getDatasForObject($item, $options, $simple);
+      // Common ITIL data
+      $data = parent::getDataForObject($item, $options, $simple);
 
-      $datas["##problem.impacts##"]  = $item->getField('impactcontent');
-      $datas["##problem.causes##"]   = $item->getField('causecontent');
-      $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
+      $data["##problem.impacts##"]  = $item->getField('impactcontent');
+      $data["##problem.causes##"]   = $item->getField('causecontent');
+      $data["##problem.symptoms##"] = $item->getField('symptomcontent');
 
       // Complex mode
       if (!$simple) {
          $restrict = "`problems_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
 
-         $datas['tickets'] = array();
+         $data['tickets'] = array();
          if (count($tickets)) {
             $ticket = new Ticket();
-            foreach ($tickets as $data) {
-               if ($ticket->getFromDB($data['tickets_id'])) {
+            foreach ($tickets as $row) {
+               if ($ticket->getFromDB($row['tickets_id'])) {
                   $tmp = array();
 
                   $tmp['##ticket.id##']
-                                    = $data['tickets_id'];
+                                    = $row['tickets_id'];
                   $tmp['##ticket.date##']
                                     = $ticket->getField('date');
                   $tmp['##ticket.title##']
                                     = $ticket->getField('name');
                   $tmp['##ticket.url##']
                                     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                       "Ticket_".$data['tickets_id']);
+                                                       "Ticket_".$row['tickets_id']);
                   $tmp['##ticket.content##']
                                     = $ticket->getField('content');
 
-                  $datas['tickets'][] = $tmp;
+                  $data['tickets'][] = $tmp;
                }
             }
          }
 
-         $datas['##problem.numberoftickets##'] = count($datas['tickets']);
+         $data['##problem.numberoftickets##'] = count($data['tickets']);
 
          $restrict = "`problems_id`='".$item->getField('id')."'";
          $changes  = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
-         $datas['changes'] = array();
+         $data['changes'] = array();
          if (count($changes)) {
             $change = new Change();
-            foreach ($changes as $data) {
-               if ($change->getFromDB($data['changes_id'])) {
+            foreach ($changes as $row) {
+               if ($change->getFromDB($row['changes_id'])) {
                   $tmp = array();
                   $tmp['##change.id##']
-                                    = $data['changes_id'];
+                                    = $row['changes_id'];
                   $tmp['##change.date##']
                                     = $change->getField('date');
                   $tmp['##change.title##']
                                     = $change->getField('name');
                   $tmp['##change.url##']
                                     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                       "Change_".$data['changes_id']);
+                                                       "Change_".$row['changes_id']);
                   $tmp['##change.content##']
                                     = $change->getField('content');
 
-                  $datas['changes'][] = $tmp;
+                  $data['changes'][] = $tmp;
                }
             }
          }
 
-         $datas['##problem.numberofchanges##'] = count($datas['changes']);
+         $data['##problem.numberofchanges##'] = count($data['changes']);
 
          $restrict = "`problems_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems', $restrict);
 
-         $datas['items'] = array();
+         $data['items'] = array();
          if (count($items)) {
-            foreach ($items as $data) {
-               if ($item2 = getItemForItemtype($data['itemtype'])) {
-                  if ($item2->getFromDB($data['items_id'])) {
+            foreach ($items as $row) {
+               if ($item2 = getItemForItemtype($row['itemtype'])) {
+                  if ($item2->getFromDB($row['items_id'])) {
                      $tmp = array();
                      $tmp['##item.itemtype##']    = $item2->getTypeName();
                      $tmp['##item.name##']        = $item2->getField('name');
@@ -190,16 +187,16 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                         $tmp['##item.model##'] = $item2->getField($modelfield);
                      }
 
-                     $datas['items'][] = $tmp;
+                     $data['items'][] = $tmp;
                   }
                }
             }
          }
 
-         $datas['##problem.numberofitems##'] = count($datas['items']);
+         $data['##problem.numberofitems##'] = count($data['items']);
 
       }
-      return $datas;
+      return $data;
    }
 
 

@@ -1702,7 +1702,7 @@ class CronTask extends CommonDBTM{
             $cron_status = 1;
             $task->addVolume(1);
          }
-         QueuedMail::forceSendFor($task->getType(), $task->fields['id']);
+         QueuedNotification::forceSendFor($task->getType(), $task->fields['id']);
       }
 
       return 1;

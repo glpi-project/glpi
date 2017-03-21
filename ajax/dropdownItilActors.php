@@ -64,7 +64,7 @@ if (isset($_POST["type"])
                              'rand'        => $rand,
                              'ldap_import' => true);
 
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
                $paramscomment = array('value'       => '__VALUE__',
                                       'allow_email' => $withemail,
@@ -104,7 +104,7 @@ if (isset($_POST["type"])
                echo "</span>";
             }
 
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                echo "<br><span id='notif_user_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
@@ -152,7 +152,7 @@ if (isset($_POST["type"])
             $options = array('name'      => '_itil_'.$_POST["actortype"].'[suppliers_id]',
                              'entity'    => $_POST['entity_restrict'],
                              'rand'      => $rand);
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
                $paramscomment = array('value'       => '__VALUE__',
                                       'allow_email' => $withemail,
@@ -187,15 +187,15 @@ if (isset($_POST["type"])
                echo "<span id='countassign_$rand'>";
                echo "</span>";
             }
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                echo "<br><span id='notif_supplier_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
                   $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST['use_notif']);
                   echo '<br>';
-                   printf(__('%1$s: %2$s'), __('Email'),
-                          "<input type='text' size='25' name='_itil_".$_POST["actortype"].
-                              "[alternative_email]'>");
+                  printf(__('%1$s: %2$s'), __('Email'),
+                         "<input type='text' size='25' name='_itil_".$_POST["actortype"].
+                           "[alternative_email]'>");
                }
                echo "</span>";
             }

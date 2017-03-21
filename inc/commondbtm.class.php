@@ -86,8 +86,8 @@ class CommonDBTM extends CommonGLPI {
    /// Is this item use notepad ?
    protected $usenotepad                       = false;
 
-   /// FLush mail queue for
-   public $mailqueueonaction                   = false;
+   /// FLush notification queue for
+   public $notificationqueueonaction            = false;
 
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
@@ -204,6 +204,19 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       return false;
+   }
+
+
+   /**
+    * Hydrate an object from a resultset row
+    *
+    * @param array $rs The row
+    *
+    * @return void
+    */
+   function getFromResultSet($rs) {
+      //just set fields!
+      $this->fields = $rs;
    }
 
 
@@ -951,8 +964,8 @@ class CommonDBTM extends CommonGLPI {
                if (isset($this->input['_add'])) {
                   $this->clearSavedInput();
                }
-               if ($this->mailqueueonaction) {
-                  QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+               if ($this->notificationqueueonaction) {
+                  QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
                }
                // For unit test (workaround for MyIsam without transaction)
                if (isset($DB->objcreated) && is_array($DB->objcreated)) {
@@ -1247,8 +1260,8 @@ class CommonDBTM extends CommonGLPI {
             }
             $this->post_updateItem($history);
 
-            if ($this->mailqueueonaction) {
-               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+            if ($this->notificationqueueonaction) {
+               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
             }
 
             return true;
@@ -1464,8 +1477,8 @@ class CommonDBTM extends CommonGLPI {
 
                Plugin::doHook("item_delete", $this);
             }
-            if ($this->mailqueueonaction) {
-               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+            if ($this->notificationqueueonaction) {
+               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
             }
             return true;
          }
@@ -1625,8 +1638,8 @@ class CommonDBTM extends CommonGLPI {
 
          $this->post_restoreItem();
          Plugin::doHook("item_restore", $this);
-         if ($this->mailqueueonaction) {
-            QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+         if ($this->notificationqueueonaction) {
+            QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
          }
          return true;
       }
