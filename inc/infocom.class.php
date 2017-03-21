@@ -456,7 +456,7 @@ class Infocom extends CommonDBChild {
    static function cronInfocom($task=NULL) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_notifications"]) {
          return 0;
       }
 
@@ -1184,7 +1184,7 @@ class Infocom extends CommonDBChild {
             Html::autocompletionTextField($ic, "warranty_info", array('option' => $option));
             echo "</td>";
 
-            if ($CFG_GLPI['use_mailing']) {
+            if ($CFG_GLPI['use_notifications']) {
                echo "<td>".__('Alarms on financial and administrative information')."</td>";
                echo "<td>";
                self::dropdownAlert(array('name'    => "alert",

@@ -53,8 +53,8 @@ if (!$auth->Login('glpi', 'glpi', true)) {
     exit('Authentication failed!');
 }
 
-// Force mailing to false
-$CFG_GLPI["use_mailing"] = 0;
+// unset notifications
+NotificationSetting::disableAll();
 
 $entity_number = 10;
 

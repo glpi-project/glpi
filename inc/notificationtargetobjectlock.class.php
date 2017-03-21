@@ -78,33 +78,27 @@ class NotificationTargetObjectLock extends NotificationTarget {
 
 
    /**
-    * @see NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::addNotificationTargets()
    **/
-   function getNotificationTargets($entity) {
+   function addNotificationTargets($entity) {
       $this->addTarget(Notification::USER, __('Locking User'));
    }
 
 
    /**
-    * @see NotificationTarget::getSpecificTargets()
+    * @see NotificationTarget::addSpecificTargets()
     **/
-   function getSpecificTargets($data, $options) {
+   function addSpecificTargets($data, $options) {
 
       $user = new User();
       if ($user->getFromDB($this->obj->fields['users_id'])) {
-         $this->addToAddressesList(array('language' => $user->getField('language'),
+         $this->addToRecipientsList(array('language' => $user->getField('language'),
                                          'users_id' => $user->getID()));
       }
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
@@ -114,28 +108,28 @@ class NotificationTargetObjectLock extends NotificationTarget {
       $user = new User();
       $user->getFromDB($options['item']->fields['users_id']);
 
-      $this->datas['##objectlock.action##']   = $events[$event];
-      $this->datas['##objectlock.name##']     = $object->fields['name'];
-      $this->datas['##objectlock.id##']       = $options['item']->fields['items_id'];
-      $this->datas['##objectlock.type##']     = $options['item']->fields['itemtype'];
-      $this->datas['##objectlock.date_mod##'] = Html::convDateTime($options['item']->fields['date_mod'],
+      $this->data['##objectlock.action##']   = $events[$event];
+      $this->data['##objectlock.name##']     = $object->fields['name'];
+      $this->data['##objectlock.id##']       = $options['item']->fields['items_id'];
+      $this->data['##objectlock.type##']     = $options['item']->fields['itemtype'];
+      $this->data['##objectlock.date_mod##'] = Html::convDateTime($options['item']->fields['date_mod'],
                                                                    $user->fields['date_format']);
-      $this->datas['##objectlock.lockedby.lastname##']
+      $this->data['##objectlock.lockedby.lastname##']
                                               = $user->fields['realname'];
-      $this->datas['##objectlock.lockedby.firstname##']
+      $this->data['##objectlock.lockedby.firstname##']
                                               = $user->fields['firstname'];
-      $this->datas['##objectlock.requester.lastname##']
+      $this->data['##objectlock.requester.lastname##']
                                               = $_SESSION['glpirealname'];
-      $this->datas['##objectlock.requester.firstname##']
+      $this->data['##objectlock.requester.firstname##']
                                               = $_SESSION['glpifirstname'];
-      $this->datas['##objectlock.url##']      = $CFG_GLPI['url_base']."/?redirect=".
+      $this->data['##objectlock.url##']      = $CFG_GLPI['url_base']."/?redirect=".
                                                    $options['item']->fields['itemtype']. "_".
                                                    $options['item']->fields['items_id'];
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }

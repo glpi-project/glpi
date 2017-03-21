@@ -4121,14 +4121,14 @@ class User extends CommonDBTM {
          if (($this->fields["authtype"] == Auth::DB_GLPI)
              || !Auth::useAuthExt()) {
 
-            if (NotificationMail::isUserAddressValid($email)) {
+            if (NotificationMailing::isUserAddressValid($email)) {
                $input['password_forget_token']      = sha1(Toolbox::getRandomString(30, true));
                $input['password_forget_token_date'] = $_SESSION["glpi_currenttime"];
                $input['id']                         = $this->fields['id'];
                $this->update($input);
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
-               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+               QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
                echo __('An email has been sent to your email address. The email contains information for reset your password.');
             } else {
                echo __('Invalid email address');

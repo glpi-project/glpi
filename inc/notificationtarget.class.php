@@ -59,9 +59,11 @@ class NotificationTarget extends CommonDBChild {
    // Tags which have data in HTML : do not try to clean them
    public $html_tags                   = array();
 
+   /** Deprecated since 9.2 */
+   private $datas                      = array();
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
-   public $datas                       = array();
+   public $data                        = array();
    public $tag_descriptions            = array();
 
    // From CommonDBTM
@@ -82,6 +84,9 @@ class NotificationTarget extends CommonDBChild {
    public $options                     = array();
    public $raiseevent                  = '';
 
+   private $mode                       = null;
+   private $event                      = null;
+
    const TAG_LANGUAGE               = 'lang';
    const TAG_VALUE                  = 'tag';
    const TAG_FOR_ALL_EVENTS         = 0;
@@ -92,10 +97,10 @@ class NotificationTarget extends CommonDBChild {
    const EXTERNAL_USER              = 2;
 
    /**
-    * @param $entity          (default '')
-    * @param $event           (default '')
-    * @param $object          (default null)
-    * @param $options   array
+    * @param string $entity  (default '')
+    * @param string $event   (default '')
+    * @param mixed  $object  (default null)
+    * @param array  $options Options
    **/
    function __construct($entity='', $event='', $object=null, $options=array()) {
 
@@ -117,8 +122,20 @@ class NotificationTarget extends CommonDBChild {
 
       $this->raiseevent = $event;
       $this->options    = $options;
-      $this->getNotificationTargets($entity);
-      $this->getAdditionalTargets($event);
+
+      if (method_exists($this, 'getNotificationTargets')) {
+         Toolbox::logDebug('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
+         $this->getNotificationTargets($entity);
+      } else {
+         $this->addNotificationTargets($entity);
+      }
+
+      $this->addAdditionalTargets($event);
+      if (method_exists($this, 'getAdditionalTargets')) {
+         Toolbox::logDebug('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
+         $this->getAdditionalTargets();
+      }
+
       // add new target by plugin
       unset($this->data);
       Plugin::doHook('item_add_targets', $this);
@@ -134,13 +151,13 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Retrieve an item from the database for a specific target
     *
-    * @param $notifications_id   integer      notification ID
-    * @param $type                            type of the target to retrive
-    * @param $ID                 integer      ID of the target to retrieve
+    * @param integer $notifications_id notification ID
+    * @param string  $type             type of the target to retrive
+    * @param integer $ID               ID of the target to retrieve
     *
     * @since version 0.85
     *
-    * @return true if succeed else false
+    * @return boolean
    **/
    function getFromDBForTarget($notifications_id, $type, $ID) {
 
@@ -158,13 +175,13 @@ class NotificationTarget extends CommonDBChild {
     *
     * @since version 0.84 (new parameter)
     *
-    * @param $event     string   notification event
-    * @param $infos     array    of destination of the notification
-    * @param $notify_me boolean  notify me on my action ?
-    *                            ($infos contains users_id to check if the target is me)
-    *                            (false by default)
+    * @param string  $event     notification event
+    * @param array   $infos     destination of the notification
+    * @param boolean $notify_me notify me on my action ?
+    *                           ($infos contains users_id to check if the target is me)
+    *                           (false by default)
     *
-    * @return true
+    * @return boolean
    **/
    function validateSendTo($event, array $infos, $notify_me=false) {
 
@@ -214,7 +231,7 @@ class NotificationTarget extends CommonDBChild {
     * @return message id for notification
    **/
    function getMessageID() {
-      return "";
+      return '';
    }
 
 
@@ -227,6 +244,8 @@ class NotificationTarget extends CommonDBChild {
     * Get a notificationtarget class by giving the object which raises the event
     *
     * @see CommonDBTM::getRawName
+    *
+    * @return string
    **/
    function getRawName() {
 
@@ -421,21 +440,18 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Add new mail with lang to current email array
+    * Add new recipient with lang to current recipients array
     *
-    * @param $data   array of data (mail, lang[, id for user])
+    * @param array $data Data (users_id, lang[, field used for notification])
+    *
+    * @return void|false
    **/
-   function addToAddressesList(array $data) {
+   function addToRecipientsList(array $data) {
       global $CFG_GLPI;
 
-      // No email set : get default for user
-      if (!isset($data['email'])
-          && isset($data['users_id'])) {
-         $data['email'] = UserEmail::getDefaultForUser($data['users_id']);
-      }
-
-      $new_mail = trim(Toolbox::strtolower($data['email']));
+      $new_target = null;
       $new_lang = '';
+
       // Default USER TYPE is ANONYMOUS
       $notificationoption = array('usertype' => self::ANONYMOUS_USER);
 
@@ -486,21 +502,21 @@ class NotificationTarget extends CommonDBChild {
 
       $notificationoption = array_merge($this->addAdditionnalUserInfo($data),
                                         $notificationoption);
-      if (!empty($new_mail)) {
-         if (NotificationMail::isUserAddressValid($new_mail)
-             && !isset($this->target[$new_mail])) {
 
-            $param = array('language'           => (empty($new_lang)
-                                                    ? $CFG_GLPI["language"] : $new_lang),
-                           'email'              => $new_mail,
-                           'additionnaloption'  => $notificationoption,
-                           'username'           => $username);
-            if (isset($data['users_id']) && $data['users_id']) {
-               $param['users_id'] = $data['users_id'];
-            }
+      $param = [
+         'language'           => (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang),
+         'additionnaloption'  => $notificationoption,
+         'username'           => $username
+      ];
+      if (isset($data['users_id']) && $data['users_id']) {
+         $param['users_id'] = $data['users_id'];
+      }
 
-            $this->target[$new_mail] = $param;
-         }
+      $eventclass = $this->event;
+      $target_field = $eventclass::getTargetField($data, $param);
+      if ($data[$target_field] !== null) {
+         $param[$target_field] = $data[$target_field];
+         $this->target[$data[$target_field]] = $param;
       }
    }
 
@@ -541,43 +557,55 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get GLPI's global administrator email
-   **/
-   function getAdminAddress() {
-      global $CFG_GLPI;
+    * Add GLPI's global administrator email
+    *
+    * @return void
+    */
+   final protected function addAdmin() {
+      $eventclass = $this->event;
+      $admin_data = $eventclass::getAdminData();
 
-      $this->addToAddressesList(array("email"    => $CFG_GLPI["admin_email"],
-                                      "name"     => $CFG_GLPI["admin_email_name"],
-                                      "language" => $CFG_GLPI["language"],
-                                      'usertype' => self::getDefaultUserType()));
+      if ($admin_data) {
+         if (!isset($admin_data['usertype'])) {
+            $admin_data['usertype'] = self::getDefaultUserType();
+         }
+         $this->addToRecipientsList($admin_data);
+      }
    }
 
 
    /**
-    * Get the email of the item's user
-   **/
-   function getItemAuthorAddress() {
-
+    * Add item's author
+    *
+    * @since 9.2
+    *
+    * @return void
+    */
+   protected function addItemAuthor() {
       $user = new User();
       if ($this->obj->isField('users_id')
           && $user->getFromDB($this->obj->getField('users_id'))) {
-         $this->addToAddressesList(array('language' => $user->getField('language'),
-                                         'users_id' => $user->getField('id')));
+         $this->addToRecipientsList([
+            'language' => $user->getField('language'),
+            'users_id' => $user->getField('id')
+         ]);
       }
    }
 
 
    /**
-    * Get Group of the item
+    * Add item's group
     *
-    * @since version 0.85
-   **/
-   function getItemGroupAddress() {
+    * @since 9.2
+    *
+    * @return void
+    */
+   final protected function addItemGroup() {
 
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id'] > 0) {
-               $this->getAddressesByGroup(0, $val->fields['groups_id']);
+               $this->addForGroup(0, $val->fields['groups_id']);
             }
          }
       }
@@ -585,16 +613,17 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get Group supervisor of the item
+    * Add item's group supervisor
     *
-    * @since version 0.85
-   **/
-   function getItemGroupSupervisorAddress() {
-
+    * @since 9.2
+    *
+    * @return void
+    */
+   final protected function addItemGroupSupervisor() {
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id'] > 0) {
-               $this->getAddressesByGroup(1, $val->fields['groups_id']);
+               $this->addForGroup(1, $val->fields['groups_id']);
             }
          }
       }
@@ -602,16 +631,18 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get Group without supervisor of the item
+    * Add item's group users exepted supervisor
     *
-    * @since version 0.85
-   **/
-   function getItemGroupWithoutSupervisorAddress() {
+    * @since 9.2
+    *
+    * @return void
+    */
+   final protected function addItemGroupWithoutSupervisor() {
 
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id'] > 0) {
-               $this->getAddressesByGroup(2, $val->fields['groups_id']);
+               $this->addForGroup(2, $val->fields['groups_id']);
             }
          }
       }
@@ -619,28 +650,36 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get entity admin email
-   **/
-   function getEntityAdminAddress() {
-      global $DB, $CFG_GLPI;
+    * Add entity admin
+    *
+    * @return void
+    */
+   final protected function addEntityAdmin() {
+      $eventclass = $this->event;
+      $admins_data = $eventclass::getEntityAdminsData($this->entity);
 
-      foreach ($DB->request('glpi_entities', array('id' => $this->entity)) as $row) {
-         $data['language'] = $CFG_GLPI['language'];
-         $data['email']    = $row['admin_email'];
-         $data['name']     = $row['admin_email_name'];
-         $data['usertype'] = self::getDefaultUserType();
-         $this->addToAddressesList($data);
+      if ($admin_data) {
+         foreach ($admins_data as $admin_data) {
+            if (!isset($admin_data['usertype'])) {
+               $admin_data['usertype'] = self::getDefaultUserType();
+            }
+            $this->addToRecipientsList($admin_data);
+         }
       }
    }
 
 
    /**
-    * Get targets for all the users of a group
+    * Add users of a group to targets
     *
-    * @param $manager      0 all users, 1 only supervisors, 2 all users without supervisors
-    * @param $group_id     id of the group
+    * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
+    * @param integer $group_id id of the group
+    *
+    * @since 9.2
+    *
+    * @return void
    **/
-   function getAddressesByGroup($manager, $group_id) {
+   final protected function addForGroup($manager, $group_id) {
       global $DB;
 
       // members/managers of the group allowed on object entity
@@ -660,12 +699,12 @@ class NotificationTarget extends CommonDBChild {
       }
 
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
+         $this->addToRecipientsList($data);
       }
    }
 
 
-   function getDistinctUserSql() {
+   final protected function getDistinctUserSql() {
 
       return  "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                `glpi_users`.`language` AS language";
@@ -726,7 +765,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $entity
    **/
-   function addGroupsToTargets($entity) {
+   final protected function addGroupsToTargets($entity) {
       global $DB;
 
       // Filter groups which can be notified and have members (as notifications are sent to members)
@@ -754,14 +793,16 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Return all the targets for this notification
-    * Values returned by this method are the ones for the alerts
-    * Can be updated by implementing the getAdditionnalTargets() method
-    * Can be overwitten (like dbconnection)
+    * Add all targets for this notification
     *
-    * @param $entity the entity on which the event is raised
+    * Can be updated by implementing the addAdditionnalTargets() method
+    * Can be overriden (like dbconnection)
+    *
+    * @param integer $entity the entity on which the event is raised
+    *
+    * @return void
    **/
-   function getNotificationTargets($entity) {
+   protected function addNotificationTargets($entity) {
 
       if (Session::haveRight("config", UPDATE)) {
          $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
@@ -777,19 +818,23 @@ class NotificationTarget extends CommonDBChild {
     * Allows to add more notification targets
     * Can be overridden in some case (for example Ticket)
     *
-    * @param $event specif event to get additional targets (default '')
-   **/
-   function getAdditionalTargets($event='') {
+    * @param string $event specif event to get additional targets (default '')
+    *
+    * @return void
+    */
+   protected function addAdditionalTargets($event='') {
    }
 
 
    /**
-    * Get addresses by a method not defined in NotificationTarget (specific to an itemtype)
+    * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
     *
-    * @param $data
-    * @param $options
+    * @param array $data    Data
+    * @param array $options Options
+    *
+    * @return void
    **/
-   function getSpecificTargets($data, $options) {
+   protected function addSpecificTargets($data, $options) {
    }
 
 
@@ -808,12 +853,14 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Add user to the notified users list
     *
-    * @param $field              look for user looking for this field in the object
-    *                            which raises the event
-    * @param $search_in_object   search is done in the object ? if not  in target object
-    *                            (false by default)
+    * @param string  $field            look for user looking for this field in the object
+    *                                  which raises the event
+    * @param boolean $search_in_object search is done in the object ? if not  in target object
+    *                                  (false by default)
+    *
+    * @return void
    **/
-   function getUserByField($field, $search_in_object=false) {
+   final protected function addUserByField($field, $search_in_object=false) {
       global $DB;
 
       $id = array();
@@ -835,29 +882,32 @@ class NotificationTarget extends CommonDBChild {
 
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
-            $this->addToAddressesList($data);
+            $this->addToRecipientsList($data);
          }
       }
    }
 
 
    /**
-    * Get technician in charge of the item
+    * Add technician in charge of the item
+    *
+    * @return void
    **/
-   function getItemTechnicianInChargeAddress() {
-      $this->getUserByField('users_id_tech', true);
+   final protected function addItemTechnicianInCharge() {
+      $this->addUserByField('users_id_tech', true);
    }
 
 
    /**
-    * Get Group of technicians in charge of the item
-   **/
-   function getItemGroupTechInChargeAddress() {
-
+    * Add group of technicians in charge of the item
+    *
+    * @return void
+    */
+   final protected function addItemGroupTechInCharge() {
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id_tech'] > 0) {
-               $this->getAddressesByGroup(0, $val->fields['groups_id_tech']);
+               $this->addForGroup(0, $val->fields['groups_id_tech']);
             }
          }
       }
@@ -865,21 +915,23 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get user owner of the material
+    * Add owner of the material
+    *
+    * @return void
    **/
-   function getItemOwnerAddress() {
-      $this->getUserByField('users_id', true);
+   final protected function addItemOwner() {
+      $this->addUserByField('users_id', true);
    }
 
 
    /**
-    * Get users emails by profile
+    * Add users from a profile
     *
-    * @param $profiles_id the profile ID to get users emails
+    * @param integer $profiles_id the profile ID
     *
-    * @return nothing
-   **/
-   function getUsersAddressesByProfile($profiles_id) {
+    * @return void
+    */
+   final protected function addForProfile($profiles_id) {
       global $DB;
 
       $query = $this->getDistinctUserSql().",
@@ -889,7 +941,7 @@ class NotificationTarget extends CommonDBChild {
                WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."';";
 
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
+         $this->addToRecipientsList($data);
       }
    }
 
@@ -908,7 +960,7 @@ class NotificationTarget extends CommonDBChild {
       foreach ($DB->request('glpi_entities',
                array('id' => $this->getEntity())) as $data) {
 
-         if (NotificationMail::isUserAddressValid($data['admin_email'])) {
+         if (NotificationMailing::isUserAddressValid($data['admin_email'])) {
             return array('email' => $data['admin_email'],
                          'name'  => $data['admin_email_name']);
          }
@@ -926,14 +978,14 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return the reply to address
    **/
-   function getReplyTo($options=array()) {
+   final public function getReplyTo($options=array()) {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
       foreach ($DB->request('glpi_entities',
                array('id' => $this->getEntity())) as $data) {
 
-         if (NotificationMail::isUserAddressValid($data['admin_reply'])) {
+         if (NotificationMailing::isUserAddressValid($data['admin_reply'])) {
             return array('email' => $data['admin_reply'],
                          'name'  => $data['admin_reply_name']);
          }
@@ -945,12 +997,14 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * Get addresses by type of notification
+    * Add addresses according to type of notification
     *
-    * @param $data
-    * @param $options   array
+    * @param array $data    Data
+    * @param array $options Option
+    *
+    * @return void
    **/
-   function getAddressesByTarget($data, $options=array()) {
+   final public function addForTarget($data, $options=array()) {
 
       //Look for all targets whose type is Notification::USER_TYPE
       switch ($data['type']) {
@@ -960,58 +1014,72 @@ class NotificationTarget extends CommonDBChild {
             switch ($data['items_id']) {
                //Send to glpi's global admin (as defined in the mailing configuration)
                case Notification::GLOBAL_ADMINISTRATOR :
-                  $this->getAdminAddress();
+                  if ($this->isMailMode()) {
+                     $this->addAdmin();
+                  }
                   break;
 
                //Send to the entity's admninistrator
                case Notification::ENTITY_ADMINISTRATOR :
-                  $this->getEntityAdminAddress();
+                  if ($this->isMailMode()) {
+                     $this->addEntityAdmin();
+                  }
                   break;
 
                //Technician in charge of the ticket
                case Notification::ITEM_TECH_IN_CHARGE :
-                  $this->getItemTechnicianInChargeAddress();
+                  $this->addItemTechnicianInCharge();
                   break;
 
                //Group of technician in charge of the ticket
                case Notification::ITEM_TECH_GROUP_IN_CHARGE :
-                  $this->getItemGroupTechInChargeAddress();
+                  $this->addItemGroupTechInCharge();
                   break;
 
                //User who's owner of the material
                case Notification::ITEM_USER :
-                  $this->getItemOwnerAddress();
+                  $this->addItemOwner();
                   break;
 
                //Send to the author of the ticket
                case Notification::AUTHOR :
-                  $this->getItemAuthorAddress();
+                  $this->addItemAuthor();
                   break;
 
                default :
                   //Maybe a target specific to a type
-                  $this->getSpecificTargets($data, $options);
+                  if (method_exists($this, 'getSpecificTargets')) {
+                     Toolbox::logDebug('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
+                     $this->getSpecificTargets($data, $options);
+                  } else {
+                     $this->addSpecificTargets($data, $options);
+                  }
             }
             break;
 
          //Send to all the users of a group
          case Notification::GROUP_TYPE :
-            $this->getAddressesByGroup(0, $data['items_id']);
+            $this->addForGroup(0, $data['items_id']);
             break;
 
          //Send to all the users of a group
          case Notification::SUPERVISOR_GROUP_TYPE :
-            $this->getAddressesByGroup(1, $data['items_id']);
+            $this->addForGroup(1, $data['items_id']);
             break;
 
          //Send to all the users of a profile
          case Notification::PROFILE_TYPE :
-            $this->getUsersAddressesByProfile($data['items_id']);
+            $this->addForProfile($data['items_id']);
             break;
 
          default :
             //Maybe a target specific to a type
-            $this->getSpecificTargets($data, $options);
+            if (method_exists($this, 'getSpecificTargets')) {
+               Toolbox::logDebug('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
+               $this->getSpecificTargets($data, $options);
+            } else {
+               $this->addSpecificTargets($data, $options);
+            }
       }
       // action for target from plugin
       $this->data = $data;
@@ -1025,14 +1093,16 @@ class NotificationTarget extends CommonDBChild {
     * Provides minimum information for alerts
     * Can be overridden by each NotificationTartget class if needed
     *
-    * @param $event
-    * @param $options   array
+    * @param string $event   Event name
+    * @param array  $options Options
+    *
+    * @return void
    **/
-   function getDatasForTemplate($event, $options=array()) {
+   protected function addDataForTemplate($event, $options=array()) {
    }
 
 
-   function getTargets() {
+   final public function getTargets() {
       return $this->target;
    }
 
@@ -1047,7 +1117,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   function getProfileJoinSql() {
+   protected function getProfileJoinSql() {
 
       return " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
@@ -1063,15 +1133,21 @@ class NotificationTarget extends CommonDBChild {
    function &getForTemplate($event, $options) {
       global $CFG_GLPI;
 
-      $this->datas = array();
+      $this->data = array();
       $this->addTagToList(array('tag'   => 'glpi.url',
                                 'value' => $CFG_GLPI['root_doc'],
                                 'label' => __('URL of the application')));
 
-      $this->getDatasForTemplate($event, $options);
+      $this->addDataForTemplate($event, $options);
+
+      if (method_exists($this, 'getDatasForTemplate')) {
+         Toolbox::logDebug('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
+         $this->getDatasForTemplate($event, $options);
+      }
+
       Plugin::doHook('item_get_datas', $this);
 
-      return $this->datas;
+      return $this->data;
    }
 
 
@@ -1267,4 +1343,285 @@ class NotificationTarget extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Set mode
+    *
+    * @param string $mode Mode (see Notification_NotificationTemplate::MODE_*)
+    *
+    * @return NotificationTarget
+    */
+   public function setMode($mode) {
+      $this->mode = $mode;
+      return $this;
+   }
+
+   /**
+    * Get mode
+    *
+    * @return string
+    */
+   protected function getMode() {
+      return $this->mode;
+   }
+
+   /**
+    * Is current mode for mail
+    *
+    * @return boolean
+    */
+   protected function isMailMode() {
+      return ($this->mode == Notification_NotificationTemplate::MODE_MAIL);
+   }
+
+   /**
+    * Set event
+    *
+    * @param string $event Event class
+    *
+    * @return NotificationTarget
+    */
+   public function setEvent($event) {
+      $this->event = $event;
+      return $this;
+   }
+
+   /**
+    * Get item's author
+    *
+    * @deprecated Use NotificationTarget::addItemAuthor()
+    *
+    * @return void
+    */
+   function getItemAuthorAddress() {
+      Toolbox::logDebug('getItemAuthorAddress() method is deprecated');
+      $this->addItemAuthor();
+   }
+
+
+   /**
+    * Get targets for all the users of a group
+    *
+    * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
+    * @param integer $group_id id of the group
+    *
+    * @deprecated Use NotificationTarget::addForGroup()
+    *
+    * @return void
+   **/
+   function getAddressesByGroup($manager, $group_id) {
+      Toolbox::logDebug('getAddressesByGroup() method is deprecated');
+      $this->addForGroup($manager, $group_id);
+   }
+
+   /**
+    * Get GLPI's global administrator email
+    *
+    * @deprecated Use NotificationTarget::addAdmin()
+    *
+    * @return void
+    */
+   function getAdminAddress() {
+      Toolbox::logDebug('getAdminAddress() method is deprecated');
+      $this->addAdmin();
+   }
+
+   /**
+    * Get Group of the item
+    *
+    * @since version 0.85
+    *
+    * @deprecated Use NotificationTarget::addItemGroup()
+    *
+    * @return void
+   **/
+   function getItemGroupAddress() {
+      Toolbox::logDebug('getItemGroupAddress() method is deprecated');
+      $this->addItemGroup();
+   }
+
+   /**
+    * Get Group supervisor of the item
+    *
+    * @since version 0.85
+    *
+    * @deprecated Use NotificationTarget::addItemGroupSupervisor()
+    *
+    * @return void
+   **/
+   function getItemGroupSupervisorAddress() {
+      Toolbox::logDebug('getItemGroupSupervisorAddress() method is deprecated');
+      $this->addItemGroupSupervisor();
+   }
+
+
+   /**
+    * Get Group without supervisor of the item
+    *
+    * @since version 0.85
+    *
+    * @deprecated Use NotificationTarget::addItemGroupWithoutSupervisor()
+    *
+    * @return void
+   **/
+   function getItemGroupWithoutSupervisorAddress() {
+      Toolbox::logDebug('getItemGroupWithoutSupervisorAddress() method is deprecated');
+      $this->addItemGroupWithoutSupervisor();
+   }
+
+   /**
+    * Get Group of technicians in charge of the item
+    *
+    * @deprecated Use NotificationTarget addItemTechnicianInCharge()
+    *
+    * @return void
+   **/
+   function getItemGroupTechInChargeAddress() {
+      Toolbox::logDebug('getItemGroupTechInChargeAddress() method is deprecated');
+      $this->addItemTechnicianInCharge();
+   }
+
+   /**
+    * Get technician in charge of the item
+    *
+    * @deprecated Use NotificationTarget::addItemTechnicianInCharge()
+    *
+    * @return void
+   **/
+   function getItemTechnicianInChargeAddress() {
+      Toolbox::logDebug('getItemTechnicianInChargeAddress() method is deprecated');
+      $this->addItemTechnicianInCharge();
+   }
+
+   /**
+    * Get user owner of the material
+    *
+    * @deprecated use NotificationTarget::addItemowner()
+    *
+    * @return void
+   **/
+   function getItemOwnerAddress() {
+      Toolbox::logDebug('getItemOwnerAddress() method is deprecated');
+      $this->addItemowner();
+   }
+
+   /**
+    * Get users emails by profile
+    *
+    * @param integer $profiles_id the profile ID to get users emails
+    *
+    * @deprecated Use NotificationTarget::addForProfile()
+    *
+    * @return nothing
+   **/
+   function getUsersAddressesByProfile($profiles_id) {
+      Toolbox::logDebug('getUsersAddressesByProfile() method is deprecated');
+      $this->addForProfile($profiles_id);
+   }
+
+   /**
+    * Add user to the notified users list
+    *
+    * @param string  $field            look for user looking for this field in the object
+    *                                  which raises the event
+    * @param boolean $search_in_object search is done in the object ? if not  in target object
+    *                                  (false by default)
+    *
+    * @deprecated Use NotificationTarget::addUserByField()
+    *
+    * @return void
+   **/
+   function getUserByField($field, $search_in_object=false) {
+      Toolbox::logDebug('getUserByField() method is deprecated');
+      $this->addUserByField($field, $search_in_object);
+   }
+
+   /**
+    * Add addresses according to type of notification
+    *
+    * @param array $data    Data
+    * @param array $options Option
+    *
+    * @deprecated Use NotificationTarget::addForTarget
+    *
+    * @return void
+   **/
+   function getAddressesByTarget($data, $options=array()) {
+      Toolbox::logDebug('getAddressesByTarget() method is deprecated');
+      $this->addForTarget($data, $options);
+   }
+
+   /**
+    * Add entity admin
+    *
+    * @deprecated Use NotificationTarget::addEntityAdmin()
+    *
+    * @return void
+    */
+   function getEntityAdminAddress() {
+      Toolbox::logDebug('getEntityAdminAddress() method is deprecated');
+      $this->addEntityAdmin();
+   }
+
+   /**
+    * Magic call to handle deprecated and removed methods
+    *
+    * @param string $name      Method name
+    * @param array  $arguments Passed args
+    *
+    * @return mixed
+    */
+   public function __call($name, $arguments) {
+      switch ($name) {
+         /**
+         * Return all the targets for this notification
+         * Values returned by this method are the ones for the alerts
+         * Can be updated by implementing the addAdditionnalTargets() method
+         * Can be overwitten (like dbconnection)
+         *
+         * @param integer $entity the entity on which the event is raised
+         *
+         * @deprecated Use NotificationTarget::addNotificationTargets()
+         *
+         * @return void
+         */
+         case 'getNotificationTargets':
+            Toolbox::logDebug('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
+            call_user_func_array([$this, 'addNotificationTargets'], $arguments);
+            break;
+         /**
+         * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
+         *
+         * @param array $data    Data
+         * @param array $options Options
+         *
+         * @deprecated Use NotificationTarget::addSpecificTargets()
+         *
+         * @return void
+         **/
+         case 'getSpecificTargets':
+            Toolbox::logDebug('getSpecificTargets() method is deprecated');
+            call_user_func_array([$this, 'addSpecificTargets'], $arguments);
+            break;
+         default:
+            throw new \RuntimeException('Unknown method ' . get_called_class() . '::' . $name);
+      }
+   }
+
+   public function __set($name, $value) {
+      if ($name == 'datas') {
+         Toolbox::logDebug('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
+         $this->data = $value;
+      } else {
+         $this->$name = $value;
+      }
+   }
+
+   public function &__get($name) {
+      if ($name == 'datas') {
+         Toolbox::logDebug('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
+         return $this->data;
+      } else {
+         return $this->$name;
+      }
+   }
 }

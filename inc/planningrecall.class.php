@@ -77,7 +77,7 @@ class PlanningRecall extends CommonDBChild {
       }
 
       $_SESSION['glpiplanningreminder_isavailable'] = 0;
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["use_notifications"]) {
          $task = new Crontask();
          if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
             // Only disabled by config
@@ -349,7 +349,7 @@ class PlanningRecall extends CommonDBChild {
    static function cronPlanningRecall($task=NULL) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_notifications"]) {
          return 0;
       }
 

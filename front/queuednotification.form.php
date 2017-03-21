@@ -32,25 +32,20 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
+
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", UPDATE);
-$notificationmail = new NotificationMailSetting();
+Session::checkRight('queuednotification', READ);
 
-if (!empty($_POST["test_smtp_send"])) {
-   NotificationMail::testNotification();
-   Html::back();
-
-} else if (!empty($_POST["update"])) {
-   $config = new Config();
-   $config->update($_POST);
-   Html::back();
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
 
-Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
+$mail = new QueuedNotification();
 
-$notificationmail->display(array('id' => 1));
-
+Html::header(QueuedNotification::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuednotification");
+$mail->display($_GET);
 Html::footer();

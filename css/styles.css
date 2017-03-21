@@ -4497,6 +4497,17 @@ tr.linked-template td:not(.top) {
    background-color: #ffb4b4;
 }
 
+.notifs_setup {
+   display: table;
+   margin: 0 auto;
+   border-spacing: 1em 0;
+}
+
+.notifs_setup > form,
+.notifs_setup > table {
+   display: table-cell;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;

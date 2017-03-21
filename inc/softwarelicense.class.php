@@ -832,7 +832,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $cron_status = 1;
 
-      if (!$CFG_GLPI['use_mailing']) {
+      if (!$CFG_GLPI['use_notifications']) {
          return 0;
       }
 

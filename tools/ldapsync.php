@@ -177,7 +177,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
                        "Date: " . Html::convDateTime($_SESSION['glpi_currenttime']) . "\n " .
                        $report;
             $entdata = new Entity();
-            $mmail   = new NotificationMail();
+            $mmail   = new NotificationMailing();
             $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
             $mmail->From      = $CFG_GLPI["admin_email"];
             $mmail->FromName  = "GLPI";

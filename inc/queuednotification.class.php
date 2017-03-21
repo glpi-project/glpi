@@ -39,17 +39,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/** QueuedMail class
+/** QueuedNotification class
  *
  * @since version 0.85
 **/
-class QueuedMail extends CommonDBTM {
+class QueuedNotification extends CommonDBTM {
 
-   static $rightname = 'queuedmail';
+   static $rightname = 'queuednotification';
 
 
    static function getTypeName($nb=0) {
-      return __('Mail queue');
+      return __('Notification queue');
    }
 
 
@@ -97,7 +97,7 @@ class QueuedMail extends CommonDBTM {
          case 'sendmail' :
             foreach ($ids as $id) {
                if ($item->canEdit($id)) {
-                  if ($item->sendMailById($id)) {
+                  if ($item->sendById($id)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -351,6 +351,19 @@ class QueuedMail extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_queuednotifications',
+         'field'              => 'mode',
+         'name'               => __('Mode'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => [
+            0 => 'equals',
+            1 => 'notequals'
+         ]
+      ];
+
+      $tab[] = [
          'id'                 => '80',
          'table'              => 'glpi_entities',
          'field'              => 'completename',
@@ -384,9 +397,52 @@ class QueuedMail extends CommonDBTM {
             }
             return $out;
             break;
+         case 'mode':
+            $out = Notification_NotificationTemplate::getMode($values[$field])['label'];
+            return $out;
+            break;
 
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'mode' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Notification_NotificationTemplate::dropdownMode($options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+
+   /**
+    * Send notification in queue
+    *
+    * @param integer $ID Id
+    *
+    * @return boolean
+    */
+   public function sendById($ID) {
+      if ($this->getFromDB($ID)) {
+         $mode = $this->getField('mode');
+         $eventclass = 'NotificationEvent' . ucfirst($mode);
+         $conf = Notification_NotificationTemplate::getMode($mode);
+         if ($conf['from'] != 'core') {
+            $eventclass = 'Plugin' . ucfirst($conf['from']) . $eventclass;
+         }
+
+         return $eventclass::send([$this->fields]);
+      } else {
+         return false;
+      }
    }
 
 
@@ -396,119 +452,11 @@ class QueuedMail extends CommonDBTM {
     * @param $ID        integer ID of the item
     *
     * @return true if send false if not
+    *
+    * @deprecated, see QueuedNotification::sendById
    **/
    function sendMailById($ID) {
-      global $CFG_GLPI;
-
-      if ($this->getFromDB($ID)) {
-
-         $mmail = new GLPIMailer();
-
-         $headers = importArrayFromDB($this->fields['headers']);
-         if (is_array($headers) && count($headers)) {
-            foreach ($headers as $key => $val) {
-               $mmail->AddCustomHeader("$key: $val");
-            }
-         }
-
-         // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
-                                 $this->fields["items_id"].">");
-
-         $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
-
-         if ($this->fields['replyto']) {
-            $mmail->AddReplyTo($this->fields['replyto'], $this->fields['replytoname']);
-         }
-         $mmail->Subject  = $this->fields['name'];
-
-         if (empty($this->fields['body_html'])) {
-            $mmail->isHTML(false);
-            $mmail->Body = $this->fields['body_text'];
-         } else {
-            $mmail->isHTML(true);
-            $mmail->Body               = '';
-            $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
-            $documents                 = importArrayFromDB($this->fields['documents']);
-            if (is_array($documents) && count($documents)) {
-               $doc = new Document();
-               foreach ($documents as $docID) {
-                  $doc->getFromDB($docID);
-                  // Add embeded image if tag present in ticket content
-                  if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
-                                     $this->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
-                     $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                              Document::getImageTag($doc->fields['tag']),
-                                              $doc->fields['filename'],
-                                              'base64',
-                                              $doc->fields['mime']);
-                  }
-               }
-            }
-            $mmail->Body   .= $this->fields['body_html'];
-            $mmail->AltBody = $this->fields['body_text'];
-         }
-
-         $recipient = $this->getField('recipient');
-         if (defined('GLPI_FORCE_MAIL')) {
-            //force recipient to configured email address
-            $recipient = GLPI_FORCE_MAIL;
-            //add original email addess to message body
-            $text = sprintf(__('Orignal email address was %1$s'), $this->getField('recipient'));
-            $mmail->Body      .= "<br/>$text";
-            $mmail->AltBody   .= $text;
-         }
-
-         $mmail->AddAddress($recipient, $this->fields['recipientname']);
-
-         if (!empty($this->fields['messageid'])) {
-            $mmail->MessageID = "<".$this->fields['messageid'].">";
-         }
-
-         $messageerror = __('Error in sending the email');
-
-         if (!$mmail->Send()) {
-            Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
-
-            $retries = $CFG_GLPI['smtp_max_retries'] - $this->fields['sent_try'];
-            Toolbox::logInFile("mail-error",
-                              sprintf(__('%1$s. Message: %2$s, Error: %3$s'),
-                                       sprintf(__('Warning: an email was undeliverable to %s with %d retries remaining'),
-                                                $this->fields['recipient'], $retries),
-                                       $this->fields['name'],
-                                       $mmail->ErrorInfo."\n"));
-
-            if ($retries <= 0) {
-               Toolbox::logInFile("mail-error",
-                                 sprintf(__('%1$s: %2$s'),
-                                          sprintf(__('Fatal error: giving up delivery of email to %s'),
-                                                $this->fields['recipient']),
-                                          $this->fields['name']."\n"));
-               $this->delete(array('id' => $this->fields['id']));
-            }
-
-            $mmail->ClearAddresses();
-            $this->update(array('id'        => $this->fields['id'],
-                                'sent_try' => $this->fields['sent_try']+1));
-            return false;
-
-         } else {
-            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-            Toolbox::logInFile("mail",
-                               sprintf(__('%1$s: %2$s'),
-                                        sprintf(__('An email was sent to %s'),
-                                                $this->fields['recipient']),
-                                        $this->fields['name']."\n"));
-            $mmail->ClearAddresses();
-            $this->update(array('id'        => $this->fields['id'],
-                                'sent_time' => $_SESSION['glpi_currenttime']));
-            $this->delete(array('id'        => $this->fields['id']));
-            return true;
-         }
-
-      } else {
-         return false;
-      }
+      return $this->sendById($ID);
    }
 
 
@@ -522,12 +470,12 @@ class QueuedMail extends CommonDBTM {
    static function cronInfo($name) {
 
       switch ($name) {
-         case 'queuedmail' :
+         case 'queuednotification' :
             return array('description' => __('Send mails in queue'),
                          'parameter'   => __('Maximum emails to send at once'));
 
-         case 'queuedmailclean' :
-            return array('description' => __('Clean mail queue'),
+         case 'queuednotificationclean' :
+            return array('description' => __('Clean notification queue'),
                          'parameter'   => __('Days to keep sent emails'));
 
       }
@@ -536,46 +484,118 @@ class QueuedMail extends CommonDBTM {
 
 
    /**
-    * Cron action on queued mails : send mails in queue
+    * Get pending notifications in queue
     *
-    * @param $task for log, if NULL display (default NULL)
-   **/
-   static function cronQueuedMail($task=NULL) {
+    * @param string  $send_time   Maximum sent_time
+    * @param integer $limit       Query limit clause
+    * @param array   $limit_modes Modes to limit to
+    * @param array   $extra_where Extra params to add to the where clause
+    *
+    * @return array
+    */
+   static public function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = []) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"]) {
+      if ($send_time === null) {
+         $send_time = date('Y-m-d H:i:s');
+      }
+
+      $base_query = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'is_deleted'   => 0,
+            'mode'         => 'TOFILL',
+            'send_time'    => ['<', $send_time],
+         ] +  $extra_where,
+         'ORDER'  => 'send_time ASC',
+         'START'  => 0,
+         'LIMIT'  => $limit
+      ];
+
+      $pendings = [];
+      $modes = Notification_NotificationTemplate::getModes();
+      foreach ($modes as $mode => $conf) {
+         $eventclass = 'NotificationEvent' . ucfirst($mode);
+         if ($conf['from'] != 'core') {
+            $eventclass = 'Plugin' . ucfirst($conf['from']) . $eventclass;
+         }
+
+         if ($limit_modes !== null && !in_array($mode, $limit_modes)
+            || !$CFG_GLPI['notifications_' . $mode]
+            || !$eventclass::canCron()
+         ) {
+            //mode is not in limits, is disabled, or cannot be called from cron, passing
+            continue;
+         }
+
+         $query = $base_query;
+         $query['WHERE']['mode'] = $mode;
+
+         $iterator = $DB->request($query);
+         if ($iterator->numRows() > 0) {
+            $pendings[$mode] = [];
+            while ($row = $iterator->next()) {
+               $pendings[$mode][] = $row;
+            }
+         }
+      }
+
+      return $pendings;
+   }
+
+
+   /**
+    * Cron action on notification queue: send notifications in queue
+    *
+    * @param CommonDBTM $task for log (default NULL)
+    *
+    * @return integer either 0 or 1
+   **/
+   static function cronQueuedNotification($task = null) {
+      global $DB, $CFG_GLPI;
+
+      if (!$CFG_GLPI["notifications_mailing"]) {
          return 0;
       }
       $cron_status = 0;
 
-      // Send mail at least 1 minute after adding in queue to be sure that process on it is finished
+      // Send notifications at least 1 minute after adding in queue to be sure that process on it is finished
       $send_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
-      $query       = "SELECT `glpi_queuedmails`.*
-                      FROM `glpi_queuedmails`
-                      WHERE NOT `glpi_queuedmails`.`is_deleted`
-                            AND `glpi_queuedmails`.`send_time` < '".$send_time."'
-                      ORDER BY `glpi_queuedmails`.`send_time` ASC
-                      LIMIT 0, ".$task->fields['param'];
 
       $mail = new self();
-      foreach ($DB->request($query) as $data) {
-         if ($mail->sendMailById($data['id'])) {
+      $pendings = self::getPendings(
+         $send_time,
+         $task->fields['param']
+      );
+
+      foreach ($pendings as $mode => $data) {
+         $eventclass = 'NotificationEvent' . ucfirst($mode);
+         $conf = Notification_NotificationTemplate::getMode($mode);
+         if ($conf['from'] != 'core') {
+            $eventclass = 'Plugin' . ucfirst($conf['from']) . $eventclass;
+         }
+
+         $result = $eventclass::send($data);
+         if ($result !== false && count($result)) {
             $cron_status = 1;
             if (!is_null($task)) {
-               $task->addVolume(1);
+               $task->addVolume($result);
             }
          }
       }
+
       return $cron_status;
    }
 
 
    /**
-    * Cron action on queued mails : clean mail queue
+    * Cron action on queued notification: clean notification queue
     *
-    * @param $task for log, if NULL display (default NULL)
+    * @param CommonDBTM $task for log (default NULL)
+    *
+    * @return integer either 0 or 1
    **/
-   static function cronQueuedMailClean($task=NULL) {
+   static function cronQueuedNotificationClean($task = null) {
       global $DB;
 
       $vol = 0;
@@ -585,8 +605,8 @@ class QueuedMail extends CommonDBTM {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
          $send_time = date("U") - $secs;
          $query_exp = "DELETE
-                       FROM `glpi_queuedmails`
-                       WHERE `glpi_queuedmails`.`is_deleted`
+                       FROM `glpi_queuednotifications`
+                       WHERE `glpi_queuednotifications`.`is_deleted`
                              AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
          $DB->query($query_exp);
@@ -601,26 +621,29 @@ class QueuedMail extends CommonDBTM {
    /**
     * Force sending all mails in queue for a specific item
     *
-    * @param $itemtype item type
-    * @param $items_id id of the item
+    * @param string  $itemtype item type
+    * @param integer $items_id id of the item
+    *
+    * @return void
    **/
    static function forceSendFor($itemtype, $items_id) {
       global $DB;
 
       if (!empty($itemtype)
-          && !empty($items_id)) {
-         // Send mail at least 1 minute after adding in queue to be sure that process on it is finished
-         $query = "SELECT `glpi_queuedmails`.*
-                   FROM `glpi_queuedmails`
-                   WHERE NOT `glpi_queuedmails`.`is_deleted`
-                        AND `glpi_queuedmails`.`itemtype` = '$itemtype'
-                        AND `glpi_queuedmails`.`items_id` = '$items_id'
-                        AND `glpi_queuedmails`.`send_time` <= NOW()
-                   ORDER BY `glpi_queuedmails`.`send_time` ASC";
+         && !empty($items_id)) {
+         $pendings = self::getPendings(
+            null,
+            1,
+            null,
+            [
+               'itemtype'  => $itemtype,
+               'items_id'  => $items_id
+            ]
+         );
 
-         $mail = new self();
-         foreach ($DB->request($query) as $data) {
-            $mail->sendMailById($data['id']);
+         foreach ($pendings as $mode => $data) {
+            $eventclass = Notification_NotificationTemplate::getModeClass($mode, 'event');
+            $eventclass::send($data);
          }
       }
    }
@@ -629,15 +652,15 @@ class QueuedMail extends CommonDBTM {
    /**
     * Print the queued mail form
     *
-    * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param integer $ID      ID of the item
+    * @param array   $options Options
     *
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("queuedmail", READ)) {
+      if (!Session::haveRight("queuednotification", READ)) {
          return false;
       }
 
@@ -655,13 +678,16 @@ class QueuedMail extends CommonDBTM {
          echo "<td>"._n('Item', 'Items', 1)."</td>";
          echo "<td>";
          echo NOT_AVAILABLE;
-      } else {
+      } else if ($item instanceof CommonDBTM) {
          echo $item->getType();
          $item->getFromDB($this->fields['items_id']);
          echo "</td>";
          echo "<td>"._n('Item', 'Items', 1)."</td>";
          echo "<td>";
          echo $item->getLink();
+      } else {
+         echo get_class($item);
+         echo "</td><td></td>";
       }
       echo "</tr>";
 

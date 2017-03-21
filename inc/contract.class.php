@@ -1166,7 +1166,7 @@ class Contract extends CommonDBTM {
    static function cronContract($task=NULL) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_notifications"]) {
          return 0;
       }
 

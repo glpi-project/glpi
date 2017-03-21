@@ -54,17 +54,11 @@ class NotificationTargetContract extends NotificationTarget {
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
-      $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
+   function addDataForTemplate($event, $options=array()) {
+      $this->data['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events                             = $this->getEvents();
-      $this->datas['##contract.action##'] = sprintf(__('%1$s - %2$s'), __('Contracts alarm'),
+      $this->data['##contract.action##'] = sprintf(__('%1$s - %2$s'), __('Contracts alarm'),
                                                     $events[$event]);
 
       foreach ($options['items'] as $id => $contract) {
@@ -121,33 +115,33 @@ class NotificationTargetContract extends NotificationTarget {
             }
          }
 
-         $this->datas['contracts'][] = $tmp;
+         $this->data['contracts'][] = $tmp;
       }
 
       switch ($event) {
          case 'end':
-            $this->datas['##lang.contract.time##'] = __('Contract expired since the');
+            $this->data['##lang.contract.time##'] = __('Contract expired since the');
             break;
 
          case 'notice':
-            $this->datas['##lang.contract.time##'] =  __('Contract with notice since the');
+            $this->data['##lang.contract.time##'] =  __('Contract with notice since the');
             break;
 
          case 'periodicity':
-            $this->datas['##lang.contract.time##']
+            $this->data['##lang.contract.time##']
                         =  __('Contract reached the end of a period since the');
             break;
 
          case 'periodicitynotice':
-            $this->datas['##lang.contract.time##']
+            $this->data['##lang.contract.time##']
                         =  __('Contract with notice for the current period since the');
             break;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
 

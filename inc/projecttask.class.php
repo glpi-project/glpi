@@ -190,7 +190,7 @@ class ProjectTask extends CommonDBChild {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Read again project to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent("update", $this);
@@ -201,7 +201,7 @@ class ProjectTask extends CommonDBChild {
    function post_addItem() {
       global $DB, $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Clean reload of the project
          $this->getFromDB($this->fields['id']);
 
@@ -259,7 +259,7 @@ class ProjectTask extends CommonDBChild {
    function pre_deleteItem() {
       global $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_mailing']) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
          NotificationEvent::raiseEvent('delete', $this);
       }
       return true;

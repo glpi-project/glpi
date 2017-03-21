@@ -513,9 +513,6 @@ class Log extends CommonDBTM {
                         $iditem  = trim(substr($data['new_value'], strrpos($data['new_value'], '(')+1,
                                        strrpos($data['new_value'], ')')), ')');
 
-                        var_dump(array($key => $data['items_id'],
-                           $itemkey => $iditem));
-                        exit;
                         foreach ($DB->request($table, array($key => $data['items_id'],
                                                          $itemkey => $iditem)) as $datalink) {
                            if ($datalink['type'] == CommonITILActor::REQUESTER) {

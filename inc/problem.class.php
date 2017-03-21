@@ -165,7 +165,7 @@ class Problem extends CommonITILObject {
    function pre_deleteItem() {
       global $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_mailing']) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
          NotificationEvent::raiseEvent('delete', $this);
       }
       return true;
@@ -299,7 +299,7 @@ class Problem extends CommonITILObject {
       }
 
       if ($donotif
-          && $CFG_GLPI["use_mailing"]) {
+          && $CFG_GLPI["use_notifications"]) {
          $mailtype = "update";
 
          if (isset($this->input["status"])
@@ -366,7 +366,7 @@ class Problem extends CommonITILObject {
       }
 
       // Processing Email
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          // Clean reload of the problem
          $this->getFromDB($this->fields['id']);
 

@@ -695,8 +695,13 @@ class Dropdown {
                break;
          }
 
-         Html::showCheckbox($options);
-         return $rand;
+         $output = Html::getCheckbox($options);
+         if (!isset($options['display']) || $options['display'] == 'true') {
+            echo $output;
+            return $rand;
+         } else {
+            return $output;
+         }
       }
 
       if ($restrict_to != 0) {
@@ -1839,6 +1844,7 @@ class Dropdown {
       $param['rand']                = mt_rand();
       $param['emptylabel']          = self::EMPTY_VALUE;
       $param['display_emptychoice'] = false;
+      $param['disabled']            = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1906,6 +1912,10 @@ class Dropdown {
 
          if ($param["multiple"]) {
             $output .= " multiple";
+         }
+
+         if ($param["disabled"]) {
+            $output .= " disabled='disabled'";
          }
 
          $output .= '>';

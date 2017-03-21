@@ -50,19 +50,13 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=array()) {
 
       $events                            = $this->getAllEvents();
 
-      $this->datas['##license.action##'] = $events[$event];
+      $this->data['##license.action##'] = $events[$event];
 
-      $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                      $options['entities_id']);
 
       foreach ($options['licenses'] as $id => $license) {
@@ -74,13 +68,13 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                                     = Html::convDate($license["expire"]);
          $tmp['##license.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
                                                        "SoftwareLicense_".$id);
-         $this->datas['licenses'][] = $tmp;
+         $this->data['licenses'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }

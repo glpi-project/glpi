@@ -48,17 +48,17 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    /**
-    * @see NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::addNotificationTargets()
    **/
-   function getNotificationTargets($entity) {
+   function addNotificationTargets($entity) {
       $this->addTarget(Notification::USER, __('User'));
    }
 
 
    /**
-    * @see NotificationTarget::getSpecificTargets()
+    * @see NotificationTarget::addSpecificTargets()
    **/
-   function getSpecificTargets($data,$options) {
+   function addSpecificTargets($data,$options) {
 
       //Look for all targets whose type is Notification::ITEM_USER
       switch ($data['type']) {
@@ -75,38 +75,32 @@ class NotificationTargetUser extends NotificationTarget {
                                 'email'    => $this->obj->getDefaultEmail(),
                                 'language' => $this->obj->getField('language'),
                                 'usertype' => $usertype);
-                  $this->addToAddressesList($data);
+                  $this->addToRecipientsList($data);
             }
       }
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
 
-      $this->datas['##user.name##']      = $this->obj->getField("name");
-      $this->datas['##user.realname##']  = $this->obj->getField("realname");
-      $this->datas['##user.firstname##'] = $this->obj->getField("firstname");
-      $this->datas['##user.token##']     = $this->obj->getField("password_forget_token");
+      $this->data['##user.name##']      = $this->obj->getField("name");
+      $this->data['##user.realname##']  = $this->obj->getField("realname");
+      $this->data['##user.firstname##'] = $this->obj->getField("firstname");
+      $this->data['##user.token##']     = $this->obj->getField("password_forget_token");
 
-      $this->datas['##user.action##']    = $events[$event];
-      $this->datas['##user.passwordforgeturl##']
+      $this->data['##user.action##']    = $events[$event];
+      $this->data['##user.passwordforgeturl##']
                                          = urldecode($CFG_GLPI["url_base"].
                                                      "/front/lostpassword.php?password_forget_token=".
                                                      $this->obj->getField("password_forget_token"));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }

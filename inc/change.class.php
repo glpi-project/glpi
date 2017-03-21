@@ -316,7 +316,7 @@ class Change extends CommonITILObject {
          $donotif = false;
       }
 
-      if ($donotif && $CFG_GLPI["use_mailing"]) {
+      if ($donotif && $CFG_GLPI["use_notifications"]) {
          $mailtype = "update";
          if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status", $this->updates)
@@ -376,8 +376,8 @@ class Change extends CommonITILObject {
          }
       }
 
-      // Processing Email
-      if ($CFG_GLPI["use_mailing"]) {
+      // Processing notifications
+      if ($CFG_GLPI["use_notifications"]) {
          // Clean reload of the change
          $this->getFromDB($this->fields['id']);
 

@@ -471,7 +471,7 @@ class CartridgeItem extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["use_notifications"]) {
          $message = array();
          $alert   = new Alert();
 
