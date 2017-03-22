@@ -672,7 +672,7 @@ class Group extends CommonTreeDropdown {
                                      AND `consumableitems_id` IN (SELECT `id`
                                                                   FROM `glpi_consumableitems` ".
                                                                   getEntitiesRestrictRequest("WHERE",
-                                                                     "glpi_consumableitems",'','',true).")";
+                                                                     "glpi_consumableitems", '', '', true).")";
          }
 
          if ($item->isEntityAssign()) {
