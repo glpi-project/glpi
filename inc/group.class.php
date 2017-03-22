@@ -628,25 +628,26 @@ class Group extends CommonTreeDropdown {
 
       // include item of child groups ?
       if ($tree) {
-         $grprestrict = "IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
+         $grprestrict1 = "IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
       } else {
-         $grprestrict = "='".$this->getID()."'";
+         $grprestrict1 = "='".$this->getID()."'";
       }
       // include items of members
       if ($user) {
          $ufield      = str_replace('groups', 'users', $field);
-         $grprestrict = "(`$field` $grprestrict
+         $grprestrict = "(`$field` $grprestrict1
                           OR (`$field`=0
                               AND `$ufield` IN (SELECT `users_id`
                                                 FROM `glpi_groups_users`
-                                                WHERE `groups_id` $grprestrict)))";
+                                                WHERE `groups_id` $grprestrict1)))";
       } else {
-         $grprestrict = "`$field` $grprestrict";
+         $grprestrict = "`$field` $grprestrict1";
       }
       // Count the total of item
       $nb  = array();
       $tot = 0;
       $join = $select = '';
+      $savfield = $field;
       foreach ($types as $itemtype) {
          $nb[$itemtype] = 0;
          if (!($item = getItemForItemtype($itemtype))) {
@@ -655,10 +656,24 @@ class Group extends CommonTreeDropdown {
          if (!$item->canView()) {
             continue;
          }
+         if ($itemtype == 'Consumable') {
+            $field = 'items_id';
+         } else {
+            $field = $savfield;
+         }
          if (!$item->isField($field)) {
             continue;
          }
          $restrict[$itemtype] = $grprestrict;
+
+         if ($itemtype == 'Consumable') {
+            $restrict[$itemtype] = " $field $grprestrict1
+                                     AND `itemtype` = 'Group'
+                                     AND `consumableitems_id` IN (SELECT `id`
+                                                                  FROM `glpi_consumableitems` ".
+                                                                  getEntitiesRestrictRequest("WHERE",
+                                                                     "glpi_consumableitems",'','',true).")";
+         }
 
          if ($item->isEntityAssign()) {
             if ($itemtype != 'Consumable') {
@@ -672,18 +687,6 @@ class Group extends CommonTreeDropdown {
          if ($item->maybeDeleted()) {
             $restrict[$itemtype] .= " AND NOT `is_deleted`";
          }
-
-         if ($itemtype == 'Consumable') {
-            $select = "`glpi_consumableitems`.";
-            $join                 = " LEFT JOIN `glpi_consumableitems`
-                                       ON `glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`";
-            $restrict[$itemtype] .= " AND `itemtype` = 'Group'
-                                      AND `consumableitems_id` IN (SELECT `id`
-                                                                   FROM `glpi_consumableitems` ".
-                                                                   getEntitiesRestrictRequest("WHERE",
-                                                                           "glpi_consumableitems", '', '', true).")";
-         }
-
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
       }
       $max = $_SESSION['glpilist_limit'];
@@ -699,6 +702,13 @@ class Group extends CommonTreeDropdown {
             // No need to read
             $start -= $nb[$itemtype];
          } else {
+            if ($itemtype == 'Consumable') {
+               $select = "`glpi_consumableitems`.";
+               $join   = " LEFT JOIN `glpi_consumableitems`
+                             ON `glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`";
+            } else {
+                  $select = $join = '';
+            }
 
             $query = "SELECT $select`id`
                       FROM `".$item->getTable()."`
@@ -781,9 +791,6 @@ class Group extends CommonTreeDropdown {
       $datas = array();
       if ($type) {
          $types = array($type);
-      }
-      if ($type == 'Consumable') {
-         $field = 'items_id';
       }
       $start  = (isset($_GET['start']) ? intval($_GET['start']) : 0);
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
