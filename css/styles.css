@@ -45,6 +45,7 @@ body {
 }
 
 body.iframed {
+   margin-top: 1em;
    overflow-x: hidden;
    background: inherit;
 }
@@ -4108,6 +4109,15 @@ td.diff del {
    max-width: 350px;
    margin : auto;
    border: none;
+}
+
+
+#loading img {
+   vertical-align: middle;
+}
+
+.small {
+   width: 1%;
 }
 
 @media screen and (max-width: 900px) {

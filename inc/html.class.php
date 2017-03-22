@@ -1457,8 +1457,7 @@ class Html {
       echo "<li id='bookmark_link'>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
+                                    array('title'         => __('Load a bookmark')));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
              "\"  class='button-icon'></span>";
@@ -1970,8 +1969,7 @@ class Html {
       echo "<li id='bookmark_link'>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
+                                    array('title'         => __('Load a bookmark')));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open'); return false;\">";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
              "\"  class='button-icon'></span>";

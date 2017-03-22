@@ -290,7 +290,6 @@ class Bookmark extends CommonDBTM {
          $this->check(-1, CREATE);
       }
 
-      echo '<br>';
       echo "<form method='post' name='form_save_query' action='".$_SERVER['PHP_SELF']."'>";
       echo "<div class='center'>";
       if (isset($options['itemtype'])) {
@@ -667,14 +666,14 @@ class Bookmark extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
-      echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      echo "<th class='small'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       echo "<th class='center' colspan='2'>"._n('Bookmark', 'Bookmarks', Session::getPluralNumber())."</th>";
-      echo "<th width='20px'>&nbsp;</th>";
-      echo "<th>".__('Default view')."</th>";
+      echo "<th class='small'>&nbsp;</th>";
+      echo "<th class='small'>".__('Default view')."</th>";
       $colspan = 5;
       if ($is_private) {
          $colspan+=2;
-         echo "<th colspan='2'>&nbsp;</th>";
+         echo "<th class='small' colspan='2'>&nbsp;</th>";
       }
       echo "</tr>";
 
@@ -708,22 +707,24 @@ class Bookmark extends CommonDBTM {
             echo "<td>";
             if ($canedit) {
                echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
-                      $this->fields["id"]."\" alt='"._sx('button', 'Update')."'>".
-                      $this->fields["name"]."</a>";
+                      $this->fields["id"]."\" title='"._sx('button', 'Update')."'>".
+                      $this->fields["name"]."</a><span class='count'></span>";
             } else {
                echo $this->fields["name"];
             }
             echo "</td>";
 
-            echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
+            echo "<td style='white-space: nowrap;'><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
                        $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
+            echo "&nbsp;<a href=\"".$CFG_GLPI['root_doc']."/ajax/bookmark.php?action=count&amp;id=".
+                       $this->fields["id"]."\" class='vsubmit countBookmarks'>".__('Count')."</a>";
             echo "</td>";
             echo "<td class='center'>";
             if ($this->fields['type'] == self::SEARCH) {
                if (is_null($this->fields['IS_DEFAULT'])) {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
-                         __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
+                         __s('Not default search')."\" title=\"".__s('Not default search')."\">".
                          "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_record.png\" class='pointer'></a>";
                } else {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
@@ -738,7 +739,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                       $CFG_GLPI["root_doc"]."/pics/puce-up.png");
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -748,7 +749,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                       $CFG_GLPI["root_doc"]."/pics/puce-down.png");
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -765,6 +766,29 @@ class Bookmark extends CommonDBTM {
             $massiveactionparams['forcecreate'] = true;
             Html::showMassiveActions($massiveactionparams);
          }
+
+         $js = "$(function() {
+            $('.countBookmarks').on('click', function(e) {
+               e.preventDefault();
+               var _this = $(this);
+               var _dest = _this.closest('tr').find('span.count');
+               $.ajax({
+                  url: _this.attr('href'),
+                  beforeSend: function() {
+                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                     _dest.append(_img);
+                  },
+                  success: function(res) {
+                     _dest.html(' (' + res.count + ')');
+                  },
+                  complete: function() {
+                     $('#loading').remove();
+                  }
+               });
+            });
+         });";
+         echo Html::scriptBlock($js);
+
       } else {
          echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
          echo __('You have not recorded any bookmarks yet');
