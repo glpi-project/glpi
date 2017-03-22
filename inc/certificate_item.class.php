@@ -59,7 +59,6 @@ class Certificate_Item extends CommonDBRelation {
     *
    **/
    function getForbiddenStandardMassiveAction() {
-
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
@@ -70,7 +69,6 @@ class Certificate_Item extends CommonDBRelation {
     * @param CommonDBTM $item
     */
    static function cleanForItem(CommonDBTM $item) {
-
       $temp = new self();
       $temp->deleteByCriteria(['itemtype' => $item->getType(),
                                'items_id' => $item->getField('id')]);
@@ -111,7 +109,8 @@ class Certificate_Item extends CommonDBRelation {
     * @param int $withtemplate
     * @return bool
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1,
+                                            $withtemplate = 0) {
 
       if ($item->getType() == 'Certificate') {
          self::showForCertificate($item);
@@ -371,14 +370,9 @@ class Certificate_Item extends CommonDBRelation {
 
       $ID = $item->getField('id');
 
-      if ($item->isNewID($ID)) {
-         return false;
-      }
-      if (!Session::haveRight("certificate", READ)) {
-         return false;
-      }
-
-      if (!$item->can($item->fields['id'], READ)) {
+      if ($item->isNewID($ID)
+         || !certificate::canView() ||
+            !$item->can($item->fields['id'], READ)) {
          return false;
       }
 
@@ -386,10 +380,32 @@ class Certificate_Item extends CommonDBRelation {
          $withtemplate = 0;
       }
 
-      $canedit = $item->canAddItem('Certificate');
-      $rand = mt_rand();
+      $canedit      = $item->canAddItem('Certificate');
+      $rand         = mt_rand();
       $is_recursive = $item->isRecursive();
-
+/*
+      $crit = ['FIELDS' => ['glpi_certificates_items' => ['id'],
+                            'glpi_entities' => ['id'],
+                            'glpi_certificates' => [*]
+                           ],
+               'FROM'   => ['glpi_certificates_items'],
+               'JOIN'   => ['glpi_certificates'
+                              => ['FKEY'
+                                    => 'glpi_certificates_items' => 'certificates_id',
+                                       'glpi_certificates'       => 'id',
+                                 ],
+                            'glpi_entities'
+                              => ['FKEY'
+                                    => 'glpi_certificates' => 'entities_id',
+                                       'glpi_entities'     => 'id',
+                                 ]
+                           ],
+               'WHERE'   => [ ['glpi_certificates_items.items_id' => $ID,
+                               'glpi_certificates_items'          => $item->getType()
+                              ]
+                            ],
+               'ORDER'   => 'glpi_certificates.name'
+            ];*/
       $query = "SELECT `glpi_certificates_items`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity,
                        `glpi_certificates`.`name` AS assocName,
@@ -409,66 +425,64 @@ class Certificate_Item extends CommonDBRelation {
       $number = $DB->numrows($result);
       $i = 0;
 
-      $certificates = array();
-      $certificate = new Certificate();
-      $used = array();
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $certificates[$data['assocID']] = $data;
-            $used[$data['id']] = $data['id'];
-         }
+      $certificates = [];
+      $used         = [];
+      $certificate  = new Certificate();
+
+      foreach ($DB->request($query) as $data) {
+         $certificates[$data['assocID']] = $data;
+         $used[$data['id']] = $data['id'];
       }
 
       if ($canedit && $withtemplate < 2) {
-         // Restrict entity for knowbase
-         $entities = "";
-         $entity = $_SESSION["glpiactive_entity"];
 
-         if ($item->isEntityAssign()) {
-            /// Case of personal items : entity = -1 : create on active entity (Reminder case))
-            if ($item->getEntityID() >= 0) {
-               $entity = $item->getEntityID();
-            }
-
-            if ($item->isRecursive()) {
-               $entities = getSonsOf('glpi_entities', $entity);
-            } else {
-               $entities = $entity;
-            }
+         if ($item->maybeRecursive()) {
+            $is_recursive = $item->fields['is_recursive'];
+         } else {
+            $is_recursive = false;
          }
-         $limit = getEntitiesRestrictRequest(" AND ", "glpi_certificates", '', $entities, true);
+         $entity_restrict = getEntitiesRestrictCriteria("glpi_certificates",
+                                                        'entities_id',
+                                                        $item->fields['entities_id'],
+                                                        $is_recursive);
 
-         $q = "SELECT COUNT(*)
-               FROM `glpi_certificates`
-               WHERE `is_deleted` = '0'
-               $limit";
-
-         $result = $DB->query($q);
-         $nb = $DB->result($result, 0, 0);
+         $nb = countElementsInTable('glpi_certificates',
+                                    [
+                                     'is_deleted'  => 0,
+                                     'entities_id' => $entity_restrict
+                                    ]);
 
          echo "<div class='firstbloc'>";
 
-         if (Certificate::canView() && ($nb > count($used))
-         ) {
-            echo "<form name='certificate_form$rand' id='certificate_form$rand' method='post'
-                   action='" . Toolbox::getItemTypeFormURL('Certificate') . "'>";
+         if (Certificate::canView() && ($nb > count($used)) ) {
+            echo "<form name='certificate_form$rand'
+                        id='certificate_form$rand'
+                        method='post'
+                        action='" . Toolbox::getItemTypeFormURL('Certificate_Item')
+              . "'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='4' class='center'>";
-            echo "<input type='hidden' name='entities_id' value='$entity'>";
-            echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
-            echo "<input type='hidden' name='itemtype' value='" . $item->getType() . "'>";
-            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo Html::hidden('entities_id',
+                              ['value' => $item->fields['entities_id']]);
+            echo Html::hidden('is_recursive',
+                              ['value' => $is_recursive]);
+            echo Html::hidden('itemtype',
+                              ['value' => $item->getType()]);
+            echo Html::hidden('items_id',
+                              ['value' => $ID]);
             if ($item->getType() == 'Ticket') {
-               echo "<input type='hidden' name='tickets_id' value='$ID'>";
+               echo Html::hidden('tickets_id', ['value' => $ID]);
             }
 
-            Certificate::dropdownCertificate(array('entity' => $entities,
-               'used' => $used));
+            Certificate::show([
+                                'entity'       => $item->fields['entities_id'],
+                                'is_recursive' => $is_recursive,
+                                'used'         => $used
+                              ]);
 
             echo "</td><td class='center' width='20%'>";
-            echo "<input type='submit' name='additem' value=\"" .
-               _sx('button', 'Associate a certificate', 'certificates') . "\" class='submit'>";
+            echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
             echo "</td>";
             echo "</tr>";
             echo "</table>";
@@ -480,15 +494,17 @@ class Certificate_Item extends CommonDBRelation {
 
       echo "<div class='spaced'>";
       if ($canedit && $number && ($withtemplate < 2)) {
+         $massiveactionparams = ['num_displayed' => $number];
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-         $massiveactionparams = array('num_displayed' => $number);
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
       if ($canedit && $number && ($withtemplate < 2)) {
-         echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
+         echo "<th width='10'>";
+         echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+         echo "</th>";
       }
       echo "<th>" . __('Name') . "</th>";
       if (Session::isMultiEntitiesMode()) {
@@ -501,15 +517,13 @@ class Certificate_Item extends CommonDBRelation {
       echo "<th>" . __('Expiration date') . "</th>";
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
-      $used = array();
+
+      $used = [];
 
       if ($number) {
-
          Session::initNavigateListItems('Certificate',
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),
-               $item->getTypeName(1), $item->getName()));
+                                        sprintf(__('%1$s = %2$s'),
+                                        $item->getTypeName(1), $item->getName()));
 
          foreach ($certificates as $data) {
             $certificateID = $data["id"];
@@ -553,8 +567,7 @@ class Certificate_Item extends CommonDBRelation {
                echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";
             }
             echo "<td class='center'>";
-            echo Dropdown::getDropdownName("glpi_certificatestates",
-               $data["certificatestates_id"]);
+            echo Dropdown::getDropdownName("states", $data["states_id"]);
             echo "</td>";
             echo "</tr>";
             $i++;

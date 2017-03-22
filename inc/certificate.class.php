@@ -522,13 +522,15 @@ class Certificate extends CommonDBTM {
     *
     * @return int|string
     */
-   static function dropdownCertificate($options = array()) {
+   static function show($options = []) {
       global $DB, $CFG_GLPI;
 
-      $p['name'] = 'certificates_id';
-      $p['entity'] = '';
-      $p['used'] = array();
-      $p['display'] = true;
+      $p = ['name'         => 'certificates_id',
+            'entity'       => '',
+            'used'         => [],
+            'display'      => true,
+            'is_recursive' => true
+           ];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -536,48 +538,51 @@ class Certificate extends CommonDBTM {
          }
       }
 
-      $where = " WHERE `certificates`.`is_deleted` = '0' " .
-         getEntitiesRestrictRequest("AND", "certificates", '', $p['entity'], true);
-
-      if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, " . implode(",", $p['used']) . ")";
+      $criteria = ['is_deleted' => 0];
+      if (count($p['used']) > 0) {
+         $criteria['NOT'] = ['id' => $p['used']];
       }
+      $criteria['entities_id']
+               = getEntitiesRestrictCriteria('glpi_certificates',
+                                             'entities_id',
+                                             $p['entity'],
+                                             $p['is_recursive']);
 
-      $query = "SELECT *
-                FROM `certificatetypes`
-                WHERE `id` IN (SELECT DISTINCT `certificatetypes_id`
-                               FROM `certificates`
-                             $where)
-                ORDER BY `name`";
-      $result = $DB->query($query);
-
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
-      while ($data = $DB->fetch_assoc($result)) {
+      $criteria['FIELDS'] = ['id', 'name'];
+      $criteria['ORDER']  = 'name';
+      foreach ($DB->request('glpi_certificates', $criteria) as $data) {
          $values[$data['id']] = $data['name'];
       }
-      $rand = mt_rand();
-      $out = Dropdown::showFromArray('_certificatetype', $values, array('width' => '30%',
-         'rand' => $rand,
-         'display' => false));
+
+      $values[0] = Dropdown::EMPTY_VALUE;
+      asort($values);
+      $rand      = mt_rand();
+
+      $out  = Dropdown::showFromArray('certificatetype', $values,
+                                      ['width'   => '30%',
+                                       'rand'    => $rand,
+                                       'display' => false,
+                                       'value'   => 0
+                                      ]);
       $field_id = Html::cleanId("dropdown__certificatetype$rand");
 
-      $params = array('certificatetype' => '__VALUE__',
-         'entity' => $p['entity'],
-         'rand' => $rand,
-         'myname' => $p['name'],
-         'used' => $p['used']);
+      $params = ['certificatetype' => '__VALUE__',
+                 'entity'          => $p['entity'],
+                 'rand'            => $rand,
+                 'myname'          => $p['name'],
+                 'used'            => $p['used']
+                ];
 
-      $out .= Ajax::updateItemOnSelectEvent($field_id, "show_" . $p['name'] . $rand,
-         $CFG_GLPI["root_doc"] . "/plugins/certificates/ajax/dropdownTypeCertificates.php",
-         $params, false);
+      $url = $CFG_GLPI["root_doc"] . "/ajax/dropdownTypeCertificates.php";
+      $out .= Ajax::updateItemOnSelectEvent($field_id,
+                                            "show_" . $p['name'] . $rand,
+                                            $url, $params, false);
       $out .= "<span id='show_" . $p['name'] . "$rand'>";
       $out .= "</span>\n";
 
       $params['certificatetype'] = 0;
-      $out .= Ajax::updateItem("show_" . $p['name'] . $rand,
-         $CFG_GLPI["root_doc"] . "/plugins/certificates/ajax/dropdownTypeCertificates.php",
-         $params, false);
+//      $out .= Ajax::updateItem("show_" . $p['name'] . $rand,
+//                               $url, $params, false);
       if ($p['display']) {
          echo $out;
          return $rand;
@@ -592,15 +597,13 @@ class Certificate extends CommonDBTM {
     * @param null $checkitem
     * @return an
     */
-   function getSpecificMassiveActions($checkitem = NULL)
-   {
-      $isadmin = static::canUpdate();
+   function getSpecificMassiveActions($checkitem = NULL) {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install'] = _x('button', 'Associate');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _x('button', 'Dissociate');
+         if (self::canUpdate()) {
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install'] = _x('button', 'Associate certificate');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _x('button', 'Dissociate certificate');
          }
       }
       return $actions;
@@ -617,12 +620,7 @@ class Certificate extends CommonDBTM {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
 
       switch ($ma->getAction()) {
-         case 'plugin_certificates_add_item':
-            self::dropdownCertificate([]);
-            echo "&nbsp;" .
-               Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-            return true;
-         case "install" :
+         case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install' :
             Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                                                    'itemtype_name' => 'typeitem',
                                                    'itemtypes'     => self::getTypes(true),
@@ -631,7 +629,7 @@ class Certificate extends CommonDBTM {
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
             break;
-         case "uninstall" :
+         case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' :
             Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                                                    'itemtype_name' => 'typeitem',
                                                    'itemtypes'     => self::getTypes(true),
