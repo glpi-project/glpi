@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "test"
+msgstr "test"
+
+msgid "test2: %s"
+msgstr "test2: %s"
+
+#: index.php:15 endpoints/acs.php:35
+msgid "User attributes:"
+msgstr ""
+
+#: index.php:16 endpoints/acs.php:36
+msgid "Name"
+msgstr ""
+
+#: index.php:16 endpoints/acs.php:36
+msgid "Values"
+msgstr ""
+
+#: index.php:26 endpoints/acs.php:46
+msgid "Attributes not found"
+msgstr ""

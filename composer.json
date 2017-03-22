@@ -29,7 +29,8 @@
         "zendframework/zend-i18n": "^2.7",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
-        "ircmaxell/random-lib": "^1.2"
+        "ircmaxell/random-lib": "^1.2",
+        "onelogin/php-saml": "^2.10"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",

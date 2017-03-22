@@ -155,6 +155,38 @@ CREATE TABLE `glpi_apiclients` (
 INSERT INTO `glpi_apiclients` VALUES (1, 0, 1, 'full access from localhost', NULL, 1, INET_ATON('127.0.0.1'), INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);
 
 
+### Dump table glpi_authsamls
+
+DROP TABLE IF EXISTS `glpi_authsamls`;
+CREATE TABLE `glpi_authsamls` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sp_entityid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_assertionconsumerservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_assertionconsumerservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_singlelogoutservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_singlelogoutservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_nameidformat` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sp_x509cert` text COLLATE utf8_unicode_ci,
+  `sp_privateKey` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_entityid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_singlesignonservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_singlesignonservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_singlelogoutservice_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_singlelogoutservice_binding` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_x509cert` text COLLATE utf8_unicode_ci,
+  `idp_certfingerprint` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `idp_certfingerprintalgorithm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `is_active` (`is_active`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_authsamls` (`id`) VALUES ('1');
+
+
 ### Dump table glpi_autoupdatesystems
 
 DROP TABLE IF EXISTS `glpi_autoupdatesystems`;

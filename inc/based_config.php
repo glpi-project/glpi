@@ -140,3 +140,11 @@ if (!defined("GLPI_JQUERY_UPLOADHANDLER")) {
    define("GLPI_JQUERY_UPLOADHANDLER",
           GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 }
+
+// Default patch to php-saml
+if (!defined('GLPI_PHP_SAML_AUTOLOADER')) {
+   define('GLPI_PHP_SAML_AUTOLOADER', GLPI_ROOT.'/lib/php-saml/_toolkit_loader.php');
+   
+   # if htmLawed available in system, use (in config_path.php)
+   # define('GLPI_PHP_SAML_AUTOLOADER', '/usr/share/php-saml/_toolkit_loader.php');
+}

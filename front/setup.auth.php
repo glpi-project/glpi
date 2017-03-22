@@ -63,7 +63,11 @@ if (Toolbox::canUseImapPop()) {
 }
 echo "</td> </tr>";
 echo "<tr class='tab_bg_1'><td class='center'>".
-     "<a href='auth.others.php'>" . __('Others authentication methods') ."</a></td></tr>";
+     "<a href='auth.others.php'>" . __('Others authentication methods') ."</a>";
+echo "</td> </tr>";
+echo "<tr class='tab_bg_1'><td class='center'>".
+     "<a href='authsaml.form.php'>" . __('SAML authentication') ."</a>";
+echo "</td> </tr>";
 echo "</table>";
 
 Html::footer();

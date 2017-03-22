@@ -2638,4 +2638,14 @@ class Toolbox {
 
       return $json;
    }
+   
+   /**
+    * Determine if Openssl is usable checking openssl extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseOpenssl() {
+      return extension_loaded('openssl');
+   }
+
 }
