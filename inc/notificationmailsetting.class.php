@@ -51,9 +51,8 @@ class NotificationMailSetting extends CommonDBTM {
 
 
 
-   // Temproray hack for this class in 0.84
-   static function getTable() {
-      return 'glpi_configs';
+   static function getTable($classname = null) {
+      return parent::getTable('Config');
    }
 
 
