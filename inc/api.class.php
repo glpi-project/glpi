@@ -927,6 +927,7 @@ abstract class API extends CommonGLPI {
     * - 'sort'             (default: id): sort by the field.
     * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
+    * - 'is_deleted'       (default: false): show trashbin. Optionnal
     * @param integer $totalcount output parameter who receive the total count of the query resulat.
     *                            As this function paginate results (with a mysql LIMIT),
     *                            we can have the full range. (default 0)
@@ -945,7 +946,8 @@ abstract class API extends CommonGLPI {
                        'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
                        'order'            => "ASC",
-                       'searchText'       => NULL);
+                       'searchText'       => NULL,
+                       'is_deleted'       => false);
       $params = array_merge($default, $params);
 
       if (!$itemtype::canView()) {
@@ -986,6 +988,9 @@ abstract class API extends CommonGLPI {
       $where = Search::addDefaultWhere($itemtype);
       if ($where == '') {
          $where = "1=1 ";
+      }
+      if ($item->maybeDeleted()) {
+         $where.= "AND `$table`.`is_deleted` = ".intval($params['is_deleted']);
       }
 
       // add filter for a parent itemtype
