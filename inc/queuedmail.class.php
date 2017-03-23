@@ -449,7 +449,17 @@ class QueuedMail extends CommonDBTM {
             $mmail->AltBody = $this->fields['body_text'];
          }
 
-         $mmail->AddAddress($this->fields['recipient'], $this->fields['recipientname']);
+         $recipient = $this->getField('recipient');
+         if (defined('GLPI_FORCE_MAIL')) {
+            //force recipient to configured email address
+            $recipient = GLPI_FORCE_MAIL;
+            //add original email addess to message body
+            $text = sprintf(__('Orignal email address was %1$s'), $this->getField('recipient'));
+            $mmail->Body      .= "<br/>$text";
+            $mmail->AltBody   .= $text;
+         }
+
+         $mmail->AddAddress($recipient, $this->fields['recipientname']);
 
          if (!empty($this->fields['messageid'])) {
             $mmail->MessageID = "<".$this->fields['messageid'].">";
