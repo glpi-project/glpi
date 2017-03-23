@@ -513,6 +513,7 @@ $ curl -X GET \
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
   * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
+  * *is_deleted* (default: false): Return deleted element. Optional.
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
