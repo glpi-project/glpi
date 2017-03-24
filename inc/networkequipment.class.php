@@ -85,9 +85,10 @@ class NetworkEquipment extends CommonDBTM {
     *
     * @since version 0.85
    **/
-   static function getMenuName() {
-      return _n('Network', 'Networks', Session::getPluralNumber());
-   }
+   // bug in translation: https://github.com/glpi-project/glpi/issues/1970
+  // static function getMenuName() {
+ //     return _n('Network', 'Networks', Session::getPluralNumber());
+ //  }
 
 
    /**
