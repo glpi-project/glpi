@@ -179,7 +179,7 @@ class Ticket_Ticket extends CommonDBRelation {
                                                          _x('button', 'Delete permanently'),
                                                          array('id'         => $linkID,
                                                                'tickets_id' => $ID),
-                                                         $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                                         'fa-times-circle');
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
                                $ticket->getLink(array('forceid' => true)));

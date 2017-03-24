@@ -449,10 +449,10 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
 
       $rand = mt_rand();
+      $tplmark = $this->getAutofillMark('name', $options);
 
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td><label for='textfield_name$rand'>".sprintf(__('%1$s%2$s'), __('Name'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+      echo "<td><label for='textfield_name$rand'>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark) .
            "</label></td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
@@ -533,8 +533,7 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'contact', ['rand' => $rand]);
       echo "</td>";
 
-      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
            "</label></td>";
       echo "<td>";
 

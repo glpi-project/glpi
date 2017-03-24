@@ -588,14 +588,13 @@ class Planning extends CommonGLPI {
                changeYear:      true,
                numberOfMonths:  3,
                showOn:          'button',
-               buttonImage:     '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-               buttonImageOnly: true,
+               buttonText:      '<i class=\'fa fa-calendar\'></i>',
                dateFormat:      'DD, d MM, yy',
                onSelect: function(dateText, inst) {
                   var selected_date = $(this).datepicker('getDate');
                   $('#planning').fullCalendar('gotoDate', selected_date);
                }
-            });
+            }).next('.ui-datepicker-trigger').addClass('pointer');
          }
 
          $('#planning$rand').fullCalendar({
@@ -912,8 +911,7 @@ class Planning extends CommonGLPI {
          // attach button (planning and refresh) in planning header
          $('#planning$rand .fc-toolbar .fc-center h2')
             .after(
-               $('<img id=\"refresh_planning\" class=\"pointer\" src=\"".
-                   $CFG_GLPI['root_doc']."/pics/refresh.png\">')
+               $('<i id=\"refresh_planning\" class=\"fa fa-refresh pointer\"></i>')
             ).after(
                $('<input type=\"hidden\" id=\"planning_datepicker\">')
             );

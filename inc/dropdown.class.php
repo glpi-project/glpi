@@ -215,9 +215,9 @@ class Dropdown {
              && !isset($_REQUEST['_in_modal'])
              && $params['addicon']) {
 
-               $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
-                            "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                            onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\">";
+               $output .= "<span class='fa fa-plus-circle pointer' title=\"".__s('Add')."\"
+                            onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\"
+                           ><span class='sr-only'>" . __s('Add') . "</span></span>";
                $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
                                                         $item->getFormURL(),
                                                         array('display' => false));
@@ -2064,9 +2064,9 @@ class Dropdown {
                                        __('Duplicate the element as many times as there are connections')));
             echo "&nbsp;";
 
-            echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" title=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' class='pointer'>";
+            echo "<span class='fa fa-info pointer'".
+                 " title=\"".__s('Duplicate the element as many times as there are connections').
+                 "\"><span class='sr-only'>". __s('Duplicate the element as many times as there are connections') . "</span></span>";
          }
 
       } else {
@@ -2170,9 +2170,9 @@ class Dropdown {
       $values['-'.Search::CSV_OUTPUT]           = __('All pages in CSV');
 
       Dropdown::showFromArray('display_type', $values);
-      echo "<input type='image' name='export' class='pointer' src='".
-             $CFG_GLPI["root_doc"] . "/pics/export.png' title=\"" . _sx('button', 'Export') . "\" alt=\"" .
-        _sx('button', 'Export')."\">";
+      echo "<button type='submit' name='export' class='unstyled pointer' ".
+             " title=\"" . _sx('button', 'Export') . "\">" .
+             "<i class='fa fa-floppy-o'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
    }
 
 

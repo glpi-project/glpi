@@ -350,7 +350,7 @@ class Notepad extends CommonDBChild {
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
                                     array('id'   => $note['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    'fa-times-circle',
                                     '',
                                      __('Confirm the final deletion?'));
             }

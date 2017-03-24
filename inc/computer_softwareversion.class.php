@@ -465,10 +465,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                            sprintf(__('%1$s = %2$s'),
                                                   Software::getTypeName(1), $title));
 
-            $sort_img = "<img src='".$CFG_GLPI["root_doc"]."/pics/".
-                          ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt=''
-                          title=''>";
-
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -494,9 +490,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             echo "<table class='tab_cadre_fixehov'>";
 
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
-
             $header_begin  = "<tr>";
             $header_top    = '';
             $header_bottom = '';
@@ -517,7 +510,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($key[0] == '_') {
                   $header_end .= "<th>$val</th>";
                } else {
-                  $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }

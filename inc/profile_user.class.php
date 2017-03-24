@@ -519,8 +519,8 @@ class Profile_User extends CommonDBRelation {
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
                echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
-                        $CFG_GLPI['root_doc']."/pics/folder.png','".$CFG_GLPI['root_doc']."/pics/folder-open.png');\">";
-               echo "<img alt='' name='imgcat$temp' src=\"".$CFG_GLPI['root_doc']."/pics/folder.png\">&nbsp;";
+                        "fa-folder','fa-folder-open');\">";
+               echo "<i id='imgcat$temp' class='fa fa-folder'>&nbsp;";
                echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
                      "</span>";
                echo "</a>";

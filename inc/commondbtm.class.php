@@ -4796,4 +4796,38 @@ class CommonDBTM extends CommonGLPI {
 
       return $input;
    }
+
+   /**
+    * Get autofill mark for/from templates
+    *
+    * @param string $field   Field name
+    * @param array  $options Withtemplate parameter
+    * @param string $value   Optional value (if field to check is not part of current itemtype)
+    *
+    * @return string
+    */
+   public function getAutofillMark($field, $options, $value = null) {
+      $mark = '';
+      if ($this->isTemplate()) {
+         if ($options['withtemplate'] == 1) {
+            $title = __('You can define an autofill template');
+         } else {
+            if ($value === null) {
+               $value = $this->getField($field);
+            }
+            $len = Toolbox::strlen($value);
+            if ($len > 8
+               && Toolbox::substr($value, 0, 4) === '&lt;'
+               && Toolbox::substr($value, $len -4, 4) === '&gt;'
+               && preg_match("/\\#{1,10}/", Toolbox::substr($value, 4, $len - 8))
+            ) {
+               $title = __('Autofilled from template');
+            } else {
+               return '';
+            }
+         };
+         $mark = "<i class='fa fa-magic' title='$title'></i>";
+      }
+      return $mark;
+   }
 }

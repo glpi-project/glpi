@@ -1177,8 +1177,8 @@ class Document extends CommonDBTM {
 
          if (Session::haveRight('dropdown', READ)) {
             $dt       = new DocumentType();
-            $message .= " <a target='_blank' href='".$dt->getSearchURL()."'>
-                         <img src=\"".$CFG_GLPI["root_doc"]."/pics/info-small.png\" class='pointer'></a>";
+            $message .= " <a target='_blank' href='".$dt->getSearchURL()."' class='pointer'>
+                         <i class='fa fa-info'</i><span class='sr-only'>" . __('Manage document types')  . "</span></a>";
          }
          Session::addMessageAfterRedirect($message, false, ERROR);
          return '';

@@ -3452,9 +3452,9 @@ class User extends CommonDBTM {
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         $output .= "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
-                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                      onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">";
+         $output .= "<span title=\"".__s('Import a user')."\" class='fa fa-plus pointer'".
+                     " onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">
+                     <span class='sr-only'>" . __s('Import a user') . "</span></span>";
          $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".

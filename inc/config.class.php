@@ -1529,8 +1529,7 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
-         echo "<tr><td>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td></td>
+         echo "<tr><td colspan='3'>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
       }
 
@@ -1579,8 +1578,7 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
-         echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td></td>
+         echo "<tr><td colspan='3'>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
       }
 

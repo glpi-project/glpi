@@ -708,7 +708,10 @@ class Html {
    /**
     * Display Debug Information
     *
-    * @param $with_session with session information (true by default)
+    * @param boolean $with_session with session information (true by default)
+    * @param boolean $ajax         If we're called from ajax (false by default)
+    *
+    * @return void
    **/
    static function displayDebugInfos($with_session=true, $ajax=false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
@@ -718,7 +721,12 @@ class Html {
          $rand = mt_rand();
          echo "<div class='debug ".($ajax?"debug_ajax":"")."'>";
          if (!$ajax) {
-            echo "<a id='see_debug' href='#' title='" . __('Display GLPI debug informations')  . "'>See GLPI DEBUG</a>";
+            echo "<span class='fa-stack fa-lg' id='see_debug'>
+                     <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
+                     <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __('Display GLPI debug informations')  . "'>
+                        <span class='sr-only'>See GLPI DEBUG</span>
+                     </a>
+            </span>";
          }
 
          echo "<div id='debugtabs$rand'><ul>";
@@ -1121,6 +1129,7 @@ class Html {
       echo Html::css('css/jstree/style.css');
       echo Html::css('lib/jqueryplugins/select2/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
+      echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
@@ -1227,7 +1236,6 @@ class Html {
       echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 
       // PLugins jquery
-      echo Html::script('lib/jqueryplugins/backtotop/BackToTop.jquery.js');
       echo Html::script('lib/jqueryplugins/select2/select2.js');
       echo Html::script('lib/jqueryplugins/qtip2/jquery.qtip.js');
       echo Html::script('lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
@@ -1420,16 +1428,14 @@ class Html {
 
       echo "<li id='deconnexion'>";
       echo "<a href='".$CFG_GLPI["root_doc"].
-                       "/front/logout.php?noAUTO=1' title=\"".__s('Logout')."\">";
-      echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\" class='button-icon'></span>";
+                       "/front/logout.php?noAUTO=1' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
+      echo "<span class='sr-only'>" . __s('Logout') . "</span>";
       echo "</a>";
       echo "</li>\n";
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\">";
-      echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\" class='button-icon'></span>";
+                 __s('My settings')."\" class='fa fa-cog'>";
+      echo "<span class='sr-only'>" . __s('My settings') . "</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1448,8 +1454,8 @@ class Html {
             ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
          );
          echo "<li id='debug_mode'>";
-         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php'>";
-         echo "<span id='debug_icon' title='$title' class='$class'></span>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class' title='$title'>";
+         echo "<span class='sr-only'>" . _('Change mode')  . "</span>";
          echo "</a>";
          echo "</li>";
       }
@@ -1466,17 +1472,15 @@ class Html {
             'icon_txt'  => __('Manage saved searches')
          ]
       );
-      echo "<a href='#' id='showSavedSearchesLink'>";
-      echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
-             "\"  class='button-icon'></span>";
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
       echo "</a></li>";
 
       echo "<li id='help_link'><a href='".
                  (empty($CFG_GLPI["central_doc_url"])
                    ? "http://glpi-project.org/help-central"
-                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-                  "<span id='help_icon' title=\"".__s('Help').
-                  "\"  class='button-icon'></span>";
+                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\" class='fa fa-question'>".
+                  "<span class='sr-only'>" . __s('Help') . "</span>";
       echo "</a></li>";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
@@ -1627,24 +1631,24 @@ class Html {
          echo "<li class='icons_block'>";
          echo "<span>";
          if (isset($links['add'])) {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add.png",
-                             array('alt' => __('Add'),
-                                    'url' => $CFG_GLPI["root_doc"].$links['add']));
+            echo "<a href='{$CFG_GLPI['root_doc']}{$links['add']}' class='pointer'
+                              title='" . __('Add') ."'><i class='fa fa-plus'></i>
+                              <span class='sr-only'>" . __('Add') . "</span></a>";
          } else {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add_off.png",
-                             array('alt' => __('Add')));
+            echo "<a href='#' class='pointer disabled' title='" . __('Add is disabled')  . "'><i class='fa fa-plus'></i>
+               <span class='sr-only'>" . __('Add is disabled') . "</span></a>";
          }
          echo "</span>";
 
          // Search Item
          echo "<span>";
          if (isset($links['search'])) {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
-                             array('alt' => __('Search'),
-                                   'url' => $CFG_GLPI["root_doc"].$links['search']));
+            echo "<a href='{$CFG_GLPI['root_doc']}{$links['search']}' class='pointer'
+                              title='" . __s('Search') ."'><i class='fa fa-search'></i>
+                              <span class='sr-only'>" . __s('Search') . "</span></a>";
          } else {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
-                             array('alt' => __('Search')));
+            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')  . "'><i class='fa fa-search'></i>
+               <span class='sr-only'>" . __('Search is disabled') . "</span></a>";
          }
          echo "</span>";
          // Links
@@ -1712,6 +1716,14 @@ class Html {
 
       echo "</div>\n"; // fin header
 
+      // Back to top button
+      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>
+               <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
+               <a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='" . __('Back to top of the page')  . "'>
+                  <span class='sr-only'>Top of the page</span>
+               </a>
+         </span>";
+
       echo "<div id='page' >";
 
       if ($DB->isSlave()
@@ -1720,31 +1732,6 @@ class Html {
          echo "<a href='#see_debug'>".__('SQL replica: read only')."</a>";
          echo "</div>";
       }
-
-      // Back to top
-      Html::scriptStart();
-      echo "$(function() {
-               var bttop = false;
-               BackToTop({
-                  'text' : '^',
-                  'class': 'vsubmit',
-                  'autoShow' : true,
-                  'timeEffect' : 100,
-                  'autoShowOffset' : '0',
-                  'appearMethod' : '',
-                  'effectScroll' : 'linear',
-                  'callback': function(e) {
-                     if (e == 'on' && bttop == false) {
-                        $('#see_debug').attr('class', 'wbttop');
-                        bttop = true;
-                     } else if (e == 'off' && bttop == true) {
-                        $('#see_debug').removeAttr('class');
-                        bttop = false;
-                     }
-                  }
-               });
-            });";
-      echo Html::scriptEnd();
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -1941,7 +1928,7 @@ class Html {
              __s('Home')."\"><span class='invisible'>Logo</span></a>";
       echo "</div>";
 
-      // Les pr??f??rences + lien d??connexion
+      // Preferences adn logout link
       echo "<div id='c_preference' >";
       echo "<ul>";
 
@@ -1952,17 +1939,15 @@ class Html {
          echo "?noAUTO=1";
       }
 
-      echo "' title=\"".__s('Logout')."\">";
+      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
       // check user id : header used for display messages when session logout
-      echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\" class='button-icon'></span>";
+      echo "<span class='sr-only'>" . __s('Logout') . "></span>";
       echo "</a>";
       echo "</li>\n";
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\">";
-      echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\" class='button-icon'></span>";
+                 __s('My settings')."\" class='fa fa-cog'>";
+      echo "<span class='sr-only'>" . __s('My settings') . "</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1978,21 +1963,22 @@ class Html {
       Ajax::createSlidePanel(
          'showSavedSearches',
          [
-            'title'  => __('Saved searches'),
-            'url'    => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show'
+            'title'     => __('Saved searches'),
+            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
+            'icon'      => '/pics/menu_config.png',
+            'icon_url'  => SavedSearch::getSearchURL(),
+            'icon_txt'  => __('Manage saved searches')
          ]
       );
-      echo "<a href='#' id='showSavedSearchesLink'>";
-      echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
-             "\"  class='button-icon'></span>";
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
       echo "</a></li>";
 
       echo "<li id='help_link'><a href='".
                  (empty($CFG_GLPI["helpdesk_doc_url"])
                    ? "http://glpi-project.org/help-helpdesk"
-                   : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-                  "<span id='help_icon' title=\"".__s('Help').
-                  "\"  class='button-icon'></span>";
+                   : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\" class='fa fa-question'>".
+                  "<span class='sr-only'>" . __s('Help')  . "</span>";
       echo "</a></li>";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
@@ -2141,9 +2127,8 @@ class Html {
 
       if (Session::haveRight('ticket', CREATE)
           && strpos($_SERVER['PHP_SELF'], "ticket")) {
-         echo "<li class='icons_block'><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
-                "\" alt=\"".__s('Add')."\" class='pointer'></a></li>";
+         echo "<li class='icons_block'><a class='pointer' href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'title=\"".__s('Add').">";
+         echo "<i class='fa fa-plus'></i><span class='sr-only'>".__s('Add')."</span></a></li>";
       }
 
       // check user id : header used for display messages when session logout
@@ -3013,8 +2998,9 @@ class Html {
       $output .= Html::hidden($name, array('value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
-                      "\" id='resetdate".$p['rand']."' class='pointer'>";
+         $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
+                      "' id='resetdate".$p['rand']."'>" .
+                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
       }
       $output .= "</div>";
 
@@ -3036,8 +3022,7 @@ class Html {
                   changeYear: true,
                   showOn: 'button',
                   showWeek: true,
-                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-                  buttonImageOnly: true  ";
+                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
 
       if (!$p['canedit']) {
          $js .= ",disabled: true";
@@ -3069,7 +3054,7 @@ class Html {
       }
       $js .= ",dateFormat: '".$format."'";
 
-      $js .= "});";
+      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -3243,8 +3228,9 @@ class Html {
       $output .= ">";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
-                      "\" id='resetdate".$p['rand']."' class='pointer'>";
+         $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
+                      "' id='resetdate".$p['rand']."'>" .
+                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
       }
       $output .= "</div>";
 
@@ -3275,8 +3261,7 @@ class Html {
                   showOn: 'button',
                   showWeek: true,
                   controlType: 'select',
-                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-                  buttonImageOnly: true";
+                  buttonText: '<i class=\'fa fa-calendar\'></i>'";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
@@ -3304,7 +3289,7 @@ class Html {
       $js .= ",dateFormat: '".$format."'";
       $js .= ",timeFormat: 'HH:mm'";
 
-      $js .= "});";
+      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
 
       $output .= Html::scriptBlock($js);
 
@@ -3686,7 +3671,7 @@ class Html {
       $param['link']       = '';
       $param['linkid']     = '';
       $param['linktarget'] = '';
-      $param['img']        = $CFG_GLPI["root_doc"]."/pics/info-small.png";
+      $param['awesome-class'] = 'fa-info';
       $param['popup']      = '';
       $param['ajax']       = '';
       $param['display']    = true;
@@ -3724,7 +3709,12 @@ class Html {
             }
             $out .= '>';
          }
-         $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
+         if (isset($param['img'])) {
+            //for compatibility. Use fontawesome instead.
+            $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
+         } else {
+            $out .= "<span id='tooltip$rand' class='fa {$param['awesome-class']} pointer'></span>";
+         }
 
          if (!empty($param['link'])) {
             $out .= "</a>";
@@ -4338,6 +4328,8 @@ class Html {
     * @param $btlabel  String   button label
     * @param $fields   Array    field name => field  value
     * @param $btimage  String   button image uri (optional)   (default '')
+    *                           If image name starts with "fa-", il will be turned into
+    *                           a font awesome element rather than an image.
     * @param $btoption String   optional button option        (default '')
     * @param $confirm  String   optional confirm message      (default '')
     *
@@ -4391,7 +4383,11 @@ class Html {
       if (empty($btimage)) {
          $link .= $btlabel;
       } else {
-         $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
+         if (substr($btimage, 0, strlen('fa-')) === 'fa-') {
+            $link .= "<span class='fa $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+         } else {
+            $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
+         }
       }
       $link .="</a>";
 

@@ -174,9 +174,8 @@ class DocumentType  extends CommonDropdown {
 
       $display = "&nbsp;";
       $display .= "<a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').
-                  ".dialog('open'); return false;\">";
-      $display .= "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
-                        alt=\"".__s('Help')."\" class='calendrier pointer'>";
+                  ".dialog('open'); return false;\" class='fa fa-info pointer' title='" . __s('Help') . "' >";
+      $display .= "<span class='sr-only'>".__s('Help')."></span>";
       $display .= "</a>";
       $display .= Ajax::createIframeModalWindow('documenttypelist',
                                                 $CFG_GLPI["root_doc"]."/front/documenttype.list.php",

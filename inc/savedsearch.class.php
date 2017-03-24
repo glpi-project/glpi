@@ -805,19 +805,23 @@ class SavedSearch extends CommonDBTM {
             $('.slidepanel .default').on('click', function(e) {
                e.preventDefault();
                var _this = $(this);
-               var _img = _this.find('img');
-               var _currentsrc = _img.attr('src');
+               var _currentclass = (_this.hasClass('bookmark_record') ? 'bookmark_record' : 'bookmark_default');
                $.ajax({
                   url: _this.attr('href').replace(/\/front\//, '/ajax/'),
                   beforeSend: function() {
-                     _img.attr('src', '{$CFG_GLPI["root_doc"]}/pics/spinner.gif');
+                     _this
+                        .removeClass(_currentclass)
+                        .addClass('fa-spinner fa-spin')
                   },
                   success: function(res) {
                      $('#showSavedSearches .contents').html(res);
                   },
                   error: function() {
                      alert('" . __('Default bookmark has not been changed!')  . "');
-                     _img.attr('src', _currentsrc);
+                     _this.addClass(_currentclass);
+                  },
+                  complete: function() {
+                     _this.removeClass('fa-spin').removeClass('fa-spinner');
                   }
                });
             });\n
@@ -884,7 +888,7 @@ class SavedSearch extends CommonDBTM {
                   __('Counting this saved search would take too long, it has been skipped.');
                if ($count === null) {
                   //no count, just inform the user
-                  $count = "<img src='{$CFG_GLPI['root_doc']}/pics/info-small.png' alt='' title='$info_message'/>";
+                  $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
                }
             }
 
@@ -899,15 +903,13 @@ class SavedSearch extends CommonDBTM {
             echo "'>";
             echo "<td class='small no-wrap'>";
             if (is_null($this->fields['IS_DEFAULT'])) {
-               echo "<a class='default' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                        "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
-                        __s('Not default search')."\" title=\"".__s('Not default search')."\">".
-                        "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_record.png\"></a>";
+               echo "<a class='default fa fa-star bookmark_record' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
+                        "mark_default=1&amp;id=".$this->fields["id"]."\" title=\"".__s('Not default search')."\">".
+                        "<span class='sr-only'>" . __('Not default search')  . "</span></a>";
             } else {
-               echo "<a class='default' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                        "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
-                        __s('Default search')."\" title=\"".__s('Default search')."\">".
-                        "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_default.png\"></a>";
+               echo "<a class='default fa fa-star bookmark_default' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
+                        "mark_default=0&amp;id=".$this->fields["id"]."\" title=\"".__s('Default search')."\">".
+                        "<span class='sr-only'>" . __('Default search') . "</span></a>";
             }
 
             echo "</td>";
@@ -919,7 +921,7 @@ class SavedSearch extends CommonDBTM {
             );
             echo "<a class='savedsearchlink' href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
                      $this->fields["id"]."\" title='".__('Click to load or drag and drop to reorder')."'>".
-                     $text . "<span class='primary count'>$count</span></a>";
+                     $text . "<span class='primary-bg primary-fg count'>$count</span></a>";
             echo "</td>";
             echo "</tr>";
          }
@@ -972,216 +974,6 @@ class SavedSearch extends CommonDBTM {
       }
    }
 
-   /**
-    * Show saved searches list
-    *
-    * @param string  $target     Target to use for links
-    * @param boolean $is_private Show private of public? (default 1)
-    *
-    * @return void
-   **/
-   function showSavedSearchesList($target, $is_private=1) {
-      global $DB, $CFG_GLPI;
-
-      if (!$is_private && !$this->canView()) {
-         return false;
-      }
-
-      $query = "SELECT `".$this->getTable()."`.*,
-                       `glpi_savedsearches_users`.`id` AS IS_DEFAULT
-                FROM `".$this->getTable()."`
-                LEFT JOIN `glpi_savedsearches_users`
-                  ON (`".$this->getTable()."`.`itemtype` = `glpi_savedsearches_users`.`itemtype`
-                      AND `".$this->getTable()."`.`id` = `glpi_savedsearches_users`.`savedsearches_id`
-                      AND `glpi_savedsearches_users`.`users_id` = '".Session::getLoginUserID()."')
-                WHERE ";
-
-      if ($is_private) {
-         $query .= "(`".$this->getTable()."`.`is_private`='1'
-                     AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."') ";
-      } else {
-         $query .= "(`".$this->getTable()."`.`is_private`='0' ".
-                     getEntitiesRestrictRequest("AND", $this->getTable(), "", "", true) . ")";
-      }
-
-      $query .= " ORDER BY `itemtype`, `name`";
-
-      // get saved searches
-      $searches = array();
-      if ($result = $DB->query($query)) {
-         if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $searches[$data['id']] = $data;
-            }
-         }
-      }
-
-      $ordered = array();
-
-      // get personal order
-      if ($is_private) {
-         $user = new User();
-         $personalorderfield = $this->getPersonalOrderField();
-
-         if ($user->getFromDB(Session::getLoginUserID())) {
-            $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
-         }
-         if (!is_array($personalorder)) {
-            $personalorder = array();
-         }
-
-         // Add on personal order
-         if (count($personalorder)) {
-            foreach ($personalorder as $val) {
-               if (isset($searches[$val])) {
-                  $ordered[$val] = $searches[$val];
-                  unset($searches[$val]);
-               }
-            }
-         }
-      }
-      // Add unsaved in order
-      if (count($searches)) {
-         foreach ($searches as $key => $val) {
-            $ordered[$key] = $val;
-         }
-      }
-      if ($is_private) {
-         // New: save order
-         $store = array_keys($ordered);
-         $user->update(array('id'                => Session::getLoginUserID(),
-                             $personalorderfield => exportArrayToDB($store)));
-      }
-
-      $rand    = mt_rand();
-      $numrows = $DB->numrows($result);
-      Html::openMassiveActionsForm('mass'.get_called_class().$rand);
-
-      echo "<div class='center' id='tabsbody' >";
-      $maactions = array('purge' => _x('button', 'Delete permanently'));
-      if ($is_private) {
-         $maactions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'move_savedsearch'] = __('Move');
-      }
-      $massiveactionparams = array('num_displayed'     => $numrows,
-                                    'container'        => 'mass'.get_called_class().$rand,
-                                    'width'            => 600,
-                                    'extraparams'      => array('is_private' => $is_private),
-                                    'height'           => 200,
-                                    'specific_actions' => $maactions);
-
-      // No massive action on bottom
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-      echo "<th class='small'>".Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand)."</th>";
-      echo "<th class='center' colspan='2'>".$this->getTypeName(Session::getPluralNumber())."</th>";
-      echo "<th class='small'>&nbsp;</th>";
-      echo "<th class='small'>".__('Default view')."</th>";
-      $colspan = 5;
-      if ($is_private) {
-         $colspan+=2;
-         echo "<th class='small' colspan='2'>&nbsp;</th>";
-      }
-      echo "</tr>";
-
-      if ($totalcount = count($ordered)) {
-         $current_type      = -1;
-         $number            = 0;
-         $current_type_name = NOT_AVAILABLE;
-         foreach ($ordered as $key => $this->fields) {
-            $number ++;
-            if ($current_type != $this->fields['itemtype']) {
-               $current_type      = $this->fields['itemtype'];
-               $current_type_name = NOT_AVAILABLE;
-
-               if ($current_type == "AllAssets") {
-                  $current_type_name = __('Global');
-               } else if ($item = getItemForItemtype($current_type)) {
-                  $current_type_name = $item->getTypeName(1);
-               }
-            }
-            $canedit = $this->canEdit($this->fields["id"]);
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td width='10px'>";
-            if ($canedit) {
-               Html::showMassiveActionCheckBox(get_called_class(), $this->fields["id"]);
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
-            echo "<td>$current_type_name</td>";
-            echo "<td>";
-            if ($canedit) {
-               echo "<a href=\"" . $this->getSearchURL() . "?action=edit&amp;id=".
-                      $this->fields["id"]."\" title='"._sx('button', 'Update')."'>".
-                      $this->fields["name"]."</a>";
-            } else {
-               echo $this->fields["name"];
-            }
-            echo "</td>";
-
-            echo "<td style='white-space: nowrap;'><a href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
-                       $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
-            echo "</td>";
-            echo "<td class='center'>";
-            if ($this->fields['type'] != self::URI) {
-               if (is_null($this->fields['IS_DEFAULT'])) {
-                  echo "<a href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                         "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
-                         __s('Not default search')."\" title=\"".__s('Not default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_record.png\" class='pointer'></a>";
-               } else {
-                  echo "<a href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                         "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
-                         __s('Default search')."\" title=\"".__s('Default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_default.png\" class='pointer'></a>";
-               }
-            }
-            echo "</td>";
-            if ($is_private) {
-               if ($number != 1) {
-                  echo "<td>";
-                  Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
-                                       array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/puce-up.png");
-                  echo "</td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-
-               if ($number != $totalcount) {
-                  echo "<td>";
-                  Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
-                                       array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/puce-down.png");
-                  echo "</td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
-            }
-            echo "</tr>";
-            $first = false;
-         }
-         echo "</table></div>";
-
-         if ($is_private
-             || Session::haveRight('bookmark_public', PURGE)) {
-            $massiveactionparams['ontop']       = false;
-            $massiveactionparams['forcecreate'] = true;
-            Html::showMassiveActions($massiveactionparams);
-         }
-      } else {
-         echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
-         echo sprintf(
-            __('You have not recorded any %1$s yet'),
-            $this->getTypeName(1)
-         );
-         echo "</td></tr></table></div>";
-      }
-      Html::closeForm();
-
-   }
-
 
    /**
     * Save order
@@ -1220,10 +1012,8 @@ class SavedSearch extends CommonDBTM {
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI;
 
-      echo " <a href='#' onClick=\"savesearch.dialog('open'); return false;\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".__s('Save current search')."\" alt=\"".__s('Save current search')."\"
-             class='calendrier'>";
+      echo " <a href='#' onClick=\"savesearch.dialog('open'); return false;\" class='fa fa-star bookmark_record save' title='".__s('Save current search')."'>";
+      echo "<span class='sr-only'>".__s('Save current search')."</span>";
       echo "</a>";
 
       Ajax::createModalWindow(

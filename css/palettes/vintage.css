@@ -145,3 +145,20 @@ a.vsubmit:hover {
    background: #bf0805;
    color: white;
 }
+
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+.primary-bg {
+   background: #bf0805;
+}
+.primary-bg-inverse {
+   background: white;
+}
+
+.primary-fg, .primary-fg:hover {
+   color: white;
+}
+
+.primary-fg-inverse, .primary-fg-inverse:hover {
+   color: #bf0805;
+}

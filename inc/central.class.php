@@ -158,6 +158,7 @@ class Central extends CommonGLPI {
 
       Plugin::doHook('display_central');
 
+      $warnings = [];
       if (Session::haveRight("config", UPDATE)) {
          $logins = User::checkDefaultPasswords();
          $user   = new User();
@@ -167,28 +168,18 @@ class Central extends CommonGLPI {
                $user->getFromDBbyName($login);
                $accounts[] = $user->getLink();
             }
-            $message = sprintf(__('For security reasons, please change the password for the default users: %s'),
+            $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),
                                implode(" ", $accounts));
-
-            echo "<tr><th colspan='2'>";
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
-            echo "</th></tr>";
          }
          if (file_exists(GLPI_ROOT . "/install/install.php")) {
-            echo "<tr><th colspan='2'>";
-            $message = sprintf(__('For security reasons, please remove file: %s'),
+            $warnings[] = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
-            echo "</th></tr>";
          }
       }
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          if (!DBMysql::isMySQLStrictMode($comment)) {
-            echo "<tr><th colspan='2'>";
-            $message = sprintf(__('SQL strict mode is not fully enabled, recommended for development: %s'), $comment);
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
-            echo "</th></tr>";
+            $warnings[] = sprintf(__('SQL strict mode is not fully enabled, recommended for development: %s'), $comment);
          }
       }
 
@@ -199,21 +190,27 @@ class Central extends CommonGLPI {
             foreach ($crashedtables as $crashedtable) {
                $tables[] = $crashedtable['table'];
             }
-            echo "<tr><th colspan='2'>";
             $message = __('The following SQL tables are marked as crashed:');
             $message.= implode(',', $tables);
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
-            echo "</th></tr>";
+            $warnings[] = $message;
          }
       }
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
+         $warnings[] = __('SQL replica: read only');
+      }
+
+      if (count($warnings)) {
          echo "<tr><th colspan='2'>";
-         Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", __('SQL replica: read only'),
-                            __('SQL replica: read only'));
+         Html::displayTitle(
+            $CFG_GLPI['root_doc']."/pics/warning.png",
+            '',
+            "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>"
+         );
          echo "</th></tr>";
       }
+
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {

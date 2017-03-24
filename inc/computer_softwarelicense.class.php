@@ -490,8 +490,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             Session::initNavigateListItems('Computer', $text);
 
-            $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
             echo "<table class='tab_cadre_fixehov'>";
 
             $columns = array('compname'          => __('Name'),
@@ -505,8 +503,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if (!$showEntity) {
                unset($columns['entity']);
             }
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             $header_begin  = "<tr>";
             $header_top    = '';
@@ -524,7 +520,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                if ($key[0] == '_') {
                   $header_end .= "<th>$val</th>";
                } else {
-                  $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
                                  "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                                  (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }
