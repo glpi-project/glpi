@@ -724,13 +724,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          // Beware : -1 is for the first element added ...
          $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-         $result .= "<span id='add".$lower_name."button'>".
-              "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
+         $result .= "<span id='add".$lower_name."button' class='fa fa-plus pointer'".
+              " title=\"".__s('Add')."\"" .
                 "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
                              row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
                             $child_count_js_var++;\"
-               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+               ><span class='sr-only'>" . __s('Add')  . "</span></span>";
       }
       if ($display) {
          echo $result;

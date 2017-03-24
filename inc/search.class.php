@@ -1216,16 +1216,18 @@ class Search {
                                                                 DisplayPreference::GENERAL))) {
 
                $search_config_top = $search_config_bottom
-                  = "<div class='pager_controls'><img alt=\"".__s('Select default items to show')."\" title=\"".
-                        __s('Select default items to show')."\" src='".
-                        $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+                  = "<div class='pager_controls'><span class='fa fa-wrench pointer' title='".
+                        __s('Select default items to show')."' onClick=\"";
 
-               $search_config_top    .= " class='pointer' onClick=\"";
                $search_config_top    .= Html::jsGetElementbyID('search_config_top').
-                                                      ".dialog('open');\">";
-               $search_config_bottom .= " class='pointer' onClick=\"";
+                                                      ".dialog('open');\"";
+               $search_config_bottom .= " onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
-                                                      ".dialog('open');\">";
+                                                      ".dialog('open');\"";
+
+               $search_config_top .= "><span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
+               $search_config_bottom .= "><span class='sr-only'" .  __s('Select default items to show') . "</span></span>";
+
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
                                                    $CFG_GLPI["root_doc"].
@@ -1544,15 +1546,15 @@ class Search {
       }
 
       $rand = mt_rand();
-      return "<div class='switch grey_border'>".
+      return "<div class='switch grey_border pager_controls'>".
              "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
-                "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
-                  "alt='" . __s('Show the dustbin') . "' class='pointer' />" .
+                "<span class='sr-only'>" . __s('Show the dustbin') . "</span>" .
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
+                "<span class='fa fa-trash-o pointer'></span>".
                 "<span class='lever'></span>" .
                 "</label>".
              "</div>";
@@ -1911,7 +1913,7 @@ class Search {
       echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='submit' >";
       echo "</td>";
       if ($p['showbookmark'] || $p['showreset']) {
-         echo "<td>";
+         echo "<td class='no-wrap'>";
          if ($p['showbookmark']) {
             //TODO: change that!
             Ajax::createIframeModalWindow('loadbookmark',
@@ -1921,12 +1923,11 @@ class Search {
          }
 
          if ($p['showreset']) {
-            echo "<a href='"
+            echo "<a class='fa fa-undo reset-search' href='"
                .$p['target']
                .(strpos($p['target'], '?') ? '&amp;' : '?')
-               ."reset=reset' >";
-            echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
-                  $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier pointer'></a>";
+               ."reset=reset' title=\"".__s('Blank')."\"
+               ><span class='sr-only'>" . __s('Blank')  ."</span></a>";
          }
          echo "</td>";
       }

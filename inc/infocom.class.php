@@ -1042,13 +1042,13 @@ class Infocom extends CommonDBChild {
             echo "<td >";
             Html::autocompletionTextField($ic, "order_number", array('option' => $option));
             echo "</td>";
-            $istemplate = '';
+            $tplmark = '';
             if ($item->isTemplate()
                 || in_array($item->getType(),
                             array('CartridgeItem', 'ConsumableItem', 'Software'))) {
-               $istemplate = '*';
+               $tplmark = $item->getAutofillMark('immo_number', ['withtemplate' => $withtemplate], $ic->getField('immo_number'));
             }
-            echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $istemplate)."</td>";
+            echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $tplmark)."</td>";
             echo "<td>";
             $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate == 2),
                                    'Infocom', $item->getEntityID());

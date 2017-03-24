@@ -580,45 +580,36 @@ function getTop(MyObject){
  * @param img_src_open     url of the open img
 **/
 function showHideDiv(id, img_name, img_src_close, img_src_open) {
+   var _elt = $('#' + id);
 
-   if (document.getElementById) { // DOM3 = IE5, NS6
-      if (document.getElementById(id).style.display == 'none') {
-         document.getElementById(id).style.display = 'block';
-         if (img_name!='') {
-            document[img_name].src=img_src_open;
+   if (img_name != '') {
+      var _awesome = img_src_close.match(/^fa-/);
+      var _deco;
+      if (!_awesome) {
+         _deco = $('img[name=' + img_name + ']');
+         if (_elt.is(':visible')) {
+            _img.attr('src', img_src_close);
+         } else {
+            _img.attr('src', img_src_open);
          }
       } else {
-         document.getElementById(id).style.display = 'none';
-         if (img_name!='') {
-            document[img_name].src=img_src_close;
+         _deco = $('#'+img_name);
+         if (_elt.is(':visible')) {
+            _deco
+               .removeClass(img_src_open)
+               .addClass(img_src_close);
+         } else {
+            _deco
+               .removeClass(img_src_close)
+               .addClass(img_src_open);
          }
       }
+   }
+
+   if (_elt.is(':visible')) {
+      _elt.hide();
    } else {
-      if (document.layers) { // Netscape 4
-         if (document.id.display == 'none') {
-            document.id.display = 'block';
-            if (img_name != '') {
-               document[img_name].src=img_src_open;
-            }
-         } else {
-            document.id.display = 'none';
-            if (img_name != '') {
-               document[img_name].src=img_src_close;
-            }
-         }
-      } else { // IE 4
-         if (document.all.id.style.display == 'none') {
-            document.all.id.style.display = 'block';
-            if (img_name != '') {
-               document[img_name].src=img_src_close;
-            }
-         } else {
-            document.all.id.style.display = 'none';
-            if (img_name != '') {
-               document[img_name].src=img_src_close;
-            }
-         }
-      }
+      _elt.show();
    }
 }
 
@@ -784,31 +775,25 @@ jQuery.datepicker._gotoToday = function(a){
 
 filter_timeline = function() {
    $(document).on("click", '.filter_timeline li a', function(event) {
+      event.preventDefault();
+      var _this = $(this);
       //hide all elements in timeline
       $('.h_item').addClass('h_hidden');
 
       //reset all elements
-      if ($(this).hasClass('reset')) {
-         $('.filter_timeline li a img').each(function(el2) {
-            $(this).attr('src', $(this).attr('src').replace('_active', ''));
-         })
+      if (_this.data('type') == 'reset') {
+         $('.filter_timeline li a').removeClass('h_active');
          $('.h_item').removeClass('h_hidden');
          return;
       }
 
       //activate clicked element
-      var current_el = $(this).children('img');
-      $(this).toggleClass('h_active');
-      if (current_el.attr('src').indexOf('active') > 0) {
-         current_el.attr('src',  current_el.attr('src').replace('_active', ''));
-      } else {
-         current_el.attr('src', current_el.attr('src').replace(/\.(png)$/, '_active.$1'));
-      }
+      _this.toggleClass('h_active');
 
       //find active classname
       active_classnames = [];
       $('.filter_timeline .h_active').each(function(index) {
-         active_classnames.push(".h_content."+$(this).attr('class').replace(' h_active', ''));
+         active_classnames.push(".h_content."+$(this).data('type'));
       })
 
       $(active_classnames.join(', ')).each(function(index){
@@ -1072,3 +1057,30 @@ var stopEvent = function(event) {
    event.preventDefault();
    event.stopPropagation();
 };
+
+/**
+ * Back to top implementation
+ */
+if ($('#backtotop').length) {
+   var scrollTrigger = 100, // px
+      backToTop = function () {
+         var scrollTop = $(window).scrollTop();
+         if (scrollTop > scrollTrigger) {
+            $('#backtotop').show('slow');
+            $('#see_debug').addClass('wbttop');
+         } else {
+            $('#backtotop').hide();
+            $('#see_debug').removeClass('wbttop');
+         }
+      };
+   backToTop();
+   $(window).on('scroll', function () {
+      backToTop();
+   });
+   $('#backtotop').on('click', function (e) {
+      e.preventDefault();
+      $('html,body').animate({
+         scrollTop: 0
+      }, 700);
+   });
+}

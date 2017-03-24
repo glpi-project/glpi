@@ -153,7 +153,7 @@ var displayUploadedFile = function(file, tag, editor, input_name) {
 
       // Delete button
       var elementsIdToRemove = {0:file.id, 1:file.id+'2'};
-      $('<img src="../pics/delete.png" class="pointer">').click(function() {
+      $('<span class="fa fa-times-circle pointer"></span>').click(function() {
          deleteImagePasted(elementsIdToRemove, tag.tag, editor);
       }).appendTo(p);
 

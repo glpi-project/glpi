@@ -632,9 +632,9 @@ class RuleCriteria extends CommonDBChild {
 
       if ($rule->specific_parameters) {
          $itemtype = get_class($rule).'Parameter';
-         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
-                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">";
+         echo "<span title=\"".__s('Add a criterion')."\" class='fa fa-plus pointer' " .
+                  " onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">".
+                  "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
          Ajax::createIframeModalWindow('addcriterion'.$rand,
                                        Toolbox::getItemTypeFormURL($itemtype),
                                        array('reloadonclose' => true));

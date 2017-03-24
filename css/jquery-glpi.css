@@ -187,21 +187,6 @@ html .ui-autocomplete {
    margin:auto;
 }
 
-#BackToTop, #see_debug {
-   display:none;
-   padding: 5px;
-   width: 17px;
-   height: 17px;
-   border-radius: 50%;
-   text-align: center;
-   font: bold 18px Arial, Helvetica;
-   position:fixed;
-   bottom:35px;
-   right:10px;
-   z-index:9000;
-   cursor: pointer;
-}
-
 input.submit {
    font-size : 12px;
 }

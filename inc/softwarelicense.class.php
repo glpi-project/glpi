@@ -307,9 +307,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<td colspan='2'>";
       echo "</td></tr>\n";
 
+      $tplmark = $this->getAutofillMark('name', $options);
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark).
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
@@ -376,8 +376,9 @@ class SoftwareLicense extends CommonTreeDropdown {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":""));
+
+      $tplmark = $this->getAutofillMark('otherserial', $options);
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark);
       echo "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
@@ -1087,11 +1088,6 @@ class SoftwareLicense extends CommonTreeDropdown {
 
                Html::showMassiveActions($massiveactionparams);
             }
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                        (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
-
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'>";
 
@@ -1105,7 +1101,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                if ($key[0] == '_') {
                   $header_end .= "<th>$val</th>";
                } else {
-                  $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                  $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                            (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                }

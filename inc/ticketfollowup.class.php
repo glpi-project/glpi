@@ -1008,7 +1008,7 @@ class TicketFollowup  extends CommonDBTM {
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
                                     array('id' => $data['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    'fa-times-circle',
                                     '',
                                      __('Confirm the final deletion?'));
             }

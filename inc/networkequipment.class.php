@@ -258,10 +258,10 @@ class NetworkEquipment extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
+      $tplmark = $this->getAutofillMark('name', $options);
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'), $tplmark).
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
@@ -328,8 +328,9 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+
+      $tplmark = $this->getAutofillMark('otherserial', $options);
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'), $tplmark).
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",

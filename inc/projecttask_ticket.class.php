@@ -335,8 +335,6 @@ class ProjectTask_Ticket extends CommonDBRelation{
                echo "<table class='tab_cadre_fixehov'>";
                echo "<tr><th colspan='10'>".ProjectTask::getTypeName($numrows)."</th>";
                echo "</tr>";
-               $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                             (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
                $header = '<tr>';
                foreach ($columns as $key => $val) {
@@ -344,7 +342,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                   if ($key[0] == '_') {
                      $header .= "<th>$val</th>";
                   } else {
-                     $header .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+                     $header .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
                                 "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
                   }

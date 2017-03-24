@@ -543,10 +543,9 @@ class SLT extends CommonDBChild {
                            }
                         }";
                echo Html::scriptBlock($JS);
-               echo "<a class='pointer' onclick='delete_date$type();return false;'>";
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/delete.png' title='".
-                      _x('button', 'Delete permanently')."' "
-                     . "alt='"._x('button', 'Delete permanently')."' class='pointer'>";
+               echo "<a class='fa fa-times-circle pointer' onclick='delete_date$type();return false;' title='".
+                      _x('button', 'Delete permanently')."'>";
+               echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
                echo "</a>";
             }
             echo "</td>";
@@ -573,7 +572,7 @@ class SLT extends CommonDBChild {
                echo "<a ".Html::addConfirmationOnAction(array(__('The assignment of a SLT to a ticket causes the recalculation of the date.'),
                        __("Escalations defined in the SLT will be triggered under this new date.")),
                                                     "cleanhide('slt_action$type');cleandisplay('slt_choice$type');").
-                     "><img src='".$CFG_GLPI['root_doc']."/pics/clock.png' title='".__('SLT')."' alt='".__('SLT')."' class='pointer'></a>";
+                     " class='pointer' title='".__('SLT')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('SLT')."</span></a>";
                echo "</span>";
                echo "<div id='slt_choice$type' style='display:none'>";
                echo "<span  class='b'>".__('SLT')."</span>&nbsp;";

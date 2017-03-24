@@ -1205,10 +1205,10 @@ class CommonGLPI {
 
       $rand = mt_rand();
 
-      $link ="<img alt=\"".__s('Display options')."\" title=\"";
-      $link .= __s('Display options')."\" src='";
-      $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-      $link .= " class='pointer' onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\">";
+      $link ="<span class='fa fa-wrench pointer' title=\"";
+      $link .= __s('Display options')."\" ";
+      $link .= " onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\"";
+      $link .= "><span class='sr-only'>" . __s('Display options') . "</span></span>";
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
                                              $CFG_GLPI['root_doc'].
                                                 "/front/display.options.php?itemtype=".

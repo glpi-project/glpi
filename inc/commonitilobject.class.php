@@ -2259,11 +2259,10 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $group->getLink(array('comments' => true));
             }
             if ($canedit && $candelete) {
-               echo "&nbsp;";
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'fa-times-circle');
             }
             echo "</div>";
          }
@@ -2330,9 +2329,8 @@ abstract class CommonITILObject extends CommonDBTM {
                      }
                      $text .= sprintf(__('%1$s: %2$s'), __('Email'), $supemail);
                   }
-                  echo "&nbsp;";
                   if ($canedit) {
-                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                     $opt = array('awesome-class' => 'fa-envelope',
                                   'popup' => $linksupplier->getFormURL()."?id=".$d['id']);
                      Html::showToolTip($text, $opt);
                   }
@@ -2341,11 +2339,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
             }
             if ($canedit && $candelete) {
-               echo "&nbsp;";
                Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'fa-times-circle');
             }
             echo '</div>';
          }
@@ -3277,22 +3274,20 @@ abstract class CommonITILObject extends CommonDBTM {
                      $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
                }
-               echo "&nbsp;";
 
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
-                  $opt      = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                  $opt      = array('awesome-class' => 'fa-envelope',
                                     'popup' => $linkuser->getFormURL()."?id=".$d['id']);
                   Html::showToolTip($text, $opt);
                }
             }
 
             if ($canedit && $candelete) {
-               echo "&nbsp;";
                Html::showSimpleForm($linkuser->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'fa-times-circle');
             }
             echo "</div>";
          }
@@ -3704,10 +3699,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && $can_admin
           && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
          $rand_requester = mt_rand();
-         echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
+         echo "&nbsp;";
+         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
                 onClick=\"".Html::jsShow("itilactor$rand_requester")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                ><span class='sr-only'>" . __s('Add') . "</span></span>";
          $candeleterequester = true;
       }
       echo "</div>"; // end .actor-head
@@ -3810,11 +3805,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
          $rand_observer = mt_rand();
 
-         echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
+         echo "&nbsp;";
+         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
                 onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-
+                ><span class='sr-only'>" . __s('Add') . "</span></span>";
          $candeleteobserver = true;
 
       } else if (($ID > 0)
@@ -3826,7 +3820,7 @@ abstract class CommonITILObject extends CommonDBTM {
          Html::showSimpleForm($this->getFormURL(), 'addme_observer',
                               __('Associate myself'),
                               array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+                              'fa-male');
       }
 
       echo "</div>"; // end .actor-head
@@ -3904,10 +3898,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
          $rand_assign = mt_rand();
 
-         echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
+         echo "&nbsp;";
+         echo "<span class='fa fa-plus pointer' title=\"".__s('Add')."\"
                 onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                ><span class='sr-only'>" . __s('Add') . "</span></span>";
       }
       if ($ID
           && $can_assigntome
@@ -3917,7 +3911,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
          Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
                               array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+                              'fa-male');
       }
       if ($ID
           && $can_assign) {

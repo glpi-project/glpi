@@ -45,17 +45,15 @@ class SavedSearch_User extends CommonDBRelation {
 
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
-      global $CFG_GLPI;
-
       if (!is_array($values)) {
          $values = array($field => $values);
       }
       switch ($field) {
          case 'users_id':
             if (!empty($values[$field])) {
-               return "<img src='{$CFG_GLPI['root_doc']}/pics/bookmark_default.png' alt='" . __('Yes') . "'/>";
+               return "<span class='fa fa-star bookmark_default'><span class='sr-only'>" . __('Yes') . "</span></span>";
             } else {
-               return "<img src='{$CFG_GLPI['root_doc']}/pics/bookmark_record.png' alt='" . __('No') . "'/>";
+               return "<span class='fa fa-star bookmark_record'><span class='sr-only'>" . __('No') . "</span></span>";
             }
             break;
       }

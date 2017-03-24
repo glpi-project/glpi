@@ -4355,9 +4355,9 @@ class Ticket extends CommonITILObject {
       echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('items_id');
       printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('items_id'));
       if ($ID && $canupdate) {
-         echo "&nbsp;<a  href='".$this->getFormURL()."?id=".$ID.
-                       "&amp;forcetab=Item_Ticket$1'><img title='".__s('Update')."' alt='".__s('Update')."'
-                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'></a>";
+         echo "&nbsp;<a class='fa fa-chevron-circle-right pointer'  href='".$this->getFormURL()."?id=".$ID.
+                       "&amp;forcetab=Item_Ticket$1' title='".__s('Update')."'><span class='sr-only'>".
+                       __s('Update')."</span></a>";
       }
       echo $tt->getEndHiddenFieldText('items_id');
       echo "</th>";
@@ -4470,10 +4470,8 @@ class Ticket extends CommonITILObject {
          echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
-            echo "&nbsp;";
-            echo "<img onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
-                   title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+            echo "<span class='fa fa-plus pointer' onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
+                   title=\"".__s('Add')."\"><span class='sr-only'>" . __s('Add') . "</span></span>";
          }
          echo '</th>';
          echo "<td colspan='3'>";
@@ -4620,8 +4618,8 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
-             __s('Add')."\" onClick=\"if (nbfiles<maxfiles){
+      echo "<span id='addfilebutton' class='fa fa-plus pointer' title=\"".__s('Add')."\"".
+             "\" onClick=\"if (nbfiles<maxfiles){
                            var row = ".Html::jsGetElementbyID('uploadfiles').";
                            row.append('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
@@ -4629,7 +4627,7 @@ class Ticket extends CommonITILObject {
                               ".Html::jsHide('addfilebutton')."
                            }
                         }\"
-              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+              <span class='sr-only'>" . __s('Add') . "</span></span>";
    }
 
 
@@ -5143,9 +5141,8 @@ class Ticket extends CommonITILObject {
       echo "<tr class='noHover'><th colspan='2'>";
 
       if ($_SESSION["glpiactiveprofile"]["interface"] != "central") {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
-                __('Create a ticket')."&nbsp;<img src='".$CFG_GLPI["root_doc"].
-                "/pics/menu_add.png' title=\"". __s('Add')."\" alt=\"".__s('Add')."\"></a>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\" class='pointer'>".
+                __('Create a ticket')."&nbsp;<i class='fa fa-plus'></i><span class='sr-only'>". __s('Add')."</span></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options, '&amp;')."\">".__('Ticket followup')."</a>";
@@ -6245,7 +6242,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='h_info'>";
 
-         echo "<div class='h_date'>".Html::convDateTime($date)."</div>";
+         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($date)."</div>";
          if ($item_i['users_id'] !== false) {
             echo "<div class='h_user'>";
             if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
@@ -6280,7 +6277,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='displayed_content'>";
          if (!in_array($item['type'], array('Document_Item', 'Assign'))
              && $item_i['can_edit']) {
-            echo "<span class='edit_item' ";
+            echo "<span class='fa fa-pencil-square-o edit_item' ";
             echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"viewitem".$item['type'].$item_i['id'].$rand."\")'";
             echo "></span>";
          }
@@ -6403,20 +6400,22 @@ class Ticket extends CommonITILObject {
             if (!empty($item_i['mime'])) {
                echo "&nbsp;(".$item_i['mime'].")";
             }
+            echo "<span class='buttons'>";
             echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
+                   "/front/document.form.php?id=".$item_i['id']."' class='edit_document fa fa-eye pointer' title='".
                    _sx("button", "Show")."'>";
-            echo "<img src='$pics_url/information.png' /></a>";
+            echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
 
             $doc = new Document();
             $doc->getFromDB($item_i['id']);
             if ($doc->can($item_i['id'], UPDATE)) {
                echo "<a href='".$CFG_GLPI['root_doc'].
                      "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
-                     "&tickets_id=".$this->getID()."' class='delete_document' title='".
+                     "&tickets_id=".$this->getID()."' class='delete_document fa fa-trash-o pointer' title='".
                      _sx("button", "Delete permanently")."'>";
-               echo "<img src='$pics_url/delete.png' /></a>";
+               echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
             }
+            echo "</span>";
          }
 
          echo "</div>"; // displayed_content
@@ -6438,7 +6437,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_item middle'>";
 
          echo "<div class='h_info'>";
-         echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
+         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
          $dem = '0';
          foreach ($DB->request("glpi_tickets_users",
@@ -6556,20 +6555,20 @@ class Ticket extends CommonITILObject {
 
       $pics_url = $CFG_GLPI['root_doc']."/pics/timeline";
       echo "<div class='filter_timeline'>";
-      echo "<label>".__("Timeline filter")." : </label>";
+      echo "<h3>".__("Timeline filter")." : </h3>";
       echo "<ul>";
-      echo "<li><a class='reset' title=\"".__("Reset display options").
-         "\"><img src='$pics_url/reset.png' class='pointer' /></a></li>";
-      echo "<li><a class='Solution' title='".__("Solution").
-         "'><img src='$pics_url/solution_min.png' class='pointer' /></a></li>";
-      echo "<li><a class='TicketValidation' title='".__("Validation").
-         "'><img src='$pics_url/validation_min.png' class='pointer' /></a></li>";
-      echo "<li><a class='Document_Item' title='".__("Document").
-         "'><img src='$pics_url/document_min.png' class='pointer' /></a></li>";
-      echo "<li><a class='TicketTask' title='".__("Task").
-         "'><img src='$pics_url/task_min.png' class='pointer' /></a></li>";
-      echo "<li><a class='TicketFollowup' title='".__("Followup").
-         "'><img src='$pics_url/followup_min.png' class='pointer' /></a></li>";
+      echo "<li><a href='#' class='fa fa-comment-o pointer' data-type='TicketFollowup' title='".__("Followup").
+         "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-check-square-o pointer' data-type='TicketTask' title='".__("Task").
+         "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__("Document").
+         "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-thumbs-o-up pointer' data-type='TicketValidation' title='".__("Validation").
+         "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__("Solution").
+         "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
+      echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__("Reset display options").
+         "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
       echo "</ul>";
       echo "</div>";
 
@@ -6672,30 +6671,30 @@ class Ticket extends CommonITILObject {
       }
 
       //show choices
-      echo "<h2>"._sx('button', 'Add')." : </h2>";
       echo "<div class='timeline_form'>";
       echo "<ul class='timeline_choices'>";
 
+      echo "<h2>"._sx('button', 'Add')." : </h2>";
       if ($canadd_fup) {
          echo "<li class='followup' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
-              .__("Followup")."</li>";
+              . "<i class='fa fa-comment-o'></i>".__("Followup")."</li>";
       }
 
       if ($canadd_task) {
          echo "<li class='task' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
-              .__("Task")."</li>";
+              ."<i class='fa fa-check-square-o'></i>".__("Task")."</li>";
       }
       if ($canadd_document) {
          echo "<li class='document' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
-              .__("Document")."</li>";
+              ."<i class='fa fa-paperclip'></i>".__("Document")."</li>";
       }
       if ($canadd_solution) {
          echo "<li class='solution' onclick='".
               "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
-              .__("Solution")."</li>";
+              ."<i class='fa fa-check'></i>".__("Solution")."</li>";
       }
 
       echo "</ul>"; // timeline_choices

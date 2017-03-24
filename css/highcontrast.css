@@ -104,7 +104,7 @@ table {
 
 .tab_cadre_pager img[src*=first\.png],
 .tab_cadre_pager img[src*=left\.png],
-.tab_cadre_pager img[src*=options_search\.png],
+.tab_cadre_pager .fa-wrench,
 .tab_cadre_pager img[src*=right\.png],
 .tab_cadre_pager img[src*=last\.png]
 {

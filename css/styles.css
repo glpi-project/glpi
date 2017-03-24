@@ -174,10 +174,17 @@ a, a:link {
    font-size : 11px;
 }
 
+a.fa, a.fa:link {
+   font-size: inherit;
+   font-weight: normal;
+}
+#page a.fa, #page a.fa:link, a .fa {
+   color: #222;
+}
+
 a:hover {
    color: black;
 }
-
 
 hr {
    border: 1px solid #cccccc;
@@ -186,7 +193,19 @@ hr {
 
 .pointer {
    cursor:pointer;
- }
+}
+
+
+.pager_controls {
+   margin-left: .5em;
+}
+
+.pager_controls .fa.pointer {
+   font-size: 1.7em;
+}
+.pager_controls label span.fa {
+   margin-right: 1em;
+}
 
 .invisible {
    display: none;
@@ -454,9 +473,7 @@ input[type="file"] {
 }
 
 input.submit,
-span.vsubmit, a.vsubmit,
-#BackToTop,
-#see_debug {
+span.vsubmit, a.vsubmit {
    padding: 5px;
    cursor:pointer;
    height: auto;
@@ -469,8 +486,7 @@ span.vsubmit, a.vsubmit,
 }
 
 input.submit:hover,
-a.vsubmit:hover,
-#BackToTop:hover {
+a.vsubmit:hover {
    opacity: .9;
    box-shadow: 0px 1px 1px #999;
 }
@@ -529,6 +545,11 @@ input.submit[type=reset] {
    opacity: 1;
 }
 
+.pointer.disabled:hover,
+.pointer.disabled {
+   opacity: .3;
+}
+
 /* ################--------------- Layout  ---------------#################### */
 .layout_classic.form div.navigationheader,
 .layout_vsplit.form div.navigationheader {
@@ -567,7 +588,7 @@ input.submit[type=reset] {
    padding-top: 5px;
 }
 
-.layout_vsplit #BackToTop {
+.layout_vsplit #backtotop {
    display: none;
 }
 
@@ -1148,6 +1169,10 @@ td.rotate {
    font-size: 1.1em;
 }
 
+.actor-head .fa {
+   padding: 0 .2em;
+}
+
 .actor-content {
    margin: 10px 15px;
    padding: 4px 0;
@@ -1212,6 +1237,13 @@ td.rotate {
    opacity: 1;
 }
 
+.reset-search, .reset-search:link {
+   color: #ccc!important;
+}
+
+.reset-search:hover {
+   color: #999;
+}
 
 .tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
    font-size:10px;
@@ -1362,6 +1394,26 @@ td.rotate {
 
 
 /* ################--------------- Calendrier  / reservation ---------------#################### */
+
+.ui-datepicker-trigger, .slt, #refresh_planning{
+   border:none;
+   background:none;
+   padding: 0;
+   font-size: 1.3em!important;
+}
+.fc button.ui-datepicker-trigger {
+   height: auto;
+   padding: 0;
+}
+
+.fc .fc-toolbar > * > * {
+   float: none;
+   display: inline-block;
+}
+
+.ui-datepicker-trigger .fa {
+   padding: 0!important;
+}
 
 .calendrier {
    vertical-align:middle;
@@ -2347,6 +2399,15 @@ a.icon_nav_move:hover img {
    float: right;
 }
 
+#c_preference a.fa {
+   font-size: 1.8em;
+   color: white;
+}
+#c_preference a.fa:hover {
+   text-decoration: none;
+   color: #ccc;
+}
+
 #c_preference ul {
    list-style: none;
 }
@@ -2356,44 +2417,11 @@ a.icon_nav_move:hover img {
    margin: 0 10px;
 }
 
-#c_preference #logout_icon {
-   background: url("../pics/logout.png");
-   display: inline-block;
-   width: 16px;
-   height: 16px;
-}
-#c_preference #bookmark_icon {
-   background: url("../pics/bookmark.png");
-   display: inline-block;
-   width: 18px;
-   height: 18px;
-}
-#c_preference #help_icon {
-   background: url("../pics/help.png");
-   display: inline-block;
-   width: 18px;
-   height: 18px;
-}
-#c_preference #preferences_icon {
-   background: url("../pics/preferences.png");
-   display: inline-block;
-   width: 18px;
-   height: 18px;
+#c_preference a.debugon,
+#c_preference a.debugon:hover {
+   color: #ff0000!important;
 }
 
-#c_preference #debug_icon {
-   display: inline-block;
-   width: 18px;
-   height: 18px;
-}
-
-#c_preference #debug_icon.debugon {
-   background: url("../pics/debug-on.png");
-}
-
-#c_preference #debug_icon.debugoff {
-   background: url("../pics/debug-off.png");
-}
 
 #c_preference a {
    text-decoration: none;
@@ -2436,19 +2464,20 @@ a.icon_nav_move:hover img {
    font-size: 12px;
    border-radius: 3px;
    position: relative;
-/*   background-image: url("../pics/search.png");
-   background-repeat: no-repeat;
-   background-position: 98% 50%;*/
 }
 
 #myname {
-   margin: 0 0 10px 3px;
+   font-size: 11px;
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
+   margin: 0 0 .5em .5em;
    display: inline-block;
-   vertical-align: middle;
+   vertical-align: bottom;
+   font-weight: bold;
 }
 
-#preferences_link:hover #myname {
-   text-decoration: underline;
+#language_link > a {
+   display: inline-block;
+   padding: .5em 0;
 }
 
 #c_menu {
@@ -2698,6 +2727,12 @@ ul#menu ul.ssmenu {
    line-height: 23px;
 }
 
+.icons_block a > img,
+.icons_block i.fa {
+   font-size: 1.7em;
+   vertical-align: top;
+}
+
 #show_all_menu {
    font-size: 11px;
    text-align: left;
@@ -2876,26 +2911,26 @@ a.copyright {
    word-break: break-all;
 }
 
-#see_debug {
-   display: inline-block;
+#see_debug, #backtotop {
    position: fixed;
    bottom: 35px;
    right: 10px;
    cursor: pointer;
-   background: #1b2f62 url('../pics/debug-off.png') 50% 50% no-repeat;
-   overflow: hidden;
-   width: 18px;
-   height: 18px;
-   text-indent: 50px;
-   line-height: 20px;
+   color: white;
    z-index: 99; /* Behind debug panel */
 }
+
+#c_preference a.fa:hover,
+#see_debug:hover, #backtotop:hover {
+   opacity: .8;
+}
+
 #see_debug.wbttop {
    right: 40px;
 }
 
-#see_debug:hover {
-   background: #1b2f62 url('../pics/debug-on.png') 50% 50% no-repeat;
+#see_debug.on a:hover {
+   color: #ff0000;
 }
 
 .debug .ui-tabs {
@@ -2974,14 +3009,29 @@ a.copyright {
    padding-left: 4px;
 }
 
+.timeline_choices h2 {
+   display: inline-block;
+   margin: 1em 1em 0 0;
+}
 .timeline_choices li {
-   float: left;
+   display: inline-block;
    min-width: 90px;
    text-align: center;
-   padding: 5px 5px 5px 25px;
+   padding: .5em .5em;
    margin-right: 3%;
    cursor: pointer;
    font-weight: bold;
+}
+
+.timeline_choices li i {
+   margin-right: 1em;
+   font-size: 1.2em;
+   vertical-align: bottom;
+}
+
+.timeline_choices li:before {
+   margin-right: 1em;
+   font-weight: normal;
 }
 
 .timeline_choices li:hover {
@@ -2989,28 +3039,20 @@ a.copyright {
  }
 
 .timeline_choices li.followup {
-   background:url(../pics/timeline/followup_min.png) no-repeat;
    background-color:#E0E0E0;
    color:#535353;
 }
 .timeline_choices li.task {
-   background:url(../pics/timeline/task_min.png) no-repeat;
    background-color: #FEDA90;
    color: #535353;
 }
 .timeline_choices li.document {
-   background:url(../pics/timeline/document_min.png) no-repeat;
    background-color:#80CEAD;
    color:#3A5D4E;
 }
 .timeline_choices li.solution {
-   background:url(../pics/timeline/solution_min.png) no-repeat;
    background-color:#9FD6ED;
    color:#425B64;
-}
-
-.timeline_box .ajax_box {
-   padding-top: 25px;
 }
 
 .timeline_box .tab_cadre_fixe {
@@ -3031,31 +3073,42 @@ a.copyright {
    float: left;
 }
 
-.timeline_history .filter_timeline,
-.timeline_history .filter_timeline ul,
-.timeline_history .filter_timeline ul li {
+.timeline_history .filter_timeline {
+   opacity: 0.2;
+   text-align: right;
+   margin-top: .2em;
+}
+.timeline_history .filter_timeline > * {
+   vertical-align: middle;
+}
+.timeline_history .filter_timeline:hover {
+   opacity: 1;
+}
+
+.timeline_history .filter_timeline {
    float: right;
 }
 
-.timeline_history .filter_timeline label {
-   opacity: 0;
-   font-size: 1.2em;
-   float: left;
-   line-height: 1.6em;
-   font-weight: bold;
-}
-.timeline_history .filter_timeline:hover label {
-   opacity: 1;
-}
+.timeline_history .filter_timeline h3,
+.timeline_history .filter_timeline ul,
 .timeline_history .filter_timeline ul li {
-   opacity: 0.2;
-   cursor: pointer;
+   display: inline-block;
 }
-.timeline_history .filter_timeline:hover ul li {
-   opacity: 0.6;
+.timeline_history .filter_timeline h3 {
+   font-weight: bold;
+   font-size: 1em;
+   margin: 0 .5em 0 0;
+   padding: 0;
 }
-.timeline_history .filter_timeline ul li:hover {
-   opacity: 1;
+
+.timeline_history .filter_timeline a {
+   font-size: 1.5em;
+   display: inline-block;
+   padding: 0 .2em;
+}
+
+.filter_timeline a.h_active {
+   color: green!important;
 }
 
 .timeline_history .h_item {
@@ -3087,12 +3140,19 @@ a.copyright {
    text-align: center;
 }
 
+.timeline_history .h_date i {
+   font-size: 1.8em;
+   margin-right: .3em;
+   opacity: .7;
+   vertical-align: -15%;
+}
+
 .timeline_history .h_date {
-   background-image: url(../pics/timeline/history.png);
    white-space: nowrap;
    margin-bottom: 10px;
    text-align: left;
    line-height: 20px;
+   padding-left: 0!important;
 }
 
  .timeline_history .h_user .h_user_name {
@@ -3328,18 +3388,18 @@ a.copyright {
 }
 
 
-.edit_document,
-.delete_document {
+.timeline_history span.buttons {
    opacity: 0.1;
    vertical-align: middle;
 }
-.edit_document:hover,
-.delete_document:hover {
+.timeline_history span.buttons:hover {
    opacity: 1;
 }
-.timeline_history .h_content.Document_Item:hover .edit_document,
-.timeline_history .h_content.Document_Item:hover .delete_document{
-   opacity: .6;
+
+.edit_document,
+.delete_document {
+   font-size: 1.5em!important;
+   margin-left: .5em;
 }
 
 
@@ -3374,12 +3434,10 @@ a.copyright {
 }
 
 .timeline_history .h_content .edit_item {
-   background-image: url(../pics/edit.png);
-   width: 16px;
-   height: 16px;
    display: block;
    float: right;
    opacity: .5;
+   font-size: 1.5em;
 }
 
 .timeline_history .h_content .edit_item:hover {
@@ -3611,16 +3669,20 @@ a.copyright {
 }
 
 .switch label input[type=checkbox] {
+   display: none;
    opacity: 0;
    width: 0;
    height: 0;
 }
 
-.switch label input[type=checkbox]:checked + .lever {
+.switch label input[type=checkbox]:checked ~ .lever {
    background-color: #E8AEAE;
 }
+.switch label input[type=checkbox]:checked ~ .fa {
+   color: #E8AEAE;
+}
 
-.switch label input[type=checkbox]:checked + .lever:after {
+.switch label input[type=checkbox]:checked ~ .lever:after {
    background-color: #cf9b9b;
 }
 
@@ -3634,7 +3696,6 @@ a.copyright {
    border-radius: 15px;
    margin-right: 5px;
    transition: background 0.3s ease;
-   vertical-align: middle;
 }
 .switch label img {
    vertical-align: middle;
@@ -3662,11 +3723,11 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08);
 }
 
-.switch label input[type=checkbox]:checked + .lever:after {
+.switch label input[type=checkbox]:checked ~ .lever:after {
    left: 8px;
 }
 
-.switch input[type=checkbox][disabled] + .lever {
+.switch input[type=checkbox][disabled] ~ .lever {
    cursor: default;
 }
 
@@ -4149,6 +4210,29 @@ td.diff del {
    border: none;
 }
 
+.slidepanel a.fa, .slidepanel a.fa:link {
+   font-size: 1.5em;
+   color: #ccc;
+}
+
+.fa.bookmark_record, .fa.bookmark_record:link {
+   font-size: 1.5em;
+   color: #ccc!important;
+}
+.fa.bookmark_default, .fa.bookmark_default:link {
+   font-size: 1.5em;
+   color: #f3b51f!important;
+}
+
+.fa.reset-search:hover,
+.fa.bookmark_record.save:hover {
+   color: #999!important;
+}
+
+.slidepanel a .count .fa {
+   color: white;
+}
+
 .drag {
    display: inline-block;
    height: 18px;
@@ -4215,12 +4299,16 @@ td.diff del {
    height: 18px;
 }
 
+.slidepanel td * {
+   vertical-align: middle;
+}
+
 /** end "slide panel" component */
 
 /** Badges */
 a.savedsearchlink {
    display: block;
-   padding: .2em 0;
+   padding: .4em 0;
 }
 span.count {
    border-radius: 10px;
@@ -4228,6 +4316,7 @@ span.count {
    text-align: center;
    padding: .2em .5em;
    float: right;
+   margin-top: -0.2em;
 }
 
 span.count img {
@@ -4235,11 +4324,31 @@ span.count img {
 }
 /** End badges */
 
-.primary {
-   /* Primary color elements (white on blue BG) designed to be overridden from palettes */
-   /* Colors are same as #c_menu */
+/* Primary color elements (white on blue BG) designed to be overridden from palettes */
+/* Colors are same as #c_menu */
+.primary-bg {
    background: #3A5693;
+}
+.primary-bg-inverse {
+   background: white;
+}
+
+.primary-fg, .primary-fg:link, .primary-fg:hover {
    color: white;
+}
+
+.primary-fg-inverse, .primary-fg-inverse:hover {
+   color: #3A5693;
+}
+
+.tab_cadre_fixe .fa {
+   padding: 0 .3em;
+}
+
+button.unstyled {
+   background: none;
+   border: none;
+   margin: none;
 }
 
 @media screen and (max-width: 900px) {

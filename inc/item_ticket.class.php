@@ -352,7 +352,7 @@ class Item_Ticket extends CommonDBRelation{
          $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
          $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
          if ($params['delete']) {
-            $result .= " <img src=\"".$CFG_GLPI['root_doc']."/pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
+            $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
          }
          $result .= "</div>";
       }

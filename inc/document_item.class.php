@@ -880,9 +880,6 @@ class Document_Item extends CommonDBRelation{
          Html::showMassiveActions($massiveactionparams);
       }
 
-      $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                    (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
-
       echo "<table class='tab_cadre_fixehov'>";
 
       $header_begin  = "<tr>";
@@ -899,7 +896,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       foreach ($columns as $key => $val) {
-         $header_end .= "<th>".(($sort == "`$key`") ?$sort_img:"").
+         $header_end .= "<th".($sort == "`$key`" ? " class='order_$order'" : '').">".
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=".
                           (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>$val</a></th>";
       }
