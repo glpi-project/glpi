@@ -126,6 +126,11 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   static function getTable($classname = null) {
+      return parent::getTable(__CLASS__);
+   }
+
+
    /**
     * Retrieve an item from the database for a specific target
     *
