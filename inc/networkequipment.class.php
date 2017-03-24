@@ -86,9 +86,10 @@ class NetworkEquipment extends CommonDBTM {
     *
     * @since version 0.85
    **/
-   static function getMenuName() {
-      return _n('Network', 'Networks', Session::getPluralNumber());
-   }
+   // bug in translation: https://github.com/glpi-project/glpi/issues/1970
+  // static function getMenuName() {
+ //     return _n('Network', 'Networks', Session::getPluralNumber());
+ //  }
 
 
    /**
@@ -351,7 +352,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       $rowspan        = 5;
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -387,7 +388,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
-      
+
       // Display auto inventory informations
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
