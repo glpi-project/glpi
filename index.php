@@ -75,7 +75,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Start the page
    echo "<!DOCTYPE html>\n";
-   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
+   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\" class='loginpage'>";
    echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
    echo '<meta charset="utf-8"/>'."\n";
    echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";

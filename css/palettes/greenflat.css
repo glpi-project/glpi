@@ -30,7 +30,7 @@
  */
 /* ===== LOGIN ===== */
 
-#firstboxlogin  {
+html.loginpage {
    background-color: #54BD90;
 }
 
