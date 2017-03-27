@@ -536,7 +536,7 @@ class SavedSearch extends CommonDBTM {
          $query_tab = array();
          parse_str($this->fields["query"], $query_tab);
          $query_tab['savedsearches_id'] = $ID;
-         if (class_exists($this->fields['itemtype'])) {
+         if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
             return $this->prepareQueryToUse($this->fields["type"], $query_tab);
          }
       }
@@ -843,7 +843,7 @@ class SavedSearch extends CommonDBTM {
                parse_str($this->fields["query"], $query_tab);
 
                $params = null;
-               if (class_exists($this->fields['itemtype'])) {
+               if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
                   $params = $this->prepareQueryToUse($this->fields["type"], $query_tab);
                }
 
