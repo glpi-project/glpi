@@ -997,7 +997,7 @@ class TicketFollowup  extends CommonDBTM {
                $content = html_entity_decode($content);
                echo $content.'</div>';
             } else {
-               $content = linkUrlsInTrustedHtml($content);
+               $content = autolink($content);
                echo $content.'</div>';
             }
 
