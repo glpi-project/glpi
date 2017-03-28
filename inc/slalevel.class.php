@@ -59,6 +59,11 @@ class SlaLevel extends RuleTicket {
    }
 
 
+   static function getTable($classname = null) {
+      return CommonDBTM::getTable(__CLASS__);
+   }
+
+
    /**
     * @since version 0.85
    **/
