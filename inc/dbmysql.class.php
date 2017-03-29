@@ -188,7 +188,8 @@ class DBmysql {
           && $CFG_GLPI["debug_sql"]) {
          $TIME                                   = $TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
-      } else if ($this->execution_time === true) {
+      }
+      if ($this->execution_time === true) {
          $this->execution_time = $TIMER->getTime(0, true);
       }
       return $res;
