@@ -886,11 +886,12 @@ class Search {
     *
     * @since version 0.85
     *
-    * @param $data array of search datas prepared to get datas
+    * @param array   $data      array of search data prepared to get data
+    * @param boolean $onlycount If we just want to count results
     *
     * @return nothing
    **/
-   static function constructDatas(array &$data) {
+   static function constructDatas(array &$data, $onlycount = false) {
       global $CFG_GLPI;
 
       if (!isset($data['sql']) || !isset($data['sql']['search'])) {
@@ -954,6 +955,11 @@ class Search {
                   $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                }
             }
+         }
+
+         if ($onlycount) {
+            //we just want to coutn results; no need to continue process
+            return;
          }
 
          // Search case
