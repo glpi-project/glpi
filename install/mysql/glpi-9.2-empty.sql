@@ -222,6 +222,8 @@ CREATE TABLE `glpi_savedsearches` (
   `query` text COLLATE utf8_unicode_ci,
   `last_execution_time` int(11) DEFAULT NULL,
   `do_count` tinyint(1) NOT NULL DEFAULT '2' COMMENT 'Do or do not count results on list display; see SavedSearch::COUNT_* constants',
+  `last_execution_date` datetime DEFAULT NULL,
+  `counter` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `type` (`type`),
   KEY `itemtype` (`itemtype`),
@@ -230,6 +232,7 @@ CREATE TABLE `glpi_savedsearches` (
   KEY `is_private` (`is_private`),
   KEY `is_recursive` (`is_recursive`),
   KEY `last_execution_time` (`last_execution_time`),
+  KEY `last_execution_date` (`last_execution_date`),
   KEY `do_count` (`do_count`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1482,6 +1485,7 @@ INSERT INTO `glpi_crontasks` VALUES ('24','Crontask','temp','3600',NULL,'1','1',
 INSERT INTO `glpi_crontasks` VALUES ('25','MailCollector','mailgateerror','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 

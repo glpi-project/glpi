@@ -224,6 +224,24 @@ class SavedSearch extends CommonDBTM {
          ]
       ];
 
+      $tab[] = [
+         'id'                 => 12,
+         'table'              => $this->getTable(),
+         'field'              => 'counter',
+         'name'               => _('Counter'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => 13,
+         'table'              => $this->getTable(),
+         'field'              => 'last_execution_date',
+         'name'               => _('Last execution date'),
+         'massiveaction'      => false,
+         'datatype'           => 'datetime'
+      ];
+
       return $tab;
    }
 
@@ -1255,7 +1273,9 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE `". static::getTable() . "`
-                SET `last_execution_time` = '$time'
+                SET `last_execution_time` = '$time',
+                    `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
+                    `counter` = `counter` + 1
                 WHERE `id` = '$id'";
       $DB->query($query);
    }
@@ -1365,6 +1385,80 @@ class SavedSearch extends CommonDBTM {
          } else {
             return 'glpi_savedsearches_users.users_id IS NOT NULL';
          }
+      }
+   }
+
+   static function cronInfo($name) {
+      switch ($name) {
+         case 'countAll' :
+            return ['description' => __('Update all bookmarks execution time')];
+      }
+      return array();
+   }
+
+   /**
+    * Update all bookmarks execution time
+    *
+    * @param Crontask $task Crontask instance
+    *
+    * @return void
+    */
+   static public function croncountAll($task) {
+      global $DB;
+
+      $lastdate = new \Datetime($task->getField('lastrun'));
+      $lastdate->sub(new \DateInterval('P7D'));
+
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'FIELDS' => ['id', 'query', 'itemtype', 'type'],
+         'WHERE'  => ['last_execution_date' => ['<' , $lastdate->format('Y-m-d H:i:s')]]
+      ]);
+
+      if ($iterator->numrows()) {
+         //prepare variables we'll use
+         $search = new Search();
+         $self = new self();
+         $now = date('Y-m-d H:i:s');
+         $stmt = $DB->prepare(
+            "UPDATE " . self::getTable() . " SET " .
+            "last_execution_time = ?, last_execution_date = ? WHERE " .
+            "id = ?"
+         );
+
+         $DB->dbh->begin_transaction();
+         while ($row = $iterator->next()) {
+            try {
+               $query_tab = array();
+               parse_str($row['query'], $query_tab);
+               $self->fields = $row;
+
+               $params = null;
+               if (class_exists($row['itemtype']) || $row['itemtype'] == 'AllAssets') {
+                  $params = $self->prepareQueryToUse($row['type'], $query_tab);
+               }
+
+               if (!$params) {
+                  Toolbox::logDebug(
+                     'Save search #' . $row['id'] . ' seems to be broken!'
+                  );
+               } else {
+                  $data = $search->prepareDatasForSearch($row['itemtype'], $params);
+                  $data['search']['sort'] = null;
+                  $search->constructSQL($data);
+                  $search->constructDatas($data, true);
+                  $execution_time = $data['data']['execution_time'];
+
+                  $stmt->bind_param('sss', $execution_time, $now, $row['id']);
+                  $stmt->execute();
+               }
+            } catch (\Exception $e) {
+               Toolbox::logDebug($e);
+            }
+         }
+
+         $DB->dbh->commit();
+         $stmt->close();
       }
    }
 }
