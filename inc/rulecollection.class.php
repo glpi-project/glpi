@@ -803,8 +803,8 @@ class RuleCollection extends CommonDBTM {
       $buttons = array();
       $title   = "";
 
-      $buttons["rule.backup.php?action=import"] = _x('button', 'Import');
-      $buttons["rule.backup.php?action=export"] = _x('button', 'Export');
+      $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=import"] = _x('button', 'Import');
+      $buttons["{$CFG_GLPI["root_doc"]}/front/rule.backup.php?action=export"] = _x('button', 'Export');
 
       Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
                          _n('User', 'Users', Session::getPluralNumber()), $title, $buttons);
