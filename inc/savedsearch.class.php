@@ -716,6 +716,7 @@ class SavedSearch extends CommonDBTM {
       $user = new User();
       $personalorderfield = $this->getPersonalOrderField();
 
+      $personalorder = [];
       if ($user->getFromDB(Session::getLoginUserID())) {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
@@ -837,6 +838,7 @@ class SavedSearch extends CommonDBTM {
             //check if we want to count results
             if ($this->fields['do_count'] == self::COUNT_YES
                || $this->fields['do_count'] == self::COUNT_AUTO
+               && $this->getField('last_execution_time') != null
                && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']) {
                //Do the same as self::getParameters() but getFromDB is useless
                $query_tab = array();
