@@ -857,7 +857,7 @@ class SavedSearch extends CommonDBTM {
                   $data = $search->prepareDatasForSearch($current_type, $params);
                   $data['search']['sort'] = null;
                   $search->constructSQL($data);
-                  $search->constructDatas($data);
+                  $search->constructDatas($data, true);
                   $count = $data['data']['totalcount'];
                }
             } else {
