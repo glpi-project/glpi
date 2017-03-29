@@ -914,9 +914,7 @@ class Search {
          }
       }
 
-      if (isset($data['search']['savedsearches_id'])) {
-         $DBread->execution_time = true;
-      }
+      $DBread->execution_time = true;
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
@@ -925,13 +923,12 @@ class Search {
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 8194304;");
                $DBread->execution_time = true;
-               if (isset($data['search']['savedsearches_id'])) {
-                  $result = $DBread->query($data['sql']['search']);
-               }
+               $result = $DBread->query($data['sql']['search']);
             }
          }
       }
 
+      $data['data']['execution_time'] = $DBread->execution_time;
       if (isset($data['search']['savedsearches_id'])) {
          SavedSearch::updateExecutionTime(
             (int)$data['search']['savedsearches_id'],
