@@ -1773,6 +1773,12 @@ class Toolbox {
                                  }
                               }
                            }
+                           if ($_SESSION['glpiticket_timeline'] == 1) {
+                              // force redirect to timeline when timeline is enabled and viewing
+                              // Tasks or Followups
+                              $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                              $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
+                           }
                            Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                                           $data[1]."&$forcetab");
                         // redirect to list
@@ -1825,6 +1831,11 @@ class Toolbox {
                                        Session::changeActiveEntities($item->getEntityID(),1);
                                     }
                                  }
+                              }
+                              if ($_SESSION['glpiticket_timeline'] == 1 && $item->getType() == 'Ticket') {
+                                 // force redirect to timeline when timeline is enabled
+                                 $forcetab = str_replace( 'TicketFollowup$1', 'Ticket$1', $forcetab);
+                                 $forcetab = str_replace( 'TicketTask$1', 'Ticket$1', $forcetab);
                               }
                               Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
                            }
