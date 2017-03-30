@@ -2359,6 +2359,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->canEdit($ID)) {
+         $rand = mt_rand();
          echo "<form name='form' method='post' action='".$params['target']."' ".
                 $params['formoptions']." enctype=\"multipart/form-data\">";
 
@@ -2406,8 +2407,16 @@ class CommonDBTM extends CommonGLPI {
 
          } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
             echo "<input type='hidden' name='is_template' value='1'>\n";
-            echo __('Template name');
-            Html::autocompletionTextField($this, "template_name", array('size' => 25));
+            echo "<label for='textfield_template_name$rand'>" . __('Template name') . "</label>";
+            Html::autocompletionTextField(
+               $this,
+               'template_name',
+               [
+                  'size'      => 25,
+                  'required'  => true,
+                  'rand'      => $rand
+               ]
+            );
          } else if ($this->isNewID($ID)) {
             $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
             printf(__('%1$s - %2$s'), __('New item'), $nametype);
@@ -2431,7 +2440,7 @@ class CommonDBTM extends CommonGLPI {
             if ($this->maybeRecursive()) {
                if (Session::isMultiEntitiesMode()) {
                   echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
-                  echo "<th class='right'>".__('Child entities')."</th><th>";
+                  echo "<th class='right'><label for='dropdown_is_recursive$rand'>".__('Child entities')."</label></th><th>";
                   if ($params['canedit']) {
                      if ($this instanceof CommonDBChild) {
                         echo Dropdown::getYesNo($this->isRecursive());
@@ -2450,7 +2459,7 @@ class CommonDBTM extends CommonGLPI {
                         $comment = __('Flag change forbidden. Linked items found.');
 
                      } else {
-                        Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
+                        Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"], -1, ['rand' => $rand]);
                         $comment = __('Change visibility in child entities');
                      }
                      echo " ";

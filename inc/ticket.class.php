@@ -3395,7 +3395,11 @@ class Ticket extends CommonITILObject {
          echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
          if (!$tt->isHiddenField('name')) {
             echo "<input type='text' maxlength='250' size='80' name='name'
-                       value=\"".$values['name']."\">";
+                       value=\"".$values['name']."\"";
+            if ($tt->isMandatoryField('name')) {
+               echo " required='required'";
+            }
+            echo ">";
          } else {
             echo $values['name'];
             echo "<input type='hidden' name='name' value=\"".$values['name']."\">";
@@ -3430,7 +3434,8 @@ class Ticket extends CommonITILObject {
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
+         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'
+               " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
                          $values['content']."</textarea></div>";
          Html::file(array('editor_id' => $content_id,
                           'showtitle' => false));
@@ -3983,7 +3988,8 @@ class Ticket extends CommonITILObject {
       if ($canupdate) {
          Html::showDateTimeField("date", array('value'      => $date,
                                                'timestep'   => 1,
-                                               'maybeempty' => false));
+                                               'maybeempty' => false,
+                                               'required'   => ($tt->isMandatoryField('date') && !$ID)));
       } else {
          echo Html::convDateTime($date);
       }
@@ -4396,6 +4402,7 @@ class Ticket extends CommonITILObject {
           || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
+                ($tt->isMandatoryField('name') ? " required='required'" : '') .
                 " value=\"".Html::cleanInputText($this->fields["name"])."\">";
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
@@ -4436,7 +4443,8 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<div id='content$rand_text'>";
-      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
+               ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $this->fields["content"]."</textarea></div>";
       echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
       echo $tt->getEndHiddenFieldValue('content', $this);

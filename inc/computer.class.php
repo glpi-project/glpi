@@ -170,47 +170,49 @@ class Computer extends CommonDBTM {
       $comp->initForm($ID);
       $comp->showFormHeader(['formtitle' => false]);
 
+      $rand = mt_rand();
+
       echo "<tr class='headerRow'><th colspan='".$colspan."'>";
       echo __('Operating system');
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
+      echo "<td><label for='dropdown_operatingsystems_id$rand'>".__('Name')."</label></td>";
       echo "<td>";
-      OperatingSystem::dropdown(array('value' => $comp->fields["operatingsystems_id"]));
+      OperatingSystem::dropdown(array('value' => $comp->fields["operatingsystems_id"], 'rand' => $rand));
       echo "</td>";
-      echo "<td>".__('Version')."</td>";
+      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>".__('Version')."</label></td>";
       echo "<td >";
-      OperatingSystemVersion::dropdown(array('value' => $comp->fields["operatingsystemversions_id"]));
+      OperatingSystemVersion::dropdown(array('value' => $comp->fields["operatingsystemversions_id"], 'rand' => $rand));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Architecture')."</td>";
+      echo "<td><label for='dropdown_operatingsystemarchitectures_id$rand'>".__('Architecture')."</label></td>";
       echo "<td >";
       OperatingSystemArchitecture::dropdown(array('value'
-                                                 => $comp->fields["operatingsystemarchitectures_id"]));
+                                                 => $comp->fields["operatingsystemarchitectures_id"], 'rand' => $rand));
       echo "</td>";
-      echo "<td>".__('Service pack')."</td>";
+      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".__('Service pack')."</label></td>";
       echo "<td >";
       OperatingSystemServicePack::dropdown(array('value'
-                                                 => $comp->fields["operatingsystemservicepacks_id"]));
+                                                 => $comp->fields["operatingsystemservicepacks_id"], 'rand' => $rand));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Kernel version')."</td>";
+      echo "<td><label for='textfield_os_kernel_version$rand'>".__('Kernel version')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($comp, 'os_kernel_version');
+      Html::autocompletionTextField($comp, 'os_kernel_version', ['rand' => $rand]);
       echo "</td>";
-      echo "<td>".__('Product ID')."</td>";
+      echo "<td><label for='textfield_os_licenseid$rand'>".__('Product ID')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($comp, 'os_licenseid');
+      Html::autocompletionTextField($comp, 'os_licenseid', ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Serial number')."</td>";
+      echo "<td><label for='textfield_os_license_number$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($comp, 'os_license_number');
+      Html::autocompletionTextField($comp, 'os_license_number', ['rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
 
       $comp->showFormButtons(array('candel' => false, 'formfooter' => false));
@@ -445,136 +447,163 @@ class Computer extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
+
+      $rand = mt_rand();
+
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
+      echo "<td><label for='textfield_name$rand'>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
-           "</td>";
+           "</label></td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
                              (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField(
+         $this,
+         'name',
+         [
+            'value'     => $objectName,
+            'rand'      => $rand
+         ]
+      );
       echo "</td>";
-      echo "<td>".__('Status')."</td>";
+      echo "<td><label for='dropdown_states_id$rand'>".__('Status')."</label></td>";
       echo "<td>";
       State::dropdown(array('value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_computer`"));
+                            'condition' => "`is_visible_computer`",
+                            'rand'      => $rand));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Location')."</td>";
+      echo "<td><label for='dropdown_locations_id$rand'>".__('Location')."</label></td>";
       echo "<td>";
       Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+                               'entity' => $this->fields["entities_id"],
+                               'rand' => $rand));
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td><label for='dropdown_computertypes_id$rand'>".__('Type')."</label></td>";
       echo "<td>";
-      ComputerType::dropdown(array('value' => $this->fields["computertypes_id"]));
+      ComputerType::dropdown(array('value' => $this->fields["computertypes_id"], 'rand' => $rand));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
+      echo "<td><label for='dropdown_users_id_tech$rand'>".__('Technician in charge of the hardware')."</label></td>";
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+                           'entity' => $this->fields["entities_id"],
+                           'rand'   => $rand));
       echo "</td>";
-      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td><label for='dropdown_manufacturers_id$rand'>".__('Manufacturer')."</label></td>";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"], 'rand' => $rand));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
+      echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
       echo "<td>";
       Group::dropdown(array('name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+                            'condition' => '`is_assign`',
+                            'rand' => $rand));
 
       echo "</td>";
-      echo "<td>".__('Model')."</td>";
+      echo "<td><label for='dropdown_computermodels_id$rand'>".__('Model')."</label></td>";
       echo "<td>";
-      ComputerModel::dropdown(array('value' => $this->fields["computermodels_id"]));
+      ComputerModel::dropdown(array('value' => $this->fields["computermodels_id"], 'rand' => $rand));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: Number of the alternate username
-      echo "<td>".__('Alternate username number')."</td>";
+      echo "<td><label for='textfield_contact_num$rand'>".__('Alternate username number')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'contact_num');
+      Html::autocompletionTextField($this, 'contact_num', ['rand' => $rand]);
       echo "</td>";
-      echo "<td>".__('Serial number')."</td>";
+      echo "<td><label for='textfield_serial$rand'>".__('Serial number')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'serial');
+      Html::autocompletionTextField($this, 'serial', ['rand' => $rand]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username')."</td>";
+      echo "<td><label for='textfield_contact$rand'>".__('Alternate username')."</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'contact');
+      Html::autocompletionTextField($this, 'contact', ['rand' => $rand]);
       echo "</td>";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
+
+      echo "<td><label for='textfield_otherserial$rand'>".sprintf(__('%1$s%2$s'), __('Inventory number'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
-           "</td>";
+           "</label></td>";
       echo "<td>";
+
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField(
+         $this,
+         'otherserial',
+         [
+            'value'     => $objectName,
+            'rand'      => $rand
+         ]
+      );
+
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('User')."</td>";
+      echo "<td><label for='dropdown_users_id$rand'>".__('User')."</label></td>";
       echo "<td>";
       User::dropdown(array('value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+                           'right'  => 'all',
+                           'rand'   => $rand));
       echo "</td>";
-      echo "<td>".__('Network')."</td>";
+      echo "<td><label for='dropdown_networks_id$rand'>".__('Network')."</label></td>";
       echo "<td>";
-      Network::dropdown(array('value' => $this->fields["networks_id"]));
+      Network::dropdown(array('value' => $this->fields["networks_id"], 'rand' => $rand));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group')."</td>";
+      echo "<td><label for='dropdown_groups_id$rand'>".__('Group')."</label></td>";
       echo "<td>";
       Group::dropdown(array('value'     => $this->fields["groups_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`'));
+                            'condition' => '`is_itemgroup`',
+                            'rand'      => $rand));
 
       echo "</td>";
 
       // Display auto inventory informations
       $rowspan        = 4;
 
-      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
+      echo "<td rowspan='$rowspan'><label for='comment'>".__('Comments')."</label></td>";
       echo "<td rowspan='$rowspan' class='middle'>";
 
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".
+      echo "<textarea cols='45' rows='".($rowspan+3)."' id='comment' name='comment' >".
            $this->fields["comment"];
       echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Domain')."</td>";
+      echo "<td><label for='dropdown_domains_id$rand'>".__('Domain')."</label></td>";
       echo "<td >";
       Domain::dropdown(array('value'  => $this->fields["domains_id"],
-                             'entity' => $this->fields["entities_id"]));
+                             'entity' => $this->fields["entities_id"],
+                             'rand'   => $rand));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('UUID')."</td>";
+      echo "<td><label for='textfield_uuid$rand'>".__('UUID')."</label></td>";
       echo "<td >";
-      Html::autocompletionTextField($this, 'uuid');
+      Html::autocompletionTextField($this, 'uuid', ['rand' => $rand]);
       echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Update Source')."</td>";
+      echo "<td><label for='dropdown_autoupdatesystems_id$rand'>".__('Update Source')."</label></td>";
       echo "<td >";
-      AutoUpdateSystem::dropdown(array('value' => $this->fields["autoupdatesystems_id"]));
+      AutoUpdateSystem::dropdown(array('value' => $this->fields["autoupdatesystems_id"], 'rand' => $rand));
       echo "</td></tr>";
       // Display auto inventory informations
       if (!empty($ID)

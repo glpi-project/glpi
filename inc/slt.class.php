@@ -592,7 +592,8 @@ class SLT extends CommonDBChild {
          Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
                                                    'timestep'   => 1,
                                                    'maybeempty' => false,
-                                                   'canedit'    => $canupdate));
+                                                   'canedit'    => $canupdate,
+                                                   'required'   => ($tt->isMandatoryField($dateField) && !$ticket->getID())));
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
          $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);

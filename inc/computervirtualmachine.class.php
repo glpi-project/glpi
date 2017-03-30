@@ -208,12 +208,30 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "ram");
+      Html::autocompletionTextField(
+         $this,
+         'ram',
+         [
+            'type' => 'number',
+            'attrs' => [
+               'min'    => 0
+            ]
+         ]
+      );
       echo "</td>";
 
       echo "<td>"._x('quantity', 'Processors number')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "vcpu");
+      Html::autocompletionTextField(
+         $this,
+         'vcpu',
+         [
+            'type'   => 'number',
+            'attrs'  => [
+               'min' => 0
+            ]
+         ]
+      );
       echo "</td></tr>";
 
       $this->showFormButtons($options);
