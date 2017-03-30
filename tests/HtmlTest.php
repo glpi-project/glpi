@@ -179,7 +179,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
     */
    public function testCleanDropTags($in, $outnotag, $outtag) {
       $this->assertEquals($outnotag, Html::clean($in, true));
-       }
+   }
 
    /**
     * @covers Html::clean
