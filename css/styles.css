@@ -321,7 +321,7 @@ select {
 }
 
 
-textarea, input[type=text], input[type=password], input[type=number] {
+textarea, input:not([type="submit reset checkbox radio"]) {
    background-color:#FCFCFC;
    color: black;
    border: 1px solid #D3D3D3;
