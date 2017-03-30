@@ -167,6 +167,28 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
       $this->assertEquals($aexpected, Html::cleanPostForTextArea($aorigin));
    }
 
+   public function providerClean() {
+      return [
+            ['<p>Hello<script type="text/javascript">alert("Damn!");</script></p>', 'Hello', '<p>Hello</p>'],
+      ];
+   }
+
+   /**
+    * @covers Html::clean
+    * @dataProvider providerClean
+    */
+   public function testCleanDropTags($in, $outnotag, $outtag) {
+      $this->assertEquals($outnotag, Html::clean($in, true));
+       }
+
+   /**
+    * @covers Html::clean
+    * @dataProvider providerClean
+    */
+   public function testCleanKeepTags($in, $outnotag, $outtag) {
+      $this->assertEquals($outtag, Html::clean($in, false));
+   }
+
    /**
     * @covers Html::formatNumber
     */
