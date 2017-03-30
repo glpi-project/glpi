@@ -56,7 +56,7 @@ class DeviceFirmware extends CommonDevice {
             [
                'name'   => 'date',
                'label'  => __('Installation date'),
-               'type'   => 'text'
+               'type'   => 'date'
             ],
             [
                'name'   => 'version',
