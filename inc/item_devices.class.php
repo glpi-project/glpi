@@ -1093,16 +1093,16 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if (($CFG_GLPI["state_autoupdate_mode"] < 0)
-         && ($computer->fields['states_id'] != $input['states_id']
-         || !isset($input['states_id']))
+         && (!isset($input['states_id']) ||
+         $computer->fields['states_id'] != $input['states_id'])
       ) {
 
          $input['states_id'] = $computer->fields['states_id'];
       }
 
       if (($CFG_GLPI["state_autoupdate_mode"] > 0)
-         && ($input['states_id'] != $CFG_GLPI["state_autoupdate_mode"]
-         || !isset($input['states_id']))
+         && (!isset($input['states_id']) ||
+         $input['states_id'] != $CFG_GLPI["state_autoupdate_mode"])
       ) {
 
          $input['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
