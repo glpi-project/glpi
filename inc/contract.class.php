@@ -1442,7 +1442,8 @@ class Contract extends CommonDBTM {
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest $expired
+                WHERE `glpi_contracts`.`is_deleted` = '0' AND `glpi_contracts`.`is_template` = '0'
+                $entrest $idrest $expired
                 ORDER BY `glpi_entities`.`completename`,
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
