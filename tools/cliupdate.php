@@ -345,6 +345,10 @@ switch ($current_version) {
 
    case "9.1.1":
    case "9.1.2":
+      include_once("../install/update_911_913.php");
+      update911to913();
+
+   case "9.1.3":
       include_once("../install/update_91_92.php");
       update91to92();
       break;

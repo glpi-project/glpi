@@ -42,7 +42,7 @@ if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
 define("GLPI_VERSION", "9.2");
 define("GLPI_SCHEMA_VERSION", "9.2");
 define('GLPI_MIN_PHP', '5.6.0');
-define('GLPI_YEAR', '2016');
+define('GLPI_YEAR', '2017');
 if (!defined('GLPI_DEMO_MODE')) {
    define('GLPI_DEMO_MODE', '0');
 }
