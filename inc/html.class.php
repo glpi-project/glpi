@@ -4202,9 +4202,16 @@ class Html {
             echo Html::hidden('item_type_param',
                               array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
          }
+
+         $parameters = trim($parameters, '&amp;');
+         if (strstr($parameters, 'start') === false) {
+            $parameters .= "&amp;start=$start";
+         }
+
          $split = explode("&amp;", $parameters);
 
-         for ($i=0; $i<count($split); $i++) {
+         $count_split = count($split);
+         for ($i=0; $i < $count_split; $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
             echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
