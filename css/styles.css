@@ -1696,12 +1696,18 @@ a.icon_nav_move:hover img {
 
 /* ################--------------- planning  ---------------#################### */
 
-#planning_filter {
-   float: left;
-   text-align: left;
-   margin-right: 10px;
+#planning_container {
+   position: relative;
+   padding-left: 310px; /* Same as planning_filter width + a 10px margin */
 }
-#planning_filter_content {
+
+#planning_filter {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   text-align: left;
+   left: 0;
+   overflow-y: auto;
    width: 300px;
 }
 

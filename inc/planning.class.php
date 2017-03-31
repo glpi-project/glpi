@@ -539,6 +539,7 @@ class Planning extends CommonGLPI {
 
       self::initSessionForCurrentUser();
 
+      echo "<div id='planning_container'>";
       $rand='';
       if ($fullview) {
          Planning::showPlanningFilter();
@@ -558,6 +559,7 @@ class Planning extends CommonGLPI {
       }
 
       echo "<div id='planning$rand'></div>";
+      echo "</div>";
       echo Html::scriptBlock("
       $(function() {
          var disable_qtip = false,
