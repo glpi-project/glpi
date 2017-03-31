@@ -88,6 +88,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $tab[13]['name']          = __('Gateway');
       $tab[13]['massiveaction'] = false;
       $tab[13]['datatype']      = 'string';
+      if (isset($tab[13]['joinparams'])) {
+         unset($tab[13]['joinparams']);
+      }
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'addressable';
