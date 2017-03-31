@@ -92,6 +92,9 @@ class RuleDictionnarySoftware extends Rule {
       $criterias['entities_id']['table']  = 'glpi_entities';
       $criterias['entities_id']['type']   = 'dropdown';
 
+      $criterias['_system_category']['field'] = 'name';
+      $criterias['_system_category']['name']  = __('Category from inventory tool');
+
       return $criterias;
    }
 
@@ -124,6 +127,11 @@ class RuleDictionnarySoftware extends Rule {
       $actions['new_entities_id']['name']       = __('Entity');
       $actions['new_entities_id']['table']      = 'glpi_entities';
       $actions['new_entities_id']['type']       = 'dropdown';
+
+      $actions['softwarecategories_id']['name']  = __('Category');
+      $actions['softwarecategories_id']['type']  = 'dropdown';
+      $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
+      $actions['softwarecategories_id']['force_actions'] = array('assign','regex_result');
 
       return $actions;
    }

@@ -143,8 +143,16 @@ class Software extends CommonDBTM {
          $softcatrule = new RuleSoftwareCategoryCollection();
          $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
-         if (!empty($result) && isset($result["softwarecategories_id"])) {
-            $input["softwarecategories_id"] = $result["softwarecategories_id"];
+         if (!empty($result)) {
+            if (isset($result['_ignore_import'])) {
+               $input["softwarecategories_id"] = 0;
+            } else if (isset($result["softwarecategories_id"])) {
+               $input["softwarecategories_id"] = $result["softwarecategories_id"];
+            } else if (isset($result["_import_category"])) {
+               $softCat = new SoftwareCategory();
+               $input["softwarecategories_id"]
+                  = $softCat->importExternal($input["_system_category"]);
+            }
          } else {
             $input["softwarecategories_id"] = 0;
          }
@@ -801,8 +809,16 @@ class Software extends CommonDBTM {
       $softcatrule = new RuleSoftwareCategoryCollection();
       $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
-      if (!empty($result) && isset($result["softwarecategories_id"])) {
-         $input["softwarecategories_id"] = $result["softwarecategories_id"];
+      if (!empty($result)) {
+         if (isset($result['_ignore_import'])) {
+            $input["softwarecategories_id"] = 0;
+         } else if (isset($result["softwarecategories_id"])) {
+            $input["softwarecategories_id"] = $result["softwarecategories_id"];
+         } else if (isset($result["_import_category"])) {
+            $softCat = new SoftwareCategory();
+            $input["softwarecategories_id"]
+               = $softCat->importExternal($input["_system_category"]);
+         }
       } else {
          $input["softwarecategories_id"] = 0;
       }

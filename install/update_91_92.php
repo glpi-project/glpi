@@ -675,6 +675,36 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 add table glpi_savedsearches_alerts");
    }
 
+   if (!countElementsInTable('glpi_rules',
+                             ['sub_type' => 'RuleSoftwareCategory',
+                              'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425'])) {
+      $rule = new Rule();
+      $rules_id = $rule->add(['name'        => 'Import category from inventory tool',
+                              'is_active'   => 0,
+                              'uuid'        => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                              'entities_id' => 0,
+                              'sub_type'    => 'RuleSoftwareCategory',
+                              'match'       => Rule::AND_MATCHING,
+                              'condition'   => 0,
+                              'description' => ''
+                             ]);
+      if ($rules_id) {
+         $criteria = new RuleCriteria();
+         $criteria->add(['rules_id'  => $rules_id,
+                         'criteria'  => 'name',
+                         'condition' => '0',
+                         'pattern'   => '*'
+                        ]);
+
+         $action = new RuleAction();
+         $action->add(['rules_id'    => $rules_id,
+                       'action_type' => 'assign',
+                       'field'       => '_import_category',
+                       'value'       => '1'
+                      ]);
+      }
+   }
+
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 

@@ -116,6 +116,10 @@ function loadDataset() {
             'name'         => '_test_soft2',
             'entities_id'  => '_test_child_2',
             'is_recursive' => 0,
+         ], [
+            'name'         => '_test_soft_3',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
          ]
 
       ], 'SoftwareVersion' => [
@@ -229,6 +233,14 @@ function loadDataset() {
          [
             'name'         => '_location01',
             'comment'      => 'Comment for location _location01'
+         ],
+         [
+            'name'         => '_location01 > _sublocation01',
+            'comment'      => 'Comment for location _sublocation01'
+         ],
+         [
+            'name'         => '_location02',
+            'comment'      => 'Comment for location _sublocation02'
          ]
       ], 'Netpoint' => [
          [
@@ -354,6 +366,10 @@ function loadDataset() {
             'name'          => 'markdown',
             'is_uploadable' => '1',
             'ext'           => 'md'
+         ]
+      ], 'Manufacturer' => [
+         [
+            'name'          => 'My Manufacturer',
          ]
       ], 'SoftwareLicense' => [
          [

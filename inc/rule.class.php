@@ -1433,7 +1433,7 @@ class Rule extends CommonDBTM {
          if ($this->checkCriterias($input)) {
             unset($output["_no_rule_matches"]);
             $refoutput = $output;
-            $output = $this->executeActions($output, $params);
+            $output    = $this->executeActions($output, $params);
 
             $this->updateOnlyCriteria($options, $refoutput, $output);
             //Hook

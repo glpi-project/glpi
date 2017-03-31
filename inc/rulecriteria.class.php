@@ -309,26 +309,23 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Get all criterias for a given rule
     *
-    * @param $ID the rule_description ID
+    * @param $rules_id the rule ID
     *
     * @return an array of RuleCriteria objects
    **/
-   function getRuleCriterias($ID) {
+   function getRuleCriterias($rules_id) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-
-      $result     = $DB->query($sql);
-      $rules_list = array();
-      while ($rule = $DB->fetch_assoc($result)) {
+      $rules_list = [];
+      $params = ['FROM'  => $this->getTable(),
+                 'WHERE' => [static::$items_id => $rules_id],
+                 'ORDER' => 'id'
+                ];
+      foreach ($DB->request($params) as $rule) {
          $tmp          = new self();
          $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }
-
       return $rules_list;
    }
 
