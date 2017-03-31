@@ -539,7 +539,7 @@ class Planning extends CommonGLPI {
 
       self::initSessionForCurrentUser();
 
-      echo "<div id='planning_container'>";
+      echo "<div" . ($fullview ? " id='planning_container'" : "") . ">";
       $rand='';
       if ($fullview) {
          Planning::showPlanningFilter();
