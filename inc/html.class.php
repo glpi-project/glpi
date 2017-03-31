@@ -4222,17 +4222,24 @@ class Html {
             echo Html::hidden('item_type_param',
                               array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
          }
-         $split = explode("&amp;",$parameters);
 
-         for ($i=0 ; $i<count($split) ; $i++) {
+         $parameters = trim($parameters, '&amp;');
+         if (strstr($parameters, 'start') === false) {
+            $parameters .= "&amp;start=$start";
+         }
+
+         $split = explode("&amp;", $parameters);
+
+         $count_split = count($split);
+         for ($i=0; $i < $count_split; $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
-            echo Html::hidden(Toolbox::substr($split[$i],0,$pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
+            echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
          }
 
          Dropdown::showOutputFormat();
          Html::closeForm();
-         echo "</td>" ;
+         echo "</td>";
       }
 
       echo "<td width='20%' class='tab_bg_2 b'>";
