@@ -315,7 +315,18 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
          $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
-         if (count($this->updates)) {
+         $proceed = count($this->updates);
+
+         //Also check if item status has changed
+         if (!$proceed) {
+            if (isset($this->input['_status'])
+               && $this->input['status'] != $item->getField('status')
+            ) {
+               $proceed = true;
+            }
+         }
+
+         if ($proceed) {
             $update_done = true;
 
             if (in_array("actiontime", $this->updates)) {
