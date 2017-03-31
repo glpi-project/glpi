@@ -404,7 +404,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity) {
       global $DB;
 
-      $new_versionID = $this->versionExists($new_software_id, $version_id, $new_version);
+      $new_versionID = $this->versionExists($new_software_id, $new_version);
 
       // Do something if it is not the same version
       if ($new_versionID != $version_id) {
@@ -455,18 +455,26 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * Move licenses from a software to another
     *
-    * @param $ID                 old software ID
+    * @param $old_software_id    old software ID
     * @param $new_software_id    new software ID
+    * @return true if move was successful
    **/
-   function moveLicenses($ID, $new_software_id) {
+   function moveLicenses($old_software_id, $new_software_id) {
       global $DB;
 
+      //Return false if one of the 2 softwares doesn't exists
+      if (!countElementsInTable('glpi_softwares', ['id' => $old_software_id])
+         || !countElementsInTable('glpi_softwares', ['id' => $new_software_id])) {
+         return false;
+      }
+
       //Transfer licenses to new software if needed
-      if ($ID != $new_software_id) {
+      if ($old_software_id != $new_software_id) {
          $DB->query("UPDATE `glpi_softwarelicenses`
                      SET `softwares_id` = '$new_software_id'
-                     WHERE `softwares_id` = '$ID'");
+                     WHERE `softwares_id` = '$old_software_id'");
       }
+      return true;
    }
 
 
@@ -474,10 +482,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     * Check if a version exists
     *
     * @param $software_id  software ID
-    * @param $version_id   version ID to search
     * @param $version      version name
    **/
-   function versionExists($software_id, $version_id, $version) {
+   function versionExists($software_id, $version) {
       global $DB;
 
       //Check if the version exists

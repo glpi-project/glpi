@@ -780,7 +780,7 @@ function getSonsOf($table, $IDf) {
       }
    }
 
-   // Get the leafs of previous founded item
+   // Get the leafs of previous found item
    while (count($found) > 0) {
       $first = true;
       // Get next elements
