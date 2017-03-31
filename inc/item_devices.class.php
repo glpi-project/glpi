@@ -741,16 +741,36 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
    **/
    static function addDevicesFromPOST($input) {
-
-      if (!isset($input['itemtype'])
-          || !isset($input['items_id'])) {
-         Html::displayNotFoundError();
+      if (!isset($input['devicetype']) || !$input['devicetype']) {
+         Session::addMessageAfterRedirect(
+            __('Please select a device type'),
+            false,
+            ERROR
+         );
+         return;
+      } else if (!isset($_POST['devices_id']) || !$_POST['devices_id']) {
+         Session::addMessageAfterRedirect(
+            __('Please select a device'),
+            false,
+            ERROR
+         );
+         return;
       }
 
       if (isset($input['devicetype'])) {
          $devicetype = $input['devicetype'];
          $linktype   = $devicetype::getItem_DeviceType();
          if ($link = getItemForItemtype($linktype)) {
+            if (!isset($input[$linktype::getForeignKeyField()])
+               && (!isset($input['new_devices']) || !$input['new_devices'])) {
+               Session::addMessageAfterRedirect(
+                  __('You must choose any unaffected device or ask to add new.'),
+                  false,
+                  ERROR
+               );
+               return;
+            }
+
             if ((isset($input[$linktype::getForeignKeyField()]))
                 && (count($input[$linktype::getForeignKeyField()]))) {
                $update_input = array('itemtype' => $input['itemtype'],
