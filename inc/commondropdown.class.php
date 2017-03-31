@@ -747,6 +747,22 @@ abstract class CommonDropdown extends CommonDBTM {
             $input["name"] = $res_rule["name"];
          }
       }
+      return $this->importExternalExec($input, $add);
+   }
+
+
+   /**
+    * Import processed value into dropdown table.
+    *
+    * Rules must have been applied.
+    *
+    * @param $input                    array of value to import
+    * @param $add                      if true, add it if not found. if false,
+    *                                  just check if exists
+    *
+    * @return integer : dropdown id.
+   **/
+   function importExternalExec(array $input, $add) {
       return ($add ? $this->import($input) : $this->findID($input));
    }
 

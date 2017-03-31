@@ -837,4 +837,16 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return $parent;
    }
 
+   /**
+    * @see CommonDropdown::importExternalExec()
+   **/
+   function importExternalExec(array $input, $add) {
+      // generic import doesn't fill "completename" -> copy it manually to there
+      if (!isset($input['completename']) && isset($input['name'])) {
+         $input['completename'] = $input['name'];
+         unset($input['name']);
+      }
+
+      return parent::importExternalExec($input, $add);
+   }
 }
