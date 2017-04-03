@@ -689,7 +689,12 @@ class Toolbox {
       header("Etag: $etag");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition:$attachment filename=\"$filename\"");
+      header(
+         "Content-disposition:$attachment filename=\"" .
+         addslashes(utf8_decode($filename)) .
+         "\"; filename*=utf-8''" .
+         rawurlencode($filename)
+      );
       header("Content-type: ".$mime);
 
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
