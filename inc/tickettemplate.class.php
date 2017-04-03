@@ -348,7 +348,7 @@ class TicketTemplate extends CommonDropdown {
    function getMandatoryMark($field, $force=false) {
 
       if ($force || $this->isMandatoryField($field)) {
-         return "<span class='red'>*</span>";
+         return "<span class='required'>*</span>";
       }
       return '';
    }

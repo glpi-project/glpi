@@ -3168,6 +3168,7 @@ class Html {
     *   - showyear   : should we set/diplay the year? (true by default)
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
+    *   - required   : required field (will add required attribute)
     *
     * @return rand value used if displayes else string
    **/
@@ -3185,6 +3186,7 @@ class Html {
       $p['showyear']   = true;
       $p['display']    = true;
       $p['rand']       = mt_rand();
+      $p['required']   = false;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3234,7 +3236,11 @@ class Html {
 
       $output = "<div class='no-wrap'>";
       $output .= "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
-                   self::convDateTime($p['value'])."'>";
+                   trim(self::convDateTime($p['value']))."'";
+      if ($p['required'] == true) {
+         $output .= " required='required'";
+      }
+      $output .= ">";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
@@ -3766,9 +3772,9 @@ class Html {
     /**
     * Show div with auto completion
     *
-    * @param $item            item object used for create dropdown
-    * @param $field           field to search for autocompletion
-    * @param $options   array of possible options:
+    * @param CommonDBTM $item    item object used for create dropdown
+    * @param strign     $field   field to search for autocompletion
+    * @param array      $options array of possible options:
     *    - name    : string / name of the select (default is field parameter)
     *    - value   : integer / preselected value (default value of the item object)
     *    - size    : integer / size of the text field
@@ -3777,8 +3783,12 @@ class Html {
     *    - user    : integer / restrict to a defined user (default -1 : no restriction)
     *    - option  : string / options to add to text field
     *    - display : boolean / if false get string
+    *    - type    : string / html5 field type (number, date, text, ...) defaults to 'text'
+    *    - required: boolean / whether the field is required
+    *    - rand    : integer / pre-exsting random value
+    *    - attrs   : array of attributes to add (['name' => 'value']
     *
-    * @return nothing (print out an HTML div)
+    * @return void|string
    **/
    static function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       global $CFG_GLPI;
@@ -3796,19 +3806,35 @@ class Html {
       }
       $params['user']   = -1;
       $params['option'] = '';
+      $params['type']   = 'text';
+      $params['required']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
+
+      $rand = (isset($params['rand']) ? $params['rand'] : mt_rand());
+      $name    = "field_".$params['name'].$rand;
+
       $output = '';
       if ($CFG_GLPI["use_ajax_autocompletion"]) {
-         $rand    = mt_rand();
-         $name    = "field_".$params['name'].$rand;
-         $output .=  "<input ".$params['option']." id='text$name' type='text' name='".
+         $output .=  "<input ".$params['option']." id='text$name' type='{$params['type']}' name='".
                        $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
-                       class='autocompletion-text-field'>";
+                       class='autocompletion-text-field'";
+
+         if ($params['required'] == true) {
+            $output .= " required='required'";
+         }
+
+         if (isset($params['attrs'])) {
+            foreach ($params['attrs'] as $attr => $value) {
+               $output .= " $attr='$value'";
+            }
+         }
+
+         $output .= ">";
 
          $parameters['itemtype'] = $item->getType();
          $parameters['field']    = $field;
@@ -3828,7 +3854,7 @@ class Html {
          $output .= Html::scriptBlock($js);
 
       } else {
-         $output .=  "<input ".$params['option']." type='text' name='".$params['name']."'
+         $output .=  "<input ".$params['option']." type='text' id='text$name' name='".$params['name']."'
                 value=\"".self::cleanInputText($params['value'])."\">\n";
       }
 
@@ -4585,7 +4611,8 @@ class Html {
                      return result.text;
                   }
 
-             });";
+             });
+             $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });";
       return Html::scriptBlock($js);
    }
 
@@ -4724,6 +4751,8 @@ class Html {
          $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
       }
+
+      $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
 
       $output .= Html::scriptBlock($js);
       return $output;
