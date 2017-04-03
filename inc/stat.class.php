@@ -670,7 +670,7 @@ class Stat extends CommonGLPI {
             echo Search::showEndLine($output_type);
          }
          // Display footer
-         echo Search::showFooter($output_type);
+         echo Search::showFooter($output_type, '', $numrows);
 
       } else {
          echo __('No statistics are available');
@@ -1576,3 +1576,4 @@ class Stat extends CommonGLPI {
       }
    }
 }
+

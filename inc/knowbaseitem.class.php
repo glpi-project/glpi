@@ -1474,9 +1474,10 @@ class KnowbaseItem extends CommonDBVisible {
                 || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                echo Search::showFooter($output_type,
                                        Dropdown::getDropdownName("glpi_knowbaseitemcategories",
-                                                                 $params['knowbaseitemcategories_id']));
+                                                                 $params['knowbaseitemcategories_id']),
+                                       $numrows_limit);
             } else {
-               echo Search::showFooter($output_type);
+               echo Search::showFooter($output_type, '', $numrows_limit);
             }
             echo "<br>";
             if ($output_type == Search::HTML_OUTPUT) {

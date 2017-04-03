@@ -1499,7 +1499,7 @@ class Search {
             echo $headers_line_bottom;
          }
          // Display footer
-         echo self::showFooter($data['display_type'], $title);
+         echo self::showFooter($data['display_type'], $title, $data['data']['count']);
 
          // Delete selected item
          if ($data['display_type'] == self::HTML_OUTPUT) {
@@ -5841,12 +5841,13 @@ class Search {
    /**
     * Print generic footer
     *
-    * @param $type   display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-    * @param $title  title of file : used for PDF (default '')
+    * @param integer $type  display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param string  $title title of file : used for PDF (default '')
+    * @param integer $count Total number of results
     *
     * @return string to display
    **/
-   static function showFooter($type, $title="") {
+   static function showFooter($type, $title="", $count = null) {
 
       $out = "";
       switch ($type) {
@@ -5857,6 +5858,9 @@ class Search {
                $pdf = new GLPIPDF('L', 'mm', 'A4', true, 'UTF-8', false);
             } else {
                $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            }
+            if ($count !== null) {
+               $pdf->setTotalCount($count);
             }
             $pdf->SetCreator('GLPI');
             $pdf->SetAuthor('GLPI');
