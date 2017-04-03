@@ -457,23 +457,28 @@ class Document extends CommonDBTM {
          die("Error file ".$file." does not exist");
       }
 
-      // don't download picture files, see them inline
-      $attachment = "";
-      $filename_parts = explode(".", $this->fields['filename']);
-      $extension = array_pop($filename_parts);
-      $extension = strtolower($extension);
-      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
-         $attachment = " attachment;";
+      // Document is a web link #1677
+      if ($this->fields['filename'] == NULL && $this->fields['link'] !== NULL) {
+         header("Location: " . $this->fields['link']);
+      } else {
+         // don't download picture files, see them inline
+         $attachment = "";
+         $filename_parts = explode(".", $this->fields['filename']);
+         $extension = array_pop($filename_parts);
+         $extension = strtolower($extension);
+         if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
+            $attachment = " attachment;";
+         }
+
+         // Now send the file with header() magic
+         header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+         header('Pragma: private'); // IE BUG + SSL
+         header('Cache-control: private, must-revalidate'); // IE BUG + SSL
+         header("Content-disposition:$attachment filename=\"" . $this->fields['filename'] . "\"");
+         header("Content-type: " . $this->fields['mime']);
+
+         readfile($file) or die("Error opening file $file");
       }
-
-      // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition:$attachment filename=\"".$this->fields['filename']."\"");
-      header("Content-type: ".$this->fields['mime']);
-
-      readfile($file) or die ("Error opening file $file");
    }
 
 
