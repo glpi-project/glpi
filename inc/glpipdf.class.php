@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
  *  @since version 0.85
 **/
 class GLPIPDF extends TCPDF {
-
+   private $total_count;
 
    /**
     * Page header
@@ -66,8 +66,11 @@ class GLPIPDF extends TCPDF {
 
       // Position at 15 mm from bottom
       $this->SetY(-15);
-      $text = "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-              " - ".$this->getAliasNumPage()."/".$this->getAliasNbPages();
+      $text = "GLPI PDF export - ".Html::convDate(date("Y-m-d"));
+      if ($this->total_count != null) {
+         $text .= " - " . sprintf(_n('%s item', '%s items', $this->total_count), $this->total_count);
+      }
+      $text .= " - ".$this->getAliasNumPage()."/".$this->getAliasNbPages();
 
       // Page number
       $this->Cell(0, 10, $text, 0, false, 'C', 0, '', 0, false, 'T', 'M');
@@ -111,4 +114,15 @@ class GLPIPDF extends TCPDF {
       return $list;
    }
 
+   /**
+    * Set total results count
+    *
+    * @param integer $count Total number of results
+    *
+    * @return GLPIPDF
+    */
+   public function setTotalCount($count) {
+      $this->total_count = $count;
+      return $this;
+   }
 }
