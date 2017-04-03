@@ -49,10 +49,13 @@ Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 if (isset($_POST["update"])) {
    $link->check($_POST["id"], UPDATE);
 
-   $link->update($_POST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.parent.location.reload();";
-   echo "</script>";
+   if ($link->update($_POST)) {
+      echo "<script type='text/javascript' >\n";
+      echo "window.parent.location.reload();";
+      echo "</script>";
+   } else {
+      Html::back();
+   }
 
 } else if (isset($_POST['delete'])) {
    $link->check($_POST['id'], DELETE);
@@ -76,3 +79,4 @@ if (isset($_POST["update"])) {
 }
 
 Html::popFooter();
+
