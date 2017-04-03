@@ -48,19 +48,13 @@ Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 if (isset($_POST["update"])) {
    $link->check($_POST["id"], UPDATE);
 
-   if (isset($_POST['alternative_email']) && !NotificationMail::isUserAddressValid($_POST['alternative_email'])) {
-      Session::addMessageAfterRedirect(
-         __('Invalid email address'),
-         false,
-         ERROR
-      );
+   if ($link->update($_POST)) {
+      echo "<script type='text/javascript' >\n";
+      echo "window.parent.location.reload();";
+      echo "</script>";
+   } else {
       Html::back();
    }
-
-   $link->update($_POST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.parent.location.reload();";
-   echo "</script>";
 
 } else if (isset($_POST['delete'])) {
    $link->check($_POST['id'], DELETE);
