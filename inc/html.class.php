@@ -3168,6 +3168,7 @@ class Html {
     *   - showyear   : should we set/diplay the year? (true by default)
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
+    *   - required   : required field (will add required attribute)
     *
     * @return rand value used if displayes else string
    **/
@@ -3785,8 +3786,9 @@ class Html {
     *    - type    : string / html5 field type (number, date, text, ...) defaults to 'text'
     *    - required: boolean / whether the field is required
     *    - rand    : integer / pre-exsting random value
+    *    - attrs   : array of attributes to add (['name' => 'value']
     *
-    * @return void (print out an HTML div)
+    * @return void|string
    **/
    static function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       global $CFG_GLPI;
