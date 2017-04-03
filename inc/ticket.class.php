@@ -1538,6 +1538,19 @@ class Ticket extends CommonITILObject {
          // if requester set by rule, clear address from mailcollector
          unset($input['_users_id_requester_notif']);
       }
+      if (isset($input['_users_id_requester_notif'])
+         && isset($input['_users_id_requester_notif']['alternative_email'])) {
+         foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
+            if ($email && !NotificationMail::isUserAddressValid($email)) {
+               Session::addMessageAfterRedirect(
+                  sprintf(__('Invalid email address %s'), $email),
+                  false,
+                  ERROR
+               );
+               return false;
+            }
+         }
+      }
 
       // Manage auto assign
       $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
