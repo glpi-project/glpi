@@ -1053,7 +1053,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                         $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
                                                    ? $hardwaredata->getName() :'');
                      }
-                     $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
+                     if (is_array($interv[$key]["device"])) {
+                        $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
+                     }
                   }
                }
             }
