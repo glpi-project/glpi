@@ -126,3 +126,16 @@ a.vsubmit,
 .primary-fg-inverse, .primary-fg-inverse:hover {
    color: #C0CC7B;
 }
+
+#show_all_menu dt a {
+   color: black;
+}
+
+#show_all_menu dt a:hover {
+   background: #828D41;
+}
+
+#show_all_menu a:hover {
+   background-color: #C0CC7B;
+   color: white;
+}

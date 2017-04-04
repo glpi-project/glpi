@@ -2309,24 +2309,24 @@ class Html {
 
       foreach ($menu as $part => $data) {
          if (isset($data['content']) && count($data['content'])) {
-            echo "<table class='all_menu_block'>";
+            echo "<dl>";
             $link = "#";
 
             if (isset($data['default']) && !empty($data['default'])) {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            echo "<tr><td class='tab_bg_1 b'>";
-            echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
-            echo "</td></tr>";
+            echo "<dt class='primary-bg primary-fg'>";
+            echo "<a class='primary-fg' href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
+            echo "</dt>";
             $i++;
 
             // list menu item
             foreach ($data['content'] as $key => $val) {
 
                if (isset($val['page'])
-                   && isset($val['title'])) {
-                  echo "<tr><td>";
+                  && isset($val['title'])) {
+                  echo "<dd>";
 
                   if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
                         && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
@@ -2339,11 +2339,12 @@ class Html {
                   }
                   echo ">";
 
-                  echo $val['title']."</a></td></tr>\n";
+                  echo $val['title']."</a>";
+                  echo "</dd>";
                   $i++;
                }
             }
-            echo "</table>";
+            echo "</dl>";
          }
       }
 

@@ -136,3 +136,12 @@ span.vsubmit, a.vsubmit,
 .primary-fg-inverse, .primary-fg-inverse:hover {
    color: #8EC547;
 }
+
+#show_all_menu dt a:hover {
+   background: #93CC4A;
+}
+
+#show_all_menu a:hover {
+   background-color: #8EC547;
+   color: #D9FFA8;
+}

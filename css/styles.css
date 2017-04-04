@@ -2740,35 +2740,29 @@ ul#menu ul.ssmenu {
    -moz-column-count:3;
 }
 
-#show_all_menu .all_menu_block {
-   width: 100%;
-   padding-bottom: 20px;
-   break-inside: avoid-column;
-}
-
-#show_all_menu .tab_bg_1 {
-   background: #D4D4D4;
-   border-radius: 3px;
-   font-size: 12px;
+#show_all_menu dl {
+   padding-bottom: .5em;
+   break-inside: avoid-column; /* standard */
+   page-break-inside: avoid; /* Firefox */
+   -webkit-column-break-inside: avoid; /* other webkit compliant */
 }
 
 #show_all_menu a {
-   color: #7F7F7F;
-   display: inline-block;
-   padding: 2px;
-   border-radius: 3px;
+   display: block;
+   padding: .2em .5em;
+}
+
+#show_all_menu dt a {
+   color:white;
+}
+
+#show_all_menu dt a:hover {
+   background: #8BAADA;
 }
 
 #show_all_menu a:hover {
-   background-color: #D0D99D;
-}
-
-#show_all_menu .tab_bg_1 a {
-   color: #000000!important;
-}
-
-#show_all_menu .tab_bg_1 a:hover {
-   background: transparent;
+   background-color: #3A5693;
+   color: #C7DBF5;
 }
 
 .iframe {
