@@ -1115,14 +1115,13 @@ class Reminder extends CommonDBVisible {
             if ($data["is_planned"]) {
                $tab      = explode(" ", $data["begin"]);
                $date_url = $tab[0];
-               echo "<span class='floatright'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-                     "&amp;type=day'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"". __s('Planning').
-                     "\" title=\"".sprintf(__s('From %1$s to %2$s'),
+                     "&amp;type=day' class='pointer floatright' title=\"".sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
                                            Html::convDateTime($data["end"]))."\">";
-               echo "</a></span>";
+               echo "<i class='fa fa-bell'></i>";
+               echo "<pan class='sr-only'>" . __s('Planning') . "</span>";
+               echo "</a>";
             }
 
             echo "</td></tr>\n";
