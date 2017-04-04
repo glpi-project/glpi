@@ -160,3 +160,20 @@ a.vsubmit:hover {
 #c_preference a.debugon:hover {
    color: black!important;
 }
+
+#show_all_menu dt a {
+   color:white;
+}
+
+#show_all_menu dt a:hover {
+   background: #41B1FF;
+}
+
+#show_all_menu a {
+   color: #3891cd;
+}
+
+#show_all_menu a:hover {
+   background-color: #5ABCFF;
+   color: white;
+}
