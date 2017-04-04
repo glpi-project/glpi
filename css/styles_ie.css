@@ -30,6 +30,9 @@
 */
 /* ################--------------- GLPI CSS style MOD and HACK for IE  ---------------#################### */
 
+#logo_login{
+   background: url(../pics/logos/logo-GLPI-250-white.png) center no-repeat ;
+}
 
 img {
    behavior: url("../css/win_png.htc");
