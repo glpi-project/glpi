@@ -271,6 +271,7 @@ class Profile_User extends CommonDBRelation {
     * @param $entity Entity object
    **/
    static function showForEntity(Entity $entity) {
+      global $DB;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
