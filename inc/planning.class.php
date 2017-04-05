@@ -533,7 +533,7 @@ class Planning extends CommonGLPI {
             _newheight -= $('#debugajax').height();
          }
          //minimal size
-         var _minheight = 400;
+         var _minheight = 300;
          if (_newheight < _minheight) {
             _newheight = _minheight;
          }
@@ -543,7 +543,7 @@ class Planning extends CommonGLPI {
          $pl_height = "function() {
             var _newheight = $('.ui-tabs-panel').height() - 30;
             //minimal size
-            var _minheight = 400;
+            var _minheight = 300;
             if (_newheight < _minheight) {
                _newheight = _minheight;
             }
