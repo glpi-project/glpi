@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $savedsearch->update($_POST);
    Html::back();
 } else {//print computer information
-   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearches");
+   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearch");
    //show computer form to add
    $savedsearch->display(['id' => $_GET["id"]]);
    Html::footer();
