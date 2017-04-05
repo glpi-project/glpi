@@ -52,7 +52,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      return _n('Virtual machine', 'Virtual machines', $nb);
+      return __('Virtualization');
    }
 
 
@@ -69,7 +69,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             $nb = countElementsInTable('glpi_computervirtualmachines',
                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
-         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+         return self::createTabEntry(self::getTypeName(), $nb);
       }
       return '';
    }
@@ -265,7 +265,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixehov'>";
-            echo  "<tr class='noHover'><th colspan='2' >".__('List of host machines')."</th></tr>";
+            echo  "<tr class='noHover'><th colspan='2' >".__('List of virtualized environments')."</th></tr>";
 
             $header = "<tr><th>".__('Name')."</th>";
             $header .= "<th>".__('Entity')."</th>";
@@ -346,9 +346,9 @@ class ComputerVirtualMachine extends CommonDBChild {
                                                 ? "($ID)" : $comp->fields['name'])));
 
       if (empty($virtualmachines)) {
-         echo "<tr><th>".__('No virtual machine associated with the computer')."</th></tr>";
+         echo "<tr><th>".__('No virtualized environment associated with the computer')."</th></tr>";
       } else {
-         echo "<tr class='noHover'><th colspan='10'>".__('List of virtual machines')."</th></tr>";
+         echo "<tr class='noHover'><th colspan='10'>".__('List of virtualized environments')."</th></tr>";
 
          $header = "<tr><th>".__('Name')."</th>";
          if (Plugin::haveImport()) {
@@ -356,7 +356,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
          $header .= "<th>".__('Virtualization system')."</th>";
          $header .= "<th>".__('Virtualization model')."</th>";
-         $header .= "<th>".__('State of the virtual machine')."</th>";
+         $header .= "<th>".__('State')."</th>";
          $header .= "<th>".__('UUID')."</th>";
          $header .= "<th>"._x('quantity', 'Processors number')."</th>";
          $header .= "<th>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</th>";
