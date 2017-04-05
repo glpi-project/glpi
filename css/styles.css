@@ -359,13 +359,13 @@ input {
 }
 
 input:required {
-    border:1px red solid;
-    border-left-width: 8px;
-    padding-right: 0;
+    border:1px red solid!important;
+    border-left-width: 8px!important;
+    padding-right: 0!important;
 }
 
 input:required:valid {
-    border-color:green;
+    border-color:green!important;
 }
 
 span.required {
