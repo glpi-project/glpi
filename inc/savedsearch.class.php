@@ -50,6 +50,10 @@ class SavedSearch extends CommonDBTM {
    const COUNT_YES = 1;
    const COUNT_AUTO = 2;
 
+   static function getForbiddenActionsForMenu() {
+      return array('add');
+   }
+
    public static function getTypeName($nb = 0) {
       return _n('Saved search', 'Saved searches', $nb);
    }
