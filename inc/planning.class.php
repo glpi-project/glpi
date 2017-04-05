@@ -1184,6 +1184,7 @@ class Planning extends CommonGLPI {
          $('#planning_filter_toggle > a.toggle').on('click', function(e) {
             $('#planning_filter_content').animate({ width:'toggle' }, 300, 'swing', function() {
                $('#planning_filter').toggleClass('folded');
+               $('#planning_container').toggleClass('folded');
             });
          });
       });"

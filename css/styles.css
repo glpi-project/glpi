@@ -1788,7 +1788,14 @@ a.icon_nav_move:hover img {
 }
 
 #planning_filter.folded .toggle {
+   float: none;
    background: url(../pics/toggle-right.png) no-repeat;
+}
+#planning_filter.folded {
+   width: 18px;
+}
+#planning_container.folded {
+   padding-left: 28px; /* Same as folded planning_filter width + a 10px margin */
 }
 
 #planning_filter h3 {
