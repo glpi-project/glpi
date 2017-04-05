@@ -4109,8 +4109,12 @@ input[type=checkbox].toggle_comments:checked ~ ul {
        display: none !important;
    }
 
+   #planning_container {
+      padding-left: 10px;
+   }
+
    #planning_filter {
-      float: none;
+      position: relative;
       width: 100%;
       margin-bottom: 10px;
    }
