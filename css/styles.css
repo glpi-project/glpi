@@ -3886,6 +3886,9 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    #page {
       padding-top: 130px;
    }
+   .nav-up ~ #page {
+      padding-top: 50px;
+   }
 
    #firstboxlogin {
       position: fixed;
