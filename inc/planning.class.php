@@ -527,9 +527,28 @@ class Planning extends CommonGLPI {
 
       $fullview_str = $fullview?"true":"false";
 
-      $pl_height = "$(document).height()-280";
+      $pl_height = "function() {
+         var _newheight = $(window).height() - 272;
+         if ($('#debugajax').length > 0) {
+            _newheight -= $('#debugajax').height();
+         }
+         //minimal size
+         var _minheight = 400;
+         if (_newheight < _minheight) {
+            _newheight = _minheight;
+         }
+         return _newheight;
+      }";
       if ($_SESSION['glpilayout'] == "vsplit") {
-         $pl_height = "$('.ui-tabs-panel').height()-30";
+         $pl_height = "function() {
+            var _newheight = $('.ui-tabs-panel').height() - 30;
+            //minimal size
+            var _minheight = 400;
+            if (_newheight < _minheight) {
+               _newheight = _minheight;
+            }
+            return _newheight;
+         }";
       }
 
       $date_formats = array(0 => 'YYYY MMM DD',
@@ -553,7 +572,7 @@ class Planning extends CommonGLPI {
       } else {
          $default_view = "listFull";
          $header = "false";
-         $pl_height = "400";
+         $pl_height = "'auto'";
          $rand = rand();
          $default_date = "moment().subtract(5, 'years')";
       }
@@ -608,9 +627,6 @@ class Planning extends CommonGLPI {
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
             listDayAltFormat: false,
-            windowResize: function(view) {
-               $(this).fullCalendar('option', 'height', $pl_height);
-            },
             header: $header,
             views: {
                month: {

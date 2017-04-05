@@ -1942,6 +1942,11 @@ a.icon_nav_move:hover img {
    display: none;
 }
 
+.planning_on_central .fc-scroller {
+   height: auto!important;
+   max-height: 400px;
+}
+
 #planning {
    width:auto;
    overflow:hidden;
