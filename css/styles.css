@@ -3544,6 +3544,10 @@ a.copyright {
    margin-bottom: 55px;
 }
 
+.displayed_content a .fa {
+   font-size: 1.5em;
+}
+
 
 .x-split-button {
   position: relative;
