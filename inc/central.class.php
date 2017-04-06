@@ -203,11 +203,11 @@ class Central extends CommonGLPI {
 
       if (count($warnings)) {
          echo "<tr><th colspan='2'>";
-         Html::displayTitle(
-            $CFG_GLPI['root_doc']."/pics/warning.png",
-            '',
-            "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>"
-         );
+         echo "<div class='warning'>";
+         echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
+         echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
+         echo "<div class='sep'></div";
+         echo "</div>";
          echo "</th></tr>";
       }
 

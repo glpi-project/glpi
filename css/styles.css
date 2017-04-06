@@ -4363,6 +4363,29 @@ button.unstyled {
    margin: none;
 }
 
+.warning {
+   padding: .5em;
+   cursor:pointer;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #FEC95C;
+   border: 0;
+   text-align: center;
+}
+
+.warning li {
+   margin-bottom: .5em;
+}
+.warning li:last-child {
+   margin-bottom: 0;
+}
+
+.warning .fa {
+   color: white;
+   float:left;
+   margin-right: .2em;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
