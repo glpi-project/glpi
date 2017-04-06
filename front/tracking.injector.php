@@ -61,6 +61,11 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
 }
 
 if (isset($_POST['add'])) {
+   if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
+      $track->check(-1, CREATE, $_POST);
+   } else {
+      $track->getEmpty();
+   }
    if ($newID = $track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getFormURL()."?id=".$newID);
