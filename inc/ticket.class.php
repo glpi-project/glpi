@@ -6518,28 +6518,34 @@ class Ticket extends CommonITILObject {
          echo "</div>"; // b_right
 
          if ($item['type'] == 'Document_Item') {
-            $filename = $item_i['filename'];
-            $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            echo "<img src='";
-            if (empty($filename)) {
-               $filename = $item_i['name'];
-            }
-            if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
-               echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
-            } else {
-               echo "$pics_url/file.png";
-            }
-            echo "' title='file' />&nbsp;";
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                   ."&tickets_id=".$this->getID()."' target='_blank'>$filename";
-            if (in_array($ext, array('jpg', 'jpeg', 'png', 'bmp'))) {
+            if ($item_i['filename']) {
+               $filename = $item_i['filename'];
+               $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+               echo "<img src='";
+               if (empty($filename)) {
+                  $filename = $item_i['name'];
+               }
+               if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
+                  echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
+               } else {
+                  echo "$pics_url/file.png";
+               }
+               echo "'/>&nbsp;";
 
-               echo "<div class='timeline_img_preview'>";
-               echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                      ."&tickets_id=".$this->getID()."'/>";
-               echo "</div>";
+               echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+                      ."&tickets_id=".$this->getID()."' target='_blank'>$filename";
+               if (in_array($ext, array('jpg', 'jpeg', 'png', 'bmp'))) {
+
+                  echo "<div class='timeline_img_preview'>";
+                  echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+                        ."&tickets_id=".$this->getID()."'/>";
+                  echo "</div>";
+               }
+               echo "</a>";
             }
-            echo "</a>";
+            if ($item_i['link']) {
+               echo "<a href='{$item_i['link']}' target='_blank'>{$item_i['name']}</a>";
+            }
             if (!empty($item_i['mime'])) {
                echo "&nbsp;(".$item_i['mime'].")";
             }
