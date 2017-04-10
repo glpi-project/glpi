@@ -406,6 +406,10 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense'];
 
+$CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Computer_SoftwareLicense',
+                                           'Computer_SoftwareVersion', 'ComputerDisk', 'ComputerVirtualMachine',
+                                           'NetworkPort', 'NetworkName', 'IPAddress'];
+
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Contract', 'Entity',
                                            'Monitor', 'NetworkEquipment',
