@@ -381,7 +381,7 @@ function loadDataset() {
             'level'        => 0,
             'entities_id'  => '_test_root_entity',
             'is_recursive' => 1,
-            'number'       => 5,
+            'number'       => 2,
             'softwares_id' => '_test_soft',
          ],
          [
