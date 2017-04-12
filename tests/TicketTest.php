@@ -32,7 +32,7 @@
 
 /* Test for inc/ticket.class.php */
 
-class TicketTest extends PHPUnit\Framework\TestCase {
+class TicketTest extends DbTestCase {
 
    public function ticketProvider() {
       return array(
@@ -227,7 +227,7 @@ class TicketTest extends PHPUnit\Framework\TestCase {
 
       // 6 - check creation of the tasks
       $tickettask = new TicketTask;
-      $found_tasks = $tickettask->find("`tickets_id` = $tickets_id");
+      $found_tasks = $tickettask->find("`tickets_id` = $tickets_id", "id ASC");
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);
