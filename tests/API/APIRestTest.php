@@ -44,6 +44,9 @@ class APIRestTest extends APIBaseClass {
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/")."/";
+
+      //to make phpunit6 happy
+      parent::__construct(null, [], '');
    }
 
    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = []) {

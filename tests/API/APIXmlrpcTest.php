@@ -43,6 +43,9 @@ class APIXmlrpcTest extends APIBaseClass {
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/apixmlrpc.php";
+
+      //to make phpunit6 happy
+      parent::__construct(null, [], '');
    }
 
    protected function doHttpRequest($resource = "", $params = []) {
