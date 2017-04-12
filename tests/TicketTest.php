@@ -32,7 +32,7 @@
 
 /* Test for inc/ticket.class.php */
 
-class TicketTest extends PHPUnit\Framework\TestCase {
+class TicketTest extends DbTestCase {
 
    public function ticketProvider() {
       return array(
