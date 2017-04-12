@@ -673,7 +673,7 @@ function update91to92() {
       }
    }
 
-   if (countElementsInTable('glpi_logs', 'entities_id=0') < 2000000) {
+   if (countElementsInTable('glpi_logs') < 2000000) {
       //add index only if this sounds... possible.
       $migration->addKey("glpi_logs", "id_search_option");
    } else {
