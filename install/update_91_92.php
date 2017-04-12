@@ -645,7 +645,7 @@ function update91to92() {
    }
 
    if (TableExists('glpi_bookmarks_users')) {
-      $has_backups_bookmarks = $migration->backupTables(['glpi_savedsearches']);
+      $has_backups_bookmarks = $migration->backupTables(['glpi_savedsearches_users']);
       if (!$has_backups && $has_backups_bookmarks) {
          $has_backups = true;
       }
