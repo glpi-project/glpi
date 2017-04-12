@@ -132,6 +132,7 @@ Session::start();
 
 // Init debug variable
 $_SESSION = ['glpilanguage' => (isset($args['lang']) ? $args['lang'] : 'en_GB')];
+$_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
 $DB = new DB();
@@ -139,6 +140,11 @@ Session::loadLanguage();
 if (!$DB->connected) {
    die("No DB connection\n");
 }
+
+//initialize entities
+$_SESSION["glpidefault_entity"] = 0;
+Session::initEntityProfiles(2);
+Session::changeProfile(4);
 
 /* ----------------------------------------------------------------- */
 /**
