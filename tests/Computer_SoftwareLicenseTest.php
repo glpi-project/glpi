@@ -45,6 +45,11 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_2');
       $this->assertEquals(2, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
 
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_3');
+      $this->assertEquals(2, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
+
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
+      $this->assertEquals(0, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
    }
 
    /**
@@ -63,85 +68,77 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
 
    /**
     * @covers Computer_SoftwareLicense::Add
+    * @covers Computer_SoftwareLicense::post_deleteFromDB
+    * @covers Computer_SoftwareLicense::upgrade
     * @depends testCountForLicense
     */
-   public function testAdd() {
+   public function testAddUpdateDelete() {
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
-      $computer3 = getItemByTypeName('Computer', '_test_pc03');
-      $lic       = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
+      $computer3 = getItemByTypeName('Computer', '_test_pc11');
+      $lic       = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
 
       // Do some installations
       $lic_computer = new Computer_SoftwareLicense();
-      $input = [
-         [
-            'computers_id'        => $computer1->fields['id'],
-            'softwarelicenses_id' => $lic->fields['id'],
-         ], [
-            'computers_id'        => $computer2->fields['id'],
-            'softwarelicenses_id' => $lic->fields['id']
-            ]
-         ];
 
-      $lic_computer->add($input);
-
-      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
-      //Number of installations exceed the number declared in the license
-      $this->assertEquals(0, $lic->fields['is_valid']);
-
-      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_2');
       $input = [
          'computers_id'        => $computer1->fields['id'],
+         'softwarelicenses_id' => $lic->fields['id'],
+      ];
+      $this->assertGreaterThan(0, $lic_computer->add($input));
+
+      $input = [
+         'computers_id'        => $computer2->fields['id'],
+         'softwarelicenses_id' => $lic->fields['id'],
+      ];
+      $this->assertGreaterThan(0, $lic_computer->add($input));
+
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
+      //License is valid: the number of affectations doesn't exceed declared number
+      $this->assertEquals(1, $lic->fields['is_valid']);
+
+      $input = [
+         'computers_id'        => $computer3->fields['id'],
          'softwarelicenses_id' => $lic->fields['id']
       ];
       $this->assertGreaterThan(0, $lic_computer->add($input));
 
-      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_2');
-      //License if valid : the number of installations doesn't exceed the number
-      //declared
-      $this->assertEquals(1, $lic->fields['is_valid']);
-   }
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
+      //Number of affectations exceed the number declared in the license
+      $this->assertEquals(0, $lic->fields['is_valid']);
 
-
-   /**
-    * @covers Computer_SoftwareLicense::post_deleteFromDB
-    * @depends testCountForLicense
-    */
-   public function testPost_deleteFromDB() {
-      $this->Login();
-      $lic          = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
-      $lic_computer = new Computer_SoftwareLicense();
-      $lic_computer->deleteByCriteria(['softwarelicenses_id' => $lic->fields['id']], true);
-
-      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
-      //Number of installations shouldn't now exceed the number declared in the license
-      $this->assertEquals(1, $lic->fields['is_valid']);
-   }
-
-   /**
-    * @covers Computer_SoftwareLicense::upgrade
-    */
-   public function testUpgrade() {
-      $this->Login();
-      $old_lic      = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
+      //test upgrade
+      $old_lic      = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
       $new_lic      = getItemByTypeName('SoftwareLicense', '_test_softlic_3');
 
       $lic_computer = new Computer_SoftwareLicense();
       $computer     = getItemByTypeName('Computer', '_test_pc01');
       $result = $lic_computer->find("`computers_id`='".$computer->fields['id']."'
                                       AND `softwarelicenses_id`='".$old_lic->fields['id']."'");
-      if (!empty($result)) {
-         $inst = array_slice($result);
-         $lic_computer->upgrade($inst->fields['id'], $new_lic->fields['id']);
+      $lic_computer->getFromDB(array_keys($result)[0]);
 
-         $this->assertNotEquals($old_lic->fields['id'],
-                                $lic_computer->fields['softwarelicenses_id']);
+      $lic_computer->upgrade($lic_computer->getID(), $new_lic->fields['id']);
 
-         $this->assertEquals($new_lic->fields['id'],
-                             $lic_computer->fields['softwarelicenses_id']);
-      }
+      $this->assertNotEquals(
+         $old_lic->fields['id'],
+         $lic_computer->fields['softwarelicenses_id']
+      );
+
+      $this->assertEquals(
+         $new_lic->fields['id'],
+         $lic_computer->fields['softwarelicenses_id']
+      );
+
+      //test delete
+      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer->deleteByCriteria(['softwarelicenses_id' => $lic->fields['id']], true);
+
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
+      //Number of installations shouldn't now exceed the number declared in the license
+      $this->assertEquals(1, $lic->fields['is_valid']);
    }
+
 
    /**
     * @covers Computer_SoftwareLicense::cloneComputer
@@ -157,12 +154,16 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
                                    $target_computer->fields['id']);
 
       $input = ['computers_id' => $source_computer->fields['id']];
-      $this->assertEquals(2, countElementsInTable('glpi_computers_softwarelicenses',
+      $this->assertEquals(3, countElementsInTable('glpi_computers_softwarelicenses',
                                                    $input));
 
       $input = ['computers_id' => $target_computer->fields['id']];
-      $this->assertEquals(2, countElementsInTable('glpi_computers_softwarelicenses',
-                                                   $input));
+      $this->assertEquals(3, countElementsInTable('glpi_computers_softwarelicenses',
+         $input));
+
+      //cleanup
+      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer->deleteByCriteria(['computers_id' => $target_computer->fields['id']], true);
    }
 
    /**

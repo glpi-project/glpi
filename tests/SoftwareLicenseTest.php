@@ -178,7 +178,8 @@ class SoftwareLicenseTest extends DbTestCase {
                ];
       $this->assertTrue($license_computer->deleteByCriteria($input, true));
 
-      //Change the number of assets from 3 to 1
+      $orig_number = $lic->getField('number');
+      //Change the number of assets to 1
       $input = ['id'     => $lic->fields['id'],
                 'number' => 1,
                ];
@@ -191,6 +192,16 @@ class SoftwareLicenseTest extends DbTestCase {
       //Update validity indicator
       $license->updateValidityIndicator($license->fields['id']);
       $this->assertEquals(0, $license->fields['is_valid']);
+
+      //cleanup
+      $input = ['id'     => $lic->fields['id'],
+                'number' => $orig_number,
+               ];
+      $license->update($input);
+
+      //Update validity indicator
+      $license->updateValidityIndicator($license->fields['id']);
+      $this->assertEquals(1, $license->fields['is_valid']);
    }
 
    public function createLicenseWithInstall($name, $computers) {
