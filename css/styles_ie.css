@@ -30,10 +30,13 @@
 */
 /* ################--------------- GLPI CSS style MOD and HACK for IE  ---------------#################### */
 
+#logo_login{
+   background: url(../pics/logos/logo-GLPI-250-white.png) center no-repeat ;
+}
+
 img {
    behavior: url("../css/win_png.htc");
 }
-
 
 div#c_ssmenu1 ul li {
    margin-top:4px;
@@ -44,4 +47,109 @@ div#c_ssmenu1 ul li {
    background-image:none;
    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod='crop', src='../pics/null-header.png');
    zoom:1;
+}
+
+
+/* ==== menu chemin de fer sous le logo  ==== */
+
+.breadcrumb_item {
+  background-color: #F2F2F2; // modifier pour IE8 vs bootstrap
+}
+
+#c_ssmenu2 {
+   margin-top: 0px;
+   min-height: 10px;
+   padding: 10px 0;
+   height: 40px;
+   box-sizing: border-box;
+   background-color: #FFF;
+}
+
+#c_ssmenu2  a.here {
+   font-size:10px;
+}
+
+.breadcrumb_item {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+    min-height: auto !important;
+    font-family: "OpenSans",Arial, Helvetica, sans-serif;
+   height: 22px;
+   position: relative;
+}
+.breadcrumb_item:before {
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: -2;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 17px;
+   margin-top: -17px;
+   z-index: 20;
+}
+
+.breadcrumb_item:after {
+   left: 100%;
+   top: 50%;
+   border: solid transparent;
+   content: " ";
+   height: 0;
+   width: 0;
+   position: absolute;
+   border-left-color: #FFF;
+   border-width: 14px;
+   margin-top: -14px;
+   z-index: 20;
+   margin-left: -1px;
+}
+
+.breadcrumb_item:not(:nth-of-type(1)) {
+   padding-left: 20px !important;
+}
+
+/* bug IE8 d'affichage sur le bckgroung transparent.
+  on force le style pour IE 8 */
+
+ul#menu ul.ssmenu {
+    width: 144px;
+    border: 1px solid #CCCCDD;
+    background: #FEFEFF;
+   -moz-box-shadow: 0px 0px 0px 0px #BCB6B3;
+   -webkit-box-shadow: 0px 0px 0px 0px #BCB6B3;
+   box-shadow: 0px 2px 2px 1px #BCB6B3;
+    opacity: 0.9;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)"; // first!
+    filter: alpha(opacity=90);                    // second!
+}
+
+/*Select dans IE8*/
+
+.select2-container .select2-choice > .select2-chosen {
+   min-width: 100%;
+   position: relative;
+   display: inline-block;
+   float: right;
+   overflow: visible;
+   text-indent: .5em;
+   background-color: inherit;
+   margin-right: 0;
+   padding-right: 26px;
+   box-sizing: border-box;
+   text-align: center\9;/*IE8*/
+}
+
+.select2-container .select2-choice > .select2-chosen:before {
+  content: '';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  background-color: inherit;
+  z-index: 2;
+  left: -.5em;
+  height: 26px;
+  margin-top: -2px;
+   text-align: center\9;/*IE8*/
 }
