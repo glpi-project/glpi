@@ -79,25 +79,10 @@ function update91to92() {
       'glpi_devicebatterytypes',
       'glpi_devicefirmwares',
       'glpi_items_devicefirmwares',
-      'glpi_devicefirmwaretypes',
-      'glpi_savedsearches',
-      'glpi_savedsearches_users'
+      'glpi_devicefirmwaretypes'
    );
 
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if (TableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
+   $has_backups = $migration->backupTables($newtables);
 
    //put you migration script here
 
@@ -636,6 +621,11 @@ function update91to92() {
                                                 'login_remember_default' => 1));
 
    if (TableExists('glpi_bookmarks')) {
+      $has_backups_bookmarks = $migration->backupTables(['glpi_savedsearches']);
+      if (!$has_backups && $has_backups_bookmarks) {
+         $has_backups = true;
+      }
+
       $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
 
       $migration->addField("glpi_savedsearches", "last_execution_time", "int(11) NULL DEFAULT NULL");
@@ -655,6 +645,11 @@ function update91to92() {
    }
 
    if (TableExists('glpi_bookmarks_users')) {
+      $has_backups_bookmarks = $migration->backupTables(['glpi_savedsearches']);
+      if (!$has_backups && $has_backups_bookmarks) {
+         $has_backups = true;
+      }
+
       $migration->renameTable("glpi_bookmarks_users", "glpi_savedsearches_users");
       $migration->changeField('glpi_savedsearches_users', 'bookmarks_id', 'savedsearches_id', 'int(11) NOT NULL DEFAULT "0"');
    }
@@ -694,6 +689,11 @@ function update91to92() {
                 VALUES ('SavedSearch', 'countAll', 604800, NULL, 0, 1, 3,
                         0, 24, 10, NULL, NULL, NULL); ";
       $DB->queryOrDie($query, "9.1 Add countAll SavedSearch cron task");
+   }
+
+   if ($has_backups) {
+      $migration->displayWarning("You can delete backup tables if you have no need of them.",
+                                 true);
    }
 
    // ************ Keep it at the end **************

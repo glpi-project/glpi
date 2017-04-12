@@ -845,4 +845,26 @@ class Migration {
    public function addPostQuery($query, $message = null) {
       return $this->addQuery(self::POST_QUERY, $query, $message);
    }
+
+   /**
+    * Backup existing tables
+    *
+    * @param array $tables Existing tables to backup
+    *
+    * @return boolean
+    */
+   public function backupTables($tables) {
+      $backup_tables = false;
+      foreach ($tables as $table) {
+         // rename new tables if exists ?
+         if (TableExists($table)) {
+            $this->dropTable("backup_$table");
+            $this->displayWarning("$table table already exists. ".
+                                       "A backup have been done to backup_$table.");
+            $backup_tables = true;
+            $this->renameTable("$table", "backup_$table");
+         }
+      }
+      return $backup_tables;
+   }
 }
