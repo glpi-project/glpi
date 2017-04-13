@@ -115,10 +115,17 @@ if ($one_item < 0 && count($values)) {
 
 } else {
    if (!isset($toadd[$one_item])) {
-      if (isset($_POST['unit'])) {
-         $txt = Dropdown::getValueWithUnit($one_item, $_POST['unit']);
+      $value = $one_item;
+      if (isset($_POST['min']) && $value < $_POST['min']) {
+         $value = $_POST['min'];
+      } else if (isset($_POST['max']) && $value > $_POST['max']) {
+         $value = $_POST['max'];
       }
-      array_push($datas, array('id'   => $one_item,
+
+      if (isset($_POST['unit'])) {
+         $txt = Dropdown::getValueWithUnit($value, $_POST['unit']);
+      }
+      array_push($datas, array('id'   => $value,
                                'text' => strval(stripslashes($txt))));
       $count++;
    }
@@ -132,3 +139,4 @@ if (($one_item >= 0)
    $ret['count']   = $count;
    echo json_encode($ret);
 }
+
