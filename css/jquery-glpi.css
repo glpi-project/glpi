@@ -29,6 +29,8 @@
  * ---------------------------------------------------------------------
  */
 .ui-dialog { z-index: 1000 !important ;}
+.ui-widget-overlay.glpi_modal { z-index: 2000 !important ;}
+.glpi_modal { z-index: 5000 !important ;}
 
 .ui-widget-content span.vsubmit, a.vsubmit {color: #8f5a0a;}
 /* css for timepicker */

@@ -5659,12 +5659,16 @@ class Html {
       window.alert = function(message, caption) {
          message = message.replace('\\n', '<br>');
          caption = caption || '".__("Information")."';
-         $('<div>').html(message).dialog({
+         $('<div/>').html(message).dialog({
             title: caption,
             buttons: {
                ".__('OK').": function() {
                   $(this).dialog('close');
                }
+            },
+            dialogClass: 'glpi_modal',
+            open: function(event, ui) {
+               $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
             },
             close: function(){
                $(this).remove();
@@ -5744,9 +5748,9 @@ class Html {
          message = message.replace('\\n', '<br>');
          caption = caption || '';
 
-         $('<div>').html(message).dialog({
+         $('<div/>').html(message).dialog({
             title: caption,
-            dialogClass: 'fixed',
+            dialogClass: 'fixed glpi_modal',
             buttons: {
                '"._sx('button', 'Confirm')."': function () {
                   $(this).dialog('close');
@@ -5763,6 +5767,9 @@ class Html {
                   $(this).dialog('close');
                   confirmed = false;
                }
+            },
+            open: function(event, ui) {
+               $(this).parent().prev('.ui-widget-overlay').addClass('glpi_modal');
             },
             close: function () {
                 $(this).remove();
