@@ -562,6 +562,7 @@ class Software extends CommonDBTM {
       $tab[5]['forcegroupby']    = true;
       $tab[5]['massiveaction']   = false;
       $tab[5]['joinparams']      = array('jointype' => 'child');
+      $tab[5]['displaywith']     = array('softwares_id');
       $tab[5]['datatype']       = 'dropdown';
 
       $tab[31]['table']          = 'glpi_states';
