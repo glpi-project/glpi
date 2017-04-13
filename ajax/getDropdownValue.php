@@ -135,6 +135,45 @@ if (isset($_POST['_one_id'])) {
 // Count real items returned
 $count = 0;
 
+/**
+ * Construct where search part
+ *
+ * @param string $table    Table name
+ * @param string $itemtype Item type
+ * @param string $text     Text to search
+ * @param array  $withs    Additionnal fields
+ * @param string $field    Field name (defaults to 'completename')
+ *
+ * @return string
+ */
+function buildSearchWhereClause(
+   $table,
+   $itemtype,
+   $text,
+   $withs = [],
+   $field = 'completename'
+) {
+   $where = " AND (";
+   $searchTexts = explode(' ', $text);
+   $first = true;
+   foreach ($searchTexts as $searchText) {
+      $search = Search::makeTextSearch($searchText);
+      if (Session::haveTranslations($itemtype, $field)) {
+         $where .= ($first ? "" : " OR ") . " (`$table`.`$field` $search ".
+                        "OR `namet`.`value` $search ";
+      } else {
+         $where .= ($first ? "" : " OR ") . " (`$table`.`$field` $search ";
+      }
+      //Also search on 'displaywith'
+      foreach ($withs as $with) {
+         $where .= " OR `$table`.`$with` ".$search;
+      }
+      $where .= ')';
+      $first = false;
+   }
+   $where .= ")";
+   return $where;
+}
 
 if ($item instanceof CommonTreeDropdown) {
 
@@ -142,19 +181,12 @@ if ($item instanceof CommonTreeDropdown) {
       $where .= " AND `$table`.`id` = '$one_item'";
    } else {
       if (!empty($_POST['searchText'])) {
-         $search = Search::makeTextSearch($_POST['searchText']);
-         if (Session::haveTranslations($_POST['itemtype'], 'completename')) {
-            $where .= " AND (`$table`.`completename` $search ".
-                             "OR `namet`.`value` $search " ;
-         } else {
-            $where .= " AND (`$table`.`completename` $search ";
-         }
-         // Also search by id
-         if ($displaywith && in_array('id', $_POST['displaywith'])) {
-            $where .= " OR `$table`.`id` ".$search;
-         }
-
-         $where .= ")";
+         $where .= buildSearchWhereClause(
+            $table,
+            $_POST['itemtype'],
+            $_POST['searchText'],
+            ($displaywith ? $_POST['displaywith'] : [])
+         );
       }
    }
 
@@ -462,21 +494,13 @@ if ($item instanceof CommonTreeDropdown) {
       $where .=" AND `$table`.`id` = '$one_item'";
    } else {
       if (!empty($_POST['searchText'])) {
-         $search = Search::makeTextSearch($_POST['searchText']);
-         $where .=" AND  (`$table`.`$field` ".$search;
-
-         if (Session::haveTranslations($_POST['itemtype'], $field)) {
-            $where .= " OR `namet`.`value` ".$search;
-         }
-         if ($_POST['itemtype'] == "SoftwareLicense") {
-            $where .= " OR `glpi_softwares`.`name` ".$search;
-         }
-         // Also search by id
-         if ($displaywith && in_array('id', $_POST['displaywith'])) {
-            $where .= " OR `$table`.`id` ".$search;
-         }
-
-         $where .= ')';
+         $where .= buildSearchWhereClause(
+            $table,
+            $_POST['itemtype'],
+            $_POST['searchText'],
+            ($displaywith ? $_POST['displaywith'] : []),
+            $field
+         );
       }
    }
    $addselect = '';
