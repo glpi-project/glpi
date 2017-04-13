@@ -628,6 +628,7 @@ class Software extends CommonDBTM {
          'name'               => __('Version name'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
+         'displaywith'        => array('softwares_id'),
          'joinparams'         => [
             'jointype'           => 'child'
          ],

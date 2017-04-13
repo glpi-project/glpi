@@ -601,20 +601,6 @@ if ($item instanceof CommonTreeDropdown) {
             }
             $outputval = Toolbox::unclean_cross_side_scripting_deep($outputval);
 
-            if ($displaywith) {
-               foreach ($_POST['displaywith'] as $key) {
-                  if (isset($data[$key])) {
-                     $withoutput = $data[$key];
-                     if (isForeignKeyField($key)) {
-                        $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
-                                                                $data[$key]);
-                     }
-                     if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
-                        $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
-                     }
-                  }
-               }
-            }
             $ID         = $data['id'];
             $addcomment = "";
             $title      = $outputval;
@@ -631,6 +617,20 @@ if ($item instanceof CommonTreeDropdown) {
                 || (strlen($outputval) == 0)) {
                //TRANS: %1$s is the name, %2$s the ID
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
+            }
+            if ($displaywith) {
+               foreach ($_POST['displaywith'] as $key) {
+                  if (isset($data[$key])) {
+                     $withoutput = $data[$key];
+                     if (isForeignKeyField($key)) {
+                        $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
+                                                                $data[$key]);
+                     }
+                     if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
+                        $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
+                     }
+                  }
+               }
             }
             array_push($datastoadd, array('id'    => $ID,
                                           'text'  => $outputval,
