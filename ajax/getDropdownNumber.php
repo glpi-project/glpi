@@ -73,7 +73,7 @@ if (isset($_POST['toadd'])) {
    $toadd = array();
 }
 
-$datas = array();
+$data = array();
 // Count real items returned
 $count = 0;
 
@@ -81,7 +81,7 @@ if ($_POST['page'] == 1) {
    if (count($toadd)) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
-            array_push($datas, array('id'   => $key,
+            array_push($data, array('id'   => $key,
                                      'text' => strval(stripslashes($val))));
          }
       }
@@ -109,7 +109,7 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($i,$_POST['unit']);
       }
-      array_push($datas, array('id'   => $i,
+      array_push($data, array('id'   => $i,
                                'text' => strval($txt)));
       $count++;
    }
@@ -126,17 +126,17 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($value, $_POST['unit']);
       }
-      array_push($datas, array('id'   => $value,
+      array_push($data, array('id'   => $value,
                                'text' => strval(stripslashes($txt))));
       $count++;
    }
 }
 
 if (($one_item >= 0)
-    && isset($datas[0])) {
-   echo json_encode($datas[0]);
+    && isset($data[0])) {
+   echo json_encode($data[0]);
 } else {
-   $ret['results'] = $datas;
+   $ret['results'] = $data;
    $ret['count']   = $count;
    echo json_encode($ret);
 }
