@@ -494,7 +494,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<div class='center'>";
          Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
-         $massiveactionparams = array('num_displayed' => $nb,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $nb),
                                       'container'     => 'massAuthLdapReplicate'.$rand);
          Html::showMassiveActions($massiveactionparams);
          echo "<input type='hidden' name='id' value='$ID'>";

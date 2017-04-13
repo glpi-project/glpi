@@ -810,7 +810,7 @@ class Group extends CommonTreeDropdown {
             echo Html::hidden('field', array('value'                 => $field,
                                              'data-glpicore-ma-tags' => 'common'));
 
-            $massiveactionparams = array('num_displayed'    => $nb,
+            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
                                          'check_itemtype'   => 'Group',
                                          'check_items_id'   => $ID,
                                          'container'        => 'mass'.__CLASS__.$rand,

@@ -173,7 +173,7 @@ abstract class CommonDBVisible extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'
-                              => $nb,
+                              => min($_SESSION['glpilist_limit'], $nb),
                            'container'
                               => 'mass'.__CLASS__.$rand,
                            'specific_actions'

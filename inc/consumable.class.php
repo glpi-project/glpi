@@ -510,7 +510,7 @@ class Consumable extends CommonDBChild {
          if ($consitem->isRecursive()) {
             $entparam = array('entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID()));
          }
-         $massiveactionparams = array('num_displayed'    => $number,
+         $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => $entparam);

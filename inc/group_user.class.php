@@ -187,7 +187,7 @@ class Group_User extends CommonDBRelation{
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
-         $massiveactionparams = array('num_displayed' => count($used),
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
                            'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }

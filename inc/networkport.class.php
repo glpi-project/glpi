@@ -797,7 +797,7 @@ class NetworkPort extends CommonDBChild {
       }
       if ($is_active_network_port
           && $showmassiveactions) {
-         $massiveactionparams = array('num_displayed'  => $number_port,
+         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $number_port),
                                       'check_itemtype' => $itemtype,
                                       'container'      => 'mass'.__CLASS__.$rand,
                                       'check_items_id' => $items_id);

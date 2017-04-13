@@ -463,7 +463,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed'    => $_SESSION['glpilist_limit'],
+               $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $DB->numrows($result)),
                                             'container'        => 'mass'.__CLASS__.$rand,
                                             'specific_actions' => array('purge' => _x('button', 'Delete permanently')));
 

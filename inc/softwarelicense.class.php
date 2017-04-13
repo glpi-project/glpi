@@ -1074,7 +1074,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
                   = array('num_displayed'
-                           => $num_displayed,
+                           => min($_SESSION['glpilist_limit'], $num_displayed),
                           'container'
                            => 'mass'.__CLASS__.$rand,
                           'extraparams'

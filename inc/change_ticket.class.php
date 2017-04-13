@@ -284,7 +284,7 @@ class Change_Ticket extends CommonDBRelation{
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams
-            = array('num_displayed'    => $numrows,
+            = array('num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
                     'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                         => __('Solve tickets'),
@@ -389,7 +389,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $numrows,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }

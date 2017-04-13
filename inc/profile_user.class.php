@@ -175,7 +175,7 @@ class Profile_User extends CommonDBRelation {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       if ($canedit && $num) {
-         $massiveactionparams = array('num_displayed' => $num,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $num),
                            'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }
@@ -475,7 +475,7 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $nb,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $nb),
                            'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }

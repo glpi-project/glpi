@@ -875,7 +875,7 @@ class Document_Item extends CommonDBRelation{
           && $number
           && ($withtemplate < 2)) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$params['rand']);
-         $massiveactionparams = array('num_displayed'  => $number,
+         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $number),
                                       'container'      => 'mass'.__CLASS__.$params['rand']);
          Html::showMassiveActions($massiveactionparams);
       }

@@ -251,7 +251,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => $numrows,
+            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
                                          'container'     => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }

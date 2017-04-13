@@ -201,7 +201,7 @@ class Contract_Supplier extends CommonDBRelation {
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('container'     => 'mass'.__CLASS__.$rand,
-                                      'num_displayed' => $number);
+                                      'num_displayed' => min($_SESSION['glpilist_limit'], $number));
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
@@ -343,7 +343,7 @@ class Contract_Supplier extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $number,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $number),
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
       }

@@ -663,7 +663,7 @@ class Cartridge extends CommonDBChild {
                $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']
                      = __('Back to stock');
             }
-            $massiveactionparams = array('num_displayed'    => $number,
+            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                                          'specific_actions' => $actions,
                                          'container'        => 'mass'.__CLASS__.$rand,
                                          'rand'             => $rand);
@@ -930,7 +930,7 @@ class Cartridge extends CommonDBChild {
                                       => __('Update printer counter'),
                              'purge' => _x('button', 'Delete permanently'));
          }
-         $massiveactionparams = array('num_displayed'    => $number,
+         $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'rand'             => $rand,
