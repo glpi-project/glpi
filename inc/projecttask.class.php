@@ -1017,7 +1017,7 @@ class ProjectTask extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $nb,
+         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $nb),
                                       'container'     => 'mass'.__CLASS__.$rand);
 //                     'specific_actions'
 //                         => array('delete' => _x('button', 'Delete permanently')) );

@@ -1070,7 +1070,7 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
-         $massiveactionparams = array('num_displayed'  => $nb,
+         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $nb),
                                       'check_itemtype' => get_class($this),
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->ruleactionclass.$rand,
@@ -1173,7 +1173,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
-         $massiveactionparams = array('num_displayed'  => $nb,
+         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $nb),
                                       'check_itemtype' => get_class($this),
                                       'check_items_id' => $rules_id,
                                       'container'      => 'mass'.$this->rulecriteriaclass.$rand,
@@ -2765,7 +2765,7 @@ class Rule extends CommonDBTM {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
             $massiveactionparams
                = array('num_displayed'
-                           => $nb,
+                           => min($_SESSION['glpilist_limit'], $nb),
                        'specific_actions'
                            => array('update' => _x('button', 'Update'),
                                     'purge'  => _x('button', 'Delete permanently')));

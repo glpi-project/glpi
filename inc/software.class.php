@@ -859,7 +859,7 @@ class Software extends CommonDBTM {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams
-            = array('num_displayed' => $nb,
+            = array('num_displayed' => min($_SESSION['glpilist_limit'], $nb),
                     'container'     => 'mass'.__CLASS__.$rand,
                     'specific_actions'
                                     => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'

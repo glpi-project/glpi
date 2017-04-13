@@ -656,7 +656,7 @@ class Bookmark extends CommonDBTM {
       if ($is_private) {
          $maactions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_bookmark'] = __('Move');
       }
-      $massiveactionparams = array('num_displayed'     => $numrows,
+      $massiveactionparams = array('num_displayed'     => min($_SESSION['glpilist_limit'], $numrows),
                                     'container'        => 'mass'.__CLASS__.$rand,
                                     'width'            => 600,
                                     'extraparams'      => array('is_private' => $is_private),

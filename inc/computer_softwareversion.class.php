@@ -478,7 +478,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
                   = array('num_displayed'
-                           => $number,
+                           => min($_SESSION['glpilist_limit'], $number),
                           'container'
                            => 'mass'.__CLASS__.$rand,
                           'specific_actions'
@@ -776,7 +776,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
                = array('num_displayed'
-                         => $number,
+                         => min($_SESSION['glpilist_limit'], $number),
                        'container'
                          => 'mass'.__CLASS__.$rand,
                        'specific_actions'
@@ -895,7 +895,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
 
-            $massiveactionparams = array('num_displayed'    => $number,
+            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                                          'container'        => 'massSoftwareLicense'.$rand,
                                          'specific_actions' => $actions);
 
