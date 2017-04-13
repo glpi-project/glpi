@@ -423,7 +423,7 @@ class Computer_Item extends CommonDBRelation{
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
                = array('num_displayed'
-                           => $number,
+                           => min($_SESSION['glpilist_limit'], $number),
                        'specific_actions'
                            => array('purge' => _x('button', 'Disconnect')),
                        'container'
@@ -567,7 +567,7 @@ class Computer_Item extends CommonDBRelation{
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams
             = array('num_displayed'
-                        => $number,
+                        => min($_SESSION['glpilist_limit'], $number),
                     'specific_actions'
                         => array('purge' => _x('button', 'Disconnect')),
                     'container'

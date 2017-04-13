@@ -323,7 +323,7 @@ class Netpoint extends CommonDropdown {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
                = array('num_displayed'
-                           => $_SESSION['glpilist_limit'],
+                           => min($_SESSION['glpilist_limit'], $number),
                        'container'
                            => 'mass'.__CLASS__.$rand,
                        'specific_actions'
