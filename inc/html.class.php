@@ -5712,11 +5712,11 @@ class Html {
             modal: true,
             title: '".Toolbox::addslashes_deep($title)."',
             buttons: {
-               'Yes': function () {
+               '" . __('Yes') . "': function () {
                      $(this).dialog('close');
                      ".($yesCallback!==null?'('.$yesCallback.')()':'')."
                   },
-               'No': function () {
+               '" . __('No') . "': function () {
                      $(this).dialog('close');
                      ".($noCallback!==null?'('.$noCallback.')()':'')."
                   }
@@ -5818,14 +5818,14 @@ class Html {
 
       return "
          // Dialog and its properties.
-         $('<div></div>').dialog({
+         $('<div/>').dialog({
             open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
             close: function(event, ui) { $(this).remove(); },
             resizable: false,
             modal: true,
             title: '".Toolbox::addslashes_deep( $title )."',
             buttons: {
-               'Ok': function () {
+               '".__('OK')."': function () {
                      $(this).dialog('close');
                      ".($okCallback!==null?'('.$okCallback.')()':'')."
                   }
