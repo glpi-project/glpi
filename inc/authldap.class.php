@@ -78,6 +78,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['port']                        = '389';
       $this->fields['condition']                   = '';
       $this->fields['login_field']                 = 'uid';
+      $this->fields['sync_field']                  = 'uid';
       $this->fields['use_tls']                     = 0;
       $this->fields['group_field']                 = '';
       $this->fields['group_condition']             = '';
@@ -118,6 +119,7 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['condition']
                = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
             $this->fields['login_field']               = 'samaccountname';
+            $this->fields['sync_field']                = 'samaccountname';
             $this->fields['use_tls']                   = 0;
             $this->fields['group_field']               = 'memberof';
             $this->fields['group_condition']
@@ -350,15 +352,21 @@ class AuthLDAP extends CommonDBTM {
          if ($ID) {
             echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
          }
-
          echo "</td>";
+         echo "<td rowspan='4'><label for='comment'>".__('Comments')."</label></td>";
+         echo "<td rowspan='4' class='middle'>";
+         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Login field') . "</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-         echo "<td colspan='3'>";
-         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Synchronization field') . "</td>";
+         echo "<td><input type='text' name='sync_field' value='".$this->fields["sync_field"]."'>";
+         echo "</td></tr>";
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
@@ -1061,6 +1069,15 @@ class AuthLDAP extends CommonDBTM {
          'field'              => 'is_active',
          'name'               => __('Active'),
          'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => $this->getTable(),
+         'field'              => 'sync_field',
+         'name'               => __('Synchrozation field'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
       ];
 
       return $tab;

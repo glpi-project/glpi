@@ -866,6 +866,22 @@ Regards,',
                                  true);
    }
 
+   //Add new sync_field for ldap servers
+   if ($migration->addField('glpi_authldaps', 'sync_field', 'string')) {
+      $migration->addKey('glpi_authldaps', 'sync_field');
+      $migration->migrationOneTable('glpi_authldaps');
+      $query = "UPDATE `glpi_authldaps` SET `sync_field`=`login_field`";
+      $DB->queryOrDie($query, "9.2 Fill ldap sync_field from login_field");
+   }
+
+   //Add new sync_field for ldap servers
+   if ($migration->addField('glpi_authldaps', 'sync_field', 'string')) {
+      $migration->addKey('glpi_authldaps', 'sync_field');
+      $migration->migrationOneTable('glpi_authldaps');
+      $query = "UPDATE `glpi_authldaps` SET `sync_field`=`login_field`";
+      $DB->queryOrDie($query, "9.2 Fill ldap sync_field from login_field");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

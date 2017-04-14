@@ -83,7 +83,7 @@ class AuthLDAP extends DbTestCase {
    public function testPost_getEmpty() {
       $ldap = new \AuthLDAP();
       $ldap->post_getEmpty();
-      $this->array($ldap->fields)->hasSize(22);
+      $this->array($ldap->fields)->hasSize(23);
    }
 
    public function testUnsetUndisclosedFields() {
@@ -99,7 +99,8 @@ class AuthLDAP extends DbTestCase {
       //login_field and sync_field must be filled
       $ldap->preconfig('AD');
       $this->array($ldap->fields)
-         ->string['login_field']->isIdenticalTo('samaccountname');
+         ->string['login_field']->isIdenticalTo('samaccountname')
+         ->string['sync_field']->isIdenticalTo('samaccountname');
 
       //No preconfiguration model
       $ldap->preconfig('');
@@ -203,7 +204,7 @@ class AuthLDAP extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $ldap     = new \AuthLDAP();
       $options  = $ldap->getSearchOptionsNew();
-      $this->array($options)->hasSize(30);
+      $this->array($options)->hasSize(31);
    }
 
    public function testGetSyncFields() {
