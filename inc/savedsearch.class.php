@@ -860,39 +860,41 @@ class SavedSearch extends CommonDBTM {
                }
             }
 
-            $count = null;
-            //check if we want to count results
-            if ($this->fields['do_count'] == self::COUNT_YES
-               || $this->fields['do_count'] == self::COUNT_AUTO
-               && $this->getField('last_execution_time') != null
-               && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']) {
-               //Do the same as self::getParameters() but getFromDB is useless
-               $query_tab = array();
-               parse_str($this->fields["query"], $query_tab);
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $count = null;
+               //check if we want to count results
+               if ($this->fields['do_count'] == self::COUNT_YES
+                  || $this->fields['do_count'] == self::COUNT_AUTO
+                  && $this->getField('last_execution_time') != null
+                  && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']) {
+                  //Do the same as self::getParameters() but getFromDB is useless
+                  $query_tab = array();
+                  parse_str($this->fields["query"], $query_tab);
 
-               $params = null;
-               if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
-                  $params = $this->prepareQueryToUse($this->fields["type"], $query_tab);
-               }
+                  $params = null;
+                  if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
+                     $params = $this->prepareQueryToUse($this->fields["type"], $query_tab);
+                  }
 
-               if (!$params) {
-                  Toolbox::logDebug(
-                     'Save search #' . $this->getID() . ' seems to be broken!'
-                  );
+                  if (!$params) {
+                     Toolbox::logDebug(
+                        'Save search #' . $this->getID() . ' seems to be broken!'
+                     );
+                  } else {
+                     $data = $search->prepareDatasForSearch($current_type, $params);
+                     $data['search']['sort'] = null;
+                     $search->constructSQL($data);
+                     $search->constructDatas($data, true);
+                     $count = $data['data']['totalcount'];
+                  }
                } else {
-                  $data = $search->prepareDatasForSearch($current_type, $params);
-                  $data['search']['sort'] = null;
-                  $search->constructSQL($data);
-                  $search->constructDatas($data, true);
-                  $count = $data['data']['totalcount'];
-               }
-            } else {
-               $info_message = ($this->fields['do_count'] == self::COUNT_NO) ?
-                  __('Count for this saved search has been disabled.') :
-                  __('Counting this saved search would take too long, it has been skipped.');
-               if ($count === null) {
-                  //no count, just inform the user
-                  $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
+                  $info_message = ($this->fields['do_count'] == self::COUNT_NO) ?
+                     __('Count for this saved search has been disabled.') :
+                     __('Counting this saved search would take too long, it has been skipped.');
+                  if ($count === null) {
+                     //no count, just inform the user
+                     $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
+                  }
                }
             }
 
@@ -925,7 +927,10 @@ class SavedSearch extends CommonDBTM {
             );
             echo "<a class='savedsearchlink' href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
                      $this->fields["id"]."\" title='".__('Click to load or drag and drop to reorder')."'>".
-                     $text . "<span class='primary-bg primary-fg count'>$count</span></a>";
+                     $text;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               echo "<span class='primary-bg primary-fg count'>$count</span></a>";
+            }
             echo "</td>";
             echo "</tr>";
          }
@@ -1066,12 +1071,14 @@ class SavedSearch extends CommonDBTM {
    static public function updateExecutionTime($id, $time) {
       global $DB;
 
-      $query = "UPDATE `". static::getTable() . "`
-                SET `last_execution_time` = '$time',
-                    `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
-                    `counter` = `counter` + 1
-                WHERE `id` = '$id'";
-      $DB->query($query);
+      if ($_SESSION['glpishow_count_on_tabs']) {
+         $query = "UPDATE `". static::getTable() . "`
+                  SET `last_execution_time` = '$time',
+                     `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
+                     `counter` = `counter` + 1
+                  WHERE `id` = '$id'";
+         $DB->query($query);
+      }
    }
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
@@ -1198,61 +1205,65 @@ class SavedSearch extends CommonDBTM {
     * @return void
     */
    static public function croncountAll($task) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
-      $lastdate = new \Datetime($task->getField('lastrun'));
-      $lastdate->sub(new \DateInterval('P7D'));
+      if ($CFG_GLPI['show_count_on_tabs'] != -1) {
+         $lastdate = new \Datetime($task->getField('lastrun'));
+         $lastdate->sub(new \DateInterval('P7D'));
 
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'FIELDS' => ['id', 'query', 'itemtype', 'type'],
-         'WHERE'  => ['last_execution_date' => ['<' , $lastdate->format('Y-m-d H:i:s')]]
-      ]);
+         $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'FIELDS' => ['id', 'query', 'itemtype', 'type'],
+            'WHERE'  => ['last_execution_date' => ['<' , $lastdate->format('Y-m-d H:i:s')]]
+         ]);
 
-      if ($iterator->numrows()) {
-         //prepare variables we'll use
-         $search = new Search();
-         $self = new self();
-         $now = date('Y-m-d H:i:s');
-         $stmt = $DB->prepare(
-            "UPDATE " . self::getTable() . " SET " .
-            "last_execution_time = ?, last_execution_date = ? WHERE " .
-            "id = ?"
-         );
+         if ($iterator->numrows()) {
+            //prepare variables we'll use
+            $search = new Search();
+            $self = new self();
+            $now = date('Y-m-d H:i:s');
+            $stmt = $DB->prepare(
+               "UPDATE " . self::getTable() . " SET " .
+               "last_execution_time = ?, last_execution_date = ? WHERE " .
+               "id = ?"
+            );
 
-         $DB->dbh->begin_transaction();
-         while ($row = $iterator->next()) {
-            try {
-               $query_tab = array();
-               parse_str($row['query'], $query_tab);
-               $self->fields = $row;
+            $DB->dbh->begin_transaction();
+            while ($row = $iterator->next()) {
+               try {
+                  $query_tab = array();
+                  parse_str($row['query'], $query_tab);
+                  $self->fields = $row;
 
-               $params = null;
-               if (class_exists($row['itemtype']) || $row['itemtype'] == 'AllAssets') {
-                  $params = $self->prepareQueryToUse($row['type'], $query_tab);
+                  $params = null;
+                  if (class_exists($row['itemtype']) || $row['itemtype'] == 'AllAssets') {
+                     $params = $self->prepareQueryToUse($row['type'], $query_tab);
+                  }
+
+                  if (!$params) {
+                     Toolbox::logDebug(
+                        'Save search #' . $row['id'] . ' seems to be broken!'
+                     );
+                  } else {
+                     $data = $search->prepareDatasForSearch($row['itemtype'], $params);
+                     $data['search']['sort'] = null;
+                     $search->constructSQL($data);
+                     $search->constructDatas($data, true);
+                     $execution_time = $data['data']['execution_time'];
+
+                     $stmt->bind_param('sss', $execution_time, $now, $row['id']);
+                     $stmt->execute();
+                  }
+               } catch (\Exception $e) {
+                  Toolbox::logDebug($e);
                }
-
-               if (!$params) {
-                  Toolbox::logDebug(
-                     'Save search #' . $row['id'] . ' seems to be broken!'
-                  );
-               } else {
-                  $data = $search->prepareDatasForSearch($row['itemtype'], $params);
-                  $data['search']['sort'] = null;
-                  $search->constructSQL($data);
-                  $search->constructDatas($data, true);
-                  $execution_time = $data['data']['execution_time'];
-
-                  $stmt->bind_param('sss', $execution_time, $now, $row['id']);
-                  $stmt->execute();
-               }
-            } catch (\Exception $e) {
-               Toolbox::logDebug($e);
             }
-         }
 
-         $DB->dbh->commit();
-         $stmt->close();
+            $DB->dbh->commit();
+            $stmt->close();
+         }
+      } else {
+         Toolbox::logDebug('Count on tabs has been disabled; crontask is inefficient.');
       }
    }
 }
