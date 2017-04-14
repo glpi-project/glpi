@@ -1421,6 +1421,10 @@ class KnowbaseItem extends CommonDBVisible {
             }
             echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
+            if ($output_type == Search::HTML_OUTPUT) {
+               echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
+            }
+
             if (isset($options['item_itemtype'])
                 && isset($options['item_items_id'])
                 && ($output_type == Search::HTML_OUTPUT)) {
@@ -1497,6 +1501,24 @@ class KnowbaseItem extends CommonDBVisible {
                   $categ   = "<a href='$cathref'>".$categ.'</a>';
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
+
+               if ($output_type == Search::HTML_OUTPUT) {
+                  echo "<td class='center'>";
+                  $j=0;
+                  foreach ($DB->request('glpi_documents_items',
+                                     ['FIELDS' => 'documents_id',
+                                     'WHERE'  => "`items_id` = '".$data["id"]."'
+                                                   AND `itemtype` = 'KnowbaseItem'"]) as $docs) {
+                     $doc = new Document();
+                     $doc->getFromDB($docs["documents_id"]);
+                     echo $doc->getDownloadLink();
+                     $j++;
+                     if ($j > 1) {
+                        echo "<br>";
+                     }
+                  }
+                  echo "</td>";
+               }
 
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
