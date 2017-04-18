@@ -951,9 +951,9 @@ class Toolbox {
          ],
          'curl'      => [
             'required'  => true,
-        ],
+         ],
          'gd'       => [
-            'required'  => false,
+            'required'  => true,
          ],
          'ldap'       => [
             'required'  => false,
