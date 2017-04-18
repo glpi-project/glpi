@@ -2139,7 +2139,7 @@ class Config extends CommonDBTM {
             'required'  => true,
          ],
          'gd'       => [
-            'required'  => false,
+            'required'  => true,
          ],
          'ldap'       => [
             'required'  => false,
