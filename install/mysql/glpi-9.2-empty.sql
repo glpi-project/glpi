@@ -7196,6 +7196,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),

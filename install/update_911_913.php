@@ -82,6 +82,17 @@ function update911to913() {
       $DB->queryOrDie($query, "9.1.3 Fix duplicate IPNetwork addressable network search option");
    }
 
+   $migration->addField(
+      "glpi_softwarelicenses",
+      "contact",
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"
+   );
+   $migration->addField(
+      "glpi_softwarelicenses",
+      "contact_num",
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
