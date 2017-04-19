@@ -2462,7 +2462,7 @@ class Ticket extends CommonITILObject {
          'forcegroupby'       => true
       ];
 
-      $validation_options = TicketValidation::getSearchOptionsToAdd();
+      $validation_options = TicketValidation::getSearchOptionsToAddNew();
       if (!Session::haveRightsOr(
          'ticketvalidation',
          [
