@@ -523,11 +523,7 @@ class Ticket extends CommonITILObject {
    function pre_deleteItem() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
-      if (isset($this->input['_disablenotif'])) {
-         $donotif = false;
-      }
-      if( $donotif ) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_mailing']) {
          NotificationEvent::raiseEvent('delete', $this);
       }
       return true;
