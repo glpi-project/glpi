@@ -2406,7 +2406,19 @@ class Ticket extends CommonITILObject {
                                                  => array('jointype'  => 'child')));
       $tab[32]['forcegroupby']      = true;
 
-      $tab += TicketValidation::getSearchOptionsToAdd();
+      $validation_options = TicketValidation::getSearchOptionsToAdd();
+      if (!Session::haveRightsOr(
+         'ticketvalidation',
+         [
+            TicketValidation::CREATEINCIDENT,
+            TicketValidation::CREATEREQUEST
+         ]
+      )) {
+         foreach ($validation_options as &$validation_option) {
+            $validation_option['massiveaction'] = false;
+         }
+      }
+      $tab += $validation_options;
 
       $tab['satisfaction']             = __('Satisfaction survey');
 
