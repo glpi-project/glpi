@@ -236,7 +236,7 @@ class TicketFollowup  extends CommonDBTM {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_DELETE_SUBITEM);
 
-      if( $donotif ) {
+      if ($donotif) {
          $options = array('followup_id' => $this->fields["id"],
                            // Force is_private with data / not available
                           'is_private'  => $this->fields['is_private']);
@@ -273,7 +273,7 @@ class TicketFollowup  extends CommonDBTM {
          $job->updateDateMod($this->fields["tickets_id"]);
 
          if (count($this->updates)) {
-            if (!isset($this->input['_disablenotif']) 
+            if (!isset($this->input['_disablenotif'])
                 && $CFG_GLPI["use_mailing"]
                 && (in_array("content", $this->updates)
                     || isset($this->input['_need_send_mail']))) {
