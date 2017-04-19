@@ -13,6 +13,7 @@ before_script:
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
   - php -S localhost:8088 tests/router.php &>/dev/null &
+  - phpenv config-add tests/enable-ldap.ini
 
 script:
   - mysql -u root -e 'select version();'
@@ -54,3 +55,7 @@ notifications:
 branches:
   except:
     - /^0\..*$/
+addons:
+  hosts:
+    - ldap-master
+    - ldap-slave
