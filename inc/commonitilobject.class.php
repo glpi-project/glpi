@@ -1146,7 +1146,12 @@ abstract class CommonITILObject extends CommonDBTM {
           || !($CFG_GLPI['impact_mask']&(1<<$input["impact"]))) {
          $input["impact"] = 3;
       }
-      if (!isset($input["priority"])) {
+      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      if ($canpriority) {
+         if (!isset($input["priority"])) {
+            $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
+         }
+      } else {
          $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
       }
 
