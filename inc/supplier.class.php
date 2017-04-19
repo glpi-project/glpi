@@ -470,7 +470,7 @@ class Supplier extends CommonDBTM {
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
-            // Set $linktype for link to search engine pnly
+            // Set $linktype for link to search engine only
             if (($itemtype == 'SoftwareLicense')
                 && ($nb > $_SESSION['glpilist_limit'])) {
                $linktype  = 'Software';
@@ -511,7 +511,11 @@ class Supplier extends CommonDBTM {
                   $link = $link_item->getFormURLWithID($data[$linkfield]);
                   $name = "<a href='$link'>".$name."</a>";
 
-                  echo "<tr class='tab_bg_1'>";
+                  echo "<tr class='tab_bg_1";
+                  if (isset($data['is_template']) && $data['is_template'] == 1) {
+                     echo " linked-template";
+                  }
+                  echo "'>";
                   if ($prem) {
                      $title = $item->getTypeName($nb);
                      if ($nb > 0) {
@@ -540,9 +544,4 @@ class Supplier extends CommonDBTM {
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }
-
-
-
-
 }
-?>
