@@ -1218,12 +1218,22 @@ class User extends CommonDBTM {
     * @see CommonDBTM::getRawName()
    **/
    function getRawName() {
+      global $CFG_GLPI;
 
       if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
-         return formatUserName($this->fields["id"],
+         //getRawName should not add ID
+         $bkp_conf = $CFG_GLPI['is_ids_visible'];
+         $CFG_GLPI['is_ids_visible'] = 0;;
+         $name = formatUserName($this->fields["id"],
                                $this->fields["name"],
                                (isset($this->fields["realname"]) ? $this->fields["realname"] : ''),
-                               (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
+                               (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''),
+                               0,
+                               0,
+                               true);
+
+         $CFG_GLPI['is_ids_visible'] = $bkp_conf;
+         return $name;
       }
       return '';
    }
