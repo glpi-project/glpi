@@ -2462,7 +2462,19 @@ class Ticket extends CommonITILObject {
          'forcegroupby'       => true
       ];
 
-      $tab = array_merge($tab, TicketValidation::getSearchOptionsToAddNew());
+      $validation_options = TicketValidation::getSearchOptionsToAdd();
+      if (!Session::haveRightsOr(
+         'ticketvalidation',
+         [
+            TicketValidation::CREATEINCIDENT,
+            TicketValidation::CREATEREQUEST
+         ]
+      )) {
+         foreach ($validation_options as &$validation_option) {
+            $validation_option['massiveaction'] = false;
+         }
+      }
+      $tab = array_merge($tab, $validation_options);
 
       $tab[] = [
          'id'                 => 'satisfaction',
