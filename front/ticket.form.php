@@ -44,6 +44,19 @@ if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
 
+$date_fields = [
+   'date',
+   'due_date',
+   'time_to_own'
+];
+
+foreach ($date_fields as $date_field) {
+   //handle not clean dates...
+   if (isset($_POST["_$date_field"]) && isset($_POST[$date_field]) && $_POST[$date_field] == '') {
+      $_POST[$date_field] = $_POST["_$date_field"];
+   }
+}
+
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
