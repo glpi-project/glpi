@@ -1223,6 +1223,11 @@ class AuthLDAP extends CommonDBTM {
    static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0) {
       global $CFG_GLPI;
 
+      //Check if timestamp is well format, otherwise return ''
+      if (!preg_match("/[\d][A-Z]/", $ldapstamp)) {
+         return '';
+      }
+
       $year    = substr($ldapstamp, 0, 4);
       $month   = substr($ldapstamp, 4, 2);
       $day     = substr($ldapstamp, 6, 2);
@@ -2397,18 +2402,7 @@ class AuthLDAP extends CommonDBTM {
     * @return boolean
     */
    static function useAuthLdap() {
-      global $DB;
-
-      //Get all the ldap directories
-      $sql = "SELECT COUNT(*)
-              FROM `glpi_authldaps`
-              WHERE `is_active` = 1";
-      $result = $DB->query($sql);
-
-      if ($DB->result($result, 0, 0) > 0) {
-         return true;
-      }
-      return false;
+      return (countElementsInTable('glpi_authldaps', ['is_active' => 1]) > 0);
    }
 
 
@@ -2973,14 +2967,7 @@ class AuthLDAP extends CommonDBTM {
     * @return integer
     */
    static function getNumberOfServers() {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_authldaps`
-                WHERE `is_active` = '1'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      return countElementsInTable('glpi_authldaps', ['is_active' => 1]);
    }
 
 
@@ -2991,7 +2978,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return string
     */
-   static private function buildLdapFilter(AuthLdap $authldap) {
+   static function buildLdapFilter(AuthLdap $authldap) {
       //Build search filter
       $counter = 0;
       $filter  = '';
@@ -3310,17 +3297,15 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       $replicates = [];
-      $query = "SELECT `id`, `host`, `port`
-                FROM `glpi_authldapreplicates`
-                WHERE `authldaps_id` = '$master_id'";
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
-         while ($replicate = $DB->fetch_assoc($result)) {
-            $replicates[] = ["id"   => $replicate["id"],
-                                  "host" => $replicate["host"],
-                                  "port" => $replicate["port"]];
-         }
+      $query = ['FIELDS' => ['id', 'host', 'port'],
+                'FROM'   => 'glpi_authldapreplicates',
+                'WHERE'  => ['authldaps_id' => $master_id]
+               ];
+      foreach ($DB->request($query) as $replicate) {
+         $replicates[] = ["id"   => $replicate["id"],
+                          "host" => $replicate["host"],
+                          "port" => $replicate["port"]
+                         ];
       }
       return $replicates;
    }
