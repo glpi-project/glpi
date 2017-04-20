@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * SoftwareLicense Class
 **/
-class SoftwareLicense extends CommonDBTM {
+class SoftwareLicense extends CommonTreeDropdown {
 
    /// TODO move to CommonDBChild ?
    // From CommonDBTM
@@ -77,6 +77,8 @@ class SoftwareLicense extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
 
+      $input = parent::prepareInputForAdd($input);
+
       if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
             Session::addMessageAfterRedirect(__("Please select a software for this license"), true,
                                              ERROR, true);
@@ -94,6 +96,7 @@ class SoftwareLicense extends CommonDBTM {
          unset ($input['expire']);
       }
 
+
       return $input;
    }
 
@@ -103,10 +106,13 @@ class SoftwareLicense extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
+      $input = parent::prepareInputForUpdate($input);
+
       // Update number : compute validity indicator
       if (isset($input['number'])) {
          $input['is_valid'] = self::computeValidityIndicator($input['id'], $input['number']);
       }
+
 
       return $input;
    }
@@ -221,6 +227,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('SoftwareLicense', $ong, $options);
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
@@ -318,6 +325,14 @@ class SoftwareLicense extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_softwarelicense`"));
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('As child of')."</td><td>";
+      self::dropdown(array('value'  => $this->fields['softwarelicenses_id'],
+                           'name'   => 'softwarelicenses_id',
+                           'entity' => $this->fields['entities_id'],
+                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : array())));
+      echo "</td></tr>";      
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Location') . "</td><td>";
@@ -468,13 +483,16 @@ class SoftwareLicense extends CommonDBTM {
 
    function getSearchOptions() {
 
+    
+
+
       // Only use for History (not by search Engine)
       $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
+      $tab[1]['field']           = 'completename';
+      $tab[1]['name']            = __('Complete name');
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
       $tab[1]['forcegroupby']    = true;
@@ -487,6 +505,9 @@ class SoftwareLicense extends CommonDBTM {
       $tab[2]['datatype']        = 'number';
       $tab[2]['forcegroupby']    = true;
       $tab[2]['massiveaction']   = false;
+
+
+
 
       $tab+=Location::getSearchOptionsToAdd();
 
@@ -535,6 +556,14 @@ class SoftwareLicense extends CommonDBTM {
       $tab[10]['field']           = 'name';
       $tab[10]['name']            = __('Software');
       $tab[10]['datatype']        = 'itemlink';
+
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'completename';
+      $tab[13]['name']              = __('Father');
+      $tab[13]['datatype']          = 'dropdown';
+      $tab[13]['massiveaction']     = false;
+      // Add virtual condition to relink table
+      $tab[13]['joinparams']        = array('condition' => "AND 1=1");
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
@@ -593,6 +622,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
+
 
       return $tab;
    }
@@ -1117,6 +1147,18 @@ class SoftwareLicense extends CommonDBTM {
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                            (($nb >= 0) ? $nb : '&infin;'));
+            break;
+            case 'SoftwareLicense' :
+               if (!self::canView()) {
+                  return '';
+               }
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                   $nb = countElementsInTable($this->getTable(),
+                                             "`softwarelicenses_id` = '".$item->getID()."'");
+               }
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
+                                           (($nb >= 0) ? $nb : '&infin;'));
+            break;
          }
       }
       return '';
@@ -1127,8 +1169,79 @@ class SoftwareLicense extends CommonDBTM {
 
       if ($item->getType()=='Software' && self::canView()) {
          self::showForSoftware($item);
+      }else{
+         if ($item->getType()=='SoftwareLicense' && self::canView()) {
+            self::getSonsOf($item);
+            return true;
+         }
       }
       return true;
+   }
+
+
+   static function getSonsOf($item){
+      global $DB;
+      $entity_assign = $item->isEntityAssign();
+      $nb            = 0;
+      $ID            = $item->getID();
+
+
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'),
+                                                                    $item->getTreeLink());
+      echo "</th></tr>";
+
+      $header = "<tr><th>".__('Name')."</th>";
+      if ($entity_assign) {
+         $header .= "<th>".__('Entity')."</th>";
+      }
+     
+      $header .= "<th>".__('Comments')."</th>";
+      $header .= "</tr>\n";
+      echo $header;
+
+      $fk   = $item->getForeignKeyField();
+      $crit = array($fk     => $ID,
+                    'ORDER' => 'name');
+
+      if ($entity_assign) {
+         if ($fk == 'entities_id') {
+            $crit['id']  = $_SESSION['glpiactiveentities'];
+            $crit['id'] += $_SESSION['glpiparententities'];
+         } else {
+            $crit['entities_id'] = $_SESSION['glpiactiveentities'];
+         }
+      }
+      $nb = 0;
+      foreach ($DB->request($item->getTable(), $crit) as $data) {
+         $nb++;
+         echo "<tr class='tab_bg_1'>";
+         echo "<td><a href='".$item->getFormURL();
+         echo '?id='.$data['id']."'>".$data['name']."</a></td>";
+         if ($entity_assign) {
+            echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"])."</td>";
+         }
+
+         echo "<td>".$data['comment']."</td>";
+         echo "</tr>\n";
+      }
+      if ($nb) {
+         echo $header;
+      }
+      echo "</table></div>\n";
+   }
+
+ function getAdditionalFields() {
+
+      $tab = array(array('name'      => 'softwares_id',
+                         'label'     => Software::getTypeName(1),
+                         'type'      => 'dropdownValue',
+                         'list'      => true),
+                  );
+
+      return $tab;
+
    }
 
 }
