@@ -467,24 +467,18 @@ class Supplier extends CommonDBTM {
             }
 
             $linktable = getTableForItemType($linktype);
-            $link_item = new $linktype();
 
-            $query = str_replace('NAME_FIELD', $link_item->getNameField(), $query);
+            $query = str_replace('NAME_FIELD', $linktype::getNameField(), $query);
             $query .= "WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID'".
                              getEntitiesRestrictRequest(" AND", $linktable) ."
                        ORDER BY `glpi_infocoms`.`entities_id`,
-                                `$linktable`.`" . $link_item->getNameField() . "`";
+                                `$linktable`.`" . $linktype::getNameField() . "`";
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
             if ($nb > $_SESSION['glpilist_limit']) {
-               if ($itemtype == 'SoftwareLicense') {
-                  // Set $linktype for link to search engine only
-                  $linktype  = 'Software';
-                  $linkfield = 'softwares_id';
-               }
                echo "<tr class='tab_bg_1'>";
                $title = $item->getTypeName($nb);
                if ($nb > 0) {
@@ -510,11 +504,11 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                  $name = $data[$link_item->getNameField()];
+                  $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
-                  $link = $link_item->getFormURLWithID($data[$linkfield]);
+                  $link = $linktype::getFormURLWithID($data[$linkfield]);
                   $name = "<a href='$link'>".$name."</a>";
 
                   echo "<tr class='tab_bg_1";
