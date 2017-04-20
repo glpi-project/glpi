@@ -656,6 +656,9 @@ class Infocom extends CommonDBChild {
     * @return float
    **/
    static function showTco($ticket_tco, $value, $date_achat="") {
+      if ($ticket_tco == NOT_AVAILABLE) {
+         return '-';
+      }
 
       // Affiche le TCO ou le TCO mensuel pour un matériel
       $totalcost = $ticket_tco;

@@ -3774,6 +3774,10 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    min-height: 1em; /** Ensure no event message is displayed well */
 }
 
+tr.linked-template td:not(.top) {
+   background-color: #ffb4b4;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
