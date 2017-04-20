@@ -3413,7 +3413,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $right = $options["_right"];
       }
 
-      if ($options["_users_id_".$typename] == 0) {
+      if ($options["_users_id_".$typename] == 0 && !isset($_REQUEST["_users_id_$typename"])) {
          $options["_users_id_".$typename] = $this->getDefaultActor($type);
       }
       $rand   = mt_rand();
