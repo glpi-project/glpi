@@ -438,7 +438,7 @@ class Supplier extends CommonDBTM {
             $linkfield = 'id';
             $itemtable = getTableForItemType($itemtype);
 
-            $query = "SELECT `glpi_infocoms`.`entities_id`, `name`, `$itemtable`.*
+            $query = "SELECT `glpi_infocoms`.`entities_id`, `NAME_FIELD`, `$itemtable`.*
                       FROM `glpi_infocoms`
                       INNER JOIN `$itemtable` ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
 
@@ -459,26 +459,32 @@ class Supplier extends CommonDBTM {
                $linkfield = 'consumableitems_id';
             }
 
-            $linktable = getTableForItemType($linktype);
+            if ($itemtype == 'Item_DeviceControl') {
+               $query .= "INNER JOIN `glpi_devicecontrols`
+                           ON (`glpi_items_devicecontrols`.`devicecontrols_id`=`glpi_devicecontrols`.`id`)";
+               $linktype = 'DeviceControl';
+               $linkfield = 'devicecontrols_id';
+            }
 
+            $linktable = getTableForItemType($linktype);
+            $link_item = new $linktype();
+
+            $query = str_replace('NAME_FIELD', $link_item->getNameField(), $query);
             $query .= "WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID'".
                              getEntitiesRestrictRequest(" AND", $linktable) ."
                        ORDER BY `glpi_infocoms`.`entities_id`,
-                                `$linktable`.`name`";
+                                `$linktable`.`" . $link_item->getNameField() . "`";
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
-            // Set $linktype for link to search engine only
-            if (($itemtype == 'SoftwareLicense')
-                && ($nb > $_SESSION['glpilist_limit'])) {
-               $linktype  = 'Software';
-               $linkfield = 'softwares_id';
-            }
-            $link_item = new $linktype();
-
             if ($nb > $_SESSION['glpilist_limit']) {
+               if ($itemtype == 'SoftwareLicense') {
+                  // Set $linktype for link to search engine only
+                  $linktype  = 'Software';
+                  $linkfield = 'softwares_id';
+               }
                echo "<tr class='tab_bg_1'>";
                $title = $item->getTypeName($nb);
                if ($nb > 0) {
@@ -504,7 +510,7 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                  $name = $data["name"];
+                  $name = $data[$link_item->getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
