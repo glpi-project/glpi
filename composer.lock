@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c7aec2e58452d7241d566916b9da2aa",
+    "content-hash": "107efa8e7c734aaf054b41c564091875",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -613,16 +613,16 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.4.3",
+            "version": "1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "2a24b6e74aa9bf33243020f52895fe77efe94ccf"
+                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/2a24b6e74aa9bf33243020f52895fe77efe94ccf",
-                "reference": "2a24b6e74aa9bf33243020f52895fe77efe94ccf",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/5de5551953f95feef12cf355a7a26a70f94aa3ab",
+                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab",
                 "shasum": ""
             },
             "require": {
@@ -669,7 +669,7 @@
                 "feeds",
                 "rss"
             ],
-            "time": "2016-11-27T01:39:18+00:00"
+            "time": "2017-04-17T07:29:31+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

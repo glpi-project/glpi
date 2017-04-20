@@ -23,7 +23,7 @@
         "iamcal/lib_autolink": "~1.7",
         "phpmailer/phpmailer": "~5.2",
         "sabre/vobject": "~4.1",
-        "simplepie/simplepie": "~1.4.0",
+        "simplepie/simplepie": "^1.5",
         "tecnickcom/tcpdf": "~6.2",
         "zendframework/zend-cache": "^2.7",
         "zendframework/zend-i18n": "^2.7",
