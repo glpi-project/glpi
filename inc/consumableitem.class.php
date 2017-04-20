@@ -504,4 +504,23 @@ class ConsumableItem extends CommonDBTM {
       NotificationEvent::debugEvent($this, $options);
    }
 
+
+   /**
+    * Have I the right to "update" the Object
+    *
+    * Default is true and check entity if the objet is entity assign
+    *
+    * May be overloaded if needed
+    *
+    * Overriden here to check entities recursively
+    *
+    * @return booleen
+   **/
+   function canUpdateItem() {
+
+      if (!$this->checkEntity(true)) {
+         return false;
+      }
+      return true;
+   }
 }
