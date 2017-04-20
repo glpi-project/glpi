@@ -53,7 +53,7 @@ if ($argv) {
 include ('../inc/includes.php');
 
 // No debug mode
-$_SESSION['glpi_use_mode'] == Session::NORMAL_MODE;
+$_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
 if (isset($_GET["dictionnary"])) {
    $rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);

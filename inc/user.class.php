@@ -1543,7 +1543,7 @@ class User extends CommonDBTM {
                      if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
                         $entity_count += count($this->fields["_ldap_rules"]["rules_entities"]);
                      }
-                     if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+                     if (isset($this->fields["_ldap_rules"]["rules_rights"])) {
                         $right_count += count($this->fields["_ldap_rules"]["rules_rights"]);
                      }
                      if ($entity_count && $right_count) {
@@ -3204,7 +3204,7 @@ class User extends CommonDBTM {
                                   AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                              $entity_restrict, 1).") ";
-
+                     break;
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
