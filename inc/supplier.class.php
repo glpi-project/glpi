@@ -506,7 +506,7 @@ class Supplier extends CommonDBTM {
             $linkfield = 'id';
             $itemtable = getTableForItemType($itemtype);
 
-            $query = "SELECT `glpi_infocoms`.`entities_id`, `name`, `$itemtable`.*
+            $query = "SELECT `glpi_infocoms`.`entities_id`, `NAME_FIELD`, `$itemtable`.*
                       FROM `glpi_infocoms`
                       INNER JOIN `$itemtable` ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
 
@@ -527,24 +527,24 @@ class Supplier extends CommonDBTM {
                $linkfield = 'consumableitems_id';
             }
 
+            if ($itemtype == 'Item_DeviceControl') {
+               $query .= "INNER JOIN `glpi_devicecontrols`
+                           ON (`glpi_items_devicecontrols`.`devicecontrols_id`=`glpi_devicecontrols`.`id`)";
+               $linktype = 'DeviceControl';
+               $linkfield = 'devicecontrols_id';
+            }
+
             $linktable = getTableForItemType($linktype);
 
+            $query = str_replace('NAME_FIELD', $linktype::getNameField(), $query);
             $query .= "WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID'".
                              getEntitiesRestrictRequest(" AND", $linktable) ."
                        ORDER BY `glpi_infocoms`.`entities_id`,
-                                `$linktable`.`name`";
+                                `$linktable`.`" . $linktype::getNameField() . "`";
 
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
-
-            // Set $linktype for link to search engine pnly
-            if (($itemtype == 'SoftwareLicense')
-                && ($nb > $_SESSION['glpilist_limit'])) {
-               $linktype  = 'Software';
-               $linkfield = 'softwares_id';
-            }
-            $link_item = new $linktype();
 
             if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
@@ -572,14 +572,18 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
-                  $name = $data["name"];
+                  $name = $data[$linktype::getNameField()];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
-                  $link = $link_item->getFormURLWithID($data[$linkfield]);
+                  $link = $linktype::getFormURLWithID($data[$linkfield]);
                   $name = "<a href='$link'>".$name."</a>";
 
-                  echo "<tr class='tab_bg_1'>";
+                  echo "<tr class='tab_bg_1";
+                  if (isset($data['is_template']) && $data['is_template'] == 1) {
+                     echo " linked-template";
+                  }
+                  echo "'>";
                   if ($prem) {
                      $title = $item->getTypeName($nb);
                      if ($nb > 0) {
@@ -608,8 +612,4 @@ class Supplier extends CommonDBTM {
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }
-
-
-
-
 }

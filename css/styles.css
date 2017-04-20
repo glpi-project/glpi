@@ -4390,6 +4390,10 @@ button.unstyled {
    margin-right: .2em;
 }
 
+tr.linked-template td:not(.top) {
+   background-color: #ffb4b4;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
