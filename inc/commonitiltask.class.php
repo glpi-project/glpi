@@ -255,7 +255,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       $itemtype      = $this->getItilObjectItemType();
       $input["_job"] = new $itemtype();
 
-      if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
+      if (isset($input[$input["_job"]->getForeignKeyField()])
+         && !$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
          return false;
       }
 
