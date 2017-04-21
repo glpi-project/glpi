@@ -1521,7 +1521,9 @@ class User extends CommonDBTM {
                                                    array('type'        => 'LDAP',
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
-                                                         'userdn'      => $userdn));
+                                                         'userdn'      => $userdn,
+                                                         'login'       => $this->fields['name'],
+                                                         'mail_email'  => $this->fields['_emails']));
 
             $this->fields['_ruleright_process'] = true;
 
@@ -1675,6 +1677,7 @@ class User extends CommonDBTM {
          $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
+                                                      'login'       => $name,
                                                       'email'       => $email));
          $this->fields['_ruleright_process'] = true;
       }
