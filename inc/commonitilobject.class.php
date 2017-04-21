@@ -2257,6 +2257,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
                echo $group->getLink(array('comments' => true));
+               echo $this->getHiddenActorFields($type, $k, 'group');
             }
             if ($canedit && $candelete) {
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
@@ -2314,6 +2315,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "$mandatory$suppliericon&nbsp;";
             if ($supplier->getFromDB($k)) {
                echo $supplier->getLink(array('comments' => $showsupplierlink));
+               echo $this->getHiddenActorFields($type, $k, 'supplier');
                echo "&nbsp;";
                $tmpname = Dropdown::getDropdownName($supplier->getTable(), $k, 1);
                Html::showToolTip($tmpname['comment']);
@@ -3245,6 +3247,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($k) {
                $userdata = getUserName($k, 2);
+               echo $this->getHiddenActorFields($type, $k, 'user');
             } else {
                $email         = $d['alternative_email'];
                $userdata      = "<a href='mailto:$email'>$email</a>";
@@ -5427,4 +5430,30 @@ abstract class CommonITILObject extends CommonDBTM {
       return Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
    }
 
+   /**
+    * Get hidden fields for existing actors (for rules to be played)
+    *
+    * @param string  $type      ITIL type
+    * @param integer $value     Current ID
+    * @param string  $actortype Actor type
+    *
+    * @return string
+    */
+   private function getHiddenActorFields($type, $value, $actortype) {
+      $itiltype = '';
+      switch ($type) {
+         case CommonItilActor::REQUESTER:
+            $itiltype = 'requester';
+            break;
+         case CommonITILActor::OBSERVER:
+            $itiltype = 'observer';
+            break;
+         case CommonITILActor::ASSIGN:
+            $itiltype = 'assign';
+            break;
+      }
+      $out = "<input type='hidden' name='_itil_{$itiltype}[_type]' value='{$actortype}'>";
+      $out .= "<input type='hidden' name='_itil_{$itiltype}[{$actortype}s_id]' value='$value'>";
+      return $out;
+   }
 }
