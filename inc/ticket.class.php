@@ -4358,7 +4358,9 @@ class Ticket extends CommonITILObject {
       echo "<div id='content$rand_text'>";
       echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                $this->fields["content"]."</textarea></div>";
-      echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+      if (!$CFG_GLPI["use_rich_text"]) {
+         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+      }
       echo $tt->getEndHiddenFieldValue('content', $this);
 
       echo "</td>";
