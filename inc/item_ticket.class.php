@@ -264,11 +264,13 @@ class Item_Ticket extends CommonDBRelation{
                     'rand'       => $rand,
                     'tickets_id' => $params['id']);
          // My items
+         $entitysons = array_intersect( getSonsOf(Entity::getTable(), $ticket->fields["entities_id"] ),
+                                        $_SESSION["glpiactiveentities"] );
          if ($params['_users_id_requester'] > 0) {
-            Item_Ticket::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
+            self::dropdownMyDevices($params['_users_id_requester'], $entitysons, $params['itemtype'], 0, $p);
          }
          // Global search
-         Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
+         self::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $entitysons, $p);
          echo "<span id='item_ticket_selection_information'></span>";
          echo "</div>";
 
@@ -411,8 +413,10 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
 
+         $entitysons = array_intersect( getSonsOf(Entity::getTable(), $ticket->fields["entities_id"] ), 
+                                        $_SESSION["glpiactiveentities"] );
          if ($dev_user_id > 0) {
-            self::dropdownMyDevices($dev_user_id, $ticket->fields["entities_id"], null, 0, array('tickets_id' => $instID));
+            self::dropdownMyDevices($dev_user_id, $entitysons, null, 0, array('tickets_id' => $instID));
          }
 
          $data =  array_keys(getAllDatasFromTable('glpi_items_tickets'));
@@ -423,7 +427,8 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
 
-         self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], array('tickets_id' => $instID));
+         self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $entitysons, array('tickets_id' => $instID));
+
          echo "<span id='item_ticket_selection_information'></span>";
          echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
