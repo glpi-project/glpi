@@ -436,7 +436,7 @@ $ curl -X GET \
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
   * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
-  * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
+  * *with_devices*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
@@ -735,7 +735,7 @@ $ curl -X GET \
   * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
   * *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
   * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
-  * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
+  * *with_devices*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
   * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
   * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
   * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
