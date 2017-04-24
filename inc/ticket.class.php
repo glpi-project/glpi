@@ -963,17 +963,57 @@ class Ticket extends CommonITILObject {
       $rule                = $rules->getRuleClass();
       $changes             = array();
       $tocleanafterrules   = array();
-      $usertypes           = array('assign', 'requester', 'observer');
-      foreach ($usertypes as $t) {
+      $usertypes           = array(
+         CommonITILActor::ASSIGN    => 'assign',
+         CommonITILActor::REQUESTER => 'requester',
+         CommonITILActor::OBSERVER  => 'observer'
+      );
+      foreach ($usertypes as $k => $t) {
+         //handle new input
          if (isset($input['_itil_'.$t]) && isset($input['_itil_'.$t]['_type'])) {
             $field = $input['_itil_'.$t]['_type'].'s_id';
             if (isset($input['_itil_'.$t][$field])
                 && !isset($input[$field.'_'.$t])) {
-               $input['_'.$field.'_'.$t]             = $input['_itil_'.$t][$field];
-               $tocleanafterrules['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
+               $input['_'.$field.'_'.$t][]             = $input['_itil_'.$t][$field];
+               $tocleanafterrules['_'.$field.'_'.$t][] = $input['_itil_'.$t][$field];
             }
          }
 
+         //handle existing actors: lad all existing actors from ticket
+         //to make sure business rules will receive all informations, and not just
+         //what have been entered in the html form.
+         $users = $this->getUsers($k);
+         if (count($users)) {
+            $field = 'users_id';
+            foreach ($users as $user) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($user['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $user['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $user['id'];
+               }
+            }
+         }
+
+         $groups = $this->getGroups($k);
+         if (count($groups)) {
+            $field = 'groups_id';
+            foreach ($groups as $group) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($group['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $group['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $group['id'];
+               }
+            }
+         }
+
+         $suppliers = $this->getSuppliers($k);
+         if (count($suppliers)) {
+            $field = 'supliers_id';
+            foreach ($suppliers as $supplier) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($supplier['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $supplier['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $supplier['id'];
+               }
+            }
+         }
       }
 
       foreach ($rule->getCriterias() as $key => $val) {
@@ -999,8 +1039,8 @@ class Ticket extends CommonITILObject {
          if (in_array('_users_id_requester', $changes)) {
             // If _users_id_requester changed : set users_locations
             $user = new User();
-            if (isset($input["_users_id_requester"])
-                && $user->getFromDB($input["_users_id_requester"])) {
+            if (isset($input["_itil_requester"]["users_id"])
+                && $user->getFromDB($input["_itil_requester"]["users_id"])) {
                $input['users_locations'] = $user->fields['locations_id'];
                $changes[]                = 'users_locations';
             }
