@@ -156,6 +156,12 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
+      $ticket = new Ticket();
+      if ($ticket->getFromDB($this->fields['tickets_id'])
+         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
+         return false;
+      }
+
       if (($this->fields["users_id"] != Session::getLoginUserID())
           && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
          return false;
@@ -171,6 +177,12 @@ class TicketTask  extends CommonITILTask {
     * @return boolean
    **/
    function canPurgeItem() {
+      $ticket = new Ticket();
+      if ($ticket->getFromDB($this->fields['tickets_id'])
+         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
+         return false;
+      }
+
       return Session::haveRight(self::$rightname, PURGE);
    }
 
