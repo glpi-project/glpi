@@ -1513,8 +1513,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate() && !$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
                             OR `users_id` ='" . Session::getLoginUserID() . "'
-                            OR `users_id_tech` ='" . Session::getLoginUserID()."'
-                            OR `groups_id_tech` IN ('".implode("','",$_SESSION["glpigroups"])."')) ";
+                            OR `users_id_tech` ='" . Session::getLoginUserID()."'";
+         if (is_array($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
+            $RESTRICT .= " OR `groups_id_tech` IN ('".implode("','", $_SESSION["glpigroups"])."')";
+         }
+         $RESTRICT .= ") ";
       }
 
       $query = "SELECT `id`, `date`
