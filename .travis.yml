@@ -20,7 +20,7 @@ before_script:
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
   - php -S localhost:8088 tests/router.php &>/dev/null &
   - phpenv config-add tests/enable-ldap.ini
-
+  - sh tests/LDAP/load_ldap.sh
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/atoum --debug -bf tests/bootstrap.php -d tests/units --no-cc -mcn 1
@@ -33,25 +33,67 @@ matrix:
     - php: 5.6
       addons:
         mariadb: 10.0
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: 5.6
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: 7.0
       addons:
         mariadb: 10.0
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: 7.0
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: 7.1
       addons:
         mariadb: 10.0
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: 7.1
       env: CS=true
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
     - php: nightly
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
   allow_failures:
     - php: nightly
 
@@ -72,7 +114,3 @@ notifications:
 branches:
   except:
     - /^0\..*$/
-addons:
-  hosts:
-    - ldap-master
-    - ldap-slave

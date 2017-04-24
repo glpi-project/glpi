@@ -1,0 +1,32 @@
+; +---------------------------------------------------------------------------+
+; | This is a configuration file for Net_LDAP2s tests.                        |
+; | To activate the tests, you need to adjust the configuration to            |
+; | your needs and copy it over to "ldapconfig.conf". Place the               |
+; | file inside the directory holding all the test programs.                  |
+; |                                                                           |
+; | Note, that this tests assume a working LDAP server.                       |
+; | If you don't have such a server, you may use the                          |
+; | LDIF based mock server. Head to 'ldapldifconfig.ini.dist'.                |
+; |                                                                           |
+; | The syntax of this file is really easy and similar to other .ini-files.   |
+; | Remember to quote strings containing non-alphanumeric characters.         |
+; +---------------------------------------------------------------------------+
+
+
+; Global section
+;   server_cap_tls:       is the server ssl capable?
+;   server_cap_anonymous: is the server allowing anonymous access?
+;   server_base_dn:       BaseDN at which your DIT starts. Ensure that the
+;                         binding user has all rights to add, delete and
+;                         modifying entries as well as creating and deleting
+;                         some subtree (ou=...) below the base.
+;   server_*:             I think those following are self-explanatory
+;   server_binddn:        Relative to base_dn below
+[global]
+server_cap_tls       = false
+server_cap_anonymous = true
+server_base_dn       = "dc=glpi,dc=org"
+server_address       = localhost
+server_port          = 389
+server_binddn        = "cn=admin"
+server_bindpw        = password
