@@ -616,31 +616,32 @@ abstract class API extends CommonGLPI {
                               $ipadress = explode(Search::SHORTSEP, $ipadress);
 
                               //find ip network attached to these ip
-                              $ipnetworks = array();
-                              $query_ipnet = "SELECT
-                                    ipnet.`id`,
-                                    ipnet.`completename`,
-                                    ipnet.`name`,
-                                    ipnet.`address`,
-                                    ipnet.`netmask`,
-                                    ipnet.`gateway`,
-                                    ipnet.`ipnetworks_id`,
-                                    ipnet.`comment`
-                                 FROM `glpi_ipnetworks` ipnet
-                                 INNER JOIN `glpi_ipaddresses_ipnetworks` ipadnet
-                                    ON ipnet.`id` = ipadnet.`ipnetworks_id`
-                                    AND ipadnet.`ipaddresses_id` = ".$ipadress[0];
-                              if ($result_ipnet = $DB->query($query_ipnet)) {
-                                 while ($data_ipnet = $DB->fetch_assoc($result_ipnet)) {
-                                    $ipnetworks[] = $data_ipnet;
+                              if (isset($ipadress[0])) {
+                                 $ipnetworks = array();
+                                 $query_ipnet = "SELECT
+                                       ipnet.`id`,
+                                       ipnet.`completename`,
+                                       ipnet.`name`,
+                                       ipnet.`address`,
+                                       ipnet.`netmask`,
+                                       ipnet.`gateway`,
+                                       ipnet.`ipnetworks_id`,
+                                       ipnet.`comment`
+                                    FROM `glpi_ipnetworks` ipnet
+                                    INNER JOIN `glpi_ipaddresses_ipnetworks` ipadnet
+                                       ON ipnet.`id` = ipadnet.`ipnetworks_id`
+                                       AND ipadnet.`ipaddresses_id` = ".$ipadress[0];
+                                 if ($result_ipnet = $DB->query($query_ipnet)) {
+                                    while ($data_ipnet = $DB->fetch_assoc($result_ipnet)) {
+                                       $ipnetworks[] = $data_ipnet;
+                                    }
                                  }
+                                 $ipadresses[] = array(
+                                    'id'        => $ipadress[0],
+                                    'name'      => $ipadress[1],
+                                    'IPNetwork' => $ipnetworks
+                                 );
                               }
-
-                              $ipadresses[] = array(
-                                 'id'        => $ipadress[0],
-                                 'name'      => $ipadress[1],
-                                 'IPNetwork' => $ipnetworks
-                              );
                            }
 
                            $data['NetworkName'] = array(
