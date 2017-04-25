@@ -1297,7 +1297,7 @@ abstract class API extends CommonGLPI {
                return $this->returnError(__("Malformed search criteria"));
             }
 
-            if (!ctype_digit($criteria['field']) 
+            if (!ctype_digit((string) $criteria['field']) 
                   || !array_key_exists($criteria['field'], $soptions)) {
                return $this->returnError(__("Bad field ID in search criteria"));
             }
