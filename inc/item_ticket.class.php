@@ -80,6 +80,10 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
+      if ($ticket->canUpdateItem()) {
+         return true;
+      }
+
       return parent::canCreateItem();
    }
 
@@ -280,7 +284,7 @@ class Item_Ticket extends CommonDBRelation{
 
       if (!empty($params['items_id'])) {
          // No delete if mandatory and only one item
-         $delete = true;
+         $delete = $ticket->canUpdateItem();
          $cpt = 0;
          foreach ($params['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
@@ -376,9 +380,7 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = ($ticket->canAddItem($instID)
-                  && isset($_SESSION["glpiactiveprofile"])
-                  && $_SESSION["glpiactiveprofile"]["interface"] == "central");
+      $canedit = $ticket->canAddItem($instID) && $ticket->canUpdateItem();
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

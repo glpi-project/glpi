@@ -434,11 +434,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if (($this->numberOfFollowups() == 0)
-          && ($this->numberOfTasks() == 0)
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          && ($this->fields['status'] != self::INCOMING
+            || $this->numberOfFollowups() > 0
+            || $this->numberOfTasks() > 0
+          )
           && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))) {
-         return true;
+              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
+         return false;
       }
 
       return static::canUpdate();
@@ -883,14 +886,13 @@ class Ticket extends CommonITILObject {
             }
 
             // Can only update initial fields if no followup or task already added
-            if (($this->numberOfFollowups() == 0)
-                && ($this->numberOfTasks() == 0)
-                && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
+            if ($this->canUpdateItem()) {
                 $allowed_fields[] = 'content';
                 $allowed_fields[] = 'urgency';
                 $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
                 $allowed_fields[] = 'itilcategories_id';
                 $allowed_fields[] = 'name';
+                $allowed_fields[] = 'items_id';
             }
 
             if ($this->canSolve()) {
@@ -3991,11 +3993,7 @@ class Ticket extends CommonITILObject {
       $colsize3 = '13';
       $colsize4 = '45';
 
-      $canupdate_descr = $canupdate
-                         || (($this->fields['status'] == self::INCOMING)
-                             && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                             && ($this->numberOfFollowups() == 0)
-                             && ($this->numberOfTasks() == 0));
+      $canupdate_descr = $canupdate || $this->canUpdateItem();
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
