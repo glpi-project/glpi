@@ -381,8 +381,6 @@ class APIRestTest extends PHPUnit\Framework\TestCase {
    public function testSearchWithBadCriteria($session_token) {
       // test retrieve all users
       // multidimensional array of vars in query string not supported ? 
-
-      // test a non existing search option ID
       try {
          $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=134343&criteria[0][searchtype]=contains&criteria[0][value]=dsadasd',
                                              ['headers' => [
@@ -390,35 +388,6 @@ class APIRestTest extends PHPUnit\Framework\TestCase {
          $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $this->assertEquals(400, $this->last_error->getStatusCode());
-         $body = json_decode($e->getResponse()->getBody());
-         $this->assertArrayHasKey('0', $body);
-         $this->assertEquals('ERROR', $body[0]);
-      }
-
-      // test a non numeric search option ID
-      try {
-         $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=\134343&criteria[0][searchtype]=contains&criteria[0][value]=dsadasd',
-               ['headers' => [
-                     'Session-Token' => $session_token]]);
-               $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
-      } catch (ClientException $e) {
-         $this->assertEquals(400, $this->last_error->getStatusCode());
-         $body = json_decode($e->getResponse()->getBody());
-         $this->assertArrayHasKey('0', $body);
-         $this->assertEquals('ERROR', $body[0]);
-      }
-
-      // test an incomplete criteria
-      try {
-         $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=\134343&criteria[0][searchtype]=contains',
-               ['headers' => [
-                     'Session-Token' => $session_token]]);
-               $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
-      } catch (ClientException $e) {
-         $this->assertEquals(400, $this->last_error->getStatusCode());
-         $body = json_decode($e->getResponse()->getBody());
-         $this->assertArrayHasKey('0', $body);
-         $this->assertEquals('ERROR', $body[0]);
       }
    }
 
@@ -1174,7 +1143,7 @@ class APIRestTest extends PHPUnit\Framework\TestCase {
       $criteria = array();
       $queryString = "";
       foreach ($rows as $row) {
-         $queryString = "&criteria[0][link]=or&criteria[0][field]=1&criteria[0][searchtype]=equals&criteria[0][value]=" . $row['name'];
+         $queryString = "&criteria[][link]=or&criteria[][field]=1&criteria[][searchtype]=equals&criteria[][value]=" . $row['name'];
       }
 
       $res = $this->doHttpRequest('GET', "search/Config" . "?$queryString",

@@ -1292,13 +1292,9 @@ abstract class API extends CommonGLPI {
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
          foreach ($params['criteria'] as $criteria) {
-            if (!isset($criteria['field']) || !isset($criteria['searchtype'])
-                || !isset($criteria['value'])) {
-               return $this->returnError(__("Malformed search criteria"));
-            }
-
-            if (!ctype_digit($criteria['field']) 
-                  || !array_key_exists($criteria['field'], $soptions)) {
+            if (isset($criteria['field'])
+                  && ctype_digit($criteria['field'])
+                  && !array_key_exists($criteria['field'], $soptions)) {
                return $this->returnError(__("Bad field ID in search criteria"));
             }
          }
