@@ -616,7 +616,7 @@ abstract class API extends CommonGLPI {
                               $ipadress = explode(Search::SHORTSEP, $ipadress);
 
                               //find ip network attached to these ip
-                              if (isset($ipadress[0])) {
+                              if (isset($ipadress[0]) && !empty($ipadress[0])) {
                                  $ipnetworks = array();
                                  $query_ipnet = "SELECT
                                        ipnet.`id`,
