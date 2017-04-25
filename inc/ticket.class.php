@@ -5064,10 +5064,17 @@ class Ticket extends CommonITILObject {
                   $options['criteria'][2]['value']      = 'NULL';
                   $options['criteria'][2]['link']       = 'AND';
 
-                  $options['criteria'][3]['field']      = 22; // auteur
-                  $options['criteria'][3]['searchtype'] = 'equals';
-                  $options['criteria'][3]['value']      = Session::getLoginUserID();
-                  $options['criteria'][3]['link']       = 'AND';
+                  if (Session::haveRight('ticket', Ticket::SURVEY)) {
+                     $options['criteria'][3]['field']      = 22; // author
+                     $options['criteria'][3]['searchtype'] = 'equals';
+                     $options['criteria'][3]['value']      = Session::getLoginUserID();
+                     $options['criteria'][3]['link']       = 'AND';
+                  } else {
+                     $options['criteria'][3]['field']      = 4; // requester
+                     $options['criteria'][3]['searchtype'] = 'equals';
+                     $options['criteria'][3]['value']      = Session::getLoginUserID();
+                     $options['criteria'][3]['link']       = 'AND';
+                  }
                   $forcetab                 = 'Ticket$3';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
