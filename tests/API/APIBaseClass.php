@@ -361,6 +361,7 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                            400,   // 400 code expected (error, bad request)
                            'ERROR');
 
+      // test a non numeric search option ID
       $data = $this->query('search',
                            ['itemtype' => 'User',
                             'headers'  => ['Session-Token' => $session_token],
