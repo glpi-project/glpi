@@ -372,7 +372,7 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                                  'searchtype' => 'contains',
                                  'value'      => 'dsadasd',
                               ]]
-                            ]],
+                             ]],
                            400,   // 400 code expected (error, bad request)
                            'ERROR');
 
@@ -385,8 +385,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                              'criteria' => [[
                                 'field'      => '134343',
                                 'searchtype' => 'contains',
-                            ]]
-                          ]],
+                             ]]
+                            ]],
                          400,  // 400 code expected (error, bad request)
                          'ERROR');
    }
