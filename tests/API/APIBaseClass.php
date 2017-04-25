@@ -363,29 +363,29 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
 
       // test a non numeric search option ID
       $data = $this->query('search',
-                           ['itemtype' => 'User',
-                            'headers'  => ['Session-Token' => $session_token],
-                            'query'    => [
+                            ['itemtype' => 'User',
+                             'headers'  => ['Session-Token' => $session_token],
+                             'query'    => [
                               'reset'    => 'reset',
                               'criteria' => [[
                                  'field'      => '\134343',
                                  'searchtype' => 'contains',
                                  'value'      => 'dsadasd',
                               ]]
-                           ]],
-                          400,   // 400 code expected (error, bad request)
-                          'ERROR');
+                            ]],
+                           400,   // 400 code expected (error, bad request)
+                           'ERROR');
 
-     // test an incomplete criteria
-     $data = $this->query('search',
-                          ['itemtype' => 'User',
-                           'headers'  => ['Session-Token' => $session_token],
-                           'query'    => [
+      // test an incomplete criteria
+      $data = $this->query('search',
+                           ['itemtype' => 'User',
+                            'headers'  => ['Session-Token' => $session_token],
+                            'query'    => [
                              'reset'    => 'reset',
                              'criteria' => [[
                                 'field'      => '134343',
                                 'searchtype' => 'contains',
-                             ]]
+                            ]]
                           ]],
                          400,  // 400 code expected (error, bad request)
                          'ERROR');
