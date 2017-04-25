@@ -6133,12 +6133,13 @@ class Ticket extends CommonITILObject {
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
 
-         // #1476 - override document date_mod to ticket attachment date_mod
-         $document_obj->fields['date_mod'] = $document_item['date_mod'];
-         // #1476 - override document "owner" to ticket attachment user
-         $document_obj->fields['users_id'] = $document_item['users_id'];
+         $item = $document_obj->fields;
+         // #1476 - set date_mod and owner to ticket attachment ones
+         $item['date_mod'] = $document_item['date_mod'];
+         $item['users_id'] = $document_item['users_id'];
+
          $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
-            = array('type' => 'Document_Item', 'item' => $document_obj->fields);
+            = array('type' => 'Document_Item', 'item' => $item);
       }
 
       //add existing solution
