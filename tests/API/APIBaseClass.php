@@ -319,7 +319,7 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                               'rawdata'       => true,
                               'criteria'      => [
                                  [
-                                    'field'      => '1',
+                                    'field'      => 1,
                                     'searchtype' => 'contains',
                                     'value'      => 'nonexistent',
                                  ]
