@@ -437,7 +437,12 @@ class ProjectTask extends CommonDBChild {
       _e('Milestone');
       echo "</td>";
       echo "<td>";
-      Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"]);
+      $rand = mt_rand();
+      Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"], -1, ['rand' => $rand]);
+      $js = "$('#dropdown_is_milestone$rand').on('change', function(e) {
+         $('tr.is_milestone').toggleClass('starthidden');
+      })";
+      echo Html::scriptBlock($js);
       echo "</td>";
       echo "</tr>";
 
@@ -455,7 +460,7 @@ class ProjectTask extends CommonDBChild {
                               array('value' => $this->fields['real_start_date']));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1 is_milestone" . ($this->fields['is_milestone'] ? ' starthidden' : '')  . "'>";
       echo "<td>".__('Planned end date')."</td>";
       echo "<td>";
       Html::showDateTimeField("plan_end_date", array('value' => $this->fields['plan_end_date']));
@@ -465,7 +470,7 @@ class ProjectTask extends CommonDBChild {
       Html::showDateTimeField("real_end_date", array('value' => $this->fields['real_end_date']));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1 is_milestone" . ($this->fields['is_milestone'] ? ' starthidden' : '')  . "'>";
       echo "<td>".__('Planned duration')."</td>";
       echo "<td>";
 
@@ -490,11 +495,11 @@ class ProjectTask extends CommonDBChild {
          $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
          echo "<br>";
          printf(__('%1$s: %2$s'),__('Tickets duration'),
-                Html::timestampToString($ticket_duration, false));
+               Html::timestampToString($ticket_duration, false));
          echo '<br>';
          printf(__('%1$s: %2$s'),__('Total duration'),
-                Html::timestampToString($ticket_duration+$this->fields["effective_duration"],
-                                        false));
+               Html::timestampToString($ticket_duration+$this->fields["effective_duration"],
+                                       false));
       }
       echo "</td></tr>\n";
 

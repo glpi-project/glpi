@@ -432,11 +432,14 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if (($this->numberOfFollowups() == 0)
-          && ($this->numberOfTasks() == 0)
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          && ($this->fields['status'] != self::INCOMING
+            || $this->numberOfFollowups() > 0
+            || $this->numberOfTasks() > 0
+          )
           && ($this->isUser(CommonITILActor::REQUESTER,Session::getLoginUserID())
-              || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))) {
-         return true;
+              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
+         return false;
       }
 
       return static::canUpdate();
@@ -884,14 +887,13 @@ class Ticket extends CommonITILObject {
             }
 
             // Can only update initial fields if no followup or task already added
-            if (($this->numberOfFollowups() == 0)
-                && ($this->numberOfTasks() == 0)
-                && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
+            if ($this->canUpdateItem()) {
                 $allowed_fields[] = 'content';
                 $allowed_fields[] = 'urgency';
                 $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
                 $allowed_fields[] = 'itilcategories_id';
                 $allowed_fields[] = 'name';
+                $allowed_fields[] = 'items_id';
             }
 
             if ($this->canSolve()) {
@@ -966,17 +968,57 @@ class Ticket extends CommonITILObject {
       $rule                = $rules->getRuleClass();
       $changes             = array();
       $tocleanafterrules   = array();
-      $usertypes           = array('assign', 'requester', 'observer');
-      foreach ($usertypes as $t) {
+      $usertypes           = array(
+         CommonITILActor::ASSIGN    => 'assign',
+         CommonITILActor::REQUESTER => 'requester',
+         CommonITILActor::OBSERVER  => 'observer'
+      );
+      foreach ($usertypes as $k => $t) {
+         //handle new input
          if (isset($input['_itil_'.$t]) && isset($input['_itil_'.$t]['_type'])) {
             $field = $input['_itil_'.$t]['_type'].'s_id';
             if (isset($input['_itil_'.$t][$field])
                 && !isset($input[$field.'_'.$t])) {
-               $input['_'.$field.'_'.$t]             = $input['_itil_'.$t][$field];
-               $tocleanafterrules['_'.$field.'_'.$t] = $input['_itil_'.$t][$field];
+               $input['_'.$field.'_'.$t][]             = $input['_itil_'.$t][$field];
+               $tocleanafterrules['_'.$field.'_'.$t][] = $input['_itil_'.$t][$field];
             }
          }
 
+         //handle existing actors: lad all existing actors from ticket
+         //to make sure business rules will receive all informations, and not just
+         //what have been entered in the html form.
+         $users = $this->getUsers($k);
+         if (count($users)) {
+            $field = 'users_id';
+            foreach ($users as $user) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($user['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $user['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $user['id'];
+               }
+            }
+         }
+
+         $groups = $this->getGroups($k);
+         if (count($groups)) {
+            $field = 'groups_id';
+            foreach ($groups as $group) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($group['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $group['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $group['id'];
+               }
+            }
+         }
+
+         $suppliers = $this->getSuppliers($k);
+         if (count($suppliers)) {
+            $field = 'supliers_id';
+            foreach ($suppliers as $supplier) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($supplier['id'], $input['_'.$field.'_'.$t])) {
+                  $input['_'.$field.'_'.$t][]             = $supplier['id'];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $supplier['id'];
+               }
+            }
+         }
       }
 
       foreach ($rule->getCriterias() as $key => $val) {
@@ -1002,8 +1044,8 @@ class Ticket extends CommonITILObject {
          if (in_array('_users_id_requester', $changes)) {
             // If _users_id_requester changed : set users_locations
             $user = new User();
-            if (isset($input["_users_id_requester"])
-                && $user->getFromDB($input["_users_id_requester"])) {
+            if (isset($input["_itil_requester"]["users_id"])
+                && $user->getFromDB($input["_itil_requester"]["users_id"])) {
                $input['users_locations'] = $user->fields['locations_id'];
                $changes[]                = 'users_locations';
             }
@@ -3841,11 +3883,7 @@ class Ticket extends CommonITILObject {
       $colsize3 = '13';
       $colsize4 = '45';
 
-      $canupdate_descr = $canupdate
-                         || (($this->fields['status'] == self::INCOMING)
-                             && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                             && ($this->numberOfFollowups() == 0)
-                             && ($this->numberOfTasks() == 0));
+      $canupdate_descr = $canupdate || $this->canUpdateItem();
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
@@ -5255,6 +5293,10 @@ class Ticket extends CommonITILObject {
                                    OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
             }
 
+            if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
+               $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
+            }
+
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
@@ -6250,7 +6292,7 @@ class Ticket extends CommonITILObject {
       $document_items = $document_item_obj->find("itemtype = 'Ticket' AND items_id = ".$this->getID());
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
-         $timeline[$document_obj->fields['date_mod']."_document_".$document_item['documents_id']]
+         $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
             = array('type' => 'Document_Item', 'item' => $document_obj->fields);
       }
 

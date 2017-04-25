@@ -398,6 +398,20 @@ class QueuedMail extends CommonDBTM {
 
          if (!$mmail->Send()) {
             Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
+
+            //TODO: add translations string
+            Toolbox::logInFile(
+               'mail-error',
+               sprintf(
+                  '%1$s: %2$s',
+                  sprintf(
+                     'Email not sent to %s',
+                     $this->fields['recipient']
+                  ),
+                  $this->fields['name']."\n"
+               )
+            );
+
             $mmail->ClearAddresses();
             $this->update(array('id'        => $this->fields['id'],
                                 'sent_try' => $this->fields['sent_try']+1));

@@ -40,6 +40,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
     public function testConvDate() {
       $this->assertNull(Html::convDate(null));
       $this->assertNull(Html::convDate('NULL'));
+      $this->assertNull(Html::convDate(''));
 
       $mydate = date('Y-m-d H:i:s');
 
