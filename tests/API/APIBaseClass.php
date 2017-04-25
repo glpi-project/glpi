@@ -31,6 +31,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                                      $params        = [],
                                      $expected_code = 200);
 
+   abstract public function testInitSessionCredentials();
+
    public static function setUpBeforeClass() {
       // enable api config
       $config = new Config;
