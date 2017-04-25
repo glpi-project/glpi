@@ -38,7 +38,7 @@
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
-toolbox::logdebug("post", $_POST);
+
 $item = new Change_Ticket();
 if (isset($_POST["add"])) {
    if (!empty($_POST['tickets_id']) && empty($_POST['changes_id'])){

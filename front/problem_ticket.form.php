@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,6 +42,18 @@ Session ::checkLoginUser();
 $item = new Problem_Ticket();
 
 if (isset($_POST["add"])) {
+   if (!empty($_POST['tickets_id']) && empty($_POST['problems_id'])){
+      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                         __('Problem'));
+      Session::addMessageAfterRedirect($message, false, ERROR);
+      Html::back();
+   }
+   if (empty($_POST['tickets_id']) && !empty($_POST['problems_id'])){
+      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                         __('Ticket'));
+      Session::addMessageAfterRedirect($message, false, ERROR);
+      Html::back();
+   }
    $item->check(-1, CREATE, $_POST);
 
    if ($item->add($_POST)) {
