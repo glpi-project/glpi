@@ -44,8 +44,15 @@ class APIXmlrpcTest extends PHPUnit\Framework\TestCase {
    protected function doHttpRequest($resource = "", $params = array()) {
       $headers = array("Content-Type" => "text/xml");
       $request = xmlrpc_encode_request($resource, $params);
-      return $this->http_client->post($this->base_uri,['body'    => $request,
-                                                       'headers' => $headers]);
+      try {
+         return $this->http_client->post($this->base_uri,['body'    => $request,
+                                                          'headers' => $headers]);
+      } catch (Exception $e) {
+         if ($e->hasResponse()) {
+            $this->last_error = $e->getResponse();
+         }
+         throw $e;
+      }
    }
 
 
@@ -583,6 +590,84 @@ class APIXmlrpcTest extends PHPUnit\Framework\TestCase {
       }
    }
 
+   
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testSearchWithBadCriteria($session_token) {
+      // test retrieve all users
+      // multidimensional array of vars in query string not supported ?
+      
+      // test a non existing search option ID
+      try {
+         $res = $this->doHttpRequest('search', ['session_token' => $session_token,
+               'itemtype' => 'User',
+               'criteria' =>
+               [0 => [
+                     'field'        => '1234343',
+                     'searchtype'   => 'contains',
+                     'value'        => 'dsadasd'
+               ]
+               ]
+         ]);
+      } catch (ClientException $e) {
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+         $body = xmlrpc_decode($e->getResponse()->getBody());
+         $this->assertArrayHasKey('0', $body);
+         $this->assertEquals('ERROR', $body[0]);
+      } catch (ServerException $e) {
+         // A s erver exceptioon occurred
+         $this->assertFalse(true);
+      }
+      
+      // test a non numeric search option ID
+      try {
+         $res = $this->doHttpRequest('search',
+               ['session_token' => $session_token,
+                     'itemtype' => 'User',
+                     'criteria' =>
+                     [0 => [
+                           'field'        => '\1234343',
+                           'searchtype'   => 'contains',
+                           'value'        => 'dsadasd'
+                     ]
+                     ]
+               ]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
+      } catch (ClientException $e) {
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+         $body = xmlrpc_decode($e->getResponse()->getBody());
+         $this->assertArrayHasKey('0', $body);
+         $this->assertEquals('ERROR', $body[0]);
+      } catch (ServerException $e) {
+         // A s erver exceptioon occurred
+         $this->assertFalse(true);
+      }
+      
+      // test an incomplete criteria
+      try {
+         $res = $this->doHttpRequest('search',
+               ['session_token' => $session_token,
+                     'itemtype' => 'User',
+                     'criteria' =>
+                     [0 => [
+                           'field'        => '\1234343',
+                           'searchtype'   => 'contains',
+                     ]
+                     ]
+               ]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
+      } catch (ClientException $e) {
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+         $body = xmlrpc_decode($e->getResponse()->getBody());
+         $this->assertArrayHasKey('0', $body);
+         $this->assertEquals('ERROR', $body[0]);
+      } catch (ServerException $e) {
+         // A s erver exceptioon occurred
+         $this->assertFalse(true);
+      }
+   }
+   
 
    /**
      * @depends testInitSessionCredentials
