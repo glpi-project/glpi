@@ -236,6 +236,14 @@ class RuleRightCollection extends RuleCollection {
             $fields = $this->getFieldsForQuery();
             foreach ($fields as $field) {
                switch (Toolbox::strtoupper($field)) {
+                  case "LOGIN" :
+                     $rule_parameters["LOGIN"] = $params["login"];
+                     break;
+
+                  case "MAIL_EMAIL" :
+                     $rule_parameters["MAIL_EMAIL"] = $params["mail_email"];
+                     break;
+
                   case "LDAP_SERVER" :
                      $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
                      break;
@@ -273,6 +281,7 @@ class RuleRightCollection extends RuleCollection {
       //IMAP/POP login method
       $rule_parameters["MAIL_SERVER"] = $params["mail_server"];
       $rule_parameters["MAIL_EMAIL"]  = $params["email"];
+      $rule_parameters["LOGIN"]       = $params["login"];
       return $rule_parameters;
    }
 

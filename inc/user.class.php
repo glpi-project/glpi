@@ -1416,6 +1416,8 @@ class User extends CommonDBTM {
          $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
          // Empty array to ensure than syncDynamicEmails will be done
          $this->fields["_emails"]    = array();
+        // force authtype as we retrieve this user by ldap (we could have login with SSO)
+        $this->fields["authtype"] = Auth::LDAP;
 
          foreach ($fields as $k => $e) {
             $val = self::getLdapFieldValue($e, $v);
@@ -1515,7 +1517,9 @@ class User extends CommonDBTM {
                                                    array('type'        => 'LDAP',
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
-                                                         'userdn'      => $userdn));
+                                                         'userdn'      => $userdn,
+                                                         'login'       => $this->fields['name'],
+                                                         'mail_email'  => $this->fields['_emails']));
 
             $this->fields['_ruleright_process'] = true;
 
@@ -1654,6 +1658,8 @@ class User extends CommonDBTM {
       $this->fields['name']      = $name;
       //Store date_sync
       $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
+      // force authtype as we retrieve this user by imap (we could have login with SSO)
+      $this->fields["authtype"] = Auth::MAIL;
 
       if (!$DB->isSlave()) {
          //Instanciate the affectation's rule
@@ -1669,6 +1675,7 @@ class User extends CommonDBTM {
          $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
+                                                      'login'       => $name,
                                                       'email'       => $email));
          $this->fields['_ruleright_process'] = true;
       }
