@@ -72,7 +72,7 @@ class APIRestTest extends APIBaseClass {
       }
    }
 
-   protected function query($resource = "", $params = [], $expected_code = 200) {
+   protected function query($resource = "", $params = [], $expected_code = 200, $expected_symbol = '') {
       $verb         = isset($params['verb'])
                         ? $params['verb']
                         : 'GET';
@@ -103,6 +103,9 @@ class APIRestTest extends APIBaseClass {
       } catch (ClientException $e) {
          $response = $e->getResponse();
          $this->assertEquals($expected_code, $response->getStatusCode());
+         $body = json_decode($e->getResponse()->getBody());
+         $this->assertArrayHasKey('0', $body);
+         $this->assertEquals($expected_symbol, $body[0]);
          return;
       }
       //retrieve data
@@ -209,8 +212,8 @@ class APIRestTest extends APIBaseClass {
     * @group   api
     * @depends testInitSessionCredentials
     */
-   public function testBadEndpoint($session_token, $expected_code = 400) {
-      parent::testBadEndpoint($session_token, $expected_code);
+   public function testBadEndpoint($session_token, $expected_code = null, $expected_symbol = null) {
+      parent::testBadEndpoint($session_token, 400, 'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
 
       $data = $this->query('getItems',
                            ['itemtype'        => 'badEndpoint',
@@ -218,7 +221,8 @@ class APIRestTest extends APIBaseClass {
                             'parent_itemtype' => 'Entity',
                             'headers'         => [
                             'Session-Token' => $session_token]],
-                           $expected_code);
+                           400,
+                           'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM');
    }
 
    /**
@@ -309,5 +313,24 @@ class APIRestTest extends APIBaseClass {
       $this->assertEquals($document_name, $document->fields['name']);
       $this->assertEquals($filename, $document->fields['filename']);
       $this->assertEquals(true, (strpos($document->fields['filepath'], 'MD/') !== false));
+   }
+
+   /**
+    * @group   api
+    * @depends testInitSessionCredentials
+    * @depends testCreateItem
+    * @covers  API::updateItems
+    */
+   public function testUpdateItem($session_token, $computers_id) {
+      parent::testUpdateItem($session_token, $computers_id);
+
+      //try to update an item without input
+      $data = $this->query('updateItems',
+            ['itemtype' => 'Computer',
+                  'verb'     => 'PUT',
+                  'headers'  => ['Session-Token' => $session_token],
+                  'json'     => []],
+            400,
+            'ERROR_JSON_PAYLOAD_INVALID');
    }
 }
