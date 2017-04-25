@@ -146,25 +146,31 @@ class Html {
          $format = $_SESSION["glpidate_format"];
       }
 
+      try {
+         $date = new \DateTime($time);
+      } catch (\Exception $e) {
+         Toolbox::logDebug("Invalid date $time!");
+         Session::addMessageAfterRedirect(
+            sprintf(
+               __('%1$s %2$s'),
+               $time,
+               _x('adjective', 'Invalid')
+            )
+         );
+         return $time;
+      }
+      $mask = 'Y-m-d';
+
       switch ($format) {
          case 1 : // DD-MM-YYYY
-            $date  = substr($time, 8, 2)."-";  // day
-            $date .= substr($time, 5, 2)."-"; // month
-            $date .= substr($time, 0, 4);     // year
-            return $date;
-
+            $mask = 'd-m-Y';
+            break;
          case 2 : // MM-DD-YYYY
-            $date  = substr($time, 5, 2)."-";  // month
-            $date .= substr($time, 8, 2)."-"; // day
-            $date .= substr($time, 0, 4);     // year
-            return $date;
-
-         default : // YYYY-MM-DD
-            if (strlen($time)>10) {
-               return substr($time, 0, 10);
-            }
-            return $time;
+            $mask = 'm-d-Y';
+            break;
       }
+
+      return $date->format($mask);
    }
 
 
