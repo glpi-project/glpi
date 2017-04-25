@@ -1422,7 +1422,6 @@ class User extends CommonDBTM {
         $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
         // Empty array to ensure than syncDynamicEmails will be done
         $this->fields["_emails"]    = array();
-
         // force authtype as we retrieve this user by ldap (we could have login with SSO)
         $this->fields["authtype"] = Auth::LDAP;
 
@@ -1665,6 +1664,8 @@ class User extends CommonDBTM {
       $this->fields['name']      = $name;
       //Store date_sync
       $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
+      // force authtype as we retrieve this user by imap (we could have login with SSO)
+      $this->fields["authtype"] = Auth::MAIL;
 
       if (!$DB->isSlave()) {
          //Instanciate the affectation's rule
