@@ -31,6 +31,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                                      $params        = [],
                                      $expected_code = 200);
 
+   abstract public function testInitSessionCredentials();
+
    public static function setUpBeforeClass() {
       // enable api config
       $config = new Config;
@@ -38,21 +40,6 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                             'enable_api'                      => true,
                             'enable_api_login_credentials'    => true,
                             'enable_api_login_external_token' => true));
-   }
-
-   /**
-    * @group  api
-    * @covers API::initSession
-    */
-   public function testInitSessionCredentials() {
-      $data = $this->query('initSession',
-                           ['query' => [
-                              'login'    => TU_USER,
-                              'password' => TU_PASS]]);
-
-      $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('session_token', $data);
-      return $data['session_token'];
    }
 
 
@@ -360,6 +347,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
    public function testSearchWithBadCriteria($session_token) {
       // test retrieve all users
       // multidimensional array of vars in query string not supported ?
+
+      // test a non existing search option ID
       $data = $this->query('search',
                            ['itemtype' => 'User',
                             'headers'  => ['Session-Token' => $session_token],
@@ -371,18 +360,49 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                                  'value'      => 'dsadasd',
                               ]]
                             ]],
-                           400); // 400 code expected (error, bad request)
+                           400,   // 400 code expected (error, bad request)
+                           'ERROR');
+
+      // test a non numeric search option ID
+      $data = $this->query('search',
+                            ['itemtype' => 'User',
+                             'headers'  => ['Session-Token' => $session_token],
+                             'query'    => [
+                              'reset'    => 'reset',
+                              'criteria' => [[
+                                 'field'      => '\134343',
+                                 'searchtype' => 'contains',
+                                 'value'      => 'dsadasd',
+                              ]]
+                             ]],
+                           400,   // 400 code expected (error, bad request)
+                           'ERROR');
+
+      // test an incomplete criteria
+      $data = $this->query('search',
+                           ['itemtype' => 'User',
+                            'headers'  => ['Session-Token' => $session_token],
+                            'query'    => [
+                             'reset'    => 'reset',
+                             'criteria' => [[
+                                'field'      => '134343',
+                                'searchtype' => 'contains',
+                             ]]
+                            ]],
+                         400,  // 400 code expected (error, bad request)
+                         'ERROR');
    }
 
    /**
     * @group   api
     * @depends testInitSessionCredentials
     */
-   public function testBadEndpoint($session_token, $expected_code = 405) {
+   public function testBadEndpoint($session_token, $expected_code = null, $expected_symbol = null) {
       $data = $this->query('badEndpoint',
                            ['headers' => [
                             'Session-Token' => $session_token]],
-                           $expected_code);
+                           $expected_code,
+                           $expected_symbol);
    }
 
 
@@ -676,7 +696,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                             'query'    => [
                                'range' => '100-105',
                                'expand_dropdowns' => true]],
-                           400);
+                           400,
+                           'ERROR_RANGE_EXCEED_TOTAL');
    }
 
    /**
@@ -707,7 +728,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                     'id'       => $tickets_id,
                     'headers'  => [
                         'Session-Token' => $data['session_token']]],
-                   401);
+                   401,
+                   'ERROR_RIGHT_MISSING');
 
       // try to access ticket list (we should get empty return)
       $data = $this->query('getItems',
@@ -749,14 +771,6 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
       $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
       $this->assertEquals("abcdef", $computer->fields['serial']);
-
-      //try to update an item without input
-      $data = $this->query('updateItems',
-                           ['itemtype' => 'Computer',
-                            'verb'     => 'PUT',
-                            'headers'  => ['Session-Token' => $session_token],
-                            'json'     => []],
-                            400);
    }
 
    /**
@@ -964,7 +978,7 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
       $criteria = array();
       $queryString = "";
       foreach ($rows as $row) {
-         $queryString = "&criteria[][link]=or&criteria[][field]=1&criteria[][searchtype]=equals&criteria[][value]=".$row['name'];
+         $queryString = "&criteria[0][link]=or&criteria[0][field]=1&criteria[0][searchtype]=equals&criteria[0][value]=".$row['name'];
       }
 
       $data = $this->query('search',
@@ -1012,7 +1026,8 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
                           ['headers' => ['Session-Token' => $session_token]]);
       $res = $this->query('getFullSession',
                           ['headers' => ['Session-Token' => $session_token]],
-                          401);
+                          401,
+                          'ERROR_SESSION_TOKEN_INVALID');
    }
 
    /**

@@ -55,7 +55,7 @@ class APIXmlrpcTest extends APIBaseClass {
                                                        'headers' => $headers]);
    }
 
-   protected function query($resource = "", $params = [], $expected_code = 200) {
+   protected function query($resource = "", $params = [], $expected_code = 200, $expected_symbol = '') {
       //reconstruct params for xmlrpc (base params done for rest)
       $flat_params = array_merge($params,
                                  isset($params['query'])   ? $params['query']   : [],
@@ -73,6 +73,9 @@ class APIXmlrpcTest extends APIBaseClass {
       } catch (Exception $e) {
          $response = $e->getResponse();
          $this->assertEquals($expected_code, $response->getStatusCode());
+         $body = xmlrpc_decode($response->getBody());
+         $this->assertArrayHasKey('0', $body);
+         $this->assertEquals($expected_symbol, $body[0]);
          return;
       }
       // common tests
@@ -86,5 +89,58 @@ class APIXmlrpcTest extends APIBaseClass {
          $data['headers'] = $res->getHeaders();
       }
       return $data;
+   }
+
+   /**
+    * @group  api
+    * @covers API::initSession
+    */
+   public function testInitSessionCredentials() {
+      $data = $this->query('initSession',
+            ['query' => [
+                  'login'    => TU_USER,
+                  'password' => TU_PASS]]);
+
+            $this->assertNotEquals(false, $data);
+            $this->assertArrayHasKey('session_token', $data);
+            return $data['session_token'];
+   }
+
+   /**
+    * Redefine this test to permits launch of testUpdateItemWithIdInQueryString
+    *
+    * @group   api
+    * @depends testInitSessionCredentials
+    * @covers  API::CreateItems
+    */
+   public function testCreateItem($session_token) {
+      return parent::testCreateItem($session_token);
+   }
+
+   /**
+    * @group   api
+    * @depends testInitSessionCredentials
+    */
+   public function testBadEndpoint($session_token, $expected_code = null, $expected_symbol = null) {
+      parent::testBadEndpoint($session_token, 405, 'ERROR_METHOD_NOT_ALLOWED');
+   }
+
+   /**
+    * @group   api
+    * @depends testInitSessionCredentials
+    * @depends testCreateItem
+    * @covers  API::updateItems
+    */
+   public function testUpdateItem($session_token, $computers_id) {
+      parent::testUpdateItem($session_token, $computers_id);
+
+      //try to update an item without input
+      $data = $this->query('updateItems',
+            ['itemtype' => 'Computer',
+                  'verb'     => 'PUT',
+                  'headers'  => ['Session-Token' => $session_token],
+                  'json'     => []],
+            400,
+            'ERROR_BAD_ARRAY');
    }
 }
