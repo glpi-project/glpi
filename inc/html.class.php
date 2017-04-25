@@ -135,7 +135,7 @@ class Html {
    **/
    static function convDate($time, $format=null) {
 
-      if (is_null($time) || ($time == 'NULL')) {
+      if (is_null($time) || $time == 'NULL' || trim($time) == '') {
          return NULL;
       }
 
