@@ -1416,8 +1416,8 @@ class User extends CommonDBTM {
          $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
          // Empty array to ensure than syncDynamicEmails will be done
          $this->fields["_emails"]    = array();
-        // force authtype as we retrieve this user by ldap (we could have login with SSO)
-        $this->fields["authtype"] = Auth::LDAP;
+         // force authtype as we retrieve this user by ldap (we could have login with SSO)
+         $this->fields["authtype"] = Auth::LDAP;
 
          foreach ($fields as $k => $e) {
             $val = self::getLdapFieldValue($e, $v);
