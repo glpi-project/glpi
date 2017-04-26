@@ -38,7 +38,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!($item = getItemForItemtype($_POST['itemtype']))) {
+if (empty($_POST['itemtype']) || !($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
 
