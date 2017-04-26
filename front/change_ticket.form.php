@@ -42,13 +42,13 @@ Session::checkLoginUser();
 
 $item = new Change_Ticket();
 if (isset($_POST["add"])) {
-   if (!empty($_POST['tickets_id']) && empty($_POST['changes_id'])){
+   if (!empty($_POST['tickets_id']) && empty($_POST['changes_id'])) {
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
                          __('Change'));
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }
-   if (empty($_POST['tickets_id']) && !empty($_POST['changes_id'])){
+   if (empty($_POST['tickets_id']) && !empty($_POST['changes_id'])) {
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
                          __('Ticket'));
       Session::addMessageAfterRedirect($message, false, ERROR);
