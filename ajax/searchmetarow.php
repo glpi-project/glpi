@@ -88,6 +88,15 @@ if (isset($_POST["itemtype"])
                            array('value' => $value,
                                  'width' => '40%'));
 
+   // Remove itemtype(s) who user don't have right to view
+   foreach ($linked as $key => $link) {
+      if ($linkitem = getItemForItemtype($link)) {
+         if (! $linkitem->canGlobal(READ)) {
+            unset($linked[$key]);
+         }
+      }
+   }
+
    // Display select of the linked item type available
    foreach ($linked as $key) {
       if (!isset($metanames[$key])) {
