@@ -94,6 +94,7 @@ echo "Delete various scripts and directories"
 \rm -rf .composer.hash;
 \rm -rf ISSUE_TEMPLATE.md;
 \rm -rf PULL_REQUEST_TEMPLATE.md;
+\rm -rf .tx;
 \find pics/ -type f -name "*.eps" -exec rm -rf {} \;
 
 echo "Creating tarball";
