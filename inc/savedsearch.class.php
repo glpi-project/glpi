@@ -60,9 +60,7 @@ class SavedSearch extends CommonDBTM {
 
    function getForbiddenStandardMassiveAction() {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      if (!Session::haveRight('config', UPDATE)) {
-         $forbidden[] = 'update';
-      }
+      $forbidden[] = 'update';
       return $forbidden;
    }
 
