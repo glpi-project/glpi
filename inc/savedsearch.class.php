@@ -68,6 +68,9 @@ class SavedSearch extends CommonDBTM {
    function getSpecificMassiveActions($checkitem=NULL) {
       $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'unset_default'] = __('Unset as default');
       $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_count_method'] = __('Change count method');
+      if (Session::haveRight('transfer', READ)) {
+         $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_entity'] = __('Change visibility');
+      }
       return $actions;
    }
 
@@ -82,6 +85,17 @@ class SavedSearch extends CommonDBTM {
             ];
             Dropdown::showFromArray('do_count', $values, array('width' => '20%'));
             break;
+         case 'change_entity':
+            Entity::dropdown([
+               'entity' => $_SESSION['glpiactiveentities'],
+               'value'  => $_SESSION['glpiactive_entity'],
+               'name'   => 'entities_id'
+            ]);
+            echo '<br/>';
+            echo __('Child entities');
+            Dropdown::showYesNo('is_recursive');
+            echo '<br/>';
+            break;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -91,9 +105,9 @@ class SavedSearch extends CommonDBTM {
                                                        array $ids) {
       global $DB;
 
+      $input = $ma->getInput();
       switch ($ma->getAction()) {
          case 'unset_default' :
-            $input = $ma->getInput();
             if ($item->unmarkDefaults($ids)) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
             } else {
@@ -102,8 +116,14 @@ class SavedSearch extends CommonDBTM {
             return;
             break;
          case 'change_count_method':
-            $input = $ma->getInput();
             if ($item->setDoCount($ids, $input['do_count'])) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            }
+            break;
+         case 'change_entity':
+            if ($item->setEntityRecur($ids, $input['entities_id'], $input['is_recursive'])) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
             } else {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -1162,6 +1182,25 @@ class SavedSearch extends CommonDBTM {
          " WHERE id IN ('" . implode("', '", $ids) . "')";
       return $DB->query($query);
    }
+
+
+   /**
+    * Set entity and recursivity from massive actions
+    *
+    * @param array   $ids   Items IDs
+    * @param integer $eid   Entityy ID
+    * @param boolean $recur Recursivity
+    *
+    * @return boolean
+    */
+   public function setEntityRecur(array $ids, $eid, $recur) {
+      global $DB;
+
+      $query = "UPDATE " . $this->getTable() . " SET entities_id=$eid, is_recursive=$recur" .
+         " WHERE id IN ('" . implode("', '", $ids) . "') AND is_private = 0";
+      return $DB->query($query);
+   }
+
 
 
    /**
