@@ -368,7 +368,7 @@ class SavedSearch extends CommonDBTM {
       }
 
       echo "<table class='tab_cadre' width='".self::WIDTH."px'>";
-      echo "<tr><th colspan='2'>";
+      echo "<tr><th colspan='4'>";
       if ($ID > 0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
@@ -380,10 +380,22 @@ class SavedSearch extends CommonDBTM {
       echo "<tr><td class='tab_bg_1'>".__('Name')."</td>";
       echo "<td class='tab_bg_1'>";
       Html::autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
+      echo "</td>";
+      if (Session::haveRight("config", UPDATE)) {
+         echo "<td class='tab_bg_1'>".__('Do count')."</td><td class='tab_bg_1'>";
+         $values = [
+            self::COUNT_AUTO  => _('Auto'),
+            self::COUNT_YES   => __('Yes'),
+            self::COUNT_NO    => __('No')
+         ];
+         Dropdown::showFromArray('do_count', $values, array('value' => $this->getField('do_count')));
+      } else {
+         echo "<td colspan='2'>";
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Visibility')."</td>";
-      echo "<td>";
+      echo "<td colspan='3'>";
 
       if ($this->canCreate()) {
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
