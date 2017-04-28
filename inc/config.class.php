@@ -2141,11 +2141,33 @@ class Config extends CommonDBTM {
          'gd'       => [
             'required'  => true,
          ],
+         'simplexml' => [
+            'required'  => true,
+         ],
+         'xml'        => [
+            'required'  => true,
+            'function'  => 'utf8_decode'
+         ],
+         //to sync/connect from LDAP
          'ldap'       => [
             'required'  => false,
          ],
+         //for mail collector
          'imap'       => [
             'required'  => false,
+         ],
+         //to enhance perfs
+         'Zend OPcache' => [
+            'required'  => false
+         ],
+         //to enhance perfs
+         'APCu'       => [
+            'required'  => false,
+            'function'  => 'apc_fetch'
+         ],
+         //for XMLRPC API
+         'xmlrpc'     => [
+            'required'  => false
          ]
       ];
 
