@@ -40,6 +40,6 @@ class DeviceFirmwareModel extends CommonDeviceModel {
 
 
    static function getTypeName($nb=0) {
-      return _n('Device firwmare model', 'Device firmware models', $nb);
+      return _n('Device firmware model', 'Device firmware models', $nb);
    }
 }
