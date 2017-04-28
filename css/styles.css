@@ -359,20 +359,20 @@ input {
 }
 
 input:required {
-    border:1px red solid!important;
-    border-left-width: 8px!important;
-    padding-right: 0!important;
+   border:1px rgba(255, 0, 0, .6) solid!important;
+   border-left-width: 3px!important;
+   padding-right: 0!important;
+   box-shadow: none;
 }
 
 input:required:valid {
-    border-color:green!important;
+   border: 1px solid RGB(211, 211, 211) !important;
 }
 
 span.required {
    color: red;
    margin-left: .2em;
 }
-
 
 .no-wrap {
    white-space: nowrap;
