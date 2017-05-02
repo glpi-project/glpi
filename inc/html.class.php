@@ -1132,7 +1132,7 @@ class Html {
 
       echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
-      echo Html::css('css/jstree/style.css');
+      echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
       echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
@@ -5938,7 +5938,7 @@ class Html {
             }
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jquery.jstree.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jstree.js';
             break;
          case 'gantt':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
