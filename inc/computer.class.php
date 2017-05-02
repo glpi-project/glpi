@@ -473,7 +473,7 @@ class Computer extends CommonDBTM {
       State::dropdown(array('value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_computer`",
-            'rand'      => $randDropdown));
+                            'rand'      => $randDropdown));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -482,7 +482,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       Location::dropdown(array('value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"],
-            'rand' => $randDropdown));
+                               'rand' => $randDropdown));
       echo "</td>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_computertypes_id$randDropdown'>".__('Type')."</label></td>";
@@ -514,7 +514,7 @@ class Computer extends CommonDBTM {
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
                             'condition' => '`is_assign`',
-            'rand' => $randDropdown));
+                            'rand' => $randDropdown));
 
       echo "</td>";
       $randDropdown = mt_rand();
