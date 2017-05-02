@@ -4498,13 +4498,21 @@ class CommonDBTM extends CommonGLPI {
       } else {
          $colspan=2;
       }
-      if ($result = $DB->query($query)) {
+
+      $result = $DB->query($query);
+      $blank_params =
+         (strpos($target, '?') ? '&amp;' : '?')
+         . "id=-1&amp;withtemplate=2";
+      $target_blank = $target . $blank_params;
+
+      if ($add && $result->num_rows == 0) {
+         //if there is no template, just use blank
+         Html::redirect($target_blank);
+      }
+
+      if ($result) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
-            $blank_params =
-               (strpos($target, '?') ? '&amp;' : '?')
-               . "id=-1&amp;withtemplate=2";
-            $target_blank = $target . $blank_params;
             echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
             echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
