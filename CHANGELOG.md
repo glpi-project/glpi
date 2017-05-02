@@ -16,6 +16,7 @@ The present file will list all changes made to the project; according to the
 - Display knowledge base category items in tickets using a popup instead of a
 new whole window
 - Reviewed all richtext editor (tinymce) and their upload parts, now more simpler and intuitive
+- Don't ask user to select a template if there is no configured template
 
 ### API changes
 
