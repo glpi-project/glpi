@@ -23,6 +23,7 @@ new whole window
 
 - `CommonDBTM::getTable()` signature has changed
 - `Bookmark` has been renamed to `SavedSearch`
+- Update to latest jsTree plugin
 
 #### Deprecated
 

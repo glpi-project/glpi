@@ -39,22 +39,24 @@ $AJAX_INCLUDE = 1;
 
 include ("../inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 $res = array();
 
-if (isset($_POST['search_string'])) {
+if (isset($_POST['str'])) {
    $query = "SELECT *
              FROM `glpi_entities`
-             WHERE `name` LIKE '%".$_POST['search_string']."%'
+             WHERE `name` LIKE '%".$_POST['str']."%'
              ORDER BY `completename`";
 
    foreach ($DB->request($query) as $data) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {
-         $res[] = '#ent'.$val;
+         if (!in_array('ent'.$val, $res)) {
+            $res[] = 'ent'.$val;
+         }
       }
    }
 }
