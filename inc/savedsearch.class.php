@@ -606,6 +606,7 @@ class SavedSearch extends CommonDBTM {
    **/
    function mark_default($ID) {
       Toolbox::logDebug('mark_default() method is deprecated');
+      Toolbox::backtrace();
       return $this->markDefault($ID);
    }
 
@@ -659,6 +660,7 @@ class SavedSearch extends CommonDBTM {
    **/
    function unmark_default($ID) {
       Toolbox::logDebug('unmark_default() method is deprecated');
+      Toolbox::backtrace();
       return $this->unmarkDefault($ID);
    }
 
