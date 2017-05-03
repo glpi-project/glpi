@@ -6119,7 +6119,7 @@ class Html {
          $timer = $timer * MINUTE_TIMESTAMP * 1000;
          
          // call callback function to $timer interval
-         echo self::scriptBlock("window.setInterval(function() {
+         $text = self::scriptBlock("window.setInterval(function() {
                $callback
             }, $timer);");
       }
