@@ -4,7 +4,7 @@
 
 var supported = /MSIE (5\.5)|[6789]/.test(navigator.userAgent) && navigator.platform == "Win32";
 var realSrc;
-var blankSrc = "../css/nothing.gif";
+var blankSrc = "../pics/nothing.gif";
 
 if (supported) fixImage();
 
