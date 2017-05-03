@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 - Revisions on knowledge base entries and their translations, with diff view
 - Add recursive comments on knowledge base entries
 - Load minified CSS and JS files (core and plugins) that are generated on release
+- Link beetween software licenses
 
 ### Changed
 - Display knowledge base category items in tickets using a popup instead of a
