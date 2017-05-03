@@ -6115,11 +6115,15 @@ class Html {
 
       $text = "";
       if ($timer > 0) {
-         // Refresh automatique  sur tracking.php
-         $text.="<script type=\"text/javascript\">\n";
-         $text.="setInterval($callback,".
-               (60000 * $timer).");\n";
-         $text.="</script>\n";
+         // set timer to millisecond from minutes
+         $timer = $timer * MINUTE_TIMESTAMP * 1000;
+         
+         // call callback function to $timer interval
+         echo self::scriptBlock("
+            window.setInterval(function() {
+               $callback
+            }, $timer);
+         ");
       }
 
       return $text;
