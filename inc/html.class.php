@@ -6117,7 +6117,7 @@ class Html {
       if ($timer > 0) {
          // set timer to millisecond from minutes
          $timer = $timer * MINUTE_TIMESTAMP * 1000;
-         
+
          // call callback function to $timer interval
          $text = self::scriptBlock("window.setInterval(function() {
                $callback
