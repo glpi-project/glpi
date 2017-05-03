@@ -645,9 +645,9 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          unset($_SESSION['glpirefresh_ticket_list']);
       }
 
-      $base_script = "window.setInterval(function() {
+      $base_script = Html::scriptBlock("window.setInterval(function() {
                ##CALLBACK##
-            }, ##TIMER##);";
+            }, ##TIMER##);");
 
       $expected = '';
       $message = Html::manageRefreshPage();
