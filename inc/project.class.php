@@ -134,7 +134,7 @@ class Project extends CommonDBTM {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
                                              "`".$this->getForeignKeyField()."` = '".
-                                                $item->getID()."'");
+                                                $item->getID()."' AND `is_deleted`=0");
                }
                $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');
@@ -774,7 +774,8 @@ class Project extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `".$this->getTable()."`
-                WHERE `".$this->getForeignKeyField()."` = '$ID'";
+                WHERE `".$this->getForeignKeyField()."` = '$ID'
+                AND `is_deleted`=0";
       if ($result = $DB->query($query)) {
          $numrows = $DB->numrows($result);
       }
