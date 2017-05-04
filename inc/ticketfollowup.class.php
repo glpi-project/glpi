@@ -187,8 +187,18 @@ class TicketFollowup  extends CommonDBTM {
          $nb = 0;
          if (self::canCreate()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable('glpi_ticketfollowups',
-                                          ['tickets_id' => $item->getID()]);
+               $nb = countElementsInTable(
+                  'glpi_ticketfollowups',
+                  [
+                     'AND' => [
+                        'tickets_id'   => $item->getID(),
+                        'OR'           => [
+                           'is_private'   => 0,
+                           'users_id'  => Session::getLoginUserID()
+                        ]
+                     ]
+                  ]
+               );
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
