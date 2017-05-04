@@ -181,6 +181,21 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
 
+         $opt['criteria'][2]['field']      = 52; // global validation status
+         $opt['criteria'][2]['searchtype'] = 'equals';
+         $opt['criteria'][2]['value']      = CommonITILValidation::WAITING;
+         $opt['criteria'][2]['link']       = 'AND';
+
+         $opt['criteria'][3]['field']      = 12; // ticket status
+         $opt['criteria'][3]['searchtype'] = 'equals';
+         $opt['criteria'][3]['value']      = Ticket::CLOSED;
+         $opt['criteria'][3]['link']       = 'AND NOT';
+
+         $opt['criteria'][4]['field']      = 12; // ticket status
+         $opt['criteria'][4]['searchtype'] = 'equals';
+         $opt['criteria'][4]['value']      = Ticket::SOLVED;
+         $opt['criteria'][4]['link']       = 'AND NOT';
+
          $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
