@@ -336,11 +336,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
    **/
    static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
       $tab[] = [
-         'id'                 => '22',
+         'id'                 => '62',
          'table'              => 'glpi_netpoints',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Network outlet'),
+         'name'               => __('Network fiber outlet'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
