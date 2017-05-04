@@ -362,7 +362,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $tab[22]['table']         = 'glpi_netpoints';
       $tab[22]['field']         = 'name';
       $tab[22]['datatype']      = 'dropdown';
-      $tab[22]['name']          = __('Network outlet');
+      $tab[22]['name']          = __('Ethernet outlet');
       $tab[22]['forcegroupby']  = true;
       $tab[22]['massiveaction'] = false;
       $tab[22]['joinparams']    = array('jointype'   => 'standard',
