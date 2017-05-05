@@ -541,7 +541,7 @@ class Toolbox {
       $err .= self::backtrace(false, $hide, $skip);
 
       // Save error
-      self::logInFile("php-errors", $err);
+      static::logInFile("php-errors", $err);
 
       // For unit test
       if (class_exists('GlpitestPHPerror')) {
