@@ -5283,11 +5283,10 @@ class Ticket extends CommonITILObject {
             $restrict = "(`glpi_items_tickets`.`items_id` = '".$item->getID()."' ".
                         " AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')";
 
-
             $restrict_with_rights = "";
             // you can only see your tickets
             if (!Session::haveRight(self::$rightname, self::READALL)) {
-               $restrict_with_rights .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+               $restrict_with_rights .= "(`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
                                    OR (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
                                        AND `glpi_tickets_users`.`users_id`
                                             = '".Session::getLoginUserID()."')";
