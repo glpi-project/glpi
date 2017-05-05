@@ -1149,13 +1149,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $canpriority = true;
       if ($this->getType() == 'Ticket') {
-         $canpriority               = Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY);
+         $canpriority = Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY);
       }
-      if ($canpriority) {
-         if (!isset($input["priority"])) {
-            $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
-         }
-      } else {
+
+      if ($canpriority && !isset($input["priority"]) || !$canpriority) {
          $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
       }
 
