@@ -826,7 +826,7 @@ class SavedSearch extends CommonDBTM {
                $.ajax({
                   url: _this.attr('href'),
                   beforeSend: function() {
-                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . Toolbox::addslashes_deep(__('Loading...')) . "\'/></span>';
                      _dest.append(_img);
                   },
                   success: function(res) {
@@ -853,7 +853,7 @@ class SavedSearch extends CommonDBTM {
                      $('#showSavedSearches .contents').html(res);
                   },
                   error: function() {
-                     alert('" . __('Default bookmark has not been changed!')  . "');
+                     alert('" . Toolbox::addslashes_deep(_('Default bookmark has not been changed!'))  . "');
                      _this.addClass(_currentclass);
                   },
                   complete: function() {
@@ -957,8 +957,10 @@ class SavedSearch extends CommonDBTM {
                $this->fields['name'],
                $current_type_name
             );
+
+            $title = ($is_private ? __('Click to load or drag and drop to reorder') : __('Click to load'));
             echo "<a class='savedsearchlink' href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
-                     $this->fields["id"]."\" title='".__('Click to load or drag and drop to reorder')."'>".
+                     $this->fields["id"]."\" title='".$title."'>".
                      $text;
             if ($_SESSION['glpishow_count_on_tabs']) {
                echo "<span class='primary-bg primary-fg count'>$count</span></a>";
@@ -989,11 +991,11 @@ class SavedSearch extends CommonDBTM {
                            ids: _ids
                         },
                         beforeSend: function() {
-                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . Toolbox::addslashes_deep(__('Loading...')) . "\'/></span>';
                            $('.private_header').prepend(_img);
                         },
                         error: function() {
-                           alert('" . __('Saved searches order cannot be saved!')  . "');
+                           alert('" . Toolbox::addslashes_deep(__('Saved searches order cannot be saved!')) . "');
                         },
                         complete: function() {
                            $('#loading').remove();
