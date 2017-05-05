@@ -319,7 +319,7 @@ class SearchTest extends DbTestCase {
                                                                 'field'      => 20,
                                                                 'searchtype' => 'equals',
                                                                 'value'      => 1)));
-      $this->setEntity('_test_root_entity', true);
+      $this->setEntity('Root entity', true);
 
       $data = $this->doSearch('Computer', $search_params);
 
