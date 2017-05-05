@@ -5284,16 +5284,13 @@ class Ticket extends CommonITILObject {
                         " AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')";
 
 
+            $restrict_with_rights = "";
             // you can only see your tickets
             if (!Session::haveRight(self::$rightname, self::READALL)) {
-               $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+               $restrict_with_rights .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
                                    OR (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
                                        AND `glpi_tickets_users`.`users_id`
                                             = '".Session::getLoginUserID()."')";
-
-               if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
-                  $restrict .= " OR glpi_tickets.status=".self::INCOMING;
-               }
 
                if (count($_SESSION['glpigroups'])) {
                   $restrict .= "OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups']).")";
@@ -5301,6 +5298,18 @@ class Ticket extends CommonITILObject {
 
                $restrict .= ")";
             }
+
+            if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
+               if (!empty($restrict_with_rights)) {
+                  $restrict_with_rights .= ' OR ';
+               }
+               $restrict_with_rights .= "glpi_tickets.status=".self::INCOMING;
+            }
+
+            if (!empty($restrict_with_rights)) {
+               $restrict .= " AND ($restrict_with_rights)";
+            }
+
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
