@@ -276,8 +276,11 @@ abstract class CommonITILTask  extends CommonDBTM {
                                              false, ERROR);
             return false;
          }
-         Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
-                                       array($this->getType() => array($input["id"])));
+
+         if (Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
+                                       array($this->getType() => array($input["id"])))) {
+            return false;
+         }
 
          $calendars_id = Entity::getUsedConfig('calendars_id', $input["_job"]->fields['entities_id']);
          $calendar     = new Calendar();
@@ -399,6 +402,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                                              false, ERROR);
             return false;
          }
+
+         if (Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"])) {
+            return false;
+         }
       }
 
       $input["_job"] = new $itemtype();
@@ -447,9 +454,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
 
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
-         Planning::checkAlreadyPlanned($this->fields["users_id_tech"], $this->fields["begin"],
-                                       $this->fields["end"],
-                                       array($this->getType() => array($this->fields["id"])));
 
          $calendars_id = Entity::getUsedConfig('calendars_id', $this->input["_job"]->fields['entities_id']);
          $calendar     = new Calendar();
