@@ -238,7 +238,7 @@ class Planning extends CommonGLPI {
       }
       if ($planned) {
          Session::addMessageAfterRedirect(__('The user is busy at the selected timeframe.').
-                                          '<br>'.$message, false, ERROR);
+                                          '<br>'.$message, false, WARNING);
       }
       return $planned;
    }
