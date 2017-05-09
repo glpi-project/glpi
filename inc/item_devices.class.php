@@ -788,14 +788,14 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
    **/
    static function addDevicesFromPOST($input) {
-      if (!isset($input['devicetype']) || !$input['devicetype']) {
+      if (isset($input['devicetype']) && !$input['devicetype']) {
          Session::addMessageAfterRedirect(
             __('Please select a device type'),
             false,
             ERROR
          );
          return;
-      } else if (!isset($_POST['devices_id']) || !$_POST['devices_id']) {
+      } else if (isset($_POST['devices_id']) && !$_POST['devices_id']) {
          Session::addMessageAfterRedirect(
             __('Please select a device'),
             false,
