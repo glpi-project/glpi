@@ -2833,6 +2833,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Can object be activated
     *
+    * @since 9.2
+    *
     * @return boolean
     **/
    function maybeActive() {
@@ -2846,6 +2848,8 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Is the object active
+    *
+    * @since 9.2
     *
     * @return boolean
     **/
