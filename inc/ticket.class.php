@@ -5387,10 +5387,10 @@ class Ticket extends CommonITILObject {
                                             = '".Session::getLoginUserID()."')
                                    OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups'])."))";
             }
-
-            if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
-               $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
-            }
+            // with this part all incoming ticket will be displayed even they are not selected in the ticket
+            //if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
+            //   $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
+            //}
 
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
@@ -5411,8 +5411,8 @@ class Ticket extends CommonITILObject {
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
                 WHERE $restrict ".
+                    " AND glpi_tickets.is_deleted = 0 ".
                       getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                AND glpi_tickets.is_deleted = 0
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
