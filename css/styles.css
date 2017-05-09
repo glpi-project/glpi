@@ -2011,7 +2011,7 @@ a.icon_nav_move:hover img {
 #firstboxlogin {
    width: 100%;
    min-height: 100%;
-   min-height: 100vh;
+   min-height: 100vh; /* double min-height, some old browser don't have vh units support*/
 }
 
 #logo_login {
