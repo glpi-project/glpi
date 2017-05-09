@@ -806,11 +806,13 @@ class Ticket extends CommonITILObject {
       }
 
       // automatic recalculate if user changes urgence or technician change impact
+      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       if (isset($input['urgency'])
-          && isset($input['impact'])
-          && (($input['urgency'] != $this->fields['urgency'])
-              || $input['impact'] != $this->fields['impact'])
-          && !isset($input['priority'])) {
+            && isset($input['impact'])
+            && (($input['urgency'] != $this->fields['urgency'])
+               || $input['impact'] != $this->fields['impact'])
+            && ($canpriority && !isset($input['priority']) || !$canpriority)
+      ) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
 
@@ -4390,6 +4392,7 @@ class Ticket extends CommonITILObject {
          $idpriority = 0;
          echo $tt->getBeginHiddenFieldValue('priority');
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
+         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
          echo $tt->getEndHiddenFieldValue('priority', $this);
       }
 
