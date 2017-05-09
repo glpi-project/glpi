@@ -1063,7 +1063,7 @@ class ProjectTask extends CommonDBChild {
                                                ? getSonsOf('glpi_entities',
                                                            $task->fields['entities_id'])
                                                : $task->fields['entities_id']),
-                         );
+                         'checkright'      => true);
          $addrand = Dropdown::showSelectItemFromItemtypes($params);
 
          echo "</td>";
