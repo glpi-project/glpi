@@ -3250,7 +3250,15 @@ class Search {
                   $regs[2] = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',
                                           $regs[2]);
                   if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
-                     return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
+                     $ret = $link;
+                     if ($nott) {
+                        $ret .= " NOT(";
+                     }
+                     $ret .= " $date_computation {$regs[1]} '{$regs[2]}'";
+                     if ($nott) {
+                        $ret .= ")";
+                     }
+                     return $ret;
                   }
                   return "";
                }
