@@ -381,7 +381,7 @@ class DupSearchOpt extends CommonDBTM {
                                                                 'field'      => 20,
                                                                 'searchtype' => 'equals',
                                                                 'value'      => 1)));
-      $this->setEntity('_test_root_entity', true);
+      $this->setEntity('Root entity', true);
 
       $data = $this->doSearch('Computer', $search_params);
 
@@ -430,5 +430,41 @@ class DupSearchOpt extends CommonDBTM {
       $this->assertNotCount(0, $data['data'], $data['last_errors']);
       //expecting one result
       $this->assertEquals(1, $data['data']['totalcount']);
+   }
+
+   public function testDateBeforeOrNot() {
+      //tickets created since one week
+      $search_params = [
+         'is_deleted'   => 0,
+         'start'        => 0,
+         'criteria'     => [
+            0 => [
+               'field'      => 'view',
+               'searchtype' => 'contains',
+               'value'      => ''
+            ],
+            // creation date
+            1 => [
+               'link'       => 'AND',
+               'field'      => '15',
+               'searchtype' => 'morethan',
+               'value'      => '-1WEEK'
+            ]
+         ]
+      ];
+
+      $data = $this->doSearch('Ticket', $search_params);
+
+      $this->assertArrayHasKey('data', $data, $data['last_errors']);
+      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      $this->assertGreaterThan(0, $data['data']['totalcount']);
+
+      //negate previous search
+      $search_params['criteria'][1]['link'] = 'AND NOT';
+      $data = $this->doSearch('Ticket', $search_params);
+
+      $this->assertArrayHasKey('data', $data, $data['last_errors']);
+      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      $this->assertEquals(0, $data['data']['totalcount']);
    }
 }
