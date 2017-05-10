@@ -38,7 +38,7 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-Session::checkRight("sla", READ);
+Session::checkRight("slm", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -47,7 +47,7 @@ if (empty($_GET["id"])) {
 $sla = new SLA();
 
 if (isset($_POST["add"])) {
-   $sla->check(-1, CREATE);
+   $sla->check(-1, CREATE, $_POST);
 
    if ($newID = $sla->add($_POST)) {
       Event::log($newID, "slas", 4, "setup",
@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
          Html::redirect($sla->getFormURL()."?id=".$newID);
       }
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
+   Html::back();
 
 } else if (isset($_POST["purge"])) {
    $sla->check($_POST["id"], PURGE);
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "sla");
 
    $sla->display(array('id' => $_GET["id"]));
    Html::footer();

@@ -872,10 +872,10 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($this->oldvalues['closedate']);
       }
 
-      if ((($key=array_search('due_date', $this->updates)) !== false)
-          && (substr($this->fields["due_date"], 0, 16) == substr($this->oldvalues['due_date'], 0, 16))) {
+      if ((($key=array_search('time_to_resolve', $this->updates)) !== false)
+          && (substr($this->fields["time_to_resolve"], 0, 16) == substr($this->oldvalues['time_to_resolve'], 0, 16))) {
          unset($this->updates[$key]);
-         unset($this->oldvalues['due_date']);
+         unset($this->oldvalues['time_to_resolve']);
       }
 
       if ((($key=array_search('solvedate', $this->updates)) !== false)
@@ -937,20 +937,38 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // check dates
 
-      // check due_date (SLA)
-      if ((in_array("date", $this->updates) || in_array("due_date", $this->updates))
-          && !is_null($this->fields["due_date"])) { // Date set
+      // check time_to_resolve (SLA)
+      if ((in_array("date", $this->updates) || in_array("time_to_resolve", $this->updates))
+          && !is_null($this->fields["time_to_resolve"])) { // Date set
 
-         if ($this->fields["due_date"] < $this->fields["date"]) {
+         if ($this->fields["time_to_resolve"] < $this->fields["date"]) {
             Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
             if (($key = array_search('date', $this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
             }
-            if (($key = array_search('due_date', $this->updates)) !== false) {
+            if (($key = array_search('time_to_resolve', $this->updates)) !== false) {
                unset($this->updates[$key]);
-               unset($this->oldvalues['due_date']);
+               unset($this->oldvalues['time_to_resolve']);
+            }
+         }
+      }
+
+      // check internal_time_to_resolve (OLA)
+      if ((in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
+          && !is_null($this->fields["internal_time_to_resolve"])) { // Date set
+
+         if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
+            Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
+
+            if (($key = array_search('date', $this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['date']);
+            }
+            if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['internal_time_to_resolve']);
             }
          }
       }
@@ -1035,41 +1053,83 @@ abstract class CommonITILObject extends CommonDBTM {
                            -strtotime($this->fields['begin_waiting_date']);
          }
 
-         // SLT case : compute slt_ttr duration
-         if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
-            $slt = new SLT();
-            if ($slt->getFromDB($this->fields['slts_ttr_id'])) {
-               $slt->setTicketCalendar($calendars_id);
-               $delay_time_sla  = $slt->getActiveTimeBetween($this->fields['begin_waiting_date'],
+         // SLA case : compute sla_ttr duration
+         if (isset($this->fields['slas_ttr_id']) && ($this->fields['slas_ttr_id'] > 0)) {
+            $sla = new SLA();
+            if ($sla->getFromDB($this->fields['slas_ttr_id'])) {
+               $sla->setTicketCalendar($calendars_id);
+               $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
                $this->fields["sla_waiting_duration"] += $delay_time_sla;
             }
 
-            // Compute new due date
-            $this->updates[]          = "due_date";
-            $this->fields['due_date'] = $slt->computeDate($this->fields['date'],
-                                                             $this->fields["sla_waiting_duration"]);
+            // Compute new time_to_resolve
+            $this->updates[]                 = "time_to_resolve";
+            $this->fields['time_to_resolve'] = $sla->computeDate($this->fields['date'],
+                                                                 $this->fields["sla_waiting_duration"]);
             // Add current level to do
-            $slt->addLevelToDo($this);
+            $sla->addLevelToDo($this);
 
          } else {
             // Using calendar
             if (($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)) {
-               if ($this->fields['due_date'] > 0) {
+               if ($this->fields['time_to_resolve'] > 0) {
                   // compute new due date using calendar
-                  $this->updates[]          = "due_date";
-                  $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
-                                                                        $delay_time);
+                  $this->updates[]                 = "time_to_resolve";
+                  $this->fields['time_to_resolve'] = $calendar->computeEndDate($this->fields['time_to_resolve'],
+                                                                               $delay_time);
                }
 
             } else { // Not calendar defined
-               if ($this->fields['due_date'] > 0) {
+               if ($this->fields['time_to_resolve'] > 0) {
                   // compute new due date : no calendar so add computed delay_time
-                  $this->updates[]          = "due_date";
-                  $this->fields['due_date'] = date('Y-m-d H:i:s',
-                                                   $delay_time+strtotime($this->fields['due_date']));
+                  $this->updates[]                 = "time_to_resolve";
+                  $this->fields['time_to_resolve'] = date('Y-m-d H:i:s',
+                                                          $delay_time + strtotime($this->fields['time_to_resolve']));
+               }
+            }
+         }
+
+         // OLA case : compute ola_ttr duration
+         if (isset($this->fields['olas_ttr_id']) && ($this->fields['olas_ttr_id'] > 0)) {
+            Toolbox::logDebug('toto');
+            $ola = new OLA();
+            if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
+               $ola->setTicketCalendar($calendars_id);
+               $delay_time_ola  = $ola->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                             $_SESSION["glpi_currenttime"]);
+               $this->updates[]                      = "ola_waiting_duration";
+               $this->fields["ola_waiting_duration"] += $delay_time_ola;
+            }
+
+            // Compute new internal_time_to_resolve
+            $this->updates[]                          = "internal_time_to_resolve";
+            $this->fields['internal_time_to_resolve'] = $ola->computeDate($this->fields['date'],
+                                                                          $this->fields["ola_waiting_duration"]);
+            // Add current level to do
+            $ola->addLevelToDo($this, $this->fields["ttr_olalevels_id"]);
+
+         } else {
+            // Using calendar
+            if (($calendars_id > 0)
+                && $calendar->getFromDB($calendars_id)) {
+               if ($this->fields['internal_time_to_resolve'] > 0) {
+                  // compute new internal_time_to_resolve using calendar
+                  $this->updates[]                          = "internal_time_to_resolve";
+                  $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
+                                                                              $this->fields['internal_time_to_resolve'],
+                                                                              $delay_time);
+               }
+
+            } else { // Not calendar defined
+               if ($this->fields['internal_time_to_resolve'] > 0) {
+                  // compute new internal_time_to_resolve : no calendar so add computed delay_time
+                  $this->updates[]                          = "internal_time_to_resolve";
+                  $this->fields['internal_time_to_resolve'] = date('Y-m-d H:i:s',
+                                                                   $delay_time +
+                                                                   strtotime($this->fields['internal_time_to_resolve']));
                }
             }
          }
@@ -1091,8 +1151,12 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          // Specific for tickets
-         if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
-            SLT::deleteLevelsToDo($this);
+         if (isset($this->fields['slas_ttr_id']) && ($this->fields['slas_ttr_id'] > 0)) {
+            SLA::deleteLevelsToDo($this);
+         }
+
+         if (isset($this->fields['olas_ttr_id']) && ($this->fields['olas_ttr_id'] > 0)) {
+            OLA::deleteLevelsToDo($this);
          }
       }
 
@@ -2687,7 +2751,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[] = [
          'id'                 => '18',
          'table'              => $this->getTable(),
-         'field'              => 'due_date',
+         'field'              => 'time_to_resolve',
          'name'               => __('Time to resolve'),
          'datatype'           => 'datetime',
          'maybefuture'        => true,
@@ -2698,7 +2762,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[] = [
          'id'                 => '151',
          'table'              => $this->getTable(),
-         'field'              => 'due_date',
+         'field'              => 'time_to_resolve',
          'name'               => __('Time to resolve + Progress'),
          'massiveaction'      => false,
          'nosearch'           => true,
@@ -2712,11 +2776,47 @@ abstract class CommonITILObject extends CommonDBTM {
          'name'               => __('Time to resolve exceedeed'),
          'datatype'           => 'bool',
          'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`due_date` IS NOT NULL
+         'computation'        => 'IF(TABLE.`time_to_resolve` IS NOT NULL
                                             AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`due_date`
+                                            AND (TABLE.`solvedate` > TABLE.`time_to_resolve`
                                                  OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`due_date` < NOW())),
+                                                      AND TABLE.`time_to_resolve` < NOW())),
+                                            1, 0)'
+      ];
+
+      $tab[] = [
+         'id'                 => '180',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '181',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '182',
+         'table'              => $this->getTable(),
+         'field'              => 'is_late',
+         'name'               => __('Internal time to resolve exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
+                                            AND TABLE.`status` <> 4
+                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
+                                                 OR (TABLE.`solvedate` IS NULL
+                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
                                             1, 0)'
       ];
 
@@ -4459,7 +4559,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
       }
       echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
-      echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
+      echo "<td>".Html::convDateTime($this->fields['time_to_resolve'])."</td></tr>";
 
       if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
                                                         $this->getClosedStatusArray()))) {
@@ -5176,10 +5276,10 @@ abstract class CommonITILObject extends CommonDBTM {
             $second_col = sprintf(__('Put on hold on %s'),
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($item->fields['begin_waiting_date']));
-         } else if ($item->fields['due_date']) {
+         } else if ($item->fields['time_to_resolve']) {
             $second_col = sprintf(__('%1$s: %2$s'), __('Time to resolve'),
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
-                                    Html::convDateTime($item->fields['due_date']));
+                                    Html::convDateTime($item->fields['time_to_resolve']));
          } else {
             $second_col = sprintf(__('Opened on %s'),
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').

@@ -32,16 +32,14 @@
 
 /** @file
 * @brief
-* @since version 9.1
 */
 
 include ('../inc/includes.php');
 
 Session::checkRight("slm", READ);
 
-Html::header(SlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config",
-             "sla", "slalevel");
+Html::header(SLM::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm");
 
-Search::show('SlaLevel');
+Search::show('SLM');
 
 Html::footer();

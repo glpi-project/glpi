@@ -2392,14 +2392,25 @@ class Entity extends CommonTreeDropdown {
                             $url);
       }
 
-      if (strstr($url, "[SLA_ID]")) {
-         $url = str_replace("[SLA_ID]", $ticket->fields['slas_id'], $url);
+      if (strstr($url, "[SLA_TTO_ID]")) {
+         $url = str_replace("[SLA_TTO_ID]", $ticket->fields['slas_tto_id'], $url);
       }
 
-      if (strstr($url, "[SLA_NAME]")) {
-         $url = str_replace("[SLA_NAME]",
+      if (strstr($url, "[SLA_TTO_NAME]")) {
+         $url = str_replace("[SLA_TTO_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
-                                                                $ticket->fields['slas_id'])),
+                                                                $ticket->fields['slas_tto_id'])),
+                            $url);
+      }
+
+      if (strstr($url, "[SLA_TTR_ID]")) {
+         $url = str_replace("[SLA_TTR_ID]", $ticket->fields['slas_ttr_id'], $url);
+      }
+
+      if (strstr($url, "[SLA_TTR_NAME]")) {
+         $url = str_replace("[SLA_TTR_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_slas',
+                                                                $ticket->fields['slas_ttr_id'])),
                             $url);
       }
 

@@ -528,7 +528,7 @@ function addTracking($type, $ID, $ID_entity) {
                                                                     $LAST['locations']),
                            'solution'                    => $solution,
                            'actiontime'                  => $actiontime,
-                           'due_date'                    => $duedatetoadd,
+                           'time_to_resolve'             => $duedatetoadd,
                            'close_delay_stat'            => $closetime,
                            'solve_delay_stat'            => $solvetime,
                            'takeintoaccount_delay_stat'  => $firstactiontime,

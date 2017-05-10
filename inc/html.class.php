@@ -1293,7 +1293,7 @@ class Html {
 
       $menu['config']['title']       = __('Setup');
       $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
-                                             'SLA', 'Config', 'Control', 'Crontask', 'Auth',
+                                             'SLM', 'Config', 'Control', 'Crontask', 'Auth',
                                              'MailCollector', 'Link', 'Plugin');
 
       // Special items

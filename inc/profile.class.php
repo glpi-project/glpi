@@ -1448,9 +1448,9 @@ class Profile extends CommonDBTM {
                       array('itemtype'  => 'Notification',
                             'label'     => _n('Notification', 'Notifications', Session::getPluralNumber()),
                             'field'     => 'notification'),
-                      array('itemtype'  => 'SLA',
-                            'label'     => __('SLA'),
-                            'field'     => 'sla'));
+                      array('itemtype'  => 'SLM',
+                            'label'     => __('SLM'),
+                            'field'     => 'slm'));
 
       $this->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
                                                       'default_class' => 'tab_bg_2',

@@ -408,7 +408,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'CommonDropdown',
          'CommonDevice',
          'Notification',
-         'SLA',
+         'SLM',
          'Config',
          'Control',
          'Crontask',

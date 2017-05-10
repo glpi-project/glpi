@@ -35,13 +35,51 @@
 * @since version 9.1
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkRight("slm", READ);
 
-Html::header(SlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config",
-             "sla", "slalevel");
+if (empty($_GET["id"])) {
+   $_GET["id"] = "";
+}
 
-Search::show('SlaLevel');
+$ola = new OLA();
 
-Html::footer();
+if (isset($_POST["add"])) {
+   $ola->check(-1, CREATE, $_POST);
+
+   if ($newID = $ola->add($_POST)) {
+      Event::log($newID, "olas", 4, "setup",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($ola->getFormURL()."?id=".$newID);
+      }
+   }
+   Html::back();
+
+} else if (isset($_POST["purge"])) {
+   $ola->check($_POST["id"], PURGE);
+   $ola->delete($_POST, 1);
+
+   Event::log($_POST["id"], "olas", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+   $ola->redirectToList();
+
+} else if (isset($_POST["update"])) {
+   $ola->check($_POST["id"], UPDATE);
+   $ola->update($_POST);
+
+   Event::log($_POST["id"], "olas", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+   Html::back();
+
+} else {
+   Html::header(OLA::getTypeName(1), $_SERVER['PHP_SELF'], "config", "slm", "ola");
+
+   $ola->display(array('id' => $_GET["id"]));
+   Html::footer();
+}

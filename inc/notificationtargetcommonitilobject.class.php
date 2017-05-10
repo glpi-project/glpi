@@ -742,7 +742,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.creationdate##"] = Html::convDateTime($item->getField('date'));
       $datas["##$objettype.closedate##"]    = Html::convDateTime($item->getField('closedate'));
       $datas["##$objettype.solvedate##"]    = Html::convDateTime($item->getField('solvedate'));
-      $datas["##$objettype.duedate##"]      = Html::convDateTime($item->getField('due_date'));
+      $datas["##$objettype.duedate##"]      = Html::convDateTime($item->getField('time_to_resolve'));
 
       $datas["##$objettype.category##"] = '';
       if ($item->getField('itilcategories_id')) {

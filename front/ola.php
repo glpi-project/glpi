@@ -37,10 +37,10 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("sla", READ);
+Session::checkRight("slm", READ);
 
-Html::header(SLT::getTypeName(1), $_SERVER['PHP_SELF'], "config", "sla", "slt");
+Html::header(OLA::getTypeName(1), $_SERVER['PHP_SELF'], "config", "slm", "ola");
 
-Search::show('SLT');
+Search::show('OLA');
 
 Html::footer();

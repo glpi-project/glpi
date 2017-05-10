@@ -157,9 +157,10 @@ class RuleTicket extends Rule {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
                case "send" :
+                  //recall & recall_ola
                   $ticket = new Ticket();
                   if ($ticket->getFromDB($output['id'])) {
-                     NotificationEvent::raiseEvent('recall', $ticket);
+                     NotificationEvent::raiseEvent($action->fields['field'], $ticket);
                   }
                   break;
 
@@ -206,6 +207,15 @@ class RuleTicket extends Rule {
                      foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
                         $output['_groups_id_of_requester'][$g['id']] = $g['id'];
                      }
+                  }
+
+                  // Special case of slas_ttr_id & slas_tto_id & olas_ttr_id & olas_tto_id
+                  if ($action->fields["field"] === 'slas_ttr_id'
+                      || $action->fields["field"] === 'slas_tto_id'
+                      ||$action->fields["field"] === 'olas_ttr_id'
+                      || $action->fields["field"] === 'olas_tto_id') {
+                     $output['_'.$action->fields["field"]] = $action->fields["value"];
+
                   }
                   break;
 
@@ -453,21 +463,37 @@ class RuleTicket extends Rule {
       $criterias['_x-priority']['table']                    = '';
       $criterias['_x-priority']['type']                     = 'text';
 
-      $criterias['slts_ttr_id']['table']                    = 'glpi_slts';
-      $criterias['slts_ttr_id']['field']                    = 'name';
-      $criterias['slts_ttr_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLT'),
+      $criterias['slas_ttr_id']['table']                    = 'glpi_slas';
+      $criterias['slas_ttr_id']['field']                    = 'name';
+      $criterias['slas_ttr_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLA'),
                                                                       __('Time to resolve'));
-      $criterias['slts_ttr_id']['linkfield']                = 'slts_ttr_id';
-      $criterias['slts_ttr_id']['type']                     = 'dropdown';
-      $criterias['slts_ttr_id']['condition']                = "`glpi_slts`.`type` = '".SLT::TTR."'";
+      $criterias['slas_ttr_id']['linkfield']                = 'slas_ttr_id';
+      $criterias['slas_ttr_id']['type']                     = 'dropdown';
+      $criterias['slas_ttr_id']['condition']                = "`glpi_slas`.`type` = '".SLM::TTR."'";
 
-      $criterias['slts_tto_id']['table']                    = 'glpi_slts';
-      $criterias['slts_tto_id']['field']                    = 'name';
-      $criterias['slts_tto_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLT'),
+      $criterias['slas_tto_id']['table']                    = 'glpi_slas';
+      $criterias['slas_tto_id']['field']                    = 'name';
+      $criterias['slas_tto_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLA'),
                                                                       __('Time to own'));
-      $criterias['slts_tto_id']['linkfield']                = 'slts_tto_id';
-      $criterias['slts_tto_id']['type']                     = 'dropdown';
-      $criterias['slts_tto_id']['condition']                = "`glpi_slts`.`type` = '".SLT::TTO."'";
+      $criterias['slas_tto_id']['linkfield']                = 'slas_tto_id';
+      $criterias['slas_tto_id']['type']                     = 'dropdown';
+      $criterias['slas_tto_id']['condition']                = "`glpi_slas`.`type` = '".SLM::TTO."'";
+
+      $criterias['olas_ttr_id']['table']                    = 'glpi_olas';
+      $criterias['olas_ttr_id']['field']                    = 'name';
+      $criterias['olas_ttr_id']['name']                     = sprintf(__('%1$s %2$s'), __('OLA'),
+                                                                      __('Time to resolve'));
+      $criterias['olas_ttr_id']['linkfield']                = 'olas_ttr_id';
+      $criterias['olas_ttr_id']['type']                     = 'dropdown';
+      $criterias['olas_ttr_id']['condition']                = "`glpi_olas`.`type` = '".SLM::TTR."'";
+
+      $criterias['olas_tto_id']['table']                    = 'glpi_olas';
+      $criterias['olas_tto_id']['field']                    = 'name';
+      $criterias['olas_tto_id']['name']                     = sprintf(__('%1$s %2$s'), __('OLA'),
+                                                                      __('Time to own'));
+      $criterias['olas_tto_id']['linkfield']                = 'olas_tto_id';
+      $criterias['olas_tto_id']['type']                     = 'dropdown';
+      $criterias['olas_tto_id']['condition']                = "`glpi_olas`.`type` = '".SLM::TTO."'";
 
       return $criterias;
    }
@@ -558,21 +584,37 @@ class RuleTicket extends Rule {
       $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
                                                                     'affectbymac');
 
-      $actions['slts_ttr_id']['table']                      = 'glpi_slts';
-      $actions['slts_ttr_id']['field']                      = 'name';
-      $actions['slts_ttr_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLT'),
+      $actions['slas_ttr_id']['table']                      = 'glpi_slas';
+      $actions['slas_ttr_id']['field']                      = 'name';
+      $actions['slas_ttr_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLA'),
                                                                       __('Time to resolve'));
-      $actions['slts_ttr_id']['linkfield']                  = 'slts_ttr_id';
-      $actions['slts_ttr_id']['type']                       = 'dropdown';
-      $actions['slts_ttr_id']['condition']                  = "`glpi_slts`.`type` = '".SLT::TTR."'";
+      $actions['slas_ttr_id']['linkfield']                  = 'slas_ttr_id';
+      $actions['slas_ttr_id']['type']                       = 'dropdown';
+      $actions['slas_ttr_id']['condition']                  = "`glpi_slas`.`type` = '".SLM::TTR."'";
 
-      $actions['slts_tto_id']['table']                      = 'glpi_slts';
-      $actions['slts_tto_id']['field']                      = 'name';
-      $actions['slts_tto_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLT'),
+      $actions['slas_tto_id']['table']                      = 'glpi_slas';
+      $actions['slas_tto_id']['field']                      = 'name';
+      $actions['slas_tto_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLA'),
                                                                       __('Time to own'));
-      $actions['slts_tto_id']['linkfield']                  = 'slts_tto_id';
-      $actions['slts_tto_id']['type']                       = 'dropdown';
-      $actions['slts_tto_id']['condition']                  = "`glpi_slts`.`type` = '".SLT::TTO."'";
+      $actions['slas_tto_id']['linkfield']                  = 'slas_tto_id';
+      $actions['slas_tto_id']['type']                       = 'dropdown';
+      $actions['slas_tto_id']['condition']                  = "`glpi_slas`.`type` = '".SLM::TTO."'";
+
+      $actions['olas_ttr_id']['table']                      = 'glpi_olas';
+      $actions['olas_ttr_id']['field']                      = 'name';
+      $actions['olas_ttr_id']['name']                       = sprintf(__('%1$s %2$s'), __('OLA'),
+                                                                      __('Time to resolve'));
+      $actions['olas_ttr_id']['linkfield']                  = 'olas_ttr_id';
+      $actions['olas_ttr_id']['type']                       = 'dropdown';
+      $actions['olas_ttr_id']['condition']                  = "`glpi_olas`.`type` = '".SLM::TTR."'";
+
+      $actions['olas_tto_id']['table']                      = 'glpi_olas';
+      $actions['olas_tto_id']['field']                      = 'name';
+      $actions['olas_tto_id']['name']                       = sprintf(__('%1$s %2$s'), __('OLA'),
+                                                                      __('Time to own'));
+      $actions['olas_tto_id']['linkfield']                  = 'olas_tto_id';
+      $actions['olas_tto_id']['type']                       = 'dropdown';
+      $actions['olas_tto_id']['condition']                  = "`glpi_olas`.`type` = '".SLM::TTO."'";
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),

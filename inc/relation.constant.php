@@ -58,7 +58,7 @@ $RELATION = array("glpi_authldaps"
                   "glpi_calendars"
                         => array('_glpi_calendarsegments'   => 'calendars_id',
                                  '_glpi_calendars_holidays' => 'calendars_id',
-                                 'glpi_slas'                => 'calendars_id',
+                                 'glpi_slms'                => 'calendars_id',
                                  'glpi_entities'            => 'calendars_id',),
 
                   "glpi_cartridgeitems"
@@ -231,7 +231,7 @@ $RELATION = array("glpi_authldaps"
                                  '_glpi_reservationitems'               => 'entities_id',
                                  'glpi_rules'                           => 'entities_id',
                                  '_glpi_slalevels'                      => 'entities_id',
-                                 'glpi_slas'                            => 'entities_id',
+                                 'glpi_slms'                            => 'entities_id',
                                  'glpi_softwarelicenses'                => 'entities_id',
                                  'glpi_softwareversions'                => 'entities_id',
                                  'glpi_softwares'                       => 'entities_id',
@@ -489,10 +489,21 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_tickets'           => 'ttr_slalevels_id',
                                  'glpi_slalevels_tickets' => 'slalevels_id'),
 
-                  "glpi_slts"
-                        => array('glpi_slalevels' => 'slts_id',
-                                 'glpi_tickets'   => array('slts_ttr_id',
-                                                           'slts_tto_id')),
+                  "glpi_slas"
+                        => array('glpi_slalevels' => 'slas_id',
+                                 'glpi_tickets'   => array('slas_ttr_id',
+                                                           'slas_tto_id')),
+
+                  "glpi_olalevels"
+                  => array('glpi_olalevelactions'   => 'olalevels_id',
+                           'glpi_olalevelcriterias' => 'olalevels_id',
+                           'glpi_tickets'           => 'ttr_olalevels_id',
+                           'glpi_olalevels_tickets' => 'olalevels_id'),
+
+                  "glpi_olas"
+                        => array('glpi_slalevels' => 'slas_id',
+                                 'glpi_tickets'   => array('olas_ttr_id',
+                                                           'olas_tto_id')),
 
                   "glpi_softwarecategories"
                         => array('glpi_softwares' => 'softwarecategories_id',

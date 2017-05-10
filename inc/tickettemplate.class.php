@@ -105,15 +105,26 @@ class TicketTemplate extends CommonDropdown {
 
          $ttp              = new TicketTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypeandcategory);
-         // Compute due_date
-         if (isset($this->predefined['due_date'])) {
-            $this->predefined['due_date']
-                        = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
+         // Compute time_to_resolve
+         if (isset($this->predefined['time_to_resolve'])) {
+            $this->predefined['time_to_resolve']
+                        = Html::computeGenericDateTimeSearch($this->predefined['time_to_resolve'], false);
          }
          if (isset($this->predefined['time_to_own'])) {
             $this->predefined['time_to_own']
                         = Html::computeGenericDateTimeSearch($this->predefined['time_to_own'], false);
          }
+
+         // Compute internal_time_to_resolve
+         if (isset($this->predefined['internal_time_to_resolve'])) {
+            $this->predefined['internal_time_to_resolve']
+               = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_resolve'], false);
+         }
+         if (isset($this->predefined['internal_time_to_own'])) {
+            $this->predefined['internal_time_to_own']
+               = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_own'], false);
+         }
+
          // Compute date
          if (isset($this->predefined['date'])) {
             $this->predefined['date']
@@ -173,14 +184,22 @@ class TicketTemplate extends CommonDropdown {
                                                                          => 'requesttypes_id',
                      $ticket->getSearchOptionIDByField('field', 'completename',
                                                        'glpi_locations') => 'locations_id',
-                     $ticket->getSearchOptionIDByField('field', 'slts_tto_id',
-                                                       'glpi_slts')      => 'slts_tto_id',
-                     $ticket->getSearchOptionIDByField('field', 'slts_ttr_id',
-                                                       'glpi_slts')      => 'slts_ttr_id',
-                     $ticket->getSearchOptionIDByField('field', 'due_date',
-                                                       'glpi_tickets')   => 'due_date',
+                     $ticket->getSearchOptionIDByField('field', 'slas_tto_id',
+                                                       'glpi_slas')      => 'slas_tto_id',
+                     $ticket->getSearchOptionIDByField('field', 'slas_ttr_id',
+                                                       'glpi_slas')      => 'slas_ttr_id',
+                     $ticket->getSearchOptionIDByField('field', 'olas_tto_id',
+                                                       'glpi_olas')      => 'olas_tto_id',
+                     $ticket->getSearchOptionIDByField('field', 'olas_ttr_id',
+                                                       'glpi_olas')      => 'olas_ttr_id',
+                     $ticket->getSearchOptionIDByField('field', 'time_to_resolve',
+                                                       'glpi_tickets')   => 'time_to_resolve',
                      $ticket->getSearchOptionIDByField('field', 'time_to_own',
                                                        'glpi_tickets')   => 'time_to_own',
+                     $ticket->getSearchOptionIDByField('field', 'internal_time_to_resolve',
+                                                       'glpi_tickets')   => 'internal_time_to_resolve',
+                     $ticket->getSearchOptionIDByField('field', 'internal_time_to_own',
+                                                       'glpi_tickets')   => 'internal_time_to_own',
                      $ticket->getSearchOptionIDByField('field', 'date',
                                                        'glpi_tickets')   => 'date',
                      $ticket->getSearchOptionIDByField('field', 'actiontime',

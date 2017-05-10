@@ -40,23 +40,28 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * SLA Class
+ * @since version 9.1
 **/
-class SLA extends CommonDBTM {
+class SLA extends CommonDBChild {
 
    // From CommonDBTM
-   public $dohistory                   = true;
+   var $dohistory                      = true;
 
-   static protected $forward_entity_to = array('SLT');
+   // From CommonDBChild
+   static public $itemtype             = 'SLM';
+   static public $items_id             = 'slms_id';
 
-   static $rightname                   = 'sla';
+   static $rightname                   = 'slm';
+
+   static protected $forward_entity_to = array('SLALevel');
 
    static function getTypeName($nb=0) {
-      // Acronymous, no plural
       return __('SLA');
    }
 
+
    /**
-    * Force calendar of the SLA if value -1: calendar of the entity
+    * Define calendar of the ticket using the SLA when using this calendar as sla-s calendar
     *
     * @param $calendars_id calendars_id of the ticket
    **/
@@ -67,21 +72,81 @@ class SLA extends CommonDBTM {
       }
    }
 
+
    function defineTabs($options=array()) {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('SLT', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('SlaLevel', $ong, $options);
+      $this->addStandardTab('Rule', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
 
       return $ong;
    }
 
-   function cleanDBonPurge() {
+   /**
+    * @see CommonDBTM::getFromDB
+   **/
+   function getFromDB($ID) {
+      if (!parent::getFromDB($ID)) {
+         return false;
+      }
 
-      $slt = new SLT();
-      $slt->cleanDBonItemDelete('SLA', $this->fields['id']);
+      // get calendar from sla
+      $slm = new SLM;
+      if ($slm->getFromDB($this->fields['slms_id'])) {
+         $this->fields['calendars_id'] = $slm->fields['calendars_id'];
+         return true;
+      } else {
+         return false;
+      }
    }
+
+
+   /**
+    * @see CommonDBTM::post_getEmpty()
+   */
+   function post_getEmpty() {
+      $this->fields['number_time'] = 4;
+      $this->fields['definition_time'] = 'hour';
+   }
+
+
+   function cleanDBonPurge() {
+      global $DB;
+
+      // Clean sla_levels
+      $query = "SELECT `id`
+                FROM `glpi_slalevels`
+                WHERE `slas_id` = '".$this->fields['id']."'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
+            $slalevel = new SlaLevel();
+            while ($data = $DB->fetch_assoc($result)) {
+               $slalevel->delete($data);
+            }
+         }
+      }
+
+      // Update tickets : clean SLA
+      list($dateField, $slaField) = self::getSlaFieldNames($this->fields['type']);
+      $query = "SELECT `id`
+                FROM `glpi_tickets`
+                WHERE `$slaField` = '".$this->fields['id']."'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
+            $ticket = new Ticket();
+            while ($data = $DB->fetch_assoc($result)) {
+               $ticket->deleteSLA($data['id'], $this->fields['type']);
+            }
+         }
+      }
+
+      Rule::cleanForItemAction($this);
+   }
+
 
    /**
     * Print the sla form
@@ -95,9 +160,31 @@ class SLA extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 2;
+      $rowspan = 4;
+      if ($ID > 0) {
+         $rowspan = 6;
+      }
 
-      $this->initForm($ID, $options);
+      // Get SLM object
+      $slm = new SLM();
+      if (isset($options['parent'])) {
+         $slm = $options['parent'];
+      } else {
+         $slm->getFromDB($this->fields['slms_id']);
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $options[static::$items_id] = $slm->getField('id');
+
+         //force itemtype of parent
+//         static::$itemtype = get_class($slm);
+
+         $this->check(-1, CREATE, $options);
+      }
+
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -108,17 +195,427 @@ class SLA extends CommonDBTM {
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('SLM')."</td>";
       echo "<td>";
-
-      Calendar::dropdown(array('value'      => $this->fields["calendars_id"],
-                               'emptylabel' => __('24/7'),
-                               'toadd'      => array('-1' => __('Calendar of the ticket'))));
+      echo $slm->getLink();
+      echo "<input type='hidden' name='slms_id' value='".$this->fields['slms_id']."'>";
       echo "</td></tr>";
+
+      if ($ID > 0) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Last update')."</td>";
+         echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
+                                                : __('Never'));
+         echo "</td></tr>";
+      }
+
+      echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
+      echo "<td>";
+      self::getSlaTypeDropdown(array('value' => $this->fields["type"]));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td>".__('Maximum time')."</td>";
+      echo "<td>";
+      Dropdown::showNumber("number_time", array('value' => $this->fields["number_time"],
+                                                    'min'   => 0));
+      $possible_values = array('minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
+                               'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
+                               'day'      => _n('Day', 'Days', Session::getPluralNumber()));
+      $rand = Dropdown::showFromArray('definition_time', $possible_values,
+                                      array('value'     => $this->fields["definition_time"],
+                                            'on_change' => 'appearhideendofworking()'));
+      echo "\n<script type='text/javascript' >\n";
+      echo "function appearhideendofworking() {\n";
+      echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
+               $('#title_endworkingday').show();
+               $('#dropdown_endworkingday').show();
+            } else {
+               $('#title_endworkingday').hide();
+               $('#dropdown_endworkingday').hide();
+            }";
+      echo "}\n";
+      echo "appearhideendofworking();\n";
+      echo "</script>\n";
+
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
+      echo "<td><div id='dropdown_endworkingday'>";
+      Dropdown::showYesNo("end_of_working_day", $this->fields["end_of_working_day"]);
+      echo "</div></td></tr>";
 
       $this->showFormButtons($options);
 
       return true;
+   }
+
+
+   /**
+    * Print the HTML array for SLAs linked to a SLA
+    *
+    * @param SLM $slm
+    * @return boolean
+    */
+   static function showForSlm(SLM $slm) {
+      global $CFG_GLPI;
+
+      $instID   = $slm->fields['id'];
+      $sla      = new self();
+      $calendar = new Calendar();
+
+      if (!$slm->can($instID, READ)) {
+         return false;
+      }
+
+      $canedit = ($slm->canEdit($instID)
+                  && isset($_SESSION["glpiactiveprofile"])
+                  && $_SESSION["glpiactiveprofile"]["interface"] == "central");
+
+      $rand = mt_rand();
+
+      if ($canedit) {
+         echo "<div id='viewsla$instID$rand'></div>\n";
+
+         echo "<script type='text/javascript' >";
+         echo "function viewAddSla$instID$rand() {";
+         $params = array('type'                     => $sla->getType(),
+                         'parenttype'               => $slm->getType(),
+                         $slm->getForeignKeyField() => $instID,
+                         'id'                       => -1);
+         Ajax::updateItemJsCode("viewsla$instID$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "}";
+         echo "</script>";
+         echo "<div class='center firstbloc'>".
+               "<a class='vsubmit' href='javascript:viewAddSla$instID$rand();'>";
+         echo __('Add a new SLA')."</a></div>\n";
+      }
+
+      // SLA list
+      $slaList = $sla->find("`slms_id` = '".$instID."'");
+      Session::initNavigateListItems('SLA',
+      //TRANS : %1$s is the itemtype name,
+      //       %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'), $slm::getTypeName(1), $slm->getName()));
+      echo "<div class='spaced'>";
+      if (count($slaList)) {
+         if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions($massiveactionparams);
+         }
+
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_top .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_top .= "</th>";
+            $header_bottom .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= "</th>";
+         }
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Maximum time')."</th>";
+         $header_end .= "<th>".__('Calendar')."</th>";
+
+         echo $header_begin.$header_top.$header_end;
+         foreach ($slaList as $val) {
+            $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditSla".
+                        $instID.$val["id"]."$rand();\""
+                        : '');
+            echo "\n<script type='text/javascript' >\n";
+            echo "function viewEditSla". $instID.$val["id"]."$rand() {\n";
+            $params = array('type'                     => $sla->getType(),
+                            'parenttype'               => $slm->getType(),
+                            $slm->getForeignKeyField() => $instID,
+                            'id'                       => $val["id"]);
+            Ajax::updateItemJsCode("viewsla$instID$rand",
+                                   $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+            echo "};";
+            echo "</script>\n";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td width='10' $edit>";
+            if ($canedit) {
+               Html::showMassiveActionCheckBox($sla->getType(), $val['id']);
+            }
+            echo "</td>";
+            $sla->getFromDB($val['id']);
+            echo "<td $edit>".$sla->getLink()."</td>";
+            echo "<td $edit>".$sla->getSpecificValueToDisplay('type', $sla->fields['type'])."</td>";
+            echo "<td $edit>";
+            echo $sla->getSpecificValueToDisplay('number_time',
+                  array('number_time'     => $sla->fields['number_time'],
+                        'definition_time' => $sla->fields['definition_time']));
+            echo "</td>";
+            if (!$slm->fields['calendars_id']) {
+               $link =  __('24/7');
+            } else if ($slm->fields['calendars_id'] == -1) {
+               $link = __('Calendar of the ticket');
+            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
+               $link = $calendar->getLink();
+            }
+            echo "<td $edit>".$link."</td>";
+            echo "</tr>";
+         }
+         echo $header_begin.$header_bottom.$header_end;
+         echo "</table>";
+
+         if ($canedit) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      } else {
+         echo __('No item to display');
+      }
+      echo "</div>";
+   }
+
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+
+      if (!$withtemplate) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'SLM' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_slas', ['slms_id' => $item->getField('id')]);
+               }
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+         }
+      }
+      return '';
+   }
+
+
+   /**
+    *
+    * @param $item            CommonGLPI item
+    * @param $tabnum          (default 1)
+    * @param $withtemplate    (default 0)
+    *
+    * @return boolean
+   **/
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'SLM' :
+            self::showForSlm($item);
+            break;
+      }
+      return true;
+   }
+
+
+   /**
+    * Get SLA data by type and ticket
+    *
+    * @param $tickets_id
+    * @param $type
+    */
+   function getSlaDataForTicket($tickets_id, $type) {
+
+      switch ($type) {
+         case SLM::TTR :
+            $field = 'slas_ttr_id';
+            break;
+
+         case SLM::TTO :
+            $field = 'slas_tto_id';
+            break;
+      }
+      return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
+   }
+
+
+    /**
+    * Get SLA datas by condition
+    *
+    * @param $condition
+   **/
+   function getSlaData($condition) {
+      return $this->find($condition);
+   }
+
+
+   /**
+    * Get SLA table fields
+    *
+    * @param $type
+    *
+    * @return array
+   **/
+   static function getSlaFieldNames($type) {
+
+      $dateField = null;
+      $slaField  = null;
+
+      switch ($type) {
+         case SLM::TTO:
+            $dateField = 'time_to_own';
+            $slaField  = 'slas_tto_id';
+            break;
+
+         case SLM::TTR:
+            $dateField = 'time_to_resolve';
+            $slaField  = 'slas_ttr_id';
+            break;
+      }
+      return array($dateField, $slaField);
+   }
+
+
+   /**
+    * Show SLA for ticket
+    *
+    * @param $ticket      Ticket item
+    * @param $type
+    * @param $tt
+    * @param $canupdate
+   **/
+   function showSlaForTicket(Ticket $ticket, $type, $tt, $canupdate) {
+      global $CFG_GLPI;
+
+      list($dateField, $slaField) = self::getSlaFieldNames($type);
+
+      echo "<table width='100%'>";
+      echo "<tr class='tab_bg_1'>";
+
+      if (!isset($ticket->fields[$dateField]) || $ticket->fields[$dateField] == 'NULL') {
+         $ticket->fields[$dateField]='';
+      }
+
+      if ($ticket->fields['id']) {
+         if ($this->getSlaDataForTicket($ticket->fields['id'], $type)) {
+            echo "<td>";
+            echo Html::convDateTime($ticket->fields[$dateField]);
+            echo "</td>";
+            echo "<th>".__('SLA')."</th>";
+            echo "<td>";
+            echo Dropdown::getDropdownName('glpi_slas', $ticket->fields[$slaField])."&nbsp;";
+            $commentsla = "";
+            $slalevel   = new SlaLevel();
+            $nextaction = new SlaLevel_Ticket();
+            if ($nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
+               $commentsla .= '<span class="b spaced">'.
+                                sprintf(__('Next escalation: %s'),
+                                        Html::convDateTime($nextaction->fields['date'])).
+                                           '</span><br>';
+               if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
+                  $commentsla .= '<span class="b spaced">'.
+                                   sprintf(__('%1$s: %2$s'), __('Escalation level'),
+                                           $slalevel->getName()).'</span>';
+               }
+            }
+
+            $slaoptions = array();
+            if (Session::haveRight('slm', READ)) {
+               $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA').
+                                          "?id=".$this->fields["id"];
+            }
+            Html::showToolTip($commentsla, $slaoptions);
+            if ($canupdate) {
+               $fields = array('sla_delete'        => 'sla_delete',
+                               'id'                => $ticket->getID(),
+                               'type'              => $type,
+                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
+                               '_glpi_simple_form' => 1);
+               $JS = "  function delete_date$type(){
+                           if (nativeConfirm('".addslashes(__('Also delete date ?'))."')) {
+                              submitGetLink('".$ticket->getFormURL()."',
+                                            ".json_encode(array_merge($fields,
+                                                                      array('delete_date' => 1))).");
+                           } else {
+                              submitGetLink('".$ticket->getFormURL()."',
+                                            ".json_encode(array_merge($fields,
+                                                                      array('delete_date' => 0))).");
+                           }
+                        }";
+               echo Html::scriptBlock($JS);
+               echo "<a class='pointer' onclick='delete_date$type();return false;'>";
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/delete.png' title='".
+                      _x('button', 'Delete permanently')."' "
+                     . "alt='"._x('button', 'Delete permanently')."' class='pointer'>";
+               echo "</a>";
+            }
+            echo "</td>";
+
+         } else {
+            echo "<td width='200px'>";
+            echo $tt->getBeginHiddenFieldValue($dateField);
+            if ($canupdate) {
+               Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
+                                                         'timestep'   => 1,
+                                                         'maybeempty' => true));
+            } else {
+               echo Html::convDateTime($ticket->fields[$dateField]);
+            }
+            echo $tt->getEndHiddenFieldValue($dateField, $ticket);
+            echo "</td>";
+            $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
+            $sla_data     = $this->getSlaData("`type` = '$type' AND $sql_entities");
+            if ($canupdate
+                && !empty($sla_data)) {
+               echo "<td>";
+               echo $tt->getBeginHiddenFieldText($slaField);
+               echo "<span id='sla_action$type'>";
+               echo "<a ".Html::addConfirmationOnAction(array(__('The assignment of a SLA to a ticket causes the recalculation of the date.'),
+                       __("Escalations defined in the SLA will be triggered under this new date.")),
+                                                    "cleanhide('sla_action$type');cleandisplay('sla_choice$type');").
+                    " class='pointer' title='".__('SLA')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('SLA')."</span></a>";
+               echo "</span>";
+               echo "<div id='sla_choice$type' style='display:none'>";
+               echo "<span  class='b'>".__('SLA')."</span>&nbsp;";
+               Sla::dropdown(array('name'      => $slaField,
+                                   'entity'    => $ticket->fields["entities_id"],
+                                   'condition' => "`type` = '".$type."'"));
+               echo "</div>";
+               echo $tt->getEndHiddenFieldText($slaField);
+               echo "</td>";
+            }
+         }
+
+      } else { // New Ticket
+         echo "<td>";
+         echo $tt->getBeginHiddenFieldValue($dateField);
+         Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
+                                                   'timestep'   => 1,
+                                                   'maybeempty' => false,
+                                                   'canedit'    => $canupdate));
+         echo $tt->getEndHiddenFieldValue($dateField, $ticket);
+         echo "</td>";
+         $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
+         $sla_data     = $this->getSlaData("`type` = '$type' AND $sql_entities");
+         if ($canupdate
+             && !empty($sla_data)) {
+            echo "<th>".$tt->getBeginHiddenFieldText($slaField);
+            if (!$tt->isHiddenField($slaField) || $tt->isPredefinedField($slaField)) {
+               echo "<th>".sprintf(__('%1$s%2$s'), __('SLA'), $tt->getMandatoryMark($slaField))."</th>";
+            }
+            echo $tt->getEndHiddenFieldText($slaField);
+            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($slaField);
+            Sla::dropdown(array('name'      => $slaField,
+                                'entity'    => $ticket->fields["entities_id"],
+                                'value'     => isset($ticket->fields[$slaField])
+                                                  ? $ticket->fields[$slaField] : 0,
+                                'condition' => "`type` = '".$type."'"));
+            echo $tt->getEndHiddenFieldValue($slaField, $ticket);
+            echo "</td>";
+         }
+      }
+
+      echo "</tr>";
+      echo "</table>";
    }
 
 
@@ -149,43 +646,357 @@ class SLA extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '4',
-         'table'              => 'glpi_calendars',
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'number_time',
+         'name'               => __('Time'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['definition_time']
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'end_of_working_day',
+         'name'               => __('End of working day'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => __('Type'),
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_slms',
          'field'              => 'name',
-         'name'               => __('Calendar'),
+         'name'               => __('SLM'),
          'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
       ];
 
       return $tab;
    }
 
+
    /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *  @since version 9.1
+    * @param $field
+    * @param $values
+    * @param $options   array
    **/
-   static function getMenuContent() {
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
-      $menu = array();
-      if (Config::canUpdate()) {
-            $menu['title']                                  = self::getTypeName(1);
-            $menu['page']                                   = '/front/sla.php';
-            $menu['links']['search'] = '/front/sla.php';
-            $menu['links']['add']    = '/front/sla.form.php';
-
-            $menu['options']['slt']['title']                = SLT::getTypeName(1);
-            $menu['options']['slt']['page']                 = '/front/slt.php';
-            $menu['options']['slt']['links']['search']      = '/front/slt.php';
-
-            $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
-            $menu['options']['slalevel']['page']            = '/front/slalevel.php';
-            $menu['options']['slalevel']['links']['search'] = '/front/slalevel.php';
-
+      if (!is_array($values)) {
+         $values = array($field => $values);
       }
-      if (count($menu)) {
-         return $menu;
+      switch ($field) {
+         case 'number_time' :
+            switch ($values['definition_time']) {
+               case 'minute' :
+                  return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
+
+               case 'hour' :
+                  return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+
+               case 'day' :
+                  return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+            }
+            break;
+
+         case 'type' :
+            return self::getSlaTypeName($values[$field]);
       }
-      return false;
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
+
+   /**
+    * @param $field
+    * @param $name            (default '')
+    * @param $values          (default '')
+    * @param $options   array
+    *
+    * @return string
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+      switch ($field) {
+         case 'type':
+            $options['value'] = $values[$field];
+            return self::getSlaTypeDropdown($options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+
+   /**
+    * Get date based on a sla
+    *
+    * @param $start_date         datetime start date
+    * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
+    *                                     (default 0)
+    *
+    * @return due date time (NULL if slm not exists)
+   **/
+   function computeDate($start_date, $additional_delay=0) {
+
+      if (isset($this->fields['id'])) {
+         $delay = $this->getSLATime();
+         // Based on a calendar
+         if ($this->fields['calendars_id'] > 0) {
+            $cal          = new Calendar();
+            $work_in_days = ($this->fields['definition_time'] == 'day');
+
+            if ($cal->getFromDB($this->fields['calendars_id'])) {
+               return $cal->computeEndDate($start_date, $delay,
+                                           $additional_delay, $work_in_days,
+                                           $this->fields['end_of_working_day']);
+            }
+         }
+
+         // No calendar defined or invalid calendar
+         if ($this->fields['number_time'] >= 0) {
+            $starttime = strtotime($start_date);
+            $endtime   = $starttime+$delay+$additional_delay;
+            return date('Y-m-d H:i:s', $endtime);
+         }
+      }
+
+      return NULL;
+   }
+
+
+   /**
+    * Get computed resolution time
+    *
+    * @return resolution time
+   **/
+   function getSLATime() {
+
+      if (isset($this->fields['id'])) {
+         if ($this->fields['definition_time'] == "minute") {
+            return $this->fields['number_time'] * MINUTE_TIMESTAMP;
+         }
+         if ($this->fields['definition_time'] == "hour") {
+            return $this->fields['number_time'] * HOUR_TIMESTAMP;
+         }
+         if ($this->fields['definition_time'] == "day") {
+            return $this->fields['number_time'] * DAY_TIMESTAMP;
+         }
+      }
+      return 0;
+   }
+
+
+   /**
+    * Get execution date of a sla level
+    *
+    * @param $start_date         datetime    start date
+    * @param $slalevels_id       integer     sla level id
+    * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
+    *                                        (default 0)
+    *
+    * @return execution date time (NULL if sla not exists)
+   **/
+   function computeExecutionDate($start_date, $slalevels_id, $additional_delay=0) {
+
+      if (isset($this->fields['id'])) {
+         $slalevel = new SlaLevel();
+
+         if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
+            if ($slalevel->fields['slas_id'] == $this->fields['id']) { // correct sla level
+               $work_in_days = ($this->fields['definition_time'] == 'day');
+               $delay        = $this->getSLATime();
+
+               // Based on a calendar
+               if ($this->fields['calendars_id'] > 0) {
+                  $cal = new Calendar();
+                  if ($cal->getFromDB($this->fields['calendars_id'])) {
+                     return $cal->computeEndDate($start_date, $delay,
+                                                 $slalevel->fields['execution_time'] + $additional_delay,
+                                                 $work_in_days);
+                  }
+               }
+               // No calendar defined or invalid calendar
+               $delay    += $additional_delay+$slalevel->fields['execution_time'];
+               $starttime = strtotime($start_date);
+               $endtime   = $starttime+$delay;
+               return date('Y-m-d H:i:s', $endtime);
+            }
+         }
+      }
+      return NULL;
+   }
+
+
+   /**
+    * Get active time between to date time for the active calendar
+    *
+    * @param $start  datetime begin
+    * @param $end    datetime end
+    *
+    * @return timestamp of delay
+   **/
+   function getActiveTimeBetween($start, $end) {
+
+      if ($end < $start) {
+         return 0;
+      }
+
+      if (isset($this->fields['id'])) {
+         $cal          = new Calendar();
+         $work_in_days = ($this->fields['definition_time'] == 'day');
+
+         // Based on a calendar
+         if ($this->fields['calendars_id'] > 0) {
+            if ($cal->getFromDB($this->fields['calendars_id'])) {
+               return $cal->getActiveTimeBetween($start, $end, $work_in_days);
+            }
+
+         } else { // No calendar
+            $timestart = strtotime($start);
+            $timeend   = strtotime($end);
+            return ($timeend-$timestart);
+         }
+      }
+      return 0;
+   }
+
+
+   /**
+    * Add a level to do for a ticket
+    *
+    * @param $ticket          Ticket object
+    * @param $slalevels_id
+    *
+    * @return execution date time (NULL if sla not exists)
+   **/
+   function addLevelToDo(Ticket $ticket, $slalevels_id = 0) {
+
+//      $slalevels_id = ($slalevels_id ? $slalevels_id
+//                                     : $ticket->fields["ttr_slalevels_id"]);
+      if ($ticket->fields["ttr_slalevels_id"] > 0) {
+         $toadd = array();
+         $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
+                                             $ticket->fields['sla_waiting_duration']);
+         if ($date != null) {
+            $toadd['date']         = $date;
+            $toadd['slalevels_id'] = $slalevels_id;
+            $toadd['tickets_id']   = $ticket->fields["id"];
+            $slalevelticket        = new SlaLevel_Ticket();
+            $slalevelticket->add($toadd);
+         }
+      }
+   }
+
+
+   /**
+    * Add a level to do for a ticket
+    *
+    * @param $ticket Ticket object
+    *
+    * @return execution date time (NULL if sla not exists)
+   **/
+   static function deleteLevelsToDo(Ticket $ticket) {
+      global $DB;
+
+      if ($ticket->fields["ttr_slalevels_id"] > 0) {
+         $query = "SELECT *
+                   FROM `glpi_slalevels_tickets`
+                   WHERE `tickets_id` = '".$ticket->fields["id"]."'";
+
+         $slalevelticket = new SlaLevel_Ticket();
+         foreach ($DB->request($query) as $data) {
+            $slalevelticket->delete(array('id' => $data['id']));
+         }
+      }
+   }
+
+
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
+   function prepareInputForAdd($input) {
+
+      if ($input['definition_time'] != 'day') {
+         $input['end_of_working_day'] = 0;
+      }
+      return $input;
+   }
+
+
+   /**
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      if (isset($input['definition_time']) && $input['definition_time'] != 'day') {
+         $input['end_of_working_day'] = 0;
+      }
+      return $input;
+   }
+
+   /**
+    * Get SLA types
+    *
+    * @return array of types
+    **/
+   static function getSlaTypes() {
+
+      return array(SLM::TTO => __('Time to own'),
+                   SLM::TTR => __('Time to resolve'));
+   }
+
+
+   /**
+    * Get SLA types name
+    *
+    * @param type $type
+    * @return string name
+    **/
+   static function getSlaTypeName($type) {
+
+      $types = self::getSlaTypes();
+      $name  = null;
+      if (isset($types[$type])) {
+         $name = $types[$type];
+      }
+      return $name;
+   }
+
+
+   /**
+    * Get SLA types dropdown
+    *
+    * @param $options
+    **/
+   static function getSlaTypeDropdown($options) {
+
+      $params = array('name'  => 'type');
+
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
+
+      return Dropdown::showFromArray($params['name'], self::getSlaTypes(), $options);
    }
 
 }

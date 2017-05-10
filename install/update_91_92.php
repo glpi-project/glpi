@@ -617,6 +617,181 @@ function update91to92() {
       ]);
    }
 
+
+   /** ************ New SLM structure ************ */
+   if (!TableExists('glpi_olas')) {
+      $query = "CREATE TABLE `glpi_olas` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `number_time` int(11) NOT NULL,
+                  `calendars_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+                  `date_creation` datetime DEFAULT NULL,
+                  `slms_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `calendars_id` (`calendars_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`),
+                  KEY `slms_id` (`slms_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_olas");
+
+      if (!TableExists('glpi_olalevelactions')) {
+         $query = "CREATE TABLE `glpi_olalevelactions` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `olalevels_id` int(11) NOT NULL DEFAULT '0',
+                 `action_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 KEY `olalevels_id` (`olalevels_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
+      }
+
+      if (!TableExists('glpi_olalevelcriterias')) {
+         $query = "CREATE TABLE `glpi_olalevelcriterias` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `olalevels_id` int(11) NOT NULL DEFAULT '0',
+                 `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+                 `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 KEY `olalevels_id` (`olalevels_id`),
+                 KEY `condition` (`condition`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
+      }
+
+      if (!TableExists('glpi_olalevels')) {
+         $query = "CREATE TABLE `glpi_olalevels` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `olas_id` int(11) NOT NULL DEFAULT '0',
+                 `execution_time` int(11) NOT NULL,
+                 `is_active` tinyint(1) NOT NULL DEFAULT '1',
+                 `entities_id` int(11) NOT NULL DEFAULT '0',
+                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                 `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
+                 `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 KEY `name` (`name`),
+                 KEY `is_active` (`is_active`),
+                 KEY `olas_id` (`olas_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
+      }
+
+      if (!TableExists('glpi_olalevels_tickets')) {
+         $query = "CREATE TABLE `glpi_olalevels_tickets` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `tickets_id` int(11) NOT NULL DEFAULT '0',
+                    `olalevels_id` int(11) NOT NULL DEFAULT '0',
+                    `date` datetime DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `tickets_id` (`tickets_id`),
+                    KEY `olalevels_id` (`olalevels_id`),
+                    KEY `unicity` (`tickets_id`,`olalevels_id`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
+      }
+
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('OlaLevel_Ticket', 'olaticket', 604800, NULL, 0, 1, 3,
+                        0, 24, 10, NULL, NULL, NULL); ";
+      $DB->queryOrDie($query, "9.2 populate glpi_crontasks for olaticket");
+
+      // Changing the structure of the table 'glpi_slas'
+      $migration->renameTable('glpi_slas', 'glpi_slms');
+
+      // Changing the structure of the table 'glpi_slts'
+      $migration->renameTable('glpi_slts', 'glpi_slas');
+      $migration->changeField('glpi_slas', 'slas_id', 'slms_id', 'integer');
+      $migration->migrationOneTable('glpi_slas');
+      $migration->dropKey('glpi_slas', 'slas_id');
+      $migration->addKey('glpi_slas', 'slms_id');
+
+      // Slalevels changes
+      $migration->changeField('glpi_slalevels', 'slts_id', 'slas_id', 'integer');
+      $migration->migrationOneTable('glpi_slalevels');
+      $migration->dropKey('glpi_slalevels', 'slts_id');
+      $migration->addKey('glpi_slalevels', 'slas_id');
+
+      // Ticket changes
+      $migration->changeField("glpi_tickets", "slts_tto_id", "slas_tto_id", "integer");
+      $migration->changeField("glpi_tickets", "slts_ttr_id", "slas_ttr_id", "integer");
+      $migration->changeField('glpi_tickets', 'due_date', 'time_to_resolve', 'datetime');
+      $migration->addField("glpi_tickets", "ola_waiting_duration", "datetime",
+                           array('after' => 'sla_waiting_duration'));
+      $migration->addField("glpi_tickets", "olas_tto_id", "integer", array('after' => 'ola_waiting_duration'));
+      $migration->addField("glpi_tickets", "olas_ttr_id", "integer", array('after' => 'olas_tto_id'));
+      $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", array('after' => 'olas_tto_id'));
+      $migration->addField("glpi_tickets", "internal_time_to_resolve", "datetime",
+                           array('after' => 'ttr_olalevels_id'));
+      $migration->addField("glpi_tickets", "internal_time_to_own", "datetime",
+                           array('after' => 'internal_time_to_resolve'));
+      $migration->migrationOneTable('glpi_tickets');
+      $migration->dropKey('glpi_tickets', 'slts_tto_id');
+      $migration->addKey('glpi_tickets', 'slas_tto_id');
+      $migration->dropKey('glpi_tickets', 'slts_ttr_id');
+      $migration->addKey('glpi_tickets', 'slas_ttr_id');
+      $migration->dropKey('glpi_tickets', 'due_date');
+      $migration->addKey('glpi_tickets', 'time_to_resolve');
+      $migration->addKey('glpi_tickets', 'olas_tto_id');
+      $migration->addKey('glpi_tickets', 'olas_ttr_id');
+      $migration->addKey('glpi_tickets', 'internal_time_to_resolve');
+      $migration->addKey('glpi_tickets', 'internal_time_to_own');
+
+      //Change changes
+      $migration->changeField('glpi_changes', 'due_date', 'time_to_resolve', 'datetime');
+      $migration->migrationOneTable('glpi_changes');
+      $migration->dropKey('glpi_changes', 'due_date');
+      $migration->addKey('glpi_changes', 'time_to_resolve');
+      
+      //Problem changes
+      $migration->changeField('glpi_problems', 'due_date', 'time_to_resolve', 'datetime');
+      $migration->migrationOneTable('glpi_problems');
+      $migration->dropKey('glpi_problems', 'due_date');
+      $migration->addKey('glpi_problems', 'time_to_resolve');
+
+      // ProfileRights changes
+      $DB->queryOrDie("UPDATE `glpi_profilerights`
+                       SET `name` = 'slm'
+                       WHERE `name` = 'sla'",
+                      "SLM profilerights migration");
+
+       //Sla rules criterias migration
+      $DB->queryOrDie("UPDATE `glpi_rulecriterias`
+                       SET `criteria` = 'slas_ttr_id'
+                       WHERE `criteria` = 'slts_ttr_id'",
+                      "SLA rulecriterias migration");
+
+      $DB->queryOrDie("UPDATE `glpi_rulecriterias`
+                       SET `criteria` = 'slas_tto_id'
+                       WHERE `criteria` = 'slts_tto_id'",
+                      "SLA rulecriterias migration");
+
+      // Sla rules actions migration
+      $DB->queryOrDie("UPDATE `glpi_ruleactions`
+                       SET `field` = 'slas_ttr_id'
+                       WHERE `field` = 'slts_ttr_id'",
+                      "SLA ruleactions migration");
+
+      $DB->queryOrDie("UPDATE `glpi_ruleactions`
+                       SET `field` = 'slas_tto_id'
+                       WHERE `field` = 'slts_tto_id'",
+                      "SLA ruleactions migration");
+   }
+
    /************** Auto login **************/
    Config::setConfigurationValues('core', array('login_remember_time'    => 604800,
                                                 'login_remember_default' => 1));
