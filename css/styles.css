@@ -42,7 +42,9 @@ body {
    margin: 0;
    padding: 0;
    background:  #f8f7f3;
-
+   height: auto;
+   min-height: 100%;
+   position: relative;
 }
 
 body.iframed {
@@ -2007,10 +2009,9 @@ a.icon_nav_move:hover img {
 /* ################--------------- Login Null Header  ---------------#################### */
 
 #firstboxlogin {
-   position: absolute;
-   top: 0;
-   bottom: 0;
    width: 100%;
+   min-height: 100%;
+   min-height: 100vh; /* double min-height, some old browser don't have vh units support*/
 }
 
 #logo_login {
@@ -3493,7 +3494,6 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    }
 
    #firstboxlogin {
-      position: fixed;
       overflow-y: auto;
    }
 
