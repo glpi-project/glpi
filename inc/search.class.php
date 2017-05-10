@@ -251,14 +251,7 @@ class Search {
                   $data['search']['view_search'] = true;
                }
             }
-            if (isset($val['value']) && (strlen($val['value']) > 0)) {
-               $data['search']['no_search'] = false;
-            }
          }
-      }
-
-      if (count($p['metacriteria'])) {
-         $data['search']['no_search'] = false;
       }
 
 
@@ -438,6 +431,8 @@ class Search {
       }
       $WHERE  = "";
       $HAVING = "";
+      //store fields using HAVING; used for the count query
+      $HAVINGFIELDS = [];
 
       // Add search conditions
       // If there is search items
@@ -470,7 +465,7 @@ class Search {
                      $item_num = array_search($criteria['field'], $data['tocompute']);
                      $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'],
                                                  $criteria['field'], $criteria['searchtype'],
-                                                 $criteria['value'], 0, $item_num);
+                                                 $criteria['value'], 0, $item_num, $HAVINGFIELDS);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
@@ -626,7 +621,7 @@ class Search {
                   }
                   $HAVING .= self::addHaving($LINK, $NOT, $metacriteria['itemtype'],
                                              $metacriteria['field'], $metacriteria['searchtype'],
-                                             $metacriteria['value'], 1, $metanum);
+                                             $metacriteria['value'], 1, $metanum, $HAVINGFIELDS);
                } else { // Meta Where Search
                   $LINK = " ";
                   $NOT  = 0;
@@ -683,90 +678,11 @@ class Search {
       }
 
       $LIMIT   = "";
-      $numrows = 0;
-      //No search : count number of items using a simple count(ID) request and LIMIT search
-      if ($data['search']['no_search']) {
+      if ($data['search']['list_limit']) {
          $LIMIT = " LIMIT ".$data['search']['start'].", ".$data['search']['list_limit'];
-
-         // Force group by for all the type -> need to count only on table ID
-         if (!isset($searchopt[1]['forcegroupby'])) {
-            $count = "count(*)";
-         } else {
-            $count = "count(DISTINCT `$itemtable`.`id`)";
-         }
-         // request currentuser for SQL supervision, not displayed
-         $query_num = "SELECT $count,
-                              '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser
-                       FROM `$itemtable`".
-                       $COMMONLEFTJOIN;
-
-         $first     = true;
-
-         if (!empty($COMMONWHERE)) {
-            $LINK = " AND " ;
-            if ($first) {
-               $LINK  = " WHERE ";
-               $first = false;
-            }
-            $query_num .= $LINK.$COMMONWHERE;
-         }
-         // Union Search :
-         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-            $tmpquery = $query_num;
-            $numrows  = 0;
-
-            foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$data['itemtype']]] as $ctype) {
-               $ctable = getTableForItemType($ctype);
-               if (($citem = getItemForItemtype($ctype))
-                   && $citem->canView()) {
-                  // State case
-                  if ($data['itemtype'] == 'AllAssets') {
-                     $query_num  = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                               $ctable, $tmpquery);
-                     $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
-                     $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
-
-                     // Add deleted if item have it
-                     if ($citem && $citem->maybeDeleted()) {
-                        $query_num .= " AND `$ctable`.`is_deleted` = '0' ";
-                     }
-
-                     // Remove template items
-                     if ($citem && $citem->maybeTemplate()) {
-                        $query_num .= " AND `$ctable`.`is_template` = '0' ";
-                     }
-
-                  } else {// Ref table case
-                     $reftable = getTableForItemType($data['itemtype']);
-                     if ($data['item'] && $data['item']->maybeDeleted()) {
-                        $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
-                                                   `is_deleted`",
-                                                "`$reftable`.`is_deleted`", $tmpquery);
-                     }
-                     $replace  = "FROM `$reftable`
-                                  INNER JOIN `$ctable`
-                                       ON (`$reftable`.`items_id` =`$ctable`.`id`
-                                           AND `$reftable`.`itemtype` = '$ctype')";
-
-                     $query_num = str_replace("FROM `".
-                                                $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
-                                              $replace, $tmpquery);
-                     $query_num = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                              $ctable, $query_num);
-
-                  }
-                  $query_num = str_replace("ENTITYRESTRICT",
-                                           getEntitiesRestrictRequest('', $ctable, '', '',
-                                                                      $citem->maybeRecursive()),
-                                           $query_num);
-                  $data['sql']['count'][] = $query_num;
-               }
-            }
-
-         } else {
-            $data['sql']['count'][] = $query_num;
-         }
       }
+
+      $numrows = 0;
 
       // If export_all reset LIMIT condition
       if ($data['search']['export_all']) {
@@ -784,8 +700,10 @@ class Search {
 
       if (!empty($HAVING)) {
          $HAVING = ' HAVING '.$HAVING;
+      } else {
+         //well... reset havingfields.
+         $HAVINGFIELDS = [];
       }
-
 
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
@@ -805,9 +723,8 @@ class Search {
                if ($data['itemtype'] == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
-                              $WHERE;
-
-                  $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                              $WHERE.
+                              " AND `$ctable`.`id` IS NOT NULL ";
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
@@ -819,12 +736,19 @@ class Search {
                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
                   }
 
-                  $tmpquery.= $GROUPBY.
-                              $HAVING;
+                  $tmpquery .= $GROUPBY . $HAVING;
 
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
-                  $tmpquery = str_replace($data['itemtype'], $ctype, $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        $CFG_GLPI["union_search_type"][$data['itemtype']],
+                        $data['itemtype']
+                     ],
+                     [
+                        $ctable,
+                        $ctype
+                     ],
+                     $tmpquery
+                  );
 
                } else {// Ref table case
                   $reftable = getTableForItemType($data['itemtype']);
@@ -834,31 +758,53 @@ class Search {
                                       `$ctable`.`entities_id` AS ENTITY ".
                               $FROM.
                               $WHERE;
+
                   if ($data['item']->maybeDeleted()) {
-                     $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.
-                                                `is_deleted`",
-                                             "`$reftable`.`is_deleted`", $tmpquery);
+                     $tmpquery = str_replace(
+                        "`".$CFG_GLPI["union_search_type"][$data['itemtype']]."`.`is_deleted`",
+                        "`$reftable`.`is_deleted`",
+                        $tmpquery
+                     );
                   }
 
                   $replace = "FROM `$reftable`"."
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
                                      AND `$reftable`.`itemtype` = '$ctype')";
-                  $tmpquery = str_replace("FROM `".
-                                             $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
-                                          $replace, $tmpquery);
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$data['itemtype']],
-                                          $ctable, $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        "FROM `" . $CFG_GLPI["union_search_type"][$data['itemtype']]."`",
+                        $CFG_GLPI["union_search_type"][$data['itemtype']]
+                     ],
+                     [
+                        $replace,
+                        $ctable
+                     ],
+                     $tmpquery
+                  );
                }
-               $tmpquery = str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('', $ctable, '', '',
-                                                                  $citem->maybeRecursive()),
-                                       $tmpquery);
+               $tmpquery = str_replace(
+                  "ENTITYRESTRICT",
+                  getEntitiesRestrictRequest(
+                     '',
+                     $ctable,
+                     '',
+                     '',
+                     $citem->maybeRecursive()
+                  ),
+                  $tmpquery
+               );
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
-                  $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
-                  $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
+                  $tmpquery = str_replace(
+                     [
+                        "`glpi_softwares`.`serial`",
+                        "`glpi_softwares`.`otherserial`"
+                     ],
+                     ["''", "''"],
+                     $tmpquery
+                  );
                }
                $QUERY .= $tmpquery;
             }
@@ -867,6 +813,7 @@ class Search {
             echo self::showError($data['display_type']);
             return;
          }
+         $COUNTQUERY = preg_replace('/^SELECT.+FROM/s', 'SELECT COUNT(1) AS count FROM', $QUERY);
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']].".", "", $ORDER) .
                    $LIMIT;
       } else {
@@ -877,8 +824,20 @@ class Search {
                   $HAVING.
                   $ORDER.
                   $LIMIT;
+
+         $COUNTSELECT = "SELECT COUNT(DISTINCT `$itemtable`.`id`) AS count";
+         if (count($HAVINGFIELDS) > 0) {
+            $COUNTSELECT .= ', ' . implode(', ', $HAVINGFIELDS);
+         }
+
+         $COUNTQUERY = $COUNTSELECT .
+                        $FROM.
+                        $WHERE.
+                        $GROUPBY.
+                        $HAVING;
       }
       $data['sql']['search'] = $QUERY;
+      $data['sql']['count'] = $COUNTQUERY;
    }
 
 
@@ -931,34 +890,17 @@ class Search {
       }
 
       if ($result) {
+         $result_num = $DBread->query($data['sql']['count']);
          $data['data']['totalcount'] = 0;
-         // if real search or complete export : get numrows from request
-         if (!$data['search']['no_search']
-             || $data['search']['export_all']) {
-            $data['data']['totalcount'] = $DBread->numrows($result);
-         } else {
-            if (!isset($data['sql']['count'])
-               || (count($data['sql']['count']) == 0)) {
-               $data['data']['totalcount'] = $DBread->numrows($result);
-            } else {
-               foreach ($data['sql']['count'] as $sqlcount) {
-                  $result_num = $DBread->query($sqlcount);
-                  $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
-               }
-            }
-         }
+         while ($row = $DBread->fetch_assoc($result_num)) {
+            $data['data']['totalcount'] += $row['count'];
+         };
 
          // Search case
          $data['data']['begin'] = $data['search']['start'];
          $data['data']['end']   = min($data['data']['totalcount'],
                                       $data['search']['start']+$data['search']['list_limit'])-1;
 
-         // No search Case
-         if ($data['search']['no_search']) {
-            $data['data']['begin'] = 0;
-            $data['data']['end']   = min($data['data']['totalcount']-$data['search']['start'],
-                                         $data['search']['list_limit'])-1;
-         }
          // Export All case
          if ($data['search']['export_all']) {
             $data['data']['begin'] = 0;
@@ -1033,12 +975,6 @@ class Search {
          }
 
          // Get rows
-
-         // if real search seek to begin of items to display (because of complete search)
-         if (!$data['search']['no_search']) {
-            $DBread->data_seek($result, $data['search']['start']);
-         }
-
          $i = $data['data']['begin'];
          $data['data']['warning']
             = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
@@ -1949,13 +1885,15 @@ class Search {
     *
     * @return select string
    **/
-   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num) {
+   static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num, &$HAVINGFIELDS) {
 
       $searchopt  = &self::getOptions($itemtype);
       $table      = $searchopt[$ID]["table"];
       $field      = $searchopt[$ID]["field"];
 
       $NAME = "ITEM_";
+
+      $HAVINGFIELDS[] = "`$field` AS `ITEM_$num`";
 
       // Plugin can override core definition for its type
       if ($plug = isPluginItemType($itemtype)) {
