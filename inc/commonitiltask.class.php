@@ -246,12 +246,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          PlanningRecall::manageDatas($input['_planningrecall']);
       }
 
-//      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-
-      if (isset($input['update'])
+      // do not update writer if content change. Following code can be used for #2187
+      /*if (isset($input['update'])
           && ($uid = Session::getLoginUserID())) { // Change from task form
          $input["users_id"] = $uid;
-      }
+      }*/
 
       $itemtype      = $this->getItilObjectItemType();
       $input["_job"] = new $itemtype();
