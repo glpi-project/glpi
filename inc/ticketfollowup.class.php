@@ -251,11 +251,11 @@ class TicketFollowup  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      // update writer if content change
-      if (($uid = Session::getLoginUserID())
+      // do not update writer if content change. Following code can be used for #2187
+      /*if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
          $input["users_id"] = $uid;
-      }
+      }*/
       return $input;
    }
 
