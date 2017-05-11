@@ -2586,26 +2586,30 @@ class Search {
    static function addDefaultWhere($itemtype) {
       global $CFG_GLPI;
 
+      $condition = '';
+    
       switch ($itemtype) {
          case 'Reminder' :
-            return Reminder::addVisibilityRestrict();
+            $condition = Reminder::addVisibilityRestrict();
+            break;
 
          case 'RSSFeed' :
-            return RSSFeed::addVisibilityRestrict();
+            $condition = RSSFeed::addVisibilityRestrict();
+            break;
 
          case 'Notification' :
             if (!Config::canView()) {
-               return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
+               $condition = " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
 
          // No link
          case 'User' :
             // View all entities
-            if (Session::isViewAllEntities()) {
-               return "";
+            if (!Session::isViewAllEntities()) {
+               $condition = getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
+            break;
 
          case 'ProjectTask' :
             $condition  = '';
@@ -2618,9 +2622,8 @@ class Search {
                                        IN (".implode(",",$_SESSION['glpigroups'])."))";
             }
             $condition .= ") ";
-
-            return $condition;
-
+            break;
+            
          case 'Project' :
             $condition = '';
             if (!Session::haveRight("project", Project::READALL)) {
@@ -2637,7 +2640,7 @@ class Search {
                }
                $condition .= ") ";
             }
-            return $condition;
+            break;
 
          case 'Ticket' :
             // Same structure in addDefaultJoin
@@ -2716,7 +2719,7 @@ class Search {
                }
                $condition .= ") ";
             }
-            return $condition;
+            break;
 
             case 'Change' :
             case 'Problem':
@@ -2768,7 +2771,7 @@ class Search {
 
                   $condition .= ") ";
                }
-               return $condition;
+               break;
 
          default :
             // Plugin can override core definition for its type
@@ -2777,12 +2780,14 @@ class Search {
                if (function_exists($function)) {
                   $out = $function($itemtype);
                   if (!empty($out)) {
-                     return $out;
+                     $condition = $out;
                   }
                }
             }
             return "";
       }
+      list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
+      return $condition;
    }
 
 
