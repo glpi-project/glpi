@@ -2483,9 +2483,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
     
-      $this->right = $right;
-      plugin::doHook('can', $this);
-      switch ($this->right) {
+      switch ($right) {
          case READ :
             // Personnal item
             if ($this->isPrivate()
