@@ -4403,10 +4403,14 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<div id='content$rand_text'>";
-      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+      if ($CFG_GLPI['use_rich_text'] || $canupdate_descr) {
+         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                $this->fields["content"]."</textarea></div>";
-      if (!$CFG_GLPI["use_rich_text"]) {
-         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         if (!$CFG_GLPI["use_rich_text"]) {
+            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         }
+      } else {
+         echo $this->fields['content'];
       }
       echo $tt->getEndHiddenFieldValue('content', $this);
 
