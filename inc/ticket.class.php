@@ -3885,7 +3885,11 @@ class Ticket extends CommonITILObject {
       $colsize3 = '13';
       $colsize4 = '45';
 
-      $canupdate_descr = $canupdate || $this->canUpdateItem();
+      $canupdate_descr = $canupdate
+                         || (($this->fields['status'] == self::INCOMING)
+                             && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                             && ($this->numberOfFollowups() == 0)
+                             && ($this->numberOfTasks() == 0));
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
