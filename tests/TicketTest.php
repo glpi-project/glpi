@@ -130,6 +130,10 @@ class TicketTest extends DbTestCase {
    }
 
    public function testTicketSolution() {
+      session_unset();
+      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+      $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+
       $uid = getItemByTypeName('User', TU_USER, true);
       $ticket = new Ticket();
       $ticket->add([
