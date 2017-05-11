@@ -129,6 +129,38 @@ class TicketTest extends DbTestCase {
       }
    }
 
+   public function testTicketSolution() {
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $ticket = new Ticket();
+      $ticket->add([
+         'name'               => 'ticket title',
+         'description'        => 'a description',
+         '_users_id_assign'   => $uid
+      ]);
+
+      $this->assertFalse($ticket->isNewItem());
+      $this->assertEquals($ticket::ASSIGNED, $ticket->getField('status'));
+      $ticketId = $ticket->getID();
+
+      $this->_testTicketUser(
+         $ticket,
+         $uid,
+         CommonITILActor::ASSIGN,
+         1,
+         ''
+      );
+
+      $ticket->update([
+         'id' => $ticket->getID(),
+         'solution'  => 'Current friendly ticket\r\nis solved!'
+      ]);
+      //reload from DB
+      $ticket->getFromDB($ticket->getID());
+
+      $this->assertEquals($ticket::CLOSED, $ticket->getField('status'));
+      $this->assertEquals("Current friendly ticket\r\nis solved!", $ticket->getField('solution'));
+   }
+
    protected function _testTicketUser(Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
       if ($actor > 0) {
          $user = new User();
