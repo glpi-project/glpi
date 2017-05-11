@@ -44,10 +44,7 @@ switch ($_GET['action']) {
          list($_GET['itemtype'], $_GET['items_id']) = explode('_', $_GET['my_items']);
       }
       if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
-         $added = true;
-         if ($added) {
-            $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
-         }
+         $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
       }
       Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
       break;
