@@ -2581,6 +2581,7 @@ class CommonDBTM extends CommonGLPI {
 
       /* Hook to restrict user right on current item @since 9.2 */
       $this->right = $right;
+      plugin::doHook('can', $this);
       Plugin::doHook("item_can", $this);
       if ($this->right !== $right) {
          return false;
