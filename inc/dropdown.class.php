@@ -1544,6 +1544,10 @@ class Dropdown {
             //TRANS: %d is a number of milliseconds
             return sprintf(_n('%d millisecond', '%d milliseconds', $value), $value);
 
+         case 'auto':
+               $value = str_replace([' ', '&nbsp;'], ['', ''], $value); // unformat value
+               return Toolbox::getSize($value*1024*1024);
+
          case '%' :
             return sprintf(__('%d%%'), $value);
 
