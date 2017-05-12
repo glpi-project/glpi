@@ -129,6 +129,17 @@ class TicketTest extends DbTestCase {
       }
    }
 
+   public function testTicket_Items() {
+      global $DB;
+
+      $this->Login();
+      $computer2 = getItemByTypeName('Computer', '_test_pc02');
+
+      $rs = Ticket::getListForItem($computer2, $options = []);
+      $number = $DB->numrows($rs);
+      $this->assertEquals(1, $number);
+   }
+
    protected function _testTicketUser(Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
       if ($actor > 0) {
          $user = new User();

@@ -52,7 +52,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => 3,
+      '_version' => 3.1,
 
       // Type => array of entries
       'Entity' => [
@@ -229,6 +229,12 @@ function loadDataset() {
             'name'           => '_ticket01',
             'content'        => 'Content for ticket _ticket01',
             'users_id_recipient' => TU_USER
+         ],
+         [
+            'name'           => '_ticket02',
+            'content'        => 'Content for ticket _ticket02',
+            'users_id_recipient' => TU_USER,
+            'entities_id'    => '_test_root_entity'
          ]
       ], 'TicketTask' => [
          [
@@ -239,6 +245,12 @@ function loadDataset() {
             'is_private'         => 0,
             'users_id_tech'      => TU_USER,
             'date'               => '2016-10-19 11:50:50'
+         ]
+      ], 'Item_Ticket' => [
+         [
+            'itemtype'     => 'Computer',
+            'items_id'     => '_test_pc02',
+            'tickets_id'   => '_ticket02'
          ]
       ], 'UserEmail' => [
          [

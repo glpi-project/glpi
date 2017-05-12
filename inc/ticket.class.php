@@ -5192,15 +5192,14 @@ class Ticket extends CommonITILObject {
    }
 
    /**
-   * Display tickets for an item
+    * Get tickets for an item and linked items
     *
-    * Will also display tickets of linked items
+    * @param CommonDBTM $item    CommonDBTM object
+    * @param array      $options Options
     *
-    * @param $item CommonDBTM object
-    *
-    * @return nothing (display a table)
+    * @return ResultSet
    **/
-   static function showListForItem(CommonDBTM $item) {
+   static function getListForItem(CommonDBTM $item, array &$options) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,
@@ -5256,16 +5255,9 @@ class Ticket extends CommonITILObject {
             // Mini search engine
             if ($item->haveChildren()) {
                $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-               echo "<table class='tab_cadre_fixe'>";
-               echo "<tr class='tab_bg_1'><th>".__('Last tickets')."</th></tr>";
-               echo "<tr class='tab_bg_1'><td class='center'>";
-               echo __('Child groups')."&nbsp;";
-               Dropdown::showYesNo('tree', $tree, -1,
-                                   array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
             } else {
                $tree = 0;
             }
-            echo "</td></tr></table>";
 
             if ($tree) {
                $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
@@ -5286,18 +5278,30 @@ class Ticket extends CommonITILObject {
             $restrict = "(`glpi_items_tickets`.`items_id` = '".$item->getID()."' ".
                         " AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')";
 
-
+            $restrict_with_rights = "";
             // you can only see your tickets
             if (!Session::haveRight(self::$rightname, self::READALL)) {
-               $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+               $restrict_with_rights .= "(`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
                                    OR (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
                                        AND `glpi_tickets_users`.`users_id`
-                                            = '".Session::getLoginUserID()."')
-                                   OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
+                                            = '".Session::getLoginUserID()."')";
+
+               if (count($_SESSION['glpigroups'])) {
+                  $restrict .= "OR `glpi_groups_tickets`.`groups_id` IN (".implode(",", $_SESSION['glpigroups']).")";
+               }
+
+               $restrict .= ")";
             }
 
             if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
-               $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
+               if (!empty($restrict_with_rights)) {
+                  $restrict_with_rights .= ' OR ';
+               }
+               $restrict_with_rights .= "glpi_tickets.status=".self::INCOMING;
+            }
+
+            if (!empty($restrict_with_rights)) {
+               $restrict .= " AND ($restrict_with_rights)";
             }
 
             $order    = '`glpi_tickets`.`date_mod` DESC';
@@ -5325,8 +5329,50 @@ class Ticket extends CommonITILObject {
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      return $result;
+   }
 
+
+   /**
+    * Display tickets for an item
+    *
+    * Will also display tickets of linked items
+    *
+    * @param $item CommonDBTM object
+    *
+    * @return nothing (display a table)
+   **/
+   static function showListForItem(CommonDBTM $item) {
+      global $DB, $CFG_GLPI;
+
+      if (!Session::haveRightsOr(self::$rightname,
+                                  array(self::READALL, self::READMY, self::READASSIGN, CREATE))) {
+         return false;
+      }
+
+      if ($item->isNewID($item->getID())) {
+         return false;
+      }
+
+      if ($item->getType() == 'Group' && $item->haveChildren()) {
+         // Mini search engine
+         $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th>".__('Last tickets')."</th></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>";
+         echo __('Child groups')."&nbsp;";
+         Dropdown::showYesNo(
+            'tree',
+            $tree,
+            -1,
+            ['on_change' => 'reloadTab("start=0&tree="+this.value)']
+         );
+         echo "</td></tr></table>";
+      }
+
+      $options = [];
+      $result = self::getListForItem($item, $options);
+      $number = $DB->numrows($result);
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {
