@@ -1197,12 +1197,12 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
    $before = "";
    $after  = "";
 
-   $order = $CFG_GLPI["names_format"];
+   $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
    if (isset($_SESSION["glpinames_format"]) && !$force_config) {
       $order = $_SESSION["glpinames_format"];
    }
 
-   $id_visible = $CFG_GLPI["is_ids_visible"];
+   $id_visible = isset($CFG_GLPI["is_ids_visible"]) ? $CFG_GLPI["is_ids_visible"] : 0;
    if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
