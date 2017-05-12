@@ -4927,6 +4927,8 @@ class Search {
                      if (isset($searchopt[$ID]['toadd'])
                            && isset($searchopt[$ID]['toadd'][$data[$num][$k]['name']])) {
                         $out .= $searchopt[$ID]['toadd'][$data[$num][$k]['name']];
+                     } else if ($unit == 'auto') {
+                        $out .= Toolbox::getSize($data[$num][$k]['name']*1024*1024);
                      } else {
                         $number = str_replace(' ', '&nbsp;',
                                               Html::formatNumber($data[$num][$k]['name'], false, 0));
