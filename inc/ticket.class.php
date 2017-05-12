@@ -1024,7 +1024,7 @@ class Ticket extends CommonITILObject {
       }
 
       foreach ($rule->getCriterias() as $key => $val) {
-         if (array_key_exists($key,$input)) {
+         if (array_key_exists($key, $input) && substr($key, 0, 1) !== '_') {
             if (!isset($this->fields[$key])
                 || ($DB->escape($this->fields[$key]) != $input[$key])) {
                $changes[] = $key;
