@@ -257,4 +257,24 @@ class DropdownTest extends DbTestCase {
       $ret = Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true, true, false );
       $this->assertEquals($expected, $ret);
    }
+
+   public function dataGetValueWithUnit() {
+      return [
+            [1,       'auto',              '1024 kB'],
+            [1025,    'auto',              '1 GB'],
+            ['1 025', 'auto',              '1 GB'],
+            [1,       'year',              '1 year'],
+            [2,       'year',              '2 years'],
+            [3,       '%',                 '3%'],
+            ['foo',   'bar',               'foo bar'],
+      ];
+   }
+
+   /**
+    * @dataProvider dataGetValueWithUnit
+    */
+   public function testGetValueWithUnit($input, $unit, $expected) {
+      $this->assertEquals($expected, Dropdown::getValueWithUnit($input, $unit));
+   }
+
 }
