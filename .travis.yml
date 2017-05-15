@@ -57,7 +57,7 @@ cache:
 notifications:
   irc:
     channels:
-      - "irc.freenode.org#glpi"
+      - "chat.freenode.org#glpi"
     on_success: change
     on_failure: always
     use_notice: true
