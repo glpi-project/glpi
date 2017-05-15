@@ -3908,6 +3908,9 @@ class Html {
                if ($('#$name').attr('required') == 'required') {
                   $('#$name').closest('form').find('input[type=submit]').click(function() {
                      editor.save();
+                     if ($('#$name').val() == '') {
+                        alert('".__('The description field is mandatory')."');
+                     }
                   });
                }
             },
