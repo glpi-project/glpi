@@ -198,7 +198,6 @@ class Dropdown {
             } else {
                $options_tooltip['link']       = $item->getSearchURL();
             }
-            $options_tooltip['linktarget'] = '_blank';
          }
 
          $output .= "&nbsp;".Html::showToolTip($comment,$options_tooltip);
