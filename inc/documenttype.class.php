@@ -154,7 +154,7 @@ class DocumentType  extends CommonDropdown {
    static function showAvailableTypesLink() {
       global $CFG_GLPI;
 
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');\">";
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');return false;\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
              alt=\"".__s('Help')."\" class='calendrier pointer'>";
       echo "</a>";

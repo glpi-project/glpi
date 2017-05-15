@@ -3773,7 +3773,7 @@ class Html {
             $out .= " href='".$param['link']."'";
 
             if (!empty($param['popup'])) {
-               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open');\" ";
+               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open');return false;\" ";
             }
             $out .= '>';
          }
