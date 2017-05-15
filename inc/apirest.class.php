@@ -235,7 +235,7 @@ class APIRest extends API {
                   foreach($response as $created_item) {
                      if ($created_item['id']) {
                         $additionalheaders['link'] .= self::$api_url."/$itemtype/".
-                                                     .$created_item['id'].",";
+                                                     $created_item['id'].",";
                      }
                   }
                   // remove last comma
