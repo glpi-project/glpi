@@ -228,14 +228,14 @@ class APIRest extends API {
                $code     = 201;
                if (isset($response['id'])) {
                   // add a location targetting created element
-                  $additionalheaders['location'] = self::$api_url.$itemtype."/".$response['id'];
+                  $additionalheaders['location'] = self::$api_url."/$itemtype/".$response['id'];
                } else {
                   // add a link header targetting created elements
                   $additionalheaders['link'] = "";
                   foreach($response as $created_item) {
                      if ($created_item['id']) {
-                        $additionalheaders['link'] .= self::$api_url.$itemtype.
-                                                     "/".$created_item['id'].",";
+                        $additionalheaders['link'] .= self::$api_url."/$itemtype/".
+                                                     .$created_item['id'].",";
                      }
                   }
                   // remove last comma
