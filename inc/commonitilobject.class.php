@@ -3513,7 +3513,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             $url = $this->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
-            echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+            echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
             printf(__('%1$s: %2$s'), __('Processing'),
                    $this->countActiveObjectsForUser($options["_users_id_".$typename]));
             echo ")</a>";

@@ -63,7 +63,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
    //TRANS: %d is number of objects for the user
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForTech($_POST['users_id_assign']));
    echo ")</a>";
@@ -85,7 +85,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForTechGroup($_POST['groups_id_assign']));
    echo ")</a>";
@@ -109,8 +109,9 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
    //TRANS: %d is number of objects for the user
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\">(";
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForSupplier($_POST['suppliers_id_assign']));
    echo ")</a>";
 }
+
