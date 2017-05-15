@@ -102,7 +102,7 @@ class SoftwareLicenseTest extends DbTestCase {
    }
 
    /**
-    * @covers SoftwareVersion::testComputeValidityIndicator
+    * @covers SoftwareLicense::computeValidityIndicator
     */
    public function testComputeValidityIndicator() {
       $this->Login();

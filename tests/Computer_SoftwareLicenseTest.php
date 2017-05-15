@@ -35,7 +35,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 class Computer_SoftwareLicenseTest extends DbTestCase {
 
    /**
-    * @covers Computer_SoftwareLicense::testCountForLicense
+    * @covers Computer_SoftwareLicense::countForLicense
     */
    public function testCountForLicense() {
       $this->Login();
@@ -53,7 +53,7 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
    }
 
    /**
-    * @covers Computer_SoftwareLicense::testCountForSoftware
+    * @covers Computer_SoftwareLicense::countForSoftware
     * @depends testCountForLicense
     */
    public function testCountForSoftware() {
