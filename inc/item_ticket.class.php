@@ -372,7 +372,7 @@ class Item_Ticket extends CommonDBRelation{
             $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
             $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
             if ($params['delete']) {
-            $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
+               $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
             }
             $result .= "</div>";
          } else {
