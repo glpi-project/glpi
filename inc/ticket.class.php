@@ -4688,7 +4688,7 @@ class Ticket extends CommonITILObject {
                         WHERE $is_deleted
                               AND `users_id_validate` = '".Session::getLoginUserID()."'
                               AND `glpi_ticketvalidations`.`status` = '".CommonITILValidation::WAITING."'
-                              AND `glpi_ticketvalidations`.`global_validation` = '".CommonITILValidation::WAITING."'
+                              AND `glpi_tickets`.`global_validation` = '".CommonITILValidation::WAITING."'
                               AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
                                                                    '".self::SOLVED."')) ".
                        getEntitiesRestrictRequest("AND", "glpi_tickets");
