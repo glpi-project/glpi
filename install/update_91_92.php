@@ -617,7 +617,6 @@ function update91to92() {
       ]);
    }
 
-
    /** ************ New SLM structure ************ */
    if (!TableExists('glpi_olas')) {
       $query = "CREATE TABLE `glpi_olas` (
@@ -756,7 +755,7 @@ function update91to92() {
       $migration->migrationOneTable('glpi_changes');
       $migration->dropKey('glpi_changes', 'due_date');
       $migration->addKey('glpi_changes', 'time_to_resolve');
-      
+
       //Problem changes
       $migration->changeField('glpi_problems', 'due_date', 'time_to_resolve', 'datetime');
       $migration->migrationOneTable('glpi_problems');

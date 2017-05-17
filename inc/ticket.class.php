@@ -4426,8 +4426,6 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-
-
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
          echo "<th width='$colsize1%'>".__('By')."</th>";

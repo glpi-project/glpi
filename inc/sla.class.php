@@ -179,9 +179,6 @@ class SLA extends CommonDBChild {
          // Create item
          $options[static::$items_id] = $slm->getField('id');
 
-         //force itemtype of parent
-//         static::$itemtype = get_class($slm);
-
          $this->check(-1, CREATE, $options);
       }
 
@@ -891,8 +888,8 @@ class SLA extends CommonDBChild {
    **/
    function addLevelToDo(Ticket $ticket, $slalevels_id = 0) {
 
-//      $slalevels_id = ($slalevels_id ? $slalevels_id
-//                                     : $ticket->fields["ttr_slalevels_id"]);
+      $slalevels_id = ($slalevels_id ? $slalevels_id
+                                     : $ticket->fields["ttr_slalevels_id"]);
       if ($ticket->fields["ttr_slalevels_id"] > 0) {
          $toadd = array();
          $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
