@@ -333,10 +333,13 @@ $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', '
                                                   'TicketTask', 'ProjectTask');
 $CFG_GLPI['planning_add_types']           = array('Reminder');
 
-$CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
+$CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Contract',
+                                                  'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'Ticket',
-                                                  'SoftwareLicense', 'User');
+                                                  'Printer', 'Software', 'SoftwareLicense',
+                                                  'Ticket', 'Problem', 'Change',
+                                                  'User', 'Group', 'Project', 'Supplier',
+                                                  'Budget');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
