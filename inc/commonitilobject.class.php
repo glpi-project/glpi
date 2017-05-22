@@ -1094,7 +1094,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // OLA case : compute ola_ttr duration
          if (isset($this->fields['olas_ttr_id']) && ($this->fields['olas_ttr_id'] > 0)) {
-            Toolbox::logDebug('toto');
             $ola = new OLA();
             if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
                $ola->setTicketCalendar($calendars_id);
@@ -2781,42 +2780,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                             AND (TABLE.`solvedate` > TABLE.`time_to_resolve`
                                                  OR (TABLE.`solvedate` IS NULL
                                                       AND TABLE.`time_to_resolve` < NOW())),
-                                            1, 0)'
-      ];
-
-      $tab[] = [
-         'id'                 => '180',
-         'table'              => $this->getTable(),
-         'field'              => 'internal_time_to_resolve',
-         'name'               => __('Internal time to resolve'),
-         'datatype'           => 'datetime',
-         'maybefuture'        => true,
-         'massiveaction'      => false,
-         'additionalfields'   => ['status']
-      ];
-
-      $tab[] = [
-         'id'                 => '181',
-         'table'              => $this->getTable(),
-         'field'              => 'internal_time_to_resolve',
-         'name'               => __('Internal time to resolve + Progress'),
-         'massiveaction'      => false,
-         'nosearch'           => true,
-         'additionalfields'   => ['status']
-      ];
-
-      $tab[] = [
-         'id'                 => '182',
-         'table'              => $this->getTable(),
-         'field'              => 'is_late',
-         'name'               => __('Internal time to resolve exceedeed'),
-         'datatype'           => 'bool',
-         'massiveaction'      => false,
-         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
-                                            AND TABLE.`status` <> 4
-                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
-                                                 OR (TABLE.`solvedate` IS NULL
-                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
                                             1, 0)'
       ];
 

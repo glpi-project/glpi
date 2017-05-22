@@ -2587,6 +2587,42 @@ class Ticket extends CommonITILObject {
       ];
 
       $tab[] = [
+         'id'                 => '180',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '181',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '182',
+         'table'              => $this->getTable(),
+         'field'              => 'is_late',
+         'name'               => __('Internal time to resolve exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
+                                            AND TABLE.`status` <> 4
+                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
+                                                 OR (TABLE.`solvedate` IS NULL
+                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
+                                            1, 0)'
+      ];
+
+      $tab[] = [
          'id'                 => '185',
          'table'              => $this->getTable(),
          'field'              => 'internal_time_to_own',
