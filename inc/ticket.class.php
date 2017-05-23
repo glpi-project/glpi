@@ -5296,10 +5296,6 @@ class Ticket extends CommonITILObject {
                                    OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
             }
 
-            if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
-               $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
-            }
-
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
@@ -5316,9 +5312,11 @@ class Ticket extends CommonITILObject {
             break;
       }
 
-
+      $table = $item->getTable();
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
+                INNER JOIN `$table` ON (`$table`.`id` = `glpi_items_tickets`.`items_id`
+                                        AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')
                 WHERE $restrict ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
                 AND glpi_tickets.is_deleted = 0
