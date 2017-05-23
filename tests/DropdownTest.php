@@ -260,9 +260,9 @@ class DropdownTest extends DbTestCase {
 
    public function dataGetValueWithUnit() {
       return [
-            [1,       'auto',              '1024 kB'],
-            [1025,    'auto',              '1 GB'],
-            ['1 025', 'auto',              '1 GB'],
+            [1,       'auto',              '1024 Kio'],
+            [1025,    'auto',              '1 Gio'],
+            ['1 025', 'auto',              '1 Gio'],
             [1,       'year',              '1 year'],
             [2,       'year',              '2 years'],
             [3,       '%',                 '3%'],

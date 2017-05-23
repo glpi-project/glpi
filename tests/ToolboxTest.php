@@ -70,11 +70,11 @@ class ToolboxTest extends PHPUnit\Framework\TestCase {
 
    public function dataGetSize() {
       return [
-         [1,                   '1 B'],
-         [1025,                '1 kB'],
-         [1100000,             '1.05 MB'],
-         [1100000000,          '1.02 GB'],
-         [1100000000000,       '1 TB'],
+         [1,                   '1 o'],
+         [1025,                '1 Kio'],
+         [1100000,             '1.05 Mio'],
+         [1100000000,          '1.02 Gio'],
+         [1100000000000,       '1 Tio'],
       ];
    }
 
