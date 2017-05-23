@@ -3258,7 +3258,7 @@ class Ticket extends CommonITILObject {
       }
       if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
           && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]))) {
-         if (!$tt->isHiddenField('itemtype')) {
+         if (!$tt->isHiddenField('items_id')) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
                                 $tt->getMandatoryMark('items_id'))."</td>";
