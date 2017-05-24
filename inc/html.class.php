@@ -6116,7 +6116,7 @@ class Html {
     */
    static public function manageRefreshPage($timer = false, $callback = null) {
       if (!$timer) {
-         $timer = $_SESSION['glpirefresh_ticket_list'];
+         $timer = isset($_SESSION['glpirefresh_ticket_list']) ? $_SESSION['glpirefresh_ticket_list'] : 0;
       }
 
       if ($callback === null) {

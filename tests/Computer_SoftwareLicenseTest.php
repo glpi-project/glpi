@@ -61,7 +61,7 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
       $soft = getItemByTypeName('Software', '_test_soft');
       $this->assertEquals(7, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
 
-      $soft = getItemByTypeName('Software', '_test_softlic_1');
+      $soft = getItemByTypeName('Software', '_test_soft2');
       $this->assertEquals(0, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
 
    }

@@ -50,6 +50,7 @@ class Computer_SoftwareVersionTest extends DbTestCase {
       $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
       // Do some installations
       $ins = new Computer_SoftwareVersion();

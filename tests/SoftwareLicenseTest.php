@@ -50,7 +50,10 @@ class SoftwareLicenseTest extends DbTestCase {
       $license = new SoftwareLicense();
 
       //With softwares_id, import refused
-      $input = [ 'name' => '_test_softlic_3'];
+      $input = [
+         'name'         => '_test_softlic_3',
+         'entities_id'  => 0
+      ];
       $this->assertFalse($license->prepareInputForAdd($input));
 
       //With a softwares_id, import ok
@@ -91,7 +94,8 @@ class SoftwareLicenseTest extends DbTestCase {
       $input  = ['softwares_id' => $soft->getID(),
                  'expire'=> '2017-01-01 00:00:00',
                  'name' => '_test_softlic_child',
-                 'softwarelicenses_id' => $father->getID()
+                 'softwarelicenses_id' => $father->getID(),
+                 'entities_id'         => $father->fields['entities_id']
                 ];
       $lic_id = $license->add($input);
       $this->assertTrue($lic_id > $soft->getID());
@@ -113,6 +117,7 @@ class SoftwareLicenseTest extends DbTestCase {
                   'expire'=> '2017-01-01 00:00:00',
                   'name' => '_test_softlic_4',
                   'number' => 3,
+                  'entities_id' => 0
                  ];
       $lic_id = $license->add($input);
 
@@ -150,6 +155,7 @@ class SoftwareLicenseTest extends DbTestCase {
                   'expire'=> '2017-01-01 00:00:00',
                   'name' => '_test_softlic_4',
                   'number' => 3,
+                  'entities_id' => 0
                  ];
       $lic_id = $license->add($input);
 

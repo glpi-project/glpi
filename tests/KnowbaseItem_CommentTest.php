@@ -53,8 +53,7 @@ class KnowbaseItem_CommentTest extends DbTestCase {
       $this->addComments($kb1, 'fr_FR');
 
       $nb = countElementsInTable(
-         'glpi_knowbaseitems_comments',
-         $where
+         'glpi_knowbaseitems_comments'
       );
       $this->assertEquals(10, $nb);
 
