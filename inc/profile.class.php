@@ -940,7 +940,10 @@ class Profile extends CommonDBTM {
                             'field'      => 'project'),
                       array('itemtype'   => 'ProjectTask',
                             'label'      => _n('Task', 'Task', Session::getPluralNumber()),
-                            'field'      => 'projecttask'));
+                            'field'      => 'projecttask'),
+                      array('itemtype'   => 'ProjectTaskTemplate',
+                            'label'      => _n('Project task template', 'Project task templates', Session::getPluralNumber()),
+                            'field'      => 'projecttasktemplate'));
       $matrix_options['title'] = _n('Project', 'Projects', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

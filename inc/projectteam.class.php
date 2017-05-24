@@ -89,7 +89,7 @@ class ProjectTeam extends CommonDBRelation {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && self::canView()) {
+      if (self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
@@ -120,6 +120,29 @@ class ProjectTeam extends CommonDBRelation {
          case 'Project' :
             $item->showTeam($item);
             return true;
+      }
+   }
+
+   /**
+    * Duplicate all teams from a project template to his clone
+    *
+    * @since version 0.84
+    *
+    * @param $oldid
+    * @param $newid
+    **/
+   static function cloneProject ($oldid, $newid) {
+      global $DB;
+
+      $query  = "SELECT *
+                 FROM `glpi_projectteams`
+                 WHERE `projects_id` = '$oldid'";
+      foreach ($DB->request($query) as $data) {
+         $cd                   = new self();
+         unset($data['id']);
+         $data['projects_id'] = $newid;
+         $data                 = Toolbox::addslashes_deep($data);
+         $cd->add($data);
       }
    }
 

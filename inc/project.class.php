@@ -125,18 +125,20 @@ class Project extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (static::canView()) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case __CLASS__ :
-               $ong    = array();
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             [$this->getForeignKeyField() => $item->getID()]);
-               }
-               $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-               $ong[2] = __('GANTT');
-               return $ong;
+      if (!$withtemplate) {
+         if (static::canView()) {
+            $nb = 0;
+            switch ($item->getType()) {
+               case __CLASS__ :
+                  $ong = array();
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     $nb = countElementsInTable($this->getTable(),
+                                                [$this->getForeignKeyField() => $item->getID()]);
+                  }
+                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
+                  $ong[2] = __('GANTT');
+                  return $ong;
+            }
          }
       }
 
@@ -250,6 +252,27 @@ class Project extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
+
+         // ADD Task
+         ProjectTask::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
+         // ADD Documents
+         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
+         // ADD Team
+         ProjectTeam::cloneProject($this->input["_oldID"], $this->fields['id']);
+
+         // ADD Change
+         Change::cloneProject($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
+         // ADD Contract
+         Contract::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
+         // ADD Notepad
+         Notepad::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
+         //Add KB links
+         KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          // Clean reload of the project
@@ -802,6 +825,17 @@ class Project extends CommonDBTM {
       }
    }
 
+   function prepareInputForAdd($input) {
+
+      if (isset($input["id"]) && ($input["id"] > 0)) {
+         $input["_oldID"] = $input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
+
+      return $input;
+   }
+
 
    function prepareInputForUpdate($input) {
       return self::checkPlanAndRealDates($input);
@@ -1314,6 +1348,7 @@ class Project extends CommonDBTM {
                    FROM `glpi_projects`
                    WHERE `projects_id` = '0'
                         AND `show_on_global_gantt` = '1'
+                        AND NOT `is_template`
                          ".getEntitiesRestrictRequest("AND", 'glpi_projects', "", '', true);
          foreach ($DB->request($query) as $data) {
             $todisplay += static::getDataToDisplayOnGantt($data['id'], false);

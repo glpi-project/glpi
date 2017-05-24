@@ -194,7 +194,7 @@ class Document extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
-
+Toolbox::logDebug($input);
       // security (don't accept filename from $_POST)
       unset($input['filename']);
 

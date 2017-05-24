@@ -696,6 +696,68 @@ function update91to92() {
                                  true);
    }
 
+   // add projecttemplate
+   $migration->addField("glpi_projects", "projecttemplates_id", "integer");
+   $migration->addField("glpi_projects", "is_template", "bool");
+   $migration->addField("glpi_projects", "template_name", "string");
+   $migration->addKey("glpi_projects", "projecttemplates_id");
+
+   $migration->addField("glpi_projecttasks", "projecttemplates_id", "integer");
+   $migration->addField("glpi_projecttasks", "is_template", "bool");
+   $migration->addField("glpi_projecttasks", "template_name", "string");
+   $migration->addKey("glpi_projecttasks", "projecttemplates_id");
+
+   if (!TableExists('glpi_projecttasktemplates')) {
+      $query = "CREATE TABLE `glpi_projecttasktemplates` (
+                       `id` int(11) NOT NULL AUTO_INCREMENT,
+                       `entities_id` int(11) NOT NULL DEFAULT '0',
+                       `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                       `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                       `description` longtext COLLATE utf8_unicode_ci,
+                       `comment` longtext COLLATE utf8_unicode_ci,
+                       `projects_id` int(11) NOT NULL DEFAULT '0',
+                       `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                       `plan_start_date` datetime DEFAULT NULL,
+                       `plan_end_date` datetime DEFAULT NULL,
+                       `real_start_date` datetime DEFAULT NULL,
+                       `real_end_date` datetime DEFAULT NULL,
+                       `planned_duration` int(11) NOT NULL DEFAULT '0',
+                       `effective_duration` int(11) NOT NULL DEFAULT '0',
+                       `projectstates_id` int(11) NOT NULL DEFAULT '0',
+                       `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
+                       `users_id` int(11) NOT NULL DEFAULT '0',
+                       `percent_done` int(11) NOT NULL DEFAULT '0',
+                       `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
+                       `comments` text COLLATE utf8_unicode_ci,
+                       `date_mod` datetime DEFAULT NULL,
+                       `date_creation` datetime DEFAULT NULL,
+                       PRIMARY KEY (`id`),
+                       KEY `name` (`name`),
+                       KEY `entities_id` (`entities_id`),
+                       KEY `is_recursive` (`is_recursive`),
+                       KEY `projects_id` (`projects_id`),
+                       KEY `projecttasks_id` (`projecttasks_id`),
+                       KEY `date_creation` (`date_creation`),
+                       KEY `date_mod` (`date_mod`),
+                       KEY `users_id` (`users_id`),
+                       KEY `plan_start_date` (`plan_start_date`),
+                       KEY `plan_end_date` (`plan_end_date`),
+                       KEY `real_start_date` (`real_start_date`),
+                       KEY `real_end_date` (`real_end_date`),
+                       KEY `percent_done` (`percent_done`),
+                       KEY `projectstates_id` (`projectstates_id`),
+                       KEY `projecttasktypes_id` (`projecttasktypes_id`),
+                       KEY `is_milestone` (`is_milestone`)
+                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_projecttasktemplates");
+   }
+
+
+
+   $migration->addKey("glpi_tickettasks", "users_id_tech");
+   $migration->addKey("glpi_tickettasks", "groups_id_tech");
+   $migration->migrationOneTable('glpi_tasktemplates');
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

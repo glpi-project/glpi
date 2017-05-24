@@ -98,6 +98,30 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
+   /**
+    * Duplicate all contracts from a item template to his clone
+    *
+    * @since version 0.84
+    *
+    * @param $oldid
+    * @param $newid
+    **/
+   static function cloneItem ($type, $oldid, $newid) {
+      global $DB;
+
+      $query  = "SELECT *
+                 FROM `glpi_contracts_items`
+                 WHERE `items_id` = '$oldid' 
+                 AND `itemtype` = '$type'";
+      foreach ($DB->request($query) as $data) {
+         $cd = new Contract_Item();
+         unset($data['id']);
+         $data['items_id'] = $newid;
+         $data             = Toolbox::addslashes_deep($data);
+
+         $cd->add($data);
+      }
+   }
 
    /**
     * @since version 0.83.3

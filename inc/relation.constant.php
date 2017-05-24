@@ -239,6 +239,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_solutiontypes'                   => 'entities_id',
                                  'glpi_taskcategories'                  => 'entities_id',
                                  'glpi_tasktemplates'                   => 'entities_id',
+                                 'glpi_projecttasktemplates'            => 'entities_id',
                                  'glpi_suppliers'                       => 'entities_id',
                                  'glpi_taskcategories'                  => 'entities_id',
                                  'glpi_ticketrecurrents'                => 'entities_id',

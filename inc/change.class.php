@@ -162,6 +162,28 @@ class Change extends CommonITILObject {
       return Session::haveRight(self::$rightname, CREATE);
    }
 
+   /**
+    * Duplicate all changes from a project template to his clone
+    *
+    * @since version 0.84
+    *
+    * @param $oldid
+    * @param $newid
+    **/
+   static function cloneProject ($oldid, $newid) {
+      global $DB;
+
+      $query  = "SELECT *
+                 FROM `glpi_changes_projects`
+                 WHERE `projects_id` = '$oldid'";
+      foreach ($DB->request($query) as $data) {
+         $cd                   = new Change_Project();
+         unset($data['id']);
+         $data['projects_id'] = $newid;
+         $data                 = Toolbox::addslashes_deep($data);
+         $cd->add($data);
+      }
+   }
 
    function pre_deleteItem() {
 
