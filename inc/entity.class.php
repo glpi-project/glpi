@@ -1066,57 +1066,53 @@ class Entity extends CommonTreeDropdown {
       echo "</form>";
 
       echo "<script type='text/javascript'>";
+      echo "var _addSubEntlink = function(instance, nodes) {
+               for (i=0 ; i < nodes.length ; i++) {
+                  node = instance.get_node(nodes[i]);
+                  if (node.li_attr && node.original) {
+                     if ($('#' + node.li_attr.id).length > 0) {
+                        $('#' + node.li_attr.id + ' > a').after(node.original.sublink);
+                     }
+                  }
+                  if (node.children.length > 0) {
+                     _addSubEntlink(instance, node.children);
+                  }
+               }
+         };";
       echo "   $(function() {
-                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jquery.jstree.min.js', function(data, textStatus, jqxhr) {
+                  $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js', function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
                      .jstree({
                         // the `plugins` array allows you to configure the active plugins on this instance
-                        'plugins' : ['themes','json_data', 'search'],
-                        'core': {
-                           'load_open': true,
-                           'html_titles': true,
-                           'animation': 0
-                        },
-                        'themes': {
-                           'theme': 'classic',
-                           'url'  : '".$CFG_GLPI["root_doc"]."/css/jstree/style.css'
-                        },
+                        'plugins' : ['search'],
                         'search': {
                            'case_insensitive': true,
                            'show_only_matches': true,
                            'ajax': {
                               'type': 'POST',
-                           'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
+                              'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
                            }
                         },
-                        'json_data': {
-                           'ajax': {
-                              'type': 'POST',
-                              'url': function (node) {
-                                 var nodeId = '';
-                                 var url = '';
-                                 if (node == -1) {
-                                    url = '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1';
-                                 }
-                                 else {
-                                    nodeId = node.attr('id');
-                                    url = '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+nodeId;
-                                 }
-
-                                 return url;
-                              },
-                              'success': function (new_data) {
-                                 //where new_data = node children
-                                 //e.g.: [{'data':'Hardware','attr':{'id':'child2'}},
-                                 //         {'data':'Software','attr':{'id':'child3'}}]
-                                 return new_data;
-                              },
-                              'progressive_render' : true
+                        'core': {
+                           'themes': {
+                              'name': 'glpi'
+                           },
+                           'animation': 0,
+                           'data': {
+                              url: function(node) {
+                                 return node.id === '#' ?
+                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
+                                    '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
+                              }
                            }
-                        }
-                     }).bind('select_node.jstree', function (e, data) {
-                        document.location.href = data.rslt.obj.children('a').attr('href');
+                        },
+                     }).on('open_node.jstree', function (e, data) {
+                        _addSubEntlink(data.instance, data.node.children);
+                     }).on('redraw.jstree', function (e, data) {
+                        _addSubEntlink(data.instance, data.nodes);
+                     }).on('select_node.jstree', function (e, data) {
+                        document.location.href = data.node.a_attr.href;
                      });
 
                      var searchTree = function() {

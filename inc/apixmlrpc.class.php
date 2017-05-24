@@ -191,13 +191,13 @@ class APIXmlrpc extends API {
             $additionalheaders = array();
             if (count($response) == 1) {
                // add a location targetting created element
-               $additionalheaders['location'] = self::$api_url.$this->parameters['itemtype']."/".$response['id'];
+               $additionalheaders['location'] = self::$api_url."/".$this->parameters['itemtype']."/".$response['id'];
             } else {
                // add a link header targetting created elements
                $additionalheaders['link'] = "";
                foreach ($response as $created_item) {
                   if ($created_item['id']) {
-                     $additionalheaders['link'] .= self::$api_url.$this->parameters['itemtype'].
+                     $additionalheaders['link'] .= self::$api_url."/".$this->parameters['itemtype'].
                                                   "/".$created_item['id'].",";
                   }
                }

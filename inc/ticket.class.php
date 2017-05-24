@@ -806,11 +806,13 @@ class Ticket extends CommonITILObject {
       }
 
       // automatic recalculate if user changes urgence or technician change impact
+      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       if (isset($input['urgency'])
-          && isset($input['impact'])
-          && (($input['urgency'] != $this->fields['urgency'])
-              || $input['impact'] != $this->fields['impact'])
-          && !isset($input['priority'])) {
+            && isset($input['impact'])
+            && (($input['urgency'] != $this->fields['urgency'])
+               || $input['impact'] != $this->fields['impact'])
+            && ($canpriority && !isset($input['priority']) || !$canpriority)
+      ) {
          $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
       }
 
@@ -1019,7 +1021,7 @@ class Ticket extends CommonITILObject {
       }
 
       foreach ($rule->getCriterias() as $key => $val) {
-         if (array_key_exists($key, $input)) {
+         if (array_key_exists($key, $input) && substr($key, 0, 1) !== '_') {
             if (!isset($this->fields[$key])
                 || ($DB->escape($this->fields[$key]) != $input[$key])) {
                $changes[] = $key;
@@ -3395,7 +3397,7 @@ class Ticket extends CommonITILObject {
       }
       if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
           && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]))) {
-         if (!$tt->isHiddenField('itemtype')) {
+         if (!$tt->isHiddenField('items_id')) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
                                 $tt->getMandatoryMark('items_id'))."</td>";
@@ -4390,6 +4392,7 @@ class Ticket extends CommonITILObject {
          $idpriority = 0;
          echo $tt->getBeginHiddenFieldValue('priority');
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
+         echo "<input id='$idajax' type='hidden' name='priority' value='".$this->fields["priority"]."'>";
          echo $tt->getEndHiddenFieldValue('priority', $this);
       }
 
@@ -5409,6 +5412,7 @@ class Ticket extends CommonITILObject {
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
                 WHERE $restrict ".
                       getEntitiesRestrictRequest("AND", "glpi_tickets")."
+                AND glpi_tickets.is_deleted = 0
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);

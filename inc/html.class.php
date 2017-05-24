@@ -1132,7 +1132,7 @@ class Html {
 
       echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
-      echo Html::css('css/jstree/style.css');
+      echo Html::css('css/jstree-glpi.css');
       echo Html::css('lib/jqueryplugins/select2/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
       echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
@@ -3904,6 +3904,16 @@ class Html {
             menubar: false,
             statusbar: false,
             skin: 'light',
+            setup: function(editor) {
+               if ($('#$name').attr('required') == 'required') {
+                  $('#$name').closest('form').find('input[type=submit]').click(function() {
+                     editor.save();
+                     if ($('#$name').val() == '') {
+                        alert('".__('The description field is mandatory')."');
+                     }
+                  });
+               }
+            },
             plugins: [
                'table directionality searchreplace',
                'tabfocus autoresize link image paste',
@@ -5938,7 +5948,7 @@ class Html {
             }
             break;
          case 'jstree':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jquery.jstree.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jstree/jstree.js';
             break;
          case 'gantt':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js';
@@ -6106,7 +6116,7 @@ class Html {
     */
    static public function manageRefreshPage($timer = false, $callback = null) {
       if (!$timer) {
-         $timer = $_SESSION['glpirefresh_ticket_list'];
+         $timer = isset($_SESSION['glpirefresh_ticket_list']) ? $_SESSION['glpirefresh_ticket_list'] : 0;
       }
 
       if ($callback === null) {
@@ -6115,11 +6125,13 @@ class Html {
 
       $text = "";
       if ($timer > 0) {
-         // Refresh automatique  sur tracking.php
-         $text.="<script type=\"text/javascript\">\n";
-         $text.="setInterval($callback,".
-               (60000 * $timer).");\n";
-         $text.="</script>\n";
+         // set timer to millisecond from minutes
+         $timer = $timer * MINUTE_TIMESTAMP * 1000;
+
+         // call callback function to $timer interval
+         $text = self::scriptBlock("window.setInterval(function() {
+               $callback
+            }, $timer);");
       }
 
       return $text;

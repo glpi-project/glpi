@@ -10,11 +10,14 @@ The present file will list all changes made to the project; according to the
 - Revisions on knowledge base entries and their translations, with diff view
 - Add recursive comments on knowledge base entries
 - Load minified CSS and JS files (core and plugins) that are generated on release
+- Link beetween software licenses
+- Alerts on saved searches
 
 ### Changed
 - Display knowledge base category items in tickets using a popup instead of a
 new whole window
 - Reviewed all richtext editor (tinymce) and their upload parts, now more simpler and intuitive
+- Don't ask user to select a template if there is no configured template
 
 ### API changes
 
@@ -22,6 +25,7 @@ new whole window
 
 - `CommonDBTM::getTable()` signature has changed
 - `Bookmark` has been renamed to `SavedSearch`
+- Update to latest jsTree plugin
 
 #### Deprecated
 

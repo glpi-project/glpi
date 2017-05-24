@@ -251,6 +251,27 @@ CREATE TABLE `glpi_savedsearches_users` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_savedsearches_alerts
+
+DROP TABLE IF EXISTS `glpi_savedsearches_alerts`;
+CREATE TABLE `glpi_savedsearches_alerts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `savedsearches_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  `operator` tinyint(1) NOT NULL,
+  `value` int(11) NOT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  UNIQUE KEY `unicity` (`savedsearches_id`,`operator`, `value`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_budgets
 
 DROP TABLE IF EXISTS `glpi_budgets`;
@@ -1486,6 +1507,7 @@ INSERT INTO `glpi_crontasks` VALUES ('25','MailCollector','mailgateerror','86400
 INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -4432,6 +4454,7 @@ INSERT INTO `glpi_notifications` VALUES ('62','New group in observers','0','Tick
 INSERT INTO `glpi_notifications` VALUES ('63','New user in assignees','0','Ticket','assign_user','mail','4','','1','1','2016-02-08 16:57:46',NULL);
 INSERT INTO `glpi_notifications` VALUES ('64','New group in assignees','0','Ticket','assign_group','mail','4','','1','1','2016-02-08 16:57:46',NULL);
 INSERT INTO `glpi_notifications` VALUES ('65','New supplier in assignees','0','Ticket','assign_supplier','mail','4','','1','1','2016-02-08 16:57:46',NULL);
+INSERT INTO `glpi_notifications` VALUES ('66','Saved searches','0','SavedSearch_Alert','alert','mail','24','','1','1','2016-02-08 16:57:46',NULL);
 
 ### Dump table glpi_notificationtargets
 
@@ -4574,6 +4597,7 @@ INSERT INTO `glpi_notificationtargets` VALUES ('127','20','1','62');
 INSERT INTO `glpi_notificationtargets` VALUES ('128','2','1','63');
 INSERT INTO `glpi_notificationtargets` VALUES ('129','23','1','64');
 INSERT INTO `glpi_notificationtargets` VALUES ('130','8','1','65');
+INSERT INTO `glpi_notificationtargets` VALUES ('131','19','1','66');
 
 ### Dump table glpi_notificationtemplates
 
@@ -4616,6 +4640,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('20','Receiver errors','MailCol
 INSERT INTO `glpi_notificationtemplates` VALUES ('21','Projects','Project','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('22','Project Tasks','ProjectTask','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('23','Unlock Item request','ObjectLock','2016-02-08 16:57:46',NULL,NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('24','Saved searches alerts','SavedSearch_Alert','2017-04-05 14:87:34',NULL,NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -5215,6 +5240,25 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('23','23','','##obje
       &lt;/tbody&gt;
       &lt;/table&gt;
       &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;');
+
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('24','24','','##savedsearch.action## ##savedsearch.name##','##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
+
+      ##savedsearch.message##
+
+      ##lang.savedsearch.url##
+      ##savedsearch.url##
+
+      Regards,', '&lt;table&gt;
+      &lt;tbody&gt;
+      &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td colspan=\"2\"&gt;&lt;a href=\"##savedsearch.url##\"&gt;##savedsearch.message##&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;##lang.savedsearch.url##&lt;/td&gt;
+      &lt;td&gt;##savedsearch.url##&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/tbody&gt;
+      &lt;/table&gt;
+      &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

@@ -67,4 +67,21 @@ class ToolboxTest extends PHPUnit\Framework\TestCase {
       $this->assertEquals($expected, $result);
 
    }
+
+   public function dataGetSize() {
+      return [
+         [1,                   '1 o'],
+         [1025,                '1 Kio'],
+         [1100000,             '1.05 Mio'],
+         [1100000000,          '1.02 Gio'],
+         [1100000000000,       '1 Tio'],
+      ];
+   }
+
+   /**
+    * @dataProvider dataGetSize
+    */
+   public function testGetSize($input, $expected) {
+      $this->assertEquals($expected, Toolbox::getSize($input));
+   }
 }

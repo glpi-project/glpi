@@ -42,6 +42,8 @@ body {
    padding: 0;
    background:  #f8f7f3;
    position: relative;
+   height: auto;
+   min-height: 100%;
 }
 
 body.iframed {
@@ -119,6 +121,10 @@ sup {
 .floatleft {
    position: relative;
    float: left;
+}
+
+.nofloat {
+   float: none!important;
 }
 
 .center-h {
@@ -359,20 +365,20 @@ input {
 }
 
 input:required {
-    border:1px red solid!important;
-    border-left-width: 8px!important;
-    padding-right: 0!important;
+   border:1px rgba(255, 0, 0, .6) solid!important;
+   border-left-width: 3px!important;
+   padding-right: 0!important;
+   box-shadow: none;
 }
 
 input:required:valid {
-    border-color:green!important;
+   border: 1px solid RGB(211, 211, 211) !important;
 }
 
 span.required {
    color: red;
    margin-left: .2em;
 }
-
 
 .no-wrap {
    white-space: nowrap;
@@ -2219,10 +2225,9 @@ a.icon_nav_move:hover img {
 /* ################--------------- Login Null Header  ---------------#################### */
 
 #firstboxlogin {
-   position: absolute;
-   top: 0;
-   bottom: 0;
    width: 100%;
+   min-height: 100%;
+   min-height: 100vh; /* double min-height, some old browser don't have vh units support*/
 }
 
 #logo_login {
@@ -3900,7 +3905,6 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    }
 
    #firstboxlogin {
-      position: fixed;
       overflow-y: auto;
    }
 
@@ -4333,6 +4337,8 @@ span.count {
    padding: .2em .5em;
    float: right;
    margin-top: -0.2em;
+   margin-left: .5em;
+   font-weight: bold;
 }
 
 span.count img {

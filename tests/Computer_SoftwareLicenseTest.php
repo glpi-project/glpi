@@ -35,7 +35,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 class Computer_SoftwareLicenseTest extends DbTestCase {
 
    /**
-    * @covers Computer_SoftwareLicense::testCountForLicense
+    * @covers Computer_SoftwareLicense::countForLicense
     */
    public function testCountForLicense() {
       $this->Login();
@@ -53,7 +53,7 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
    }
 
    /**
-    * @covers Computer_SoftwareLicense::testCountForSoftware
+    * @covers Computer_SoftwareLicense::countForSoftware
     * @depends testCountForLicense
     */
    public function testCountForSoftware() {
@@ -61,7 +61,7 @@ class Computer_SoftwareLicenseTest extends DbTestCase {
       $soft = getItemByTypeName('Software', '_test_soft');
       $this->assertEquals(7, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
 
-      $soft = getItemByTypeName('Software', '_test_softlic_1');
+      $soft = getItemByTypeName('Software', '_test_soft2');
       $this->assertEquals(0, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
 
    }

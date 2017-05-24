@@ -231,12 +231,14 @@ class Item_Ticket extends CommonDBRelation{
 
          // Get associated elements for ticket
          $used = self::getUsedItems($params['id']);
+         $usedcount = 0;
          foreach ($used as $itemtype => $items) {
             foreach ($items as $items_id) {
                if (!isset($params['items_id'][$itemtype])
                    || !in_array($items_id, $params['items_id'][$itemtype])) {
                   $params['items_id'][$itemtype][] = $items_id;
                }
+               ++$usedcount;
             }
          }
       }
@@ -287,9 +289,7 @@ class Item_Ticket extends CommonDBRelation{
          $delete = $ticket->canUpdateItem();
          $cpt = 0;
          foreach ($params['items_id'] as $itemtype => $items) {
-            foreach ($items as $items_id) {
-               $cpt++;
-            }
+            $cpt += count($items);
          }
 
          if ($cpt == 1 && isset($tt->mandatory['items_id'])) {
@@ -297,10 +297,17 @@ class Item_Ticket extends CommonDBRelation{
          }
          foreach ($params['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
-               if (($count < 5 && $params['id']) || $params['id'] == 0) {
-                  echo Item_Ticket::showItemToAdd($params['id'], $itemtype, $items_id, array('rand' => $rand, 'delete' => $delete));
-               }
                $count++;
+               echo self::showItemToAdd(
+                  $params['id'],
+                  $itemtype,
+                  $items_id,
+                  [
+                     'rand'      => $rand,
+                     'delete'    => $delete,
+                     'visible'   => ($count <= 5)
+                  ]
+               );
             }
          }
       }
@@ -309,9 +316,13 @@ class Item_Ticket extends CommonDBRelation{
          echo "<input type='hidden' value='0' name='items_id'>";
       }
 
-      if ($params['id'] > 0 && $count > 5) {
+      if ($params['id'] > 0 && $usedcount != $count) {
+         $count_notsaved = $count - $usedcount;
+         echo "<i>" . sprintf(_n('%1$s item not saved', '%1$s items not saved', $count_notsaved), $count_notsaved)  . "</i>";
+      }
+      if ($params['id'] > 0 && $usedcount > 5) {
          echo "<i><a href='".$ticket->getFormURL()."?id=".$params['id']."&amp;forcetab=Item_Ticket$1'>"
-                  .__('Display all items')." (".$count.")</a></i>";
+                  .__('Display all items')." (".$usedcount.")</a></i>";
       }
       echo "</div>";
 
@@ -342,7 +353,11 @@ class Item_Ticket extends CommonDBRelation{
    static function showItemToAdd($tickets_id, $itemtype, $items_id, $options) {
       global $CFG_GLPI;
 
-      $params = array('rand' => mt_rand(), 'delete' => true);
+      $params = [
+         'rand'      => mt_rand(),
+         'delete'    => true,
+         'visible'   => true
+      ];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
@@ -351,14 +366,18 @@ class Item_Ticket extends CommonDBRelation{
       $result = "";
 
       if ($item = getItemForItemtype($itemtype)) {
-         $item->getFromDB($items_id);
-         $result =  "<div id='".$itemtype."_".$items_id."'>";
-         $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
-         $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
-         if ($params['delete']) {
-            $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
+         if ($params['visible']) {
+            $item->getFromDB($items_id);
+            $result =  "<div id='{$itemtype}_$items_id'>";
+            $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
+            $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
+            if ($params['delete']) {
+               $result .= " <span class='fa fa-times-circle pointer' onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\"></span>";
+            }
+            $result .= "</div>";
+         } else {
+            $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
          }
-         $result .= "</div>";
       }
 
       return $result;

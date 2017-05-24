@@ -883,7 +883,7 @@ class CronTask extends CommonDBTM{
     *
     * @return bool for success
    **/
-   static public function Register($itemtype, $name, $frequency, $options=array()) {
+   static public function register($itemtype, $name, $frequency, $options=array()) {
 
       // Check that hook exists
       if (!isPluginItemType($itemtype)) {
@@ -922,7 +922,7 @@ class CronTask extends CommonDBTM{
     *
     * @return bool for success
    **/
-   static public function Unregister($plugin) {
+   static public function unregister($plugin) {
       global $DB;
 
       if (empty($plugin)) {

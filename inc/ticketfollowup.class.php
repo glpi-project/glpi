@@ -187,8 +187,18 @@ class TicketFollowup  extends CommonDBTM {
          $nb = 0;
          if (self::canCreate()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable('glpi_ticketfollowups',
-                                          ['tickets_id' => $item->getID()]);
+               $nb = countElementsInTable(
+                  'glpi_ticketfollowups',
+                  [
+                     'AND' => [
+                        'tickets_id'   => $item->getID(),
+                        'OR'           => [
+                           'is_private'   => 0,
+                           'users_id'  => Session::getLoginUserID()
+                        ]
+                     ]
+                  ]
+               );
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -253,11 +263,11 @@ class TicketFollowup  extends CommonDBTM {
 
       $input = $this->addFiles($input);
 
-      // update writer if content change
-      if (($uid = Session::getLoginUserID())
+      // do not update writer if content change. Following code can be used for #2187
+      /*if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
          $input["users_id"] = $uid;
-      }
+      }*/
 
       return $input;
    }

@@ -60,6 +60,10 @@ if (isset($_POST["add"])) {
    $savedsearch->check($_POST['id'], UPDATE);
    $savedsearch->update($_POST);
    Html::back();
+} else if (isset($_GET['create_notif'])) {
+   $savedsearch->check($_GET['id'], UPDATE);
+   $savedsearch->createNotif();
+   Html::back();
 } else {//print computer information
    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "savedsearch");
    //show computer form to add

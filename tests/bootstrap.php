@@ -66,7 +66,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => 4,
+      '_version' => '4.1',
 
       // Type => array of entries
       'Entity' => [
@@ -201,14 +201,15 @@ function loadDataset() {
          ]
       ], 'Contact' => [
          [
-            'name'      => '_contact01_name',
-            'firstname' => '_contact01_firstname',
-            'phone'     => '0123456789',
-            'phone2'    => '0123456788',
-            'mobile'    => '0623456789',
-            'fax'       => '0123456787',
-            'email'     => '_contact01_firstname._contact01_name@glpi.com',
-            'comment'   => 'Comment for contact _contact01_name'
+            'name'         => '_contact01_name',
+            'firstname'    => '_contact01_firstname',
+            'phone'        => '0123456789',
+            'phone2'       => '0123456788',
+            'mobile'       => '0623456789',
+            'fax'          => '0123456787',
+            'email'        => '_contact01_firstname._contact01_name@glpi.com',
+            'comment'      => 'Comment for contact _contact01_name',
+            'entities_id'  => '_test_root_entity'
          ]
       ], 'Supplier' => [
          [
@@ -216,7 +217,8 @@ function loadDataset() {
             'phonenumber'  => '0123456789',
             'fax'          => '0123456787',
             'email'        => 'info@_supplier01_name.com',
-            'comment'      => 'Comment for supplier _suplier01_name'
+            'comment'      => 'Comment for supplier _suplier01_name',
+            'entities_id'  => '_test_root_entity'
          ]
       ], 'Location' => [
          [
@@ -241,7 +243,8 @@ function loadDataset() {
             'locations_id'   => '_location01',
             'budgettypes_id' => '_budgettype01',
             'begin_date'     => '2016-10-18',
-            'end_date'       => '2016-12-31'
+            'end_date'       => '2016-12-31',
+            'entities_id'     => '_test_root_entity'
          ]
       ], 'Ticket' => [
          [
@@ -436,9 +439,9 @@ function loadDataset() {
 
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
-      printf("\nGLPI dataset version %d already loaded\n\n", $data['_version']);
+      printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
    } else {
-      printf("\nLoading GLPI dataset version %d\n", $data['_version']);
+      printf("\nLoading GLPI dataset version %s\n", $data['_version']);
 
       $ids = array();
       foreach ($data as $type => $inputs) {

@@ -46,6 +46,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase {
 
    public function testNewRevision() {
       global $DB;
+      $this->login();
 
       $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
 

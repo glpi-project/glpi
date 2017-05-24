@@ -41,7 +41,6 @@ class SavedSearch extends CommonDBTM {
 
    static $rightname               = 'bookmark_public';
 
-   const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
    const URI    = 2;
    const ALERT  = 3; //SEARCH SYSTEM search alert
@@ -160,7 +159,8 @@ class SavedSearch extends CommonDBTM {
 
    function defineTabs($options=array()) {
       $ong = [];
-      $this->addDefaultFormTab($ong);
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('SavedSearch_Alert', $ong, $options);
       return $ong;
    }
 
@@ -367,7 +367,7 @@ class SavedSearch extends CommonDBTM {
          echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'/>";
       }
 
-      echo "<table class='tab_cadre' width='".self::WIDTH."px'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>";
       if ($ID > 0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
@@ -606,6 +606,7 @@ class SavedSearch extends CommonDBTM {
    **/
    function mark_default($ID) {
       Toolbox::logDebug('mark_default() method is deprecated');
+      Toolbox::backtrace();
       return $this->markDefault($ID);
    }
 
@@ -659,6 +660,7 @@ class SavedSearch extends CommonDBTM {
    **/
    function unmark_default($ID) {
       Toolbox::logDebug('unmark_default() method is deprecated');
+      Toolbox::backtrace();
       return $this->unmarkDefault($ID);
    }
 
@@ -824,7 +826,7 @@ class SavedSearch extends CommonDBTM {
                $.ajax({
                   url: _this.attr('href'),
                   beforeSend: function() {
-                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . Toolbox::addslashes_deep(__('Loading...')) . "\'/></span>';
                      _dest.append(_img);
                   },
                   success: function(res) {
@@ -851,7 +853,7 @@ class SavedSearch extends CommonDBTM {
                      $('#showSavedSearches .contents').html(res);
                   },
                   error: function() {
-                     alert('" . __('Default bookmark has not been changed!')  . "');
+                     alert('" . Toolbox::addslashes_deep(_('Default bookmark has not been changed!'))  . "');
                      _this.addClass(_currentclass);
                   },
                   complete: function() {
@@ -892,31 +894,8 @@ class SavedSearch extends CommonDBTM {
 
             if ($_SESSION['glpishow_count_on_tabs']) {
                $count = null;
-               //check if we want to count results
-               if ($this->fields['do_count'] == self::COUNT_YES
-                  || $this->fields['do_count'] == self::COUNT_AUTO
-                  && $this->getField('last_execution_time') != null
-                  && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']) {
-                  //Do the same as self::getParameters() but getFromDB is useless
-                  $query_tab = array();
-                  parse_str($this->fields["query"], $query_tab);
-
-                  $params = null;
-                  if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
-                     $params = $this->prepareQueryToUse($this->fields["type"], $query_tab);
-                  }
-
-                  if (!$params) {
-                     Toolbox::logDebug(
-                        'Save search #' . $this->getID() . ' seems to be broken!'
-                     );
-                  } else {
-                     $data = $search->prepareDatasForSearch($current_type, $params);
-                     $data['search']['sort'] = null;
-                     $search->constructSQL($data);
-                     $search->constructDatas($data, true);
-                     $count = $data['data']['totalcount'];
-                  }
+               if ($data = $this->execute()) {
+                  $count = $data['data']['totalcount'];
                } else {
                   $info_message = ($this->fields['do_count'] == self::COUNT_NO) ?
                      __('Count for this saved search has been disabled.') :
@@ -955,8 +934,10 @@ class SavedSearch extends CommonDBTM {
                $this->fields['name'],
                $current_type_name
             );
+
+            $title = ($is_private ? __('Click to load or drag and drop to reorder') : __('Click to load'));
             echo "<a class='savedsearchlink' href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
-                     $this->fields["id"]."\" title='".__('Click to load or drag and drop to reorder')."'>".
+                     $this->fields["id"]."\" title='".$title."'>".
                      $text;
             if ($_SESSION['glpishow_count_on_tabs']) {
                echo "<span class='primary-bg primary-fg count'>$count</span></a>";
@@ -987,11 +968,11 @@ class SavedSearch extends CommonDBTM {
                            ids: _ids
                         },
                         beforeSend: function() {
-                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __('Loading...') . "\'/></span>';
+                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . Toolbox::addslashes_deep(__('Loading...')) . "\'/></span>';
                            $('.private_header').prepend(_img);
                         },
                         error: function() {
-                           alert('" . __('Saved searches order cannot be saved!')  . "');
+                           alert('" . Toolbox::addslashes_deep(__('Saved searches order cannot be saved!')) . "');
                         },
                         complete: function() {
                            $('#loading').remove();
@@ -1268,7 +1249,6 @@ class SavedSearch extends CommonDBTM {
 
          if ($iterator->numrows()) {
             //prepare variables we'll use
-            $search = new Search();
             $self = new self();
             $now = date('Y-m-d H:i:s');
             $stmt = $DB->prepare(
@@ -1280,24 +1260,8 @@ class SavedSearch extends CommonDBTM {
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {
                try {
-                  $query_tab = array();
-                  parse_str($row['query'], $query_tab);
                   $self->fields = $row;
-
-                  $params = null;
-                  if (class_exists($row['itemtype']) || $row['itemtype'] == 'AllAssets') {
-                     $params = $self->prepareQueryToUse($row['type'], $query_tab);
-                  }
-
-                  if (!$params) {
-                     Toolbox::logDebug(
-                        'Save search #' . $row['id'] . ' seems to be broken!'
-                     );
-                  } else {
-                     $data = $search->prepareDatasForSearch($row['itemtype'], $params);
-                     $data['search']['sort'] = null;
-                     $search->constructSQL($data);
-                     $search->constructDatas($data, true);
+                  if ($data = $self->execute(true)) {
                      $execution_time = $data['data']['execution_time'];
 
                      $stmt->bind_param('sss', $execution_time, $now, $row['id']);
@@ -1313,6 +1277,74 @@ class SavedSearch extends CommonDBTM {
          }
       } else {
          Toolbox::logDebug('Count on tabs has been disabled; crontask is inefficient.');
+      }
+   }
+
+   /**
+    * Execute current saved search and return results
+    *
+    * @param boolean $force Force query execution even if it should not be executed
+    *
+    * @throws RuntimeException
+    *
+    * @return array
+    */
+   public function execute($force = false) {
+      global $CFG_GLPI;
+
+      if ($force === true || ($this->fields['do_count'] == self::COUNT_YES
+         || $this->fields['do_count'] == self::COUNT_AUTO
+         && $this->getField('last_execution_time') != null
+         && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count'])) {
+
+         $search = new Search();
+         //Do the same as self::getParameters() but getFromDB is useless
+         $query_tab = array();
+         parse_str($this->getField('query'), $query_tab);
+
+         $params = null;
+         if (class_exists($this->getField('itemtype')) || $this->getField('itemtype') == 'AllAssets') {
+            $params = $this->prepareQueryToUse($this->getField('type'), $query_tab);
+         }
+
+         if (!$params) {
+            throw new \RuntimeException(
+               'Saved search #' . $this->getID() . ' seems to be broken!'
+            );
+         } else {
+            $data = $search->prepareDatasForSearch($this->getField('itemtype'), $params);
+            $data['search']['sort'] = null;
+            $search->constructSQL($data);
+            $search->constructDatas($data, true);
+            return $data;
+         }
+      }
+   }
+
+   /**
+    * Create specific notification for a public saved search
+    *
+    * @return void
+    */
+   public function createNotif() {
+      $notif = new Notification();
+      $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
+
+      if ($notif->isNewItem()) {
+         $notif->check(-1, CREATE);
+         $notif->add([
+            'name'            => __('Saved search') . ' ' . $this->getName(),
+            'entities_id'     => $_SESSION["glpidefault_entity"],
+            'itemtype'        => SavedSearch_Alert::getType(),
+            'event'           => 'alert_' . $this->getID(),
+            'is_active'       => 0,
+            'datate_creation' => date('Y-m-d H:i:s')
+         ]);
+
+         Session::addMessageAfterRedirect(
+            __('Notification has been created!'),
+            INFO
+         );
       }
    }
 }

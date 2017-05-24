@@ -35,8 +35,6 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 class MonitorTest extends DbTestCase {
 
    public function testBasicMonitor() {
-      global $CFG_GLPI;
-
       $this->Login();
       $this->setEntity('_test_root_entity', true);
 
@@ -44,7 +42,8 @@ class MonitorTest extends DbTestCase {
       $_SESSION['glpi_currenttime'] = $date;
 
       $data = [
-         'name' => '_test_monitor01'
+         'name'         => '_test_monitor01',
+         'entities_id'  => '0'
       ];
 
       $monitor = new Monitor();

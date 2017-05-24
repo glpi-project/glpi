@@ -2831,6 +2831,40 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Can object be activated
+    *
+    * @since 9.2
+    *
+    * @return boolean
+    **/
+   function maybeActive() {
+
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      return array_key_exists('is_active', $this->fields);
+   }
+
+
+   /**
+    * Is the object active
+    *
+    * @since 9.2
+    *
+    * @return boolean
+    **/
+   function isActive() {
+
+      if ($this->maybeActive()) {
+         return $this->fields["is_active"];
+      }
+      // Return integer value to be used to fill is_active field
+      return 1;
+
+   }
+
+
+   /**
     * Is the object may be a template
     *
     * @return boolean
@@ -3837,8 +3871,16 @@ class CommonDBTM extends CommonGLPI {
          // Get input entities if set / else get object one
          if (isset($this->input['entities_id'])) {
             $entities_id = $this->input['entities_id'];
-         } else {
+         } else if (isset($this->fields['entities_id'])) {
             $entities_id = $this->fields['entities_id'];
+         } else {
+            $message = 'Missing entity ID!';
+            if (defined('TU_USER')) {
+               //will break tests
+               throw new \RuntimeException($message);
+            } else {
+               Toolbox::logDebug($message);
+            }
          }
 
          $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
@@ -4498,13 +4540,21 @@ class CommonDBTM extends CommonGLPI {
       } else {
          $colspan=2;
       }
-      if ($result = $DB->query($query)) {
+
+      $result = $DB->query($query);
+      $blank_params =
+         (strpos($target, '?') ? '&amp;' : '?')
+         . "id=-1&amp;withtemplate=2";
+      $target_blank = $target . $blank_params;
+
+      if ($add && $result->num_rows == 0) {
+         //if there is no template, just use blank
+         Html::redirect($target_blank);
+      }
+
+      if ($result) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
-            $blank_params =
-               (strpos($target, '?') ? '&amp;' : '?')
-               . "id=-1&amp;withtemplate=2";
-            $target_blank = $target . $blank_params;
             echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
             echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";

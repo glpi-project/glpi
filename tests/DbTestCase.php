@@ -33,6 +33,8 @@
 // Generic test classe, to be extended for CommonDBTM Object
 
 class DbTestCase extends PHPUnit\Framework\TestCase {
+   private $int;
+   private $str;
 
    protected function setUp() {
       global $DB;
@@ -40,8 +42,13 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = array();
 
-      // By default, no sessio, not connected
-      $_SESSION = [];
+      // By default, no session, not connected
+      $_SESSION = [
+         'glpi_use_mode'         => Session::NORMAL_MODE,
+         'glpi_currenttime'      => date("Y-m-d H:i:s"),
+         'glpiis_ids_visible'    => 0,
+         'glpiticket_timeline'   => 1
+      ];
    }
 
 
@@ -78,8 +85,6 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
     * Get a unique random string
     */
    protected function getUniqueString() {
-      static $str = NULL;
-
       if (is_null($this->str)) {
          return $this->str = uniqid('str');
       }
@@ -90,8 +95,6 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
     * Get a unique random integer
     */
    protected function getUniqueInteger() {
-      static $int = NULL;
-
       if (is_null($this->int)) {
          return $this->int = mt_rand(1000, 10000);
       }

@@ -371,7 +371,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          'table'              => 'glpi_netpoints',
          'field'              => 'name',
          'datatype'           => 'dropdown',
-         'name'               => __('Network outlet'),
+          'name'              => __('Ethernet outlet'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'joinparams'         => [
