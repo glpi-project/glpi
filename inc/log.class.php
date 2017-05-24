@@ -500,11 +500,11 @@ class Log extends CommonDBTM {
 
                      foreach($DB->request($table, array($key => $data['items_id'],
                                                         $itemkey => $iditem)) as $datalink) {
-                        if ($datalink['type'] == 1) {
+                        if ($datalink['type'] == CommonITILActor::REQUESTER) {
                            $as = __('Requester');
-                        } else if ($datalink['type'] == 2) {
+                        } else if ($datalink['type'] == CommonITILActor::ASSIGN) {
                            $as = __('Assigned to');
-                        } else if ($datalink['type'] == 3) {
+                        } else if ($datalink['type'] == CommonITILActor::OBSERVER) {
                            $as = __('Watcher');
                         }
                         $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
