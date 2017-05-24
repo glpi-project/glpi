@@ -3871,8 +3871,16 @@ class CommonDBTM extends CommonGLPI {
          // Get input entities if set / else get object one
          if (isset($this->input['entities_id'])) {
             $entities_id = $this->input['entities_id'];
-         } else {
+         } else if (isset($this->fields['entities_id'])) {
             $entities_id = $this->fields['entities_id'];
+         } else {
+            $message = 'Missing entity ID!';
+            if (defined('TU_USER')) {
+               //will break tests
+               throw new \RuntimeException($message);
+            } else {
+               Toolbox::logDebug($message);
+            }
          }
 
          $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
