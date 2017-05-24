@@ -230,6 +230,7 @@ class SearchTest extends DbTestCase {
                  || substr($itemtype, 0, 6) === "Common"
                  || substr($itemtype, 0, 2) === "DB"
                  || $itemtype == 'SlaLevel'
+                 || $itemtype == 'OlaLevel'
                  || $itemtype == 'Reservation'
                  || $itemtype == 'Event'
                  || $itemtype == 'KnowbaseItem'
