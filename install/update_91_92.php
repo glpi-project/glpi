@@ -828,8 +828,6 @@ Regards,',
       $DB->queryOrDie($query, "9.2 add table glpi_projecttasktemplates");
    }
 
-
-
    $migration->addKey("glpi_tickettasks", "users_id_tech");
    $migration->addKey("glpi_tickettasks", "groups_id_tech");
    $migration->migrationOneTable('glpi_tasktemplates');

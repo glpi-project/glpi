@@ -50,8 +50,6 @@ class ProjectTaskTemplate extends CommonDropdown {
 
    static $rightname          = 'projecttasktemplate';
 
-
-
    static function getTypeName($nb=0) {
       return _n('Project task template', 'Project task templates', $nb);
    }
@@ -202,16 +200,9 @@ class ProjectTaskTemplate extends CommonDropdown {
          'datatype'           => 'textarea',
       ];
 
-//      $tab[] = [
-//         'id'                 => '16',
-//         'name'               => __('Comments'),
-//         'field'              => 'comments',
-//         'table'              => $this->getTable(),
-//         'datatype'           => 'textarea',
-//      ];
-
       return $tab;
    }
+
 
    /**
     * @see CommonDropdown::displaySpecificTypeField()
@@ -238,13 +229,14 @@ class ProjectTaskTemplate extends CommonDropdown {
       }
    }
 
+
    /**
     * @param $field
     * @param $values
     * @param $options   array
     */
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
-      Toolbox::logDebug($field);
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -255,6 +247,7 @@ class ProjectTaskTemplate extends CommonDropdown {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
+
 
    function defineTabs($options=array()) {
 

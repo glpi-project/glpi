@@ -229,8 +229,6 @@ class ProjectTask extends CommonDBChild {
                                $this->fields['id'],
                                $this->getType());
 
-
-
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
          // Clean reload of the project
          $this->getFromDB($this->fields['id']);
@@ -326,7 +324,6 @@ class ProjectTask extends CommonDBChild {
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
       }
-
 
       return Project::checkPlanAndRealDates($input);
    }
@@ -469,7 +466,6 @@ class ProjectTask extends CommonDBChild {
                $("#dropdown_effective_duration'.$rand_effective_duration.'").select2("val", data.effective_duration);               
                // set planned_duration
                $("#dropdown_planned_duration'.$rand_planned_duration.'").select2("val", data.planned_duration);
-               
 
             });
          }
@@ -1106,24 +1102,22 @@ class ProjectTask extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-//      if (!$withtemplate) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case 'Project' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                            ['projects_id' => $item->getID()]);
-               }
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+      $nb = 0;
+      switch ($item->getType()) {
+         case 'Project' :
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $nb = countElementsInTable($this->getTable(),
+                                         ['projects_id' => $item->getID()]);
+            }
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
-            case __CLASS__ :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                            ['projecttasks_id' => $item->getID()]);
-               }
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
-         }
-//      }
+         case __CLASS__ :
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $nb = countElementsInTable($this->getTable(),
+                                         ['projecttasks_id' => $item->getID()]);
+            }
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+      }
       return '';
    }
 
