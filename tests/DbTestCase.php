@@ -42,8 +42,13 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = array();
 
-      // By default, no sessio, not connected
-      $_SESSION = [];
+      // By default, no session, not connected
+      $_SESSION = [
+         'glpi_use_mode'         => Session::NORMAL_MODE,
+         'glpi_currenttime'      => date("Y-m-d H:i:s"),
+         'glpiis_ids_visible'    => 0,
+         'glpiticket_timeline'   => 1
+      ];
    }
 
 
