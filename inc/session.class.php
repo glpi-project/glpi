@@ -186,7 +186,7 @@ class Session {
    **/
    static function start() {
 
-      if (!session_id()) {
+      if (session_status() === PHP_SESSION_NONE) {
          session_name("glpi_".md5(realpath(GLPI_ROOT)));
          @session_start();
       }
