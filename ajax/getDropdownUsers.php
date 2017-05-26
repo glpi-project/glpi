@@ -79,9 +79,18 @@ if (!isset($_GET['page'])) {
    $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
+$entity_restrict = -1;
+if (isset($_GET['entity_restrict'])) {
+   $entity_restrict = Toolbox::stripslashes_deep($_GET['entity_restrict']);
+   $entity_restrict = json_decode($entity_restrict);
+   if (json_last_error() != JSON_ERROR_NONE) {
+      $entity_restrict = $_GET['entity_restrict'];
+   }
+}
+
 if ($one_item < 0) {
    $start  = intval(($_GET['page']-1)*$_GET['page_limit']);
-   $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
+   $result = User::getSqlSearchResult(false, $_GET['right'], $entity_restrict,
                                       $_GET['value'], $used, $_GET['searchText'], $start,
                                       intval($_GET['page_limit']));
 } else {
