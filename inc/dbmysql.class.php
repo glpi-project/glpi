@@ -65,6 +65,9 @@ class DBmysql {
    //to calculate execution time
    public $execution_time          = false;
 
+   //to simulate transactions (for tests)
+   public $objcreated = [];
+
    /**
     * Constructor / Connect to the MySQL Database
     *

@@ -30,25 +30,35 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/knowbaseitem_revision.class.php */
 
-class KnowbaseItem_RevisionTest extends DbTestCase {
+class KnowbaseItem_Revision extends DbTestCase {
+
+   public function afterTestMethod($method) {
+      global $DB;
+      $DB->query('DELETE FROM glpi_knowbaseitems_revisions');
+      parent::afterTestMethod($method);
+   }
 
    public function testGetTypeName() {
       $expected = 'Revision';
-      $this->assertEquals($expected, KnowbaseItem_Revision::getTypeName(1));
+      $this->string(\KnowbaseItem_Revision::getTypeName(1))->isIdenticalTo($expected);
 
       $expected = 'Revisions';
-      $this->assertEquals($expected, KnowbaseItem_Revision::getTypeName(0));
-      $this->assertEquals($expected, KnowbaseItem_Revision::getTypeName(2));
-      $this->assertEquals($expected, KnowbaseItem_Revision::getTypeName(10));
+      $this->string(\KnowbaseItem_Revision::getTypeName(0))->isIdenticalTo($expected);
+      $this->string(\KnowbaseItem_Revision::getTypeName(2))->isIdenticalTo($expected);
+      $this->string(\KnowbaseItem_Revision::getTypeName(10))->isIdenticalTo($expected);
    }
 
    public function testNewRevision() {
       global $DB;
       $this->login();
 
-      $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
+      $kb1 = $this->getNewKbItem();
 
       $where = [
          'knowbaseitems_id' => $kb1->getID(),
@@ -59,53 +69,78 @@ class KnowbaseItem_RevisionTest extends DbTestCase {
          'glpi_knowbaseitems_revisions',
          $where
       );
-      $this->assertEquals(0, $nb);
+      $this->integer((int)$nb)->isIdenticalTo(0);
 
-      $this->assertTrue(
+      $this->boolean(
          $kb1->update(
             [
                'id'   => $kb1->getID(),
                'name' => '_knowbaseitem01-01'
             ]
          )
-      );
+      )->isTrue();
 
       $nb = countElementsInTable(
          'glpi_knowbaseitems_revisions',
          $where
       );
-      $this->assertEquals(1, $nb);
+      $this->integer((int)$nb)->isIdenticalTo(1);
 
       $rev_id = null;
       $result = $DB->query('SELECT MIN(id) as id FROM glpi_knowbaseitems_revisions');
       $data = $DB->fetch_assoc($result);
       $rev_id = $data['id'];
 
-      $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01-01');
-      $this->assertTrue($kb1->revertTo($rev_id));
+      $kb1->getFromDB($kb1->getID());
+      $this->boolean($kb1->revertTo($rev_id))->isTrue();
 
       $nb = countElementsInTable(
          'glpi_knowbaseitems_revisions',
          $where
       );
-      $this->assertEquals(2, $nb);
+      $this->integer((int)$nb)->isIdenticalTo(2);
    }
 
    public function testGetTabNameForItem() {
-       global $DB;
+      $kb_rev = new \KnowbaseItem_Revision();
+      $kb1 = $this->getNewKbItem();
 
-       $kb_rev = new KnowbaseItem_Revision();
-       $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+      $this->boolean(
+         $kb1->update(
+            [
+               'id'   => $kb1->getID(),
+               'name' => '_knowbaseitem01-01'
+            ]
+         )
+      )->isTrue();
 
-       $_SESSION['glpishow_count_on_tabs'] = 1;
-       $name = $kb_rev->getTabNameForItem($kb1);
-       $this->assertEquals('Revisions <sup class=\'tab_nb\'>2</sup>', $name);
+      $_SESSION['glpishow_count_on_tabs'] = 1;
+      $name = $kb_rev->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Revision <sup class=\'tab_nb\'>1</sup>');
 
-       $_SESSION['glpishow_count_on_tabs'] = 0;
-       $name = $kb_rev->getTabNameForItem($kb1);
-       $this->assertEquals('Revisions', $name);
+      $this->boolean(
+         $kb1->update(
+            [
+               'id'   => $kb1->getID(),
+               'name' => '_knowbaseitem01-02'
+            ]
+         )
+      )->isTrue();
 
-       //cleanup...
-       $DB->query('DELETE FROM glpi_knowbaseitems_revisions');
+      $name = $kb_rev->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Revisions <sup class=\'tab_nb\'>2</sup>');
+
+      $_SESSION['glpishow_count_on_tabs'] = 0;
+      $name = $kb_rev->getTabNameForItem($kb1);
+      $this->string($name)->isIdenticalTo('Revisions');
+   }
+
+   private function getNewKbItem() {
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+      $toadd = $kb1->fields;
+      unset($toadd['id']);
+      $toadd['name'] = $this->getUniqueString();
+      $this->integer((int)$kb1->add($toadd))->isGreaterThan(0);
+      return $kb1;
    }
 }

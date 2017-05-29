@@ -30,15 +30,19 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/search.class.php */
 
-class SearchTest extends DbTestCase {
+class Search extends DbTestCase {
 
    private function doSearch($itemtype, $params, array $forcedisplay = array()) {
       global $DEBUG_SQL;
 
       // check param itemtype exists (to avoid search errors)
-      $this->assertTrue(is_subclass_of($itemtype, "CommonDBTM"));
+      $this->class($itemtype)->isSubClassof('CommonDBTM');
 
       // login to glpi if needed
       if (!isset($_SESSION['glpiname'])) {
@@ -47,14 +51,14 @@ class SearchTest extends DbTestCase {
 
       // force session in debug mode (to store & retrieve sql errors)
       $glpi_use_mode             = $_SESSION['glpi_use_mode'];
-      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+      $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
 
       // don't compute last request from session
       $params['reset'] = 'reset';
 
       // do search
-      $params = Search::manageParams($itemtype, $params);
-      $data   = Search::getDatas($itemtype, $params, $forcedisplay);
+      $params = \Search::manageParams($itemtype, $params);
+      $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
 
       // append existing errors to returned data
       $data['last_errors'] = array();
@@ -67,7 +71,7 @@ class SearchTest extends DbTestCase {
       $_SESSION['glpi_use_mode'] = $glpi_use_mode;
 
       // do not store this search from session
-      Search::resetSaveSearch();
+      \Search::resetSaveSearch();
 
       return $data;
    }
@@ -75,10 +79,14 @@ class SearchTest extends DbTestCase {
 
    /**
     * Get all classes in folder inc/
+    *
+    * @param boolean $function Whether to look for a function
+    *
+    * @return array
     */
-   private function getClasses($function=false) {
+   private function getClasses($function = false) {
       $classes = array();
-      foreach (new DirectoryIterator('inc/') as $fileInfo) {
+      foreach (new \DirectoryIterator('inc/') as $fileInfo) {
          if ($fileInfo->isDot()) {
             continue;
          }
@@ -128,11 +136,11 @@ class SearchTest extends DbTestCase {
       $data = $this->doSearch('Computer', $search_params);
 
       // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty();
    }
-
-
 
    public function testMetaComputerUser() {
       $search_params = array('is_deleted'   => 0,
@@ -169,8 +177,10 @@ class SearchTest extends DbTestCase {
       $data = $this->doSearch('Computer', $search_params);
 
       // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty();
    }
 
    public function testUser() {
@@ -199,23 +209,24 @@ class SearchTest extends DbTestCase {
       $data = $this->doSearch('User', $search_params);
 
       // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-      //expecting one result
-      $this->assertEquals(1, $data['data']['totalcount']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']
+               ->isNotEmpty()
+               //expecting one result
+               ->integer['totalcount']->isIdenticalTo(1);
    }
 
-
-
    /**
-    * This test will add all serachoptions in each itemtype and check if the
+    * This test will add all searchoptions in each itemtype and check if the
     * search give a SQL error
     *
-    * @medium
+    * @return void
     */
    public function testSearchOptions() {
 
-      $displaypref = new DisplayPreference();
+      $displaypref = new \DisplayPreference();
       // save table glpi_displaypreferences
       $dp = getAllDatasFromTable($displaypref->getTable());
       foreach ($dp as $line) {
@@ -260,8 +271,8 @@ class SearchTest extends DbTestCase {
                $number++;
             }
          }
-         $this->assertEquals($number, countElementsInTable($displaypref->getTable(),
-                 "`itemtype`='".$itemtype."' AND `users_id`=0"));
+         $this->integer((int)countElementsInTable($displaypref->getTable(),
+                 "`itemtype`='".$itemtype."' AND `users_id`=0"))->isIdenticalTo($number);
 
          // do a search query
          $search_params = array('is_deleted'   => 0,
@@ -270,28 +281,39 @@ class SearchTest extends DbTestCase {
                                 'metacriteria' => array());
          $data = $this->doSearch($itemtype, $search_params);
          // check for sql error (data key missing or empty)
-         $this->assertArrayHasKey('data', $data, $data['last_errors']);
-         $this->assertNotCount(0, $data['data'], $data['last_errors']);
+         $this->array($data)
+            ->hasKey('data')
+               ->array['last_errors']->isIdenticalTo([])
+               ->array['data']->isNotEmpty();
       }
       // restore displaypreference table
       /// TODO: review, this can't work.
       foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
          $displaypref->delete($line, true);
       }
-      $this->assertEquals(0, countElementsInTable($displaypref->getTable()));
+      $this->integer((int)countElementsInTable($displaypref->getTable()))->isIdenticalTo(0);
       foreach ($dp as $input) {
          $displaypref->add($input);
       }
    }
 
-
-
    /**
     * Test search with all meta to not have SQL errors
+    *
+    * @return void
     */
    public function test_search_all_meta() {
-      $itemtypeslist = array('Computer', 'Problem', 'Ticket', 'Printer', 'Monitor',
-          'Peripheral', 'Software', 'Phone');
+      $itemtypeslist = [
+         'Computer',
+         'Problem',
+         'Ticket',
+         'Printer',
+         'Monitor',
+         'Peripheral',
+         'Software',
+         'Phone'
+      ];
+
       foreach ($itemtypeslist as $itemtype) {
          // do a search query
          $search_params = array('is_deleted'   => 0,
@@ -301,7 +323,7 @@ class SearchTest extends DbTestCase {
                                                                    'value'      => '')),
                                 'metacriteria' => array());
          $metacriteria = array();
-         $metaList = Search::getMetaItemtypeAvailable($itemtype);
+         $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
             foreach ($item->getSearchOptions() as $key=>$data) {
@@ -327,45 +349,11 @@ class SearchTest extends DbTestCase {
          $search_params['metacriteria'] = $metacriteria;
          $data = $this->doSearch($itemtype, $search_params);
          // check for sql error (data key missing or empty)
-         $this->assertArrayHasKey('data', $data, $data['last_errors']);
-         $this->assertNotCount(0, $data['data'], $data['last_errors']);
+         $this->array($data)
+            ->hasKey('data')
+               ->array['last_errors']->isIdenticalTo([])
+               ->array['data']->isNotEmpty();
       }
-   }
-
-   /**
-    * Test that getSearchOptions throws an exception when it finds a duplicate
-    */
-   public function testGetSearchOptionsWException() {
-      $item = new DupSearchOpt();
-      $error = 'Duplicate key 12 (One search option/Any option) in DupSearchOpt searchOptions!';
-      $catched = false;
-
-      try {
-         $options = $item->getSearchOptions();
-      } catch (\Exception $e) {
-         $catched = true;
-         $this->assertTrue($e instanceof \RuntimeException);
-         $this->assertEquals($error, $e->getMessage());
-      }
-      $this->assertTrue($catched, 'getSearchOptions exception has not been catched!');
-   }
-}
-
-class DupSearchOpt extends CommonDBTM {
-   public function getSearchOptionsNew() {
-      $tab = [];
-
-      $tab[] = [
-         'id'     => '12',
-         'name'   => 'One search option'
-      ];
-
-      $tab[] = [
-         'id'     => '12',
-         'name'   => 'Any option'
-      ];
-
-      return $tab;
    }
 
    public function testIsNotifyComputerGroup() {
@@ -381,20 +369,23 @@ class DupSearchOpt extends CommonDBTM {
                                                                 'field'      => 20,
                                                                 'searchtype' => 'equals',
                                                                 'value'      => 1)));
-      $this->setEntity('Root entity', true);
+      $this->login();
+      $this->setEntity('_test_root_entity', true);
 
       $data = $this->doSearch('Computer', $search_params);
 
       // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-      //expecting no result
-      $this->assertEquals(0, $data['data']['totalcount']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting no result
+            ->integer['totalcount']->isIdenticalTo(0);
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
       //create group that can be notified
-      $group = new Group();
+      $group = new \Group();
       $gid = $group->add(
          [
             'name'         => '_test_group01',
@@ -403,7 +394,7 @@ class DupSearchOpt extends CommonDBTM {
             'is_recursive' => 1
          ]
       );
-      $this->assertGreaterThan(0, $gid, 'Group has not been created!');
+      $this->integer($gid)->isGreaterThan(0);
 
       //attach group to computer
       $updated = $computer1->update(
@@ -412,7 +403,7 @@ class DupSearchOpt extends CommonDBTM {
             'groups_id' => $gid
          ]
       );
-      $this->assertTrue($updated, 'Group has not been attached to computer!');
+      $this->boolean($updated)->isTrue();
 
       $data = $this->doSearch('Computer', $search_params);
 
@@ -423,13 +414,15 @@ class DupSearchOpt extends CommonDBTM {
             'groups_id' => 0
          ]
       );
-      $this->assertTrue($updated, 'Group has not been detached from computer!');
+      $this->boolean($updated)->isTrue();
 
       // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-      //expecting one result
-      $this->assertEquals(1, $data['data']['totalcount']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            //expecting one result
+            ->integer['totalcount']->isIdenticalTo(1);
    }
 
    public function testDateBeforeOrNot() {
@@ -455,16 +448,57 @@ class DupSearchOpt extends CommonDBTM {
 
       $data = $this->doSearch('Ticket', $search_params);
 
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-      $this->assertGreaterThan(0, $data['data']['totalcount']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            ->integer['totalcount']->isGreaterThan(0);
 
       //negate previous search
       $search_params['criteria'][1]['link'] = 'AND NOT';
       $data = $this->doSearch('Ticket', $search_params);
 
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-      $this->assertEquals(0, $data['data']['totalcount']);
+      $this->array($data)
+         ->hasKey('data')
+            ->array['last_errors']->isIdenticalTo([])
+            ->array['data']->isNotEmpty()
+            ->integer['totalcount']->isIdenticalTo(0);
    }
+
+   /**
+    * Test that getSearchOptions throws an exception when it finds a duplicate
+    *
+    * @return void
+    */
+   public function testGetSearchOptionsWException() {
+      $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
+
+      $this->exception(
+         function () {
+            $item = new DupSearchOpt();
+            $item->getSearchOptions();
+         }
+      )
+         ->isInstanceOf('\RuntimeException')
+         ->hasMessage($error);
+   }
+}
+
+class DupSearchOpt extends \CommonDBTM {
+   public function getSearchOptionsNew() {
+      $tab = [];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'One search option'
+      ];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'Any option'
+      ];
+
+      return $tab;
+   }
+
 }

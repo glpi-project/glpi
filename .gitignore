@@ -16,7 +16,7 @@
 /vendor/
 /nbproject/private/
 phpunit.xml
-/coverage/
+/tests/code-coverage/
 /config/based_config.php
 /config/config.php
 /config/define.php

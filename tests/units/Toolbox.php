@@ -30,41 +30,41 @@
  * ---------------------------------------------------------------------
 */
 
-/* Test for inc/html.class.php */
+namespace tests\units;
 
-class ToolboxTest extends PHPUnit\Framework\TestCase {
+use \atoum;
 
-   /**
-    * @covers Toolbox::getRandomString
-    */
+/* Test for inc/toolbox.class.php */
+
+class Toolbox extends atoum {
+
    public function testGetRandomString() {
-
       for ($len = 20; $len < 50; $len += 5) {
          // Low strength
-         $str = Toolbox::getRandomString($len);
-         $this->assertEquals($len, strlen($str));
-         $this->assertTrue(ctype_alnum($str));
+         $str = \Toolbox::getRandomString($len);
+         $this->integer(strlen($str))->isIdenticalTo($len);
+         $this->boolean(ctype_alnum($str))->isTrue();
          // High strength
-         $str = Toolbox::getRandomString($len, true);
-         $this->assertEquals($len, strlen($str));
-         $this->assertTrue(ctype_alnum ($str) );
+         $str = \Toolbox::getRandomString($len, true);
+         $this->integer(strlen($str))->isIdenticalTo($len);
+         $this->boolean(ctype_alnum ($str))->isTrue();
       }
    }
 
    public function testRemoveHtmlSpecialChars() {
       $original = 'My - string èé  Ê À ß';
       $expected = 'my - string ee  e a sz';
-      $result = Toolbox::removeHtmlSpecialChars($original);
+      $result = \Toolbox::removeHtmlSpecialChars($original);
 
-      $this->assertEquals($expected, $result);
+      $this->string($result)->isIdenticalTo($expected);
    }
 
    public function testSlugify() {
       $original = 'My - string èé  Ê À ß';
       $expected = 'my-string-ee-e-a-sz';
-      $result = Toolbox::slugify($original);
+      $result = \Toolbox::slugify($original);
 
-      $this->assertEquals($expected, $result);
+      $this->string($result)->isIdenticalTo($expected);
 
    }
 
@@ -82,6 +82,6 @@ class ToolboxTest extends PHPUnit\Framework\TestCase {
     * @dataProvider dataGetSize
     */
    public function testGetSize($input, $expected) {
-      $this->assertEquals($expected, Toolbox::getSize($input));
+      $this->string(\Toolbox::getSize($input))->isIdenticalTo($expected);
    }
 }

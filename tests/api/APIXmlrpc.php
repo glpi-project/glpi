@@ -30,22 +30,31 @@
  * ---------------------------------------------------------------------
  */
 
-/* Test for inc/api.class.php */
+namespace tests\units;
 
-use GuzzleHttp\Exception\ClientException;
+use \GuzzleHttp\Exception\ClientException;
+use \GuzzleHttp;
+use \APIBaseClass;
 
-class APIXmlrpcTest extends APIBaseClass {
-   protected $http_client;
-   protected $base_uri = "";
+/* Test for inc/apixmlrpc.class.php */
 
-   public function __construct() {
+/**
+ * @engine isolate
+ */
+class APIXmlrpc extends APIBaseClass {
+
+   public function setUp() {
+      parent::setUp();
+      $this->boolean(extension_loaded('xmlrpc'))->isTrue();
+   }
+
+   public function beforeTestMethod($method) {
       global $CFG_GLPI;
 
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/apixmlrpc.php";
 
-      //to make phpunit6 happy
-      parent::__construct(null, [], '');
+      parent::beforeTestMethod($method);
    }
 
    protected function doHttpRequest($resource = "", $params = []) {
@@ -70,19 +79,20 @@ class APIXmlrpcTest extends APIBaseClass {
       // launch query
       try {
          $res = $this->doHttpRequest($resource, $flat_params);
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
          $response = $e->getResponse();
-         $this->assertEquals($expected_code, $response->getStatusCode());
+         $this->variable($response->getStatusCode())->isEqualTo($expected_code);
          $body = xmlrpc_decode($response->getBody());
-         $this->assertArrayHasKey('0', $body);
-         $this->assertEquals($expected_symbol, $body[0]);
+         $this->array($body)
+            ->hasKey('0')
+            ->string[0]->isIdenticalTo($expected_symbol);
          return;
       }
       // common tests
       if (isset($this->last_error)) {
-         $this->assertNotEquals(null, $res, $this->last_error);
+         $this->variable($res)->isNotNull();
       }
-      $this->assertEquals($expected_code, $res->getStatusCode());
+      $this->variable($res->getStatusCode())->isEqualTo($expected_code);
       // retrieve data
       $data = xmlrpc_decode($res->getBody());
       if (is_array($data)) {
@@ -92,53 +102,39 @@ class APIXmlrpcTest extends APIBaseClass {
    }
 
    /**
-    * @group  api
+    * @tags   api
     * @covers API::initSession
     */
-   public function testInitSessionCredentials() {
+   public function initSessionCredentials() {
       $data = $this->query('initSession',
             ['query' => [
                   'login'    => TU_USER,
                   'password' => TU_PASS]]);
 
-            $this->assertNotEquals(false, $data);
-            $this->assertArrayHasKey('session_token', $data);
-            return $data['session_token'];
+      $this->variable($data)->isNotFalse();
+      $this->array($data)->hasKey('session_token');
+      $this->session_token = $data['session_token'];
    }
 
    /**
-    * Redefine this test to permits launch of testUpdateItemWithIdInQueryString
-    *
-    * @group   api
-    * @depends testInitSessionCredentials
-    * @covers  API::CreateItems
+    * @tags    api
     */
-   public function testCreateItem($session_token) {
-      return parent::testCreateItem($session_token);
+   public function testBadEndpoint() {
+      parent::badEndpoint(405, 'ERROR_METHOD_NOT_ALLOWED');
    }
 
    /**
-    * @group   api
-    * @depends testInitSessionCredentials
-    */
-   public function testBadEndpoint($session_token, $expected_code = null, $expected_symbol = null) {
-      parent::testBadEndpoint($session_token, 405, 'ERROR_METHOD_NOT_ALLOWED');
-   }
-
-   /**
-    * @group   api
-    * @depends testInitSessionCredentials
-    * @depends testCreateItem
+    * @tags    api
     * @covers  API::updateItems
     */
-   public function testUpdateItem($session_token, $computers_id) {
-      parent::testUpdateItem($session_token, $computers_id);
+   public function testUpdateItem() {
+      //:parent::testUpdateItem($session_token, $computers_id);
 
       //try to update an item without input
       $data = $this->query('updateItems',
             ['itemtype' => 'Computer',
                   'verb'     => 'PUT',
-                  'headers'  => ['Session-Token' => $session_token],
+                  'headers'  => ['Session-Token' => $this->session_token],
                   'json'     => []],
             400,
             'ERROR_BAD_ARRAY');

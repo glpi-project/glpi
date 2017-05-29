@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+
+define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
+define('GLPI_URI', 'http://localhost:8088');
+
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
 }
@@ -37,7 +42,7 @@ global $CFG_GLPI;
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/API/APIBaseClass.php';
+include_once __DIR__ . '/APIBaseClass.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {

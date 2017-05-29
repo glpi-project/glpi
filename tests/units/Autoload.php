@@ -30,9 +30,15 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
+require_once __DIR__ . '/../Autoload.php';
+
 /* Test for inc/autoload.function.php */
 
-class AutoloadTest extends DbTestCase {
+class Autoload extends DbTestCase {
 
    public function dataItemType() {
       return [
@@ -45,28 +51,33 @@ class AutoloadTest extends DbTestCase {
    }
 
    /**
-    * @covers ::isPluginItemType
     * @dataProvider dataItemType
     **/
    public function testIsPluginItemType($type, $plug, $class) {
-
       $res = isPluginItemType($type);
       if ($plug) {
-         $this->assertEquals($plug, $res['plugin'], 'Plugin name');
-         $this->assertEquals($class, $res['class'], 'Class name');
+         $this->array($res)
+            ->isIdenticalTo([
+               'plugin' => $plug,
+               'class'  => $class
+            ]);
       } else {
-         $this->assertFalse($res);
+         $this->boolean($res)->isFalse;
       }
    }
 
+   /**
+    * @extensions event
+    */
    public function testAutoloadEvent() {
-      if (class_exists('Event', false)) {
-         $this->markTestSkipped('pecl/event extension loaded');
-      }
-      $this->assertTrue(class_exists('Event'));
+      $this->boolean(class_exists('Event'))->isTrue();
    }
 
    public function testAutoloadGlpiEvent() {
-      $this->assertTrue(class_exists('Glpi\\Event'));
+      $this->boolean(class_exists('Glpi\\Event'))->isTrue();
+      if (class_exists('Event', false)) {
+         //tested if pecl/event is not present
+         $this->boolean(class_exists('Event'))->isTrue();
+      }
    }
 }
