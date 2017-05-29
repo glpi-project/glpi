@@ -778,10 +778,10 @@ Regards,',
    $migration->addField("glpi_projects", "template_name", "string");
    $migration->addKey("glpi_projects", "projecttemplates_id");
 
-   $migration->addField("glpi_projecttasks", "projecttemplates_id", "integer");
+   $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
    $migration->addField("glpi_projecttasks", "is_template", "bool");
    $migration->addField("glpi_projecttasks", "template_name", "string");
-   $migration->addKey("glpi_projecttasks", "projecttemplates_id");
+   $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
 
    if (!TableExists('glpi_projecttasktemplates')) {
       $query = "CREATE TABLE `glpi_projecttasktemplates` (

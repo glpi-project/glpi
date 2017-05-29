@@ -125,25 +125,23 @@ class Project extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
-         if (static::canView()) {
-            $nb = 0;
-            switch ($item->getType()) {
-               case __CLASS__ :
-                  $ong = array();
-                  if ($_SESSION['glpishow_count_on_tabs']) {
-                     $nb = countElementsInTable(
-                        $this->getTable(),
-                        [
-                           $this->getForeignKeyField() => $item->getID(),
-                           'is_deleted'                => 0
-                        ]
-                     );
-                  }
-                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-                  $ong[2] = __('GANTT');
-                  return $ong;
-            }
+      if (static::canView() && !$withtemplate) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong = array();
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable(
+                     $this->getTable(),
+                     [
+                        $this->getForeignKeyField() => $item->getID(),
+                        'is_deleted'                => 0
+                     ]
+                  );
+               }
+               $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
+               $ong[2] = __('GANTT');
+               return $ong;
          }
       }
 
