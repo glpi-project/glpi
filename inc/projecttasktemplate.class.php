@@ -104,100 +104,100 @@ class ProjectTaskTemplate extends CommonDropdown {
    function getSearchOptionsNew() {
       $tab = parent::getSearchOptionsNew();
 
-       $tab[] = [
-          'id'                 => '4',
-          'name'               => _x('item', 'State'),
-          'field'              => 'name',
-          'table'              => 'glpi_projectstates',
-          'datatype'           => 'dropdown',
-       ];
-
       $tab[] = [
-         'id'                 => '5',
-         'name'               => __('Type'),
-         'field'              => 'name',
-         'table'              => 'glpi_projecttasktypes',
-         'datatype'           => 'dropdown',
+         'id'       => '4',
+         'name'     => _x('item', 'State'),
+         'field'    => 'name',
+         'table'    => 'glpi_projectstates',
+         'datatype' => 'dropdown',
       ];
 
       $tab[] = [
-         'id'                 => '6',
-         'name'               => __('As child of'),
-         'field'              => 'name',
-         'table'              => 'glpi_projects',
-         'datatype'           => 'itemlink',
+         'id'       => '5',
+         'name'     => __('Type'),
+         'field'    => 'name',
+         'table'    => 'glpi_projecttasktypes',
+         'datatype' => 'dropdown',
       ];
 
       $tab[] = [
-         'id'                 => '7',
-         'name'               => __('Percent done'),
-         'field'              => 'percent_done',
-         'table'              => $this->getTable(),
-         'datatype'           => 'percent',
+         'id'       => '6',
+         'name'     => __('As child of'),
+         'field'    => 'name',
+         'table'    => 'glpi_projects',
+         'datatype' => 'itemlink',
       ];
 
       $tab[] = [
-         'id'                 => '8',
-         'name'               => __('Milestone'),
-         'field'              => 'is_milestone',
-         'table'              => $this->getTable(),
-         'datatype'           => 'bool',
+         'id'       => '7',
+         'name'     => __('Percent done'),
+         'field'    => 'percent_done',
+         'table'    => $this->getTable(),
+         'datatype' => 'percent',
       ];
 
       $tab[] = [
-         'id'                 => '9',
-         'name'               => __('Planned start date'),
-         'field'              => 'plan_start_date',
-         'table'              => $this->getTable(),
-         'datatype'           => 'datetime',
+         'id'       => '8',
+         'name'     => __('Milestone'),
+         'field'    => 'is_milestone',
+         'table'    => $this->getTable(),
+         'datatype' => 'bool',
       ];
 
       $tab[] = [
-         'id'                 => '10',
-         'name'               => __('Real start date'),
-         'field'              => 'real_start_date',
-         'table'              => $this->getTable(),
-         'datatype'           => 'datetime',
+         'id'       => '9',
+         'name'     => __('Planned start date'),
+         'field'    => 'plan_start_date',
+         'table'    => $this->getTable(),
+         'datatype' => 'datetime',
       ];
 
       $tab[] = [
-         'id'                 => '11',
-         'name'               => __('Planned end date'),
-         'field'              => 'plan_end_date',
-         'table'              => $this->getTable(),
-         'datatype'           => 'datetime',
+         'id'       => '10',
+         'name'     => __('Real start date'),
+         'field'    => 'real_start_date',
+         'table'    => $this->getTable(),
+         'datatype' => 'datetime',
       ];
 
       $tab[] = [
-         'id'                 => '12',
-         'name'               => __('Real end date'),
-         'field'              => 'real_end_date',
-         'table'              => $this->getTable(),
-         'datatype'           => 'datetime',
+         'id'       => '11',
+         'name'     => __('Planned end date'),
+         'field'    => 'plan_end_date',
+         'table'    => $this->getTable(),
+         'datatype' => 'datetime',
       ];
 
       $tab[] = [
-         'id'                 => '13',
-         'name'               => __('Planned duration'),
-         'field'              => 'planned_duration',
-         'table'              => $this->getTable(),
-         'datatype'           => 'actiontime',
+         'id'       => '12',
+         'name'     => __('Real end date'),
+         'field'    => 'real_end_date',
+         'table'    => $this->getTable(),
+         'datatype' => 'datetime',
       ];
 
       $tab[] = [
-         'id'                 => '14',
-         'name'               => __('Effective duration'),
-         'field'              => 'effective_duration',
-         'table'              => $this->getTable(),
-         'datatype'           => 'actiontime',
+         'id'       => '13',
+         'name'     => __('Planned duration'),
+         'field'    => 'planned_duration',
+         'table'    => $this->getTable(),
+         'datatype' => 'actiontime',
       ];
 
       $tab[] = [
-         'id'                 => '15',
-         'name'               => __('Description'),
-         'field'              => 'description',
-         'table'              => $this->getTable(),
-         'datatype'           => 'textarea',
+         'id'       => '14',
+         'name'     => __('Effective duration'),
+         'field'    => 'effective_duration',
+         'table'    => $this->getTable(),
+         'datatype' => 'actiontime',
+      ];
+
+      $tab[] = [
+         'id'       => '15',
+         'name'     => __('Description'),
+         'field'    => 'description',
+         'table'    => $this->getTable(),
+         'datatype' => 'textarea',
       ];
 
       return $tab;
