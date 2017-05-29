@@ -28,29 +28,8 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
+ */
 
-/* Test for inc/user.class.php */
-
-class UserTokenTest extends PHPUnit\Framework\TestCase {
-
-   /**
-    * @covers User::getToken
-    */
-   public function testGenerateUserToken() {
-      $user = new User();
-      $userID = 2;
-      $user->getFromDB($userID);
-      $this->assertEmpty($user->fields['personal_token_date']);
-      $this->assertEmpty($user->fields['personal_token']);
-
-      $token = User::getToken($userID);
-      $this->assertNotEmpty($token);
-
-      $user->getFromDB($userID);
-      $this->assertNotEmpty($user->fields['personal_token']);
-      $this->assertEquals($token, $user->fields['personal_token']);
-      $this->assertNotEmpty($user->fields['personal_token_date']);
-      $this->assertEquals($_SESSION['glpi_currenttime'], $user->fields['personal_token_date']);
-   }
+class DbFunction extends \DbTestCase {
+   //Placebo class to get inc/db.function.php tested
 }

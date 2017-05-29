@@ -30,22 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationtargetticket.class.php */
 
-class NotificationTargetTicketTest extends DbTestCase {
+class NotificationTargetTicket extends DbTestCase {
 
-
-   /**
-    * @covers NotificationTargetTicket::getTags
-    * @covers NotificationTargetCommonITILObject::getTags
-    * @covers NotificationTargetTicket::getDatasForObject
-    * @covers NotificationTargetCommonITILObject::getDatasForObject
-    */
    public function testgetDatasForObject() {
       global $CFG_GLPI;
 
       $tkt = getItemByTypeName('Ticket', '_ticket01');
-      $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt );
+      $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt );
       $notiftargetticket->getTags();
 
       // basic test for ##task.categorycomment## tag
@@ -59,8 +56,10 @@ class NotificationTargetTicketTest extends DbTestCase {
          'allowed_values'  => [],
          ];
 
-      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##']);
-      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categorycomment##']);
+      $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##'])
+         ->isIdenticalTo($expected);
+      $this->array($notiftargetticket->tag_descriptions['tag']['##task.categorycomment##'])
+         ->isIdenticalTo($expected);
 
       // basic test for ##task.categorid## tag
       $expected = [
@@ -72,15 +71,17 @@ class NotificationTargetTicketTest extends DbTestCase {
          'lang'            => true,
          'allowed_values'  => [],
          ];
-      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##']);
-      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categoryid##']);
+      $this->array($notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##'])
+         ->isIdenticalTo($expected);
+      $this->array($notiftargetticket->tag_descriptions['tag']['##task.categoryid##'])
+         ->isIdenticalTo($expected);
 
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
       // test of the getDatasForObject for default language en_GB
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
       $expected = [
                      [
-                     '##task.id##'              => 1,
+                     '##task.id##'              => '1',
                      '##task.isprivate##'       => 'No',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
@@ -97,20 +98,25 @@ class NotificationTargetTicketTest extends DbTestCase {
                      ]
                   ];
 
-      $ret = $notiftargetticket->getDatasForObject( $tkt, array() );
+      $basic_options = [
+         'additionnaloption' => [
+            'usertype' => ''
+         ]
+      ];
+      $ret = $notiftargetticket->getDatasForObject($tkt, $basic_options);
 
-      $this->assertEquals($expected, $ret['tasks']);
+      $this->array($ret['tasks'])->isIdenticalTo($expected);
 
       // test of the getDatasForObject for default language fr_FR
       $CFG_GLPI['translate_dropdowns'] = 1;
-      $_SESSION["glpilanguage"] = Session::loadLanguage( 'fr_FR' );
-      $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+      $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
+      $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
-      $ret = $notiftargetticket->getDatasForObject( $tkt, array() );
+      $ret = $notiftargetticket->getDatasForObject($tkt, $basic_options);
 
       $expected = [
                      [
-                     '##task.id##'              => 1,
+                     '##task.id##'              => '1',
                      '##task.isprivate##'       => 'Non',
                      '##task.author##'          => '_test_user',
                      '##task.categoryid##'      => $taskcat->getID(),
@@ -127,10 +133,9 @@ class NotificationTargetTicketTest extends DbTestCase {
                      ]
                   ];
 
-      $this->assertEquals($expected, $ret['tasks']);
+      $this->array($ret['tasks'])->isIdenticalTo($expected);
 
       // switch back to default language
-      $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
-
+      $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
    }
 }

@@ -30,23 +30,29 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/knowbaseitem_comment.class.php */
 
-class KnowbaseItem_CommentTest extends DbTestCase {
+/**
+ * @engine isolate
+ */
+class KnowbaseItem_Comment extends DbTestCase {
 
    public function testGetTypeName() {
       $expected = 'Comment';
-      $this->assertEquals($expected, KnowbaseItem_Comment::getTypeName(1));
+      $this->string(\KnowbaseItem_Comment::getTypeName(1))->isIdenticalTo($expected);
 
       $expected = 'Comments';
-      $this->assertEquals($expected, KnowbaseItem_Comment::getTypeName(0));
-      $this->assertEquals($expected, KnowbaseItem_Comment::getTypeName(2));
-      $this->assertEquals($expected, KnowbaseItem_Comment::getTypeName(10));
+      foreach ([0, 2, 10] as $i) {
+         $this->string(\KnowbaseItem_Comment::getTypeName($i))->isIdenticalTo($expected);
+      }
    }
 
    public function testGetCommentsForKbItem() {
-      //$this->Login();
-      $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 
       //first, set data
       $this->addComments($kb1);
@@ -55,17 +61,17 @@ class KnowbaseItem_CommentTest extends DbTestCase {
       $nb = countElementsInTable(
          'glpi_knowbaseitems_comments'
       );
-      $this->assertEquals(10, $nb);
+      $this->integer((int)$nb)->isIdenticalTo(10);
 
       // second, test what we retrieve
-      $comments = KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
-      $this->assertEquals(2, count($comments));
-      $this->assertEquals(9, count($comments[0]));
-      $this->assertEquals(2, count($comments[0]['answers']));
-      $this->assertEquals(1, count($comments[0]['answers'][0]['answers']));
-      $this->assertEquals(0, count($comments[0]['answers'][1]['answers']));
-      $this->assertEquals(9, count($comments[1]));
-      $this->assertEquals(0, count($comments[1]['answers']));
+      $comments = \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
+      $this->array($comments)->hasSize(2);
+      $this->array($comments[0])->hasSize(9);
+      $this->array($comments[0]['answers'])->hasSize(2);
+      $this->array($comments[0]['answers'][0]['answers'])->hasSize(1);
+      $this->array($comments[0]['answers'][1]['answers'])->hasSize(0);
+      $this->array($comments[1])->hasSize(9);
+      $this->array($comments[1]['answers'])->hasSize(0);
    }
 
    /**
@@ -76,9 +82,9 @@ class KnowbaseItem_CommentTest extends DbTestCase {
     *
     * @return void
     */
-   private function addComments(KnowbaseItem $kb, $lang = 'NULL') {
+   private function addComments(\KnowbaseItem $kb, $lang = 'NULL') {
       $this->Login();
-      $kbcom = new KnowbaseItem_Comment();
+      $kbcom = new \KnowbaseItem_Comment();
       $input = [
          'knowbaseitems_id' => $kb->getID(),
          'users_id'         => getItemByTypeName('User', TU_USER, true),
@@ -86,88 +92,88 @@ class KnowbaseItem_CommentTest extends DbTestCase {
          'language'         => $lang
       ];
       $kbcom1 = $kbcom->add($input);
-      $this->assertTrue($kbcom1 > 0);
+      $this->boolean($kbcom1 > 0)->isTrue();
 
       $input['comment'] = 'Comment 2 for KB1';
       $kbcom2 = $kbcom->add($input);
-      $this->assertTrue($kbcom2 > $kbcom1);
+      $this->boolean($kbcom2 > $kbcom1)->isTrue();
 
       //this one is from another user.
       $input['comment'] = 'Comment 1 - 1 for KB1';
       $input['parent_comment_id'] = $kbcom1;
       $input['users_id'] = getItemByTypeName('User', 'glpi', true);
       $kbcom11 = $kbcom->add($input);
-      $this->assertTrue($kbcom11 > $kbcom2);
+      $this->boolean($kbcom11 > $kbcom2)->isTrue();
 
       $input['comment'] = 'Comment 1 - 2 for KB1';
       $input['users_id'] = getItemByTypeName('User', TU_USER, true);
       $kbcom12 = $kbcom->add($input);
-      $this->assertTrue($kbcom12 > $kbcom11);
+      $this->boolean($kbcom12 > $kbcom11)->isTrue();
 
       $input['comment'] = 'Comment 1 - 1 - 1 for KB1';
       $input['parent_comment_id'] = $kbcom11;
       $kbcom111 = $kbcom->add($input);
-      $this->assertTrue($kbcom111 > $kbcom12);
+      $this->boolean($kbcom111 > $kbcom12)->isTrue();
    }
 
    public function testGetTabNameForItem() {
-       $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+       $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
        $this->addComments($kb1);
-       $kbcom = new KnowbaseItem_Comment();
+       $kbcom = new \KnowbaseItem_Comment();
 
        $name = $kbcom->getTabNameForItem($kb1, true);
-       $this->assertEquals('Comments <sup class=\'tab_nb\'>5</sup>', $name);
+       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
 
        $_SESSION['glpishow_count_on_tabs'] = 1;
        $name = $kbcom->getTabNameForItem($kb1);
-       $this->assertEquals('Comments <sup class=\'tab_nb\'>5</sup>', $name);
+       $this->string($name)->isIdenticalTo('Comments <sup class=\'tab_nb\'>5</sup>');
 
        $_SESSION['glpishow_count_on_tabs'] = 0;
        $name = $kbcom->getTabNameForItem($kb1);
-       $this->assertEquals('Comments', $name);
+       $this->string($name)->isIdenticalTo('Comments');
    }
 
    public function testDisplayComments() {
-      $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+      $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
       $this->addComments($kb1);
 
-      $html = KnowbaseItem_Comment::displayComments(
-         KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
+      $html = \KnowbaseItem_Comment::displayComments(
+         \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
          true
       );
 
       preg_match_all("/li class='comment'/", $html, $results);
-      $this->assertEquals(2, count($results[0]));
+      $this->array($results[0])->hasSize(2);
 
       preg_match_all("/li class='comment subcomment'/", $html, $results);
-      $this->assertEquals(3, count($results[0]));
+      $this->array($results[0])->hasSize(3);
 
       preg_match_all("/span class='edit_item'/", $html, $results);
-      $this->assertEquals(4, count($results[0]));
+      $this->array($results[0])->hasSize(4);
 
       preg_match_all("/span class='add_answer'/", $html, $results);
-      $this->assertEquals(5, count($results[0]));
+      $this->array($results[0])->hasSize(5);
 
       //same tests, from another user
-      $auth = new Auth();
+      $auth = new \Auth();
       $result = $auth->Login('glpi', 'glpi', true);
-      $this->assertTrue($result);
+      $this->boolean($result)->isTrue();
 
-      $html = KnowbaseItem_Comment::displayComments(
-         KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
+      $html = \KnowbaseItem_Comment::displayComments(
+         \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
          true
       );
 
       preg_match_all("/li class='comment'/", $html, $results);
-      $this->assertEquals(2, count($results[0]));
+      $this->array($results[0])->hasSize(2);
 
       preg_match_all("/li class='comment subcomment'/", $html, $results);
-      $this->assertEquals(3, count($results[0]));
+      $this->array($results[0])->hasSize(3);
 
       preg_match_all("/span class='edit_item'/", $html, $results);
-      $this->assertEquals(1, count($results[0]));
+      $this->array($results[0])->hasSize(1);
 
       preg_match_all("/span class='add_answer'/", $html, $results);
-      $this->assertEquals(5, count($results[0]));
+      $this->array($results[0])->hasSize(5);
    }
 }

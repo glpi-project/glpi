@@ -30,79 +30,68 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \atoum;
+
 /* Test for inc/html.class.php */
 
-class HtmlTest extends PHPUnit\Framework\TestCase {
+class Html extends atoum {
 
-   /**
-    * @covers Html::convDate
-    */
    public function testConvDate() {
-      $this->assertNull(Html::convDate(null));
-      $this->assertNull(Html::convDate('NULL'));
-      $this->assertNull(Html::convDate(''));
+      $this->variable(\Html::convDate(null))->isNull();
+      $this->variable(\Html::convDate('NULL'))->isNull();
+      $this->variable(\Html::convDate(''))->isNull();
 
       $mydate = date('Y-m-d H:i:s');
 
       $expected = date('Y-m-d');
       unset($_SESSION['glpidate_format']);
-      $this->assertEquals($expected, Html::convDate($mydate));
+      $this->string(\Html::convDate($mydate))->isIdenticalTo($expected);
       $_SESSION['glpidate_format'] = 0;
-      $this->assertEquals($expected, Html::convDate($mydate));
+      $this->string(\Html::convDate($mydate))->isIdenticalTo($expected);
 
-      $this->assertEquals($expected, Html::convDate(date('Y-m-d')));
+      $this->string(\Html::convDate(date('Y-m-d')))->isIdenticalTo($expected);
 
       $expected = date('d-m-Y');
-      $this->assertEquals($expected, Html::convDate($mydate, 1));
+      $this->string(\Html::convDate($mydate, 1))->isIdenticalTo($expected);
 
       $expected = date('m-d-Y');
-      $this->assertEquals($expected, Html::convDate($mydate, 2));
+      $this->string(\Html::convDate($mydate, 2))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::convDateTime
-    */
    public function testConvDateTime() {
-      $this->assertNull(Html::convDateTime(null));
-      $this->assertNull(Html::convDateTime('NULL'));
+      $this->variable(\Html::convDateTime(null))->isNull();
+      $this->variable(\Html::convDateTime('NULL'))->isNull;
 
       $mydate = date('Y-m-d H:i:s');
 
       $expected = date('Y-m-d H:i');
-      $this->assertEquals($expected, Html::convDateTime($mydate));
+      $this->string(\Html::convDateTime($mydate))->isIdenticalTo($expected);
 
       $expected = date('d-m-Y H:i');
-      $this->assertEquals($expected, Html::convDateTime($mydate, 1));
+      $this->string(\Html::convDateTime($mydate, 1))->isIdenticalTo($expected);
 
       $expected = date('m-d-Y H:i');
-      $this->assertEquals($expected, Html::convDateTime($mydate, 2));
+      $this->string(\Html::convDateTime($mydate, 2))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::cleanInputText
-    */
    public function testCleanInputText() {
       $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
       $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
-      $this->assertEquals($expected, Html::cleanInputText($origin));
+      $this->string(\Html::cleanInputText($origin))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::cleanParametersURL
-    */
    public function cleanParametersURL() {
       $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
       $expected = 'http://host/glpi/path/to/file.php';
-      $this->assertEquals($expected, Html::cleanParametersURL($url));
+      $this->string(\Html::cleanParametersURL($url))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::nl2br_deep
-    */
    public function testNl2br_deep() {
       $origin = "A string\nwith breakline.";
       $expected = "A string<br />\nwith breakline.";
-      $this->assertEquals($expected, Html::nl2br_deep($origin));
+      $this->string(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
 
       $origin = [
          "Another string\nwith breakline.",
@@ -112,12 +101,9 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          "Another string<br />\nwith breakline.",
          "And another<br />\none"
       ];
-      $this->assertEquals($expected, Html::nl2br_deep($origin));
+      $this->array(\Html::nl2br_deep($origin))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::resume_text
-    */
    public function testResume_text() {
       $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
@@ -125,16 +111,13 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
       $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
          'And if the string has been correctly truncated, well... All is ok then, let\'s show i&nbsp;(...)';
-      $this->assertEquals($expected, Html::resume_text($origin));
+      $this->string(\Html::resume_text($origin))->isIdenticalTo($expected);
 
       $origin = 'A string that is longer than 10 characters.';
       $expected = 'A string t&nbsp;(...)';
-      $this->assertEquals($expected, Html::resume_text($origin, 10));
+      $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::resume_name
-    */
    public function testResume_name() {
       $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
@@ -142,20 +125,17 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
       $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
          'And if the string has been correctly truncated, well... All is ok then, let\'s show i...';
-      $this->assertEquals($expected, Html::resume_name($origin));
+      $this->string(\Html::resume_name($origin))->isIdenticalTo($expected);
 
       $origin = 'A string that is longer than 10 characters.';
       $expected = 'A string t...';
-      $this->assertEquals($expected, Html::resume_name($origin, 10));
+      $this->string(\Html::resume_name($origin, 10))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::cleanPostForTextArea
-    */
    public function testCleanPostForTextArea() {
       $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
       $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
-      $this->assertEquals($expected, Html::cleanPostForTextArea($origin));
+      $this->string(\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
 
       $aorigin = [
         $origin,
@@ -165,7 +145,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          $expected,
          "Another\none!"
       ];
-      $this->assertEquals($aexpected, Html::cleanPostForTextArea($aorigin));
+      $this->array(\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
    }
 
    public function providerClean() {
@@ -175,156 +155,143 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
    }
 
    /**
-    * @covers Html::clean
     * @dataProvider providerClean
     */
    public function testCleanDropTags($in, $outnotag, $outtag) {
-      $this->assertEquals($outnotag, Html::clean($in, true));
+      $this->string(\Html::clean($in, true))->isIdenticalTo($outnotag);
    }
 
    /**
-    * @covers Html::clean
     * @dataProvider providerClean
     */
    public function testCleanKeepTags($in, $outnotag, $outtag) {
-      $this->assertEquals($outtag, Html::clean($in, false));
+      $this->string(\Html::clean($in, false))->isIdenticalTo($outtag);
    }
 
-   /**
-    * @covers Html::formatNumber
-    */
    public function testFormatNumber() {
       $_SESSION['glpinumber_format'] = 0;
       $origin = '';
-      $expected = 0;
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $expected = '0.00';
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = '1207.3';
 
       $expected = '1&nbsp;207.30';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '1207.30';
-      $this->assertEquals($expected, Html::formatNumber($origin, true));
+      $this->string(\Html::formatNumber($origin, true))->isIdenticalTo($expected);
 
       $origin = 124556.693;
       $expected = '124&nbsp;556.69';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $origin = 120.123456789;
 
       $expected = '120.12';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $expected = '120.12346';
-      $this->assertEquals($expected, Html::formatNumber($origin, false, 5));
+      $this->string(\Html::formatNumber($origin, false, 5))->isIdenticalTo($expected);
 
       $expected = '120';
-      $this->assertEquals($expected, Html::formatNumber($origin, false, 0));
+      $this->string(\Html::formatNumber($origin, false, 0))->isIdenticalTo($expected);
 
       $origin = 120.999;
+      $expected = '121.00';
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
       $expected = '121';
-      $this->assertEquals($expected, Html::formatNumber($origin));
-      $this->assertEquals($expected, Html::formatNumber($origin, false, 0));
+      $this->string(\Html::formatNumber($origin, false, 0))->isIdenticalTo($expected);
 
-      $this->assertEquals('-', Html::formatNumber('-'));
+      $this->string(\Html::formatNumber('-'))->isIdenticalTo('-');
 
       $_SESSION['glpinumber_format'] = 2;
 
       $origin = '1207.3';
       $expected = '1&nbsp;207,30';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 3;
 
       $origin = '1207.3';
       $expected = '1207.30';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 4;
 
       $origin = '1207.3';
       $expected = '1207,30';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
 
       $_SESSION['glpinumber_format'] = 1337;
       $origin = '1207.3';
 
       $expected = '1,207.30';
-      $this->assertEquals($expected, Html::formatNumber($origin));
+      $this->string(\Html::formatNumber($origin))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::timestampToString
-    */
    public function testTimestampToString() {
       $expected = '0 seconds';
-      $this->assertEquals($expected, Html::timestampToString(null));
-      $this->assertEquals($expected, Html::timestampToString(''));
-      $this->assertEquals($expected, Html::timestampToString(0));
+      $this->string(\Html::timestampToString(null))->isIdenticalTo($expected);
+      $this->string(\Html::timestampToString(''))->isIdenticalTo($expected);
+      $this->string(\Html::timestampToString(0))->isIdenticalTo($expected);
 
       $tstamp = 57226;
       $expected = '15 hours 53 minutes 46 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp));
+      $this->string(\Html::timestampToString($tstamp))->isIdenticalTo($expected);
 
       $tstamp = -57226;
       $expected = '- 15 hours 53 minutes 46 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp));
+      $this->string(\Html::timestampToString($tstamp))->isIdenticalTo($expected);
 
       $tstamp = 1337;
       $expected = '22 minutes 17 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp));
+      $this->string(\Html::timestampToString($tstamp))->isIdenticalTo($expected);
 
       $expected = '22 minutes';
-      $this->assertEquals($expected, Html::timestampToString($tstamp, false));
+      $this->string(\Html::timestampToString($tstamp, false))->isIdenticalTo($expected);
 
       $tstamp = 54;
       $expected = '54 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp));
-      $this->assertEquals($expected, Html::timestampToString($tstamp, false));
+      $this->string(\Html::timestampToString($tstamp))->isIdenticalTo($expected);
+      $this->string(\Html::timestampToString($tstamp, false))->isIdenticalTo($expected);
 
       $tstamp = 157226;
       $expected = '1 days 19 hours 40 minutes 26 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp));
+      $this->string(\Html::timestampToString($tstamp))->isIdenticalTo($expected);
 
       $expected = '1 days 19 hours 40 minutes';
-      $this->assertEquals($expected, Html::timestampToString($tstamp, false));
+      $this->string(\Html::timestampToString($tstamp, false))->isIdenticalTo($expected);
 
       $expected = '43 hours 40 minutes 26 seconds';
-      $this->assertEquals($expected, Html::timestampToString($tstamp, true, false));
+      $this->string(\Html::timestampToString($tstamp, true, false))->isIdenticalTo($expected);
 
       $expected = '43 hours 40 minutes';
-      $this->assertEquals($expected, Html::timestampToString($tstamp, false, false));
+      $this->string(\Html::timestampToString($tstamp, false, false))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::weblink_extract
-    */
    public function testWeblink_extract() {
       $origin = '<a href="http://glpi-project.org" class="example">THE GLPI Project!</a>';
       $expected = 'http://glpi-project.org';
-      $this->assertEquals($expected, Html::weblink_extract($origin));
+      $this->string($expected, \Html::weblink_extract($origin))->isIdenticalTo($expected);
 
       $origin = '<a href="http://glpi-project.org/?one=two">THE GLPI Project!</a>';
       $expected = 'http://glpi-project.org/?one=two';
-      $this->assertEquals($expected, Html::weblink_extract($origin));
+      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
 
       //These ones does not work, but probably should...
       $origin = '<a class="example" href="http://glpi-project.org">THE GLPI Project!</a>';
       $expected = $origin;
-      $this->assertEquals($origin, Html::weblink_extract($origin));
+      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
 
       $origin = '<a href="http://glpi-project.org" class="example">THE <span>GLPI</span> Project!</a>';
       $expected = $origin;
-      $this->assertEquals($expected, Html::weblink_extract($origin));
+      $this->string(\Html::weblink_extract($origin))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Html::getMenuInfos
-    */
    public function testGetMenuInfos() {
-      $menu = Html::getMenuInfos();
-      $this->assertEquals(8, count($menu));
+      $menu = \Html::getMenuInfos();
+      $this->integer(count($menu))->isIdenticalTo(8);
 
       $expected = [
          'assets',
@@ -336,7 +303,9 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'config',
          'preference'
       ];
-      $this->assertEquals($expected, array_keys($menu));
+      $this->array($menu)
+         ->hasSize(count($expected))
+         ->hasKeys($expected);
 
       $expected = [
          'Computer',
@@ -349,8 +318,8 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'ConsumableItem',
          'Phone'
       ];
-      $this->assertEquals('Assets', $menu['assets']['title']);
-      $this->assertEquals($expected, $menu['assets']['types']);
+      $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
+      $this->array($menu['assets']['types'])->isIdenticalTo($expected);
 
       $expected = [
          'Ticket',
@@ -360,8 +329,8 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'Stat',
          'TicketRecurrent'
       ];
-      $this->assertEquals('Assistance', $menu['helpdesk']['title']);
-      $this->assertEquals($expected, $menu['helpdesk']['types']);
+      $this->string($menu['helpdesk']['title'])->isIdenticalTo('Assistance');
+      $this->array($menu['helpdesk']['types'])->isIdenticalTo($expected);
 
       $expected = [
          'SoftwareLicense',
@@ -371,8 +340,8 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'Contract',
          'Document'
       ];
-      $this->assertEquals('Management', $menu['management']['title']);
-      $this->assertEquals($expected, $menu['management']['types']);
+      $this->string($menu['management']['title'])->isIdenticalTo('Management');
+      $this->array($menu['management']['types'])->isIdenticalTo($expected);
 
       $expected = [
          'Project',
@@ -384,12 +353,12 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'MigrationCleaner',
          'SavedSearch'
       ];
-      $this->assertEquals('Tools', $menu['tools']['title']);
-      $this->assertEquals($expected, $menu['tools']['types']);
+      $this->string($menu['tools']['title'])->isIdenticalTo('Tools');
+      $this->array($menu['tools']['types'])->isIdenticalTo($expected);
 
       $expected = [];
-      $this->assertEquals('Plugins', $menu['plugins']['title']);
-      $this->assertEquals($expected, $menu['plugins']['types']);
+      $this->string($menu['plugins']['title'])->isIdenticalTo('Plugins');
+      $this->array($menu['plugins']['types'])->isIdenticalTo($expected);
 
       $expected = [
          'User',
@@ -401,8 +370,8 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'Backup',
          'Event'
       ];
-      $this->assertEquals('Administration', $menu['admin']['title']);
-      $this->assertEquals($expected, $menu['admin']['types']);
+      $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
+      $this->array($menu['admin']['types'])->isIdenticalTo($expected);
 
       $expected = [
          'CommonDropdown',
@@ -417,27 +386,21 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'Link',
          'Plugin'
       ];
-      $this->assertEquals('Setup', $menu['config']['title']);
-      $this->assertEquals($expected, $menu['config']['types']);
+      $this->string($menu['config']['title'])->isIdenticalTo('Setup');
+      $this->array($menu['config']['types'])->isIdenticalTo($expected);
 
-      $this->assertEquals('My settings', $menu['preference']['title']);
-      $this->assertArrayNotHasKey('types', $menu['preference']);
-      $this->assertEquals('/front/preference.php', $menu['preference']['default']);
-
+      $this->string($menu['preference']['title'])->isIdenticalTo('My settings');
+      $this->array($menu['preference'])->notHasKey('types');
+      $this->string($menu['preference']['default'])->isIdenticalTo('/front/preference.php');
    }
 
-   /**
-    * @covers Html::getCopyrightMessage()
-    */
    public function testGetCopyrightMessage() {
-      $message = Html::getCopyrightMessage();
-      $this->assertContains(GLPI_VERSION, $message, 'Invalid GLPI version!');
-      $this->assertContains(GLPI_YEAR, $message, 'Invalid copyright date!');
+      $message = \Html::getCopyrightMessage();
+      $this->string($message)
+         ->contains(GLPI_VERSION)
+         ->contains(GLPI_YEAR);
    }
 
-   /**
-    * @covers Html::css()
-    */
    public function testCss() {
       global $CFG_GLPI;
 
@@ -464,7 +427,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css'));
+      $this->string(\Html::css($dir . '/file.css'))->isIdenticalTo($expected);
 
       //explicitely require not minified file
       $expected = str_replace(
@@ -472,17 +435,17 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css', [], false));
+      $this->string(\Html::css($dir . '/file.css', [], false))->isIdenticalTo($expected);
 
       //activate debug mode: expect not minified file
-      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+      $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       $expected = str_replace(
          ['%url', '%attrs'],
          ['file.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css'));
-      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+      $this->string(\Html::css($dir . '/file.css'))->isIdenticalTo($expected);
+      $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
       //expect original file
       $expected = str_replace(
@@ -490,7 +453,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['nofile.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/nofile.css'));
+      $this->string(\Html::css($dir . '/nofile.css'))->isIdenticalTo($expected);
 
       //expect original file
       $expected = str_replace(
@@ -498,7 +461,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['other.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/other.css'));
+      $this->string(\Html::css($dir . '/other.css'))->isIdenticalTo($expected);
 
       //expect original file
       $expected = str_replace(
@@ -506,7 +469,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['other-min.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/other-min.css'));
+      $this->string(\Html::css($dir . '/other-min.css'))->isIdenticalTo($expected);
 
       //expect minified file, print media
       $expected = str_replace(
@@ -514,7 +477,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.css', 'media="print"'],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css', ['media' => 'print']));
+      $this->string(\Html::css($dir . '/file.css', ['media' => 'print']))->isIdenticalTo($expected);
 
       //expect minified file, screen media
       $expected = str_replace(
@@ -522,7 +485,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.css', $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css', ['media' => '']));
+      $this->string(\Html::css($dir . '/file.css', ['media' => '']))->isIdenticalTo($expected);
 
       //expect minified file and specific version
       $fake_version = '0.0.1';
@@ -531,7 +494,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.css', $base_attrs, $fake_version],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css', ['version' => $fake_version]));
+      $this->string(\Html::css($dir . '/file.css', ['version' => $fake_version]))->isIdenticalTo($expected);
 
       //expect minified file with added attributes
       $expected = str_replace(
@@ -539,7 +502,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.css', 'attribute="one" ' . $base_attrs],
          $base_expected
       );
-      $this->assertEquals($expected, Html::css($dir . '/file.css', ['attribute' => 'one']));
+      $this->string($expected, \Html::css($dir . '/file.css', ['attribute' => 'one']))->isIdenticalTo($expected);
 
       //remove test files
       foreach ($fake_files as $fake_file) {
@@ -547,9 +510,6 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
       }
    }
 
-   /**
-    * @covers Html::script()
-    */
    public function testScript() {
       global $CFG_GLPI;
 
@@ -575,7 +535,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'file.min.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/file.js'));
+      $this->string(\Html::script($dir . '/file.js'))->isIdenticalTo($expected);
 
       //explicitely require not minified file
       $expected = str_replace(
@@ -583,17 +543,17 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'file.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/file.js', [], false));
+      $this->string(\Html::script($dir . '/file.js', [], false))->isIdenticalTo($expected);
 
       //activate debug mode: expect not minified file
-      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+      $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
       $expected = str_replace(
          '%url',
          'file.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/file.js'));
-      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+      $this->string($expected, \Html::script($dir . '/file.js'))->isIdenticalTo($expected);
+      $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
       //expect original file
       $expected = str_replace(
@@ -601,7 +561,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'nofile.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/nofile.js'));
+      $this->string(\Html::script($dir . '/nofile.js'))->isIdenticalTo($expected);
 
       //expect original file
       $expected = str_replace(
@@ -609,7 +569,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'other.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/other.js'));
+      $this->string(\Html::script($dir . '/other.js'))->isIdenticalTo($expected);
 
       //expect original file
       $expected = str_replace(
@@ -617,7 +577,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          'other-min.js',
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/other-min.js'));
+      $this->string(\Html::script($dir . '/other-min.js'))->isIdenticalTo($expected);
 
       //expect minified file and specific version
       $fake_version = '0.0.1';
@@ -626,7 +586,7 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
          ['file.min.js', $fake_version],
          $base_expected
       );
-      $this->assertEquals($expected, Html::script($dir . '/file.js', ['version' => $fake_version]));
+      $this->string(\Html::script($dir . '/file.js', ['version' => $fake_version]))->isIdenticalTo($expected);
 
       //remove test files
       foreach ($fake_files as $fake_file) {
@@ -634,45 +594,40 @@ class HtmlTest extends PHPUnit\Framework\TestCase {
       }
    }
 
-   /**
-    * @covers Html::manageRefreshPage()
-    *
-    * @return void
-    */
    public function testManageRefreshPage() {
       //no session refresh, no args => no timer
       if (isset($_SESSION['glpirefresh_ticket_list'])) {
          unset($_SESSION['glpirefresh_ticket_list']);
       }
 
-      $base_script = Html::scriptBlock("window.setInterval(function() {
+      $base_script = \Html::scriptBlock("window.setInterval(function() {
                ##CALLBACK##
             }, ##TIMER##);");
 
       $expected = '';
-      $message = Html::manageRefreshPage();
-      $this->assertEquals($expected, $message, 'Timer empty');
+      $message = \Html::manageRefreshPage();
+      $this->string($message)->isIdenticalTo($expected);
 
       //Set session refresh to one minute
       $_SESSION['glpirefresh_ticket_list'] = 1;
       $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
       $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
-      $message = Html::manageRefreshPage();
-      $this->assertEquals($expected, $message, 'Timer set to one minute from session');
+      $message = \Html::manageRefreshPage();
+      $this->string($message)->isIdenticalTo($expected);
 
       $expected = str_replace("##CALLBACK##", '$(\'#mydiv\').remove();', $base_script);
       $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
-      $message = Html::manageRefreshPage(false, '$(\'#mydiv\').remove();');
-      $this->assertEquals($expected, $message, 'Timer set to one minute from session with callback');
+      $message = \Html::manageRefreshPage(false, '$(\'#mydiv\').remove();');
+      $this->string($message)->isIdenticalTo($expected);
 
       $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
       $expected = str_replace("##TIMER##", 3 * MINUTE_TIMESTAMP * 1000, $expected);
-      $message = Html::manageRefreshPage(3);
-      $this->assertEquals($expected, $message, 'Timer set to 3 minutes from args');
+      $message = \Html::manageRefreshPage(3);
+      $this->string($message)->isIdenticalTo($expected);
 
       $expected = str_replace("##CALLBACK##", '$(\'#mydiv\').remove();', $base_script);
       $expected = str_replace("##TIMER##", 3 * MINUTE_TIMESTAMP * 1000, $expected);
-      $message = Html::manageRefreshPage(3, '$(\'#mydiv\').remove();');
-      $this->assertEquals($expected, $message, 'Timer set to 3 minutes from args minute with callback');
+      $message = \Html::manageRefreshPage(3, '$(\'#mydiv\').remove();');
+      $this->string($message)->isIdenticalTo($expected);
    }
 }

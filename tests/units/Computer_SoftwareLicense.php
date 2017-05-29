@@ -30,188 +30,158 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
 */
 
-/* Test for inc/Computer_SoftwareLicense.class.php */
+namespace tests\units;
 
-class Computer_SoftwareLicenseTest extends DbTestCase {
+use \DbTestCase;
 
-   /**
-    * @covers Computer_SoftwareLicense::countForLicense
-    */
+/* Test for inc/computer_softwarelicense.class.php */
+
+class Computer_SoftwareLicense extends DbTestCase {
+
    public function testCountForLicense() {
       $this->Login();
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
-      $this->assertEquals(3, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForLicense($lic->fields['id']))->isIdenticalTo(3);
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_2');
-      $this->assertEquals(2, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForLicense($lic->fields['id']))->isIdenticalTo(2);
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_3');
-      $this->assertEquals(2, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForLicense($lic->fields['id']))->isIdenticalTo(2);
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
-      $this->assertEquals(0, Computer_SoftwareLicense::countForLicense($lic->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForLicense($lic->fields['id']))->isIdenticalTo(0);
    }
 
-   /**
-    * @covers Computer_SoftwareLicense::countForSoftware
-    * @depends testCountForLicense
-    */
    public function testCountForSoftware() {
       $this->Login();
       $soft = getItemByTypeName('Software', '_test_soft');
-      $this->assertEquals(7, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForSoftware($soft->fields['id']))->isIdenticalTo(7);
 
       $soft = getItemByTypeName('Software', '_test_soft2');
-      $this->assertEquals(0, Computer_SoftwareLicense::countForSoftware($soft->fields['id']));
+      $this->integer((int)\Computer_SoftwareLicense::countForSoftware($soft->fields['id']))->isIdenticalTo(0);
 
    }
 
-   /**
-    * @covers Computer_SoftwareLicense::Add
-    * @covers Computer_SoftwareLicense::post_deleteFromDB
-    * @covers Computer_SoftwareLicense::upgrade
-    * @depends testCountForLicense
-    */
    public function testAddUpdateDelete() {
-
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');
       $computer3 = getItemByTypeName('Computer', '_test_pc11');
       $lic       = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
 
       // Do some installations
-      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer = new \Computer_SoftwareLicense();
 
       $input = [
          'computers_id'        => $computer1->fields['id'],
          'softwarelicenses_id' => $lic->fields['id'],
       ];
-      $this->assertGreaterThan(0, $lic_computer->add($input));
+      $this->integer((int)$lic_computer->add($input))->isGreaterThan(0);
 
       $input = [
          'computers_id'        => $computer2->fields['id'],
          'softwarelicenses_id' => $lic->fields['id'],
       ];
-      $this->assertGreaterThan(0, $lic_computer->add($input));
+      $this->integer((int)$lic_computer->add($input))->isGreaterThan(0);
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
       //License is valid: the number of affectations doesn't exceed declared number
-      $this->assertEquals(1, $lic->fields['is_valid']);
+      $this->variable($lic->fields['is_valid'])->isEqualTo(1);
 
       $input = [
          'computers_id'        => $computer3->fields['id'],
          'softwarelicenses_id' => $lic->fields['id']
       ];
-      $this->assertGreaterThan(0, $lic_computer->add($input));
+      $this->integer((int)$lic_computer->add($input))->isGreaterThan(0);
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
       //Number of affectations exceed the number declared in the license
-      $this->assertEquals(0, $lic->fields['is_valid']);
+      $this->variable($lic->fields['is_valid'])->isEqualTo(0);
 
       //test upgrade
       $old_lic      = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
       $new_lic      = getItemByTypeName('SoftwareLicense', '_test_softlic_3');
 
-      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer = new \Computer_SoftwareLicense();
       $computer     = getItemByTypeName('Computer', '_test_pc01');
       $result = $lic_computer->find("`computers_id`='".$computer->fields['id']."'
                                       AND `softwarelicenses_id`='".$old_lic->fields['id']."'");
-      $lic_computer->getFromDB(array_keys($result)[0]);
+      $this->boolean($lic_computer->getFromDB(array_keys($result)[0]))->isTrue();
 
       $lic_computer->upgrade($lic_computer->getID(), $new_lic->fields['id']);
 
-      $this->assertNotEquals(
-         $old_lic->fields['id'],
-         $lic_computer->fields['softwarelicenses_id']
-      );
-
-      $this->assertEquals(
-         $new_lic->fields['id'],
-         $lic_computer->fields['softwarelicenses_id']
-      );
+      $this->variable($lic_computer->fields['softwarelicenses_id'])
+         ->isNotEqualTo($old_lic->getID())
+         ->isEqualTo($new_lic->getID());
 
       //test delete
-      $lic_computer = new Computer_SoftwareLicense();
-      $lic_computer->deleteByCriteria(['softwarelicenses_id' => $lic->fields['id']], true);
+      $lic_computer = new \Computer_SoftwareLicense();
+      $this->boolean($lic_computer->deleteByCriteria(['softwarelicenses_id' => $lic->fields['id']], true))->isTrue();
 
       $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
       //Number of installations shouldn't now exceed the number declared in the license
-      $this->assertEquals(1, $lic->fields['is_valid']);
+      $this->variable($lic->fields['is_valid'])->isEqualTo(1);
    }
 
 
-   /**
-    * @covers Computer_SoftwareLicense::cloneComputer
-    */
    public function testCloneComputer() {
       $this->Login();
 
       $source_computer = getItemByTypeName('Computer', '_test_pc21');
       $target_computer = getItemByTypeName('Computer', '_test_pc22');
 
-      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer = new \Computer_SoftwareLicense();
       $lic_computer->cloneComputer($source_computer->fields['id'],
                                    $target_computer->fields['id']);
 
       $input = ['computers_id' => $source_computer->fields['id']];
-      $this->assertEquals(3, countElementsInTable('glpi_computers_softwarelicenses',
-                                                   $input));
+      $this->integer((int)countElementsInTable('glpi_computers_softwarelicenses', $input))
+         ->isIdenticalTo(3);
 
       $input = ['computers_id' => $target_computer->fields['id']];
-      $this->assertEquals(3, countElementsInTable('glpi_computers_softwarelicenses',
-         $input));
+      $this->integer((int)countElementsInTable('glpi_computers_softwarelicenses', $input))
+         ->isIdenticalTo(3);
 
       //cleanup
-      $lic_computer = new Computer_SoftwareLicense();
+      $lic_computer = new \Computer_SoftwareLicense();
       $lic_computer->deleteByCriteria(['computers_id' => $target_computer->fields['id']], true);
    }
 
-   /**
-    * @covers Computer_SoftwareLicense::getTabNameForItem
-    * @depends testCloneComputer
-    */
    public function testGetTabNameForItem() {
       $this->Login();
 
       $license      = getItemByTypeName('SoftwareLicense', '_test_softlic_2');
-      $cSoftwareLicense = new Computer_SoftwareLicense();
-      $this->assertEquals('', $cSoftwareLicense->getTabNameForItem(new Computer(), 0));
-      $this->assertEquals('', $cSoftwareLicense->getTabNameForItem($license, 1));
+      $cSoftwareLicense = new \Computer_SoftwareLicense();
+      $this->string($cSoftwareLicense->getTabNameForItem(new \Computer(), 0))->isEmpty();
+      $this->string($cSoftwareLicense->getTabNameForItem($license, 1))->isEmpty();
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $expected = [1 => __('Summary'),
-                   2 => Computer::getTypeName(Session::getPluralNumber())];
-      $this->assertEquals($expected, $cSoftwareLicense->getTabNameForItem($license, 0));
+                   2 => \Computer::getTypeName(\Session::getPluralNumber())];
+      $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $expected = [1 => __('Summary'),
-                   2 => Computer_SoftwareLicense::createTabEntry(Computer::getTypeName(Session::getPluralNumber()),
+                   2 => \Computer_SoftwareLicense::createTabEntry(\Computer::getTypeName(\Session::getPluralNumber()),
                                                                  2)];
-      $this->assertEquals($expected, $cSoftwareLicense->getTabNameForItem($license, 0));
+      $this->array($cSoftwareLicense->getTabNameForItem($license, 0))->isIdenticalTo($expected);
    }
 
-   /**
-    * @covers Computer_SoftwareLicense::getTabNameForItem
-    * @depends testCloneComputer
-    */
    public function testCountLicenses() {
       $this->Login();
 
       $software = getItemByTypeName('Software', '_test_soft');
-      $this->assertEquals(5, Computer_SoftwareLicense::countLicenses($software->getID()));
+      $this->integer((int)\Computer_SoftwareLicense::countLicenses($software->getID()))->isIdenticalTo(5);
 
       $software = getItemByTypeName('Software', '_test_soft2');
-      $this->assertEquals(0, Computer_SoftwareLicense::countLicenses($software->getID()));
+      $this->integer((int)\Computer_SoftwareLicense::countLicenses($software->getID()))->isIdenticalTo(0);
    }
 
-   /**
-    * @covers Computer_SoftwareLicense::getTabNameForItem
-    * @depends testCloneComputer
-    */
    public function testGetSearchOptionsNew() {
       $this->Login();
 
-      $cSoftwareLicense = new Computer_SoftwareLicense();
-      $this->assertEquals(4, count($cSoftwareLicense->getSearchOptionsNew()));
+      $cSoftwareLicense = new \Computer_SoftwareLicense();
+      $this->array($cSoftwareLicense->getSearchOptionsNew())
+         ->hasSize(4);
    }
 }

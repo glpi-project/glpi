@@ -37,7 +37,7 @@
         "consolidation/robo": "^1.0",
         "natxet/CssMin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
-        "phpunit/phpunit": "^5.7 || ^6.0"
+        "atoum/atoum": "^3.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
@@ -50,7 +50,10 @@
         }
     },
     "scripts": {
-        "post-install-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+        "post-install-cmd": [
+           "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
+           "if [ $COMPOSER_DEV_MODE -eq 1 ]; then patch -d vendor/guzzlehttp/guzzle/ -p1 < tools/guzzle-php72.patch; fi"
+        ],
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }
 }

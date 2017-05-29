@@ -30,9 +30,13 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/monitor.class.php */
 
-class MonitorTest extends DbTestCase {
+class Monitor extends DbTestCase {
 
    public function testBasicMonitor() {
       $this->Login();
@@ -46,9 +50,9 @@ class MonitorTest extends DbTestCase {
          'entities_id'  => '0'
       ];
 
-      $monitor = new Monitor();
+      $monitor = new \Monitor();
       $added = $monitor->add($data);
-      $this->assertGreaterThan(0, $added, 'Monitor has not been added!');
+      $this->integer((int)$added)->isGreaterThan(0);
 
       $monitor = getItemByTypeName('Monitor', '_test_monitor01');
 
@@ -90,6 +94,6 @@ class MonitorTest extends DbTestCase {
          'is_recursive' => '0'
       ];
 
-      $this->assertEquals($expected, $monitor->fields);
+      $this->array($monitor->fields)->isIdenticalTo($expected);
    }
 }

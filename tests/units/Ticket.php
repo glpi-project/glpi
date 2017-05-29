@@ -30,74 +30,79 @@
  * ---------------------------------------------------------------------
  */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/ticket.class.php */
 
-class TicketTest extends DbTestCase {
+class Ticket extends DbTestCase {
 
    public function ticketProvider() {
-      return array(
-            'single requester'   => array(
-                  array(
-                     '_users_id_requester'   => '3'
-                  ),
+      return [
+         'single requester' => array(
+            array(
+               '_users_id_requester' => '3'
             ),
-            'single unknown requester'   => array(
-                  array(
-                        '_users_id_requester'         => '0',
-                        '_users_id_requester_notif'   => array(
-                              'use_notification'            => array('1'),
-                              'alternative_email'           => array('unknownuser@localhost.local')
-                        ),
-                  ),
+         ),
+         'single unknown requester' => array(
+            array(
+               '_users_id_requester'         => '0',
+               '_users_id_requester_notif'   => array(
+                  'use_notification'   => array('1'),
+                  'alternative_email'  => array('unknownuser@localhost.local')
+               ),
             ),
-           'multiple requesters'   => array(
-                  array(
-                        '_users_id_requester'   => array('3', '5'),
-                  ),
+         ),
+         'multiple requesters' => array(
+            array(
+               '_users_id_requester' => array('3', '5'),
             ),
-            'multiple mixed requesters'   => array(
-                  array(
-                        '_users_id_requester'   => array('3', '5', '0'),
-                        '_users_id_requester_notif'   => array(
-                              'use_notification'            => array('1', '0', '1'),
-                              'alternative_email'           => array('','', 'unknownuser@localhost.local')
-                        ),
-                  ),
+         ),
+         'multiple mixed requesters' => array(
+            array(
+               '_users_id_requester'         => array('3', '5', '0'),
+               '_users_id_requester_notif'   => array(
+                  'use_notification'   => array('1', '0', '1'),
+                  'alternative_email'  => array('','', 'unknownuser@localhost.local')
+               ),
             ),
-            'single observer'   => array(
-                  array(
-                        '_users_id_observer'   => '3'
-                  ),
+         ),
+         'single observer' => array(
+            array(
+               '_users_id_observer' => '3'
             ),
-            'multiple observers'   => array(
-                  array(
-                        '_users_id_observer'   => array('3', '5'),
-                  ),
+         ),
+         'multiple observers' => array(
+            array(
+               '_users_id_observer' => array('3', '5'),
             ),
-            'single assign'   => array(
-                  array(
-                        '_users_id_observer'   => '3'
-                  ),
+         ),
+         'single assign' => array(
+            array(
+               '_users_id_assign' => '3'
             ),
-            'multiple assigns'   => array(
-                  array(
-                        '_users_id_observer'   => array('3', '5'),
-                  ),
+         ),
+         'multiple assigns' => array(
+            array(
+               '_users_id_assign' => array('3', '5'),
             ),
-      );
+         ),
+      ];
    }
 
    /**
     * @dataProvider ticketProvider
     */
    public function testCreateTicketWithActors($ticketActors) {
-      $ticket = new Ticket();
-      $ticket->add(array(
+      $ticket = new \Ticket();
+      $this->integer((int)$ticket->add(array(
             'name'         => 'ticket title',
-            'description'  => 'a description'
-      ) + $ticketActors);
+            'description'  => 'a description',
+            'content'      => ''
+      ) + $ticketActors))->isGreaterThan(0);
 
-      $this->assertFalse($ticket->isNewItem());
+      $this->boolean($ticket->isNewItem())->isFalse();
       $ticketId = $ticket->getID();
 
       foreach ($ticketActors as $actorType => $actorsList) {
@@ -115,14 +120,14 @@ class TicketTest extends DbTestCase {
                               ? $actorList['_users_id_requester_notif']['alternative_email'][$index]
                               : '';
             switch ($actorType) {
-               case '_users_id_assign':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::REQUESTER, $notify, $alternateEmail);
+               case '_users_id_requester':
+                  //$this->_testTicketUser($ticket, $actor, \CommonITILActor::REQUESTER, $notify, $alternateEmail);
                   break;
                case '_users_id_observer':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::OBSERVER, $notify, $alternateEmail);
+                  $this->_testTicketUser($ticket, $actor, \CommonITILActor::OBSERVER, $notify, $alternateEmail);
                   break;
                case '_users_id_assign':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::ASSIGN, $notify, $alternateEmail);
+                  $this->_testTicketUser($ticket, $actor, \CommonITILActor::ASSIGN, $notify, $alternateEmail);
                   break;
             }
          }
@@ -132,24 +137,26 @@ class TicketTest extends DbTestCase {
    public function testTicketSolution() {
       session_unset();
       $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-      $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+      $_SESSION['glpi_use_mode']       = \Session::NORMAL_MODE;
+      $_SESSION['glpi_currenttime']    = date("Y-m-d H:i:s");
 
       $uid = getItemByTypeName('User', TU_USER, true);
-      $ticket = new Ticket();
-      $ticket->add([
+      $ticket = new \Ticket();
+      $this->integer((int)$ticket->add([
          'name'               => 'ticket title',
          'description'        => 'a description',
+         'content'            => '',
          '_users_id_assign'   => $uid
-      ]);
+      ]))->isGreaterThan(0);
 
-      $this->assertFalse($ticket->isNewItem());
-      $this->assertEquals($ticket::ASSIGNED, $ticket->getField('status'));
+      $this->boolean($ticket->isNewItem())->isFalse();
+      $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
       $ticketId = $ticket->getID();
 
       $this->_testTicketUser(
          $ticket,
          $uid,
-         CommonITILActor::ASSIGN,
+         \CommonITILActor::ASSIGN,
          1,
          ''
       );
@@ -159,43 +166,46 @@ class TicketTest extends DbTestCase {
          'solution'  => 'Current friendly ticket\r\nis solved!'
       ]);
       //reload from DB
-      $ticket->getFromDB($ticket->getID());
+      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
 
-      $this->assertEquals($ticket::CLOSED, $ticket->getField('status'));
-      $this->assertEquals("Current friendly ticket\r\nis solved!", $ticket->getField('solution'));
+      $this->variable($ticket->getField('status'))->isEqualTo($ticket::CLOSED);
+      $this->string($ticket->getField('solution'))->isIdenticalTo("Current friendly ticket\r\nis solved!");
    }
 
-   protected function _testTicketUser(Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
+   protected function _testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
       if ($actor > 0) {
-         $user = new User();
-         $user->getFromDB($actor);
-         $this->assertFalse($user->isNewItem());
+         $user = new \User();
+         $this->boolean($user->getFromDB($actor))->isTrue();
+         $this->boolean($user->isNewItem())->isFalse();
 
-         $ticketUser = new Ticket_User();
-         $ticketUser->getFromDBForItems($ticket, $user);
-         $this->assertFalse($ticketUser->isNewItem());
-         $this->assertEquals($role, $ticketUser->getField('type'));
-         $this->assertEquals($notify, $ticketUser->getField('use_notification'));
+         $ticketUser = new \Ticket_User();
+         $this->boolean($ticketUser->getFromDBForItems($ticket, $user))->isTrue();
       } else {
          $ticketId = $ticket->getID();
-         $ticketUser = new Ticket_User();
-         $ticketUser->getFromDBByQuery("WHERE `tickets_id` = '$ticketId' AND `users_id` = '0' AND `alternative_email` = '$alternateEmail'");
-         $this->assertFalse($ticketUser->isNewItem());
-         $this->assertEquals($role, $ticketUser->getField('type'));
-         $this->assertEquals($notify, $ticketUser->getField('use_notification'));
+         $ticketUser = new \Ticket_User();
+         $this->boolean(
+            $ticketUser->getFromDBByQuery(
+               "WHERE `tickets_id` = '$ticketId'
+                  AND `users_id` = '0'
+                  AND `alternative_email` = '$alternateEmail'"
+            )
+         )->isTrue();
       }
+      $this->boolean($ticketUser->isNewItem())->isFalse();
+      $this->variable($ticketUser->getField('type'))->isEqualTo($role);
+      $this->variable($ticketUser->getField('use_notification'))->isEqualTo($notify);
    }
 
    public function testTasksFromTemplate() {
       // 1- create a task category
-      $taskcat    = new TaskCategory;
+      $taskcat    = new \TaskCategory;
       $taskcat_id = $taskcat->add([
          'name' => 'my task cat',
       ]);
-      $this->assertFalse($taskcat->isNewItem());
+      $this->boolean($taskcat->isNewItem())->isFalse();
 
       // 2- create some task templates
-      $tasktemplate = new TaskTemplate;
+      $tasktemplate = new \TaskTemplate;
       $ttA_id          = $tasktemplate->add([
          'name'              => 'my task template A',
          'content'           => 'my task template A',
@@ -204,9 +214,9 @@ class TicketTest extends DbTestCase {
          'is_private'        => true,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
-         'state'             => Planning::INFO,
+         'state'             => \Planning::INFO,
       ]);
-      $this->assertFalse($tasktemplate->isNewItem());
+      $this->boolean($tasktemplate->isNewItem())->isFalse();
       $ttB_id          = $tasktemplate->add([
          'name'              => 'my task template B',
          'content'           => 'my task template B',
@@ -215,32 +225,32 @@ class TicketTest extends DbTestCase {
          'is_private'        => false,
          'users_id_tech'     => 2,
          'groups_id_tech'    => 0,
-         'state'             => Planning::TODO,
+         'state'             => \Planning::TODO,
       ]);
-      $this->assertFalse($tasktemplate->isNewItem());
+      $this->boolean($tasktemplate->isNewItem())->isFalse();
 
       // 3 - create a ticket template with the task templates in predefined fields
-      $tickettemplate    = new TicketTemplate;
+      $tickettemplate    = new \TicketTemplate;
       $tickettemplate_id = $tickettemplate->add([
          'name' => 'my ticket template',
       ]);
-      $this->assertFalse($tickettemplate->isNewItem());
-      $ttp = new TicketTemplatePredefinedField();
+      $this->boolean($tickettemplate->isNewItem())->isFalse();
+      $ttp = new \TicketTemplatePredefinedField();
       $ttp->add([
          'tickettemplates_id' => $tickettemplate_id,
          'num'                => '175',
          'value'              => $ttA_id,
       ]);
-      $this->assertFalse($ttp->isNewItem());
+      $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
          'tickettemplates_id' => $tickettemplate_id,
          'num'                => '175',
          'value'              => $ttB_id,
       ]);
-      $this->assertFalse($ttp->isNewItem());
+      $this->boolean($ttp->isNewItem())->isFalse();
 
       // 4 - create a ticket category using the ticket template
-      $itilcat    = new ITILCategory;
+      $itilcat    = new \ITILCategory;
       $itilcat_id = $itilcat->add([
          'name'                        => 'my itil category',
          'tickettemplates_id_incident' => $tickettemplate_id,
@@ -248,10 +258,10 @@ class TicketTest extends DbTestCase {
          'is_incident'                 => true,
          'is_request'                  => true,
       ]);
-      $this->assertFalse($itilcat->isNewItem());
+      $this->boolean($itilcat->isNewItem())->isFalse();
 
       // 5 - create a ticket using the ticket category
-      $ticket     = new Ticket;
+      $ticket     = new \Ticket;
       $tickets_id = $ticket->add([
          'name'                => 'test task template',
          'content'             => 'test task template',
@@ -259,32 +269,30 @@ class TicketTest extends DbTestCase {
          '_tickettemplates_id' => $tickettemplate_id,
          '_tasktemplates_id'   => [$ttA_id, $ttB_id],
       ]);
-      $this->assertFalse($ticket->isNewItem());
+      $this->boolean($ticket->isNewItem())->isFalse();
 
       // 6 - check creation of the tasks
-      $tickettask = new TicketTask;
+      $tickettask = new \TicketTask;
       $found_tasks = $tickettask->find("`tickets_id` = $tickets_id", "id ASC");
 
       // 6.1 -> check first task
       $taskA = array_shift($found_tasks);
-      $this->assertEquals('my task template A', $taskA['content']);
-      $this->assertEquals($taskcat_id, $taskA['taskcategories_id']);
-      $this->assertEquals(60, $taskA['actiontime']);
-      $this->assertEquals(1, $taskA['is_private']);
-      $this->assertEquals(2, $taskA['users_id_tech']);
-      $this->assertEquals(0, $taskA['groups_id_tech']);
-      $this->assertEquals(Planning::INFO, $taskA['state']);
+      $this->string($taskA['content'])->isIdenticalTo('my task template A');
+      $this->variable($taskA['taskcategories_id'])->isEqualTo($taskcat_id);
+      $this->variable($taskA['actiontime'])->isEqualTo(60);
+      $this->variable($taskA['is_private'])->isEqualTo(1);
+      $this->variable($taskA['users_id_tech'])->isEqualTo(2);
+      $this->variable($taskA['groups_id_tech'])->isEqualTo(0);
+      $this->variable($taskA['state'])->isEqualTo(\Planning::INFO);
 
       // 6.2 -> check second task
       $taskB = array_shift($found_tasks);
-      $this->assertEquals('my task template B', $taskB['content']);
-      $this->assertEquals($taskcat_id, $taskB['taskcategories_id']);
-      $this->assertEquals(120, $taskB['actiontime']);
-      $this->assertEquals(0, $taskB['is_private']);
-      $this->assertEquals(2, $taskB['users_id_tech']);
-      $this->assertEquals(0, $taskB['groups_id_tech']);
-      $this->assertEquals(Planning::TODO, $taskB['state']);
+      $this->string($taskB['content'])->isIdenticalTo('my task template B');
+      $this->variable($taskB['taskcategories_id'])->isEqualTo($taskcat_id);
+      $this->variable($taskB['actiontime'])->isEqualTo(120);
+      $this->variable($taskB['is_private'])->isEqualTo(0);
+      $this->variable($taskB['users_id_tech'])->isEqualTo(2);
+      $this->variable($taskB['groups_id_tech'])->isEqualTo(0);
+      $this->variable($taskB['state'])->isEqualTo(\Planning::TODO);
    }
 }
-
-
