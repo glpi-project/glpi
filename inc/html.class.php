@@ -1427,15 +1427,16 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
-      echo "</a>";
+             "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
+      echo "</span></a>";// MODIF
       echo "</li>\n";
 
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+             "\"  alt=\"".__s('My settings')."\" class='button-icon'> 
+			</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1454,17 +1455,18 @@ class Html {
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon' />";
-      echo "</a></li>";
+             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon'></span>";// MODIF
+      echo "</a></li>";// MODIF
+
 
       echo "<li id='help_link'><a href='".
                  (empty($CFG_GLPI["central_doc_url"])
                    ? "http://glpi-project.org/help-central"
                    : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
                   "<span id='help_icon' title=\"".__s('Help').
-                  "\"  alt=\"".__s('Help')."\" class='button-icon' />";
-           "</a></li>";
-
+                  "\"  alt=\"".__s('Help')."\" class='button-icon'></span>"; // MODIF
+           "</a></li>"; // MODIF
+         echo "";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
                  "/front/preference.php?forcetab=User\$1' title=\"".
@@ -1482,13 +1484,8 @@ class Html {
          Html::closeForm();
       }
       echo "</li>";
-
-      
       echo "</ul>";
       echo "</div>\n";
-
-
-
       echo "</div>";
 
       ///Main menu
@@ -1943,7 +1940,7 @@ class Html {
              __s('Home')."\"><span class='invisible'>Logo</span></a>";
       echo "</div>";
 
-      // Les préférences + lien déconnexion
+      /// Prefs / Logout link
       echo "<div id='c_preference' >";
       echo "<ul>";
 
@@ -1955,16 +1952,17 @@ class Html {
       }
 
       echo "' title=\"".__s('Logout')."\">";
-      // check user id : header used for display messages when session logout
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
+      echo "<span id='logout_icon' title=\"".__s('Logout').
              "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
-      echo "</a>";
+      echo "</span></a>";// MODIF
       echo "</li>\n";
+
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+             "\"  alt=\"".__s('My settings')."\" class='button-icon'> 
+			</span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1975,33 +1973,47 @@ class Html {
       }
       echo "</a></li>";  
 
-      echo "<li>";
+      /// Bookmark load
+      echo "<li id='bookmark_link'>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon'>";
-      echo "</a></li>";
+      echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
+             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon'></span>";// MODIF
+      echo "</a></li>";// MODIF
 
-      echo "<li id='help_link'>".
-            "<a href='".(empty($CFG_GLPI["helpdesk_doc_url"])
-                        ? "http://glpi-project.org/help-helpdesk"
-                        : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-           "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
-                  "\"  alt=\"".__s('Help')."\" class='button-icon'>";
-           "</a></li>";
 
+      echo "<li id='help_link'><a href='".
+                 (empty($CFG_GLPI["central_doc_url"])
+                   ? "http://glpi-project.org/help-central"
+                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
+                  "<span id='help_icon' title=\"".__s('Help').
+                  "\"  alt=\"".__s('Help')."\" class='button-icon'></span>"; // MODIF
+           "</a></li>"; // MODIF
+         echo "";
+
+      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                 "/front/preference.php?forcetab=User\$1' title=\"".
+                 addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                 Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+
+
+      /// Search engine
+      echo "<li id='c_recherche'>\n";
+      if ($CFG_GLPI['allow_search_global']) {
+         echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+         echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
+                                         placeholder='". __s('Search')."'>";
+         echo "</span>";
+         Html::closeForm();
+      }
+      echo "</li>";
       echo "</ul>";
+      echo "</div>\n";
       echo "</div>";
-
-      //-- Le moteur de recherche --
-      echo "<div id='c_recherche'></div>";
-
-
-      echo "</div>";
-
+	   
       //-- Le menu principal --
       echo "<div id='c_menu'>";
 
