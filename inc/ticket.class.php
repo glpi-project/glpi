@@ -4549,7 +4549,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`id`
+      $query = "SELECT DISTINCT `glpi_tickets`.`id`, `glpi_tickets`.`date_mod`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_tickets_users`
                      ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
@@ -6574,7 +6574,7 @@ class Ticket extends CommonITILObject {
                       WHERE gt.`tickets_id` = ".$this->getId()."
                      ) AS allactors
                 WHERE `type` != ".CommonItilActor::OBSERVER."
-                GROUP BY `users_id`
+                GROUP BY `users_id`, `type`
                 ORDER BY `type` DESC";
 
       $res               = $DB->query($query);

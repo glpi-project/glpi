@@ -627,7 +627,7 @@ class Problem extends CommonITILObject {
          }
       }
 
-      $query = "SELECT DISTINCT `glpi_problems`.`id`
+      $query = "SELECT DISTINCT `glpi_problems`.`id`, `glpi_problems`.`date_mod`
                 FROM `glpi_problems`
                 LEFT JOIN `glpi_problems_users`
                      ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
