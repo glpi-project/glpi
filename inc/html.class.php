@@ -1152,7 +1152,6 @@ class Html {
             }
          }
 
-
          if (in_array('fullcalendar', $jslibs)) {
             echo Html::css('lib/jqueryplugins/fullcalendar/fullcalendar.css',
                            array('media' => ''));
