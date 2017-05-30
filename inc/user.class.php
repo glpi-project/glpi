@@ -4243,6 +4243,19 @@ class User extends CommonDBTM {
 
    }
 
+   /**
+   * Get personal token checking that it is unique
+   *
+   * @deprecated since version 9.2; @see User::getUniqueToken()
+   *
+   * @return string personal token
+   **/
+   static function getUniquePersonalToken() {
+      Toolbox::logDebug('getUniquePersonalToken() method is deprecated');
+      Toolbox::backtrace();
+      return self::getUniqueToken('personal_token');
+   }
+
 
    /**
     * Get token of a user. If not exists generate it.
@@ -4268,6 +4281,21 @@ class User extends CommonDBTM {
       }
 
       return false;
+   }
+
+   /**
+    * Get personal token of a user. If not exists generate it.
+    *
+    * @param $ID user ID
+   *
+   * @deprecated since version 9.2; @see User::getToken()
+    *
+    * @return string personal token
+   **/
+   static function getPersonalToken($ID) {
+      Toolbox::logDebug('getPersonalToken() method is deprecated');
+      Toolbox::backtrace();
+      return self::getToken($ID, 'personal_token');
    }
 
    /**
