@@ -54,7 +54,7 @@ abstract class APIBaseClass extends PHPUnit\Framework\TestCase {
       $user->getFromDB($uid);
       $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
       if (empty($token)) {
-         $token = User::getPersonalToken($uid);
+         $token = User::getToken($uid, 'personal_token');
       }
 
       $data = $this->query('initSession',

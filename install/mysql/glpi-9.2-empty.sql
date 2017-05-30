@@ -8026,6 +8026,8 @@ CREATE TABLE `glpi_users` (
   `set_default_tech` tinyint(1) DEFAULT NULL,
   `personal_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `personal_token_date` datetime DEFAULT NULL,
+  `api_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `api_token_date` datetime DEFAULT NULL,
   `display_count_on_home` int(11) DEFAULT NULL,
   `notification_to_myself` tinyint(1) DEFAULT NULL,
   `duedateok_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

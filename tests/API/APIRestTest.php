@@ -191,7 +191,7 @@ class APIRestTest extends APIBaseClass {
       $user->getFromDB($uid);
       $token = isset($user->fields['personal_token'])?$user->fields['personal_token']:"";
       if (empty($token)) {
-         $token = User::getPersonalToken($uid);
+         $token = User::getToken($uid, 'personal_token');
       }
 
       $res = $this->doHttpRequest('GET', 'initSession/',

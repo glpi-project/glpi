@@ -1299,7 +1299,7 @@ class Planning extends CommonGLPI {
                        //"&limititemtype=$limititemtype".
                        "&entities_id=".$_SESSION["glpiactive_entity"].
                        "&is_recursive=".$_SESSION["glpiactive_entity_recursive"].
-                       "&token=".User::getPersonalToken(Session::getLoginUserID(true));
+                       "&token=".User::getToken(Session::getLoginUserID(true), 'personal_token');
 
             echo "<li><a target='_blank' href='".$CFG_GLPI["root_doc"]."$cal_url'>".
                  _sx("button", "Export")." - ".__("Ical")."</a></li>";

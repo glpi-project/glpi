@@ -772,6 +772,14 @@ Regards,',
                                  true);
    }
 
+   // Create a dedicated token for api
+   if (!FieldExists('glpi_users', 'api_token')) {
+      $migration->addField('glpi_users', 'api_token', 'string');
+      $migration->addField('glpi_users', 'api_token_date', 'datetime');
+      $migration->displayWarning("Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token.",
+                                 true);
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -1152,6 +1152,7 @@ class Html {
             }
          }
 
+
          if (in_array('fullcalendar', $jslibs)) {
             echo Html::css('lib/jqueryplugins/fullcalendar/fullcalendar.css',
                            array('media' => ''));
@@ -1177,6 +1178,10 @@ class Html {
 
          if (in_array('tinymce', $jslibs)) {
             Html::requireJs('tinymce');
+         }
+
+         if (in_array('clipboard', $jslibs)) {
+            Html::requireJs('clipboard');
          }
 
          if (in_array('charts', $jslibs)) {
@@ -5933,6 +5938,9 @@ class Html {
          return;
       }
       switch ($name) {
+         case 'clipboard':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
+            break;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
             break;

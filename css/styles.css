@@ -3877,6 +3877,29 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    display: block;
 }
 
+.copy_to_clipboard_wrapper,
+.copy_to_clipboard_wrapper * {
+   cursor: pointer;
+}
+
+.copy_to_clipboard_wrapper:after {
+   font-family: 'FontAwesome';
+   position: relative;
+   left: -15px;
+   top: 1px;
+   content: "\f0ea";
+   color: #7F7F7F;
+   transition: color 0.3s ease-in-out;
+}
+.copy_to_clipboard_wrapper.copied:after {
+   content: "\f00c";
+   color: green;
+}
+.copy_to_clipboard_wrapper.copyfail:after {
+   content: "\f071";
+   color: red;
+}
+
 /* ################--------------- Responsive  ---------------#################### */
 
 @media screen and (max-width: 700px) {

@@ -497,11 +497,16 @@ class User extends CommonDBTM {
     * Retrieve an item from the database using its personal token
     *
     * @param $token user token
+    * @param string $field the field storing the token
     *
     * @return true if succeed else false
    **/
-   function getFromDBbyToken($token) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`personal_token` = '$token'");
+   function getFromDBbyToken($token, $field = 'personal_token') {
+      if (!in_array($field, ['personal_token', 'api_token'])) {
+         return false;
+      }
+
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`$field` = '$token'");
    }
 
 
@@ -787,8 +792,13 @@ class User extends CommonDBTM {
       }
 
       if (isset($input['_reset_personal_token'])) {
-         $input['personal_token']      = self::getUniquePersonalToken();
+         $input['personal_token']      = self::getUniqueToken('personal_token');
          $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
+      }
+
+      if (isset($input['_reset_api_token'])) {
+         $input['api_token']      = self::getUniqueToken('api_token');
+         $input['api_token_date'] = $_SESSION['glpi_currenttime'];
       }
 
       // Manage preferences fields
@@ -4210,11 +4220,12 @@ class User extends CommonDBTM {
 
 
    /**
-   * Get personal token checking that it is unique
+   * Get token checking that it is unique
+   * @param string $field the field storing the token
    *
-   * @return string personal token
+   * @return string token
    **/
-   static function getUniquePersonalToken() {
+   static function getUniqueToken($field = 'personal_token') {
       global $DB;
 
       $ok = false;
@@ -4222,7 +4233,7 @@ class User extends CommonDBTM {
          $key    = Toolbox::getRandomString(40, true);
          $query  = "SELECT COUNT(*)
                     FROM `glpi_users`
-                    WHERE `personal_token` = '$key'";
+                    WHERE `$field` = '$key'";
          $result = $DB->query($query);
 
          if ($DB->result($result, 0, 0) == 0) {
@@ -4234,25 +4245,26 @@ class User extends CommonDBTM {
 
 
    /**
-    * Get personal token of a user. If not exists generate it.
+    * Get token of a user. If not exists generate it.
     *
     * @param $ID user ID
+    * @param string $field the field storing the token
     *
-    * @return string personal token
+    * @return string token
    **/
-   static function getPersonalToken($ID) {
+   static function getToken($ID, $field = 'personal_token') {
       global $DB;
 
       $user = new self();
       if ($user->getFromDB($ID)) {
-         if (!empty($user->fields['personal_token'])) {
-            return $user->fields['personal_token'];
+         if (!empty($user->fields[$field])) {
+            return $user->fields[$field];
          }
-         $token = self::getUniquePersonalToken();
-         $user->update(array('id'                  => $user->getID(),
-                             'personal_token'      => $token,
-                             'personal_token_date' => $_SESSION['glpi_currenttime']));
-         return $user->fields['personal_token'];
+         $token = self::getUniqueToken($field);
+         $user->update(array('id'          => $user->getID(),
+                             $field        => $token,
+                             "$field_date" => $_SESSION['glpi_currenttime']));
+         return $user->fields[$field];
       }
 
       return false;

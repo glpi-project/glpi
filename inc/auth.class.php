@@ -473,7 +473,7 @@ class Auth extends CommonGLPI {
          case self::API:
             if ($CFG_GLPI['enable_api_login_external_token']) {
                $user = new User();
-               if ($user->getFromDBbyToken($_REQUEST['user_token'])) {
+               if ($user->getFromDBbyToken($_REQUEST['user_token'], 'api_token')) {
                   $this->user->fields['name'] = $user->fields['name'];
                   return true;
                }
@@ -490,7 +490,7 @@ class Auth extends CommonGLPI {
                if (count($data) === 2) {
                   list ($cookie_id, $cookie_token) = $data;
 
-                  $token = User::getPersonalToken($cookie_id);
+                  $token = User::getToken($cookie_id, 'personal_token');
 
                   if ($token !== false && Auth::checkPassword($token, $cookie_token)) {
                      $user = new User();
@@ -819,7 +819,7 @@ class Auth extends CommonGLPI {
          if (!empty($this->user->fields['personal_token'])) {
             $token = $this->user->fields['personal_token'];
          } else {
-            $token = User::getPersonalToken($this->user->fields['id']);
+            $token = User::getToken($this->user->fields['id'], 'personal_token');
          }
 
          if ($token) {
