@@ -2361,7 +2361,7 @@ class Config extends CommonDBTM {
       $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
       /* TODO: could be improved, only default vhost checked */
-      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r')) {
          fclose($fic);
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='b left'>".
