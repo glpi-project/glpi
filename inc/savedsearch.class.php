@@ -894,7 +894,13 @@ class SavedSearch extends CommonDBTM {
 
             if ($_SESSION['glpishow_count_on_tabs']) {
                $count = null;
-               if ($data = $this->execute()) {
+               try {
+                  $data = $this->execute();
+               } catch (\RuntimeException $e) {
+                  Toolbox::logDebug($e);
+                  $data = false;
+               }
+               if ($data) {
                   $count = $data['data']['totalcount'];
                } else {
                   $info_message = ($this->fields['do_count'] == self::COUNT_NO) ?

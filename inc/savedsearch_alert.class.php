@@ -119,6 +119,7 @@ class SavedSearch_Alert extends CommonDBChild {
             $count = $data['data']['totalcount'];
          }
       } catch (\RuntimeException $e) {
+         Toolbox::logDebug($e);
          $pass = true;
       }
 
