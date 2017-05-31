@@ -1058,7 +1058,9 @@ class Toolbox {
       }
       echo "</tr>";
 
-      $suberr = Config::checkWriteAccessToDirs();
+      if (!isset($_REQUEST['skipCheckWriteAccessToDirs'])) {
+         $suberr = Config::checkWriteAccessToDirs();
+      }
       if ($suberr > $error) {
          $error = $suberr;
       }
