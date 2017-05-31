@@ -424,7 +424,8 @@ $CFG_GLPI['javascript'] = [
          'notificationtemplate' => ['tinymce']
       ]
    ],
-   'preference'=> ['colorpicker'],
+   'admin'     => ['clipboard'],
+   'preference'=> ['colorpicker', 'clipboard'],
 ];
 
 //Maximum time, in miliseconds a saved search should not exeed

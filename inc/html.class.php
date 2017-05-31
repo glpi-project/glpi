@@ -1179,6 +1179,10 @@ class Html {
             Html::requireJs('tinymce');
          }
 
+         if (in_array('clipboard', $jslibs)) {
+            Html::requireJs('clipboard');
+         }
+
          if (in_array('charts', $jslibs)) {
             echo Html::css('lib/chartist-js-0.10.1/chartist.css');
             echo Html::css('css/chartists-glpi.css');
@@ -5933,6 +5937,9 @@ class Html {
          return;
       }
       switch ($name) {
+         case 'clipboard':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
+            break;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
             break;
