@@ -503,6 +503,7 @@ class User extends CommonDBTM {
    **/
    function getFromDBbyToken($token, $field = 'personal_token') {
       if (!in_array($field, ['personal_token', 'api_token'])) {
+         Toolbox::logDebug('User::getFromDBbyToken() can only be called with $field parameter with theses values: \'personal_token\', \'api_token\'');
          return false;
       }
 
