@@ -13,7 +13,7 @@ $(function() {
       var succeed;
       try {
          succeed = document.execCommand("copy");
-      } catch(e) {
+      } catch (e) {
          succeed = false;
       }
       target.blur();
