@@ -229,7 +229,9 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
-      return parent::canUpdate();
+
+      return Session::haveRightsOr(self::$rightname,
+                                   array(UPDATE, self::ASSIGN, self::STEAL, self::OWN));
    }
 
 
