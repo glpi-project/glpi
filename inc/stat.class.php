@@ -865,8 +865,16 @@ class Stat extends CommonGLPI {
             $LEFTJOIN .= " INNER JOIN `glpi_computers`
                               ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
                                   AND `$linkedtable`.`itemtype` = 'Computer')";
-            $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
-                          AND `glpi_computers`.`is_template` <> '1'";
+            if (substr($champ, 0, strlen('operatingsystem')) === 'operatingsystem') {
+               $LEFTJOIN .= " INNER JOIN `glpi_items_operatingsystems`
+                              ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id`
+                                  AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')";
+               $WHERE   .= " AND `glpi_items_operatingsystems`.`$champ` = '$value'
+                             AND `glpi_computers`.`is_template` <> '1'";
+            } else {
+               $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
+                             AND `glpi_computers`.`is_template` <> '1'";
+            }
             break;
       }
 

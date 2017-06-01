@@ -6954,10 +6954,6 @@ msgstr "Add an antivirus"
 msgid "Operating System"
 msgstr "Operating System"
 
-#: inc/computer.class.php:203
-msgid "Kernel version"
-msgstr "Kernel version"
-
 #: inc/computer.class.php:207
 msgid "Product ID"
 msgstr "Product ID"

@@ -832,13 +832,6 @@ CREATE TABLE `glpi_computers` (
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
-  `operatingsystems_id` int(11) NOT NULL DEFAULT '0',
-  `operatingsystemversions_id` int(11) NOT NULL DEFAULT '0',
-  `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
-  `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
-  `os_license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `os_licenseid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `os_kernel_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `domains_id` int(11) NOT NULL DEFAULT '0',
@@ -870,10 +863,6 @@ CREATE TABLE `glpi_computers` (
   KEY `locations_id` (`locations_id`),
   KEY `computermodels_id` (`computermodels_id`),
   KEY `networks_id` (`networks_id`),
-  KEY `operatingsystems_id` (`operatingsystems_id`),
-  KEY `operatingsystemservicepacks_id` (`operatingsystemservicepacks_id`),
-  KEY `operatingsystemversions_id` (`operatingsystemversions_id`),
-  KEY `operatingsystemarchitectures_id` (`operatingsystemarchitectures_id`),
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `computertypes_id` (`computertypes_id`),
@@ -998,6 +987,78 @@ CREATE TABLE `glpi_computervirtualmachines` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+### Dump table glpi_items_operatingsystems
+
+DROP TABLE IF EXISTS `glpi_items_operatingsystems`;
+CREATE TABLE `glpi_items_operatingsystems` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `operatingsystems_id` int(11) NOT NULL DEFAULT '0',
+  `operatingsystemversions_id` int(11) NOT NULL DEFAULT '0',
+  `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
+  `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
+  `operatingsystemkernelversions_id` int(11) NOT NULL DEFAULT '0',
+  `license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `license_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `operatingsystemeditions_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `items_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `operatingsystems_id` (`operatingsystems_id`),
+  KEY `operatingsystemservicepacks_id` (`operatingsystemservicepacks_id`),
+  KEY `operatingsystemversions_id` (`operatingsystemversions_id`),
+  KEY `operatingsystemarchitectures_id` (`operatingsystemarchitectures_id`),
+  KEY `operatingsystemkernelversions_id` (`operatingsystemkernelversions_id`),
+  KEY `operatingsystemeditions_id` (`operatingsystemeditions_id`),
+  UNIQUE KEY `unicity` (`items_id`,`itemtype`, `operatingsystems_id`, `operatingsystemarchitectures_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_operatingsystemkernels
+
+DROP TABLE IF EXISTS `glpi_operatingsystemkernels`;
+CREATE TABLE `glpi_operatingsystemkernels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_operatingsystemkernelversions
+
+DROP TABLE IF EXISTS `glpi_operatingsystemkernelversions`;
+CREATE TABLE `glpi_operatingsystemkernelversions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `operatingsystemkernels_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `operatingsystemkernels_id` (`operatingsystemkernels_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_operatingsystemeditions
+
+DROP TABLE IF EXISTS `glpi_operatingsystemeditions`;
+CREATE TABLE `glpi_operatingsystemeditions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_configs
 

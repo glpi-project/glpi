@@ -43,7 +43,7 @@ class Computer extends DbTestCase {
          $fields   = $computer->fields;
          unset($fields['id']);
          $fields['name'] = $this->getUniqueString();
-         $computer->add($fields);
+         $this->integer((int)$computer->add($fields))->isGreaterThan(0);
          return $computer;
    }
 
@@ -52,7 +52,7 @@ class Computer extends DbTestCase {
       $pfields  = $printer->fields;
       unset($pfields['id']);
       $pfields['name'] = $this->getUniqueString();
-      $printer->add($pfields);
+      $this->integer((int)$printer->add($pfields))->isGreaterThan(0);
       return $printer;
    }
 

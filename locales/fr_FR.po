@@ -7041,10 +7041,6 @@ msgstr "Ajouter un antivirus"
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
-#: inc/computer.class.php:203
-msgid "Kernel version"
-msgstr "version du noyau"
-
 #: inc/computer.class.php:207
 msgid "Product ID"
 msgstr "Product ID"
