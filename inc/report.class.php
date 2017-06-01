@@ -222,11 +222,10 @@ class Report extends CommonGLPI{
                       AND `is_template` = '0' ";
 
       $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
-                FROM `glpi_computers`
+                FROM `glpi_items_operatingsystems`
                 LEFT JOIN `glpi_operatingsystems`
-                   ON (`glpi_computers`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
-                $where ".
-                        getEntitiesRestrictRequest("AND", "glpi_computers")."
+                   ON (`glpi_items_operatingsystems`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
+                $where
                 GROUP BY `glpi_operatingsystems`.`name`";
       $result = $DB->query($query);
 

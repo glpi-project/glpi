@@ -944,15 +944,27 @@ class Dropdown {
                                             'Operating systems',
                                             Session::getPluralNumber()),
                  'OperatingSystemVersion'
-                                      => _n('Version of the operating system',
-                                            'Versions of the operating system',
+                                      => _n('Version',
+                                            'Versions',
                                             Session::getPluralNumber()),
                  'OperatingSystemServicePack'
                                       => _n('Service pack', 'Service packs',
                                             Session::getPluralNumber()),
                  'OperatingSystemArchitecture'
-                                      => _n('Operating system architecture',
-                                            'Operating system architectures',
+                                      => _n('Architecture',
+                                            'Architectures',
+                                            Session::getPluralNumber()),
+                 'OperatingSystemEdition'
+                                      => _n('Edition',
+                                            'Editions',
+                                             Session::getPluralNumber()),
+                 'OperatingSystemKernel'
+                                      => _n('Kernel',
+                                            'Kernels',
+                                            Session::getPluralNumber()),
+                 'OperatingSystemKernelVersion'
+                                      => _n('Kernel version',
+                                            'Kernel versions',
                                             Session::getPluralNumber()),
                  'AutoUpdateSystem'   => _n('Update source', 'Update sources',
                                             Session::getPluralNumber())

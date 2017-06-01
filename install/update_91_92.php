@@ -81,7 +81,11 @@ function update91to92() {
       'glpi_items_devicefirmwares',
       'glpi_devicefirmwaretypes',
       'glpi_savedsearches_alerts',
-      'glpi_notifications_notificationtemplates'
+      'glpi_notifications_notificationtemplates',
+      'glpi_items_operatingsystems',
+      'glpi_operatingsystemkernels',
+      'glpi_operatingsystemkernelversions',
+      'glpi_operatingsystemeditions'
    );
 
    $has_backups = $migration->backupTables($newtables);
@@ -839,8 +843,10 @@ Regards,',
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_notifications_notificationtemplates");
       $migration->migrationOneTable('glpi_notifications_notificationtemplates');
-      $query = "INSERT INTO glpi_notifications_notificationtemplates (notifications_id, mode, notificationtemplates_id) SELECT id, mode, notificationtemplates_id FROM glpi_notifications";
-      $DB->queryOrDie($query, "9.2 migrate notifications templates");
+      if (FieldExists('glpi_notifications', 'mode')) {
+         $query = "INSERT INTO glpi_notifications_notificationtemplates (notifications_id, mode, notificationtemplates_id) SELECT id, mode, notificationtemplates_id FROM glpi_notifications";
+         $DB->queryOrDie($query, "9.2 migrate notifications templates");
+      }
    }
 
    //migrate any existing mode before removing the field
@@ -864,6 +870,146 @@ Regards,',
       $migration->addField('glpi_users', 'api_token_date', 'datetime', ['after' => 'api_token']);
       $migration->displayWarning("Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token.",
                                  true);
+   }
+
+   if (!TableExists('glpi_items_operatingsystems')) {
+      $query = "CREATE TABLE `glpi_items_operatingsystems` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `operatingsystems_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystemversions_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
+                  `operatingsystemkernelversions_id` int(11) NOT NULL DEFAULT '0',
+                  `license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `license_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `operatingsystemeditions_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `items_id` (`items_id`),
+                  KEY `item` (`itemtype`,`items_id`),
+                  KEY `operatingsystems_id` (`operatingsystems_id`),
+                  KEY `operatingsystemservicepacks_id` (`operatingsystemservicepacks_id`),
+                  KEY `operatingsystemversions_id` (`operatingsystemversions_id`),
+                  KEY `operatingsystemarchitectures_id` (`operatingsystemarchitectures_id`),
+                  KEY `operatingsystemkernelversions_id` (`operatingsystemkernelversions_id`),
+                  KEY `operatingsystemeditions_id` (`operatingsystemeditions_id`),
+                  UNIQUE KEY `unicity` (`items_id`,`itemtype`, `operatingsystems_id`, `operatingsystemarchitectures_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_items_operatingsystems");
+   }
+
+   if (!TableExists('glpi_operatingsystemkernels')) {
+      $query = "CREATE TABLE `glpi_operatingsystemkernels` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_operatingsystemkernels");
+   }
+
+   if (!TableExists('glpi_operatingsystemkernelversions')) {
+      $query = "CREATE TABLE `glpi_operatingsystemkernelversions` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `operatingsystemkernels_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `operatingsystemkernels_id` (`operatingsystemkernels_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_operatingsystemversions");
+   }
+
+   if (!TableExists('glpi_operatingsystemeditions')) {
+      $query = "CREATE TABLE `glpi_operatingsystemeditions` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_operatingsystemeditions");
+   }
+
+   if (FieldExists('glpi_computers', 'operatingsystems_id')) {
+      //migrate data from computers table, and drop old fields
+      $query = "INSERT INTO glpi_items_operatingsystems (
+                  itemtype,
+                  items_id,
+                  operatingsystems_id,
+                  operatingsystemversions_id,
+                  operatingsystemservicepacks_id,
+                  operatingsystemarchitectures_id,
+                  license_number,
+                  license_id
+               ) SELECT
+                  'Computer',
+                  id,
+                  operatingsystems_id,
+                  operatingsystemversions_id,
+                  operatingsystemservicepacks_id,
+                  operatingsystemarchitectures_id,
+                  os_license_number,
+                  os_licenseid
+                FROM glpi_computers
+                WHERE
+                  operatingsystems_id !=0 
+                  OR operatingsystemservicepacks_id != 0
+                  OR operatingsystemservicepacks_id != 0
+                  OR operatingsystemarchitectures_id != 0
+                  OR os_license_number IS NOT NULL
+                  OR os_kernel_version IS NOT NULL
+                  OR os_licenseid IS NOT NULL";
+      $DB->queryOrDie($query, "9.2 migrate main operating system informations");
+
+      //migrate kernel versions.
+      $query = "SELECT id, os_kernel_version FROM glpi_computers WHERE os_kernel_version IS NOT NULL";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $mapping = [];
+            $kver = new OperatingSystemKernelVersion();
+            while ($data = $DB->fetch_assoc($result)) {
+               $key = md5($data['os_kernel_version']);
+               if (!isset($mapping[$key])) {
+                  $mapping[$key] = [];
+               }
+               $kver->add(['version' => $data['os_kernel_version']]);
+               $mapping[$key][$data['id']] = $kver->getID();
+            }
+
+            foreach ($mapping as $map) {
+               foreach ($map as $computers_id => $kver_id) {
+                  $query = "UPDATE glpi_items_operatingsystems
+                              SET operatingsystemkernelversions_id = '$kver_id'
+                            WHERE itemtype='Computer' AND items_id = '$computers_id'";
+                  $DB->queryOrDie($query);
+               }
+            }
+         }
+      }
+
+      $migration->dropKey('glpi_computers', 'operatingsystems_id');
+      $migration->dropField('glpi_computers', 'operatingsystems_id');
+      $migration->dropKey('glpi_computers', 'operatingsystemservicepacks_id');
+      $migration->dropField('glpi_computers', 'operatingsystemservicepacks_id');
+      $migration->dropKey('glpi_computers', 'operatingsystemversions_id');
+      $migration->dropField('glpi_computers', 'operatingsystemversions_id');
+      $migration->dropKey('glpi_computers', 'operatingsystemarchitectures_id');
+      $migration->dropField('glpi_computers', 'operatingsystemarchitectures_id');
+      $migration->dropField('glpi_computers', 'os_license_number');
+      $migration->dropField('glpi_computers', 'os_licenseid');
+      $migration->dropField('glpi_computers', 'os_kernel_version');
    }
 
    // ************ Keep it at the end **************

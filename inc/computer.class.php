@@ -68,23 +68,6 @@ class Computer extends CommonDBTM {
 
 
    /**
-    * @see CommonGLPI::getTabNameForItem()
-    *
-    * @since version 9.1
-   **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
-      if (static::canView()) {
-         switch ($item->getType()) {
-            case __CLASS__ :
-               $ong = array(1 => __('Operating System'));
-               return $ong;
-         }
-      }
-   }
-
-
-   /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
     *
     * @since version 0.84
@@ -112,6 +95,7 @@ class Computer extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong)
          ->addStandardTab(__CLASS__, $ong, $options)
+         ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
          ->addStandardTab('ComputerDisk', $ong, $options)
          ->addStandardTab('Computer_SoftwareVersion', $ong, $options)
@@ -133,89 +117,6 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
-   }
-
-
-   /**
-    * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
-    * @param $withtemplate (default 0)
-    *
-    * @since version 9.1
-   **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      self::showOperatingSystem($item);
-      return true;
-   }
-
-
-   /**
-    * Print the computer's operating system form
-    *
-    * @param $comp Computer object
-    *
-    * @since version 9.1
-    *
-    * @return Nothing (call to classes members)
-   **/
-   static function showOperatingSystem(Computer $comp) {
-      global $DB;
-
-      $ID = $comp->fields['id'];
-      $colspan = 4;
-
-      echo "<div class='center'>";
-
-      $comp->initForm($ID);
-      $comp->showFormHeader(['formtitle' => false]);
-
-      $rand = mt_rand();
-
-      echo "<tr class='headerRow'><th colspan='".$colspan."'>";
-      echo __('Operating system');
-      echo "</th></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_operatingsystems_id$rand'>".__('Name')."</label></td>";
-      echo "<td>";
-      OperatingSystem::dropdown(array('value' => $comp->fields["operatingsystems_id"], 'rand' => $rand));
-      echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemversions_id$rand'>".__('Version')."</label></td>";
-      echo "<td >";
-      OperatingSystemVersion::dropdown(array('value' => $comp->fields["operatingsystemversions_id"], 'rand' => $rand));
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_operatingsystemarchitectures_id$rand'>".__('Architecture')."</label></td>";
-      echo "<td >";
-      OperatingSystemArchitecture::dropdown(array('value'
-                                                 => $comp->fields["operatingsystemarchitectures_id"], 'rand' => $rand));
-      echo "</td>";
-      echo "<td><label for='dropdown_operatingsystemservicepacks_id$rand'>".__('Service pack')."</label></td>";
-      echo "<td >";
-      OperatingSystemServicePack::dropdown(array('value'
-                                                 => $comp->fields["operatingsystemservicepacks_id"], 'rand' => $rand));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_os_kernel_version$rand'>".__('Kernel version')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($comp, 'os_kernel_version', ['rand' => $rand]);
-      echo "</td>";
-      echo "<td><label for='textfield_os_licenseid$rand'>".__('Product ID')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($comp, 'os_licenseid', ['rand' => $rand]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='textfield_os_license_number$rand'>".__('Serial number')."</label></td>";
-      echo "<td >";
-      Html::autocompletionTextField($comp, 'os_license_number', ['rand' => $rand]);
-      echo "</td><td colspan='2'></td></tr>";
-
-      $comp->showFormButtons(array('candel' => false, 'formfooter' => false));
    }
 
 
@@ -364,6 +265,9 @@ class Computer extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // ADD OS
+         Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Devices
          Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -427,6 +331,9 @@ class Computer extends CommonDBTM {
 
       $antivirus = new ComputerAntivirus();
       $antivirus->cleanDBonItemDelete('Computer', $this->fields['id']);
+
+      $ios = new Item_OperatingSystem();
+      $ios->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
 
@@ -731,30 +638,6 @@ class Computer extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '45',
-         'table'              => 'glpi_operatingsystems',
-         'field'              => 'name',
-         'name'               => __('Operating system'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '46',
-         'table'              => 'glpi_operatingsystemversions',
-         'field'              => 'name',
-         'name'               => __('Version of the operating system'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '41',
-         'table'              => 'glpi_operatingsystemservicepacks',
-         'field'              => 'name',
-         'name'               => __('Service pack'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
          'id'                 => '42',
          'table'              => 'glpi_autoupdatesystems',
          'field'              => 'name',
@@ -763,42 +646,10 @@ class Computer extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '43',
-         'table'              => 'glpi_computers',
-         'field'              => 'os_license_number',
-         'name'               => __('Serial of the operating system'),
-         'datatype'           => 'string'
-      ];
-
-      $tab[] = [
-         'id'                 => '44',
-         'table'              => 'glpi_computers',
-         'field'              => 'os_licenseid',
-         'name'               => __('Product ID of the operating system'),
-         'datatype'           => 'string'
-      ];
-
-      $tab[] = [
-         'id'                 => '61',
-         'table'              => 'glpi_operatingsystemarchitectures',
-         'field'              => 'name',
-         'name'               => __('Operating system architecture'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
          'id'                 => '47',
          'table'              => 'glpi_computers',
          'field'              => 'uuid',
          'name'               => __('UUID'),
-         'datatype'           => 'string'
-      ];
-
-      $tab[] = [
-         'id'                 => '48',
-         'table'              => 'glpi_computers',
-         'field'              => 'os_kernel_version',
-         'name'               => __('Kernel version of the operating system'),
          'datatype'           => 'string'
       ];
 
@@ -929,6 +780,9 @@ class Computer extends CommonDBTM {
          'name'               => __('Entity'),
          'datatype'           => 'dropdown'
       ];
+
+      // add operating system search options
+      $tab = array_merge($tab, Item_OperatingSystem::getSearchOptionsToAddNew(get_class($this)));
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));

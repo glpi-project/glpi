@@ -392,14 +392,14 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_networkequipments' => 'networks_id'),
 
                   "glpi_operatingsystems"
-                        => array('glpi_computers'        => 'operatingsystems_id',
-                                 'glpi_softwareversions' => 'operatingsystems_id'),
+                        => array('glpi_items_operatingsystems'  => 'operatingsystems_id',
+                                 'glpi_softwareversions'       => 'operatingsystems_id'),
 
                   "glpi_operatingsystemservicepacks"
-                        => array('glpi_computers' => 'operatingsystemservicepacks_id'),
+                        => array('glpi_items_operatingsystems' => 'operatingsystemservicepacks_id'),
 
                   "glpi_operatingsystemversions"
-                        => array('glpi_computers' => 'operatingsystemversions_id'),
+                        => array('glpi_items_operatingsystems' => 'operatingsystemversions_id'),
 
                   "glpi_peripheralmodels"
                         => array('glpi_peripherals' =>' peripheralmodels_id'),

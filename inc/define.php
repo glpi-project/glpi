@@ -266,7 +266,9 @@ $CFG_GLPI["dictionnary_types"]            = array('ComputerModel', 'ComputerType
                                                   'OperatingSystemVersion', 'PeripheralModel',
                                                   'PeripheralType', 'PhoneModel', 'PhoneType',
                                                   'Printer', 'PrinterModel', 'PrinterType',
-                                                  'Software', 'OperatingSystemArchitecture');
+                                                  'Software', 'OperatingSystemArchitecture',
+                                                  'OperatingSystemKernel', 'OperatingSystemKernelVersion',
+                                                  'OperatingSystemEdition');
 
 $CFG_GLPI["helpdesk_visible_types"]       = array('Software');
 
