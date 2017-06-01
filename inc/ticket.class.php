@@ -2515,7 +2515,9 @@ class Ticket extends CommonITILObject {
          ]
       )) {
          foreach ($validation_options as &$validation_option) {
-            $validation_option['massiveaction'] = false;
+            if (isset($validation_option['table'])) {
+               $validation_option['massiveaction'] = false;
+            }
          }
       }
       $tab = array_merge($tab, $validation_options);
