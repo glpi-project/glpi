@@ -50,9 +50,6 @@ if (!isset($_GET["projects_id"])) {
 if (!isset($_GET["projecttasks_id"])) {
    $_GET["projecttasks_id"] = "";
 }
-if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = '';
-}
 $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
