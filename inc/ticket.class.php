@@ -231,7 +231,11 @@ class Ticket extends CommonITILObject {
       }
 
       return Session::haveRightsOr(self::$rightname,
-                                   array(UPDATE, self::ASSIGN, self::STEAL, self::OWN));
+                                   array(UPDATE,
+                                         self::ASSIGN,
+                                         self::STEAL,
+                                         self::OWN,
+                                         self::CHANGEPRIORITY));
    }
 
 
@@ -428,20 +432,25 @@ class Ticket extends CommonITILObject {
     * @return boolean
    **/
    function canUpdateItem() {
-
       if (!$this->checkEntity()) {
          return false;
       }
 
-      if ($this->fields['status'] == self::INCOMING
-          && $this->numberOfFollowups() == 0
-          && $this->numberOfTasks() == 0
-          && ($this->isUser(CommonITILActor::REQUESTER,Session::getLoginUserID())
-              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
+      if ($this->canRequesterUpdateItem()) {
          return true;
       }
 
-      return static::canUpdate();
+      return self::canupdate();
+   }
+
+
+   function canRequesterUpdateItem() {
+       return ($this->isUser(CommonITILActor::REQUESTER,Session::getLoginUserID())
+               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+              && $this->fields['status'] != self::SOLVED
+              && $this->fields['status'] != self::CLOSED
+              && $this->numberOfFollowups() == 0
+              && $this->numberOfTasks() == 0;
    }
 
 
@@ -481,7 +490,6 @@ class Ticket extends CommonITILObject {
 
       return static::canDelete();
    }
-
 
    /**
     * @see CommonITILObject::getDefaultActor()
@@ -3854,7 +3862,9 @@ class Ticket extends CommonITILObject {
       $values['_tickettemplate'] = $tt;
 
       // check right used for this ticket
-      $canupdate   = !$ID || $this->canUpdateItem();
+      $canupdate   = !$ID
+                     || Session::haveRight(self::$rightname, UPDATE)
+                     || $this->canRequesterUpdateItem();
       $canpriority = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
 
       if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
