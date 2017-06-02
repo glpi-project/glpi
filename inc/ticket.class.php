@@ -6892,7 +6892,7 @@ class Ticket extends CommonITILObject {
 
       $canadd_fup      = $fup->can(-1, CREATE, $tmp);
       $canadd_task     = $ttask->can(-1, CREATE, $tmp);
-      $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
+      $canadd_document = $canadd_fup || $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
       if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
