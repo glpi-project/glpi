@@ -4275,9 +4275,9 @@ class User extends CommonDBTM {
             return $user->fields[$field];
          }
          $token = self::getUniqueToken($field);
-         $user->update(array('id'          => $user->getID(),
-                             $field        => $token,
-                             "$field_date" => $_SESSION['glpi_currenttime']));
+         $user->update(array('id'             => $user->getID(),
+                             $field           => $token,
+                             $field . "_date" => $_SESSION['glpi_currenttime']));
          return $user->fields[$field];
       }
 
