@@ -5296,10 +5296,6 @@ class Ticket extends CommonITILObject {
                                    OR `glpi_groups_tickets`.`groups_id` IN (".implode(",",$_SESSION['glpigroups'])."))";
             }
 
-            if (Session::haveRightsAnd(self::$rightname, [self::READASSIGN, self::ASSIGN])) {
-               $restrict .= " OR (glpi_tickets.status=".self::INCOMING.")";
-            }
-
             $order    = '`glpi_tickets`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 12;
