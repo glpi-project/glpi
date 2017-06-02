@@ -487,9 +487,9 @@ class Log extends CommonDBTM {
                   if ($data['itemtype'] == 'Ticket') {
                      if ($data['itemtype_link'] == 'Group') {
                         $itemtick = new Group_Ticket();
-                     } else if  ($data['itemtype_link'] == 'User') {
+                     } else if ($data['itemtype_link'] == 'User') {
                         $itemtick = new Ticket_User();
-                     } else if  ($data['itemtype_link'] == 'Supplier') {
+                     } else if ($data['itemtype_link'] == 'Supplier') {
                         $itemtick = new Supplier_Ticket();
                      }
                      $table   = $itemtick->getTable();
