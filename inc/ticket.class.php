@@ -444,6 +444,11 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * Is the current user is a requester of the current ticket and have the right to update it ?
+    *
+    * @return boolean
+    */
    function canRequesterUpdateItem() {
        return ($this->isUser(CommonITILActor::REQUESTER,Session::getLoginUserID())
                || $this->fields["users_id_recipient"] === Session::getLoginUserID())
@@ -2230,7 +2235,12 @@ class Ticket extends CommonITILObject {
           && ($this->getField('status') == self::CLOSED)) {
          return false;
       }
-      return parent::canAddItem($type);
+
+      // as self::canUpdate & $this->canUpdateItem checks more general rights (like STEAL or OWN),
+      // we specify only the rights needed for this action
+      return $this->checkEntity()
+             && (Session::haveRight(self::$rightname, UPDATE)
+                 || $this->canRequesterUpdateItem());
    }
 
 
