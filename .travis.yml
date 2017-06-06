@@ -9,6 +9,7 @@ env:
   - DB=mysql
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
@@ -21,7 +22,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/phpunit --verbose
-  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
+  - if [[ "$CS" == "true" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
@@ -42,6 +43,7 @@ matrix:
       addons:
         mariadb: 10.0
     - php: 7.1
+      env: CS=true
       addons:
         mariadb: 10.1
     - php: nightly
