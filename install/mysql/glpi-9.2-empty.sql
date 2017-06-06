@@ -1513,6 +1513,7 @@ INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4',
 INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('30','Ticket','expirePending','3600',NULL,'1','2','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -2607,6 +2608,8 @@ CREATE TABLE `glpi_entities` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `autofill_decommission_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
+  `pendingenddate` int(11) NOT NULL DEFAULT '-2',
+  `pending_add_follow` int(11) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
@@ -2614,7 +2617,7 @@ CREATE TABLE `glpi_entities` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,0);
+INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,0,0,0);
 
 ### Dump table glpi_entities_knowbaseitems
 
@@ -7800,6 +7803,8 @@ CREATE TABLE `glpi_tickets` (
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `validation_percent` int(11) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `pendingenddate` datetime DEFAULT NULL,
+  `pendingcomment` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),

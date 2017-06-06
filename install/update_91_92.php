@@ -798,6 +798,23 @@ Regards,',
       $DB->queryOrDie($query, "9.2 add saved searches alerts notification translation");
    }
 
+   // Manage pending status end date + comment
+   $migration->addField("glpi_tickets", "pendingenddate", "datetime");
+   $migration->addField("glpi_tickets", "pendingcomment", "longtext");
+   $migration->addField("glpi_entities", "pendingenddate", "integer");
+   $migration->addField("glpi_entities", "pending_add_follow", "integer");
+
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='Ticket' AND `name`='expirePending'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('Ticket', 'expirePending', 3600, NULL, 1, 2, 3,
+                        0, 24, 10, NULL, NULL, NULL); ";
+      $DB->queryOrDie($query, "9.2 Add expirePending Ticket cron task");
+   }
+
+
    if ($has_backups) {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
