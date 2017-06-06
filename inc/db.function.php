@@ -1705,15 +1705,17 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
       $field = "`$table`.`$field`";
    }
 
-   $query .= "$field";
-
    if (is_array($value)) {
-      $query .= " IN ('" . implode("','",$value) . "') ";
+      $query .= "$field IN ('" . implode("','",$value) . "') ";
    } else {
       if (strlen($value) == 0) {
-         $query .= " IN (".$_SESSION['glpiactiveentities_string'].") ";
+         if (isset($_SESSION['glpiactiveentities_string'])) {
+            $query .= "$field IN (".$_SESSION['glpiactiveentities_string'].") ";
+         } else {
+            $query .= " 0 ";
+         }
       } else {
-         $query .= " = '$value' ";
+         $query .= "$field = '$value' ";
       }
    }
 
