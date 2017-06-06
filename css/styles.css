@@ -226,6 +226,58 @@ hr {
    user-select: none;
 }
 
+/* ################--------------- Fuzzy ---------------#################### */
+
+#fuzzysearch {
+   position: fixed;
+   width: 500px;
+   min-height: 50px;
+   top: 30%;
+   left: 50%;
+   margin-top: -100px;
+   margin-left: -250px;
+   background: #FFF;
+   z-index: 200;
+}
+
+#fuzzysearch input {
+   border: 2px solid #CCC;
+   font-size: 2em;
+   border-radius: 3px;
+   height: 50px;
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+}
+
+#fuzzysearch .results:not(:empty) {
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+   height: 300px;
+   overflow-y: auto;
+   overflow-x: none;
+}
+
+#fuzzysearch .results li {
+   padding: 10px;
+}
+
+#fuzzysearch .results li:nth-child(odd) {
+   background: #E8E8E8;
+}
+
+#fuzzysearch .results li.selected {
+   background: #848484;
+   color: #FFF;
+}
+
+#fuzzysearch .results a {
+   font-size: 1.3em;
+   color: inherit;
+   font-weight: normal;
+}
+
 /* ################--------------- Tabs ---------------#################### */
 
 .alltab {

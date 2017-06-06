@@ -1,0 +1,28 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/underscore/underscore.js"></script>
+  <script>
+    mocha.setup({
+        ui: 'bdd'
+      , globals: []
+    })
+  </script>
+  <script src="../lib/fuzzy.js"></script>
+  <script src="fuzzy.test.js"></script>
+  <script>
+    $(function(){
+      mocha.run()
+    })
+  </script>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
+</html>

@@ -2656,4 +2656,69 @@ class Toolbox {
 
       return $json;
    }
+
+
+   /**
+    * Manage events from js/fuzzysearch.js
+    *
+    * @param string $action action to switch (should be actually 'getHtml' or 'getList')
+    *
+    * @return nothing (display)
+    */
+   static function fuzzySearch($action = '') {
+      global $CFG_GLPI;
+
+      switch ($action) {
+         case 'getHtml':
+            echo "<div id='fuzzysearch'>
+                  <input type='text' placeholder='".__("Start typing to find a menu")."'>
+                  <ul class='results'></ul>
+                  </div>";
+            echo "<div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'></div>";
+            break;
+
+         default;
+            $fuzzy_entries = [];
+
+            // retrieve menu
+            foreach($_SESSION['glpimenu'] as $firstlvl) {
+               if (isset($firstlvl['content'])) {
+                  foreach($firstlvl['content'] as $menu) {
+                     if (strlen($menu['title']) > 0) {
+                        $fuzzy_entries[] = [
+                           'url'   => $menu['page'],
+                           'title' => $firstlvl['title']." > ".$menu['title']
+                        ];
+
+                        if (isset($menu['options'])) {
+                           foreach($menu['options'] as $submenu) {
+                              if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                 $fuzzy_entries[] = [
+                                    'url'   => $submenu['page'],
+                                    'title' => $firstlvl['title']." > ".
+                                               $menu['title']." > ".
+                                               $submenu['title']
+                                 ];
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+
+               if (isset($firstlvl['default'])) {
+                  if (strlen($menu['title']) > 0) {
+                     $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default'],
+                        'title' => $firstlvl['title']
+                     ];
+                  }
+               }
+            }
+
+            // return the entries to ajax call
+            echo json_encode($fuzzy_entries);
+            break;
+      }
+   }
 }

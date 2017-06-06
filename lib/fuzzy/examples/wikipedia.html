@@ -1,0 +1,533 @@
+<html>
+<head>
+  <title>Wikipedia Fuzzy Search Example</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+
+
+  <script src="../lib/fuzzy.js"></script>
+
+  <script type="text/javascript">
+
+    function displaySearchResults() {
+
+      // The user-entered value we're searching for
+      var search = $('#search').val();
+
+      var options = {
+          pre:  '<b>'    // Wrap each character in a <b> tag to bold
+        , post: '</b>'
+
+        // Each element in wikiLists is an object, not a string. We can pass an `extract`
+        // function that is called on each element in the array to extract the string
+        // to fuzzy search against. In this case, element.title
+        , extract: function(element) {
+            return element.title;
+          }
+      };
+
+      // Filter!
+      var filtered = fuzzy.filter(search, wikiLists, options);
+
+      // Map the results to the html we want generated
+      var results = filtered.map(function(entry){
+        return '<li><a href="' + entry.original.url + '">' + entry.string + '</a></li>';
+      });
+
+      // Update the html
+      $('#lists').html(results.join(''));
+    }
+
+    $(function() {
+
+      // List the initial characters
+      displaySearchResults();
+
+      // Filter the characters on each change of the textbox
+      $('#search').keyup(displaySearchResults);
+    });
+  </script>
+  <style>
+    b {
+        color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Search Wikipedia Lists of Lists</h1>
+    <input type="text" id="search" class="search" style="height:30px" x-webkit-speech></input>
+    <ul id="lists">
+    </ul>
+  </div>
+  <script>
+  var wikiLists = [
+     {url:"http://wikipedia.org/wiki/List_of_lists_of_ancient_kings", title:"List of lists of ancient kings"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_A%26M_Records_artists", title:"Lists of A&amp;M Records artists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ABC_shows", title:"Lists of ABC shows"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_African_Americans", title:"Lists of African Americans"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_African_Union_members", title:"Lists of African Union members"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_American_films", title:"Lists of American films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_American_football_players", title:"Lists of American football players"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_American_television_episodes_with_LGBT_themes", title:"Lists of American television episodes with LGBT themes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_American_writers", title:"Lists of American writers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Americans", title:"Lists of Americans"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Argentine_films", title:"Lists of Argentine films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Armenians", title:"Lists of Armenians"}
+    ,{url:"http://wikipedia.org/wiki/List_of_atheists", title:"List of atheists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Australian_rules_football_leagues", title:"Lists of Australian rules football leagues"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Australians", title:"Lists of Australians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Austrian_films", title:"Lists of Austrian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Azerbaijani_films", title:"Lists of Azerbaijani films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_abbreviations", title:"Lists of abbreviations"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_academic_journals", title:"Lists of academic journals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_accidents_and_incidents_involving_military_aircraft", title:"Lists of accidents and incidents involving military aircraft"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_active_separatist_movements", title:"Lists of active separatist movements"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_actors", title:"Lists of actors"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_actors_by_television_series", title:"Lists of actors by television series"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_advertising_characters", title:"Lists of advertising characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_albums", title:"Lists of albums"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_allied_military_operations_of_the_Vietnam_War", title:"Lists of allied military operations of the Vietnam War"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_amphibians_by_region", title:"Lists of amphibians by region"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ancient_doctors", title:"Lists of ancient doctors"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_animals", title:"Lists of animals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_aquarium_fish", title:"Lists of aquarium fish"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_armoured_fighting_vehicles", title:"Lists of armoured fighting vehicles"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_association_football_players", title:"Lists of association football players"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_astronauts", title:"Lists of astronauts"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_astronomical_objects", title:"Lists of astronomical objects"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_banks", title:"Lists of banks"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_baseball_parks", title:"Lists of baseball parks"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Battlestar_Galactica_locations", title:"Lists of Battlestar Galactica locations"}
+    ,{url:"http://wikipedia.org/wiki/Ranked_lists_of_Belgian_provinces", title:"Ranked lists of Belgian provinces"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Bible_stories", title:"Lists of Bible stories"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_biologists_by_author_abbreviation", title:"Lists of biologists by author abbreviation"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_birds_by_region", title:"Lists of birds by region"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_bisexual_people", title:"Lists of bisexual people"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_blues_musicians_by_genre", title:"Lists of blues musicians by genre"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_books", title:"Lists of books"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_bookstores", title:"Lists of bookstores"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Brazilian_films", title:"Lists of Brazilian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_British_inventions", title:"Lists of British inventions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_British_people_by_ethnic_or_national_origin", title:"Lists of British people by ethnic or national origin"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Britons", title:"Lists of Britons"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Bulgarian_military_aircraft", title:"Lists of Bulgarian military aircraft"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_bus_routes_in_New_York_City", title:"Lists of bus routes in New York City"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Canadian_game_shows", title:"Lists of Canadian game shows"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Canadian_senators", title:"Lists of Canadian senators"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Canadian_television_series", title:"Lists of Canadian television series"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_canals", title:"Lists of canals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_capitals", title:"Lists of capitals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_case_law", title:"Lists of case law"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Category_5_hurricanes", title:"Lists of Category 5 hurricanes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cathedrals", title:"Lists of cathedrals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cathedrals_in_the_United_Kingdom", title:"Lists of cathedrals in the United Kingdom"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Catholicoi", title:"Lists of Catholicoi"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cats", title:"Lists of cats"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Celts", title:"Lists of Celts"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cemeteries", title:"Lists of cemeteries"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_centenarians", title:"Lists of centenarians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_characters_from_The_Office", title:"Lists of characters from The Office"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_characters_in_a_fictional_work", title:"Lists of characters in a fictional work"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_characters_in_the_Suikoden_series", title:"Lists of characters in the Suikoden series"}
+    ,{url:"http://wikipedia.org/wiki/Ranked_lists_of_Chilean_regions", title:"Ranked lists of Chilean regions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Christian_Scientists", title:"Lists of Christian Scientists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Christians", title:"Lists of Christians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Christmas_number_one_singles", title:"Lists of Christmas number one singles"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cities", title:"Lists of cities"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cities_by_country", title:"Lists of cities by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cities_in_Serbia_and_Montenegro", title:"Lists of cities in Serbia and Montenegro"}
+    ,{url:"http://wikipedia.org/wiki/Chronological_lists_of_classical_composers", title:"Chronological lists of classical composers"}
+    ,{url:"http://wikipedia.org/wiki/Chronological_lists_of_classical_composers_by_nationality", title:"Chronological lists of classical composers by nationality"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_College_Football_Hall_of_Fame_inductees", title:"Lists of College Football Hall of Fame inductees"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Commissioners%27_churches_in_southern_England,_the_Midlands_and_Wales", title:"Lists of Commissioners' churches in southern England, the Midlands and Wales"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_collective_nouns", title:"Lists of collective nouns"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_comets", title:"Lists of comets"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_comics_(disambiguation)", title:"Lists of comics (disambiguation)"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_communes_of_France", title:"Lists of communes of France"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_composers", title:"Lists of composers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_computers", title:"Lists of computers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_copper_mines_in_the_United_States", title:"Lists of copper mines in the United States"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Coronation_Street_characters", title:"Lists of Coronation Street characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_corporate_assets", title:"Lists of corporate assets"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_corporate_headquarters_by_city", title:"Lists of corporate headquarters by city"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_counties", title:"Lists of counties"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_countries_and_territories", title:"Lists of countries and territories"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_countries_by_GDP", title:"Lists of countries by GDP"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_countries_by_GDP_per_capita", title:"Lists of countries by GDP per capita"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_countries_by_GNI_per_capita", title:"Lists of countries by GNI per capita"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_countries_by_debt", title:"Lists of countries by debt"}
+    ,{url:"http://wikipedia.org/wiki/Lists_by_country", title:"Lists by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_country-related_topics", title:"Lists of country-related topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_country_codes", title:"Lists of country codes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_county_governors_of_Norway", title:"Lists of county governors of Norway"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Crayola_colors", title:"Lists of Crayola colors"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_crossings_of_the_East_River", title:"Lists of crossings of the East River"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_crossings_of_the_Hudson_River", title:"Lists of crossings of the Hudson River"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_crossings_of_the_Mississippi_River", title:"Lists of crossings of the Mississippi River"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_CSI_characters", title:"Lists of CSI characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_CSI_episodes", title:"Lists of CSI episodes"}
+    ,{url:"http://wikipedia.org/wiki/List_of_culinary_vegetables", title:"List of culinary vegetables"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_cultivars", title:"Lists of cultivars"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_curling_clubs", title:"Lists of curling clubs"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_current_members_of_the_Privy_Council", title:"Lists of current members of the Privy Council"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_custodes_rotulorum", title:"Lists of custodes rotulorum"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Czechoslovakian_films", title:"Lists of Czechoslovakian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Danish_football_transfers_2008%E2%80%9309", title:"Lists of Danish football transfers 2008–09"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Danish_football_transfers_2009%E2%80%9310", title:"Lists of Danish football transfers 2009–10"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Danzig_officials", title:"Lists of Danzig officials"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_demons", title:"Lists of demons"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_dictionaries", title:"Lists of dictionaries"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_diplomatic_missions", title:"Lists of diplomatic missions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_disasters", title:"Lists of disasters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_diseases", title:"Lists of diseases"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_disparaging_terms_for_people", title:"Lists of disparaging terms for people"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_display_resolutions", title:"Lists of display resolutions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Dominican_newspapers_(disambiguation)", title:"Lists of Dominican newspapers (disambiguation)"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Dominicans", title:"Lists of Dominicans"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_dragons", title:"Lists of dragons"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Dungeons_%26_Dragons_monsters", title:"Lists of Dungeons &amp; Dragons monsters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_earthquakes", title:"Lists of earthquakes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_EastEnders_characters", title:"Lists of EastEnders characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_East_Asian_surnames", title:"Lists of East Asian surnames"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Egyptian_films", title:"Lists of Egyptian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Emmerdale_characters", title:"Lists of Emmerdale characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Emmy_winners", title:"Lists of Emmy winners"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_English_loanwords_by_country_or_language_of_origin", title:"Lists of English loanwords by country or language of origin"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_English_words", title:"Lists of English words"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_English_words_of_Celtic_origin", title:"Lists of English words of Celtic origin"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_English_words_of_Scottish_origin_(disambiguation)", title:"Lists of English words of Scottish origin (disambiguation)"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ecoregions", title:"Lists of ecoregions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ecoregions_by_country", title:"Lists of ecoregions by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ecoregions_in_the_United_States", title:"Lists of ecoregions in the United States"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_educational_institutions_in_Pakistan", title:"Lists of educational institutions in Pakistan"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_emperors", title:"Lists of emperors"}
+    ,{url:"http://wikipedia.org/wiki/List_of_Empire_ships", title:"List of Empire ships"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_endangered_languages", title:"Lists of endangered languages"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_engineers", title:"Lists of engineers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_environmental_publications", title:"Lists of environmental publications"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_environmental_topics", title:"Lists of environmental topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ethnic_groups", title:"Lists of ethnic groups"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_etymologies", title:"Lists of etymologies"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Exosquad_characters", title:"Lists of Exosquad characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_extinct_animals", title:"Lists of extinct animals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_extinct_animals_of_the_British_Isles", title:"Lists of extinct animals of the British Isles"}
+    ,{url:"http://wikipedia.org/wiki/List_of_extreme_points_lists", title:"List of extreme points lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_American_films", title:"Lists of American films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Argentine_films", title:"Lists of Argentine films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Austrian_films", title:"Lists of Austrian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Azerbaijani_films", title:"Lists of Azerbaijani films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Brazilian_films", title:"Lists of Brazilian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Czechoslovakian_films", title:"Lists of Czechoslovakian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Egyptian_films", title:"Lists of Egyptian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Indian_films", title:"Lists of Indian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Korean_films", title:"Lists of Korean films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Pakistani_films", title:"Lists of Pakistani films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_female_state_governors", title:"Lists of female state governors"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_fictional_animals", title:"Lists of fictional animals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_fictional_extraterrestrials", title:"Lists of fictional extraterrestrials"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_fictional_hybrids", title:"Lists of fictional hybrids"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_fictional_species", title:"Lists of fictional species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_films_based_on_location", title:"Lists of films based on location"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_flags", title:"Lists of flags"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_former_Guantanamo_Bay_detainees_alleged_to_have_returned_to_terrorism", title:"Lists of former Guantanamo Bay detainees alleged to have returned to terrorism"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_former_Soviet_Republics", title:"Lists of former Soviet Republics"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_films", title:"List of lists of films"}
+    ,{url:"http://wikipedia.org/wiki/Green_Lists", title:"Green Lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Game_Boy_games", title:"Lists of Game Boy games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Gedanian_natives", title:"Lists of Gedanian natives"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Gladiators_events", title:"Lists of Gladiators events"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Governors_of_Punjab_(disambiguation)", title:"Lists of Governors of Punjab (disambiguation)"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_games", title:"Lists of games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_giants", title:"Lists of giants"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_golfers", title:"Lists of golfers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_governments_of_Lithuania", title:"Lists of governments of Lithuania"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_gun_cartridges", title:"Lists of gun cartridges"}
+    ,{url:"http://wikipedia.org/wiki/Hill_lists_in_the_British_Isles", title:"Hill lists in the British Isles"}
+    ,{url:"http://wikipedia.org/wiki/Historical_lists_of_Privy_Counsellors", title:"Historical lists of Privy Counsellors"}
+    ,{url:"http://wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy_cast_lists", title:"The Hitchhiker's Guide to the Galaxy cast lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Hispanic_Academy_Award_winners_and_nominees_by_country", title:"Lists of Hispanic Academy Award winners and nominees by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Hollyoaks_characters", title:"Lists of Hollyoaks characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_habeas_petitions_filed_on_behalf_of_War_on_Terror_detainees", title:"Lists of habeas petitions filed on behalf of War on Terror detainees"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_heroes", title:"Lists of heroes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_highest_points", title:"Lists of highest points"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hoards", title:"Lists of hoards"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_holidays", title:"Lists of holidays"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_horses", title:"Lists of horses"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals", title:"Lists of hospitals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_Africa", title:"Lists of hospitals in Africa"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_Asia", title:"Lists of hospitals in Asia"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_Europe", title:"Lists of hospitals in Europe"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_North_America", title:"Lists of hospitals in North America"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_Oceania", title:"Lists of hospitals in Oceania"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_hospitals_in_South_America", title:"Lists of hospitals in South America"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_islands_of_the_European_Union", title:"List of lists of islands of the European Union"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_national_institutions_and_symbols", title:"List of lists of national institutions and symbols"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_important_publications_in_science", title:"Lists of important publications in science"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Indian_films", title:"Lists of Indian films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Indigenous_Australians", title:"Lists of Indigenous Australians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_insects_of_Great_Britain", title:"Lists of insects of Great Britain"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_institutions_of_higher_education_by_endowment", title:"Lists of institutions of higher education by endowment"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_integrals", title:"Lists of integrals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_international_rugby_football_teams", title:"Lists of international rugby football teams"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_invasive_species", title:"Lists of invasive species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ISO_639_codes", title:"Lists of ISO 639 codes"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists", title:"Isotope lists"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists,_0-24", title:"Isotope lists, 0-24"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists,_25-48", title:"Isotope lists, 25-48"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists,_49-72", title:"Isotope lists, 49-72"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists,_73-96", title:"Isotope lists, 73-96"}
+    ,{url:"http://wikipedia.org/wiki/Isotope_lists,_97%2B", title:"Isotope lists, 97+"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_islands_of_the_Americas", title:"Lists of islands of the Americas"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Israeli_artists", title:"Lists of Israeli artists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Italian_football_transfers_2007%E2%80%9308", title:"Lists of Italian football transfers 2007–08"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_IUCN_Red_List_Critically_Endangered_species", title:"Lists of IUCN Red List Critically Endangered species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_IUCN_Red_List_data_deficient_species", title:"Lists of IUCN Red List data deficient species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_IUCN_Red_List_endangered_species", title:"Lists of IUCN Red List endangered species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_IUCN_Red_List_near_threatened_species", title:"Lists of IUCN Red List near threatened species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_IUCN_Red_List_vulnerable_species", title:"Lists of IUCN Red List vulnerable species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Japanese_Governors-General", title:"Lists of Japanese Governors-General"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Jews", title:"Lists of Jews"}
+    ,{url:"http://wikipedia.org/wiki/List_of_ancient_king_lists", title:"List of ancient king lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Knight_Rider_episodes", title:"Lists of Knight Rider episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Korean_birds", title:"Lists of Korean birds"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Korean_films", title:"Lists of Korean films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_LGBT_figures_in_fiction_and_myth", title:"Lists of LGBT figures in fiction and myth"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Latin_American_countries_by_GDP", title:"Lists of Latin American countries by GDP"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Linyphiidae_species", title:"Lists of Linyphiidae species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Los_Angeles_topics", title:"Lists of Los Angeles topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_lakes", title:"Lists of lakes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_landmark_court_decisions", title:"Lists of landmark court decisions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_languages", title:"Lists of languages"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_law_schools", title:"Lists of law schools"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_legislation", title:"Lists of legislation"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_lord_lieutenancies", title:"Lists of lord lieutenancies"}
+    ,{url:"http://wikipedia.org/wiki/Cast_lists_for_Love,_Loss,_and_What_I_Wore", title:"Cast lists for Love, Loss, and What I Wore"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lymantriid_genera", title:"List of lymantriid genera"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Maccabiah_Games_medalists", title:"Lists of Maccabiah Games medalists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Macedonians", title:"Lists of Macedonians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_magazines", title:"Lists of magazines"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_mammals_by_region", title:"Lists of mammals by region"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Massachusetts_Institute_of_Technology_people", title:"Lists of Massachusetts Institute of Technology people"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_mathematics_topics", title:"Lists of mathematics topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Melrose_Place_episodes", title:"Lists of Melrose Place episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_members_of_the_British_Royal_Family_through_history", title:"Lists of members of the British Royal Family through history"}
+    ,{url:"http://wikipedia.org/wiki/List_of_MeSH_codes", title:"List of MeSH codes"}
+    ,{url:"http://wikipedia.org/wiki/List_of_metalloid_lists", title:"List of metalloid lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Michigan_Wolverines_football_statistical_leaders", title:"Lists of Michigan Wolverines football statistical leaders"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_microcomputers", title:"Lists of microcomputers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Middle-earth_articles", title:"Lists of Middle-earth articles"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_military_aircraft_by_nation", title:"Lists of military aircraft by nation"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_military_installations", title:"Lists of military installations"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_mines", title:"Lists of mines"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_monarchs_in_the_British_Isles", title:"Lists of monarchs in the British Isles"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_mosques", title:"Lists of mosques"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_most_common_surnames", title:"Lists of most common surnames"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_most_expensive_items", title:"Lists of most expensive items"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_mountains", title:"Lists of mountains"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_MPs_for_Welsh_constituencies", title:"Lists of MPs for Welsh constituencies"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_municipalities", title:"Lists of municipalities"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_music_by_theme", title:"Lists of music by theme"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_music_inspired_by_literature", title:"Lists of music inspired by literature"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_musicals", title:"Lists of musicals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_musicians", title:"Lists of musicians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Muslim_scientists_and_scholars", title:"Lists of Muslim scientists and scholars"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Muslims", title:"Lists of Muslims"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_national_institutions_and_symbols", title:"List of lists of national institutions and symbols"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_NFL_starting_quarterbacks", title:"Lists of NFL starting quarterbacks"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_NRL_records", title:"Lists of NRL records"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_National_Treasures_of_Japan", title:"Lists of National Treasures of Japan"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_New_Jersey_Transit_bus_routes", title:"Lists of New Jersey Transit bus routes"}
+    ,{url:"http://wikipedia.org/wiki/List_of_New_Testament_minuscules", title:"List of New Testament minuscules"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_New_York_City_topics", title:"Lists of New York City topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_New_Zealanders", title:"Lists of New Zealanders"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Nintendo_characters", title:"Lists of Nintendo characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Nintendo_games", title:"Lists of Nintendo games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_North_American_area_codes", title:"Lists of North American area codes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_North_American_place_name_etymologies", title:"Lists of North American place name etymologies"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_named_passenger_trains", title:"Lists of named passenger trains"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_neighborhoods_by_city", title:"Lists of neighborhoods by city"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_newspaper_endorsements_in_United_States_presidential_elections", title:"Lists of newspaper endorsements in United States presidential elections"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_newspapers", title:"Lists of newspapers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_nicknames_in_association_football", title:"Lists of nicknames in association football"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_nuclear_disasters_and_radioactive_incidents", title:"Lists of nuclear disasters and radioactive incidents"}
+    ,{url:"http://wikipedia.org/wiki/National_Football_League_team_season_lists", title:"National Football League team season lists"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_about_Omaha", title:"List of lists about Omaha"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Olympic_medalists", title:"Lists of Olympic medalists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Oregon-related_topics", title:"Lists of Oregon-related topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_office-holders", title:"Lists of office-holders"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_offshore_wind_farms_by_country", title:"Lists of offshore wind farms by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_offshore_wind_farms_by_water_area", title:"Lists of offshore wind farms by water area"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_operas", title:"Lists of operas"}
+    ,{url:"http://wikipedia.org/wiki/List_of_extreme_points_lists", title:"List of extreme points lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Pakistan_Supreme_Court_cases", title:"Lists of Pakistan Supreme Court cases"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Pakistani_films", title:"Lists of Pakistani films"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Paralympic_medalists", title:"Lists of Paralympic medalists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Polish_politicians", title:"Lists of Polish politicians"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Presidents_of_the_United_States_by_place_of_birth", title:"Lists of Presidents of the United States by place of birth"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_painters", title:"Lists of painters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_pairs", title:"Lists of pairs"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_patriarchs", title:"Lists of patriarchs"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_patriarchs,_archbishops,_and_bishops", title:"Lists of patriarchs, archbishops, and bishops"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people", title:"Lists of people"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_by_African_Union_state", title:"Lists of people by African Union state"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_by_belief", title:"Lists of people by belief"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_by_cause_of_death", title:"Lists of people by cause of death"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_by_nationality", title:"Lists of people by nationality"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_by_occupation", title:"Lists of people by occupation"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_executed_in_Texas", title:"Lists of people executed in Texas"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_from_Camden", title:"Lists of people from Camden"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_from_India_by_state", title:"Lists of people from India by state"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_from_Quebec_by_region", title:"Lists of people from Quebec by region"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_people_on_the_cover_of_Time_magazine", title:"Lists of people on the cover of Time magazine"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_pianists", title:"Lists of pianists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_places", title:"Lists of places"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_places_by_eponym", title:"Lists of places by eponym"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_places_in_Kansas", title:"Lists of places in Kansas"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_plant_diseases", title:"Lists of plant diseases"}
+    ,{url:"http://wikipedia.org/wiki/List_of_pornographic_actresses_by_decade", title:"List of pornographic actresses by decade"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_presidents", title:"Lists of presidents"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_programming_languages", title:"Lists of programming languages"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_promoters_of_the_Rosary", title:"Lists of promoters of the Rosary"}
+    ,{url:"http://wikipedia.org/wiki/Party_lists_in_the_New_Zealand_general_election,_2005", title:"Party lists in the New Zealand general election, 2005"}
+    ,{url:"http://wikipedia.org/wiki/Party_lists_in_the_New_Zealand_general_election,_2008", title:"Party lists in the New Zealand general election, 2008"}
+    ,{url:"http://wikipedia.org/wiki/Party_lists_in_the_New_Zealand_general_election,_2011", title:"Party lists in the New Zealand general election, 2011"}
+    ,{url:"http://wikipedia.org/wiki/Peppa_Pig:_Episode_%26_DVD_lists", title:"Peppa Pig: Episode &amp; DVD lists"}
+    ,{url:"http://wikipedia.org/wiki/Phone_hacking_scandal_reference_lists", title:"Phone hacking scandal reference lists"}
+    ,{url:"http://wikipedia.org/wiki/Political_lists", title:"Political lists"}
+    ,{url:"http://wikipedia.org/wiki/Publishers_Weekly_lists_of_bestselling_novels_in_the_United_States", title:"Publishers Weekly lists of bestselling novels in the United States"}
+    ,{url:"http://wikipedia.org/wiki/Lists_about_renewable_energy", title:"Lists about renewable energy"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Registered_Historic_Places_in_Clinton_County_(disambiguation)", title:"Lists of Registered Historic Places in Clinton County (disambiguation)"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Roman_Catholics", title:"Lists of Roman Catholics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_radio_stations_in_Europe", title:"Lists of radio stations in Europe"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_radio_stations_in_North_America", title:"Lists of radio stations in North America"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_radio_stations_in_Oceania", title:"Lists of radio stations in Oceania"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rail_accidents", title:"Lists of rail accidents"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_reptiles_by_region", title:"Lists of reptiles by region"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_reptiles_of_the_United_States", title:"Lists of reptiles of the United States"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_reservoirs_and_dams", title:"Lists of reservoirs and dams"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rivers", title:"Lists of rivers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_roads_in_the_United_Kingdom", title:"Lists of roads in the United Kingdom"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_role-playing_games", title:"Lists of role-playing games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Djibouti", title:"Lists of rulers of Djibouti"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Ethiopia", title:"Lists of rulers of Ethiopia"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Germany", title:"Lists of rulers of Germany"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Ghana", title:"Lists of rulers of Ghana"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Greece", title:"Lists of rulers of Greece"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_India", title:"Lists of rulers of India"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Ireland", title:"Lists of rulers of Ireland"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Italy", title:"Lists of rulers of Italy"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Kenya", title:"Lists of rulers of Kenya"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Madagascar", title:"Lists of rulers of Madagascar"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_rulers_of_Spain", title:"Lists of rulers of Spain"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_Empire_ships", title:"List of lists of Empire ships"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_settlements_in_the_United_States", title:"List of lists of settlements in the United States"}
+    ,{url:"http://wikipedia.org/wiki/List_of_Sri_Lanka_Cricket_lists", title:"List of Sri Lanka Cricket lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_San_Francisco_topics", title:"Lists of San Francisco topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Scottish_counties_by_population", title:"Lists of Scottish counties by population"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Sega_games", title:"Lists of Sega games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Slovak_authors", title:"Lists of Slovak authors"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Spanish_provinces", title:"Lists of Spanish provinces"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Star_Trek_planets", title:"Lists of Star Trek planets"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Star_Trek_ships", title:"Lists of Star Trek ships"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Stargate_characters", title:"Lists of Stargate characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Stargate_episodes", title:"Lists of Stargate episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Stargate_topics", title:"Lists of Stargate topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Statutes_of_New_Zealand", title:"Lists of Statutes of New Zealand"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Statutory_Instruments", title:"Lists of Statutory Instruments"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Statutory_Instruments_of_Scotland", title:"Lists of Statutory Instruments of Scotland"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Super_Nintendo_Entertainment_System_games", title:"Lists of Super Nintendo Entertainment System games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Supreme_Court_Justices", title:"Lists of Supreme Court Justices"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Swedish_Swimming_Championships_champions", title:"Lists of Swedish Swimming Championships champions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_school_districts_in_the_United_States", title:"Lists of school districts in the United States"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_schools_in_Australia", title:"Lists of schools in Australia"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_schools_in_New_Zealand", title:"Lists of schools in New Zealand"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_scientists", title:"Lists of scientists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ships", title:"Lists of ships"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_ships_of_the_Turkish_Navy", title:"Lists of ships of the Turkish Navy"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_small_Solar_System_bodies", title:"Lists of small Solar System bodies"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_software", title:"Lists of software"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_solar_eclipses", title:"Lists of solar eclipses"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_sovereign_states_and_dependent_territories", title:"Lists of sovereign states and dependent territories"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_sovereign_states_by_year", title:"Lists of sovereign states by year"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_species", title:"Lists of species"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_sports_venues", title:"Lists of sports venues"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_stars", title:"Lists of stars"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_stars_by_constellation", title:"Lists of stars by constellation"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_state_leaders", title:"Lists of state leaders"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_state_leaders_by_year", title:"Lists of state leaders by year"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_statistics_topics", title:"Lists of statistics topics"}
+    ,{url:"http://wikipedia.org/wiki/Shrek_the_Musical_cast_lists", title:"Shrek the Musical cast lists"}
+    ,{url:"http://wikipedia.org/wiki/Shrek_the_Musical_non-english_cast_lists", title:"Shrek the Musical non-english cast lists"}
+    ,{url:"http://wikipedia.org/wiki/Special_Honours_Lists_(Australia)", title:"Special Honours Lists (Australia)"}
+    ,{url:"http://wikipedia.org/wiki/Status_lists_of_players_in_professional_sports", title:"Status lists of players in professional sports"}
+    ,{url:"http://wikipedia.org/wiki/Sustainable_seafood_advisory_lists_and_certification", title:"Sustainable seafood advisory lists and certification"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_tennis_records_and_statistics", title:"List of lists of tennis records and statistics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Taiwanese_counties_and_cities", title:"Lists of Taiwanese counties and cities"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_The_New_York_Times_Fiction_Best_Sellers", title:"Lists of The New York Times Fiction Best Sellers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_The_New_York_Times_Non-Fiction_Best_Sellers", title:"Lists of The New York Times Non-Fiction Best Sellers"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_The_Office_episodes", title:"Lists of The Office episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_The_Simpsons_publications", title:"Lists of The Simpsons publications"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_This_American_Life_episodes", title:"Lists of This American Life episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Turkish_field_marshals", title:"Lists of Turkish field marshals"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_television_channels", title:"Lists of television channels"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_television_programs", title:"Lists of television programs"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_television_programs_with_LGBT_characters", title:"Lists of television programs with LGBT characters"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_television_stations_in_North_America", title:"Lists of television stations in North America"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_tennis_players", title:"Lists of tennis players"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_the_Arab_League", title:"Lists of the Arab League"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_things_named_after_places", title:"Lists of things named after places"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_time_zones", title:"Lists of time zones"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_tourist_attractions", title:"Lists of tourist attractions"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_tourist_attractions_in_England", title:"Lists of tourist attractions in England"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_townlands_of_County_Cork", title:"Lists of townlands of County Cork"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_towns_in_Ireland", title:"Lists of towns in Ireland"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_tropical_cyclone_names", title:"Lists of tropical cyclone names"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_twin_towns_and_sister_cities", title:"Lists of twin towns and sister cities"}
+    ,{url:"http://wikipedia.org/wiki/UNESCO_Intangible_Cultural_Heritage_Lists", title:"UNESCO Intangible Cultural Heritage Lists"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_cathedrals_in_the_United_Kingdom", title:"List of lists of cathedrals in the United Kingdom"}
+    ,{url:"http://wikipedia.org/wiki/List_of_lists_of_settlements_in_the_United_States", title:"List of lists of settlements in the United States"}
+    ,{url:"http://wikipedia.org/wiki/List_of_United_States_congressional_lists", title:"List of United States congressional lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_U.S._cities_with_large_ethnic_identity_populations", title:"Lists of U.S. cities with large ethnic identity populations"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_U.S._cities_with_non-white_majority_populations", title:"Lists of U.S. cities with non-white majority populations"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_U.S._county_name_etymologies", title:"Lists of U.S. county name etymologies"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_UK_Compilation_Chart_number-one_albums", title:"Lists of UK Compilation Chart number-one albums"}
+    ,{url:"http://wikipedia.org/wiki/List_of_UK_Indie_Breakers_Chart_number_ones", title:"List of UK Indie Breakers Chart number ones"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_UK_locations_with_large_ethnic_minority_populations", title:"Lists of UK locations with large ethnic minority populations"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_United_States_Supreme_Court_cases", title:"Lists of United States Supreme Court cases"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_United_States_Supreme_Court_cases_by_volume", title:"Lists of United States Supreme Court cases by volume"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_United_States_state_insignia", title:"Lists of United States state insignia"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_United_States_tornadoes_in_2009", title:"Lists of United States tornadoes in 2009"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_universities_and_colleges", title:"Lists of universities and colleges"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_university_leaders", title:"Lists of university leaders"}
+    ,{url:"http://wikipedia.org/wiki/List_of_unsolved_problems", title:"List of unsolved problems"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_V_episodes", title:"Lists of V episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Victoria_Cross_recipients", title:"Lists of Victoria Cross recipients"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_vampires", title:"Lists of vampires"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_video_games", title:"Lists of video games"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_villages_in_Norway", title:"Lists of villages in Norway"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_violinists", title:"Lists of violinists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_volcanoes", title:"Lists of volcanoes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Washington_initiatives", title:"Lists of Washington initiatives"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Witchblade_episodes", title:"Lists of Witchblade episodes"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_World_War_II_prisoner-of-war_camps", title:"Lists of World War II prisoner-of-war camps"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_World_War_II_topics", title:"Lists of World War II topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_World_War_I_topics", title:"Lists of World War I topics"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_wars", title:"Lists of wars"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_waterways", title:"Lists of waterways"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_weapons", title:"Lists of weapons"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_websites", title:"Lists of websites"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_wind_farms_by_country", title:"Lists of wind farms by country"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_words_having_different_meanings_in_American_and_British_English", title:"Lists of words having different meanings in American and British English"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_works_by_Sharpe,_Paley_and_Austin", title:"Lists of works by Sharpe, Paley and Austin"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_writers", title:"Lists of writers"}
+    ,{url:"http://wikipedia.org/wiki/Wonders_of_the_World", title:"Wonders of the World"}
+    ,{url:"http://wikipedia.org/wiki/Word_lists_by_frequency", title:"Word lists by frequency"}
+    ,{url:"http://wikipedia.org/wiki/Xenosaga_lists", title:"Xenosaga lists"}
+    ,{url:"http://wikipedia.org/wiki/Lists_of_Zambia-related_topics", title:"Lists of Zambia-related topics"}
+    ,{url:"http://wikipedia.org/wiki/The_Book_of_Lists", title:"The Book of Lists"}
+    ,{url:"http://wikipedia.org/wiki/The_Infinity_of_Lists", title:"The Infinity of Lists"}
+  ];
+  </script>
+</body>
+</html>

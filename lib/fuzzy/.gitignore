@@ -1,0 +1,8 @@
+coverage.html
+.DS_Store
+node_modules
+*.sublime-project
+*.sublime-workspace
+benchmark.js
+*.tgz
+*.

@@ -1,0 +1,126 @@
+<html>
+<head>
+  <title>Directors Fuzzy Search Example</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+
+  <script src="../lib/fuzzy.js"></script>
+  <script src="directors.json"></script>
+
+  <script type="text/javascript">
+    _.templateSettings = {
+      interpolate : /\{\{(.+?)\}\}/g
+    };
+
+    var listItemTemplate = _.template('<a href="http://freebase.com{{freebase}}" target="_blank"><div class="score">match score: {{score}}</div><div class="director">{{director}}</div><div class="movies">Movies: {{movies}}</div></a>');
+
+    function displayResults() {
+      // The value we're searching for
+      var search = $('#search').val();
+
+      var options = {
+          pre: "<b>"
+        , post: "</b>"
+
+        // Each element in directors is an object, not a string. We can pass in a
+        // function that is called on each element in the array to extract the
+        // string to fuzzy search against. In this case, element.dir
+        , extract: function(entry) {
+            // return entry.dir + '::' + entry.movies;
+            return entry.dir;
+          }
+      }
+
+      // Filter!
+      var filtered = fuzzy.filter(search, directors, options);
+
+      // Map the results to the html we want generated
+      var results = filtered.slice(0,50).map(function(result){
+        var items = result.string.split('::');
+        return listItemTemplate({
+            freebase: result.original.fb
+          , director: result.string
+          , movies: result.original.movies
+          , score: result.score
+        });
+      });
+
+      // Update the html
+      $('#lists').html(results.join(''));
+
+      $('#result_size').html(results.length);
+    }
+
+    $(function() {
+
+      // Add the size of the results
+      $('#size').html(directors.length);
+
+      // List the initial characters
+      displayResults();
+
+      // Filter the characters on each change of the textbox
+      $('#search').keyup(displayResults);
+    });
+  </script>
+  <style type="text/css">
+    input {
+      width: 600px;
+      height: 50px;
+    }
+    #lists a {
+      display: block;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-collapse: collapse;
+      position: relative;
+    }
+
+    #lists a:hover {
+      text-decoration: none;
+      background-color: #eee;
+    }
+
+    #lists div.director {
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    #lists div.movies {
+      color: gray;
+      font-size: 12px;
+    }
+    #lists div.score {
+      float: right;
+      width: 85px;
+      color: gray;
+      font-size: 10px;
+    }
+    b {
+      color: red;
+    }
+    div.info {
+      color: gray;
+      font-style: italic;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 12px;
+    }
+    div.container {
+      width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Search All Directors Pre-2012</h1>
+    <input type="text" id="search"></input>
+    <div class="info">displaying <span id="result_size"></span> of <span id="size"></span></div>
+    <div id="lists">
+    </div>
+  </div>
+  </script>
+</html>
