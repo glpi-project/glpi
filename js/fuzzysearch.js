@@ -1,4 +1,15 @@
 $(document).ready(function() {
+   var list = [];
+
+   // prepapre options for fuzzy lib
+   var fuzzy_options = {
+      pre: "<b>",
+      post: "</b>",
+      extract: function(el) {
+         return el.title;
+      }
+   };
+
    // when the shortcut for fuzzy is called
    $(document).bind('keyup', 'alt+ctrl+g', function() {
       console.log('start fuzzy search');
@@ -8,6 +19,13 @@ $(document).ready(function() {
          'action': 'getHtml'
       }, function(html) {
          $(document.body).append(html);
+
+         // retrieve current menu data
+         $.getJSON(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
+            'action': 'getList'
+         }, function(data) {
+            list = data;
+         });
 
          // when a key is pressed in fuzzy input, launch match
          $("#fuzzysearch input").focus()
@@ -56,34 +74,20 @@ $(document).ready(function() {
    });
 
    var startFuzzy = function() {
-      // prepapre options for fuzzy lib
-      var fuzzy_options = {
-         pre: "<b>",
-         post: "</b>",
-         extract: function(el) {
-            return el.title;
-         }
-      };
-
       // retrieve input
       var input_text = $("#fuzzysearch input").val();
 
-      // retrieve list of possible navigation
-      $.getJSON(CFG_GLPI.root_doc+'/ajax/fuzzysearch.php', {
-         'action': 'getList'
-      }, function(list) {
-         //clean old results
-         $("#fuzzysearch .results").empty();
+      //clean old results
+      $("#fuzzysearch .results").empty();
 
-         // launch fuzzy search on this list
-         var results = fuzzy.filter(input_text, list, fuzzy_options);
+      // launch fuzzy search on this list
+      var results = fuzzy.filter(input_text, list, fuzzy_options);
 
-         // append new results
-         results.map(function(el) {
-            //console.log(el.string);
-            $("#fuzzysearch .results")
-               .append("<li><a href='"+el.original.url+"'>"+el.string+"</a></li>")
-         });
+      // append new results
+      results.map(function(el) {
+         //console.log(el.string);
+         $("#fuzzysearch .results")
+            .append("<li><a href='"+el.original.url+"'>"+el.string+"</a></li>")
       });
    };
 
@@ -91,9 +95,13 @@ $(document).ready(function() {
       $("#fuzzysearch, .fuzzymodal").remove();
    };
 
+   var selectFirst = function() {
+      $("#fuzzysearch .results li:first()").addClass("selected");
+   }
+
    var selectNext = function() {
       if ($("#fuzzysearch .results .selected").length == 0) {
-         $("#fuzzysearch .results li:first()").addClass("selected");
+         selectFirst();
       } else  {
          $("#fuzzysearch .results .selected:not(:last-child)")
             .removeClass('selected')
