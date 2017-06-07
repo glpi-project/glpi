@@ -245,7 +245,7 @@ hr {
    font-size: 1.5em;
    border-radius: 3px;
    height: 50px;
-   width: calc(100% - 20px);
+   width: calc(100% - 40px);
    margin: 10px;
    box-sizing: border-box;
 }
@@ -276,6 +276,14 @@ hr {
    font-weight: normal;
    line-height: 100%;
    display: block;
+}
+
+#fuzzysearch .fa-close {
+   position: absolute;
+   top: calc(5px + (1.5em / 2));
+   right: 5px;
+   color: #848484;
+   cursor: pointer;
 }
 
 @media screen and (max-width: 700px) {

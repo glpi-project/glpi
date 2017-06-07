@@ -66,6 +66,11 @@ $(document).ready(function() {
                }
             });
 
+         // event for close icon
+         $("#fuzzysearch .fa-close").click(function() {
+            removeFuzzy();
+         });
+
          setTimeout(function() {
             if ($("#fuzzysearch .results li").length == 0) {
                startFuzzy();

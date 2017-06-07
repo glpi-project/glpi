@@ -6166,8 +6166,9 @@ class Html {
             echo "<div id='fuzzysearch'>
                   <input type='text' placeholder='".__("Start typing to find a menu")."'>
                   <ul class='results'></ul>
-                  </div>";
-            echo "<div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'></div>";
+                  <i class='fa fa-2x fa-close'></i>
+                  </div>
+                  <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'></div>";
             break;
 
          default;
