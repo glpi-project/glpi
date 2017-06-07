@@ -259,23 +259,23 @@ hr {
    overflow-x: none;
 }
 
-#fuzzysearch .results li {
-   padding: 10px;
-}
-
 #fuzzysearch .results li:nth-child(odd) {
    background: #E8E8E8;
 }
 
-#fuzzysearch .results li.selected {
+#fuzzysearch .results li.selected,
+#fuzzysearch .results li:hover {
    background: #848484;
    color: #FFF;
 }
 
 #fuzzysearch .results a {
+   padding: 10px;
    font-size: 1.3em;
    color: inherit;
    font-weight: normal;
+   line-height: 100%;
+   display: block;
 }
 
 @media screen and (max-width: 700px) {

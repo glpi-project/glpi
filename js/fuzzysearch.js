@@ -50,7 +50,7 @@ $(document).ready(function() {
                      url = $("#fuzzysearch .results li:first a").attr('href');
                   }
                   if (url != undefined) {
-                     document.location = CFG_GLPI.root_doc+url;
+                     document.location = url;
                   }
                   break;
 
@@ -58,11 +58,6 @@ $(document).ready(function() {
                   startFuzzy();
                   break;
             }
-         })
-
-         // when losing focus on input, remove fuzzy input
-         .focusout(function() {
-            removeFuzzy();
          });
 
          setTimeout(function() {
@@ -91,7 +86,7 @@ $(document).ready(function() {
       results.map(function(el) {
          //console.log(el.string);
          $("#fuzzysearch .results")
-            .append("<li><a href='"+el.original.url+"'>"+el.string+"</a></li>")
+            .append("<li><a href='"+CFG_GLPI.root_doc+el.original.url+"'>"+el.string+"</a></li>")
       });
    };
 
