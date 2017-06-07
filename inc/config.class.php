@@ -1252,19 +1252,44 @@ class Config extends CommonDBTM {
 
       // Only for user
       if (array_key_exists('personal_token', $data)) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access key') ."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='2'>";
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("Personal token");
+         echo "</td><td colspan='2'>";
          if (!empty($data["personal_token"])) {
-            //TRANS: %s is the generation date
-            echo "<br>".sprintf(__('generated on %s'),
-                                Html::convDateTime($data["personal_token_date"]));
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_personal_token', [
+                                 'value'    => $data["personal_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($data["personal_token_date"])).")";
          }
+         echo "</td><td>";
+         Html::showCheckbox(['name'  => '_reset_personal_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
+         echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("API token");
+         echo "</td><td colspan='2'>";
+         if (!empty($data["api_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_api_token', [
+                                 'value'    => $data["api_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($data["api_token_date"])).")";
+         }
          echo "</td><td>";
-         echo $data["personal_token"];
-         echo "</td><td>";
-         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".__('Regenerate');
+         Html::showCheckbox(['name'  => '_reset_api_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
 
@@ -2336,7 +2361,7 @@ class Config extends CommonDBTM {
       $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
       /* TODO: could be improved, only default vhost checked */
-      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r')) {
          fclose($fic);
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='b left'>".

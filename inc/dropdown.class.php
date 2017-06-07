@@ -197,7 +197,6 @@ class Dropdown {
             } else {
                $options_tooltip['link']       = $item->getSearchURL();
             }
-            $options_tooltip['linktarget'] = '_blank';
          }
 
          if (empty($comment)) {

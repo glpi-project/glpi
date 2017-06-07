@@ -318,8 +318,9 @@ class DisplayPreference extends CommonDBTM {
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                $group = $val;
-
-            } else if (($key != 1)
+            } else if (count($val) === 1) {
+               $group = $val['name'];
+            } else if ($key != 1
                        && !in_array($key, $already_added)
                        && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];
@@ -425,7 +426,7 @@ class DisplayPreference extends CommonDBTM {
    function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;
 
-      $searchopt = Search::getOptions($itemtype);
+      $searchopt = Search::getCleanedOptions($itemtype);
       if (!is_array($searchopt)) {
          return false;
       }
@@ -460,11 +461,12 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          $group  = '';
          $values = array();
-         $searchopt   = Search::getCleanedOptions($itemtype);
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                $group = $val;
-            } else if (($key != 1)
+            } else if (count($val) === 1) {
+               $group = $val['name'];
+            } else if ($key != 1
                        && !in_array($key, $already_added)
                        && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];

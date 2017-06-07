@@ -1179,6 +1179,10 @@ class Html {
             Html::requireJs('tinymce');
          }
 
+         if (in_array('clipboard', $jslibs)) {
+            Html::requireJs('clipboard');
+         }
+
          if (in_array('charts', $jslibs)) {
             echo Html::css('lib/chartist-js-0.10.1/chartist.css');
             echo Html::css('css/chartists-glpi.css');
@@ -4227,8 +4231,7 @@ class Html {
           && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
          echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
-         echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'
-                target='_blank'>";
+         echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'>";
          echo Html::hidden('item_type', array('value' => $item_type_output));
 
          if ($item_type_output_param != 0) {
@@ -5933,6 +5936,9 @@ class Html {
          return;
       }
       switch ($name) {
+         case 'clipboard':
+            $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
+            break;
          case 'tinymce':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
             break;

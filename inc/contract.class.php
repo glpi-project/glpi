@@ -1328,7 +1328,8 @@ class Contract extends CommonDBTM {
                                                 strtotime($next_alerts[$type]." +".($before)." day"));
                      $message            = sprintf(__('%1$s: %2$s')."<br>\n",
                                                  $data["name"], Html::convDate($real_alert_date));
-                     $contract_infos[$type][$entity][$data['id']]['alert_date'] = $real_alert_date;
+                     $data['alert_date'] = $real_alert_date;
+                     $contract_infos[$type][$entity][$data['id']] = $data;
 
                      switch ($type) {
                         case 'periodicitynotice' :
