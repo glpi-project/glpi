@@ -278,6 +278,15 @@ hr {
    font-weight: normal;
 }
 
+@media screen and (max-width: 700px) {
+   #fuzzysearch {
+      width: 90%;
+      top: 20%;
+      left: 0;
+      margin: 0 5%
+   }
+}
+
 /* ################--------------- Tabs ---------------#################### */
 
 .alltab {
