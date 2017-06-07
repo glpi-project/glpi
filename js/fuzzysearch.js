@@ -27,6 +27,7 @@ $(document).ready(function() {
             list = data;
          });
 
+         // general key matches
          $(document).bind('keyup', function(key) {
             switch (key.key) {
                case "Escape":
