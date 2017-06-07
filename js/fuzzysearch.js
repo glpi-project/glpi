@@ -73,6 +73,9 @@ $(document).ready(function() {
       });
    });
 
+   /**
+    * Call Fuzzy lib and match the current input with the menu list
+    */
    var startFuzzy = function() {
       // retrieve input
       var input_text = $("#fuzzysearch input").val();
@@ -91,14 +94,31 @@ $(document).ready(function() {
       });
    };
 
+   /**
+    * Clean generated Html
+    */
    var removeFuzzy = function() {
       $("#fuzzysearch, .fuzzymodal").remove();
    };
 
+   /**
+    * Select the first element in the results list
+    */
    var selectFirst = function() {
       $("#fuzzysearch .results li:first()").addClass("selected");
    }
 
+   /**
+    * Select the last element in the results list
+    */
+   var selectLast = function() {
+      $("#fuzzysearch .results li:last()").addClass("selected");
+   }
+
+   /**
+    * Select the next element in the results list.
+    * If no selected, select the first.
+    */
    var selectNext = function() {
       if ($("#fuzzysearch .results .selected").length == 0) {
          selectFirst();
@@ -112,9 +132,13 @@ $(document).ready(function() {
       scrollToSelected();
    };
 
+   /**
+    * Select the previous element in the results list.
+    * If no selected, select the last.
+    */
    var selectPrev = function() {
       if ($("#fuzzysearch .results .selected").length == 0) {
-         $("#fuzzysearch .results li:last()").addClass("selected");
+         selectLast();
       } else  {
          $("#fuzzysearch .results .selected:not(:first-child)")
             .removeClass('selected')
@@ -124,6 +148,9 @@ $(document).ready(function() {
       scrollToSelected();
    };
 
+   /**
+    * Force scroll to the selected element in the results list
+    */
    var scrollToSelected = function() {
       var results = $("#fuzzysearch .results");
       var selected = results.find('.selected');
