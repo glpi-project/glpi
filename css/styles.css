@@ -245,7 +245,7 @@ hr {
    font-size: 1.5em;
    border-radius: 3px;
    height: 50px;
-   width: calc(100% - 40px);
+   width: calc(100% - 20px);
    margin: 10px;
    box-sizing: border-box;
 }
@@ -280,15 +280,20 @@ hr {
 
 #fuzzysearch .fa-close {
    position: absolute;
-   top: calc(5px + (1.5em / 2));
-   right: 5px;
+   top: 0;
+   right: -30px;
    color: #848484;
    cursor: pointer;
+   background: #FFF;
+   width: 30px;
+   height: 30px;
+   padding: 3px 6px;
+   box-sizing: border-box;
 }
 
 @media screen and (max-width: 700px) {
    #fuzzysearch {
-      width: 90%;
+      width: 85%;
       top: 20%;
       left: 0;
       margin: 0 5%
