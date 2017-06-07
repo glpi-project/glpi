@@ -129,7 +129,7 @@ $(document).ready(function() {
    var selectNext = function() {
       if ($("#fuzzysearch .results .selected").length == 0) {
          selectFirst();
-      } else  {
+      } else {
          $("#fuzzysearch .results .selected:not(:last-child)")
             .removeClass('selected')
             .next()
@@ -146,7 +146,7 @@ $(document).ready(function() {
    var selectPrev = function() {
       if ($("#fuzzysearch .results .selected").length == 0) {
          selectLast();
-      } else  {
+      } else {
          $("#fuzzysearch .results .selected:not(:first-child)")
             .removeClass('selected')
             .prev()

@@ -6175,9 +6175,9 @@ class Html {
             $fuzzy_entries = [];
 
             // retrieve menu
-            foreach($_SESSION['glpimenu'] as $firstlvl) {
+            foreach ($_SESSION['glpimenu'] as $firstlvl) {
                if (isset($firstlvl['content'])) {
-                  foreach($firstlvl['content'] as $menu) {
+                  foreach ($firstlvl['content'] as $menu) {
                      if (strlen($menu['title']) > 0) {
                         $fuzzy_entries[] = [
                            'url'   => $menu['page'],
@@ -6185,7 +6185,7 @@ class Html {
                         ];
 
                         if (isset($menu['options'])) {
-                           foreach($menu['options'] as $submenu) {
+                           foreach ($menu['options'] as $submenu) {
                               if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
                                  $fuzzy_entries[] = [
                                     'url'   => $submenu['page'],
