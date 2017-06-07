@@ -30,20 +30,24 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationajax.class.php .class.php */
 
-class NotificationAjaxTest extends DbTestCase {
+class NotificationAjax extends DbTestCase {
 
    public function testCheck() {
       $instance = new \NotificationAjax();
       $uid = getItemByTypeName('User', TU_USER, true);
-      $this->assertTrue($instance->check($uid));
-      $this->assertFalse($instance->check(0));
-      $this->assertFalse($instance->check('abc'));
+      $this->boolean($instance->check($uid))->isTrue();
+      $this->boolean($instance->check(0))->isFalse();
+      $this->boolean($instance->check('abc'))->isFalse;
    }
 
    public function testSendNotification() {
-      $this->assertTrue(\NotificationAjax::testNotification());
+      $this->boolean(\NotificationAjax::testNotification())->isTrue();
    }
 
    public function testGetMyNotifications() {
@@ -52,40 +56,45 @@ class NotificationAjaxTest extends DbTestCase {
       //setup
       $this->Login();
 
-      $this->assertTrue(\NotificationAjax::testNotification());
-      $this->assertTrue(\NotificationAjax::testNotification());
+      $this->boolean(\NotificationAjax::testNotification())->isTrue();
+      //another one
+      $this->boolean(\NotificationAjax::testNotification())->isTrue();
 
       //ajax notifications disabled: gets nothing.
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertFalse($notifs);
+      $this->boolean($notifs)->isFalse();
 
       $CFG_GLPI['notifications_ajax'] = 1;
 
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertCount(2, $notifs);
+      $this->array($notifs)->hasSize(2);
 
       foreach ($notifs as $notif) {
-         $this->assertEquals('Test notification', $notif['title']);
-         $this->assertEquals('Hello, this is a test notification.', $notif['body']);
-         $this->assertNull($notif['url']);
+         unset($notif['id']);
+         $this->array($notif)->isIdenticalTo([
+            'title'  => 'Test notification',
+            'body'   => 'Hello, this is a test notification.',
+            'url'    => null
+         ]);
       }
 
       //while not deleted, still 2 notifs available
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertCount(2, $notifs);
+      $this->array($notifs)->hasSize(2);
 
       //void method
       \NotificationAjax::raisedNotification($notifs[1]['id']);
 
       $expected = $notifs[0];
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertCount(1, $notifs);
-      $this->assertEquals($expected, $notifs[0]);
+      $this->array($notifs)
+         ->hasSize(1);
+      $this->array($notifs[0])->isIdenticalTo($expected);
 
       //void method
       \NotificationAjax::raisedNotification($notifs[0]['id']);
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertFalse($notifs);
+      $this->boolean($notifs)->isFalse();
 
       $computer = getItemByTypeName('Computer', '_test_pc01');
       $instance = new \NotificationAjax();
@@ -97,19 +106,16 @@ class NotificationAjaxTest extends DbTestCase {
          'fromname'                    => 'TEST',
          'subject'                     => 'Test notification',
          'content_text'                => "Hello, this is a test notification.",
-         'to'                          => Session::getLoginUserID()
+         'to'                          => \Session::getLoginUserID()
       ]);
-      $this->assertTrue($res);
+      $this->boolean($res)->isTrue();
 
       $notifs = \NotificationAjax::getMyNotifications();
-      $this->assertCount(1, $notifs);
-      $this->assertEquals(
-         $computer->getFormURL() . '?id=' . $computer->getID(),
-         $notifs[0]['url']
-      );
+      $this->array($notifs)->hasSize(1);
+      $this->string($notifs[0]['url'])
+         ->isIdenticalTo($computer->getFormURL() . '?id=' . $computer->getID());
 
       //reset
       $CFG_GLPI['notifications_ajax'] = 0;
-
    }
 }

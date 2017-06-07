@@ -30,77 +30,75 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationmailingsetting.class.php .class.php */
 
-class NotificationMailingSettingTest extends DbTestCase {
+class NotificationMailingSetting extends DbTestCase {
 
    public function testGetTable() {
-      $this->assertEquals('glpi_configs', \NotificationMailingSetting::getTable());
+      $this->string(\NotificationMailingSetting::getTable())->isIdenticalTo('glpi_configs');
    }
 
    public function testGetTypeName() {
-      $this->assertEquals('Email followups configuration', \NotificationMailingSetting::getTypeName());
-      $this->assertEquals('Email followups configuration', \NotificationMailingSetting::getTypeName(10));
+      $this->string(\NotificationMailingSetting::getTypeName())->isIdenticalTo('Email followups configuration');
+      $this->string(\NotificationMailingSetting::getTypeName(10))->isIdenticalTo('Email followups configuration');
    }
 
    public function testDefineTabs() {
       $instance = new \NotificationMailingSetting();
       $tabs = $instance->defineTabs();
-      $this->assertCount(1, $tabs);
-      $this->assertEquals(['NotificationMailingSetting$1' => 'Setup'], $tabs);
+      $this->array($tabs)
+         ->hasSize(1)
+         ->isIdenticalTo(['NotificationMailingSetting$1' => 'Setup']);
    }
 
    public function testGetTabNameForItem() {
       $instance = new \NotificationMailingSetting();
-      $this->assertEquals(['1' => 'Setup'], $instance->getTabNameForItem($instance));
+      $this->array($instance->getTabNameForItem($instance))->isIdenticalTo(['1' => 'Setup']);
    }
 
    public function testDisplayTabContentForItem() {
-      $instance = new \NotificationMailingSetting();
 
-      ob_start();
-      $instance->displayTabContentForItem($instance);
-      $out = ob_get_contents();
-      ob_end_clean();
-
-      $this->assertGreaterThanOrEqual(100, strlen($out));
+      $this->output(
+         function () {
+            $instance = new \NotificationMailingSetting();
+            $instance->displayTabContentForItem($instance);
+         }
+      )->hasLengthGreaterThan(100);
    }
 
    public function testGetEnableLabel() {
-      $this->assertEquals('Enable followups via email', \NotificationMailingSetting::getEnableLabel());
+      $this->string(\NotificationMailingSetting::getEnableLabel())->isIdenticalTo('Enable followups via email');
    }
 
    public function testGetMode() {
-      $this->assertEquals(
-         \Notification_NotificationTemplate::MODE_MAIL,
-         \NotificationMailingSetting::getMode()
-      );
+      $this->string(\NotificationMailingSetting::getMode())
+         ->isIdenticalTo(\Notification_NotificationTemplate::MODE_MAIL);
    }
 
    public function testShowFormConfig() {
       global $CFG_GLPI;
 
-      $instance = new \NotificationMailingSetting();
+      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
 
-      $this->assertEquals(0, $CFG_GLPI['notifications_mailing']);
-
-      ob_start();
-      $instance->showFormConfig();
-      $out = ob_get_contents();
-      ob_end_clean();
-
-      $match = strpos($out, 'Notifications are disabled.');
-      $this->assertGreaterThanOrEqual(1, $match);
+      $this->output(
+         function () {
+            $instance = new \NotificationMailingSetting();
+            $instance->showFormConfig();
+         }
+      )->contains('Notifications are disabled.');
 
       $CFG_GLPI['notifications_mailing'] = 1;
 
-      ob_start();
-      $instance->showFormConfig();
-      $out = ob_get_contents();
-      ob_end_clean();
-
-      $match = strpos($out, 'Notifications are disabled.');
-      $this->assertFalse($match);
+      $this->output(
+         function () {
+            $instance = new \NotificationMailingSetting();
+            $instance->showFormConfig();
+         }
+      )->notContains('Notifications are disabled.');
 
       //rest to defaults
       $CFG_GLPI['notifications_mailing'] = 0;

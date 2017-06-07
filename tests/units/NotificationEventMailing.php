@@ -30,110 +30,110 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationeventajax.class.php */
 
-class NotificationEventMailingTest extends DbTestCase {
+class NotificationEventMailing extends DbTestCase {
 
    public function testGetTargetField() {
       $data = [];
-      $this->assertEquals('email', \NotificationEventMailing::getTargetField($data));
+      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
       $expected = ['email' => null];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       $data = ['email' => 'user'];
-      $this->assertEquals('email', \NotificationEventMailing::getTargetField($data));
+      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
       $expected = ['email' => null];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       $data = ['email' => 'user@localhost'];
-      $this->assertEquals('email', \NotificationEventMailing::getTargetField($data));
+      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
 
       $expected = ['email' => 'user@localhost'];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       $uid = getItemByTypeName('User', TU_USER, true);
       $data = ['users_id' => $uid];
 
-      $this->assertEquals('email', \NotificationEventMailing::getTargetField($data));
+      $this->string(\NotificationEventMailing::getTargetField($data))->isIdenticalTo('email');
       $expected = [
          'users_id'  => $uid,
          'email'     => TU_USER . '@glpi.com'
       ];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
    }
 
    public function testCanCron() {
-      $this->assertTrue(\NotificationEventMailing::canCron());
+      $this->boolean(\NotificationEventMailing::canCron())->isTrue();
    }
 
    public function testGetAdminData() {
       global $CFG_GLPI;
 
-      $this->assertEquals(
-         [
+      $this->array(\NotificationEventMailing::getAdminData())
+         ->isIdenticalTo([
             'email'     => $CFG_GLPI['admin_email'],
             'name'      => $CFG_GLPI['admin_email_name'],
             'language'  => $CFG_GLPI['language']
-         ],
-         \NotificationEventMailing::getAdminData()
-      );
+         ]);
 
       $CFG_GLPI['admin_email'] = 'adminlocalhost';
-      $this->assertFalse(\NotificationEventMailing::getAdminData());
+      $this->boolean(\NotificationEventMailing::getAdminData())->isFalse();
    }
 
    public function testGetEntityAdminsData() {
-      $this->assertFalse(\NotificationEventMailing::getEntityAdminsData(0));
+      $this->boolean(\NotificationEventMailing::getEntityAdminsData(0))->isFalse();
 
       $this->login();
 
       $entity1 = getItemByTypeName('Entity', '_test_child_1');
-      $this->assertTrue(
+      $this->boolean(
          $entity1->update([
             'id'                 => $entity1->getId(),
             'admin_email'        => 'entadmin@localhost',
             'admin_email_name'   => 'Entity admin ONE'
          ])
-      );
+      )->isTrue();
 
       $entity2 = getItemByTypeName('Entity', '_test_child_2');
-      $this->assertTrue(
+      $this->boolean(
          $entity2->update([
             'id'                 => $entity2->getId(),
             'admin_email'        => 'entadmin2localhost',
             'admin_email_name'   => 'Entity admin TWO'
          ])
-      );
+      )->isTrue();
 
-      $this->assertEquals(
-         [
+      $this->array(\NotificationEventMailing::getEntityAdminsData($entity1->getID()))
+         ->isIdenticalTo([
             [
                'language' => 'en_GB',
                'email' => 'entadmin@localhost',
                'name' => 'Entity admin ONE'
             ]
-         ],
-         \NotificationEventMailing::getEntityAdminsData($entity1->getID())
-      );
-      $this->assertFalse(\NotificationEventMailing::getEntityAdminsData($entity2->getID()));
+         ]);
+      $this->boolean(\NotificationEventMailing::getEntityAdminsData($entity2->getID()))->isFalse();
 
       //reset
-      $this->assertTrue(
+      $this->boolean(
          $entity1->update([
             'id'                 => $entity1->getId(),
             'admin_email'        => 'NULL',
             'admin_email_name'   => 'NULL'
          ])
-      );
-      $this->assertTrue(
+      )->isTrue();
+      $this->boolean(
          $entity2->update([
             'id'                 => $entity2->getId(),
             'admin_email'        => 'NULL',
             'admin_email_name'   => 'NULL'
          ])
-      );
+      )->isTrue();
    }
 
    public function testRaise() {
@@ -145,23 +145,24 @@ class NotificationEventMailingTest extends DbTestCase {
 
       $this->login();
 
-      $ticket = new Ticket();
+      $ticket = new \Ticket();
       $ticket->notificationqueueonaction = false;
       $uid = getItemByTypeName('User', TU_USER, true);
-      $this->assertGreaterThanOrEqual(
-         1,
-         $ticket->add([
+      $this->integer(
+         (int)$ticket->add([
+            'name'                  => '',
             'description'           => 'My ticket to be notified.',
-            '_users_id_requester'   => $uid
+            '_users_id_requester'   => $uid,
+            'content'               => ''
          ])
-      );
+      )->isGreaterThan(0);
 
       //event has been raised; it is in the queue!
       $queue = getAllDatasFromTable('glpi_queuednotifications');
 
-      $this->assertCount(1, $queue);
+      $this->array($queue)->hasSize(2);
 
-      $data = array_pop($queue);
+      $data = array_shift($queue);
       unset($data['id']);
       unset($data['create_time']);
       unset($data['send_time']);
@@ -185,7 +186,7 @@ class NotificationEventMailingTest extends DbTestCase {
          'sent_try' => '0',
          'sent_time' => null,
          'name' => '[GLPI #' . str_pad($ticket ->getID(), 7, '0', STR_PAD_LEFT).'] New ticket ',
-         'sender' => 'adminlocalhost',
+         'sender' => 'admsys@localhost',
          'sendername' => '',
          'recipient' => '_test_user@glpi.com',
          'recipientname' => '_test_user',
@@ -250,7 +251,7 @@ Automatically generated by GLPI 9.2
          'documents' => '',
          'mode' => 'mailing'
       ];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       //reset
       $CFG_GLPI['use_notifications'] = 0;

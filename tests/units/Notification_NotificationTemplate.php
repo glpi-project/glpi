@@ -30,82 +30,97 @@
  * ---------------------------------------------------------------------
 */
 
-/* Test for inc/notification_notificationtemplate.class.php .class.php */
+namespace tests\units;
 
-class Notification_NotificationTemplateTest extends DbTestCase {
+use \DbTestCase;
+
+/* Test for inc/notification_notificationtemplate.class.php */
+
+class Notification_NotificationTemplate extends DbTestCase {
 
    public function testGetTypeName() {
-      $this->assertEquals('Templates', \Notification_NotificationTemplate::getTypeName(0));
-      $this->assertEquals('Template', \Notification_NotificationTemplate::getTypeName(1));
-      $this->assertEquals('Templates', \Notification_NotificationTemplate::getTypeName(2));
-      $this->assertEquals('Templates', \Notification_NotificationTemplate::getTypeName(10));
+      $this->string(\Notification_NotificationTemplate::getTypeName(0))->isIdenticalTo('Templates');
+      $this->string(\Notification_NotificationTemplate::getTypeName(1))->isIdenticalTo('Template');
+      $this->string(\Notification_NotificationTemplate::getTypeName(2))->isIdenticalTo('Templates');
+      $this->string(\Notification_NotificationTemplate::getTypeName(10))->isIdenticalTo('Templates');
    }
 
    public function testGetTabNameForItem() {
       $n_nt = new \Notification_NotificationTemplate();
-      $n_nt->getFromDB(1);
+      $this->boolean($n_nt->getFromDB(1))->isTrue();
 
       $notif = new \Notification();
-      $this->assertTrue($notif->getFromDB($n_nt->getField('notifications_id')));
+      $this->boolean($notif->getFromDB($n_nt->getField('notifications_id')))->isTrue();
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
 
       //not logged => no ACLs
       $name = $n_nt->getTabNameForItem($notif);
-      $this->assertEquals('', $name);
+      $this->string($name)->isIdenticalTo('');
 
       $this->login();
       $name = $n_nt->getTabNameForItem($notif);
-      $this->assertEquals('Templates <sup class=\'tab_nb\'>1</sup>', $name);
+      $this->string($name)->isIdenticalTo('Templates <sup class=\'tab_nb\'>1</sup>');
 
       $_SESSION['glpishow_count_on_tabs'] = 0;
       $name = $n_nt->getTabNameForItem($notif);
-      $this->assertEquals('Templates', $name);
+      $this->string($name)->isIdenticalTo('Templates');
 
-       /*$ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');*/
       $toadd = $n_nt->fields;
       unset($toadd['id']);
       $toadd['mode'] = \Notification_NotificationTemplate::MODE_XMPP;
-      $this->assertGreaterThan(0, $n_nt->add($toadd));
+      $this->integer((int)$n_nt->add($toadd))->isGreaterThan(0);
 
       $_SESSION['glpishow_count_on_tabs'] = 1;
       $name = $n_nt->getTabNameForItem($notif);
-      $this->assertEquals('Templates <sup class=\'tab_nb\'>2</sup>', $name);
+      $this->string($name)->isIdenticalTo('Templates <sup class=\'tab_nb\'>2</sup>');
    }
 
    public function testShowForNotification() {
       $notif = new \Notification();
-      $notif->getFromDB(1);
+      $this->boolean($notif->getFromDB(1))->isTrue();
 
       //not logged, no ACLs
-      $this->expectOutputString('');
-      \Notification_NotificationTemplate::showForNotification($notif);
+      $this->output(
+         function () use ($notif) {
+            \Notification_NotificationTemplate::showForNotification($notif);
+         }
+      )->isEmpty();
 
       $this->login();
-      $this->expectOutputString("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
-      \Notification_NotificationTemplate::showForNotification($notif);
+
+      $this->output(
+         function () use ($notif) {
+            \Notification_NotificationTemplate::showForNotification($notif);
+         }
+      )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
    }
 
    public function testGetName() {
       $n_nt = new \Notification_NotificationTemplate();
-      $n_nt->getFromDB(1);
-      $this->assertEquals('1', $n_nt->getName());
+      $this->boolean($n_nt->getFromDB(1))->isTrue();
+      $this->string($n_nt->getName())->isIdenticalTo('1');
    }
 
    public function testShowForFormNotLogged() {
-      $n_nt = new \Notification_NotificationTemplate();
-
       //not logged, no ACLs
-      $this->expectOutputString('');
-      $n_nt->showForm(1);
+      $this->output(
+         function () {
+            $n_nt = new \Notification_NotificationTemplate();
+            $n_nt->showForm(1);
+         }
+      )->isEmpty();
    }
 
    public function testShowForForm() {
-      $n_nt = new \Notification_NotificationTemplate();
 
       $this->login();
-      $this->expectOutputRegex('/_glpi_csrf/');
-      $n_nt->showForm(1);
+      $this->output(
+         function () {
+            $n_nt = new \Notification_NotificationTemplate();
+            $n_nt->showForm(1);
+         }
+      )->matches('/_glpi_csrf/');
    }
 
    public function testGetMode() {
@@ -114,10 +129,10 @@ class Notification_NotificationTemplateTest extends DbTestCase {
          'label'  => 'Email',
          'from'   => 'core'
       ];
-      $this->assertEquals($expected, $mode);
+      $this->array($mode)->isIdenticalTo($expected);
 
       $mode = \Notification_NotificationTemplate::getMode('not_a_mode');
-      $this->assertEquals(NOT_AVAILABLE, $mode);
+      $this->string($mode)->isIdenticalTo(NOT_AVAILABLE);
    }
 
    public function testGetModes() {
@@ -132,7 +147,7 @@ class Notification_NotificationTemplateTest extends DbTestCase {
             'from'   => 'core'
          ]
       ];
-      $this->assertEquals($expected, $modes);
+      $this->array($modes)->isIdenticalTo($expected);
 
       //register new mode
       \Notification_NotificationTemplate::registerMode(
@@ -145,46 +160,42 @@ class Notification_NotificationTemplateTest extends DbTestCase {
          'label'  => 'A test label',
          'from'   => 'anyplugin'
       ];
-      $this->assertEquals($expected, $modes);
+      $this->array($modes)->isIdenticalTo($expected);
    }
 
    public function testGetSpecificValueToDisplay() {
       $n_nt = new \Notification_NotificationTemplate();
       $display = $n_nt->getSpecificValueToDisplay('id', 1);
-      $this->assertEquals('', $display);
+      $this->string($display)->isEmpty();
 
       $display = $n_nt->getSpecificValueToDisplay('mode', \Notification_NotificationTemplate::MODE_AJAX);
-      $this->assertEquals('Ajax', $display);
+      $this->string($display)->isIdenticalTo('Ajax');
 
       $display = $n_nt->getSpecificValueToDisplay('mode', 'not_a_mode');
-      $this->assertEquals('not_a_mode (N/A)', $display);
+      $this->string($display)->isIdenticalTo('not_a_mode (N/A)');
    }
 
    public function testGetSpecificValueToSelect() {
-
       $n_nt = new \Notification_NotificationTemplate();
       $select = $n_nt->getSpecificValueToSelect('id', 1);
-      $this->assertEquals('', $select);
+      $this->string($select)->isEmpty();
 
       $select = $n_nt->getSpecificValueToSelect('mode', 'a_name', \Notification_NotificationTemplate::MODE_AJAX);
-      $this->assertGreaterThanOrEqual(
-         0,
-         preg_match(
-            "|<select name='ajax' id='dropdown_ajax\d+' size='1'><option value='mailing'>Email</option><option value='ajax'>Ajax</option><option value='test_mode'>A test label</option></select>|",
-            $select
-         )
+      //FIXME: why @selected?
+      $this->string($select)->matches(
+         "/<select name='a_name' id='dropdown_a_name\d+' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Ajax<\/option><\/select>/"
       );
    }
 
    public function testGetModeClass() {
       $class = \Notification_NotificationTemplate::getModeClass(\Notification_NotificationTemplate::MODE_MAIL);
-      $this->assertEquals('NotificationMailing', $class);
+      $this->string($class)->isIdenticalTo('NotificationMailing');
 
       $class = \Notification_NotificationTemplate::getModeClass(\Notification_NotificationTemplate::MODE_MAIL, 'event');
-      $this->assertEquals('NotificationEventMailing', $class);
+      $this->string($class)->isIdenticalTo('NotificationEventMailing');
 
       $class = \Notification_NotificationTemplate::getModeClass(\Notification_NotificationTemplate::MODE_MAIL, 'setting');
-      $this->assertEquals('NotificationMailingSetting', $class);
+      $this->string($class)->isIdenticalTo('NotificationMailingSetting');
 
       //register new mode
       \Notification_NotificationTemplate::registerMode(
@@ -194,12 +205,12 @@ class Notification_NotificationTemplateTest extends DbTestCase {
       );
 
       $class = \Notification_NotificationTemplate::getModeClass('testmode');
-      $this->assertEquals('PluginAnypluginNotificationTestmode', $class);
+      $this->string($class)->isIdenticalTo('PluginAnypluginNotificationTestmode');
 
       $class = \Notification_NotificationTemplate::getModeClass('testmode', 'event');
-      $this->assertEquals('PluginAnypluginNotificationEventTestmode', $class);
+      $this->string($class)->isIdenticalTo('PluginAnypluginNotificationEventTestmode');
 
       $class = \Notification_NotificationTemplate::getModeClass('testmode', 'setting');
-      $this->assertEquals('PluginAnypluginNotificationTestmodeSetting', $class);
+      $this->string($class)->isIdenticalTo('PluginAnypluginNotificationTestmodeSetting');
    }
 }
