@@ -27,9 +27,7 @@ $(document).ready(function() {
             list = data;
          });
 
-         // when a key is pressed in fuzzy input, launch match
-         $("#fuzzysearch input").focus()
-            .bind('keyup', function(key) {
+         $(document).bind('keyup', function(key) {
             switch (key.key) {
                case "Escape":
                   removeFuzzy();
@@ -53,12 +51,19 @@ $(document).ready(function() {
                      document.location = url;
                   }
                   break;
-
-               default:
-                  startFuzzy();
-                  break;
             }
-         });
+         })
+
+         // when a key is pressed in fuzzy input, launch match
+         $("#fuzzysearch input").focus()
+            .bind('keyup', function(key) {
+               if (key.key != "Escape"
+                   && key.key != "ArrowUp"
+                   && key.key != "ArrowDown"
+                   && key.key != "Enter") {
+                  startFuzzy();
+               }
+            });
 
          setTimeout(function() {
             if ($("#fuzzysearch .results li").length == 0) {
