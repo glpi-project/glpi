@@ -41,4 +41,4 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-Toolbox::fuzzySearch($_REQUEST['action']);
+Html::fuzzySearch($_REQUEST['action']);
