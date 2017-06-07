@@ -5312,9 +5312,11 @@ class Ticket extends CommonITILObject {
             break;
       }
 
-
+      $table = $item->getTable();
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
+                INNER JOIN `$table` ON (`$table`.`id` = `glpi_items_tickets`.`items_id`
+                                        AND `glpi_items_tickets`.`itemtype` = '".$item->getType()."')
                 WHERE $restrict ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
                 AND glpi_tickets.is_deleted = 0
