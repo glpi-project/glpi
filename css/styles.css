@@ -242,7 +242,7 @@ hr {
 
 #fuzzysearch input {
    border: 2px solid #CCC;
-   font-size: 2em;
+   font-size: 1.5em;
    border-radius: 3px;
    height: 50px;
    width: calc(100% - 20px);
