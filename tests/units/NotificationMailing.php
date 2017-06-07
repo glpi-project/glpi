@@ -30,18 +30,22 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationmailing.class.php .class.php */
 
-class NotificationMailingTest extends DbTestCase {
+class NotificationMailing extends DbTestCase {
 
    public function testCheck() {
       $instance = new \NotificationMailing();
 
-      $this->assertFalse($instance->check('user'));
-      $this->assertTrue($instance->check('user@localhost'));
-      $this->assertTrue($instance->check('user@localhost.dot'));
-      $this->assertFalse($instance->check('user@localhost.dot', ['checkdns' => true]));
-      $this->assertTrue($instance->check('user@glpi-project.org', ['checkdns' => true]));
+      $this->boolean($instance->check('user'))->isFalse();
+      $this->boolean($instance->check('user@localhost'))->isTrue();
+      $this->boolean($instance->check('user@localhost.dot'))->isTrue();
+      $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
+      $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
    }
 
    public function testSendNotification() {
@@ -57,20 +61,22 @@ class NotificationMailingTest extends DbTestCase {
          'fromname'                    => 'TEST',
          'subject'                     => 'Test notification',
          'content_text'                => "Hello, this is a test notification.",
-         'to'                          => Session::getLoginUserID()
+         'to'                          => \Session::getLoginUserID(),
+         'from'                        => 'glpi@tests',
+         'toname'                      => ''
       ]);
-      $this->assertTrue($res);
+      $this->boolean($res)->isTrue();
 
       $data = getAllDatasFromTable('glpi_queuednotifications');
-      $this->assertCount(1, $data);
+      $this->array($data)->hasSize(1);
 
       $row = array_pop($data);
       unset($row['id']);
       unset($row['create_time']);
       unset($row['send_time']);
 
-      $this->assertEquals(
-         [
+      $this->array($row)
+         ->isIdenticalTo([
             'itemtype'                 => 'NotificationMailing',
             'items_id'                 => '1',
             'notificationtemplates_id' => '0',
@@ -79,7 +85,7 @@ class NotificationMailingTest extends DbTestCase {
             'sent_try'                 => '0',
             'sent_time'                => null,
             'name'                     => 'Test notification',
-            'sender'                   => '',
+            'sender'                   => 'glpi@tests',
             'sendername'               => 'TEST',
             'recipient'                => '6',
             'recipientname'            => '',
@@ -91,8 +97,6 @@ class NotificationMailingTest extends DbTestCase {
             'messageid'                => null,
             'documents'                => '',
             'mode'                     => 'mailing'
-         ],
-         $row
-      );
+         ]);
    }
 }

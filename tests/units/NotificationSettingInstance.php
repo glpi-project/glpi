@@ -30,37 +30,41 @@
  * ---------------------------------------------------------------------
 */
 
-/* Test for inc/notificationmailingsetting.class.php .class.php */
+namespace tests\units;
 
-class NotificationSettingTest extends DbTestCase {
+use \DbTestCase;
+
+require_once __DIR__ . '/../NotificationSettingInstance.php';
+
+/* Test for inc/notificationmailingsetting.class.php */
+
+class NotificationSettingInstance extends DbTestCase {
 
    public function testGetTable() {
-      $this->assertEquals('glpi_configs', \NotificationSetting::getTable());
+      $this->string(\NotificationSetting::getTable())->isIdenticalTo('glpi_configs');
    }
 
    public function testGetTypeName() {
-      $success = false;
-      try {
-         \NotificationSetting::getTypeName();
-         $success = true;
-      } catch (\RuntimeException $e) {
-         $this->assertEquals('getTypeName must be implemented', $e->getMessage());
-      }
-
-      $this->assertFalse($success);
+      $this->exception(
+         function () {
+            \NotificationSetting::getTypeName();
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->hasMessage('getTypeName must be implemented');
    }
 
    public function testDisplayTabContentForItem() {
-      $instance = new \NotificationMailingSetting();
-      $this->assertEquals(true, \NotificationSetting::displayTabContentForItem($instance));
+      $instance = new \mock\NotificationMailingSetting();
+      $this->boolean(\NotificationSetting::displayTabContentForItem($instance))->isTrue();
    }
 
    public function testDisableAll() {
       global $CFG_GLPI;
 
-      $this->assertEquals(0, $CFG_GLPI['use_notifications']);
-      $this->assertEquals(0, $CFG_GLPI['notifications_mailing']);
-      $this->assertArrayNotHasKey('notifications_xyz', $CFG_GLPI);
+      $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
+      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
+      $this->array($CFG_GLPI)->notHasKey('notifications_xyz');
 
       $CFG_GLPI['use_notifications'] = 1;
       $CFG_GLPI['notifications_mailing'] = 1;
@@ -68,8 +72,8 @@ class NotificationSettingTest extends DbTestCase {
 
       \NotificationSetting::disableAll();
 
-      $this->assertEquals(0, $CFG_GLPI['use_notifications']);
-      $this->assertEquals(0, $CFG_GLPI['notifications_mailing']);
-      $this->assertEquals(0, $CFG_GLPI['notifications_xyz']);
+      $this->variable($CFG_GLPI['use_notifications'])->isEqualTo(0);
+      $this->variable($CFG_GLPI['notifications_mailing'])->isEqualTo(0);
+      $this->variable($CFG_GLPI['notifications_xyz'])->isEqualTo(0);
    }
 }

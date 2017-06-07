@@ -30,38 +30,42 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/notificationeventajax.class.php */
 
-class NotificationEventAjaxTest extends DbTestCase {
+class NotificationEventAjax extends DbTestCase {
 
    public function testGetTargetField() {
       $data = [];
-      $this->assertEquals('users_id', \NotificationEventAjax::getTargetField($data));
+      $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
 
       $expected = ['users_id' => null];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       $data = ['users_id' => '121'];
-      $this->assertEquals('users_id', \NotificationEventAjax::getTargetField($data));
+      $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
 
       $expected = ['users_id' => '121'];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
    }
 
    public function testCanCron() {
-      $this->assertFalse(\NotificationEventAjax::canCron());
+      $this->boolean(\NotificationEventAjax::canCron())->isFalse();
    }
 
    public function testGetAdminData() {
-      $this->assertFalse(\NotificationEventAjax::getAdminData());
+      $this->boolean(\NotificationEventAjax::getAdminData())->isFalse();
    }
 
    public function testGetEntityAdminsData() {
-      $this->assertFalse(\NotificationEventAjax::getEntityAdminsData(0));
+      $this->boolean(\NotificationEventAjax::getEntityAdminsData(0))->isFalse();
    }
 
    public function testSend() {
-      $this->assertFalse(\NotificationEventAjax::send([]));
+      $this->boolean(\NotificationEventAjax::send([]))->isFalse();
    }
 
    public function testRaise() {
@@ -73,65 +77,64 @@ class NotificationEventAjaxTest extends DbTestCase {
 
       $this->login();
 
-      $ticket = new Ticket();
+      $ticket = new \Ticket();
       $ticket->notificationqueueonaction = false;
       $uid = getItemByTypeName('User', TU_USER, true);
-      $this->assertGreaterThanOrEqual(
-         1,
-         $ticket->add([
+      $this->integer(
+         (int)$ticket->add([
+            'name'                  => '',
             'description'           => 'My ticket to be notified.',
-            '_users_id_requester'   => $uid
+            '_users_id_requester'   => $uid,
+            'content'               => ''
          ])
-      );
+      )->isGreaterThan(0);
 
       //event has been raised; it is in the queue!
       $queue = getAllDatasFromTable('glpi_queuednotifications');
 
       //no ajax notification configured per default
-      $this->assertCount(0, $queue);
+      $this->array($queue)->hasSize(0);
 
       //add an ajax notification on tickets creation
       $iterator = $DB->request([
-         'FROM'   => Notification::getTable(),
+         'FROM'   => \Notification::getTable(),
          'WHERE'  => [
-            'itemtype'  => Ticket::getType(),
+            'itemtype'  => \Ticket::getType(),
             'event'     => 'new'
          ]
       ]);
-      $this->assertEquals(1, $iterator->numRows());
+      $this->integer($iterator->numRows())->isIdenticalTo(1);
       $row = $iterator->next();
       $notif_id = $row['id'];
 
       $iterator = $DB->request([
-         'FROM'   => Notification_NotificationTemplate::getTable(),
+         'FROM'   => \Notification_NotificationTemplate::getTable(),
          'WHERE'  => [
             'notifications_id'   => $notif_id,
-            'mode'               => Notification_NotificationTemplate::MODE_MAIL
+            'mode'               => \Notification_NotificationTemplate::MODE_MAIL
          ]
       ]);
-      $this->assertEquals(1, $iterator->numRows());
+      $this->integer($iterator->numRows())->isIdenticalTo(1);
       $row = $iterator->next();
       unset($row['id']);
-      $row['mode'] = Notification_NotificationTemplate::MODE_AJAX;
-      $notiftpltpl = new Notification_NotificationTemplate();
-      $this->assertGreaterThanOrEqual(
-         1,
-         $notiftpltpl->add($row)
-      );
+      $row['mode'] = \Notification_NotificationTemplate::MODE_AJAX;
+      $notiftpltpl = new \Notification_NotificationTemplate();
+      $this->integer($notiftpltpl->add($row))->isGreaterThan(0);
 
-      $this->assertGreaterThanOrEqual(
-         1,
-         $ticket->add([
+      $this->integer(
+         (int)$ticket->add([
+            'name'                  => '',
             'description'           => 'My ticket to be notified.',
-            '_users_id_requester'   => $uid
+            '_users_id_requester'   => $uid,
+            'content'               => ''
          ])
-      );
+      )->isGreaterThan(0);
 
       //event has been raised; it is in the queue!
       $queue = getAllDatasFromTable('glpi_queuednotifications');
 
       //no ajax notification configured per default
-      $this->assertCount(1, $queue);
+      $this->array($queue)->hasSize(1);
 
       $data = array_pop($queue);
       unset($data['id']);
@@ -192,7 +195,7 @@ Automatically generated by GLPI 9.2
          'documents' => '',
          'mode' => 'ajax'
       ];
-      $this->assertEquals($expected, $data);
+      $this->array($data)->isIdenticalTo($expected);
 
       //reset
       $CFG_GLPI['use_notifications'] = 0;
