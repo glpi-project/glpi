@@ -68,6 +68,7 @@ $(document).ready(function() {
          setTimeout(function() {
             if ($("#fuzzysearch .results li").length == 0) {
                startFuzzy();
+               selectFirst();
             }
          }, 100);
       });
