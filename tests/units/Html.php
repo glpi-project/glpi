@@ -636,9 +636,6 @@ class Html extends atoum {
       $auth = new \Auth();
       $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
-      $this->array($_SESSION)
-         ->notHasKey('glpimenu');
-
       $menu = \Html::generateMenuSession(true);
 
       $this->array($_SESSION)
@@ -687,7 +684,9 @@ class Html extends atoum {
 
       // test modal
       $modal = \Html::FuzzySearch('getHtml');
-      $this->string($modal);
+      $this->string($modal)
+         ->contains("id='fuzzysearch'")
+         ->contains("class='results'");
 
       // test retrieving entries
       $default = json_decode(\Html::FuzzySearch(), true);
