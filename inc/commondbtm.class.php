@@ -2371,8 +2371,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
+      $rand = mt_rand();
       if ($this->canEdit($ID)) {
-         $rand = mt_rand();
          echo "<form name='form' method='post' action='".$params['target']."' ".
                 $params['formoptions']." enctype=\"multipart/form-data\">";
 

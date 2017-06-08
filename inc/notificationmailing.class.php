@@ -67,7 +67,7 @@ class NotificationMailing implements NotificationInterface {
    static function isUserAddressValid($address, $options=array('checkdns'=>false)) {
       $isValid = \PHPMailer::ValidateAddress($address);
 
-      $checkdns = $options['checkdns'];
+      $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
       if ($checkdns) {
          $domain    = substr($address, strrpos($address, '@')+1);
          if ($isValid
@@ -128,9 +128,11 @@ class NotificationMailing implements NotificationInterface {
       $data['sender']                               = $options['from'];
       $data['sendername']                           = $options['fromname'];
 
-      if ($options['replyto']) {
+      if (isset($options['replyto']) && $options['replyto']) {
          $data['replyto']       = $options['replyto'];
-         $data['replytoname']   = $options['replytoname'];
+         if (isset($options['replytoname'])) {
+            $data['replytoname']   = $options['replytoname'];
+         }
       }
 
       $data['name']                                 = $options['subject'];
