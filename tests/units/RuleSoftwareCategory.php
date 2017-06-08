@@ -30,47 +30,49 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/rulesoftwarecategory.class.php */
 
-class RuleSoftwareCategoryTest extends DbTestCase {
+class RuleSoftwareCategory extends DbTestCase {
 
-   /**
-    * @covers RuleSoftwareCategory::maxActionsCount
-    */
    public function testMaxActionsCount() {
-      $category = new RuleSoftwareCategory();
-      $this->assertEquals(1, $category->maxActionsCount());
+      $category = new \RuleSoftwareCategory();
+      $this->integer($category->maxActionsCount())->isIdenticalTo(1);
    }
 
-   /**
-    * @covers RuleSoftwareCategory::getCriteria
-    */
    public function testGetCriteria() {
-      $category = new RuleSoftwareCategory();
+      $category = new \RuleSoftwareCategory();
       $criteria = $category->getCriterias();
-
-      $this->assertEquals(4, count($criteria));
+      $this->array($criteria)->hasSize(4);
    }
 
-   /**
-    * @covers RuleSoftwareCategory::getActions
-    */
    public function testGetActions() {
-      $category = new RuleSoftwareCategory();
+      $category = new \RuleSoftwareCategory();
       $actions  = $category->getActions();
-
-      $this->assertEquals(3, count($actions));
+      $this->array($actions)->hasSize(3);
    }
 
-   /**
-    * @test Test that the default result has been added to DB, disabled by default
-    */
    public function testDefaultRuleExists() {
-      $this->assertEquals(1, countElementsInTable('glpi_rules',
-                                                  ['uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-                                                   'is_active' => 0]));
-      $this->assertEquals(0, countElementsInTable('glpi_rules',
-                                                  ['uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-                                                  'is_active' => 1]));
+      $this->integer(
+         (int)countElementsInTable(
+            'glpi_rules',
+            [
+               'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+               'is_active' => 0
+            ]
+         )
+      )->isIdenticalTo(1);
+      $this->integer(
+         (int)countElementsInTable(
+            'glpi_rules',
+            [
+               'uuid' => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+               'is_active' => 1
+            ]
+         )
+      )->isIdenticalTo(0);
    }
 }

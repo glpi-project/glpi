@@ -30,49 +30,40 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/ruledictionnarysoftware.class.php */
 
-class RuleDictionnarySoftwareTest extends DbTestCase {
+class RuleDictionnarySoftware extends DbTestCase {
 
-   /**
-    * @covers RuleDictionnarySoftware::maxActionsCount
-    */
    public function testMaxActionsCount() {
-      $rule = new RuleDictionnarySoftware();
-      $this->assertEquals(4, $rule->maxActionsCount());
+      $rule = new \RuleDictionnarySoftware();
+      $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
    }
 
-   /**
-    * @covers RuleDictionnarySoftware::getCriteria
-    */
    public function testGetCriteria() {
-      $rule     = new RuleDictionnarySoftware();
+      $rule     = new \RuleDictionnarySoftware();
       $criteria = $rule->getCriterias();
-      $this->assertEquals(4, count($criteria));
+      $this->array($criteria)->hasSize(4);
    }
 
-   /**
-    * @covers RuleDictionnarySoftware::getActions
-    */
    public function testGetActions() {
-      $rule    = new RuleDictionnarySoftware();
+      $rule    = new \RuleDictionnarySoftware();
       $actions = $rule->getActions();
-
-      $this->assertEquals(7, count($actions));
+      $this->array($actions)->hasSize(7);
    }
 
-   /**
-    * @test Test that the default result has been added to DB, disabled by default
-    */
    public function testAddSpecificParamsForPreview() {
-      $rule    = new RuleDictionnarySoftware();
+      $rule    = new \RuleDictionnarySoftware();
 
       $input = ['param1' => 'test'];
       $result = $rule->addSpecificParamsForPreview($input);
-      $this->assertEquals($result, ['param1' => 'test']);
+      $this->array($result)->isIdenticalTo(['param1' => 'test']);
 
       $_POST['version'] = '1.0';
       $result = $rule->addSpecificParamsForPreview($input);
-      $this->assertEquals($result, ['param1' => 'test', 'version' => '1.0']);
+      $this->array($result)->isIdenticalTo(['param1' => 'test', 'version' => '1.0']);
    }
 }
