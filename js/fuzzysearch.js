@@ -74,7 +74,6 @@ $(document).ready(function() {
          setTimeout(function() {
             if ($("#fuzzysearch .results li").length == 0) {
                startFuzzy();
-               selectFirst();
             }
          }, 100);
       });
@@ -99,6 +98,8 @@ $(document).ready(function() {
          $("#fuzzysearch .results")
             .append("<li><a href='"+CFG_GLPI.root_doc+el.original.url+"'>"+el.string+"</a></li>")
       });
+
+      selectFirst();
    };
 
    /**
@@ -113,6 +114,7 @@ $(document).ready(function() {
     */
    var selectFirst = function() {
       $("#fuzzysearch .results li:first()").addClass("selected");
+      scrollToSelected();
    }
 
    /**
@@ -120,6 +122,7 @@ $(document).ready(function() {
     */
    var selectLast = function() {
       $("#fuzzysearch .results li:last()").addClass("selected");
+      scrollToSelected();
    }
 
    /**
@@ -134,9 +137,8 @@ $(document).ready(function() {
             .removeClass('selected')
             .next()
             .addClass("selected");
+         scrollToSelected();
       }
-
-      scrollToSelected();
    };
 
    /**
@@ -151,8 +153,8 @@ $(document).ready(function() {
             .removeClass('selected')
             .prev()
             .addClass("selected");
+         scrollToSelected();
       }
-      scrollToSelected();
    };
 
    /**
