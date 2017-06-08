@@ -30,60 +30,55 @@
  * ---------------------------------------------------------------------
 */
 
+namespace tests\units;
+
+use \DbTestCase;
+
 /* Test for inc/rulesoftwarecategorycollection.class.php */
 
-class RuleSoftwareCategoryCollectionTest extends DbTestCase {
+class RuleSoftwareCategoryCollection extends DbTestCase {
 
-   /**
-    * @covers RuleSoftwareCategoryCollection::prepareInputDataForProcess
-    */
    public function testPrepareInputDataForProcess() {
       $this->Login();
 
-      $collection = new RuleSoftwareCategoryCollection();
+      $collection = new \RuleSoftwareCategoryCollection();
 
       //Only process name
       $input = ['name' => 'Software'];
       $params = $collection->prepareInputDataForProcess([], $input);
-      $this->assertEquals($input, $params);
+      $this->array($input)->isIdenticalTo($params);
 
       //Process name + comment
       $input = ['name' => 'Software', 'comment' => 'Comment'];
       $params = $collection->prepareInputDataForProcess([], $input);
-      $this->assertEquals($input, $params);
+      $this->array($input)->isIdenticalTo($params);
 
       //Process also manufacturer
       $input = ['name'             => 'Software',
                 'comment'          => 'Comment',
                 'manufacturers_id' => 1];
       $params = $collection->prepareInputDataForProcess([], $input);
-      $this->assertEquals($params['manufacturer'], 'My Manufacturer');
+      $this->string($params['manufacturer'])->isIdenticalTo('My Manufacturer');
    }
 
-   /**
-    * @test
-    */
    public function testNoRuleMatches() {
       $this->Login();
 
-      $categoryCollection = new RuleSoftwareCategoryCollection();
+      $categoryCollection = new \RuleSoftwareCategoryCollection();
 
       //Default rule is disabled : no rule should match
       $input = ['name'             => 'MySoft',
                 'manufacturer'     => 'My Manufacturer',
                 '_system_category' => 'dev'];
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->assertEquals($result, ["_no_rule_matches" => 1]);
+      $this->array($result)->isIdenticalTo(["_no_rule_matches" => '1']);
    }
 
-   /**
-    * @test
-    */
    public function testRuleMatchImport() {
       $this->Login();
 
-      $categoryCollection = new RuleSoftwareCategoryCollection();
-      $rule               = new Rule();
+      $categoryCollection = new \RuleSoftwareCategoryCollection();
+      $rule               = new \Rule();
 
       //Default rule is disabled : no rule should match
       $input = ['name'             => 'MySoft',
@@ -92,30 +87,30 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase {
 
       $rules = getAllDatasFromTable('glpi_rules',
                                     "`uuid`='500717c8-2bd6e957-53a12b5fd38869.86003425'");
-      $this->assertEquals(1, count($rules));
+      $this->array($rules)->hasSize(1);
 
       $myrule = current($rules);
       $rule->update(['id' => $myrule['id'], 'is_active' => 1]);
 
       //Force reload of the rules list
+      $categoryCollection->RuleList = new \stdClass();
       $categoryCollection->RuleList->load = true;
 
       //Run the rules engine a second time with the rule enabled
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->assertEquals($result, ["_import_category" => 1,
-                                    "_ruleid"          => $myrule['id']]);
+      $this->array($result)->isIdenticalTo([
+         "_import_category" => '1',
+         "_ruleid"          => $myrule['id']
+      ]);
 
       //Set default rule as disabled, as it was before
       $rule->update(['id' => $myrule['id'], 'is_active' => 0]);
    }
 
-   /**
-    * @test
-    */
    public function testRuleSetCategory() {
       $this->Login();
 
-      $categoryCollection = new RuleSoftwareCategoryCollection();
+      $categoryCollection = new \RuleSoftwareCategoryCollection();
 
       //Default rule is disabled : no rule should match
       $input = ['name'             => 'MySoft',
@@ -123,91 +118,116 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase {
                 '_system_category' => 'dev'];
 
       //Let's enable the rule
-      $rule     = new Rule();
-      $criteria = new RuleCriteria();
-      $action   = new RuleAction();
+      $rule     = new \Rule();
+      $criteria = new \RuleCriteria();
+      $action   = new \RuleAction();
 
       //Force reload of the rules list
+      $categoryCollection->RuleList = new \stdClass();
       $categoryCollection->RuleList->load = true;
 
       //Create a software category
-      $category      = new SoftwareCategory();
+      $category      = new \SoftwareCategory();
       $categories_id = $category->importExternal('Application');
 
       $rules_id = $rule->add(['name'        => 'Import name',
                               'is_active'   => 1,
                               'entities_id' => 0,
                               'sub_type'    => 'RuleSoftwareCategory',
-                              'match'       => Rule::AND_MATCHING,
+                              'match'       => \Rule::AND_MATCHING,
                               'condition'   => 0,
                               'description' => ''
                              ]);
+      $this->integer($rules_id)->isGreaterThan(0);
 
-      $criteria->add(['rules_id'  => $rules_id,
-                      'criteria'  => 'name',
-                      'condition' => Rule::PATTERN_IS,
-                      'pattern'   => 'MySoft'
-                     ]);
+      $this->integer(
+         $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'MySoft'
+         ])
+      )->isGreaterThan(0);
 
-      $action->add(['rules_id'    => $rules_id,
-                    'action_type' => 'assign',
-                    'field'       => 'softwarecategories_id',
-                    'value'       => $categories_id
-                   ]);
+      $this->integer(
+         $action->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'softwarecategories_id',
+            'value'       => $categories_id
+         ])
+      )->isGreaterThan(0);
 
-      $this->assertEquals(2, countElementsInTable('glpi_rules', "`sub_type`='RuleSoftwareCategory'"));
+      $this->integer(
+         (int)countElementsInTable('glpi_rules', "`sub_type`='RuleSoftwareCategory'")
+      )->isIdenticalTo(2);
 
       //Test that a software category can be assigned
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->assertEquals($result, ["softwarecategories_id" => $categories_id,
-                                    "_ruleid"               => $rules_id]);
-
+      $this->array($result)->isIdenticalTo([
+         "softwarecategories_id" => "$categories_id",
+         "_ruleid"               => "$rules_id"
+      ]);
    }
 
-   /**
-    * @test
-    */
    public function testRuleIgnoreImport() {
       $this->Login();
 
-      $categoryCollection = new RuleSoftwareCategoryCollection();
+      $categoryCollection = new \RuleSoftwareCategoryCollection();
 
       //Let's enable the rule
-      $rule     = new Rule();
-      $criteria = new RuleCriteria();
-      $action   = new RuleAction();
+      $rule     = new \Rule();
+      $criteria = new \RuleCriteria();
+      $action   = new \RuleAction();
 
       //Force reload of the rules list
+      $categoryCollection->RuleList = new \stdClass();
       $categoryCollection->RuleList->load = true;
 
       $rules_id = $rule->add(['name'        => 'Ignore import',
                                'is_active'   => 1,
                                'entities_id' => 0,
                                'sub_type'    => 'RuleSoftwareCategory',
-                               'match'       => Rule::AND_MATCHING,
+                               'match'       => \Rule::AND_MATCHING,
                                'condition'   => 0,
                                'description' => ''
-                               ]);
+                            ]);
+      $this->integer($rules_id)->isGreaterThan(0);
 
-       $criteria->add(['rules_id'  => $rules_id,
-                       'criteria'  => '_system_category',
-                       'condition' => Rule::PATTERN_IS,
-                       'pattern'   => 'dev'
-                      ]);
+      $this->integer(
+         $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => '_system_category',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'dev'
+         ])
+      )->isGreaterThan(0);
 
-       $action->add(['rules_id'    => $rules_id,
-                     'action_type' => 'assign',
-                     'field'       => '_ignore_import',
-                     'value'       => '1'
-                    ]);
+      $this->integer(
+         $action->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_ignore_import',
+            'value'       => '1'
+         ])
+      )->isGreaterThan(0);
 
-      $this->assertEquals(2, countElementsInTable('glpi_rules',
-                                                  "`sub_type`='RuleSoftwareCategory'"));
-      $this->assertEquals(1, countElementsInTable('glpi_rules',
-                                                  "`sub_type`='RuleSoftwareCategory'
-                                                     AND `is_active`='1'"));
+      $this->integer(
+         (int)countElementsInTable(
+            'glpi_rules',
+            "`sub_type`='RuleSoftwareCategory'"
+         )
+      )->isIdenticalTo(2);
+
+      $this->integer(
+         (int)countElementsInTable(
+            'glpi_rules',
+            "`sub_type`='RuleSoftwareCategory' AND `is_active`='1'"
+         )
+      )->isIdenticalTo(1);
 
       //Force reload of the rules list
+      $categoryCollection->RuleList = new \stdClass();
       $categoryCollection->RuleList->load = true;
 
       $input = ['name'             => 'fusioninventory-agent',
@@ -216,9 +236,9 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase {
 
       //Test that a software category can be ignored
       $result = $categoryCollection->processAllRules(null, null, $input);
-      $this->assertEquals($result, ["_ignore_import" => 1,
-                                    "_ruleid"        => $rules_id]);
-
+      $this->array($result)->isIdenticalTo([
+         "_ignore_import" => '1',
+         "_ruleid"        => "$rules_id"
+      ]);
    }
-
 }
