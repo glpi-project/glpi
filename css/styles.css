@@ -226,6 +226,80 @@ hr {
    user-select: none;
 }
 
+/* ################--------------- Fuzzy ---------------#################### */
+
+#fuzzysearch {
+   position: fixed;
+   width: 500px;
+   min-height: 50px;
+   top: 30%;
+   left: 50%;
+   margin-top: -100px;
+   margin-left: -250px;
+   background: #FFF;
+   z-index: 200;
+}
+
+#fuzzysearch input {
+   border: 2px solid #CCC;
+   font-size: 1.5em;
+   border-radius: 3px;
+   height: 50px;
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+}
+
+#fuzzysearch .results:not(:empty) {
+   width: calc(100% - 20px);
+   margin: 10px;
+   box-sizing: border-box;
+   height: 300px;
+   overflow-y: auto;
+   overflow-x: none;
+}
+
+#fuzzysearch .results li:nth-child(odd) {
+   background: #E8E8E8;
+}
+
+#fuzzysearch .results li.selected,
+#fuzzysearch .results li:hover {
+   background: #848484;
+   color: #FFF;
+}
+
+#fuzzysearch .results a {
+   padding: 10px;
+   font-size: 1.3em;
+   color: inherit;
+   font-weight: normal;
+   line-height: 100%;
+   display: block;
+}
+
+#fuzzysearch .fa-close {
+   position: absolute;
+   top: 0;
+   right: -30px;
+   color: #848484;
+   cursor: pointer;
+   background: #FFF;
+   width: 30px;
+   height: 30px;
+   padding: 3px 6px;
+   box-sizing: border-box;
+}
+
+@media screen and (max-width: 700px) {
+   #fuzzysearch {
+      width: 85%;
+      top: 20%;
+      left: 0;
+      margin: 0 5%
+   }
+}
+
 /* ################--------------- Tabs ---------------#################### */
 
 .alltab {

@@ -1194,6 +1194,9 @@ class Html {
       //file upload is required... almost everywhere.
       Html::requireJs('fileupload');
 
+      // load fuzzy search everywhere
+      Html::requireJs('fuzzy');
+
       echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
@@ -1307,53 +1310,22 @@ class Html {
       return $menu;
    }
 
-
    /**
-    * Print a nice HTML head for every page
+    * Generate menu array in $_SESSION['glpimenu'] and return the array
     *
-    * @param $title     title of the page
-    * @param $url       not used anymore (default '')
-    * @param $sector    sector in which the page displayed is (default 'none')
-    * @param $item      item corresponding to the page displayed (default 'none')
-    * @param $option    option corresponding to the page displayed (default '')
-   **/
-   static function header($title, $url='', $sector="none", $item="none", $option="") {
-      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+    * @since  9.2
+    *
+    * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+    * @return array          the menu array
+    */
+   static function generateMenuSession($force = false) {
+      $menu = [];
 
-      // If in modal : display popHeader
-      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-         return self::popHeader($title, $url);
-      }
-      // Print a nice HTML-head for every page
-      if ($HEADER_LOADED) {
-         return;
-      }
-      $HEADER_LOADED = true;
-      // Force lower case for sector and item
-      $sector = strtolower($sector);
-      $item   = strtolower($item);
-
-      self::includeHeader($title, $sector, $item, $option);
-
-      $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
-          && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!CommonGLPI::isLayoutExcludedPage()) {
-            $body_class.= " form";
-         } else {
-            $body_class = "";
-         }
-      }
-      // Body
-      echo "<body class='$body_class'>";
-      // Generate array for menu and check right
-      if (!isset($_SESSION['glpimenu'])
+      if ($force
+          || !isset($_SESSION['glpimenu'])
           || !is_array($_SESSION['glpimenu'])
           || (count($_SESSION['glpimenu']) == 0)) {
 
-         // INVENTORY
-         //don't change order in array
-         $showallassets                 = false;
          $menu = self::getMenuInfos();
 
          // Permit to plugins to add entry to others sector !
@@ -1422,6 +1394,51 @@ class Html {
          $menu = $_SESSION['glpimenu'];
       }
 
+      return $menu;
+   }
+
+
+   /**
+    * Print a nice HTML head for every page
+    *
+    * @param $title     title of the page
+    * @param $url       not used anymore (default '')
+    * @param $sector    sector in which the page displayed is (default 'none')
+    * @param $item      item corresponding to the page displayed (default 'none')
+    * @param $option    option corresponding to the page displayed (default '')
+   **/
+   static function header($title, $url='', $sector="none", $item="none", $option="") {
+      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+
+      // If in modal : display popHeader
+      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+         return self::popHeader($title, $url);
+      }
+      // Print a nice HTML-head for every page
+      if ($HEADER_LOADED) {
+         return;
+      }
+      $HEADER_LOADED = true;
+      // Force lower case for sector and item
+      $sector = strtolower($sector);
+      $item   = strtolower($item);
+
+      self::includeHeader($title, $sector, $item, $option);
+
+      $body_class = "layout_".$_SESSION['glpilayout'];
+      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
+          && isset($_GET['id']) && ($_GET['id'] > 0)) {
+         if (!CommonGLPI::isLayoutExcludedPage()) {
+            $body_class.= " form";
+         } else {
+            $body_class = "";
+         }
+      }
+      // Generate array for menu and check right
+      $menu = self::generateMenuSession();
+
+      // Body
+      echo "<body class='$body_class'>";
       $already_used_shortcut = array('1');
 
       echo "<div id='header'>";
@@ -5975,6 +5992,11 @@ class Html {
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js';
             break;
+         case 'fuzzy':
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy/fuzzy-min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
+            break;
          default:
             $found = false;
             if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
@@ -6141,5 +6163,73 @@ class Html {
       }
 
       return $text;
+   }
+
+   /**
+    * Manage events from js/fuzzysearch.js
+    *
+    * @since 9.2
+    *
+    * @param string $action action to switch (should be actually 'getHtml' or 'getList')
+    *
+    * @return nothing (display)
+    */
+   static function fuzzySearch($action = '') {
+      global $CFG_GLPI;
+
+      switch ($action) {
+         case 'getHtml':
+            return "<div id='fuzzysearch'>
+                    <input type='text' placeholder='".__("Start typing to find a menu")."'>
+                    <ul class='results'></ul>
+                    <i class='fa fa-2x fa-close'></i>
+                    </div>
+                    <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'>
+                    </div>";
+            break;
+
+         default;
+            $fuzzy_entries = [];
+
+            // retrieve menu
+            foreach ($_SESSION['glpimenu'] as $firstlvl) {
+               if (isset($firstlvl['content'])) {
+                  foreach ($firstlvl['content'] as $menu) {
+                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                        $fuzzy_entries[] = [
+                           'url'   => $menu['page'],
+                           'title' => $firstlvl['title']." > ".$menu['title']
+                        ];
+
+                        if (isset($menu['options'])) {
+                           foreach ($menu['options'] as $submenu) {
+                              if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                 $fuzzy_entries[] = [
+                                    'url'   => $submenu['page'],
+                                    'title' => $firstlvl['title']." > ".
+                                               $menu['title']." > ".
+                                               $submenu['title']
+                                 ];
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+
+               if (isset($firstlvl['default'])) {
+                  if (strlen($menu['title']) > 0) {
+                     $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default'],
+                        'title' => $firstlvl['title']
+                     ];
+                  }
+               }
+            }
+
+            // return the entries to ajax call
+            return json_encode($fuzzy_entries);
+            break;
+      }
    }
 }
