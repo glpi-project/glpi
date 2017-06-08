@@ -631,6 +631,7 @@ class Auth extends CommonGLPI {
                                                        'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
                         $this->user->fields['auths_id'] = $ldap_method['id'];
+                        $this->user->fields['authtype'] = self::LDAP;
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
                                                  !$this->user_present);
                         break;
