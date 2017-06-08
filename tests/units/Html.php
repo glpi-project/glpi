@@ -32,11 +32,11 @@
 
 namespace tests\units;
 
-use \DbTestCase;
+use \atoum;
 
 /* Test for inc/html.class.php */
 
-class Html extends DbTestCase {
+class Html extends atoum {
 
    public function testConvDate() {
       $this->variable(\Html::convDate(null))->isNull();
@@ -632,7 +632,9 @@ class Html extends DbTestCase {
    }
 
    public function testGenerateMenuSession() {
-      $this->login();
+      //login to get session
+      $auth = new \Auth();
+      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
       $this->array($_SESSION)
          ->notHasKey('glpimenu');
@@ -676,7 +678,9 @@ class Html extends DbTestCase {
    }
 
    public function testFuzzySearch() {
-      $this->login();
+      //login to get session
+      $auth = new \Auth();
+      $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
 
       // init menu
       \Html::generateMenuSession(true);
