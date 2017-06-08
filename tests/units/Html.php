@@ -32,11 +32,11 @@
 
 namespace tests\units;
 
-use \atoum;
+use \DbTestCase;
 
 /* Test for inc/html.class.php */
 
-class Html extends atoum {
+class Html extends DbTestCase {
 
    public function testConvDate() {
       $this->variable(\Html::convDate(null))->isNull();
@@ -629,5 +629,75 @@ class Html extends atoum {
       $expected = str_replace("##TIMER##", 3 * MINUTE_TIMESTAMP * 1000, $expected);
       $message = \Html::manageRefreshPage(3, '$(\'#mydiv\').remove();');
       $this->string($message)->isIdenticalTo($expected);
+   }
+
+   public function testGenerateMenuSession() {
+      $this->login();
+
+      $this->array($_SESSION)
+         ->notHasKey('glpimenu');
+
+      $menu = \Html::generateMenuSession(true);
+
+      $this->array($_SESSION)
+         ->hasKey('glpimenu');
+
+      $this->array($menu)
+            ->isIdenticalTo($_SESSION['glpimenu'])
+            ->hasKey('assets')
+            ->hasKey('helpdesk')
+            ->hasKey('management')
+            ->hasKey('tools')
+            ->hasKey('plugins')
+            ->hasKey('admin')
+            ->hasKey('config')
+            ->hasKey('preference');
+
+      foreach ($menu as $menu_entry) {
+         $this->array($menu_entry)
+            ->hasKey('title');
+
+         if (isset($menu_entry['content'])) {
+
+            $this->array($menu_entry)
+               ->hasKey('types');
+
+            foreach ($menu_entry['content'] as $submenu_label => $submenu) {
+               if ($submenu_label === 'is_multi_entries') {
+                  continue;
+               }
+
+               $this->array($submenu)
+                  ->hasKey('title')
+                  ->hasKey('page');
+            }
+         }
+      }
+   }
+
+   public function testFuzzySearch() {
+      $this->login();
+
+      // init menu
+      \Html::generateMenuSession(true);
+
+      // test modal
+      $modal = \Html::FuzzySearch('getHtml');
+      $this->string($modal);
+
+      // test retrieving entries
+      $default = json_decode(\Html::FuzzySearch(), true);
+      $entries = json_decode(\Html::FuzzySearch('getList'), true);
+      $this->array($default)
+         ->isNotEmpty()
+         ->isIdenticalTo($entries)
+         ->hasKey(0)
+         ->size->isGreaterThan(5);
+
+      foreach ($default as $entry) {
+         $this->array($entry)
+            ->hasKey('title')
+            ->hasKey('url');
+      }
    }
 }
