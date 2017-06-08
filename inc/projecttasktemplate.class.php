@@ -48,7 +48,7 @@ class ProjectTaskTemplate extends CommonDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static $rightname          = 'projecttask';
+   static $rightname          = 'project';
 
    static function getTypeName($nb=0) {
       return _n('Project task template', 'Project task templates', $nb);
@@ -69,7 +69,7 @@ class ProjectTaskTemplate extends CommonDropdown {
                          'type'  => 'dropdownValue'),
                    array('name'  => 'percent_done',
                          'label' => __('Percent done'),
-                         'type'  => 'percent'),
+                         'type'  => 'percent_done'),
                    array('name'  => 'is_milestone',
                          'label' => __('Milestone'),
                          'type'  => 'bool'),
