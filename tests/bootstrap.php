@@ -432,6 +432,8 @@ function loadDataset() {
    $_SESSION['glpishowallentities'] = 1;
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+   $_SESSION['glpiactiveentities']  = [0];
+   $_SESSION['glpiactiveentities_string'] = "'0'";
    $CFG_GLPI['root_doc']            = '/glpi';
 
    // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
@@ -460,8 +462,10 @@ function loadDataset() {
                $foreigntype = false;
                $match = array();
                if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
-                  $foreigntype = array_pop( $match );
-                  $foreigntype = getItemTypeForTable( "glpi_$foreigntype" );
+                  $foreigntypetxt = array_pop($match);
+                  if (substr($foreigntypetxt, 0, 1) !== '_') {
+                     $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
+                  }
                }
                if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$foreigntype][$v];
