@@ -774,8 +774,8 @@ Regards,',
 
    // Create a dedicated token for api
    if (!FieldExists('glpi_users', 'api_token')) {
-      $migration->addField('glpi_users', 'api_token', 'string');
-      $migration->addField('glpi_users', 'api_token_date', 'datetime');
+      $migration->addField('glpi_users', 'api_token', 'string', ['after' => 'personal_token_date']);
+      $migration->addField('glpi_users', 'api_token_date', 'datetime', ['after' => 'api_token']);
       $migration->displayWarning("Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token.",
                                  true);
    }
