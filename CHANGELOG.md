@@ -28,6 +28,7 @@ new whole window
 - `User::getFromDBbyToken()` signature has changed
 - `Bookmark` has been renamed to `SavedSearch`
 - Update to latest jsTree plugin
+- `RuleDictionnarySoftwareCollection::versionExists()` signature has changed
 
 #### Deprecated
 

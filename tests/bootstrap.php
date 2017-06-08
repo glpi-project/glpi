@@ -71,7 +71,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.1',
+      '_version' => '4.2',
 
       // Type => array of entries
       'Entity' => [
