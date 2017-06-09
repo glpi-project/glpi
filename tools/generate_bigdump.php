@@ -54,8 +54,7 @@ if (!$auth->Login('glpi', 'glpi', true)) {
 }
 
 // unset notifications
-// NotificationSetting::disableAll() cause issues on PHP 5.6
-NotificationMailingSetting::disableAll();
+NotificationSetting::disableAll();
 
 $entity_number = 10;
 
