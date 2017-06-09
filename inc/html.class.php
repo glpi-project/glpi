@@ -1323,6 +1323,7 @@ class Html {
     * @return array          the menu array
     */
    static function generateMenuSession($force = false) {
+      global $PLUGIN_HOOKS;
       $menu = [];
 
       if ($force
