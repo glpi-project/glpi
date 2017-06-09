@@ -30,30 +30,22 @@
 #  * ---------------------------------------------------------------------
 # */
 cd $(dirname $0)/..
-if ! which phpunit &>/dev/null
+if ! which atoum &>/dev/null
 then
-   echo -e "\nphpunit not found, see https://phpunit.de/\n"
+   echo -e "\natoum not found, see https://atoum.org/\n"
    exit 1
 
-elif which phpdbg &>/dev/null
-then
-   # PHP 7 + phpdbg, faster
-   phpdbg -qrr $(which phpunit) \
-          -d memory_limit=1G \
-          --coverage-html tools/htmlcov \
-          --whitelist inc \
-          --verbose
 elif php -m | grep -qi xdebug
 then
    # PHP 5 + xdebug
-   phpunit -d memory_limit=1G \
-           --coverage-html tools/htmlcov \
-           --whitelist inc \
-           --verbose
+   atoum \
+      --debug \
+      --max-children-number 1 \
+      --bootstrap-file tests/bootstrap.php \
+      --directories tests/units \
+      --no-code-coverage-for-classes DbTestCase DbFunction Autoload NotificationSettingInstance \
+      --no-code-coverage-for-namespaces mageekguy\\atoum
 else
-   echo -e "\nYou need PHP 7 with phpdng or PHP with XDebug\n"
+   echo -e "\nYou need PHP with XDebug\n"
    exit 2
 fi
-
-echo "Result in file://$PWD/tools/htmlcov/index.html";
-
