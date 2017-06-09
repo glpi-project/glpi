@@ -125,7 +125,8 @@ class Transfer extends CommonDBTM {
       global $CFG_GLPI;
 
       // unset notifications
-      NotificationSetting::disableAll();
+      // NotificationSetting::disableAll() cause issues on PHP 5.6
+      NotificationMailingSetting::disableAll();
 
       $this->options = array('keep_ticket'         => 0,
                              'keep_networklink'    => 0,
