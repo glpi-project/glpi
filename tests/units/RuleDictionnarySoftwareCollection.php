@@ -65,32 +65,59 @@ class RuleDictionnarySoftwareCollection extends DbTestCase {
    }
 
    public function testMoveLicense() {
-      $old_soft = getItemByTypeName('Software', '_test_soft');
-      $new_soft = getItemByTypeName('Software', '_test_soft_3');
+      $old_software = new \Software();
+      $softwares_id = $old_software->add([
+         'name'         => 'Software ' .$this->getUniqueString(),
+         'is_template'  => 0,
+         'entities_id'  => 0
+      ]);
+      $this->integer((int)$softwares_id)->isGreaterThan(0);
+      $this->boolean($old_software->getFromDB($softwares_id))->isTrue();
+
+      //ad and link 5 licenses to new software
+      for ($i = 0; $i < 5; ++$i) {
+         $license = new \SoftwareLicense();
+         $license_id = $license->add([
+            'name'         => 'Software license ' . $this->getUniqueString(),
+            'softwares_id' => $old_software->getID(),
+            'entities_id'  => 0
+         ]);
+         $this->integer((int)$license_id)->isGreaterThan(0);
+         $this->boolean($license->getFromDB($license_id))->isTrue();
+      }
+
+      $new_software = new \Software();
+      $softwares_id = $new_software->add([
+         'name'         => 'Software ' .$this->getUniqueString(),
+         'is_template'  => 0,
+         'entities_id'  => 0
+      ]);
+      $this->integer((int)$softwares_id)->isGreaterThan(0);
+      $this->boolean($new_software->getFromDB($softwares_id))->isTrue();
 
       $collection = new \RuleDictionnarySoftwareCollection();
       $this->boolean(
          $collection->moveLicenses(
-            $old_soft->getID(),
-            $new_soft->getID()
+            $old_software->getID(),
+            $new_software->getID()
          )
       )->isTrue();
 
       $this->integer(
          (int)countElementsInTable(
             'glpi_softwarelicenses',
-            ['softwares_id' => $old_soft->getID()]
+            ['softwares_id' => $old_software->getID()]
          )
       )->isIdenticalTo(0);
       $this->integer(
          (int)countElementsInTable(
             'glpi_softwarelicenses',
-            ['softwares_id' => $new_soft->getID()]
+            ['softwares_id' => $new_software->getID()]
          )
       )->isIdenticalTo(5);
 
-      $this->boolean($collection->moveLicenses('100', $new_soft->getID()))->isFalse();
-      $this->boolean($collection->moveLicenses($old_soft->getID(), '100'))->isFalse();
+      $this->boolean($collection->moveLicenses('100', $new_software->getID()))->isFalse();
+      $this->boolean($collection->moveLicenses($old_software->getID(), '100'))->isFalse();
    }
 
    public function testPutOldSoftsInTrash() {
