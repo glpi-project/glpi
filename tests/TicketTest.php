@@ -513,6 +513,104 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canAddFollowups());
    }
 
+   public function testNotOwnerAcls() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->assertGreaterThan(
+         0,
+         $ticket->add([
+            'description'  => 'A ticket to check ACLS',
+            'content'      => ''
+         ])
+      );
+
+      $auth = new \Auth();
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reload ticket from DB
+      $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
+      $this->assertTrue((boolean)$ticket->canAdminActors());
+      $this->assertFalse((boolean)$ticket->canAssign());
+      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertTrue((boolean)$ticket->canUpdate());
+      $this->assertTrue((boolean)$ticket->canView());
+      $this->assertTrue((boolean)$ticket->canViewItem());
+      $this->assertTrue((boolean)$ticket->canSolve());
+      $this->assertFalse((boolean)$ticket->canApprove());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canCreateItem());
+      $this->assertTrue((boolean)$ticket->canUpdateItem());
+      $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
+      $this->assertFalse((boolean)$ticket->canDelete());
+      $this->assertFalse((boolean)$ticket->canDeleteItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
+      $this->assertTrue((boolean)$ticket->canAddFollowups());
+
+      //drop update ticket right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
+      $this->assertFalse((boolean)$ticket->canAdminActors());
+      $this->assertFalse((boolean)$ticket->canAssign());
+      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertTrue((boolean)$ticket->canUpdate());
+      $this->assertTrue((boolean)$ticket->canView());
+      $this->assertTrue((boolean)$ticket->canViewItem());
+      $this->assertFalse((boolean)$ticket->canSolve());
+      $this->assertFalse((boolean)$ticket->canApprove());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canCreateItem());
+      $this->assertTrue((boolean)$ticket->canUpdateItem());
+      $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
+      $this->assertFalse((boolean)$ticket->canDelete());
+      $this->assertFalse((boolean)$ticket->canDeleteItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
+      $this->assertTrue((boolean)$ticket->canAddFollowups());
+
+      $this->assertTrue((boolean)$auth->Login('post-only', 'postonly', true));
+      $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
+      $this->assertFalse((boolean)$ticket->canAdminActors());
+      $this->assertFalse((boolean)$ticket->canAssign());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
+      $this->assertTrue((boolean)$ticket->canUpdate());
+      $this->assertTrue((boolean)$ticket->canView());
+      $this->assertFalse((boolean)$ticket->canViewItem());
+      $this->assertFalse((boolean)$ticket->canSolve());
+      $this->assertFalse((boolean)$ticket->canApprove());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canCreateItem());
+      $this->assertTrue((boolean)$ticket->canUpdateItem());
+      $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
+      $this->assertTrue((boolean)$ticket->canDelete());
+      $this->assertFalse((boolean)$ticket->canDeleteItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
+      $this->assertFalse((boolean)$ticket->canAddFollowups());
+   }
+
    /**
     * Checks showForm() output
     *
