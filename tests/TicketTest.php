@@ -196,13 +196,18 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertFalse((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertFalse((boolean)$ticket->canCreateItem());
       $this->assertFalse((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertFalse((boolean)$ticket->canAddFollowups());
 
       $this->login();
@@ -216,13 +221,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertFalse((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertTrue((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $ticket = getItemByTypeName('Ticket', '_ticket01');
@@ -234,13 +244,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertTrue((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
    }
 
@@ -257,13 +272,18 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertFalse((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertFalse((boolean)$ticket->canAddFollowups());
 
       $this->assertGreaterThan(
@@ -284,13 +304,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertTrue((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertTrue((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $uid = getItemByTypeName('User', TU_USER, true);
@@ -314,13 +339,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
    }
 
@@ -337,13 +367,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertFalse((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $this->assertGreaterThan(
@@ -364,13 +399,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertTrue((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $uid = getItemByTypeName('User', TU_USER, true);
@@ -394,13 +434,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       //drop update ticket right from tech profile
@@ -423,13 +468,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem());
+      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $this->assertGreaterThan(
@@ -448,13 +498,18 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canViewItem());
       $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
-      $this->assertTrue((boolean)$ticket->canMassiveAction());
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
+      $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
       $this->assertTrue((boolean)$ticket->canUpdateItem());
       $this->assertTrue((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
    }
 
