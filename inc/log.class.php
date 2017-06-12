@@ -485,6 +485,7 @@ class Log extends CommonDBTM {
                                            $data["new_value"]);
               
                   if ($data['itemtype'] == 'Ticket') {
+                     switch ($data['itemtype_link']) {
                         case 'Group':
                            $itemtick = new Group_Ticket();
                            break;
