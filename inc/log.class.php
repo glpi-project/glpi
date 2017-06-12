@@ -498,9 +498,10 @@ class Log extends CommonDBTM {
                            $itemtick = new Supplier_Ticket();
                            break;
 
-                      default:
+                        default:
                            $itemtick = false;
-                           break; 
+                           break;
+                     }
                    
                      if ($itemtick !== false) {
                         $table   = $itemtick->getTable();
