@@ -183,6 +183,21 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
 
+         $opt['criteria'][2]['field']      = 52; // global validation status
+         $opt['criteria'][2]['searchtype'] = 'equals';
+         $opt['criteria'][2]['value']      = CommonITILValidation::WAITING;
+         $opt['criteria'][2]['link']       = 'AND';
+
+         $opt['criteria'][3]['field']      = 12; // ticket status
+         $opt['criteria'][3]['searchtype'] = 'equals';
+         $opt['criteria'][3]['value']      = Ticket::CLOSED;
+         $opt['criteria'][3]['link']       = 'AND NOT';
+
+         $opt['criteria'][4]['field']      = 12; // ticket status
+         $opt['criteria'][4]['searchtype'] = 'equals';
+         $opt['criteria'][4]['value']      = Ticket::SOLVED;
+         $opt['criteria'][4]['link']       = 'AND NOT';
+
          $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
@@ -4772,6 +4787,7 @@ class Ticket extends CommonITILObject {
                         WHERE $is_deleted
                               AND `users_id_validate` = '".Session::getLoginUserID()."'
                               AND `glpi_ticketvalidations`.`status` = '".CommonITILValidation::WAITING."'
+                              AND `glpi_tickets`.`global_validation` = '".CommonITILValidation::WAITING."'
                               AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
                                                                    '".self::SOLVED."')) ".
                        getEntitiesRestrictRequest("AND", "glpi_tickets");
@@ -4984,7 +5000,12 @@ class Ticket extends CommonITILObject {
                   $options['criteria'][2]['searchtype'] = 'equals';
                   $options['criteria'][2]['value']      = 'old';
                   $options['criteria'][2]['link']       = 'AND NOT';
-                  $forcetab                 = 'TicketValidation$1';
+
+                  $options['criteria'][3]['field']      = 52; // global validation status
+                  $options['criteria'][3]['searchtype'] = 'equals';
+                  $options['criteria'][3]['value']      = CommonITILValidation::WAITING;
+                  $options['criteria'][3]['link']       = 'AND';
+                  $forcetab                         = 'TicketValidation$1';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options, '&amp;')."\">".
