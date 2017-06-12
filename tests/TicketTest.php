@@ -805,4 +805,128 @@ class TicketTest extends DbTestCase {
          $assign = true
       );
    }
+
+   public function testPriorityAcl() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->assertGreaterThan(
+         0,
+         $ticket->add([
+            'description'  => 'A ticket to check priority ACLS',
+            'content'      => ''
+         ])
+      );
+
+      $auth = new \Auth();
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+      $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
+
+      $this->assertFalse((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY));
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //Add priority right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 234503 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->assertTrue((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY));
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = true,
+         $save = true,
+         $assign = true
+      );
+   }
+
+   public function testAssignAcl() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->assertGreaterThan(
+         0,
+         $ticket->add([
+            'description'  => 'A ticket to check assign ACLS',
+            'content'      => ''
+         ])
+      );
+
+      $auth = new \Auth();
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+      $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
+
+      $this->assertFalse((boolean)$ticket->canAssign());
+      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //Drop being in charge from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 136199 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->assertFalse((boolean)$ticket->canAssign());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = false
+      );
+
+      //Add assign in charge from tech profile
+      $query = "UPDATE glpi_profilerights SET rights = 144391 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->assertTrue((boolean)$ticket->canAssign());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+   }
 }
