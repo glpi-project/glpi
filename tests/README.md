@@ -2,7 +2,7 @@
 
 To run the GLPI test suite you need
 
-* [PHPunit](https://phpunit.de/) version 4.8 or greater
+* [atoum](http://atoum.org/)
 
 Installing composer development dependencies
 ----------------------
@@ -36,7 +36,7 @@ Use the **CliInstall** script to create a new database,
 only used for the test suite, using the `--tests` option:
 
 ```bash
-$ php tools/cliinstall.php --db=glpitests --user=root --pass=xxxx --lang=en_US --tests
+$ php tools/cliinstall.php --db=glpitests --user=root --pass=xxxx --tests
 Connect to the DB...
 Create the DB...
 Save configuration file...
@@ -55,48 +55,41 @@ If you need to recreate the database (e.g. for a new schema), you need to run
 Changing database configuration
 -------------------------------
 
-If you prefer to use the another test configuration file, 
-Copy the `phpunit.xml.dist` file to `phpunit.xml` and change 
-the `GLPI_CONFIG_DIR` option.
-
-Using the same database than the web application is not recommended.
-
+Using the same database than the web application is not recommended. Use the `tests/config_db.php` file to adjust connection settings.
 
 Running the test suite
 ----------------------
 
-If you want to run the full test suite,
-including the API tests,
-you need to run a development server:
+There are two directories for tests:
+- `tests/units` for main core tests;
+- `tests/api` for API tests.
+
+You can choose to run tests on a whole directory, or on any file. You have to specify a bootstrap file each time:
+
+```bash
+$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/units/
+[...]
+$ atoum -bf tests/bootstrap.php -f tests/units/Html.php
+```
+
+If you want to run the API tests suite, you need to run a development server:
 
 ```bash
 php -S localhost:8088 tests/router.php &>/dev/null &
 ```
 
-If you want to skip the API test suite,
-you have to use the "`--exclude-group api`" option.
+Running `atoum` without any arguments will show you the possible options. Most important are:
+- `-bf` to set bootstrap file,
+- `-d` to run tests located in a whole directory,
+- `-f` to run tests on a standalone file,
+- `--debug` to get extra informations when something goes wrong,
+- `-mcn` limit number of concurrent runs. This is unfortunately mandatory running the whole test suite right now :/,
+- `-ncc` do not generate code coverage,
+- `--php` to change PHP executable to use,
+- `-l` loop mode.
 
-Run the **phpunit** command in the top of GLPI tree:
+Note that if you do not use the `-ncc` switch; coverage will be generated in the `tests/code-coverage/` directory.
 
+On first run, additional data are loaded into the test database. On following run, this step is skipped. Note that if the test dataset version changes; you'll have to reset your database using the **CliInstall** script again.
 
-```bash
-$ phpunit
-
-Loading GLPI dataset version 2
-+++++++++++++++++
-Done
-
-PHPUnit 5.3.4 by Sebastian Bergmann and contributors.
-
-Runtime:       PHP 5.6.21
-Configuration: /work/GLPI/master/phpunit.xml.dist
-
-.........................................................         57 / 57 (100%)
-
-Time: 419 ms, Memory: 41.00MB
-
-OK (57 tests, 630 assertions)
-```
-
-On first run, additional data are loaded into the test database.
-On following run, this step is skipped.
+Note: you may see a skipped tests regarding missing extension `event`; this is expected ;)
