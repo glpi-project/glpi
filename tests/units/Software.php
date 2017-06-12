@@ -302,43 +302,70 @@ class Software extends DbTestCase {
       //TODO : test Change_Item, Item_Problem, Item_Project
    }
 
-   public function testUpdateValidityIndicatorDecrease() {
-      $soft    = getItemByTypeName('Software', '_test_soft');
-      $soft_id = $soft->getID();
+   /**
+    * Creates a new software
+    *
+    * @return \Software
+    */
+   private function createSoft() {
+      $software     = new \Software();
+      $softwares_id = $software->add([
+         'name'         => 'Software ' .$this->getUniqueString(),
+         'is_template'  => 0,
+         'entities_id'  => 0
+      ]);
+      $this->integer((int)$softwares_id)->isGreaterThan(0);
+      $this->boolean($software->getFromDB($softwares_id))->isTrue();
 
-      $license = new \SoftwareLicense();
-
-      //As defined in the bootstrap, license with ID 2 has
-      //3 installations : is_valid = 1
-
-      //Descrease number to one
-      //FIXME: do not change boostrap data
-      /*$this->boolean(
-         $license->update(['id' => 2, 'number' => 1])
-      )->isTrue();
-      \Software::updateValidityIndicator($soft_id);*/
-      //FIXME: something is missing?
+      return $software;
    }
 
-   public function testUpdateValidityIndicatorIncrease() {
-      $soft    = getItemByTypeName('Software', '_test_soft');
-      $soft_id = $soft->getID();
+   public function testUpdateValidityIndicatorIncreaseDecrease() {
+      $software = $this->createSoft();
 
+      //create a license with 3 installations
       $license = new \SoftwareLicense();
+      $license_id = $license->add([
+         'name'         => 'a_software_license',
+         'softwares_id' => $software->getID(),
+         'entities_id'  => 0,
+         'number'       => 3
+      ]);
+      $this->integer((int)$license_id)->isGreaterThan(0);
 
-      //As defined in the bootstrap, license with ID 2 has
-      //3 installations : is_valid = 1
+      //attach 2 licenses
+      $license_computer = new \Computer_SoftwareLicense();
+      foreach (['_test_pc01', '_test_pc02'] as $pcid) {
+         $computer = getItemByTypeName('Computer', $pcid);
+         $input_comp = [
+            'softwarelicenses_id'   => $license_id,
+            'computers_id'          => $computer->getID(),
+            'is_deleted'            => 0,
+            'is_dynamic'            => 0
+         ];
+         $this->integer((int)$license_computer->add($input_comp))->isGreaterThan(0);
+      }
+
+      $this->boolean($software->getFromDB($software->getID()))->isTrue();
+      $this->variable($software->fields['is_valid'])->isEqualTo(1);
+
+      //Descrease number to one
+      $this->boolean(
+         $license->update(['id' => $license->getID(), 'number' => 1])
+      )->isTrue();
+      \Software::updateValidityIndicator($software->getID());
+
+      $software->getFromDB($software->getID());
+      $this->variable($software->fields['is_valid'])->isEqualTo(0);
 
       //Increase number to ten
-      //FIXME: do not change boostrap data
-      /*$this->boolean(
-         $license->update(['id' => 2, 'number' => 10])
+      $this->boolean(
+         $license->update(['id' => $license->getID(), 'number' => 10])
       )->isTrue();
-      \Software::updateValidityIndicator($soft_id);
+      \Software::updateValidityIndicator($software->getID());
 
-      //Check if is_valid still equals 1
-      $soft->getFromDB($soft_id);
-      $this->variable($soft->fields['is_valid'])->isEqualTo(1);*/
+      $software->getFromDB($software->getID());
+      $this->variable($software->fields['is_valid'])->isEqualTo(1);
    }
 
    public function testGetEmpty() {
