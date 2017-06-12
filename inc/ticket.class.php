@@ -436,8 +436,15 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if ($this->canRequesterUpdateItem()) {
+      // for all, if no modification in ticket return true
+      if ($can_requester = $this->canRequesterUpdateItem()) {
          return true;
+      }
+
+      // for self-service only, if modification in ticket, we can't update the ticket
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          && !$can_requester) {
+         return false;
       }
 
       return self::canupdate();
