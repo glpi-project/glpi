@@ -487,15 +487,15 @@ class Log extends CommonDBTM {
                         case 'Group':
                            $itemtick = new Group_Ticket();
                            break;
-                           
+
                         case 'User':
                            $itemtick = new Ticket_User();
                            break;
-                           
+
                         case 'Supplier':
                            $itemtick = new Supplier_Ticket();
                            break;
-                           
+
                         default:
                            $itemtick = false;
                            break;
