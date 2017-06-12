@@ -245,7 +245,7 @@ class TicketTest extends DbTestCase {
    }
 
    public function testPostOnlyAcls() {
-      $auth = new Auth();
+      $auth = new \Auth();
       $this->assertTrue((boolean)$auth->Login('post-only', 'postonly', true));
 
       $ticket = new \Ticket();
@@ -325,7 +325,7 @@ class TicketTest extends DbTestCase {
    }
 
    public function testTechAcls() {
-      $auth = new Auth();
+      $auth = new \Auth();
       $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
 
       $ticket = new \Ticket();
@@ -407,15 +407,21 @@ class TicketTest extends DbTestCase {
       global $DB;
       $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
 
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
-      $this->assertTrue((boolean)$ticket->canAdminActors());
+      $this->assertFalse((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
       $this->assertTrue((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
-      $this->assertTrue((boolean)$ticket->canSolve());
+      $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
       $this->assertTrue((boolean)$ticket->canMassiveAction());
       $this->assertTrue((boolean)$ticket->canCreateItem());
@@ -423,7 +429,7 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertTrue((boolean)$ticket->canAddItem());
+      $this->assertFalse((boolean)$ticket->canAddItem());
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
       $this->assertGreaterThan(
@@ -434,13 +440,13 @@ class TicketTest extends DbTestCase {
          ])
       );
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
-      $this->assertTrue((boolean)$ticket->canAdminActors());
+      $this->assertFalse((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
       $this->assertTrue((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
-      $this->assertTrue((boolean)$ticket->canSolve());
+      $this->assertFalse((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
       $this->assertTrue((boolean)$ticket->canMassiveAction());
       $this->assertTrue((boolean)$ticket->canCreateItem());
@@ -450,10 +456,6 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canDeleteItem());
       $this->assertTrue((boolean)$ticket->canAddItem());
       $this->assertTrue((boolean)$ticket->canAddFollowups());
-
-      //reset rights
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
    }
 
    /**
@@ -480,8 +482,8 @@ class TicketTest extends DbTestCase {
       $ticket->showForm($ticket->getID());
       $output =ob_get_contents();
       ob_end_clean();
-      file_put_contents('output.txt', $output);
 
+      //Form title
       preg_match(
          '/.*Ticket - ID: ' . $ticket->getID() . '.*/s',
          $output,
@@ -489,6 +491,7 @@ class TicketTest extends DbTestCase {
       );
       $this->assertEquals(1, count($matches));
 
+      //Ticket name, editable
       preg_match(
          '/.*<input[^>]*name=\'name\'  value="_ticket01">.*/',
          $output,
@@ -496,6 +499,7 @@ class TicketTest extends DbTestCase {
       );
       $this->assertEquals(($name === true ? 1 : 0), count($matches));
 
+      //Ticket content, editable
       preg_match(
          '/.*<textarea[^>]*name=\'content\'[^>]*>.*/',
          $output,
@@ -503,6 +507,7 @@ class TicketTest extends DbTestCase {
       );
       $this->assertEquals(($textarea === true ? 1 : 0), count($matches));
 
+      //Priority, editable
       preg_match(
          '/.*<select name=\'priority\'[^>]*>.*/',
          $output,
@@ -510,6 +515,7 @@ class TicketTest extends DbTestCase {
       );
       $this->assertEquals(($priority === true ? 1 : 0), count($matches));
 
+      //Save button
       preg_match(
          '/.*<input[^>]type=\'submit\'[^>]*>.*/',
          $output,
@@ -517,6 +523,7 @@ class TicketTest extends DbTestCase {
       );
       $this->assertEquals(($save === true ? 1 : 0), count($matches));
 
+      //Assign to
       preg_match(
          '/.*<select name=\'_itil_assign\[_type\]\'[^>]*>.*/',
          $output,
@@ -554,6 +561,95 @@ class TicketTest extends DbTestCase {
          $priority = false,
          $save = true,
          $assign = false
+      );
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->assertGreaterThan(
+         0,
+         $fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      );
+
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = false,
+         $assign = false
+      );
+   }
+
+   public function testFormTech() {
+      $auth = new Auth();
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //create a new ticket
+      $ticket = new \Ticket();
+      $this->assertGreaterThan(
+         0,
+         $ticket->add([
+            'description'  => 'A ticket to check displayed tech form',
+            'content'      => ''
+         ])
+      );
+
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //drop update ticket right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->assertTrue((boolean)$auth->Login('tech', 'tech', true));
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->assertGreaterThan(
+         0,
+         $fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      );
+
+      //check output with changed ACLs when a followup has been added
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = false,
+         $assign = true
       );
    }
 }
