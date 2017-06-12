@@ -2231,12 +2231,18 @@ class Ticket extends CommonITILObject {
    **/
    function canAddItem($type) {
 
-      if (($type == 'Document')
-          && ($this->getField('status') == self::CLOSED)) {
-         return false;
+      if ($type == 'Document') {
+         if ($this->getField('status') == self::CLOSED) {
+            return false;
+         }
+
+         if ($this->canAddFollowups()) {
+            return true;
+         }
       }
 
-      // as self::canUpdate & $this->canUpdateItem checks more general rights (like STEAL or OWN),
+      // as self::canUpdate & $this->canUpdateItem checks more general rights
+      // (like STEAL or OWN),
       // we specify only the rights needed for this action
       return $this->checkEntity()
              && (Session::haveRight(self::$rightname, UPDATE)

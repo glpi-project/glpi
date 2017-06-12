@@ -653,9 +653,8 @@ class Document_Item extends CommonDBRelation{
       $used       = array_keys($used_found);
       $used       = array_combine($used, $used);
 
-      if (((($item->getType() == 'Ticket') && $item->canAddFollowups())
-           || $item->canAddItem('Document'))
-          && ($withtemplate < 2)) {
+      if ($item->canAddItem('Document')
+          && $withtemplate < 2) {
          // Restrict entity for knowbase
          $entities = "";
          $entity   = $_SESSION["glpiactive_entity"];

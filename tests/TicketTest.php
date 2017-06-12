@@ -349,7 +349,7 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
       $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
    }
@@ -478,7 +478,7 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
       $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
@@ -582,7 +582,7 @@ class TicketTest extends DbTestCase {
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertFalse((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
-      $this->assertFalse((boolean)$ticket->canAddItem('Document'));
+      $this->assertTrue((boolean)$ticket->canAddItem('Document'));
       $this->assertFalse((boolean)$ticket->canAddItem('Ticket_Cost'));
       $this->assertTrue((boolean)$ticket->canAddFollowups());
 
