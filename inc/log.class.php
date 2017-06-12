@@ -487,22 +487,17 @@ class Log extends CommonDBTM {
                         case 'Group':
                            $itemtick = new Group_Ticket();
                            break;
+                           
                         case 'User':
                            $itemtick = new Ticket_User();
                            break;
+                           
                         case 'Supplier':
                            $itemtick = new Supplier_Ticket();
                            break;
-                        case 'KnowbaseItem':
-                           //no user referenced in link
-                           $itemtick = false;
-                           break;
+                           
                         default:
                            $itemtick = false;
-                           trigger_error(
-                              sprintf(__('Unknown itemtype_link %1$s'), $data['itemtype_link']),
-                              E_USER_ERROR
-                           );
                            break;
                      }
 
