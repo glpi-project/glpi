@@ -1005,6 +1005,13 @@ class User extends CommonDBTM {
                }
             }
 
+            if (isset($this->input["groups_id"])) {
+               $group_user         = new Group_user();
+               $input['users_id']  = $this->getID();
+               $input['groups_id'] = $this->input["groups_id"];
+               $group_user->add($input);
+            }
+
             //Unset all the temporary tables
             unset($this->input["_ldap_rules"]);
 
