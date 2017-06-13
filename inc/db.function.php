@@ -144,16 +144,16 @@ function getItemTypeForTable($table) {
          $table = Toolbox::ucfirst(getSingular($table));
       }
 
-      // Namespaced item
-      $itemtype = $pref2 . str_replace('_', '\\', $table);
+      $itemtype = $prefix.$table;
+      // Get real existence of itemtype
       if (($item = getItemForItemtype($itemtype))) {
          $itemtype                                   = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
          $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
          return $itemtype;
       }
-      // Get real existence of itemtype
-      $itemtype = $prefix.$table;
+      // Namespaced item
+      $itemtype = $pref2 . str_replace('_', '\\', $table);
       if (($item = getItemForItemtype($itemtype))) {
          $itemtype                                   = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
