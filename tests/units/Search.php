@@ -243,6 +243,7 @@ class Search extends DbTestCase {
                  || $itemtype == 'SlaLevel'
                  || $itemtype == 'Reservation'
                  || $itemtype == 'Event'
+                 || $itemtype == 'Glpi\\Event'
                  || $itemtype == 'KnowbaseItem'
                  || $itemtype == 'NetworkPortMigration') {
             // it's the case where not have search possible in this itemtype
