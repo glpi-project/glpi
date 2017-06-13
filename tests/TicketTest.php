@@ -345,7 +345,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canCreateItem());
-      $this->assertTrue((boolean)$ticket->canUpdateItem());
+      $this->assertFalse((boolean)$ticket->canUpdateItem());
       $this->assertFalse((boolean)$ticket->canRequesterUpdateItem());
       $this->assertTrue((boolean)$ticket->canDelete());
       $this->assertFalse((boolean)$ticket->canDeleteItem());
