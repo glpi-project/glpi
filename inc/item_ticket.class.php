@@ -286,7 +286,7 @@ class Item_Ticket extends CommonDBRelation{
 
       if (!empty($params['items_id'])) {
          // No delete if mandatory and only one item
-         $delete = $ticket->canUpdateItem();
+         $delete = $ticket->canAddItem(__CLASS__);
          $cpt = 0;
          foreach ($params['items_id'] as $itemtype => $items) {
             $cpt += count($items);
@@ -399,7 +399,7 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $ticket->canAddItem($instID) && $ticket->canUpdateItem();
+      $canedit = $ticket->canAddItem($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

@@ -246,8 +246,13 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
+
       return Session::haveRightsOr(self::$rightname,
-                                   array(UPDATE, self::ASSIGN, self::STEAL, self::OWN));
+                                   array(UPDATE,
+                                         self::ASSIGN,
+                                         self::STEAL,
+                                         self::OWN,
+                                         self::CHANGEPRIORITY));
    }
 
 
@@ -444,22 +449,37 @@ class Ticket extends CommonITILObject {
     * @return boolean
    **/
    function canUpdateItem() {
-
-      if (!Session::haveAccessToEntity($this->getEntityID())) {
+      if (!$this->checkEntity()) {
          return false;
       }
 
+      // for all, if no modification in ticket return true
+      if ($can_requester = $this->canRequesterUpdateItem()) {
+         return true;
+      }
+
+      // for self-service only, if modification in ticket, we can't update the ticket
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
-          && ($this->fields['status'] != self::INCOMING
-            || $this->numberOfFollowups() > 0
-            || $this->numberOfTasks() > 0
-          )
-          && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
+          && !$can_requester) {
          return false;
       }
 
-      return static::canUpdate();
+      return self::canupdate();
+   }
+
+
+   /**
+    * Is the current user is a requester of the current ticket and have the right to update it ?
+    *
+    * @return boolean
+    */
+   function canRequesterUpdateItem() {
+       return ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+              && $this->fields['status'] != self::SOLVED
+              && $this->fields['status'] != self::CLOSED
+              && $this->numberOfFollowups() == 0
+              && $this->numberOfTasks() == 0;
    }
 
 
@@ -499,7 +519,6 @@ class Ticket extends CommonITILObject {
 
       return static::canDelete();
    }
-
 
    /**
     * @see CommonITILObject::getDefaultActor()
@@ -2242,11 +2261,22 @@ class Ticket extends CommonITILObject {
    **/
    function canAddItem($type) {
 
-      if (($type == 'Document')
-          && ($this->getField('status') == self::CLOSED)) {
-         return false;
+      if ($type == 'Document') {
+         if ($this->getField('status') == self::CLOSED) {
+            return false;
+         }
+
+         if ($this->canAddFollowups()) {
+            return true;
+         }
       }
-      return parent::canAddItem($type);
+
+      // as self::canUpdate & $this->canUpdateItem checks more general rights
+      // (like STEAL or OWN),
+      // we specify only the rights needed for this action
+      return $this->checkEntity()
+             && (Session::haveRight(self::$rightname, UPDATE)
+                 || $this->canRequesterUpdateItem());
    }
 
 
@@ -3982,9 +4012,11 @@ class Ticket extends CommonITILObject {
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 
-      $canupdate                 = Session::haveRight(self::$rightname, UPDATE);
-      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
-      $canstatus                 = $canupdate;
+      // check right used for this ticket
+      $canupdate   = !$ID
+                     || Session::haveRight(self::$rightname, UPDATE)
+                     || $this->canRequesterUpdateItem();
+      $canpriority = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
 
       if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
          $canupdate = false;
@@ -4011,8 +4043,6 @@ class Ticket extends CommonITILObject {
       $colsize2 = '29';
       $colsize3 = '13';
       $colsize4 = '45';
-
-      $canupdate_descr = $canupdate || $this->canUpdateItem();
 
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
@@ -4169,7 +4199,7 @@ class Ticket extends CommonITILObject {
                                              $tt->getMandatoryMark('type'))."</th>";
       echo "<td width='$colsize2%'>";
       // Permit to set type when creating ticket without update right
-      if ($canupdate || !$ID) {
+      if ($canupdate) {
          $opt = array('value' => $this->fields["type"]);
          /// Auto submit to load template
          if (!$ID) {
@@ -4194,9 +4224,7 @@ class Ticket extends CommonITILObject {
                                              $tt->getMandatoryMark('itilcategories_id'))."</th>";
       echo "<td width='$colsize4%'>";
       // Permit to set category when creating ticket without update right
-      if ($canupdate
-          || !$ID
-          || $canupdate_descr) {
+      if ($canupdate) {
 
          $opt = array('value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]);
@@ -4250,7 +4278,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('status')."</th>";
       echo "<td width='$colsize2%'>";
       echo $tt->getBeginHiddenFieldValue('status');
-      if ($canstatus) {
+      if ($canupdate) {
          self::dropdownStatus(array('value'     => $this->fields["status"],
                                     'showtype'  => 'allowed'));
          TicketValidation::alertValidation($this, 'status');
@@ -4286,9 +4314,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
-      if (($canupdate && $canpriority)
-          || !$ID
-          || $canupdate_descr) {
+      if ($canupdate && $canpriority) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
@@ -4381,7 +4407,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
-      if ($canupdate || !$ID) {
+      if ($canupdate) {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $this->fields['entities_id']));
       } else {
@@ -4413,8 +4439,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('priority', $this);
       }
 
-      if ($canupdate
-          || $canupdate_descr) {
+      if ($canupdate) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
                          'priority' => $idpriority);
@@ -4447,7 +4472,7 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         $values['_canupdate'] = $canupdate || $canupdate_descr;
+         $values['_canupdate'] = $canupdate;
          Item_Ticket::itemAddForm($this, $values);
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
@@ -4476,16 +4501,13 @@ class Ticket extends CommonITILObject {
          $this->showActorsPartForm($ID, $values);
       }
 
-      $view_linked_tickets = ($ID || $canupdate);
-
       echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td colspan='3'>";
-      if (!$ID
-          || $canupdate_descr) {
+      if ($canupdate) {
          echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
                 ($tt->isMandatoryField('name') ? " required='required'" : '') .
@@ -4504,8 +4526,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      if (!$ID
-          || $canupdate_descr) {
+      if ($canupdate) {
          $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
@@ -4522,18 +4543,22 @@ class Ticket extends CommonITILObject {
             $this->fields["content"] = Html::setRichTextContent($content_id,
                                                                 $this->fields["content"],
                                                                 $rand,
-                                                                !$canupdate_descr);
+                                                                !$canupdate);
          $rows = 10;
       } else {
          $this->fields["content"] = Html::setSimpleTextContent($this->fields["content"]);
       }
 
       echo "<div id='content$rand_text'>";
-      echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
+      if ($CFG_GLPI['use_rich_text'] || $canupdate) {
+         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $this->fields["content"]."</textarea></div>";
-      if (!$CFG_GLPI["use_rich_text"]) {
-         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         if (!$CFG_GLPI["use_rich_text"]) {
+            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         }
+      } else {
+         echo $this->fields['content'];
       }
       echo $tt->getEndHiddenFieldValue('content', $this);
 
@@ -4541,7 +4566,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      if ($view_linked_tickets) {
+      if ($canupdate) {
          echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
@@ -4623,16 +4648,16 @@ class Ticket extends CommonITILObject {
 
       echo "</table>";
 
-      if ((!$ID
-           || $canupdate
-           || $canupdate_descr
-           || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL, DELETE, PURGE)))
+      if (($canupdate
+           || $canpriority
+           || $this->canAssign()
+           || $this->canAssignTome())
           && !$options['template_preview']) {
 
          if ($ID) {
-            if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
+            if (self::canPurge()
                 || $this->canDeleteItem()
-                || $this->canUpdateItem()) {
+                || $canupdate) {
                echo "<div class='center'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
@@ -4640,7 +4665,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                } else {
-                  if (self::canUpdate()) {
+                  if ($canupdate || $canpriority) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
@@ -6760,7 +6785,7 @@ class Ticket extends CommonITILObject {
 
       $canadd_fup      = $fup->can(-1, CREATE, $tmp);
       $canadd_task     = $ttask->can(-1, CREATE, $tmp);
-      $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
+      $canadd_document = $canadd_fup || $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
       if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution) {
