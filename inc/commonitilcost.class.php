@@ -486,7 +486,7 @@ abstract class CommonITILCost extends CommonDBChild {
       }
       $canedit = false;
       if (!$forproject) {
-         $canedit = $item->canUpdateItem();
+         $canedit = $item->canAddItem(__CLASS__);
       }
 
       echo "<div class='center'>";
