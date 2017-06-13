@@ -368,7 +368,7 @@ class Html extends atoum {
          'Profile',
          'QueuedNotification',
          'Backup',
-         'Event'
+         'Glpi\\Event'
       ];
       $this->string($menu['admin']['title'])->isIdenticalTo('Administration');
       $this->array($menu['admin']['types'])->isIdenticalTo($expected);
