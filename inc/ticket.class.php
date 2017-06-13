@@ -213,7 +213,7 @@ class Ticket extends CommonITILObject {
 
    function canAdminActors() {
 
-      if ($this->fields['is_deleted'] == 1) {
+      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
          return false;
       }
       return Session::haveRight(self::$rightname, UPDATE);
@@ -231,7 +231,7 @@ class Ticket extends CommonITILObject {
 
    function canAssignToMe() {
 
-      if ($this->fields['is_deleted'] == 1) {
+      if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
          return false;
       }
       return (Session::haveRight(self::$rightname, self::STEAL)

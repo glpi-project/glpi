@@ -295,4 +295,748 @@ class Ticket extends DbTestCase {
       $this->variable($taskB['groups_id_tech'])->isEqualTo(0);
       $this->variable($taskB['state'])->isEqualTo(\Planning::TODO);
    }
+
+   public function testAcls() {
+      $ticket = new \Ticket();
+      //to fix an undefined index
+      $_SESSION["glpiactiveprofile"]["interface"] = '';
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdate())->isFalse();
+      $this->boolean((boolean)$ticket->canView())->isFalse();
+      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      $this->login();
+      $this->setEntity('Root entity', true);
+      $ticket = new \Ticket();
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
+      $this->boolean((boolean)$ticket->canAssign())->isTrue(); //=> get 8192
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $ticket = getItemByTypeName('Ticket', '_ticket01');
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue(); //=> get 2
+      $this->boolean((boolean)$ticket->canAssign())->isTrue(); //=> get 8192
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testPostOnlyAcls() {
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+
+      $ticket = new \Ticket();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem());
+      $this->boolean((boolean)$ticket->canAddItem('Document'));
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      //reload ticket from DB
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->integer(
+         (int)$fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testTechAcls() {
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      $ticket = new \Ticket();
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      //reload ticket from DB
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->integer(
+         (int)$fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      )->isGreaterThan(0);
+
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      //drop update ticket right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'Another ticket to check ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+   }
+
+   public function testNotOwnerAcls() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reload ticket from DB
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      //drop update ticket right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isTrue();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isFalse();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isTrue();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
+
+      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+      $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      $this->boolean((boolean)$ticket->canUpdate())->isTrue();
+      $this->boolean((boolean)$ticket->canView())->isTrue();
+      $this->boolean((boolean)$ticket->canViewItem())->isFalse();
+      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canApprove())->isFalse();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'priority', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'type', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canMassiveAction('update', 'location', 'qwerty'))->isTrue();
+      $this->boolean((boolean)$ticket->canCreateItem())->isTrue();
+      $this->boolean((boolean)$ticket->canUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canRequesterUpdateItem())->isFalse();
+      $this->boolean((boolean)$ticket->canDelete())->isTrue();
+      $this->boolean((boolean)$ticket->canDeleteItem())->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Document'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
+      $this->boolean((boolean)$ticket->canAddFollowups())->isFalse();
+   }
+
+   /**
+    * Checks showForm() output
+    *
+    * @param \Ticket $ticket   Ticket instance
+    * @param boolean $name     Name is editable
+    * @param boolean $textarea Content is editable
+    * @param boolean $priority Priority can be changed
+    * @param boolean $save     Save button is present
+    * @param boolean $assign   Can assign
+    *
+    * @return void
+    */
+   private function checkFormOutput(
+      \Ticket $ticket,
+      $name = true,
+      $textarea = true,
+      $priority = true,
+      $save = true,
+      $assign = true
+   ) {
+      ob_start();
+      $ticket->showForm($ticket->getID());
+      $output =ob_get_contents();
+      ob_end_clean();
+
+      //Form title
+      preg_match(
+         '/.*Ticket - ID: ' . $ticket->getID() . '.*/s',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(1);
+
+      //Ticket name, editable
+      preg_match(
+         '/.*<input[^>]*name=\'name\'  value="_ticket01">.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($name === true ? 1 : 0));
+
+      //Ticket content, editable
+      preg_match(
+         '/.*<textarea[^>]*name=\'content\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($textarea === true ? 1 : 0));
+
+      //Priority, editable
+      preg_match(
+         '/.*<select name=\'priority\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($priority === true ? 1 : 0));
+
+      //Save button
+      preg_match(
+         '/.*<input[^>]type=\'submit\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($save === true ? 1 : 0));
+
+      //Assign to
+      preg_match(
+         '/.*<select name=\'_itil_assign\[_type\]\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($assign === true ? 1 : 0));
+   }
+
+   public function testForm() {
+      $this->login();
+      $this->setEntity('Root entity', true);
+      $ticket = getItemByTypeName('Ticket', '_ticket01');
+
+      $this->checkFormOutput($ticket);
+   }
+
+   public function testFormPostOnly() {
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+
+      //create a new ticket
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check displayed postonly form',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
+
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = false
+      );
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->integer(
+         (int)$fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      )->isGreaterThan(0);
+
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = false,
+         $assign = false
+      );
+   }
+
+   public function testFormTech() {
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //create a new ticket
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check displayed tech form',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+      $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
+
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //drop update ticket right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      $uid = getItemByTypeName('User', TU_USER, true);
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->integer(
+         (int)$fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      )->isGreaterThan(0);
+
+      //check output with changed ACLs when a followup has been added
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = false,
+         $assign = true
+      );
+   }
+
+   public function testPriorityAcl() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check priority ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+
+      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isFalse();
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //Add priority right from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 234503 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isTrue();
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = true,
+         $save = true,
+         $assign = true
+      );
+   }
+
+   public function testAssignAcl() {
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check assign ACLS',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
+
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      //check output with default ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+
+      //Drop being in charge from tech profile
+      global $DB;
+      $query = "UPDATE glpi_profilerights SET rights = 136199 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->boolean((boolean)$ticket->canAssign())->isFalse();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = false
+      );
+
+      //Add assign in charge from tech profile
+      $query = "UPDATE glpi_profilerights SET rights = 144391 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+      //ACLs have changed: login again.
+      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
+      $DB->query($query);
+
+      $this->boolean((boolean)$ticket->canAssign())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
+      //check output with changed ACLs
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = true,
+         $priority = false,
+         $save = true,
+         $assign = true
+      );
+   }
 }
