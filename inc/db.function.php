@@ -226,7 +226,10 @@ function getTableForItemType($itemtype) {
  * @return itemtype object or false if class does not exists
 **/
 function getItemForItemtype($itemtype) {
-
+   if ($itemtype === 'Event') {
+      //to avoid issues when pecl-event is installed...
+      $itemtype = 'Glpi\\Event';
+   }
    if (class_exists($itemtype)) {
       return new $itemtype();
    }
