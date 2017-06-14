@@ -89,7 +89,7 @@ class Stat extends DbTestCase {
                   'data'   => [10, 12, 16, 19]
             ],
       ];
-      $html = $stat->displayBarGraph('title of the graph', $labels, $series, null, false);
+      $html = $stat->displayStackedBarGraph('title of the graph', $labels, $series, null, false);
 
       $expectedLabels = "labels: ['" . implode("', '", $labels) . "']";
       $expectedSeries = [];
