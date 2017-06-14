@@ -662,8 +662,8 @@ class MassiveAction {
                   }
                   foreach (Search::getCleanedOptions($itemtype, UPDATE) as $index => $option) {
 
-                     if (!is_array($option)) {
-                        $group                               = $option;
+                     if (!is_array($option) || count($option) == 1) {
+                        $group                               = !is_array($option) ? $option : $option['name'];
                         $options_per_type[$itemtype][$group] = array();
                      } else {
                         if (($option['field'] != 'id')
