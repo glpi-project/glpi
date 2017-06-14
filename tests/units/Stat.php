@@ -73,9 +73,6 @@ class Stat extends DbTestCase {
       }
    }
 
-   /**
-    * @engine inline
-    */
    public function testStackedBarGraph() {
       $stat = new \Stat();
       $labels = ['label 1', 'label 2'];
