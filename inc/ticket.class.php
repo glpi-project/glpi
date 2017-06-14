@@ -4551,7 +4551,7 @@ class Ticket extends CommonITILObject {
 
       echo "<div id='content$rand_text'>";
       if ($CFG_GLPI['use_rich_text'] || $canupdate) {
-         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
+         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
                ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $this->fields["content"]."</textarea></div>";
          if (!$CFG_GLPI["use_rich_text"]) {
