@@ -198,7 +198,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                           sprintf(__('Fatal error: giving up delivery of email to %s'),
                                                 $current->fields['recipient']),
                                           $current->fields['name']."\n"));
-               $current->delete(array('id' => $curent->fields['id']));
+               $current->delete(array('id' => $current->fields['id']));
             }
 
             $mmail->ClearAddresses();
