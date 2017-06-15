@@ -420,7 +420,7 @@ select {
 }
 
 
-textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]) {
+textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-input) {
    background-color:#FCFCFC;
    color: black;
    border: 1px solid #D3D3D3;
