@@ -2484,7 +2484,7 @@ class CommonDBTM extends CommonGLPI {
       }
     
       $this->right = $right;
-      plugin::doHook('can', $this);
+      plugin::doHook('item_can', $this);
       switch ($this->right) {
          case READ :
             // Personnal item
