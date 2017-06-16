@@ -12745,11 +12745,11 @@ msgstr "Reservierungsaktualisierung"
 
 #: inc/notificationtargetreservation.class.php:53
 msgid "Deletion of a reservation"
-msgstr "Löschung einer Reservation"
+msgstr "Löschung einer Reservierung"
 
 #: inc/notificationtargetreservation.class.php:54
 msgid "Reservation expired"
-msgstr "Ablauf der Reservation"
+msgstr "Ablauf der Reservierung"
 
 #: inc/notificationtargetreservation.class.php:160
 msgid "URL of item reserved"
@@ -12916,7 +12916,7 @@ msgstr[1] "Template-Übersetzungen"
 
 #: inc/notificationtemplatetranslation.class.php:128
 msgid "Show list of available tags"
-msgstr "Liste der verfügbaren Tags anziegen"
+msgstr "Liste der verfügbaren Tags anzeigen"
 
 #: inc/notificationtemplatetranslation.class.php:152
 #: inc/notificationtemplatetranslation.class.php:304
