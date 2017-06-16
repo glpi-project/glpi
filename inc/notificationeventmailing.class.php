@@ -145,7 +145,9 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
             $documents = importArrayFromDB($current->fields['documents']);
             if (is_array($documents) && count($documents)) {
-               $doc = new Document();
+               if (!$doc = new Document()) {
+                  continue;
+               }
                foreach ($documents as $docID) {
                   $doc->getFromDB($docID);
                   // Add embeded image if tag present in ticket content
@@ -198,7 +200,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                           sprintf(__('Fatal error: giving up delivery of email to %s'),
                                                 $current->fields['recipient']),
                                           $current->fields['name']."\n"));
-               $current->delete(array('id' => $curent->fields['id']));
+               $current->delete(array('id' => $current->fields['id']));
             }
 
             $mmail->ClearAddresses();
