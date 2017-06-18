@@ -52,10 +52,8 @@ class Certificate_Item extends CommonDBRelation {
    static public $items_id_2    = 'items_id';
    static public $take_entity_2 = true;
 
-   static $rightname = "certificate";
-
    /**
-    * @since version 0.84
+    * @since version 9.2
     *
    **/
    function getForbiddenStandardMassiveAction() {
@@ -136,8 +134,11 @@ class Certificate_Item extends CommonDBRelation {
    }
 
    /**
+    * Get the number of certificates for an item
+    *
+    * @since 9.2
     * @param CommonDBTM $item
-    * @return int
+    * @return int the number of certificates
     */
    static function countForItem(CommonDBTM $item) {
       return countElementsInTable('glpi_certificates_items',
@@ -171,20 +172,27 @@ class Certificate_Item extends CommonDBRelation {
    }
 
    /**
-    * @param $values
-    */
+   * Link a certificate to an item
+   *
+   * @since 9.2
+   * @param $values
+   */
    function addItem($values) {
 
       $this->add(['certificates_id' => $values["certificates_id"],
-                  'items_id' => $values["items_id"],
-                  'itemtype' => $values["itemtype"]]);
+                  'items_id'        => $values["items_id"],
+                  'itemtype'        => $values["itemtype"]]);
    }
 
    /**
-    * @param $certificates_id
-    * @param $items_id
-    * @param $itemtype
-    */
+   * Delete a certificate link to an item
+   *
+   * @since 9.2
+   *
+   * @param $certificates_id the certificate ID
+   * @param $items_id the item's id
+   * @param $itemtype the itemtype
+   */
    function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype) {
 
       if ($this->getFromDBbyCertificatesAndItem($certificates_id, $items_id,
@@ -194,9 +202,9 @@ class Certificate_Item extends CommonDBRelation {
    }
 
    /**
-    * Show items links to a certificate
+    * Show items linked to a certificate
     *
-    * @since version 0.84
+    * @since version 9.2
     *
     * @param $certificate Certificate object
     *
@@ -249,8 +257,8 @@ class Certificate_Item extends CommonDBRelation {
                 'checkright'      => true,
                ]);
          echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
-         Html::hidden('certificates_id', ['value' => $instID]);
-         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
+         echo Html::hidden('certificates_id', ['value' => $instID]);
+         echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -358,7 +366,7 @@ class Certificate_Item extends CommonDBRelation {
    /**
     * Show certificates associated to an item
     *
-    * @since version 0.84
+    * @since version 9.2
     *
     * @param $item  CommonDBTM object for which associated certificates must be displayed
     * @param $withtemplate (default '')
@@ -417,19 +425,17 @@ class Certificate_Item extends CommonDBRelation {
                 WHERE `glpi_certificates_items`.`items_id` = '$ID'
                       AND `glpi_certificates_items`.`itemtype` = '" . $item->getType() . "' ";
 
-      $query .= getEntitiesRestrictRequest(" AND", "glpi_certificates", '', '', true);
-
-      $query .= " ORDER BY `assocName`";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      $i = 0;
+      $query   .= getEntitiesRestrictRequest(" AND", "glpi_certificates", '', '', true);
+      $query   .= " ORDER BY `assocName`";
+      $iterator = $DB->request($query);
+      $number   = $iterator->numrows();
+      $i        = 0;
 
       $certificates = [];
       $used         = [];
       $certificate  = new Certificate();
 
-      foreach ($DB->request($query) as $data) {
+      foreach ($iterator as $data) {
          $certificates[$data['assocID']] = $data;
          $used[$data['id']] = $data['id'];
       }
@@ -454,7 +460,7 @@ class Certificate_Item extends CommonDBRelation {
 
          echo "<div class='firstbloc'>";
 
-         if (Certificate::canView() && ($nb > count($used)) ) {
+         if (Certificate::canView() && (!$nb || ($nb > count($used))) ) {
             echo "<form name='certificate_form$rand'
                         id='certificate_form$rand'
                         method='post'
@@ -475,10 +481,9 @@ class Certificate_Item extends CommonDBRelation {
                echo Html::hidden('tickets_id', ['value' => $ID]);
             }
 
-            Certificate::show([
-                                'entity'       => $item->fields['entities_id'],
-                                'is_recursive' => $is_recursive,
-                                'used'         => $used
+            Certificate::show(['entity'       => $item->fields['entities_id'],
+                               'is_recursive' => $is_recursive,
+                               'used'         => $used
                               ]);
 
             echo "</td><td class='center' width='20%'>";
@@ -567,7 +572,7 @@ class Certificate_Item extends CommonDBRelation {
                echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";
             }
             echo "<td class='center'>";
-            echo Dropdown::getDropdownName("states", $data["states_id"]);
+            echo Dropdown::getDropdownName("glpi_states", $data["states_id"]);
             echo "</td>";
             echo "</tr>";
             $i++;

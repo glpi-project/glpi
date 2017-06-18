@@ -557,13 +557,13 @@ class Certificate extends CommonDBTM {
       $values[0] = Dropdown::EMPTY_VALUE;
       asort($values);
       $rand      = mt_rand();
-
-      $out  = Dropdown::showFromArray('certificatetype', $values,
-                                      ['width'   => '30%',
-                                       'rand'    => $rand,
-                                       'display' => false,
-                                       'value'   => 0
-                                      ]);
+      $out       = '';
+      Dropdown::show('CertificateType', $values,
+                               ['width'   => '30%',
+                                 'rand'    => $rand,
+                                 'display' => false,
+                                 'value'   => 0
+                                ]);
       $field_id = Html::cleanId("dropdown__certificatetype$rand");
 
       $params = ['certificatetype' => '__VALUE__',
@@ -581,8 +581,8 @@ class Certificate extends CommonDBTM {
       $out .= "</span>\n";
 
       $params['certificatetype'] = 0;
-//      $out .= Ajax::updateItem("show_" . $p['name'] . $rand,
-//                               $url, $params, false);
+      $out .= Ajax::updateItem("show_" . $p['name'] . $rand,
+                               $url, $params, false);
       if ($p['display']) {
          echo $out;
          return $rand;
@@ -602,8 +602,10 @@ class Certificate extends CommonDBTM {
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
          if (self::canUpdate()) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install'] = _x('button', 'Associate certificate');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _x('button', 'Dissociate certificate');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
+               = _x('button', 'Associate certificate');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
+               = _x('button', 'Dissociate certificate');
          }
       }
       return $actions;

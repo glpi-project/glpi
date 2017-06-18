@@ -882,7 +882,11 @@ class Profile extends CommonDBTM {
                             'field'     => 'budget'],
                       ['itemtype'  => 'Line',
                             'label'     => __('Line'),
-                            'field'     => 'line']];
+                            'field'     => 'line'],
+                      ['itemtype'  => 'Certificate',
+                            'label'     => _n('Certificate', 'Cerficates',
+                                              Session::getPluralNumber()),
+                            'field'     => 'certificate']];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

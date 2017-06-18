@@ -44,8 +44,8 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
 Session::checkCentralAccess();
 
 // Make a select box
-if (isset($_POST["certificatetype"])) {
-   $used = array();
+//if (isset($_POST["certificatetype"])) {
+   $used = [];
 
    // Clean used array
    if (isset($_POST['used'])
@@ -66,4 +66,4 @@ if (isset($_POST["certificatetype"])) {
                    'entity'    => $_POST['entity'],
                    'rand'      => $_POST['rand'],
                 ]);
-}
+//}

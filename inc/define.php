@@ -232,7 +232,8 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-                                                  'Software', 'SoftwareLicense', 'Certificate'], $CFG_GLPI['itemdevices']);
+                                                  'Software', 'SoftwareLicense', 'Certificate'],
+                                                  $CFG_GLPI['itemdevices']);
 
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer', 'Certificate'];
 
@@ -422,9 +423,10 @@ $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Problem', 'Project', 'Software',
                                            'SoftwareLicense', 'Supplier',
                                            'Ticket', 'Certificate'];
-$CFG_GLPI["certificate_types"]     = ['Computer', 'Monitor',
+$CFG_GLPI["certificate_types"]     = ['Computer',
                                       'NetworkEquipment', 'Peripheral',
-                                      'Phone', 'Printer', 'Software', 'User'];
+                                      'Phone', 'Printer',
+                                      'SoftwareLicense', 'User'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [

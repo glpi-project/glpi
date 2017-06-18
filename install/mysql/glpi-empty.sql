@@ -487,6 +487,94 @@ CREATE TABLE `glpi_cartridges` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_certificates
+
+DROP TABLE IF EXISTS `glpi_certificates`;
+CREATE TABLE `glpi_certificates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `certificatetypes_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+  `dns_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dns_suffix` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id_tech` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
+  `locations_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `is_autosign` tinyint(1) NOT NULL DEFAULT '0',
+  `date_expiration` date DEFAULT NULL,
+  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `command` text COLLATE utf8_unicode_ci,
+  `certificate_request` text COLLATE utf8_unicode_ci,
+  `certificate_item` text COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_template` (`is_template`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `certificatetypes_id` (`certificatetypes_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `states_id` (`states_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_certificates_items
+
+DROP TABLE IF EXISTS `glpi_certificates_items`;
+CREATE TABLE `glpi_certificates_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `certificates_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`certificates_id`,`itemtype`,`items_id`),
+  KEY `device` (`items_id`,`itemtype`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_certificatetypes
+
+DROP TABLE IF EXISTS `glpi_certificatetypes`;
+CREATE TABLE `glpi_certificatetypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_changecosts
 
 DROP TABLE IF EXISTS `glpi_changecosts`;
@@ -7902,6 +7990,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwarelicense` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_line` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_certificate` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7916,6 +8005,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_softwareversion` (`is_visible_softwareversion`),
   KEY `is_visible_softwarelicense` (`is_visible_softwarelicense`),
   KEY `is_visible_line` (`is_visible_line`),
+  KEY `is_visible_certificate` (`is_visible_certificate`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
