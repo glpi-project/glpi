@@ -330,7 +330,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           'groupe,compname'   => __('Group'),
                           'username,compname' => __('User'),
                           'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
-                          'date_instal'       => __('Installation date'));
+                          'date_install'      => __('Installation date'));
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
       }
