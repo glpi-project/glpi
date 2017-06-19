@@ -1,9 +1,4 @@
 language: php
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - nightly
 
 env:
   - DB=mysql
@@ -32,6 +27,15 @@ matrix:
   include:
     - php: 5.6
       addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
+
+    - php: 5.6
+      addons:
         mariadb: 10.0
         apt:
           packages:
@@ -50,7 +54,23 @@ matrix:
           - ldap-master
     - php: 7.0
       addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
+    - php: 7.0
+      addons:
         mariadb: 10.0
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
+    - php: 7.1
+      addons:
         apt:
           packages:
             - ldap-utils
@@ -79,6 +99,14 @@ matrix:
       env: CS=true
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+        hosts:
+          - ldap-master
+    - php: nightly
+      addons:
         apt:
           packages:
             - ldap-utils
