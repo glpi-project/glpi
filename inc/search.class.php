@@ -2602,6 +2602,7 @@ class Search {
       global $CFG_GLPI;
 
       $condition = '';
+
       switch ($itemtype) {
          case 'Reminder' :
             $condition = Reminder::addVisibilityRestrict();
@@ -2636,7 +2637,6 @@ class Search {
                                        IN (".implode(",", $_SESSION['glpigroups'])."))";
             }
             $condition .= ") ";
-
             break;
 
          case 'Project' :
@@ -2786,7 +2786,7 @@ class Search {
 
                $condition .= ") ";
             }
-            break;;
+            break;
 
          case 'Config':
             $availableContexts = array('core') + $_SESSION['glpi_plugins'];
@@ -2816,7 +2816,7 @@ class Search {
          }
          unset($item->add_where);
       }
-
+      list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
       return $condition;
    }
 
