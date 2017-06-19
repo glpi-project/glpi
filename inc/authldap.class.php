@@ -78,6 +78,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['port']                        = '389';
       $this->fields['condition']                   = '';
       $this->fields['login_field']                 = 'uid';
+      $this->fields['sync_field']                  = 'uid';
       $this->fields['use_tls']                     = 0;
       $this->fields['group_field']                 = '';
       $this->fields['group_condition']             = '';
@@ -118,6 +119,7 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['condition']
                = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
             $this->fields['login_field']               = 'samaccountname';
+            $this->fields['sync_field']                = 'samaccountname';
             $this->fields['use_tls']                   = 0;
             $this->fields['group_field']               = 'memberof';
             $this->fields['group_condition']
@@ -350,15 +352,21 @@ class AuthLDAP extends CommonDBTM {
          if ($ID) {
             echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
          }
-
          echo "</td>";
+         echo "<td rowspan='4'><label for='comment'>".__('Comments')."</label></td>";
+         echo "<td rowspan='4' class='middle'>";
+         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Login field') . "</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-         echo "<td colspan='3'>";
-         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Synchronization field') . "</td>";
+         echo "<td><input type='text' name='sync_field' value='".$this->fields["sync_field"]."'>";
+         echo "</td></tr>";
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
@@ -1063,6 +1071,15 @@ class AuthLDAP extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => $this->getTable(),
+         'field'              => 'sync_field',
+         'name'               => __('Synchrozation field'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
       return $tab;
    }
 
@@ -1222,6 +1239,11 @@ class AuthLDAP extends CommonDBTM {
     */
    static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset=0) {
       global $CFG_GLPI;
+
+      //Check if timestamp is well format, otherwise return ''
+      if (!preg_match("/[\d][A-Z]/", $ldapstamp)) {
+         return '';
+      }
 
       $year    = substr($ldapstamp, 0, 4);
       $month   = substr($ldapstamp, 4, 2);
@@ -2397,18 +2419,7 @@ class AuthLDAP extends CommonDBTM {
     * @return boolean
     */
    static function useAuthLdap() {
-      global $DB;
-
-      //Get all the ldap directories
-      $sql = "SELECT COUNT(*)
-              FROM `glpi_authldaps`
-              WHERE `is_active` = 1";
-      $result = $DB->query($sql);
-
-      if ($DB->result($result, 0, 0) > 0) {
-         return true;
-      }
-      return false;
+      return (countElementsInTable('glpi_authldaps', ['is_active' => 1]) > 0);
    }
 
 
@@ -2973,14 +2984,7 @@ class AuthLDAP extends CommonDBTM {
     * @return integer
     */
    static function getNumberOfServers() {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS cpt
-                FROM `glpi_authldaps`
-                WHERE `is_active` = '1'";
-      $result = $DB->query($query);
-
-      return $DB->result($result, 0, 'cpt');
+      return countElementsInTable('glpi_authldaps', ['is_active' => 1]);
    }
 
 
@@ -2991,7 +2995,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return string
     */
-   static private function buildLdapFilter(AuthLdap $authldap) {
+   static function buildLdapFilter(AuthLdap $authldap) {
       //Build search filter
       $counter = 0;
       $filter  = '';
@@ -3095,7 +3099,7 @@ class AuthLDAP extends CommonDBTM {
    static function getDefault() {
       global $DB;
 
-      foreach ($DB->request('glpi_authldaps', array('is_default' => 1)) as $data) {
+      foreach ($DB->request('glpi_authldaps', ['is_default' => 1]) as $data) {
          return $data['id'];
       }
       return 0;
@@ -3309,18 +3313,16 @@ class AuthLDAP extends CommonDBTM {
    static function getAllReplicateForAMaster($master_id) {
       global $DB;
 
-      $replicates = array();
-      $query = "SELECT `id`, `host`, `port`
-                FROM `glpi_authldapreplicates`
-                WHERE `authldaps_id` = '$master_id'";
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
-         while ($replicate = $DB->fetch_assoc($result)) {
-            $replicates[] = array("id"   => $replicate["id"],
-                                  "host" => $replicate["host"],
-                                  "port" => $replicate["port"]);
-         }
+      $replicates = [];
+      $query = ['FIELDS' => ['id', 'host', 'port'],
+                'FROM'   => 'glpi_authldapreplicates',
+                'WHERE'  => ['authldaps_id' => $master_id]
+               ];
+      foreach ($DB->request($query) as $replicate) {
+         $replicates[] = ["id"   => $replicate["id"],
+                          "host" => $replicate["host"],
+                          "port" => $replicate["port"]
+                         ];
       }
       return $replicates;
    }

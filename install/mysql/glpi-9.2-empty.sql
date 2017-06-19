@@ -72,6 +72,7 @@ CREATE TABLE `glpi_authldaps` (
   `port` int(11) NOT NULL DEFAULT '389',
   `condition` text COLLATE utf8_unicode_ci,
   `login_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'uid',
+  `sync_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'uid',
   `use_tls` tinyint(1) NOT NULL DEFAULT '0',
   `group_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `group_condition` text COLLATE utf8_unicode_ci,
