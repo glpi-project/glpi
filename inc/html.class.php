@@ -1486,8 +1486,9 @@ class Html {
             ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
          );
          echo "<li id='debug_mode'>";
-         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class' title='$title'>";
-         echo "<span class='sr-only'>" . _('Change mode')  . "</span>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
+                title='$title'>";
+         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
          echo "</a>";
          echo "</li>";
       }
@@ -1504,15 +1505,17 @@ class Html {
             'icon_txt'  => __('Manage saved searches')
          ]
       );
-      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
+             __s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
-      echo "<li id='help_link'><a href='".
-                 (empty($CFG_GLPI["central_doc_url"])
-                   ? "http://glpi-project.org/help-central"
-                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\" class='fa fa-question'>".
-                  "<span class='sr-only'>" . __s('Help') . "</span>";
+      echo "<li id='help_link'>".
+           "<a href='".(empty($CFG_GLPI["central_doc_url"])
+                         ? "http://glpi-project.org/help-central"
+                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+                            __s('Help')."\" class='fa fa-question'>".
+           "<span class='sr-only'>" . __s('Help') . "</span>";
       echo "</a></li>";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
@@ -1603,8 +1606,9 @@ class Html {
       echo "<ul>";
 
       // Display item
-      echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
-            __('Home')."</a></li>";
+      echo "<li class='breadcrumb_item'>".
+           "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
+             __('Home')."</a></li>";
 
       if (isset($menu[$sector])) {
          $link = "/front/central.php";
@@ -1612,7 +1616,8 @@ class Html {
          if (isset($menu[$sector]['default'])) {
             $link = $menu[$sector]['default'];
          }
-         echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
+         echo "<li class='breadcrumb_item'>".
+              "<a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
                     $menu[$sector]['title']."</a></li>";
       }
 
@@ -1628,7 +1633,8 @@ class Html {
          }
 
          if (isset($menu[$sector]['content'][$item]['page'])) {
-            echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+            echo "<li class='breadcrumb_item'>".
+                 "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
                        ($with_option?"":"class='here'")." title=\"".
                        $menu[$sector]['content'][$item]['title']."\" >".
                        $menu[$sector]['content'][$item]['title']."</a>".
@@ -1636,10 +1642,11 @@ class Html {
          }
 
          if ($with_option) {
-            echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].
-                       $menu[$sector]['content'][$item]['options'][$option]['page'].
-                       "' class='here' title=\"".
-                       $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+            echo "<li class='breadcrumb_item'>".
+                 "<a href='".$CFG_GLPI["root_doc"].
+                      $menu[$sector]['content'][$item]['options'][$option]['page'].
+                      "' class='here' title=\"".
+                      $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
             echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
                                    17);
             echo "</a></li>";
@@ -1667,8 +1674,9 @@ class Html {
                               title='" . __('Add') ."'><i class='fa fa-plus'></i>
                               <span class='sr-only'>" . __('Add') . "</span></a>";
          } else {
-            echo "<a href='#' class='pointer disabled' title='" . __('Add is disabled')  . "'><i class='fa fa-plus'></i>
-               <span class='sr-only'>" . __('Add is disabled') . "</span></a>";
+            echo "<a href='#' class='pointer disabled' title='".__('Add is disabled')."'>".
+                 "<i class='fa fa-plus'></i>".
+                 "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
          }
          echo "</span>";
 
@@ -1679,8 +1687,9 @@ class Html {
                               title='" . __s('Search') ."'><i class='fa fa-search'></i>
                               <span class='sr-only'>" . __s('Search') . "</span></a>";
          } else {
-            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')  . "'><i class='fa fa-search'></i>
-               <span class='sr-only'>" . __('Search is disabled') . "</span></a>";
+            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')."'>".
+                 "<i class='fa fa-search'></i>".
+                 "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
          }
          echo "</span>";
          // Links
@@ -1749,12 +1758,12 @@ class Html {
       echo "</div>\n"; // fin header
 
       // Back to top button
-      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>
-               <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
-               <a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='" . __('Back to top of the page')  . "'>
-                  <span class='sr-only'>Top of the page</span>
-               </a>
-         </span>";
+      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>".
+           "<i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>".
+           "<a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='".
+              __('Back to top of the page')."'>".
+           "<span class='sr-only'>Top of the page</span>".
+           "</a></span>";
 
       echo "<div id='page' >";
 
@@ -2003,7 +2012,7 @@ class Html {
          ]
       );
       echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
       echo "<li id='help_link'><a href='".
@@ -2794,14 +2803,17 @@ class Html {
     * must contains :
     *    - container       : DOM ID of the container of the item checkboxes (since version 0.85)
     * may contains :
-    *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
+    *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit.
+    *                        (default -1 not to check)
     *    - ontop           : boolean true if displayed on top (default true)
     *    - fixed           : boolean true if used with fixed table display (default true)
     *    - forcecreate     : boolean force creation of modal window (default = false).
     *            Modal is automatically created when displayed the ontop item.
     *            If only a bottom one is displayed use it
-    *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype (default empty)
-    *    - check_items_id   : integer ID of the alternate item used to check right / optional (default empty)
+    *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype
+    *                         (default empty)
+    *    - check_items_id   : integer ID of the alternate item used to check right / optional
+    *                         (default empty)
     *    - is_deleted       : boolean is massive actions for deleted items ?
     *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
     *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
@@ -5435,7 +5447,8 @@ class Html {
     * @param $columns   array   of column field name => column label
     * @param $rows      array    of field name => array(
     *      'label' the label of the row
-    *       'columns' an array of specific information regaring current row and given column indexed by column field_name
+    *      'columns' an array of specific information regaring current row
+    *                and given column indexed by column field_name
     *                 * a string if only have to display a string
     *                 * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
     * @param $options   array   possible:
