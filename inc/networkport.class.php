@@ -521,7 +521,8 @@ class NetworkPort extends CommonDBChild {
       $netport       = new self();
       $netport->item = $item;
 
-      if ($itemtype == 'NetworkPort') {
+      if (($itemtype == 'NetworkPort')
+          || ($withtemplate == 2)) {
          $canedit = false;
       } else {
          $canedit = $item->canEdit($items_id);
@@ -1162,7 +1163,7 @@ class NetworkPort extends CommonDBChild {
 
       if (in_array($item->getType(), $CFG_GLPI["networkport_types"])
           || ($item->getType() == 'NetworkPort')) {
-         self::showForItem($item);
+         self::showForItem($item, $withtemplate);
          return true;
       }
    }

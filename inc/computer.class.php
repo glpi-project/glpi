@@ -144,7 +144,7 @@ class Computer extends CommonDBTM {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showOperatingSystem($item);
+      self::showOperatingSystem($item, $withtemplate);
       return true;
    }
 
@@ -152,22 +152,31 @@ class Computer extends CommonDBTM {
    /**
     * Print the computer's operating system form
     *
-    * @param $comp Computer object
+    * @param          $comp           Computer object
+    * @param bolean   $withtemplate   (default 0)
     *
     * @since version 9.1
     *
     * @return Nothing (call to classes members)
    **/
-   static function showOperatingSystem(Computer $comp) {
+   static function showOperatingSystem(Computer $comp, $withtemplate=0) {
       global $DB;
 
       $ID = $comp->fields['id'];
       $colspan = 4;
 
       echo "<div class='center'>";
+      $options = array();
+      $options['withtemplate'] = $withtemplate;
 
-      $comp->initForm($ID);
-      $comp->showFormHeader(['formtitle' => false]);
+      $canedit = $comp->canEdit($ID);
+      if ($withtemplate == 2) {
+         $canedit = false;
+      }
+
+      $comp->initForm($ID, $options);
+      $comp->showFormHeader(array('formtitle'    => false,
+                                  'withtemplate' => $withtemplate));
 
       echo "<tr class='headerRow'><th colspan='".$colspan."'>";
       echo __('Operating system');
@@ -212,7 +221,10 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($comp, 'os_license_number');
       echo "</td><td colspan='2'></td></tr>";
 
-      $comp->showFormButtons(array('candel' => false, 'formfooter' => false));
+      $comp->showFormButtons(array('candel'       => false,
+                                   'formfooter'   => false,
+                                   'withtemplate' => $withtemplate,
+                                   'canedit'      =>$canedit));
    }
 
 
