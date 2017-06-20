@@ -123,7 +123,7 @@ class Notepad extends CommonDBChild {
     * @param $withtemplate    (default 0)
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      static::showForItem($item);
+      static::showForItem($item, $withtemplate);
    }
 
 
@@ -241,7 +241,8 @@ class Notepad extends CommonDBChild {
          $showuserlink = 1;
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='boxnote center'>";
 
          echo "<div class='boxnoteleft'></div>";
