@@ -353,7 +353,8 @@ class ContractCost extends CommonDBChild {
 
       $rand   = mt_rand();
 
-      if ($canedit) {
+      if ($canedit
+          && ($withtemplate != 2)) {
          echo "<div id='viewcost".$ID."_$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";

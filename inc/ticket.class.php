@@ -724,7 +724,7 @@ class Ticket extends CommonITILObject {
          case 'Group' :
          case 'SLT' :
          default :
-            self::showListForItem($item);
+            self::showListForItem($item, $withtemplate);
       }
       return true;
    }
@@ -5342,11 +5342,12 @@ class Ticket extends CommonITILObject {
     *
     * Will also display tickets of linked items
     *
-    * @param $item CommonDBTM object
+    * @param CommonDBTM $item         CommonDBTM object
+    * @param boolean    $withtemplate (default 0)
     *
-    * @return nothing (display a table)
+    * @return void (display a table)
    **/
-   static function showListForItem(CommonDBTM $item) {
+   static function showListForItem(CommonDBTM $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,
@@ -5477,7 +5478,9 @@ class Ticket extends CommonITILObject {
       // Link to open a new ticket
       if ($item->getID()
           && Ticket::isPossibleToAssignType($item->getType())
-          && self::canCreate()) {
+          && self::canCreate()
+          && !(!empty($withtemplate) && ($withtemplate == 2))
+          && ($item->fields['is_template'] == 0)) {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               array('itemtype' => $item->getType(),
@@ -5510,7 +5513,9 @@ class Ticket extends CommonITILObject {
 
       if ($item->getID()
           && ($item->getType() == 'User')
-          && self::canCreate()) {
+          && self::canCreate()
+          && !(!empty($withtemplate) && ($withtemplate == 2))
+          && ($item->fields['is_template'] == 0)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='$colspan'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),

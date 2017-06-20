@@ -323,7 +323,7 @@ class Contract_Item extends CommonDBRelation{
 
       switch ($item->getType()) {
          case 'Contract' :
-            self::showForContract($item);
+            self::showForContract($item, $withtemplate);
 
          default :
             if (in_array($item->getType(), $CFG_GLPI["contract_types"])) {
@@ -407,7 +407,6 @@ class Contract_Item extends CommonDBRelation{
             $used[$data['contracts_id']] = $data['contracts_id'];
          }
       }
-
       if ($canedit && ($withtemplate != 2)) {
          echo "<div class='firstbloc'>";
          echo "<form name='contractitem_form$rand' id='contractitem_form$rand' method='post'
@@ -531,11 +530,12 @@ class Contract_Item extends CommonDBRelation{
     *
     * @since version 0.84
     *
-    * @param $contract   Contract object
+    * @param Contract $contract     Contract object
+    * @param boolean  $withtemplate (default 0)
     *
-    * @return Nothing (display)
+    * @return void (display)
    **/
-   static function showForContract(Contract $contract) {
+   static function showForContract(Contract $contract, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
       $instID = $contract->fields['id'];
@@ -643,7 +643,8 @@ class Contract_Item extends CommonDBRelation{
 
       if ($canedit
           && (($contract->fields['max_links_allowed'] == 0)
-              || ($contract->fields['max_links_allowed'] > $totalnb))) {
+              || ($contract->fields['max_links_allowed'] > $totalnb))
+          && ($withtemplate != 2)) {
          echo "<div class='firstbloc'>";
          echo "<form name='contract_form$rand' id='contract_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

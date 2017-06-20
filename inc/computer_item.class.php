@@ -393,7 +393,8 @@ class Computer_Item extends CommonDBRelation{
       }
       $number = count($datas);
 
-      if ($canedit) {
+      if ($canedit
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -535,7 +536,8 @@ class Computer_Item extends CommonDBRelation{
       }
       $number = count($compids);
       if ($canedit
-          && ($global || !$number)) {
+          && ($global || !$number)
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -808,11 +810,11 @@ class Computer_Item extends CommonDBRelation{
          case 'Printer' :
          case 'Peripheral' :
          case 'Monitor' :
-            self::showForItem($item);
+            self::showForItem($item, $withtemplate);
             return true;
 
          case 'Computer' :
-            self::showForComputer($item);
+            self::showForComputer($item, $withtemplate);
             return true;
       }
    }
