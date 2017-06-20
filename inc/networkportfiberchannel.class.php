@@ -328,7 +328,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
      $tab[62]['table']         = 'glpi_netpoints';
      $tab[62]['field']         = 'name';
      $tab[62]['datatype']      = 'dropdown';
-     $tab[62]['name']          = _('Network fiber outlet');
+     $tab[62]['name']          = __('Network fiber outlet');
      $tab[62]['forcegroupby']  = true;
      $tab[62]['massiveaction'] = false;
      $tab[62]['joinparams']    = array('jointype'   => 'standard',
