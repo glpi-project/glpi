@@ -61,7 +61,9 @@ class NotificationAjaxSetting extends NotificationSetting {
       echo "<div>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Ajax notification', 'Ajax notifications', Session::getPluralNumber())."</th></tr>";
+      echo "<tr class='tab_bg_1'>".
+           "<th colspan='4'>"._n('Ajax notification', 'Ajax notifications', Session::getPluralNumber()).
+           "</th></tr>";
 
       if ($CFG_GLPI['notifications_ajax']) {
          $sounds = [
@@ -82,17 +84,22 @@ class NotificationAjaxSetting extends NotificationSetting {
          ]);
          echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . __('Time to check for new notifications (in seconds)') . "</td>";
+         echo "<tr class='tab_bg_2'><td>" . __('Time to check for new notifications (in seconds)') .
+              "</td>";
          echo "<td>";
-         Dropdown::showInteger('notifications_ajax_check_interval', $CFG_GLPI["notifications_ajax_check_interval"], 5, 120, 5);
+         Dropdown::showInteger('notifications_ajax_check_interval',
+                               $CFG_GLPI["notifications_ajax_check_interval"], 5, 120, 5);
          echo "</td>";
          echo "<td>" . __('URL of the icon') . "</td>";
-         echo "<td><input type='text' name='notifications_ajax_icon_url' value='" . $CFG_GLPI["notifications_ajax_icon_url"] . "' "
-         . "placeholder='{$CFG_GLPI['root_doc']}/pics/glpi.png'/>";
+         echo "<td><input type='text' name='notifications_ajax_icon_url' value='".
+                    $CFG_GLPI["notifications_ajax_icon_url"] . "' ".
+                    "placeholder='{$CFG_GLPI['root_doc']}/pics/glpi.png'/>";
          echo "</td></tr>";
 
       } else {
-         echo "<tr><td colspan='4'>" . __('Notifications are disabled.')  . " <a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" . _('See configuration') .  "</td></tr>";
+         echo "<tr><td colspan='4'>" . __('Notifications are disabled.') .
+              "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .
+                __('See configuration') .  "</a></td></tr>";
       }
       $options['candel']     = false;
       if ($CFG_GLPI['notifications_ajax']) {

@@ -125,12 +125,13 @@ class KnowbaseItem_Revision extends CommonDBTM {
       Html::printAjaxPager(self::getTypeName(1), $start, $number);
       // Output events
       echo "<div class='center'>";
-      echo "<input type='button' name='compare' value='"._sx('button', 'Compare selected revisions')."' class='submit compare'>";
+      echo "<input type='button' name='compare' value='"._sx('button', 'Compare selected revisions').
+             "' class='submit compare'>";
       echo "<table class='tab_cadre_fixehov'>";
       $header = '<tr>';
       $header .= "<th title='" . __('Revision') . "'>#</th>";
       $header .= "<th>&nbsp;</th>";
-      $header .= "<th>" . _('Author')  . "</th>";
+      $header .= "<th>" . __('Author')  . "</th>";
       $header .= "<th>".__('Creation date')."</th>";
       $header .= "<th></th></tr>";
       echo $header;
@@ -179,7 +180,8 @@ class KnowbaseItem_Revision extends CommonDBTM {
 
          echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
                     data-revid='" . $revision['id']  . "' class='show'>" . __('show') . "</a>
-                 - <a href='{$CFG_GLPI["root_doc"]}/front/$form?id={$revision["knowbaseitems_id"]}&to_rev={$revision['id']}' class='restore'>" . __('restore')  . "</td>";
+                 - <a href='{$CFG_GLPI["root_doc"]}/front/$form?id={$revision["knowbaseitems_id"]}&to_rev={$revision['id']}' class='restore'>".
+                    __('restore')  . "</a></td>";
          echo "</tr>";
       }
 
@@ -189,7 +191,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
             $(function() {
                $('.restore').on('click', function(e) {
                   lastClickedElement = e.target;
-                  return window.confirm('" . _('Do you want to restore the selected revision?')  . "');
+                  return window.confirm('" . __('Do you want to restore the selected revision?')  . "');
                });
 
                $('.show').on('click', function(e) {

@@ -69,7 +69,9 @@ class NotificationMailingSetting extends NotificationSetting {
       $out .= "<div>";
       $out .= "<input type='hidden' name='id' value='1'>";
       $out .= "<table class='tab_cadre_fixe'>";
-      $out .= "<tr class='tab_bg_1'><th colspan='4'>"._n('Email notification', 'Email notifications', Session::getPluralNumber())."</th></tr>";
+      $out .= "<tr class='tab_bg_1'><th colspan='4'>"._n('Email notification',
+                                                         'Email notifications',
+                                                         Session::getPluralNumber())."</th></tr>";
 
       if ($CFG_GLPI['notifications_mailing']) {
          $out .= "<tr class='tab_bg_2'>";
@@ -89,7 +91,8 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "<td >" . __('Administrator reply-to email (if needed)') . "</td>";
          $out .= "<td><input type='text' name='admin_reply' size='40' value='" .
                     $CFG_GLPI["admin_reply"] . "'>";
-         if (!empty($CFG_GLPI['admin_reply']) && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_reply"])) {
+         if (!empty($CFG_GLPI['admin_reply'])
+             && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_reply"])) {
             $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          $out .= " </td>";
@@ -169,12 +172,15 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td >" . __('SMTP max. delivery retries') . "</td>";
-         $out .= "<td><input type='text' name='smtp_max_retries' size='5' value='" . $CFG_GLPI["smtp_max_retries"] . "'></td>";
+         $out .= "<td><input type='text' name='smtp_max_retries' size='5' value='" .
+                       $CFG_GLPI["smtp_max_retries"] . "'></td>";
 
          $out .= "</tr>";
 
       } else {
-         $out .= "<tr><td colspan='4'>" . __('Notifications are disabled.')  . " <a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" . _('See configuration') .  "</td></tr>";
+         $out .= "<tr><td colspan='4'>" . __('Notifications are disabled.')  .
+                      "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .
+                        __('See configuration')."</a></td></tr>";
       }
       $options['candel']     = false;
       if ($CFG_GLPI['notifications_mailing']) {
