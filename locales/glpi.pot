@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-21 10:20+0200\n"
+"POT-Creation-Date: 2017-06-21 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16235,10 +16235,6 @@ msgid "Associated contract"
 msgid_plural "Associated contracts"
 msgstr[0] ""
 msgstr[1] ""
-
-#: inc/telemetry.class.php:81
-msgid "Send telemetry informations"
-msgstr ""
 
 #: inc/ticket.class.php:154
 msgid "Create ticket"
