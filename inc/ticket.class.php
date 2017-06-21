@@ -1580,6 +1580,12 @@ class Ticket extends CommonITILObject {
          }
       }
 
+
+      if ($_SESSION['glpiset_default_requester']
+          && ($input['_users_id_assign'] == 0)) {
+         $input['_users_id_assign'] = Session::getLoginUserID();
+      }
+
       // Process Business Rules
       $rules = new RuleTicketCollection($input['entities_id']);
 
