@@ -107,6 +107,9 @@ class NetworkEquipment extends CommonDBTM {
       $ip = new Item_Project();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
+      $ios = new Item_OperatingSystem();
+      $ios->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
    }
@@ -126,6 +129,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_OperatingSystem', $ong, $options);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('NetworkName', $ong, $options);
@@ -162,6 +166,9 @@ class NetworkEquipment extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // ADD OS
+         Item_OperatingSystem::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Devices
          Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -630,6 +637,9 @@ class NetworkEquipment extends CommonDBTM {
          'name'               => __('Child entities'),
          'datatype'           => 'bool'
       ];
+
+      // add operating system search options
+      $tab = array_merge($tab, Item_OperatingSystem::getSearchOptionsToAddNew(get_class($this)));
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
