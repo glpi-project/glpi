@@ -504,7 +504,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
@@ -538,7 +538,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
@@ -572,11 +572,11 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
       $this->boolean((boolean)$ticket->canApprove())->isTrue();
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
@@ -602,11 +602,11 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
-      $this->boolean((boolean)$ticket->canSolve())->isFalse();
+      $this->boolean((boolean)$ticket->canSolve())->isTrue();
       $this->boolean((boolean)$ticket->canApprove())->isTrue();
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'))->isTrue();
       $this->boolean((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'))->isTrue();
@@ -642,7 +642,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
@@ -676,7 +676,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       $this->boolean((boolean)$ticket->canUpdate())->isTrue();
       $this->boolean((boolean)$ticket->canView())->isTrue();
       $this->boolean((boolean)$ticket->canViewItem())->isTrue();
@@ -870,7 +870,7 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       //drop update ticket right from tech profile
@@ -891,7 +891,7 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       $uid = getItemByTypeName('User', TU_USER, true);
@@ -912,7 +912,7 @@ class Ticket extends DbTestCase {
          $textarea = false,
          $priority = false,
          $save = false,
-         $assign = true
+         $assign = false
       );
    }
 
@@ -940,7 +940,7 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       //Add priority right from tech profile
@@ -962,7 +962,7 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = true,
          $save = true,
-         $assign = true
+         $assign = false
       );
    }
 
@@ -983,7 +983,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
 
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
-      $this->boolean((boolean)$ticket->canAssignToMe())->isTrue();
+      $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
       //check output with default ACLs
       $this->checkFormOutput(
          $ticket,
@@ -991,7 +991,7 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       //Drop being in charge from tech profile
