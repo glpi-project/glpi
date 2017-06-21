@@ -604,22 +604,21 @@ function update91to92() {
                             'targets_id' => Notification::SUPPLIER],
    ];
 
-   foreach ($new_notifications as $event => $notif_options) {
-      $notifications_id = $notification->add([
-         'name'                     => $notif_options['label'],
-         'itemtype'                 => 'Ticket',
-         'event'                    => $event,
-         'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-         'notificationtemplates_id' => 0,
-         'is_recursive'             => 1,
-         'is_active'                => 0,
-      ]);
+   if (FieldExists("glpi_notifications", "mode", false)) {
+      foreach ($new_notifications as $event => $notif_options) {
+         $notifications_id = $notification->add([
+                        'name'                     => $notif_options['label'],
+                        'itemtype'                 => 'Ticket',
+                        'event'                    => $event,
+                        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                        'notificationtemplates_id' => 0,
+                        'is_recursive'             => 1,
+                        'is_active'                => 0]);
 
-      $notificationtarget->add([
-         'items_id'         => $notif_options['targets_id'],
-         'type'             => 1,
-         'notifications_id' => $notifications_id,
-      ]);
+         $notificationtarget->add(['items_id'         => $notif_options['targets_id'],
+                                   'type'             => 1,
+                                   'notifications_id' => $notifications_id]);
+      }
    }
 
    /************** Auto login **************/
@@ -843,8 +842,10 @@ Regards,',
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_notifications_notificationtemplates");
       $migration->migrationOneTable('glpi_notifications_notificationtemplates');
-      if (FieldExists('glpi_notifications', 'mode')) {
-         $query = "INSERT INTO glpi_notifications_notificationtemplates (notifications_id, mode, notificationtemplates_id) SELECT id, mode, notificationtemplates_id FROM glpi_notifications";
+      if (FieldExists("glpi_notifications", "mode", false)) {
+         $query = "INSERT INTO glpi_notifications_notificationtemplates
+                          (notifications_id, mode, notificationtemplates_id)
+                          SELECT id, mode, notificationtemplates_id FROM glpi_notifications";
          $DB->queryOrDie($query, "9.2 migrate notifications templates");
       }
    }
