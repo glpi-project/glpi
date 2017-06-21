@@ -1250,6 +1250,8 @@ INSERT INTO `glpi_configs` VALUES ('179','core','smtp_max_retries','5');
 INSERT INTO `glpi_configs` VALUES ('180','core','smtp_sender', NULL);
 INSERT INTO `glpi_configs` VALUES ('181','core','from_email', NULL);
 INSERT INTO `glpi_configs` VALUES ('182','core','from_email_name', NULL);
+INSERT INTO `glpi_configs` VALUES ('183','core','instance_uuid', NULL);
+INSERT INTO `glpi_configs` VALUES ('184','core','registration_uuid', NULL);
 
 
 ### Dump table glpi_consumableitems
@@ -1581,6 +1583,7 @@ INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4',
 INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 

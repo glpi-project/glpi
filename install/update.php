@@ -48,6 +48,12 @@ $DB = new DB();
 $update = new Update($DB);
 $update->initSession();
 
+if (isset($_POST['update_end'])) {
+   if (isset($_POST['send_stats'])) {
+      Telemetry::enable();
+   }
+   header('Location: ../index.php');
+}
 
 /* ----------------------------------------------------------------- */
 
@@ -569,7 +575,18 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
                   break;
 
                default:
-                  echo "<a class='vsubmit' href='../index.php'>".__('Use GLPI')."</a>";
+                  echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
+                  echo "<input type='hidden' name='update_end' value='1'/>";
+                  if (!Telemetry::isEnabled()) {
+                     echo "<hr/>";
+                     echo Telemetry::showTelemetry();
+                  }
+
+                  echo Telemetry::showReference();
+
+                  echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+                           __('Use GLPI')."'></p>";
+                  Html::closeForm();
             }
          }
          echo "</div>";

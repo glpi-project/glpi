@@ -1742,6 +1742,8 @@ class Config extends CommonDBTM {
 
       $width = 128;
 
+      echo "<p>" . Telemetry::getViewLink() . "</p>";
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
 

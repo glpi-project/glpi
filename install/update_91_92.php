@@ -1384,6 +1384,21 @@ Regards,',
       'from_email_name'    => 'NULL'
    ]);
 
+   //register telemetry crontask
+   CronTask::register(
+      'Telemetry',
+      'telemetry',
+      MONTH_TIMESTAMP,
+      [
+         'comment'   => '',
+         'mode'      => CronTask::MODE_EXTERNAL
+      ]
+   );
+   $migration->addConfig([
+      'instance_uuid'      => Telemetry::generateInstanceUuid(),
+      'registration_uuid'  => Telemetry::generateRegistrationUuid()
+   ]);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
