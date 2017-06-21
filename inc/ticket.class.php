@@ -1581,7 +1581,7 @@ class Ticket extends CommonITILObject {
       }
 
 
-      if ($_SESSION['glpiset_default_requester']
+      if ($_SESSION['glpiset_default_tech']
           && ($input['_users_id_assign'] == 0)) {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
