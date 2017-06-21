@@ -144,6 +144,11 @@ define("NOT_AVAILABLE", 'N/A');
 // If you hav to define passwords again
 define("GLPIKEY", "GLPI£i'snarss'ç");
 
+//Telemetry
+if (!defined('GLPI_TELEMETRY_URI')) {
+   define('GLPI_TELEMETRY_URI', 'http://glpi-project.org/telemetry');
+}
+
 // TIMES
 define("MINUTE_TIMESTAMP", 60);
 define("HOUR_TIMESTAMP", 3600);
