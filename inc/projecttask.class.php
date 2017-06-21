@@ -153,7 +153,8 @@ class ProjectTask extends CommonDBChild {
     **/
    function getRights($interface='central') {
 
-      $values = array();
+      $values = parent::getRights();
+      unset($values[READ], $values[CREATE], $values[UPDATE], $values[DELETE], $values[PURGE]);
 
       $values[self::READMY]   = __('See (actor)');
       $values[self::UPDATEMY] = __('Update (actor)');
