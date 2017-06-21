@@ -81,7 +81,6 @@ function update91to92() {
       'glpi_items_devicefirmwares',
       'glpi_devicefirmwaretypes',
       'glpi_savedsearches_alerts',
-      'glpi_notifications_notificationtemplates',
       'glpi_items_operatingsystems',
       'glpi_operatingsystemkernels',
       'glpi_operatingsystemkernelversions',
