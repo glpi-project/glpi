@@ -476,7 +476,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'id'                 => '43',
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'license_number',
-         'name'               => __('Serial'),
+         'name'               => __('Serial number'),
          'datatype'           => 'string'
       ];
 
