@@ -201,7 +201,7 @@ class NotificationEvent extends CommonDBTM {
             echo "<tr><th>".self::getTypeName(Session::getPluralNumber()).'</th><th>'._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
             echo "<th>"._n('Notification template', 'Notification templates', Session::getPluralNumber())."</th>".
                  "<th>".__('Mode')."</th>" .
-                 "<th>".__('To contact')."</th></tr>";
+                 "<th>"._n('Recipient', 'Recipients', 1)."</th></tr>";
 
             foreach ($events as $event => $label) {
                self::raiseEvent($event, $item, $options, $label);
