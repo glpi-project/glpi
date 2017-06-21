@@ -393,7 +393,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertTrue((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
@@ -428,7 +428,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertTrue((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
@@ -462,11 +462,11 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertFalse((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
-      $this->assertFalse((boolean)$ticket->canSolve());
+      $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
@@ -492,11 +492,11 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertFalse((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
-      $this->assertFalse((boolean)$ticket->canSolve());
+      $this->assertTrue((boolean)$ticket->canSolve());
       $this->assertTrue((boolean)$ticket->canApprove());
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'content', 'qwerty'));
       $this->assertTrue((boolean)$ticket->canMassiveAction('update', 'name', 'qwerty'));
@@ -532,7 +532,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertTrue((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
@@ -566,7 +566,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
       $this->assertFalse((boolean)$ticket->canAdminActors());
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       $this->assertTrue((boolean)$ticket->canUpdate());
       $this->assertTrue((boolean)$ticket->canView());
       $this->assertTrue((boolean)$ticket->canViewItem());
@@ -830,7 +830,7 @@ class TicketTest extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       //Add priority right from tech profile
@@ -852,7 +852,7 @@ class TicketTest extends DbTestCase {
          $textarea = true,
          $priority = true,
          $save = true,
-         $assign = true
+         $assign = false
       );
    }
 
@@ -873,7 +873,7 @@ class TicketTest extends DbTestCase {
       $this->assertTrue((boolean)$ticket->getFromDB($ticket->getID()));
 
       $this->assertFalse((boolean)$ticket->canAssign());
-      $this->assertTrue((boolean)$ticket->canAssignToMe());
+      $this->assertFalse((boolean)$ticket->canAssignToMe());
       //check output with default ACLs
       $this->checkFormOutput(
          $ticket,
@@ -881,7 +881,7 @@ class TicketTest extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = false
       );
 
       //Drop being in charge from tech profile
