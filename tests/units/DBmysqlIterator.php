@@ -191,6 +191,19 @@ class DBmysqlIterator extends DbTestCase {
    }
 
 
+   public function testLeftJoin() {
+
+      $it = new \DBmysqlIterator(NULL, 'foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+   }
+
+   public function testInnerJoin() {
+
+      $it = new \DBmysqlIterator(NULL, 'foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+   }
+
+
    public function testOperators() {
       $it = new \DBmysqlIterator(NULL, 'foo', ['a' => 1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = 1');
