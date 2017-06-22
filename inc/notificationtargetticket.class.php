@@ -677,8 +677,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                    FROM `glpi_notifications`
                    INNER JOIN `glpi_notificationtargets`
                      ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
+                   INNER JOIN `glpi_notifications_notificationtemplates`
+                     ON (`glpi_notifications`.`id`=`glpi_notifications_notificationtemplates`.`notifications_id`)
                    WHERE `glpi_notifications`.`itemtype` = 'Ticket'
-                         AND `glpi_notifications`.`mode` = 'mail'
+                         AND `glpi_notifications_notificationtemplates`.`mode` = '" . Notification_NotificationTemplate::MODE_MAIL  . "'
                          AND `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
                          AND `glpi_notificationtargets`.`items_id` = '".Notification::AUTHOR."'";
 
