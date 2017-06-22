@@ -210,7 +210,7 @@ class NotificationEventMailing extends DbTestCase {
 <p><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Title</span>&#160;: <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Requesters</span>&#160;: _test_user      <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Opening date</span> OPENING <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Closing date</span>&#160;: <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Request source</span>&#160;:Helpdesk<br />
 <br /><span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Associated item</span>&#160;:
 <p></p>
-<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">Status </span>&#160;: New<br /> <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Urgency</span>&#160;: Medium<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Impact</span>&#160;: Medium<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Priority</span>&#160;: Medium <br />     <br />   No defined category     <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Description</span>&#160;: </p>
+ <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Assigned to technicians</span>&#160;: _test_user <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">Status </span>&#160;: Processing (assigned)<br /> <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Urgency</span>&#160;: Medium<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Impact</span>&#160;: Medium<br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Priority</span>&#160;: Medium <br />     <br />   No defined category     <br /> <span style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"> Description</span>&#160;: </p>
 <br /></p>
 <div class="description b">Number of followups&#160;: 0</div>
 <p></p>
@@ -230,7 +230,8 @@ Title :
  Request source : Helpdesk
 Associated item :
 
-Status : New
+Assigned to technicians : _test_user 
+ Status : Processing (assigned)
 
 Urgency : Medium
  Impact : Medium

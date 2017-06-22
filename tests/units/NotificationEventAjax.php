@@ -174,7 +174,8 @@ Title :
  Request source : Helpdesk
 Associated item :
 
-Status : New
+Assigned to technicians : _test_user 
+ Status : Processing (assigned)
 
 Urgency : Medium
  Impact : Medium
