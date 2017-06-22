@@ -745,6 +745,7 @@ class DBmysqlIterator implements Iterator {
     * @return void
     */
    function __construct ($dbconnexion, $table, $crit="", $debug=false) {
+
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -811,13 +812,25 @@ class DBmysqlIterator implements Iterator {
                      unset($crit[$key]);
                      break;
 
-                  case 'JOIN' :
+                  case 'JOIN' : // deprecated
+                  case 'LEFT JOIN' :
                      if (is_array($val)) {
                         foreach ($val as $jointable => $joincrit) {
                            $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
                         }
                      } else {
-                        trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
+                        trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
+                     }
+                     unset($crit[$key]);
+                     break;
+
+                  case 'INNER JOIN' :
+                     if (is_array($val)) {
+                        foreach ($val as $jointable => $joincrit) {
+                           $join .= " INNER JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                        }
+                     } else {
+                        trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
                      }
                      unset($crit[$key]);
                      break;

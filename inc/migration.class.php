@@ -854,21 +854,20 @@ class Migration {
     * @return boolean
     */
    public function backupTables($tables) {
+
       $backup_tables = false;
       foreach ($tables as $table) {
          // rename new tables if exists ?
          if (TableExists($table)) {
             $this->dropTable("backup_$table");
-            $this->displayWarning(
-               sprintf(
-                  __('%1$s table already exists. A backup have been done to %2$s'),
-                  $table,
-                  "backup_$table"
-               )
-            );
+            $this->displayWarning(sprintf(__('%1$s table already exists. A backup have been done to %2$s'),
+                                          $table, "backup_$table"));
             $backup_tables = true;
             $this->renameTable("$table", "backup_$table");
          }
+      }
+      if ($backup_tables) {
+         $this->displayWarning("You can delete backup tables if you have no need of them.", true);
       }
       return $backup_tables;
    }
