@@ -24,3 +24,5 @@ phpunit.xml
 .composer.hash
 /css/**/*.min.css
 /js/*.min.js
+/locales/en.po
+/locales/en.mo
