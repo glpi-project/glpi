@@ -1375,7 +1375,7 @@ class Plugin extends CommonDBTM {
             $function = "plugin_".$plug."_getAddSearchOptions";
             if (function_exists($function)) {
                $tmp = $function($itemtype);
-               if (count($tmp)) {
+               if (is_array($tmp) && count($tmp)) {
                   $sopt += $tmp;
                }
             }
