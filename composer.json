@@ -51,8 +51,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-           "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-           "if [ $COMPOSER_DEV_MODE -eq 1 ]; then patch -d vendor/guzzlehttp/guzzle/ -p1 < tools/guzzle-php72.patch; fi"
+           "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
         ],
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }

@@ -14,7 +14,6 @@ before_script:
   - rm -f composer.lock
   - composer install --optimize-autoloader
     #upstream patch, bt not yet part of the last release :( TODO: remove when upstream will include it.
-  - patch -d vendor/guzzlehttp/guzzle/ -p1 < tools/guzzle-php72.patch
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
