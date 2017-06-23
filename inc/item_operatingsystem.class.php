@@ -506,10 +506,49 @@ class Item_OperatingSystem extends CommonDBRelation {
       ];
 
       $tab[] = [
+         'id'                 => '64',
+         'table'              => 'glpi_operatingsystemkernels',
+         'field'              => 'name',
+         'name'               => _n('Kernel', 'Kernels', 1),
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_operatingsystemkernelversions',
+               'joinparams'         => [
+                  'beforejoin'   => [
+                     'table'        => 'glpi_items_operatingsystems',
+                     'joinparams'   => [
+                        'jointype'           => 'itemtype_item',
+                        'specific_itemtype'  => $itemtype
+                     ]
+                  ]
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
          'id'                 => '48',
          'table'              => 'glpi_operatingsystemkernelversions',
          'field'              => 'name',
          'name'               => _n('Kernel version', 'Kernel versions', 1),
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_operatingsystems',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item',
+                  'specific_itemtype'  => $itemtype
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '63',
+         'table'              => 'glpi_operatingsystemeditions',
+         'field'              => 'name',
+         'name'               => __('Edition'),
          'datatype'           => 'dropdown',
          'joinparams'         => [
             'beforejoin'         => [
