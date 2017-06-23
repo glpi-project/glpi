@@ -332,12 +332,12 @@ class SavedSearch extends CommonDBTM {
    /**
     * Print the saved search form
     *
-    * @param integer   $ID          ID of the item
-    * @param array     $options     possible options:
-    *     - target for the Form
-    *     - type when adding
-    *     - url when adding
-    *     - itemtype when adding
+    * @param integer $ID      ID of the item
+    * @param array   $options possible options:
+    *                         - target for the Form
+    *                         - type when adding
+    *                         - url when adding
+    *                         - itemtype when adding
     *
     * @return void
    **/
@@ -453,8 +453,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Prepare query to store depending of the type
     *
-    * @param integer  $type         Saved search type (self::SEARCH, self::URI or self::ALERT)
-    * @param array    $query_tab
+    * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
+    * @param array   $query_tab Parameters
     *
     * @return clean query array
    **/
@@ -484,8 +484,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Prepare query to use depending of the type
     *
-    * @param integer $type         Saved search type (see SavedSearch constants)
-    * @param array   $query_tab
+    * @param integer $type      Saved search type (see SavedSearch constants)
+    * @param array   $query_tab Parameters array
     *
     * @return prepared query array
    **/
@@ -548,7 +548,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Load a saved search
     *
-    * @param integer   $ID    ID of the saved search
+    * @param integer $ID ID of the saved search
     *
     * @return nothing
    **/
@@ -567,7 +567,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Get saved search parameters
     *
-    * @param integer   $ID  ID of the saved search
+    * @param integer $ID ID of the saved search
     *
     * @return array|false
    **/
@@ -588,7 +588,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Mark saved search as default view for the currect user
     *
-    * @param integer   $ID   ID of the saved search
+    * @param integer $ID ID of the saved search
     *
     * @return void
    **/
@@ -623,7 +623,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Unmark savedsearch as default view for the current user
     *
-    * @param integer   $ID   ID of the saved search
+    * @param integer $ID ID of the saved search
     *
     * @return void
    **/
@@ -654,7 +654,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Unmark savedsearch as default view
     *
-    * @param array   $ids  IDs of the saved searches
+    * @param array $ids IDs of the saved searches
     *
     * @return boolean
    **/
@@ -828,7 +828,11 @@ class SavedSearch extends CommonDBTM {
 
 
    /**
-    * @param $searches
+    * Display saved searches from a type
+    *
+    * @param string $searches Search type
+    *
+    * @return void
    **/
    private function displaySavedSearchType($searches) {
       global $CFG_GLPI;
@@ -960,7 +964,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Save order
     *
-    * @param array   $items   Ordered ids
+    * @param array $items Ordered ids
     *
     * @return boolean
     */
@@ -982,8 +986,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Display buttons
     *
-    * @param integer   $type      SavedSearch type to use
-    * @param integer   $itemtype  Device type of item where is the bookmark (default 0)
+    * @param integer $type     SavedSearch type to use
+    * @param integer $itemtype Device type of item where is the bookmark (default 0)
     *
     * @return void
    **/
@@ -1033,8 +1037,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Update bookmark execution time after it has been loaded
     *
-    * @param integer   $id      Saved search ID
-    * @param integer   $time    Execution time, in milliseconds
+    * @param integer $id   Saved search ID
+    * @param integer $time Execution time, in milliseconds
     *
     * @return void
    **/
@@ -1095,10 +1099,10 @@ class SavedSearch extends CommonDBTM {
    /**
     * Dropdown of do_count possible values
     *
-    * @param array   $options   arrray of options:
-    *  - name     : select name (default is do_count)
-    *  - value    : default value (default self::COUNT_AUTO)
-    *  - display  : boolean if false get string
+    * @param array $options array of options:
+    *                       - name     : select name (default is do_count)
+    *                       - value    : default value (default self::COUNT_AUTO)
+    *                       - display  : boolean if false get string
     *
     * @return void|string
    **/
@@ -1125,8 +1129,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Set do_count from massive actions
     *
-    * @param array     $ids         Items IDs
-    * @param integer   $do_count    One of self::COUNT_*
+    * @param array   $ids      Items IDs
+    * @param integer $do_count One of self::COUNT_*
     *
     * @return boolean
     */
@@ -1143,9 +1147,9 @@ class SavedSearch extends CommonDBTM {
    /**
     * Set entity and recursivity from massive actions
     *
-    * @param array      $ids      Items IDs
-    * @param integer    $eid      Entityy ID
-    * @param boolean    $recur    Recursivity
+    * @param array   $ids   Items IDs
+    * @param integer $eid   Entityy ID
+    * @param boolean $recur Recursivity
     *
     * @return boolean
     */
@@ -1165,13 +1169,13 @@ class SavedSearch extends CommonDBTM {
    /**
     * Specific method to add where to a request
     *
-    * @param string    $link         link string
-    * @param boolean   $nott         is it a negative search ?
-    * @param string    $itemtype     item type
-    * @param integer   $ID           ID of the item to search
-    * @param string    $searchtype   searchtype used (equals or contains)
-    * @param mixed     $val          item num in the request
-    * @param integer   $meta         is a meta search (meta=2 in search.class.php) (default 0)
+    * @param string  $link       link string
+    * @param boolean $nott       is it a negative search ?
+    * @param string  $itemtype   item type
+    * @param integer $ID         ID of the item to search
+    * @param string  $searchtype searchtype used (equals or contains)
+    * @param mixed   $val        item num in the request
+    * @param integer $meta       is a meta search (meta=2 in search.class.php) (default 0)
     *
     * @return string where clause
     */
@@ -1199,7 +1203,7 @@ class SavedSearch extends CommonDBTM {
    /**
     * Update all bookmarks execution time
     *
-    * @param Crontask   $task     Crontask instance
+    * @param Crontask $task Crontask instance
     *
     * @return void
    **/
@@ -1251,8 +1255,8 @@ class SavedSearch extends CommonDBTM {
    /**
     * Execute current saved search and return results
     *
-    * @param boolean   $force   Force query execution even if it should not be executed
-    *                           (default false)
+    * @param boolean $force Force query execution even if it should not be executed
+    *                       (default false)
     *
     * @throws RuntimeException
     *
