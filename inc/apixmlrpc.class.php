@@ -66,6 +66,8 @@ class APIXmlrpc extends API {
       // retrieve session (if exist)
       $this->retrieveSession();
 
+      $this->extraEndpoints = $this->getExtraEndpoints();
+
       $code = 200;
 
       if ($resource === "initSession") {
@@ -129,6 +131,9 @@ class APIXmlrpc extends API {
          }
 
          return $this->returnResponse($response, $code, $additionalheaders);
+
+      } else if (isset($this->extraEndpoints[$resource]) && is_callable($this->extraEndpoints[$resource])) {
+         return call_user_func($this->extraEndpoints[$resource], $this->parameters);
 
       } else if (in_array($resource,
                           array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {

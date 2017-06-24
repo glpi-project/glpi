@@ -68,7 +68,6 @@ class APIRest extends API {
     * @return mixed json with response or error
     */
    public function call() {
-
       //parse http request and find parts
       $this->request_uri  = $_SERVER['REQUEST_URI'];
       $this->verb         = $_SERVER['REQUEST_METHOD'];
@@ -104,6 +103,8 @@ class APIRest extends API {
       if (isset($this->parameters['session_write'])) {
          $this->session_write = (bool)$this->parameters['session_write'];
       }
+
+      $this->extraEndpoints = $this->getExtraEndpoints();
 
       // inline documentation (api/)
       if ($is_inline_doc) {
@@ -188,6 +189,8 @@ class APIRest extends API {
          }
 
          return $this->returnResponse($response, $code, $additionalheaders);
+      } else if (isset($this->extraEndpoints[$resource]) && is_callable($this->extraEndpoints[$resource])) {
+         return call_user_func($this->extraEndpoints[$resource], $this->parameters);
 
       } else {
          // commonDBTM manipulation
