@@ -1294,6 +1294,8 @@ abstract class API extends CommonGLPI {
 
    /**
     * return additional endpoints provided by plugins
+    *
+    * @return array endpointName => callable function or method
     */
    protected function getExtraEndpoints() {
       global $PLUGIN_HOOKS;
@@ -1305,7 +1307,10 @@ abstract class API extends CommonGLPI {
             continue;
          }
          foreach ($endpoints as $name => $function) {
-            $pluginEndpoints[$name] = $function;
+            $pluginEndpoints[$name] = [
+                  'callable' => $function,
+                  'plugin'   => $plugin
+            ];
          }
       }
       return $pluginEndpoints;

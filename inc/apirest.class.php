@@ -189,8 +189,13 @@ class APIRest extends API {
          }
 
          return $this->returnResponse($response, $code, $additionalheaders);
-      } else if (isset($this->extraEndpoints[$resource]) && is_callable($this->extraEndpoints[$resource])) {
-         return call_user_func($this->extraEndpoints[$resource], $this->parameters);
+      } else if (isset($this->extraEndpoints[$resource]) && is_callable($this->extraEndpoints[$resource]['callable'])) {
+         $plug = $this->extraEndpoints[$resource]['plugin'];
+         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+         }
+         $response = call_user_func($this->extraEndpoints[$resource]['callable'], $this, $this->parameters);
+         $this->returnResponse($response);
 
       } else {
          // commonDBTM manipulation
@@ -488,7 +493,7 @@ class APIRest extends API {
     *
     * @return void
     */
-   public function returnResponse($response, $httpcode=200, $additionalheaders=array()) {
+   protected function returnResponse($response, $httpcode=200, $additionalheaders=array()) {
 
       if (empty($httpcode)) {
          $httpcode = 200;
