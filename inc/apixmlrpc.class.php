@@ -66,6 +66,8 @@ class APIXmlrpc extends API {
       // retrieve session (if exist)
       $this->retrieveSession();
 
+      $this->extraEndpoints = $this->getExtraEndpoints();
+
       $code = 200;
 
       if ($resource === "initSession") {
@@ -129,6 +131,14 @@ class APIXmlrpc extends API {
          }
 
          return $this->returnResponse($response, $code, $additionalheaders);
+
+      } else if (isset($this->extraEndpoints[$resource]) && is_callable($this->extraEndpoints[$resource]['callable'])) {
+         $plug = $this->extraEndpoints[$resource]['plugin'];
+         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+         }
+         $response = call_user_func($this->extraEndpoints[$resource]['callable'], $this, $this->parameters);
+         $this->returnResponse($response);
 
       } else if (in_array($resource,
                           array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {

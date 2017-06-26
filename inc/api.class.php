@@ -41,10 +41,11 @@ abstract class API extends CommonGLPI {
 
    static $api_url = "";
    protected $format;
-   protected $iptxt         = "";
-   protected $ipnum         = "";
-   protected $app_tokens    = array();
-   protected $apiclients_id = 0;
+   protected $iptxt           = "";
+   protected $ipnum           = "";
+   protected $app_tokens      = array();
+   protected $apiclients_id   = 0;
+   protected $extraEndpoints  = [];
 
    /**
     * First function used on api call
@@ -1289,6 +1290,30 @@ abstract class API extends CommonGLPI {
       }
 
       return $uid_parts;
+   }
+
+   /**
+    * return additional endpoints provided by plugins
+    *
+    * @return array endpointName => callable function or method
+    */
+   protected function getExtraEndpoints() {
+      global $PLUGIN_HOOKS;
+
+      $pluginEndpoints = [];
+      foreach ($PLUGIN_HOOKS['api_endpoint'] as $plugin => $endpoints) {
+         if (!is_array($endpoints)) {
+            // Ignore invalid endpoint definition
+            continue;
+         }
+         foreach ($endpoints as $name => $function) {
+            $pluginEndpoints[$name] = [
+                  'callable' => $function,
+                  'plugin'   => $plugin
+            ];
+         }
+      }
+      return $pluginEndpoints;
    }
 
 
