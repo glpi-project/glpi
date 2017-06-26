@@ -4100,6 +4100,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $this->check($this->getField('id'), READ);
 
+      $close_warning = false;
+      if ($this instanceof Ticket) {
+         $ti = new Ticket_Ticket();
+         $open_child = $ti->countOpenChildren($this->getID());
+         if ($open_child > 0) {
+            echo "<div class='tab_cadre_fixe warning'>" . __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?')  . "</div>";
+         }
+      }
+
       $canedit = $this->canSolve();
       $options = [];
 
