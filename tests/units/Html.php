@@ -58,6 +58,8 @@ class Html extends atoum {
 
       $expected = date('m-d-Y');
       $this->string(\Html::convDate($mydate, 2))->isIdenticalTo($expected);
+
+      $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
    }
 
    public function testConvDateTime() {
@@ -702,5 +704,171 @@ class Html extends atoum {
             ->hasKey('title')
             ->hasKey('url');
       }
+   }
+
+   public function testEntitiesDeep() {
+      $value = 'Should be \' "escaped" éè!';
+      $expected = 'Should be &#039; &quot;escaped&quot; &eacute;&egrave;!';
+      $result = \Html::entities_deep($value);
+      $this->string($result)->isIdenticalTo($expected);
+
+      $result = \Html::entities_deep([$value, $value, $value]);
+      $this->array($result)->isIdenticalTo([$expected, $expected, $expected]);
+   }
+
+   public function testCleanParametersURL() {
+      $url = 'http://perdu.com';
+      $this->string(\Html::cleanParametersURL($url))->isIdenticalTo($url);
+
+      $purl = $url . '?with=some&args=none';
+      $this->string(\Html::cleanParametersURL($url))->isIdenticalTo($url);
+   }
+
+   public function testDisplayMessageAfterRedirect() {
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
+         ERROR    => ['Something wen really wrong :('],
+         WARNING  => ['Oooops, I did it again!']
+      ];
+
+      $this->output(
+         function () {
+            \Html::displayMessageAfterRedirect();
+         }
+      )
+         ->contains('<div id="message_after_redirect_1" title="Error">Something wen really wrong :(</div>')
+         ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
+
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
+   }
+
+   public function testCleanSQLDisplay() {
+      $sql = "SELECT * FROM mytable WHERE myfield < 10 ORDER BY id";
+      $expected = "SELECT * <br>FROM mytable <br>WHERE myfield &lt; 10 <br>ORDER BY id";
+      $this->string(\Html::cleanSQLDisplay($sql))->isIdenticalTo($expected);
+   }
+
+   public function testDisplayBackLink() {
+      $this->output(
+         function () {
+            \Html::displayBackLink();
+         }
+      )->isIdenticalTo("<a href='javascript:history.back();'>Back</a>");
+
+      $_SERVER['HTTP_REFERER'] = 'originalpage.html';
+      $this->output(
+         function () {
+            \Html::displayBackLink();
+         }
+      )->isIdenticalTo("<a href='originalpage.html'>Back</a>");
+   }
+
+   public function testAddConfirmationOnAction() {
+      $string = 'Are U\' OK?';
+      $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ ;return true;} else { return false;}"';
+      $this->string(\Html::addConfirmationOnAction($string))->isIdenticalTo($expected);
+
+      $strings = ['Are you', 'OK?'];
+      $expected = 'onclick="if (window.confirm(\'Are you\nOK?\')){ ;return true;} else { return false;}"';
+      $this->string(\Html::addConfirmationOnAction($strings))->isIdenticalTo($expected);
+
+      $actions = '$("#mydiv").focus();';
+      $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ $("#mydiv").focus();return true;} else { return false;}"';
+      $this->string(\Html::addConfirmationOnAction($string, $actions))->isIdenticalTo($expected);
+   }
+
+   public function testJsFunctions() {
+      $this->string(\Html::jsHide('myid'))->isIdenticalTo("$('#myid').hide();\n");
+      $this->string(\Html::jsShow('myid'))->isIdenticalTo("$('#myid').show();\n");
+      $this->string(\Html::jsEnable('myid'))->isIdenticalTo("$('#myid').removeAttr('disabled');\n");
+      $this->string(\Html::jsDisable('myid'))->isIdenticalTo("$('#myid').attr('disabled', 'disabled');\n");
+      $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
+      $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').val('myval').trigger('change');");
+      $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");
+   }
+
+   public function testCleanId() {
+      $id = 'myid';
+      $this->string(\Html::cleanId($id))->isIdenticalTo($id);
+
+      $id = 'array[]';
+      $expected = 'array__';
+      $this->string(\Html::cleanId($id))->isIdenticalTo($expected);
+   }
+
+   public function testImage() {
+      $path = '/path/to/image.png';
+      $expected = '<img src="/path/to/image.png" title="" alt=""  />';
+      $this->string(\Html::image($path))->isIdenticalTo($expected);
+
+      $options = [
+         'title'  => 'My title',
+         'alt'    => 'no img text'
+      ];
+      $expected = '<img src="/path/to/image.png" title="My title" alt="no img text"  />';
+      $this->string(\Html::image($path, $options))->isIdenticalTo($expected);
+
+      $options = ['url' => 'mypage.php'];
+      $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class=\'pointer\' /></a>';
+      $this->string(\Html::image($path, $options))->isIdenticalTo($expected);
+   }
+
+   public function testLink() {
+      $text = 'My link';
+      $url = 'mylink.php';
+
+      $expected = '<a href="mylink.php" >My link</a>';
+      $this->string(\Html::link($text, $url))->isIdenticalTo($expected);
+
+      $options = [
+         'confirm'   => 'U sure?'
+      ];
+      $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
+      $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
+
+      $options['confirmaction'] = 'window.close();';
+      $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ window.close();return true;} else { return false;}">My link</a>';
+      $this->string(\Html::link($text, $url, $options))->isIdenticalTo($expected);
+   }
+
+   public function testHidden() {
+      $name = 'hiddenfield';
+      $expected = '<input type="hidden" name="hiddenfield"  />';
+      $this->string(\Html::hidden($name))->isIdenticalTo($expected);
+
+      $options = ['value'  => 'myval'];
+      $expected = '<input type="hidden" name="hiddenfield" value="myval" />';
+      $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
+
+      $options = [
+         'value'  => [
+            'a value',
+            'another one'
+         ]
+      ];
+      $expected = "<input type=\"hidden\" name=\"hiddenfield[0]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[1]\" value=\"another one\" />\n";
+      $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
+
+      $options = [
+         'value'  => [
+            'one' => 'a value',
+            'two' => 'another one'
+         ]
+      ];
+      $expected = "<input type=\"hidden\" name=\"hiddenfield[one]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[two]\" value=\"another one\" />\n";
+      $this->string(\Html::hidden($name, $options))->isIdenticalTo($expected);
+   }
+
+   public function testInput() {
+      $name = 'in_put';
+      $expected = '<input type="text" name="in_put"  />';
+      $this->string(\Html::input($name))->isIdenticalTo($expected);
+
+      $options = [
+         'value'     => 'myval',
+         'class'     => 'a_class',
+         'data-id'   => 12
+      ];
+      $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
+      $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
    }
 }
