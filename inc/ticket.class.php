@@ -4588,7 +4588,8 @@ class Ticket extends CommonITILObject {
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "</td><td width='70%'>";
             $linkparam = ['name'        => '_link[tickets_id_2]',
-                               'displaywith' => ['id']];
+                          'used'        => [$this->getID()],
+                          'displaywith' => ['id']];
 
             if (isset($values["_link"])) {
                $linkparam['value'] = $values["_link"]['tickets_id_2'];
