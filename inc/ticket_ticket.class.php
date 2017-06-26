@@ -53,6 +53,8 @@ class Ticket_Ticket extends CommonDBRelation {
    // Ticket links
    const LINK_TO        = 1;
    const DUPLICATE_WITH = 2;
+   const SON_OF         = 3;
+   const PARENT_OF      = 4;
 
 
    /**
@@ -141,8 +143,9 @@ class Ticket_Ticket extends CommonDBRelation {
 
       foreach ($DB->request($sql) as $data) {
          if ($data['tickets_id_1'] != $ID) {
-            $tickets[$data['id']] = ['link'       => $data['link'],
-                                          'tickets_id' => $data['tickets_id_1']];
+            $tickets[$data['id']] = ['link'         => $data['link'],
+                                     'tickets_id_1' => $data['tickets_id_1'],
+                                     'tickets_id'   => $data['tickets_id_1']];
          } else {
             $tickets[$data['id']] = ['link'       => $data['link'],
                                           'tickets_id' => $data['tickets_id_2']];
@@ -181,7 +184,8 @@ class Ticket_Ticket extends CommonDBRelation {
                                                                'tickets_id' => $ID],
                                                          'fa-times-circle');
                }
-               $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
+               $inverted = (isset($data['tickets_id_1']));
+               $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link'], $inverted),
                                $ticket->getLink(['forceid' => true]));
                printf(__('%1$s %2$s'), $text, $icons);
 
@@ -195,13 +199,17 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Dropdown for links between tickets
     *
-    * @param $myname    select name
-    * @param $value     default value (default self::LINK_TO)
+    * @param string  $myname select name
+    * @param integer $value  default value (default self::LINK_TO)
+    *
+    * @return void
    **/
    static function dropdownLinks($myname, $value = self::LINK_TO) {
 
       $tmp[self::LINK_TO]        = __('Linked to');
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');
+      $tmp[self::SON_OF]         = __('Son of');
+      $tmp[self::PARENT_OF]      = __('Parent of');
       Dropdown::showFromArray($myname, $tmp, ['value' => $value]);
    }
 
@@ -209,12 +217,23 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Get Link Name
     *
-    * @param $value default value
+    * @param integer $value    Current value
+    * @param boolean $inverted Whether to invert label
+    *
+    * @return string
    **/
-   static function getLinkName($value) {
+   static function getLinkName($value, $inverted = false) {
+      $tmp = [];
 
-      $tmp[self::LINK_TO]        = __('Linked to');
-      $tmp[self::DUPLICATE_WITH] = __('Duplicates');
+      if (!$inverted) {
+         $tmp[self::LINK_TO]        = __('Linked to');
+         $tmp[self::DUPLICATE_WITH] = __('Duplicates');
+         $tmp[self::SON_OF]         = __('Son of');
+      } else {
+         $tmp[self::LINK_TO]        = __('Linked to');
+         $tmp[self::DUPLICATE_WITH] = __('Duplicated by');
+         $tmp[self::SON_OF]         = __('Parent of');
+      }
 
       if (isset($tmp[$value])) {
          return $tmp[$value];
@@ -237,6 +256,8 @@ class Ticket_Ticket extends CommonDBRelation {
          $input['link'] = self::LINK_TO;
       }
 
+      $this->checkParentSon($input);
+
       // No multiple links
       $tickets = self::getLinkedTicketsTo($input['tickets_id_1']);
       if (count($tickets)) {
@@ -255,6 +276,31 @@ class Ticket_Ticket extends CommonDBRelation {
       }
 
       return parent::prepareInputForAdd($input);
+   }
+
+
+   function prepareInputForUpdate($input) {
+      $this->checkParentSon($input);
+      return parent::prepareInputForAdd($input);
+   }
+
+
+   /**
+    * Check for parent relation (inverse of son)
+    *
+    * @param array $input Input
+    *
+    * @return void
+    */
+   public function checkParentSon(&$input) {
+      if (isset($input['link']) && $input['link'] == Ticket_Ticket::PARENT_OF) {
+         //a PARENT_OF relation is an inverted SON_OF one :)
+         $id1 = $input['tickets_id_2'];
+         $id2 = $input['tickets_id_1'];
+         $input['tickets_id_1'] = $id1;
+         $input['tickets_id_2'] = $id2;
+         $input['link']         = Ticket_Ticket::SON_OF;
+      }
    }
 
 
@@ -292,6 +338,27 @@ class Ticket_Ticket extends CommonDBRelation {
          NotificationEvent::raiseEvent("update", $t);
       }
 
+   }
+
+
+   /**
+    * Count number of open children for a parent
+    *
+    * @param integer $pid Parent ID
+    *
+    * @return integer
+    */
+   public function countOpenChildren($pid) {
+      global $DB;
+
+      $query = "SELECT COUNT(1) AS cpt FROM " . $this->getTable() . " links " .
+         "INNER JOIN " . Ticket::getTable() . " tickets ON " .
+         "links.tickets_id_1=tickets.id " .
+         "WHERE links.link='" . self::SON_OF . "' AND links.tickets_id_2=$pid " .
+         "AND tickets.status NOT IN ('" . Ticket::SOLVED . "', '" . Ticket::CLOSED . "')";
+      $results = $DB->query($query);
+      $result = $results->fetch_assoc();
+      return (int)$result['cpt'];
    }
 
 
