@@ -140,7 +140,9 @@ class SlaLevel extends RuleTicket {
                                      array('max_time'
                                              => $delay,
                                            'used'
-                                             => self::getAlreadyUsedExecutionTime($slt->fields['id'])));
+                                             => self::getAlreadyUsedExecutionTime($slt->fields['id']),
+                                           'type'
+                                             => $slt->fields['type']));
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
@@ -313,7 +315,9 @@ class SlaLevel extends RuleTicket {
                                         'used'
                                              => self::getAlreadyUsedExecutionTime($slt->fields['id']),
                                         'value'
-                                             => $this->fields['execution_time']));
+                                             => $this->fields['execution_time'],
+                                        'type'
+                                             => $slt->fields['type']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -389,7 +393,11 @@ class SlaLevel extends RuleTicket {
          }
       }
       if (!in_array(0,$p['used'])) {
-         $possible_values[0] = __('Time to resolve');
+         if ($p['type'] == 1) {
+         	$possible_values[0] = __('Time to own');
+         } else {
+            $possible_values[0] = __('Time to resolve');
+         }
       }
       ksort($possible_values);
 
