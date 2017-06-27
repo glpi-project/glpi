@@ -179,7 +179,7 @@ class DBmysqlIterator extends DbTestCase {
    }
 
 
-   public function testJoin() {
+   public function testJoins() {
       $it = new \DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
@@ -188,19 +188,30 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = new \DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)');
-   }
-
-
-   public function testLeftJoin() {
 
       $it = new \DBmysqlIterator(NULL, 'foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
-   }
-
-   public function testInnerJoin() {
 
       $it = new \DBmysqlIterator(NULL, 'foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+
+      $this->when(
+         function () {
+            $it = new \DBmysqlIterator(null, 'foo', ['LEFT JOIN' => 'bar']);
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('BAD JOIN, value must be [ table => criteria ]')
+         ->exists();
+
+      $this->when(
+         function () {
+            $it = new \DBmysqlIterator(NULL, 'foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('BAD FOREIGN KEY, should be [ key1, key2 ]')
+         ->exists();
    }
 
 
