@@ -142,9 +142,9 @@ class Auth extends CommonGLPI {
       global $DB;
 
       $result = $DB->request('glpi_users',
-         ['AND' => [$options],
-         'JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users' => 'id',
-                                                     'glpi_useremails' => 'users_id']]]]);
+         ['AND'      => [$options],
+         'LEFT JOIN' => ['glpi_useremails' => ['FKEY' => ['glpi_users'      => 'id',
+                                                          'glpi_useremails' => 'users_id']]]]);
       // Check if there is a row
       if ($result->numrows() == 0) {
          $this->addToError(__('Incorrect username or password'));
