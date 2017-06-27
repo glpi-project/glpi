@@ -393,7 +393,7 @@ class SlaLevel extends RuleTicket {
       }
       if (!in_array(0, $p['used'])) {
          if ($p['type'] == 1) {
-         	$possible_values[0] = __('Time to own');
+             $possible_values[0] = __('Time to own');
          } else {
             $possible_values[0] = __('Time to resolve');
          }
