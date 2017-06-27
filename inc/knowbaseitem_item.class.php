@@ -315,15 +315,13 @@ class KnowbaseItem_Item extends CommonDBRelation {
       ];
       $where = [];
 
-      $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
-      $itemtable = $item->getTable();
 
       if ($item::getType() == KnowbaseItem::getType()) {
          $id_field = 'glpi_knowbaseitems_items.knowbaseitems_id';
          $visibility = KnowbaseItem::getVisibilityCriteria();
-         if (count($visibility['JOIN'])) {
-            $options['JOIN'] = $visibility['JOIN'];
+         if (count($visibility['LEFT JOIN'])) {
+            $options['LEFT JOIN'] = $visibility['LEFT JOIN'];
             if (isset($visibility['WHERE'])) {
                $where = $visibility['WHERE'];
             }

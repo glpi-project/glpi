@@ -576,7 +576,7 @@ class KnowbaseItem extends CommonDBVisible {
          }
       }
 
-      $criteria = ['JOIN' => $join];
+      $criteria = ['LEFT JOIN' => $join];
       if (count($where)) {
          $criteria['WHERE'] = ['OR' => $where];
       }
