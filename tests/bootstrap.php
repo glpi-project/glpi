@@ -526,7 +526,8 @@ function loadDataset() {
 function getItemByTypeName($type, $name, $onlyid=false) {
 
    $item = getItemForItemtype($type);
-   if ($item->getFromDBByQuery("WHERE `name`='$name'")) {
+   $nameField = $type::getNameField();
+   if ($item->getFromDBByQuery("WHERE `$nameField`='$name'")) {
       return ($onlyid ? $item->getField('id') : $item);
    }
    return false;
