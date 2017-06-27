@@ -106,7 +106,8 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id'));
+                                                   'max_closedate', 'tickettemplates_id',
+                                                   'pendingenddate', 'pending_add_follow'));
 
 
    function getForbiddenStandardMassiveAction() {
@@ -2135,6 +2136,38 @@ class Entity extends CommonTreeDropdown {
          echo "</font>";
       }
       echo "</td></tr>";
+
+      // todo: add code to manage expire pending tickets
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>".__('Expiration pending status')."<br/>(".
+              __('Number of days mean auto-close if expire date not defined').")</td>";
+      echo "<td colspan='2'>";
+      $elements = [
+          self::CONFIG_NEVER  => __('No'),
+          0                   => __('Enable expiration date'),
+      ];
+      if ($ID > 0) {
+         $elements[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+      Dropdown::showNumber('pendingenddate',
+                           array('value' => $entity->fields['pendingenddate'],
+                                 'min'   => 1,
+                                 'max'   => 500,
+                                 'step'  => 1,
+                                 'toadd' => $elements,
+                                 'unit'  => 'day'));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>".__('Add private followup when add reason of pending status')."</td>";
+      echo "<td colspan='2'>";
+      Alert::dropdownYesNo(array('name'           => "pending_add_follow",
+                                 'value'          =>  $entity->fields['pending_add_follow'],
+                                 'inherit_parent' => (($ID > 0) ? 1 : 0)));
+      echo "</td>";
+      echo "</tr>";
+
 
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 

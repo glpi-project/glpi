@@ -78,4 +78,77 @@ class Entity extends DbTestCase {
       $this->array(array_values(getSonsOf('glpi_entities', $ent2->getID())))
          ->isEqualTo([$ent2->getID()]);
    }
+
+   public function testPendingStatusOptionDisabled() {
+      $entity = new \Entity;
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => \Entity::CONFIG_NEVER
+      ];
+      $this->boolean($entity->update($input))->isTrue();
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(\Entity::CONFIG_NEVER);
+   }
+
+   public function testPendingStatusOptionEnabled() {
+      $entity = new \Entity;
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 0
+      ];
+      $entity->update($input);
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(0);
+   }
+
+   public function testPendingStatusOption2Days() {
+      $entity = new \Entity;
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 2
+      ];
+      $entity->update($input);
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(2);
+   }
+
+   public function testPendingStatusOptionParentValue() {
+      $entity = new \Entity;
+      // Disabled option
+      $e = getItemByTypeName('Entity', '_test_child_1', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => \Entity::CONFIG_NEVER
+      ];
+      $entity->update($input);
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(\Entity::CONFIG_NEVER);
+
+      // Enabled option
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 0
+      ];
+      $entity->update($input);
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(0);
+
+      // 2 days option
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 2
+      ];
+      $entity->update($input);
+
+      $val = $entity->getUsedConfig('pendingenddate', $e);
+      $this->variable($val)->isEqualTo(2);
+   }
 }

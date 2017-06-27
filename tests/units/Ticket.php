@@ -1039,4 +1039,98 @@ class Ticket extends DbTestCase {
          $assign = true
       );
    }
+   
+   public function testAddFollowupWhenDefineExpirationPendingStatus() {
+      $this->login();
+
+      $entity = new \Entity;
+      $ticket = new \Ticket;
+      $followup = new \TicketFollowup;
+
+      // First: Activate the option in the entity + activate followup
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 0,
+          'pending_add_follow' => 1
+      ];
+      $entity->update($input);
+
+      // Create a ticket
+      $input = [
+          'name'           => 'test',
+          'content'        => 'test description',
+          'entities_id'    => $e,
+          'status'         => \Ticket::WAITING,
+          'pendingenddate' => date('Y-m-d H:i:s', (date('U') - 36000))
+      ];
+      $ticket_id = $ticket->add($input);
+      $this->integer($ticket_id);
+
+      $this->integer(count($followup->find("`tickets_id`='".$ticket_id."'")))->isEqualTo(1);
+
+      // go back ticket in assigned status manually
+      $input = [
+          'id'     => $ticket_id,
+          'status' => \Ticket::ASSIGNED
+      ];
+      $ticket->update($input);
+      $this->integer(count($followup->find("`tickets_id`='".$ticket_id."'")))->isEqualTo(1);
+      $ticket->getFromDB($ticket_id);
+      $this->variable($ticket->fields['pendingenddate'])->isNull();
+      $this->variable($ticket->fields['pendingcomment'])->isNull();
+
+      // Return ticket status in pending state
+      $input = [
+          'id'     => $ticket_id,
+          'status' => \Ticket::WAITING,
+          'pendingenddate' => date('Y-m-d H:i:s', (date('U') - 36000))
+      ];
+      $ticket->update($input);
+      $this->integer(count($followup->find("`tickets_id`='".$ticket_id."'")))->isEqualTo(2);
+
+   }
+
+   public function testCronPendingStatus() {
+      $this->login();
+
+      $entity = new \Entity;
+      $ticket = new \Ticket;
+      $followup = new \TicketFollowup;
+      $cron   = new \CronTask;
+
+      // First: Activate the option in the entity
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $input = [
+          'id' => $e,
+          'pendingenddate' => 0,
+          'pending_add_follow' => 0
+      ];
+      $entity->update($input);
+
+      // Create a ticket
+      $input = [
+          'name'           => 'test',
+          'content'        => 'test description',
+          'entities_id'    => $e,
+          'status'         => \Ticket::WAITING,
+          'pendingenddate' => date('Y-m-d H:i:s', (date('U') - 36000))
+      ];
+      $ticket_id = $ticket->add($input);
+      $this->integer($ticket_id);
+
+      // Run the cron
+      // reset last run, in case we run test few minutes ago
+      $cron->getFromDBbyName('Ticket', 'expirePending');
+      $cron->resetDate();
+      \CronTask::launch(\CronTask::MODE_EXTERNAL, 1, 'expirePending');
+
+      // The ticket must be go in assign status and pending date resetted
+      $get_ticket = $ticket->getFromDB($ticket_id);
+      $this->boolean($get_ticket)->isTrue;
+      $this->string($ticket->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+      $this->variable($ticket->fields['pendingenddate'])->isNull();
+
+      $this->integer(count($followup->find("`tickets_id`='".$ticket_id."'")))->isEqualTo(0);
+   }
 }
