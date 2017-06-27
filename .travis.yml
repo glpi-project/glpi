@@ -1,9 +1,4 @@
 language: php
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - nightly
 
 env:
   - DB=mysql
@@ -29,27 +24,16 @@ script:
 matrix:
   include:
     - php: 5.6
-      addons:
-        mariadb: 10.0
-    - php: 5.6
-      addons:
-        mariadb: 10.1
     - php: 7.0
-      addons:
-        mariadb: 10.0
-    - php: 7.0
-      addons:
-        mariadb: 10.1
     - php: 7.1
       addons:
         mariadb: 10.0
+    - php: 7.1
+      addons:
+        mariadb: 10.1
     - php: 7.1
       env: CS=true
-      addons:
-        mariadb: 10.1
     - php: nightly
-      addons:
-        mariadb: 10.1
   allow_failures:
     - php: nightly
 
