@@ -329,7 +329,7 @@ class MassiveAction {
       if (isset($this->action)) {
          return $this->action;
       }
-      return NULL;
+      return null;
    }
 
 
@@ -395,7 +395,7 @@ class MassiveAction {
                }
             }
          } else {
-            $this->check_item = NULL;
+            $this->check_item = null;
          }
       }
       return $this->check_item;
@@ -495,7 +495,7 @@ class MassiveAction {
     *
     * @return an array of massive actions or false if $item is not valid
    **/
-   static function getAllMassiveActions($item, $is_deleted=0, CommonDBTM $checkitem=NULL) {
+   static function getAllMassiveActions($item, $is_deleted=0, CommonDBTM $checkitem=null) {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // TODO: when maybe* will be static, when can completely switch to $itemtype !

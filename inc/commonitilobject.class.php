@@ -1258,16 +1258,16 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      $useractors = NULL;
+      $useractors = null;
       // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {
          $useractors = new $this->userlinkclass();
       }
-      $groupactors = NULL;
+      $groupactors = null;
       if (!empty($this->grouplinkclass)) {
          $groupactors = new $this->grouplinkclass();
       }
-      $supplieractors = NULL;
+      $supplieractors = null;
       if (!empty($this->supplierlinkclass)) {
          $supplieractors = new $this->supplierlinkclass();
       }
@@ -1509,16 +1509,16 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    private function addAdditionalActors($input) {
 
-      $useractors = NULL;
+      $useractors = null;
       // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {
          $useractors = new $this->userlinkclass();
       }
-      $groupactors = NULL;
+      $groupactors = null;
       if (!empty($this->grouplinkclass)) {
          $groupactors = new $this->grouplinkclass();
       }
-      $supplieractors = NULL;
+      $supplieractors = null;
       if (!empty($this->supplierlinkclass)) {
          $supplieractors = new $this->supplierlinkclass();
       }

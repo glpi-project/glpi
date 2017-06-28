@@ -1217,8 +1217,8 @@ class Project extends CommonDBTM {
          // Get all tasks
          $tasks      = ProjectTask::getAllForProject($ID);
 
-         $real_begin = NULL;
-         $real_end   = NULL;
+         $real_begin = null;
+         $real_end   = null;
          // Use real if set
          if (is_null($project->fields['real_start_date'])) {
             $real_begin = $project->fields['real_start_date'];

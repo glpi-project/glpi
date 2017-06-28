@@ -2540,7 +2540,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return boolean
    **/
-   function can($ID, $right, array &$input=NULL) {
+   function can($ID, $right, array &$input=null) {
       // Clean ID :
       $ID = Toolbox::cleanInteger($ID);
 
@@ -2653,7 +2653,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return void
    **/
-   function check($ID, $right, array &$input=NULL) {
+   function check($ID, $right, array &$input=null) {
       global $CFG_GLPI;
 
       // Check item exists
@@ -3451,7 +3451,7 @@ class CommonDBTM extends CommonGLPI {
     * @return void (update is set inside $actions)
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=NULL) {
+                                                CommonDBTM $checkitem=null) {
    }
 
 
@@ -3510,7 +3510,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array an array of massive actions
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       // test if current profile has rights to unlock current item type
       if (Session::haveRight( static::$rightname, UNLOCK)) {

@@ -477,7 +477,7 @@ class Printer  extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {

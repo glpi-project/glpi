@@ -193,7 +193,7 @@ class CronTask extends CommonDBTM{
          pcntl_signal(SIGTERM, SIG_DFL);
 
          // End of this task
-         $this->end(NULL);
+         $this->end(null);
 
          // End of this cron
          $_SESSION["glpicronuserrunning"]='';
@@ -1258,7 +1258,7 @@ class CronTask extends CommonDBTM{
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1667,7 +1667,7 @@ class CronTask extends CommonDBTM{
    **/
    static function cronOptimize($task) {
 
-      $nb = DBmysql::optimize_tables(NULL, true);
+      $nb = DBmysql::optimize_tables(null, true);
       $task->setVolume($nb);
 
       return 1;

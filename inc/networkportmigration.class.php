@@ -320,7 +320,7 @@ class NetworkPortMigration extends CommonDBChild {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -476,11 +476,11 @@ class NetworkPortMigration extends CommonDBChild {
    **/
    static function getMigrationInstantiationHTMLTableHeaders(HTMLTableGroup $group,
                                                              HTMLTableSuperHeader $super,
-                                                             HTMLTableSuperHeader $internet_super = NULL,
-                                                             HTMLTableHeader $father=NULL,
+                                                             HTMLTableSuperHeader $internet_super = null,
+                                                             HTMLTableHeader $father=null,
                                                              array $options=array()) {
       // TODO : study to display the correct informations for this undefined NetworkPort
-      return NULL;
+      return null;
    }
 
 }

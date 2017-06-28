@@ -1193,17 +1193,17 @@ class Plugin extends CommonDBTM {
     *
     * @return mixed $data
    **/
-   static function doHook ($name, $param=NULL) {
+   static function doHook ($name, $param=null) {
       global $PLUGIN_HOOKS;
 
-      if ($param == NULL) {
+      if ($param == null) {
          $data = func_get_args();
       } else {
          $data = $param;
       }
 
       // Apply hook only for the item
-      if (($param != NULL) && is_object($param)) {
+      if (($param != null) && is_object($param)) {
          $itemtype = get_class($param);
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
             foreach ($PLUGIN_HOOKS[$name] as $plug => $tab) {
@@ -1244,7 +1244,7 @@ class Plugin extends CommonDBTM {
     *
     * @return mixed $data
    **/
-   static function doHookFunction($name, $parm=NULL) {
+   static function doHookFunction($name, $parm=null) {
       global $PLUGIN_HOOKS;
 
       $ret = $parm;
@@ -1318,7 +1318,7 @@ class Plugin extends CommonDBTM {
     *
     * @return String or Array (when $info is NULL)
    **/
-   static function getInfo($plugin, $info=NULL) {
+   static function getInfo($plugin, $info=null) {
 
       $fct = 'plugin_version_'.strtolower($plugin);
       if (function_exists($fct)) {

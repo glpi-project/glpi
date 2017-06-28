@@ -2426,7 +2426,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array or string
    **/
-   static function getAutoAssignMode($val=NULL) {
+   static function getAutoAssignMode($val=null) {
 
       $tab = array(self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
                    self::CONFIG_NEVER                   => __('No'),

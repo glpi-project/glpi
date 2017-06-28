@@ -70,7 +70,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'unset_default']
                      = __('Unset as default');

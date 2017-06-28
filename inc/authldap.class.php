@@ -575,7 +575,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|string
     */
-   static function getGroupSearchTypeName($val=NULL) {
+   static function getGroupSearchTypeName($val=null) {
 
       $tmp[0] = __('In users');
       $tmp[1] = __('In groups');
@@ -1564,7 +1564,7 @@ class AuthLDAP extends CommonDBTM {
       $values['mode']         = self::ACTION_SYNCHRONIZE;
       $values['ldap_filter']  = '';
       $values['basedn']       = $config_ldap->fields['basedn'];
-      $values['begin_date']   = NULL;
+      $values['begin_date']   = null;
       $values['end_date']     = date('Y-m-d H:i:s', time()-DAY_TIMESTAMP);
       //Called by an external script or not
       $values['script']       = 0;
@@ -3026,10 +3026,10 @@ class AuthLDAP extends CommonDBTM {
       //If time restriction
       $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
                      && !empty($_SESSION['ldap_import']['begin_date'])
-                        ? $_SESSION['ldap_import']['begin_date'] : NULL);
+                        ? $_SESSION['ldap_import']['begin_date'] : null);
       $end_date   = (isset($_SESSION['ldap_import']['end_date'])
                      && !empty($_SESSION['ldap_import']['end_date'])
-                        ? $_SESSION['ldap_import']['end_date'] : NULL);
+                        ? $_SESSION['ldap_import']['end_date'] : null);
       $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
       $ldap_condition = $authldap->getField('condition');
       //Add entity filter and filter filled in directory's configuration form

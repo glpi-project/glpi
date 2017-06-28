@@ -631,7 +631,7 @@ class NetworkPort extends CommonDBChild {
          $c_network->setHTMLClass('center');
 
       } else {
-         $c_network = NULL;
+         $c_network = null;
       }
 
       foreach ($porttypes as $portType) {
@@ -652,7 +652,7 @@ class NetworkPort extends CommonDBChild {
                                               Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand,
                                                                           '__RAND__'), $c_main);
          } else {
-            $c_checkbox = NULL;
+            $c_checkbox = null;
          }
 
          $c_number  = $t_group->addHeader('NetworkPort', "#", $c_main);
@@ -668,19 +668,19 @@ class NetworkPort extends CommonDBChild {
          if ($display_options['characteristics']) {
             if (empty($portType)) {
                NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
-                                                                               $c_network, NULL,
+                                                                               $c_network, null,
                                                                                $table_options);
             } else {
                $instantiation = new $portType();
                $instantiation->getInstantiationHTMLTableHeaders($t_group, $c_instant, $c_network,
-                                                                NULL, $table_options);
+                                                                null, $table_options);
                unset ($instantiation);
             }
          }
 
          if ($display_options['internet']
              && !$display_options['characteristics']) {
-            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL, $table_options);
+            NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, null, $table_options);
          }
 
          if ($itemtype == 'NetworkPort') {
@@ -741,7 +741,7 @@ class NetworkPort extends CommonDBChild {
                      $ce_checkbox =  $t_row->addCell($c_checkbox,
                                                      Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
                   } else {
-                     $ce_checkbox = NULL;
+                     $ce_checkbox = null;
                   }
                   $content = "<span class='b'>";
                   // Display link based on default rights
@@ -770,23 +770,23 @@ class NetworkPort extends CommonDBChild {
                   $t_row->addCell($c_number, $content);
 
                   $value = $netport->fields["name"];
-                  $t_row->addCell($c_name, $value, NULL, $netport);
+                  $t_row->addCell($c_name, $value, null, $netport);
 
                   if ($table_options['display_isDynamic']) {
                      $t_row->addCell($c_dynamic,
                                      Dropdown::getYesNo($netport->fields['is_dynamic']));
                   }
 
-                  $instant_cell = NULL;
+                  $instant_cell = null;
                   if ($display_options['characteristics']) {
                      $instantiation = $netport->getInstantiation();
                      if ($instantiation !== false) {
-                        $instantiation->getInstantiationHTMLTable($netport, $t_row, NULL,
+                        $instantiation->getInstantiationHTMLTable($netport, $t_row, null,
                                                                   $table_options);
                         unset($instantiation);
                      }
                   } else if ($display_options['internet']) {
-                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
+                     NetworkName::getHTMLTableCellsForItem($t_row, $netport, null, $table_options);
                   }
 
                }
@@ -986,7 +986,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

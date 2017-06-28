@@ -738,7 +738,7 @@ class Document extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1363,7 +1363,7 @@ class Document extends CommonDBTM {
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=NULL) {
+                                                CommonDBTM $checkitem=null) {
       global $CFG_GLPI;
 
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;

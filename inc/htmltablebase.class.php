@@ -125,8 +125,8 @@ abstract class HTMLTableBase  {
     *
     * @return the HTMLTableHeader        that have been created
    **/
-   function addHeader($name, $content, HTMLTableSuperHeader $super=NULL,
-                      HTMLTableHeader $father=NULL) {
+   function addHeader($name, $content, HTMLTableSuperHeader $super=null,
+                      HTMLTableHeader $father=null) {
 
       $this->tryAddHeader();
       if (is_null($super)) {
@@ -155,7 +155,7 @@ abstract class HTMLTableBase  {
     * @param $name
     * @param $sub_name (default NULL)
    **/
-   function getHeaderByName($name, $sub_name=NULL) {
+   function getHeaderByName($name, $sub_name=null) {
 
       if (is_string($sub_name)) {
          if (isset($this->headers[$name][$sub_name])) {

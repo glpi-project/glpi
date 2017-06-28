@@ -264,7 +264,7 @@ class DisplayPreference extends CommonDBTM {
          return false;
       }
 
-      $item = NULL;
+      $item = null;
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
@@ -432,7 +432,7 @@ class DisplayPreference extends CommonDBTM {
       }
       $IDuser = 0;
 
-      $item = NULL;
+      $item = null;
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }

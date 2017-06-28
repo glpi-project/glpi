@@ -153,7 +153,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item            CommonDBTM object
     * @param $relations_id    (default NULL)
    **/
-   static function getOpposite(CommonDBTM $item, &$relations_id=NULL) {
+   static function getOpposite(CommonDBTM $item, &$relations_id=null) {
       return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
    }
 
@@ -165,7 +165,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $items_id        ID of the item to search for its opposite
     * @param $relations_id    (default NULL)
     **/
-   static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id=NULL) {
+   static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id=null) {
       global $DB;
 
       if ($items_id < 0) {
@@ -404,7 +404,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                || (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights)));
 
       try {
-         $item1 = NULL;
+         $item1 = null;
          $can1  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_1_Rights,
                                           static::$itemtype_1, static::$items_id_1, $item1);
          if ($OneWriteIsEnough) {
@@ -422,7 +422,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       try {
-         $item2 = NULL;
+         $item2 = null;
          $can2  = $this->canConnexityItem($method, $methodNotItem, static::$checkItem_2_Rights,
                                           static::$itemtype_2, static::$items_id_2, $item2);
          if ($OneWriteIsEnough) {
@@ -983,8 +983,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       if (isset($options[get_called_class().'_side'])) {
          $side = $options[get_called_class().'_side'];
@@ -1015,8 +1015,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                            HTMLTableCell $father=null, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {

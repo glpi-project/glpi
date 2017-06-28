@@ -262,7 +262,7 @@ class KnowbaseItem extends CommonDBVisible {
           && !empty($this->input["_visibility"]["_type"])) {
 
          $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
-         $item                                           = NULL;
+         $item                                           = null;
 
          switch ($this->input["_visibility"]['_type']) {
             case 'User' :

@@ -676,7 +676,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function getWHEREForMatchingElement($tableName, $binaryFieldPrefix, $versionField) {
 
       $version = $this->fields["version"];
-      $start   = NULL;
+      $start   = null;
       $this->computeNetworkRange($start);
 
       $result = array();
@@ -809,7 +809,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                                     ($this->fields['addressable'] by default)
     *                                     (default '')
    **/
-   function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork='') {
+   function computeNetworkRange(&$start, &$end=null, $excludeBroadcastAndNetwork='') {
 
       if (!is_bool($excludeBroadcastAndNetwork)) {
          if (isset($this->fields['addressable'])) {
@@ -840,7 +840,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                                              result (false by default)
    **/
    static function computeNetworkRangeFromAdressAndNetmask($address, $netmask, &$firstAddress,
-                                                           &$lastAddress=NULL,
+                                                           &$lastAddress=null,
                                                            $excludeBroadcastAndNetwork=false) {
       if ($address instanceof IPAddress) {
          $address = $address->getBinary();
@@ -921,8 +921,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       if ($itemtype != 'IPAddress') {
          return;
@@ -947,8 +947,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                            HTMLTableCell $father=null, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {

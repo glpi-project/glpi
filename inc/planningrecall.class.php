@@ -346,7 +346,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @param $task for log, if NULL display (default NULL)
    **/
-   static function cronPlanningRecall($task=NULL) {
+   static function cronPlanningRecall($task=null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {

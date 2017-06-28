@@ -544,7 +544,7 @@ class Item_Devices extends CommonDBRelation {
 
          $table_group = $table->createGroup($group_name, '');
 
-         $peer_column = $table_group->addHeader('item', $column_label, $common_column, NULL);
+         $peer_column = $table_group->addHeader('item', $column_label, $common_column, null);
 
          if (!empty($peer_type)) {
             //TRANS : %1$s is the type of the device
@@ -566,7 +566,7 @@ class Item_Devices extends CommonDBRelation {
          $options['itemtype_title'] = sprintf(__('%1$s of %2$s: %3$s'), $peer_type::getTypeName(Session::getPluralNumber()),
                                               $item->getTypeName(1), $item->getName());
 
-         $peer_type::getHTMLTableHeader($item->getType(), $table_group, $common_column, NULL,
+         $peer_type::getHTMLTableHeader($item->getType(), $table_group, $common_column, null,
                                           $options);
       }
 
@@ -642,7 +642,7 @@ class Item_Devices extends CommonDBRelation {
          $peer = new $peer_type();
          $peer->getEmpty();
       } else {
-         $peer = NULL;
+         $peer = null;
       }
       foreach ($DB->request($query) as $link) {
 
@@ -665,12 +665,12 @@ class Item_Devices extends CommonDBRelation {
 
             if ($is_device) {
                $cell = $current_row->addCell($peer_column, ($peer ? $peer->getLink() : __('None')),
-                                             NULL, $peer);
+                                             null, $peer);
                if (is_null($peer)) {
                   $cell->setHTMLClass('center');
                }
             } else {
-               $peer->getHTMLTableCellForItem($current_row, $item, NULL, $options);
+               $peer->getHTMLTableCellForItem($current_row, $item, null, $options);
             }
 
          }

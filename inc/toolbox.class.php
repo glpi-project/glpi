@@ -299,7 +299,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                      ? $value : str_replace($in, $out, $value)));
 
       return $value;
@@ -323,7 +323,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                      ? $value : str_replace($out, $in, $value)));
 
       return $value;
@@ -350,7 +350,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'), $value)
                   : (is_null($value)
-                      ? NULL : (is_resource($value)
+                      ? null : (is_resource($value)
                                   ? $value : str_replace($out, $in, $value)));
 
       // revert unclean inside <pre>
@@ -597,7 +597,7 @@ class Toolbox {
     *
     * @since version 0.84
    **/
-   static function setDebugMode($mode=NULL, $debug_sql=NULL, $debug_vars=NULL, $log_in_files=NULL) {
+   static function setDebugMode($mode=null, $debug_sql=null, $debug_vars=null, $log_in_files=null) {
       global $CFG_GLPI;
 
       if (isset($mode)) {
@@ -725,7 +725,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
                   : (is_null($value)
-                       ? NULL : (is_resource($value)
+                       ? null : (is_resource($value)
                                   ? $value : $DB->escape($value)));
 
       return $value;
@@ -744,7 +744,7 @@ class Toolbox {
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                     ? $value :stripslashes($value)));
 
       return $value;
@@ -1540,7 +1540,7 @@ class Toolbox {
     *
     * @return content of the page (or empty)
    **/
-   static function getURLContent ($url, &$msgerr=NULL, $rec=0) {
+   static function getURLContent ($url, &$msgerr=null, $rec=0) {
       global $CFG_GLPI;
 
       $content = "";
@@ -2390,7 +2390,7 @@ class Toolbox {
    **/
    static function getMime($file, $type=false) {
 
-      static $finfo = NULL;
+      static $finfo = null;
 
       if (is_null($finfo)) {
          $finfo = new finfo(FILEINFO_MIME_TYPE);

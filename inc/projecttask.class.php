@@ -1154,8 +1154,8 @@ class ProjectTask extends CommonDBChild {
             $subtasks += static::getDataToDisplayOnGantt($data['id']);
          }
 
-         $real_begin = NULL;
-         $real_end   = NULL;
+         $real_begin = null;
+         $real_end   = null;
          // Use real if set
          if (!is_null($task->fields['real_start_date'])) {
             $real_begin = $task->fields['real_start_date'];

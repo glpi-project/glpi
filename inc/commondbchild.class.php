@@ -694,7 +694,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return the button HTML code if $display is true
    **/
-   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=NULL,
+   static function showAddChildButtonForItemForm(CommonDBTM $item, $field_name, $canedit=null,
                                                  $display=true) {
       global $CFG_GLPI;
 
@@ -756,7 +756,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     *
     * @return nothing (display only)
    **/
-   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit=NULL) {
+   static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit=null) {
       global $DB, $CFG_GLPI;
 
       $items_id = $item->getID();

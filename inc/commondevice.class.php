@@ -302,8 +302,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @return nothing (elements added to $base)
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       $this_type = get_called_class();
 
@@ -341,8 +341,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                    HTMLTableCell $father=null, array $options=array()) {
 
       global $CFG_GLPI;
 

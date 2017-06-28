@@ -60,7 +60,7 @@ class DeviceSoundCard extends CommonDevice {
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
-                                                                                    NULL, false),
+                                                                                    null, false),
                                      'type'  => 'registeredIDChooser'),
                                array('name'  => 'devicesoundcardmodels_id',
                                      'label' => __('Model'),
@@ -97,8 +97,8 @@ class DeviceSoundCard extends CommonDevice {
     * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -121,8 +121,8 @@ class DeviceSoundCard extends CommonDevice {
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                    HTMLTableCell $father=null, array $options=array()) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -132,7 +132,7 @@ class DeviceSoundCard extends CommonDevice {
 
       switch ($item->getType()) {
          case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
             if ($this->fields["type"]) {
                $row->addCell($row->getHeaderByName('devicesoundcard_type'), $this->fields["type"],
                              $father);

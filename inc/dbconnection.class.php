@@ -134,7 +134,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return DBmysql object
    **/
-   static function getDBSlaveConf($choice=NULL) {
+   static function getDBSlaveConf($choice=null) {
 
       if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -323,7 +323,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return integer
    **/
-   static function getReplicateDelay($choice=NULL) {
+   static function getReplicateDelay($choice=null) {
 
       include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
       return (int) (self::getHistoryMaxDate(new DB())

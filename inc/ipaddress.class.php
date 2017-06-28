@@ -254,7 +254,7 @@ class IPAddress extends CommonDBChild {
                                                                         $itemtype::getTypeName(Session::getPluralNumber()));
 
                self::getHTMLTableHeader($item->getType(), $table_options['group_'.$itemtype],
-                                        $item_column, NULL, $table_options);
+                                        $item_column, null, $table_options);
 
             }
          }
@@ -262,9 +262,9 @@ class IPAddress extends CommonDBChild {
          $table_options['group_None'] = $table->createGroup('Main', __('Other kind of items'));
 
          self::getHTMLTableHeader($item->getType(), $table_options['group_None'], $item_column,
-                                  NULL, $table_options);
+                                  null, $table_options);
 
-         self::getHTMLTableCellsForItem(NULL, $item, NULL, $table_options);
+         self::getHTMLTableCellsForItem(null, $item, null, $table_options);
 
          if ($table->getNumberOfRows() > 0) {
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
@@ -995,8 +995,8 @@ class IPAddress extends CommonDBChild {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -1037,11 +1037,11 @@ class IPAddress extends CommonDBChild {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                            HTMLTableCell $father=null, array $options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (($item !== NULL)
+      if (($item !== null)
           && ($item->getType() == 'IPNetwork')) {
 
          $queries = array();
@@ -1160,7 +1160,7 @@ class IPAddress extends CommonDBChild {
          $networkname = new NetworkName();
          $networkport = new NetworkPort();
 
-         $item = NULL;
+         $item = null;
          foreach ($DB->request($query) as $line) {
 
             unset($row);

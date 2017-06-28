@@ -496,8 +496,8 @@ class NetworkName extends FQDNLabel {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       $column_name = __CLASS__;
       if (isset($options['massiveactionnetworkname'])
@@ -536,8 +536,8 @@ class NetworkName extends FQDNLabel {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                            HTMLTableCell $father=null, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -761,11 +761,11 @@ class NetworkName extends FQDNLabel {
                                                                      self::getTypeName(Session::getPluralNumber()));
       $t_group                                   = $table->createGroup('Main', '');
 
-      self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
+      self::getHTMLTableHeader(__CLASS__, $t_group, $column, null, $table_options);
 
       $t_row   = $t_group->createRow();
 
-      self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
+      self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
       if ($table->getNumberOfRows() > 0) {
          $number = $table->getNumberOfRows();

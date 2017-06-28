@@ -946,7 +946,7 @@ abstract class API extends CommonGLPI {
                        'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
                        'order'            => "ASC",
-                       'searchText'       => NULL,
+                       'searchText'       => null,
                        'is_deleted'       => false);
       $params = array_merge($default, $params);
 

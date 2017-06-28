@@ -1575,7 +1575,7 @@ function update084to085() {
    }
 
    //generate uuid for the rules of user
-   foreach ($DB->request('glpi_rules', array('uuid' => NULL)) as $data) {
+   foreach ($DB->request('glpi_rules', array('uuid' => null)) as $data) {
       $uuid  = Rule::getUuid();
       $query = "UPDATE `glpi_rules`
                 SET `uuid` = '$uuid'
@@ -1583,7 +1583,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add uuid to existing rules");
    }
 
-   foreach ($DB->request('glpi_slalevels', array('uuid' => NULL)) as $data) {
+   foreach ($DB->request('glpi_slalevels', array('uuid' => null)) as $data) {
       $uuid  = Rule::getUuid();
       $query = "UPDATE `glpi_slalevels`
                 SET `uuid` = '$uuid'

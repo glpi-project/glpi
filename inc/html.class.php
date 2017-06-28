@@ -136,7 +136,7 @@ class Html {
    static function convDate($time, $format=null) {
 
       if (is_null($time) || $time == 'NULL' || trim($time) == '') {
-         return NULL;
+         return null;
       }
 
       if (!isset($_SESSION["glpidate_format"])) {
@@ -185,7 +185,7 @@ class Html {
    static function convDateTime($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
-         return NULL;
+         return null;
       }
 
       return self::convDate($time, $format).' '. substr($time, 11, 5);
@@ -941,7 +941,7 @@ class Html {
 
       $params            = array();
       $params['create']  = false;
-      $params['message'] = NULL;
+      $params['message'] = null;
       $params['percent'] = -1;
 
       if (is_array($options) && count($options)) {
@@ -959,7 +959,7 @@ class Html {
          echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
       }
 
-      if ($params['message'] !== NULL) {
+      if ($params['message'] !== null) {
          echo Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
                                 addslashes($params['message'])."\");");
       }
@@ -2417,7 +2417,7 @@ class Html {
 
       flush();
       if (function_exists("ob_flush")
-          && (ob_get_length() !== FALSE)) {
+          && (ob_get_length() !== false)) {
          ob_flush();
       }
    }
@@ -5469,7 +5469,7 @@ class Html {
       $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
       $param['table_class']          = 'tab_cadre_fixehov';
-      $param['cell_class_method']    = NULL;
+      $param['cell_class_method']    = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

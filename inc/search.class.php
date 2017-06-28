@@ -193,7 +193,7 @@ class Search {
       $data['itemtype'] = $itemtype;
 
       // Instanciate an object to access method
-      $data['item'] = NULL;
+      $data['item'] = null;
 
       if ($itemtype != 'AllAssets') {
          $data['item'] = getItemForItemtype($itemtype);
@@ -1088,7 +1088,7 @@ class Search {
 
                      if (strpos($val, self::SHORTSEP) === false) {
                         if ($val == self::NULLVALUE) {
-                           $newrow[$j][0][$fieldname] = NULL;
+                           $newrow[$j][0][$fieldname] = null;
                         } else {
                            $newrow[$j][0][$fieldname] = $val;
                         }
@@ -1110,7 +1110,7 @@ class Search {
                            $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
                            $newrow[$j][$key2]['id'] = $split2[1];
                            if ($split2[0] == self::NULLVALUE) {
-                              $newrow[$j][$key2][$fieldname] = NULL;
+                              $newrow[$j][$key2][$fieldname] = null;
                            } else {
                               $newrow[$j][$key2][$fieldname] = $split2[0];
                            }
@@ -2195,7 +2195,7 @@ class Search {
       global $CFG_GLPI;
 
       $toview = array();
-      $item   = NULL;
+      $item   = null;
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
@@ -2223,7 +2223,7 @@ class Search {
    static function addDefaultSelect($itemtype) {
 
       $itemtable = getTableForItemType($itemtype);
-      $item      = NULL;
+      $item      = null;
       $mayberecursive = false;
       if ($itemtype != 'AllAssets') {
          $item           = getItemForItemtype($itemtype);
@@ -5309,7 +5309,7 @@ class Search {
    static function &getOptions($itemtype, $withplugins=true) {
       global $CFG_GLPI;
 
-      $item = NULL;
+      $item = null;
 
       if (!isset(self::$search[$itemtype])) {
          // standard type first
@@ -5891,7 +5891,7 @@ class Search {
             $pdf->SetFooterMargin(10);
 
             //set auto page breaks
-            $pdf->SetAutoPageBreak(TRUE, 15);
+            $pdf->SetAutoPageBreak(true, 15);
 
             // For standard language
             //$pdf->setFontSubsetting($subsetting);
@@ -6204,7 +6204,7 @@ class Search {
    static function sylk_clean($value) {
 
       $value = preg_replace('/\x0A/', ' ', $value);
-      $value = preg_replace('/\x0D/', NULL, $value);
+      $value = preg_replace('/\x0D/', null, $value);
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
       $value = str_replace("&gt;", ">", $value);
@@ -6305,7 +6305,7 @@ class Search {
       }
       // Manage NULL value
       if ($tab[0] == self::NULLVALUE) {
-         $tab[0] = NULL;
+         $tab[0] = null;
       }
       return $tab;
    }

@@ -453,7 +453,7 @@ class Infocom extends CommonDBChild {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronInfocom($task=NULL) {
+   static function cronInfocom($task=null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {
@@ -556,7 +556,7 @@ class Infocom extends CommonDBChild {
     *
     * @return array or string
    **/
-   static function getAlertName($val=NULL) {
+   static function getAlertName($val=null) {
 
       $tmp[0]                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
@@ -1851,7 +1851,7 @@ class Infocom extends CommonDBChild {
          return __('Never');
       }
 
-      if (($from == NULL) || empty($from)) {
+      if (($from == null) || empty($from)) {
          return "";
       }
 
@@ -1869,7 +1869,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+                                                CommonDBTM $checkitem = null) {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 

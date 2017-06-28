@@ -75,7 +75,7 @@ class DBmysql {
     *
     * @return void
     */
-   function __construct($choice=NULL) {
+   function __construct($choice=null) {
       $this->connect($choice);
    }
 
@@ -87,7 +87,7 @@ class DBmysql {
     *
     * @return void
     */
-   function connect($choice=NULL) {
+   function connect($choice=null) {
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -261,7 +261,7 @@ class DBmysql {
           && isset($data[$field])) {
          return $data[$field];
       }
-      return NULL;
+      return null;
    }
 
    /**
@@ -550,7 +550,7 @@ class DBmysql {
      *
      * @return int number of tables
      */
-   static function optimize_tables($migration=NULL, $cron=false) {
+   static function optimize_tables($migration=null, $cron=false) {
       global $DB;
 
       $crashed_tables = self::checkForCrashedTables();

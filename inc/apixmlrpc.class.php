@@ -287,7 +287,7 @@ class APIXmlrpc extends API {
       self::header($this->debug);
 
       $response = $this->escapekeys($response);
-      $out = xmlrpc_encode_request(NULL, $response, array('encoding' => 'UTF-8',
+      $out = xmlrpc_encode_request(null, $response, array('encoding' => 'UTF-8',
                                                           'escaping' => 'markup'));
       echo $out;
       exit;

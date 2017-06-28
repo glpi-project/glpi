@@ -75,7 +75,7 @@ class QueuedNotification extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL, $is_deleted=false) {
+   function getSpecificMassiveActions($checkitem=null, $is_deleted=false) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

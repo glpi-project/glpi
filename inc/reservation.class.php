@@ -654,7 +654,7 @@ class Reservation extends CommonDBChild {
          $r->getFromDB($itemID);
          $type = $r->fields["itemtype"];
          $name = NOT_AVAILABLE;
-         $item = NULL;
+         $item = null;
 
          if ($item = getItemForItemtype($r->fields["itemtype"])) {
             $type = $item->getTypeName();
@@ -662,7 +662,7 @@ class Reservation extends CommonDBChild {
             if ($item->getFromDB($r->fields["items_id"])) {
                $name = $item->getName();
             } else {
-               $item = NULL;
+               $item = null;
             }
          }
 

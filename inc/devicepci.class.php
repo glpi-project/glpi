@@ -61,7 +61,7 @@ class DevicePci extends CommonDevice {
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
-                                                                                    NULL, false),
+                                                                                    null, false),
                                      'type'  => 'registeredIDChooser'),
                          array('name'  => 'devicenetworkcardmodels_id',
                                      'label' => __('Model'),

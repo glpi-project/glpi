@@ -2480,7 +2480,7 @@ class User extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -4072,7 +4072,7 @@ class User extends CommonDBTM {
                if (Config::validatePassword($input["password"]) && $this->update($input)) {
                   echo __('Reset password successful.');
                   $input2['password_forget_token']      = '';
-                  $input2['password_forget_token_date'] = NULL;
+                  $input2['password_forget_token_date'] = null;
                   $input2['id']                         = $this->fields['id'];
                   $this->update($input2);
                } else {

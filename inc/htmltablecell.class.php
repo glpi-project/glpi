@@ -64,8 +64,8 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function __construct($row, $header, $content, HTMLTableCell $father=NULL,
-                        CommonDBTM $item=NULL) {
+   function __construct($row, $header, $content, HTMLTableCell $father=null,
+                        CommonDBTM $item=null) {
 
       parent::__construct($content);
       $this->row        = $row;
@@ -75,7 +75,7 @@ class HTMLTableCell extends HTMLTableEntity {
       if (!empty($item)) {
          $this->item = clone $item;
       } else {
-         $this->item = NULL;
+         $this->item = null;
       }
 
       if (!is_null($this->father)) {
