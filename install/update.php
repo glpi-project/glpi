@@ -123,7 +123,7 @@ $DB = new DB();
  * To be conserved to migrations before 0.80
  * since 0.80, migration is a new class
 **/
-function displayMigrationMessage ($id, $msg="") {
+function displayMigrationMessage ($id, $msg = "") {
    static $created = 0;
    static $deb;
 

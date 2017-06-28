@@ -77,12 +77,12 @@ class Log extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Historical');
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -97,7 +97,7 @@ class Log extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForItem($item);
       return true;
@@ -193,7 +193,7 @@ class Log extends CommonDBTM {
     *
     * @return boolean success
    **/
-   static function history ($items_id, $itemtype, $changes, $itemtype_link='', $linked_action='0') {
+   static function history ($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0') {
       global $DB;
 
       $date_mod = $_SESSION["glpi_currenttime"];
@@ -250,7 +250,7 @@ class Log extends CommonDBTM {
     * @param $withtemplate    integer  withtemplate param (default '')
 
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB;
 
       $itemtype = $item->getType();
@@ -318,7 +318,7 @@ class Log extends CommonDBTM {
     *
     * @return array of localized log entry (TEXT only, no HTML)
    **/
-   static function getHistoryData(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
+   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, $sqlfilter = '') {
       global $DB;
 
       $itemtype  = $item->getType();
@@ -713,7 +713,7 @@ class Log extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = [ READ => __('Read')];
       return $values;

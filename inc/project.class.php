@@ -62,7 +62,7 @@ class Project extends CommonDBTM {
     *
     * @param $nb : number of item in the type (default 0)
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Project', 'Projects', $nb);
    }
 
@@ -111,7 +111,7 @@ class Project extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[READ]);
@@ -123,7 +123,7 @@ class Project extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
          $nb = 0;
@@ -149,7 +149,7 @@ class Project extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -168,7 +168,7 @@ class Project extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -238,7 +238,7 @@ class Project extends CommonDBTM {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -617,7 +617,7 @@ class Project extends CommonDBTM {
     * @param $output_type     (default 'Search::HTML_OUTPUT')
     * @param $mass_id         id of the form to check all (default '')
     */
-   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
+   static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
@@ -664,7 +664,7 @@ class Project extends CommonDBTM {
     *      id_for_massaction      : default 0 means no massive action
     *      followups              : only for Tickets : show followup columns
     */
-   static function showShort($id, $options=[]) {
+   static function showShort($id, $options = []) {
       global $CFG_GLPI, $DB;
 
       $p['output_type']            = Search::HTML_OUTPUT;
@@ -903,7 +903,7 @@ class Project extends CommonDBTM {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
@@ -1058,7 +1058,7 @@ class Project extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1079,7 +1079,7 @@ class Project extends CommonDBTM {
     * @param $values          (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1203,7 +1203,7 @@ class Project extends CommonDBTM {
    * @param $ID        integer   ID of the project
    * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
    */
-   static function getDataToDisplayOnGantt($ID, $showall=true) {
+   static function getDataToDisplayOnGantt($ID, $showall = true) {
       global $DB;
 
       $todisplay = [];

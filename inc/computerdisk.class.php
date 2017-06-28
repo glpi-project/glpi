@@ -49,7 +49,7 @@ class ComputerDisk extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Volume', 'Volumes', $nb);
    }
 
@@ -63,7 +63,7 @@ class ComputerDisk extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'Computer')
@@ -84,7 +84,7 @@ class ComputerDisk extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForComputer($item, $withtemplate);
       return true;
@@ -96,7 +96,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -140,7 +140,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -223,7 +223,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB;
 
       $ID = $comp->fields['id'];

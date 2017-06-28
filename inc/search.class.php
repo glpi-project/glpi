@@ -110,7 +110,7 @@ class Search {
     *
     * @return data array
    **/
-   static function getDatas($itemtype, $params, array $forcedisplay=[]) {
+   static function getDatas($itemtype, $params, array $forcedisplay = []) {
 
       $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
       self::constructSQL($data);
@@ -132,7 +132,7 @@ class Search {
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
    **/
-   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay=[]) {
+   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []) {
       global $CFG_GLPI;
 
       // Default values of parameters
@@ -2069,7 +2069,7 @@ class Search {
     * @return select string
     *
    **/
-   static function addOrderBy($itemtype, $ID, $order, $key=0) {
+   static function addOrderBy($itemtype, $ID, $order, $key = 0) {
       global $CFG_GLPI;
 
       // Security test for order
@@ -2265,7 +2265,7 @@ class Search {
     *
     * @return select string
    **/
-   static function addSelect($itemtype, $ID, $num, $meta=0, $meta_type=0) {
+   static function addSelect($itemtype, $ID, $num, $meta = 0, $meta_type = 0) {
       global $CFG_GLPI;
 
       $searchopt   = &self::getOptions($itemtype);
@@ -2834,7 +2834,7 @@ class Search {
     *
     * @return select string
    **/
-   static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
+   static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
       $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
@@ -3594,7 +3594,7 @@ class Search {
     * @return Left join string
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
-                               $linkfield, $meta=0, $meta_type=0, $joinparams=[], $field='') {
+                               $linkfield, $meta = 0, $meta_type = 0, $joinparams = [], $field = '') {
 
       // Rename table for meta left join
       $AS = "";
@@ -3833,7 +3833,7 @@ class Search {
     * @return Meta Left join string
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
-                                   $nullornott, $joinparams=[]) {
+                                   $nullornott, $joinparams = []) {
 
       $LINK = " INNER JOIN ";
       if ($nullornott) {
@@ -4048,7 +4048,7 @@ class Search {
     *
     * @return string to print
    **/
-   static function displayConfigItem($itemtype, $ID, $data=[], $num=0) {
+   static function displayConfigItem($itemtype, $ID, $data = [], $num = 0) {
 
       $searchopt  = &self::getOptions($itemtype);
 
@@ -4106,8 +4106,8 @@ class Search {
     *
     * @return string to print
    **/
-   static function giveItem($itemtype, $ID, array $data, $num, $meta=0,
-                            array $addobjectparams=[]) {
+   static function giveItem($itemtype, $ID, array $data, $num, $meta = 0,
+                            array $addobjectparams = []) {
       global $CFG_GLPI, $DB;
 
       $searchopt = &self::getOptions($itemtype);
@@ -5074,8 +5074,8 @@ class Search {
     *
     * @return parsed params array
    **/
-   static function manageParams($itemtype, $params=[], $usesession=true,
-                                $forcebookmark=false) {
+   static function manageParams($itemtype, $params = [], $usesession = true,
+                                $forcebookmark = false) {
       global $CFG_GLPI, $DB;
 
       $redirect = false;
@@ -5220,7 +5220,7 @@ class Search {
     *
     * @return clean $SEARCH_OPTION array
    **/
-   static function getCleanedOptions($itemtype, $action=READ, $withplugins=true) {
+   static function getCleanedOptions($itemtype, $action = READ, $withplugins = true) {
       global $CFG_GLPI;
 
       $options = &self::getOptions($itemtype, $withplugins);
@@ -5306,7 +5306,7 @@ class Search {
     *
     * @return the reference to  array of search options for the given item type
    **/
-   static function &getOptions($itemtype, $withplugins=true) {
+   static function &getOptions($itemtype, $withplugins = true) {
       global $CFG_GLPI;
 
       $item = null;
@@ -5701,8 +5701,8 @@ class Search {
     *
     * @return string to display
    **/
-   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="",
-                                  $options="") {
+   static function showHeaderItem($type, $value, &$num, $linkto = "", $issort = 0, $order = "",
+                                  $options = "") {
       global $CFG_GLPI;
 
       $out = "";
@@ -5757,7 +5757,7 @@ class Search {
     *
     *@return string to display
    **/
-   static function showItem($type, $value, &$num, $row, $extraparam='') {
+   static function showItem($type, $value, &$num, $row, $extraparam = '') {
 
       $out = "";
       switch ($type) {
@@ -5856,7 +5856,7 @@ class Search {
     *
     * @return string to display
    **/
-   static function showFooter($type, $title="", $count = null) {
+   static function showFooter($type, $title = "", $count = null) {
 
       $out = "";
       switch ($type) {
@@ -5946,7 +5946,7 @@ class Search {
     *
     * @return string to display
    **/
-   static function showHeader($type, $rows, $cols, $fixed=0) {
+   static function showHeader($type, $rows, $cols, $fixed = 0) {
 
       $out = "";
       switch ($type) {
@@ -6078,7 +6078,7 @@ class Search {
     *
     * @return string to display
    **/
-   static function showNewLine($type, $odd=false, $is_deleted=false) {
+   static function showNewLine($type, $odd = false, $is_deleted = false) {
 
       $out = "";
       switch ($type) {
@@ -6224,7 +6224,7 @@ class Search {
     *
     * @return search SQL string
    **/
-   static function makeTextCriteria ($field, $val, $not=false, $link='AND') {
+   static function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 
       $sql = $field . self::makeTextSearch($val, $not);
 
@@ -6244,7 +6244,7 @@ class Search {
     *
     * @return search string
    **/
-   static function makeTextSearch($val, $not=false) {
+   static function makeTextSearch($val, $not = false) {
 
       $NOT = "";
       if ($not) {

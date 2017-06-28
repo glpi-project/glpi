@@ -48,7 +48,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    public $dohistory = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
@@ -81,7 +81,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
@@ -97,7 +97,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
@@ -140,7 +140,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @return an array of mandatory fields
    **/
-   function getMandatoryFields($ID, $withtypeandcategory=true) {
+   function getMandatoryFields($ID, $withtypeandcategory = true) {
       global $DB;
 
       $sql = "SELECT *
@@ -186,7 +186,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
       global $DB;
 
       $ID = $tt->fields['id'];

@@ -46,7 +46,7 @@ class ChangeTask extends CommonITILTask {
    /**
     * @since version 0.84
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Change task', 'Change tasks', $nb);
    }
 
@@ -153,7 +153,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=[]) {
+   static function populatePlanning($options = []) {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
@@ -181,7 +181,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 

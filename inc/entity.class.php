@@ -133,7 +133,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Entity', 'Entities', $nb);
    }
 
@@ -287,7 +287,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @see CommonTreeDropdown::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -306,7 +306,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84 (before in entitydata.class)
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -334,7 +334,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * @since version 0.84 (before in entitydata.class)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()==__CLASS__) {
          switch ($tabnum) {
@@ -1942,7 +1942,7 @@ class Entity extends CommonTreeDropdown {
     * @param $field
     * @param $value must be addslashes
    **/
-   private static function getEntityIDByField($field,$value) {
+   private static function getEntityIDByField($field, $value) {
       global $DB;
 
       $sql = "SELECT `id`
@@ -2264,7 +2264,7 @@ class Entity extends CommonTreeDropdown {
     * @param $fieldval        string   name of the field that we want value (default '')
     * @param $default_value            value to return (default -2)
    **/
-   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $default_value=-2) {
+   static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
 
       // for calendar
       if (empty($fieldval)) {
@@ -2426,7 +2426,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @return array or string
    **/
-   static function getAutoAssignMode($val=null) {
+   static function getAutoAssignMode($val = null) {
 
       $tab = [self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
                    self::CONFIG_NEVER                   => __('No'),
@@ -2471,7 +2471,7 @@ class Entity extends CommonTreeDropdown {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -2647,7 +2647,7 @@ class Entity extends CommonTreeDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
       if (!is_array($values)) {
@@ -2761,7 +2761,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       $values[self::READHELPDESK]   = ['short' => __('Read parameters'),

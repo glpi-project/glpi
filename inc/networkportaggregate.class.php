@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortAggregate extends NetworkPortInstantiation {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Aggregation port');
    }
 
@@ -91,9 +91,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=null,
-                                             HTMLTableHeader $father=null,
-                                             array $options=[]) {
+                                             HTMLTableSuperHeader $internet_super = null,
+                                             HTMLTableHeader $father = null,
+                                             array $options = []) {
 
       $group->addHeader('Origin', __('Origin port'), $super);
 
@@ -107,7 +107,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=[]) {
+                                      HTMLTableCell $father = null, array $options = []) {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {

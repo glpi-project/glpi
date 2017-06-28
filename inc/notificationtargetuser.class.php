@@ -58,7 +58,7 @@ class NotificationTargetUser extends NotificationTarget {
    /**
     * @see NotificationTarget::addSpecificTargets()
    **/
-   function addSpecificTargets($data,$options) {
+   function addSpecificTargets($data, $options) {
 
       //Look for all targets whose type is Notification::ITEM_USER
       switch ($data['type']) {
@@ -81,7 +81,7 @@ class NotificationTargetUser extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();

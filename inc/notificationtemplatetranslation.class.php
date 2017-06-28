@@ -50,7 +50,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    public $dohistory = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Template translation', 'Template translations', $nb);
    }
 
@@ -82,7 +82,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -172,7 +172,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
     * @param $template        NotificationTemplate object
     * @param $options   array
    **/
-   function showSummary(NotificationTemplate $template, $options=[]) {
+   function showSummary(NotificationTemplate $template, $options = []) {
       global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
@@ -404,7 +404,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -421,7 +421,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'NotificationTemplate') {
          $temp = new self();

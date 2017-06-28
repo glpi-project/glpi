@@ -68,7 +68,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('General');
    }
 
@@ -132,7 +132,7 @@ class CommonGLPI {
     *
     * @return array array containing the tabs
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -150,7 +150,7 @@ class CommonGLPI {
     *
     * @return array array containing the tabs
    **/
-   final function defineAllTabs($options=[]) {
+   final function defineAllTabs($options = []) {
       global $CFG_GLPI;
 
       $onglets = [];
@@ -398,7 +398,7 @@ class CommonGLPI {
     *
     *  @return string tab name
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       return '';
    }
 
@@ -414,7 +414,7 @@ class CommonGLPI {
     *
     * @return boolean
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       return false;
    }
 
@@ -429,7 +429,7 @@ class CommonGLPI {
     *
     * @return boolean true
    **/
-   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options=[]) {
+   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = []) {
 
       switch ($tab) {
          // All tab
@@ -498,7 +498,7 @@ class CommonGLPI {
     *
     *  @return array array containing the onglets
    **/
-   static function createTabEntry($text, $nb=0) {
+   static function createTabEntry($text, $nb = 0) {
 
       if ($nb) {
          //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
@@ -565,7 +565,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getTabsURL($full=true) {
+   static function getTabsURL($full = true) {
       return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
    }
 
@@ -577,7 +577,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
    }
 
@@ -589,7 +589,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getFormURL($full=true) {
+   static function getFormURL($full = true) {
       return Toolbox::getItemTypeFormURL(get_called_class(), $full);
    }
 
@@ -604,7 +604,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getFormURLWithID($id=0, $full=true) {
+   static function getFormURLWithID($id = 0, $full = true) {
 
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
@@ -622,7 +622,7 @@ class CommonGLPI {
     *
     * @return boolean
    **/
-   function showPrimaryForm($options=[]) {
+   function showPrimaryForm($options = []) {
 
       if (!method_exists($this, "showForm")) {
          return false;
@@ -659,7 +659,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function showTabsContent($options=[]) {
+   function showTabsContent($options = []) {
       global $CFG_GLPI;
 
       // for objects not in table like central
@@ -737,7 +737,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function showNavigationHeader($options=[]) {
+   function showNavigationHeader($options = []) {
       global $CFG_GLPI;
 
       // for objects not in table like central
@@ -952,7 +952,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function display($options=[]) {
+   function display($options = []) {
       global $CFG_GLPI;
 
       if (isset($options['id'])
@@ -1033,7 +1033,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   static function updateDisplayOptions($input=[], $sub_itemtype='') {
+   static function updateDisplayOptions($input = [], $sub_itemtype = '') {
 
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
@@ -1082,7 +1082,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   static function getDisplayOptions($sub_itemtype='') {
+   static function getDisplayOptions($sub_itemtype = '') {
 
       if (!isset($_SESSION['glpi_display_options'])) {
          // Load display_options from user table
@@ -1132,7 +1132,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   static function showDislayOptions($sub_itemtype='') {
+   static function showDislayOptions($sub_itemtype = '') {
       global $CFG_GLPI;
 
       $options      = static::getAvailableDisplayOptions($sub_itemtype);
@@ -1232,7 +1232,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   function getErrorMessage($error, $object='') {
+   function getErrorMessage($error, $object = '') {
 
       if (empty($object)) {
          $object = $this->getLink();

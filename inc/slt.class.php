@@ -55,7 +55,7 @@ class SLT extends CommonDBChild {
    const TTO = 1; // Time to own
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       // Acronymous, no plural
       return __('SLT');
    }
@@ -74,7 +74,7 @@ class SLT extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -159,7 +159,7 @@ class SLT extends CommonDBChild {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $rowspan = 4;
       if ($ID > 0) {
@@ -407,7 +407,7 @@ class SLT extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'SLA' :
@@ -745,7 +745,7 @@ class SLT extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -779,7 +779,7 @@ class SLT extends CommonDBChild {
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -803,7 +803,7 @@ class SLT extends CommonDBChild {
     *
     * @return due date time (NULL if sla not exists)
    **/
-   function computeDate($start_date, $additional_delay=0) {
+   function computeDate($start_date, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
          $delay = $this->getSLTTime();
@@ -863,7 +863,7 @@ class SLT extends CommonDBChild {
     *
     * @return execution date time (NULL if sla not exists)
    **/
-   function computeExecutionDate($start_date, $slalevels_id, $additional_delay=0) {
+   function computeExecutionDate($start_date, $slalevels_id, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
          $slalevel = new SlaLevel();

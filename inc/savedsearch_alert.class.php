@@ -51,12 +51,12 @@ class SavedSearch_Alert extends CommonDBChild {
    const OP_GREATEQ  = 4;
    const OP_GREAT    = 5;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Saved search alert', 'Saved searches alerts', $nb);
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'SavedSearch')
@@ -72,13 +72,13 @@ class SavedSearch_Alert extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForSavedSearch($item, $withtemplate);
       return true;
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -98,7 +98,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       /*if (!Session::haveRight("savedsearch", UPDATE)) {
          return false;
@@ -179,7 +179,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @return void
    **/
-   static function showForSavedSearch(SavedSearch $search, $withtemplate='') {
+   static function showForSavedSearch(SavedSearch $search, $withtemplate = '') {
       global $DB;
 
       $ID = $search->getID();

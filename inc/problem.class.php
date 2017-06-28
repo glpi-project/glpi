@@ -70,7 +70,7 @@ class Problem extends CommonITILObject {
     *
     * @param $nb : number of item in the type
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Problem', 'Problems', $nb);
    }
 
@@ -172,7 +172,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
          $nb = 0;
@@ -199,7 +199,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -224,7 +224,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       // show related tickets and changes
       $ong = [];
@@ -285,7 +285,7 @@ class Problem extends CommonITILObject {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $donotif = count($this->updates);
@@ -398,7 +398,7 @@ class Problem extends CommonITILObject {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -545,7 +545,7 @@ class Problem extends CommonITILObject {
     *
     * @return an array
    **/
-   static function getAllStatusArray($withmetaforsearch=false) {
+   static function getAllStatusArray($withmetaforsearch = false) {
 
       // To be overridden by class
       $tab = [self::INCOMING => _x('status', 'New'),
@@ -633,7 +633,7 @@ class Problem extends CommonITILObject {
     * @param $status             (default 'proces)
     * @param $showgroupproblems  (true by default)
    **/
-   static function showCentralList($start, $status="process", $showgroupproblems=true) {
+   static function showCentralList($start, $status = "process", $showgroupproblems = true) {
       global $DB, $CFG_GLPI;
 
       if (!static::canView()) {
@@ -840,7 +840,7 @@ class Problem extends CommonITILObject {
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
    **/
-   static function showCentralCount($foruser=false) {
+   static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
@@ -946,7 +946,7 @@ class Problem extends CommonITILObject {
     * @param $ID
     * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
-   static function showVeryShort($ID, $forcetab='') {
+   static function showVeryShort($ID, $forcetab = '') {
       global $CFG_GLPI;
 
       // Prints a job in short form
@@ -1022,7 +1022,7 @@ class Problem extends CommonITILObject {
     * @param $ID
     * @param $options   array
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
@@ -1540,7 +1540,7 @@ class Problem extends CommonITILObject {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[READ]);

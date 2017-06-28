@@ -46,7 +46,7 @@ class PlanningRecall extends CommonDBChild {
    static public $itemtype        = 'itemtype';
    static public $items_id        = 'items_id';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Planning reminder', 'Planning reminders', $nb);
    }
 
@@ -114,7 +114,7 @@ class PlanningRecall extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $alert = new Alert();
       $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);
@@ -222,7 +222,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
-   static function dropdown($options=[]) {
+   static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
 
       // Default values
@@ -295,7 +295,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
-   static function specificForm($options=[]) {
+   static function specificForm($options = []) {
       global $CFG_GLPI;
 
       // Default values
@@ -346,7 +346,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @param $task for log, if NULL display (default NULL)
    **/
-   static function cronPlanningRecall($task=null) {
+   static function cronPlanningRecall($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {

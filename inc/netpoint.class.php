@@ -60,7 +60,7 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network outlet', 'Network outlets', $nb);
    }
 
@@ -112,8 +112,8 @@ class Netpoint extends CommonDropdown {
     *
     * @return nothing (display the select box)
    **/
-   static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
-                                    $entity_restrict=-1, $devtype='') {
+   static function dropdownNetpoint($myname, $value = 0, $locations_id = -1, $display_comment = 1,
+                                    $entity_restrict = -1, $devtype = '') {
       global $CFG_GLPI;
 
       $rand          = mt_rand();
@@ -218,7 +218,7 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -235,7 +235,7 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'Location') {
          self::showForLocation($item);
@@ -394,8 +394,8 @@ class Netpoint extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -416,8 +416,8 @@ class Netpoint extends CommonDropdown {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, $options = []) {
 
       $column_name = __CLASS__;
 

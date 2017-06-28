@@ -79,7 +79,7 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Location', 'Locations', $nb);
    }
 
@@ -182,7 +182,7 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
@@ -205,7 +205,7 @@ class Location extends CommonTreeDropdown {
     *
     * @see CommonTreeDropdown::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -223,7 +223,7 @@ class Location extends CommonTreeDropdown {
    /**
     * @since version 0.85
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {

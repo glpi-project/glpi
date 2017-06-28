@@ -48,7 +48,7 @@ abstract class CommonITILCost extends CommonDBChild {
    public $dohistory        = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cost', 'Costs', $nb);
    }
 
@@ -61,7 +61,7 @@ abstract class CommonITILCost extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == static::$itemtype)
@@ -82,7 +82,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForObject($item, $withtemplate);
       return true;
@@ -371,7 +371,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
@@ -469,7 +469,7 @@ abstract class CommonITILCost extends CommonDBChild {
     *
     * @return total cost
    **/
-   static function showForObject($item, $withtemplate='') {
+   static function showForObject($item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $forproject = false;
@@ -681,7 +681,7 @@ abstract class CommonITILCost extends CommonDBChild {
     * @return total cost formatted string
    **/
    static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
-                                     $edit=true) {
+                                     $edit = true) {
 
       return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
                                 $edit);

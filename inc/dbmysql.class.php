@@ -75,7 +75,7 @@ class DBmysql {
     *
     * @return void
     */
-   function __construct($choice=null) {
+   function __construct($choice = null) {
       $this->connect($choice);
    }
 
@@ -87,7 +87,7 @@ class DBmysql {
     *
     * @return void
     */
-   function connect($choice=null) {
+   function connect($choice = null) {
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -208,7 +208,7 @@ class DBmysql {
     *
     * @return mysqli_result Query result handler
     */
-   function queryOrDie($query, $message='') {
+   function queryOrDie($query, $message = '') {
       //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $res = $this->query($query)
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
@@ -373,7 +373,7 @@ class DBmysql {
     *
     * @return mysqli_result list of tables
     */
-   function list_tables($table="glpi_%") {
+   function list_tables($table = "glpi_%") {
       return $this->query(
          "SELECT TABLE_NAME FROM information_schema.`TABLES`
              WHERE TABLE_SCHEMA = '{$this->dbdefault}'
@@ -390,7 +390,7 @@ class DBmysql {
     *
     * @return mixed list of fields
     */
-   function list_fields($table, $usecache=true) {
+   function list_fields($table, $usecache = true) {
       static $cache = [];
 
       if ($usecache && isset($cache[$table])) {
@@ -536,7 +536,7 @@ class DBmysql {
     *
     * @return DBmysqlIterator
     */
-   public function request ($tableorsql, $crit="", $debug=false) {
+   public function request ($tableorsql, $crit = "", $debug = false) {
       return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
    }
 
@@ -550,7 +550,7 @@ class DBmysql {
      *
      * @return int number of tables
      */
-   static function optimize_tables($migration=null, $cron=false) {
+   static function optimize_tables($migration = null, $cron = false) {
       global $DB;
 
       $crashed_tables = self::checkForCrashedTables();

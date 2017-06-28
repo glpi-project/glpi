@@ -318,7 +318,7 @@ function getSingular($string) {
  *
  * @return int nb of elements in table
 **/
-function countElementsInTable($table, $condition="") {
+function countElementsInTable($table, $condition = "") {
    global $DB;
 
    if (!is_array($condition)) {
@@ -343,7 +343,7 @@ function countElementsInTable($table, $condition="") {
  *
  * @return int nb of elements in table
 **/
-function countDistinctElementsInTable($table, $field, $condition="") {
+function countDistinctElementsInTable($table, $field, $condition = "") {
    global $DB;
 
    if (is_array($table)) {
@@ -372,7 +372,7 @@ function countDistinctElementsInTable($table, $field, $condition="") {
  *
  * @return int nb of elements in table
 **/
-function countElementsInTableForMyEntities($table, $condition='') {
+function countElementsInTableForMyEntities($table, $condition = '') {
 
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype = getItemTypeForTable($table);
@@ -397,7 +397,7 @@ function countElementsInTableForMyEntities($table, $condition='') {
  *
  * @return int nb of elements in table
 **/
-function countElementsInTableForEntity($table, $entity, $condition='') {
+function countElementsInTableForEntity($table, $entity, $condition = '') {
 
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype = getItemTypeForTable($table);
@@ -423,7 +423,7 @@ function countElementsInTableForEntity($table, $entity, $condition='') {
  *
  * @return array containing all the datas
 **/
-function getAllDatasFromTable($table, $condition='', $usecache=false, $order='') {
+function getAllDatasFromTable($table, $condition = '', $usecache = false, $order = '') {
    global $DB;
 
    static $cache = [];
@@ -468,7 +468,7 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
  *
  * @see getTreeValueCompleteName
 **/
-function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) {
+function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
    global $DB;
 
    $name    = "";
@@ -543,7 +543,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) 
  *
  * @see getTreeLeafValueName
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=true, $tooltip=true) {
+function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
    global $DB;
 
    $name    = "";
@@ -623,7 +623,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
  *
  * @return string name
 **/
-function getTreeValueName($table, $ID, $wholename="", $level=0) {
+function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
    global $DB;
 
    $parentIDfield = getForeignKeyFieldForTable($table);
@@ -929,7 +929,7 @@ function contructTreeFromList($list, $root) {
  *
  * @return list of items in the tree
 **/
-function contructListFromTree($tree, $parent=0) {
+function contructListFromTree($tree, $parent = 0) {
 
    $list = [];
    foreach ($tree as $root => $data) {
@@ -959,7 +959,7 @@ function contructListFromTree($tree, $parent=0) {
  *
  * @return string the query
 **/
-function getRealQueryForTreeItem($table, $IDf, $reallink="") {
+function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
    global $DB;
 
    if (empty($IDf)) {
@@ -1014,7 +1014,7 @@ function regenerateTreeCompleteName($table) {
  *
  * @return the next ID, -1 if not exist
 **/
-function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
+function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
    global $DB, $CFG_GLPI;
 
    if (empty($nextprev_item)) {
@@ -1103,7 +1103,7 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
  *
  * @return the previous ID, -1 if not exist
 **/
-function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
+function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
    global $DB, $CFG_GLPI;
 
    if (empty($nextprev_item)) {
@@ -1194,7 +1194,7 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
  *
  *@return string : formatted username
 **/
-function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $force_config=false) {
+function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false) {
    global $CFG_GLPI;
 
    $before = "";
@@ -1255,7 +1255,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
  *
  *@return string : username string (realname if not empty and name if realname is empty).
 **/
-function getUserName($ID, $link=0) {
+function getUserName($ID, $link = 0) {
    global $DB, $CFG_GLPI;
 
    $user = "";
@@ -1389,7 +1389,7 @@ function TableExists($tablename) {
  *
  *@return bool : true if exists, false elseway.
 **/
-function FieldExists($table, $field, $usecache=true) {
+function FieldExists($table, $field, $usecache = true) {
    global $DB;
 
    if (!TableExists($table)) {
@@ -1447,7 +1447,7 @@ function isIndex($table, $field) {
  *
  * @return new auto string
 **/
-function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) {
+function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
    global $DB, $CFG_GLPI;
 
    $len = Toolbox::strlen($objectName);
@@ -1695,8 +1695,8 @@ function getDbRelations() {
  *
  * @return String : the WHERE clause to restrict
 **/
-function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$value='',
-                                    $is_recursive=false, $complete_request=false) {
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
+                                    $is_recursive = false, $complete_request = false) {
 
    $query = $separator ." ( ";
 
@@ -1787,8 +1787,8 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
  *
  * @return array of criteria
  **/
-function getEntitiesRestrictCriteria($table='', $field='', $value='',
-                                     $is_recursive=false, $complete_request=false) {
+function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
+                                     $is_recursive = false, $complete_request = false) {
 
    // !='0' needed because consider as empty
    if (!$complete_request

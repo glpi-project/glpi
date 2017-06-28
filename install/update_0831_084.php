@@ -2451,8 +2451,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
  * @param $new_specif_type          (default NULL)
  * @param $other_specif      array
  */
-function migrateComputerDevice($deviceType, $new_specif=null, $new_specif_type=null,
-                               array $other_specif=[]) {
+function migrateComputerDevice($deviceType, $new_specif = null, $new_specif_type = null,
+                               array $other_specif = []) {
    global $DB, $migration;
 
    $table        = getTableForItemType('Item_'.$deviceType);

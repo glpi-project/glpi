@@ -51,7 +51,7 @@ class SoftwareVersion extends CommonDBChild {
    static public $items_id  = 'softwares_id';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Version', 'Versions', $nb);
    }
 
@@ -64,7 +64,7 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -101,7 +101,7 @@ class SoftwareVersion extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
     *
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -219,7 +219,7 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownForOneSoftware($options=[]) {
+   static function dropdownForOneSoftware($options = []) {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
@@ -348,7 +348,7 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -364,7 +364,7 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'Software') {
          self::showForSoftware($item);

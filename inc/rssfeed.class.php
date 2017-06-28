@@ -78,7 +78,7 @@ class RSSFeed extends CommonDBVisible {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       if (Session::haveRight('rssfeed_public', READ)) {
          return _n('RSS feed', 'RSS feed', $nb);
@@ -201,7 +201,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall=false) {
+   static function addVisibilityJoins($forceall = false) {
 
       if (!self::canView()) {
          return '';
@@ -287,7 +287,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -306,7 +306,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $values             (default '')
     * @param $options      array
     **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -445,7 +445,7 @@ class RSSFeed extends CommonDBVisible {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
          $nb = 0;
@@ -469,7 +469,7 @@ class RSSFeed extends CommonDBVisible {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -485,7 +485,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'RSSFeed' :
@@ -571,7 +571,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Test _rss cache directory. I permission trouble : unable to edit
@@ -683,7 +683,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @param $error   (false by default
     **/
-   function setError($error=false) {
+   function setError($error = false) {
 
       if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
          return;
@@ -791,7 +791,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return feed object
    **/
-   static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
+   static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP) {
       global $CFG_GLPI;
 
       $feed = new SimplePie();
@@ -837,7 +837,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return Nothing (display function)
     **/
-   static function showListForCentral($personal=true) {
+   static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;
 
       $users_id             = Session::getLoginUserID();
@@ -961,7 +961,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'helpdesk') {
          $values = [READ => __('Read')];

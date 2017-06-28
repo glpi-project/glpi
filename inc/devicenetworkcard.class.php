@@ -45,7 +45,7 @@ class DeviceNetworkCard extends CommonDevice {
 
    static protected $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network card', 'Network cards', $nb);
    }
 
@@ -152,8 +152,8 @@ class DeviceNetworkCard extends CommonDevice {
     * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -179,8 +179,8 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -207,8 +207,8 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=[]) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 

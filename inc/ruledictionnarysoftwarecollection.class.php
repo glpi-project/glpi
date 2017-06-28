@@ -110,7 +110,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
+   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 
       if (isCommandLine()) {
@@ -225,7 +225,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule=[]) {
+   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = []) {
       global $DB;
 
       $new_softs  = [];

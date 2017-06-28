@@ -111,7 +111,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network port', 'Network ports', $nb);
    }
 
@@ -203,7 +203,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem
     */
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       if (count($this->updates)) {
@@ -305,7 +305,7 @@ class NetworkPort extends CommonDBChild {
     *
     * @see splitInputForElements() for preparing the input
    **/
-   function updateDependencies($history=true) {
+   function updateDependencies($history = true) {
 
       $instantiation = $this->getInstantiation();
       if ($instantiation !== false
@@ -437,7 +437,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -504,7 +504,7 @@ class NetworkPort extends CommonDBChild {
     * @param $item                     CommonDBTM object
     * @param $withtemplate   integer   withtemplate param (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $rand     = mt_rand();
@@ -828,7 +828,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!isset($options['several'])) {
@@ -986,7 +986,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1143,7 +1143,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
       // Can exists on template
@@ -1195,7 +1195,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if (in_array($item->getType(), $CFG_GLPI["networkport_types"])

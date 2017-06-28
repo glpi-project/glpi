@@ -70,7 +70,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'unset_default']
                      = __('Unset as default');
@@ -169,7 +169,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong)
@@ -341,7 +341,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $ID = $this->getID();
 
@@ -991,7 +991,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void
    **/
-   static function showSaveButton($type, $itemtype=0) {
+   static function showSaveButton($type, $itemtype = 0) {
       global $CFG_GLPI;
 
       echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
@@ -1056,7 +1056,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1079,7 +1079,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1106,7 +1106,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void|string
    **/
-   static function dropdownDoCount(array $options=[]) {
+   static function dropdownDoCount(array $options = []) {
 
       $p['name']      = 'do_count';
       $p['value']     = self::COUNT_AUTO;
@@ -1179,7 +1179,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return string where clause
     */
-   public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
+   public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
       if ($ID == 11) { //search for defaults/not defaults
          if ($val == 0) {
@@ -1262,7 +1262,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return array
    **/
-   public function execute($force=false) {
+   public function execute($force = false) {
       global $CFG_GLPI;
 
       if (($force === true)

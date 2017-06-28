@@ -73,7 +73,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
+   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 
       if (isCommandLine()) {
@@ -190,7 +190,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnPrintersByID(array $IDs, $res_rule=[]) {
+   function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = []) {
       global $DB;
 
       $new_printers  = [];
@@ -223,7 +223,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    /**
     * @param $IDS array
    */
-   function putOldPrintersInTrash($IDS=[]) {
+   function putOldPrintersInTrash($IDS = []) {
 
       $printer = new Printer();
       foreach ($IDS as $id) {

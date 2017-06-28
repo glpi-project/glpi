@@ -190,7 +190,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @return Nothing (display)
    **/
-   static function itemAddForm(Ticket $ticket, $options=[]) {
+   static function itemAddForm(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
 
       $params = ['id'                  => (isset($ticket->fields['id'])
@@ -575,7 +575,7 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -595,7 +595,7 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Ticket' :
@@ -622,8 +622,8 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownAllDevices($myname, $itemtype, $items_id=0, $admin=0, $users_id=0,
-                                      $entity_restrict=-1,$options=[]) {
+   static function dropdownAllDevices($myname, $itemtype, $items_id = 0, $admin = 0, $users_id = 0,
+                                      $entity_restrict = -1, $options = []) {
       global $CFG_GLPI, $DB;
 
       $params = ['tickets_id' => 0,
@@ -717,7 +717,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0, $options=[]) {
+   static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = []) {
       global $DB, $CFG_GLPI;
 
       $params = ['tickets_id' => 0,
@@ -1246,7 +1246,7 @@ class Item_Ticket extends CommonDBRelation{
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1286,7 +1286,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       if (!is_array($values)) {
          $values = [$field => $values];
       }

@@ -54,7 +54,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static public $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Installation', 'Installations', $nb);
    }
 
@@ -224,7 +224,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return number of installations
    **/
-   static function countForVersion($softwareversions_id, $entity='') {
+   static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
@@ -656,7 +656,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       if (!Software::canView()) {
@@ -1095,7 +1095,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   function upgrade($instID, $softwareversions_id, $dohistory=1) {
+   function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
       if ($this->getFromDB($instID)) {
          $computers_id = $this->fields['computers_id'];
@@ -1133,7 +1133,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;
       switch ($item->getType()) {
@@ -1178,7 +1178,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software') {
          self::showForSoftware($item);

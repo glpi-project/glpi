@@ -54,7 +54,7 @@ class NotificationTargetContract extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
       $this->data['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events                             = $this->getEvents();

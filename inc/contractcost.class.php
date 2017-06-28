@@ -48,7 +48,7 @@ class ContractCost extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cost', 'Costs', $nb);
    }
 
@@ -90,7 +90,7 @@ class ContractCost extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'Contract')
@@ -110,7 +110,7 @@ class ContractCost extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForContract($item, $withtemplate);
       return true;
@@ -274,7 +274,7 @@ class ContractCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -333,7 +333,7 @@ class ContractCost extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForContract(Contract $contract, $withtemplate='') {
+   static function showForContract(Contract $contract, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $ID = $contract->fields['id'];

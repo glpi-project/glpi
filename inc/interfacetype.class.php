@@ -44,7 +44,7 @@ class InterfaceType extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
    }
 
@@ -59,8 +59,8 @@ class InterfaceType extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -80,8 +80,8 @@ class InterfaceType extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {

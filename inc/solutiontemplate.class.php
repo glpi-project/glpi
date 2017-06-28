@@ -51,7 +51,7 @@ class SolutionTemplate extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Solution template', 'Solution templates', $nb);
    }
 
@@ -95,7 +95,7 @@ class SolutionTemplate extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'tinymce' :

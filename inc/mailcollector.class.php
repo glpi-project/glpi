@@ -85,7 +85,7 @@ class MailCollector  extends CommonDBTM {
    const ACCEPTED_FOLDER = 'accepted';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Receiver', 'Receivers', $nb);
    }
 
@@ -184,7 +184,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -198,7 +198,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -215,7 +215,7 @@ class MailCollector  extends CommonDBTM {
     * @param $tabnum       (default 1
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == __CLASS__) {
@@ -234,7 +234,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -430,7 +430,7 @@ class MailCollector  extends CommonDBTM {
     * @param $action                (default 0)
     * @param $entity                (default 0)
    **/
-   function deleteOrImportSeveralEmails($emails_ids=[], $action=0, $entity=0) {
+   function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0) {
       global $DB;
 
       $mailbox_id = 0;
@@ -507,7 +507,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return if $display = false return messages result string
    **/
-   function collect($mailgateID, $display=0) {
+   function collect($mailgateID, $display = 0) {
       global $CFG_GLPI;
 
       if ($this->getFromDB($mailgateID)) {
@@ -657,7 +657,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return ticket fields array
     */
-   function buildTicket($i, $options=[]) {
+   function buildTicket($i, $options = []) {
       global $CFG_GLPI;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -1045,8 +1045,8 @@ class MailCollector  extends CommonDBTM {
     *
     * @return decoded string
    **/
-   function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8',
-                             $fallbackCharset='iso-8859-1') {
+   function decodeMimeString($mimeStr, $inputCharset = 'utf-8', $targetCharset = 'utf-8',
+                             $fallbackCharset = 'iso-8859-1') {
 
       if (function_exists('mb_list_encodings')
           && function_exists('mb_convert_encoding')) {
@@ -1278,7 +1278,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return data of false if error
    **/
-   function get_part($stream, $msg_number, $mime_type, $structure=false, $part_number=false) {
+   function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) {
 
       if ($structure) {
          if ($mime_type == $this->get_mime_type($structure)) {
@@ -1396,7 +1396,7 @@ class MailCollector  extends CommonDBTM {
     *
     * Result is stored in $this->files
    **/
-   function getRecursiveAttached($mid, $path, $maxsize, $structure, $part="") {
+   function getRecursiveAttached($mid, $path, $maxsize, $structure, $part = "") {
 
       if ($structure->type == 1) { // multipart
          reset($structure->parts);
@@ -1570,7 +1570,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return Boolean
    **/
-   function deleteMails($mid, $folder='') {
+   function deleteMails($mid, $folder = '') {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
@@ -1750,7 +1750,7 @@ class MailCollector  extends CommonDBTM {
     * @param $to        (default '')
     * @param $subject   (default '')
    **/
-   function sendMailRefusedResponse($to='', $subject='') {
+   function sendMailRefusedResponse($to = '', $subject = '') {
       global $CFG_GLPI;
 
       $mmail = new GLPIMailer();
@@ -1823,7 +1823,7 @@ class MailCollector  extends CommonDBTM {
     * @param $name
     * @param $value  (default 0)
    **/
-   static function showMaxFilesize($name, $value=0) {
+   static function showMaxFilesize($name, $value = 0) {
 
       $sizes[0] = __('No import');
       for ($index=1; $index<100; $index++) {

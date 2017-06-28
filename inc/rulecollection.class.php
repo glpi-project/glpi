@@ -75,7 +75,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * @param $entity (default 0)
    **/
-   function setEntity($entity=0) {
+   function setEntity($entity = 0) {
       $this->entity = $entity;
    }
 
@@ -98,7 +98,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return : number of rules
    **/
-   function getCollectionSize($recursive=true, $condition=0) {
+   function getCollectionSize($recursive = true, $condition = 0) {
 
       $restrict = "`sub_type` = '".$this->getRuleClassName()."'".
                   getEntitiesRestrictRequest(" AND", "glpi_rules", "entities_id",
@@ -114,7 +114,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * @param $options   array
    **/
-   function getRuleListQuery($options=[]) {
+   function getRuleListQuery($options = []) {
 
       $p['active']    = true;
       $p['start']     = 0;
@@ -178,7 +178,7 @@ class RuleCollection extends CommonDBTM {
     *         - recursive : boolean get recursive rules
     *         - childirens : boolean get childrens rules
    **/
-   function getCollectionPart($options=[]) {
+   function getCollectionPart($options = []) {
       global $DB;
 
       $p['start']     = 0;
@@ -217,7 +217,7 @@ class RuleCollection extends CommonDBTM {
     * @param $retrieve_action    Retrieve the action of the rules ? (default 0)
     * @param $condition          Retrieve with a specific condition
    **/
-   function getCollectionDatas($retrieve_criteria=0, $retrieve_action=0, $condition = 0) {
+   function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0) {
       global $DB;
 
       if ($this->RuleList === null) {
@@ -297,7 +297,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return -1 if all rows done, else offset for next run
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
+   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
    }
 
 
@@ -394,7 +394,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return nothing
    **/
-   function showListRules($target, $options=[]) {
+   function showListRules($target, $options = []) {
       global $CFG_GLPI;
 
       $p['inherited'] = 1;
@@ -709,7 +709,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return true if all ok
    **/
-   function moveRule($ID, $ref_ID, $type='after') {
+   function moveRule($ID, $ref_ID, $type = 'after') {
       global $DB;
 
       $ruleDescription = new Rule();
@@ -883,7 +883,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return nothing, send attachment to browser
    **/
-   static function exportRulesToXML($items=[]) {
+   static function exportRulesToXML($items = []) {
 
       if (!count($items)) {
          return false;
@@ -1434,7 +1434,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return the output array updated by actions (addslashes datas)
    **/
-   function processAllRules($input=[] ,$output=[], $params=[], $options=[]) {
+   function processAllRules($input = [], $output = [], $params = [], $options = []) {
 
       $p['condition']     = 0;
       $p['only_criteria'] = null;
@@ -1485,7 +1485,7 @@ class RuleCollection extends CommonDBTM {
     * @param $values    array of data
     * @param $condition       condition to limit rules (default 0)
     **/
-   function showRulesEnginePreviewCriteriasForm($target, array $values, $condition=0) {
+   function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
       global $DB;
 
       $input = $this->prepareInputDataForTestProcess($condition);
@@ -1544,7 +1544,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return the output array updated by actions
    **/
-   function testAllRules($input=[], $output=[], $params=[], $condition=0) {
+   function testAllRules($input = [], $output = [], $params = [], $condition = 0) {
 
       // Get Collection datas
       $this->getCollectionDatas(1, 1, $condition);
@@ -1641,7 +1641,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return the updated input datas
    **/
-   function prepareInputDataForTestProcess($condition=0) {
+   function prepareInputDataForTestProcess($condition = 0) {
       global $DB;
 
       $limit = '';
@@ -1670,7 +1670,7 @@ class RuleCollection extends CommonDBTM {
     * @param $input     array of data
     * @param $condition       condition to limit rules (DEFAULT 0)
    **/
-   function showRulesEnginePreviewResultsForm($target, array $input, $condition=0) {
+   function showRulesEnginePreviewResultsForm($target, array $input, $condition = 0) {
 
       $output = [];
 
@@ -1819,7 +1819,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @return the rulecollection class or null
     */
-   static function getClassByType($itemtype, $check_dictionnary_type=false) {
+   static function getClassByType($itemtype, $check_dictionnary_type = false) {
       global $CFG_GLPI;
 
       if ($plug = isPluginItemType($itemtype)) {
@@ -1888,7 +1888,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong               = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -1900,7 +1900,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item instanceof RuleCollection) {
          $ong = [];
@@ -1927,7 +1927,7 @@ class RuleCollection extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item instanceof RuleCollection) {
          $options = $_GET;

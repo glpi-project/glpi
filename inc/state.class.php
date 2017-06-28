@@ -57,7 +57,7 @@ class State extends CommonTreeDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Status of items', 'Statuses of items', $nb);
    }
 
@@ -91,7 +91,7 @@ class State extends CommonTreeDropdown {
     * @param $lib    string   to add for -1 value (default '')
     * @param $value           default value (default 0)
    **/
-   static function dropdownBehaviour($name, $lib="", $value=0) {
+   static function dropdownBehaviour($name, $lib = "", $value = 0) {
       global $DB;
 
       $elements = ["0" => __('Keep status')];

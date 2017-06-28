@@ -49,7 +49,7 @@ class FQDN extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Internet domain', 'Internet domains', $nb);
    }
 
@@ -109,7 +109,7 @@ class FQDN extends CommonDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab('NetworkName', $ong, $options);
@@ -141,7 +141,7 @@ class FQDN extends CommonDropdown {
     * @return if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
     *         if $wildcard_search == true : an array of the id of the fqdn
    **/
-   static function getFQDNIDByFQDN($fqdn, $wildcard_search=false) {
+   static function getFQDNIDByFQDN($fqdn, $wildcard_search = false) {
       global $DB;
 
       if (empty($fqdn)) {

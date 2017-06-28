@@ -52,7 +52,7 @@ class ConsumableItem extends CommonDBTM {
    static $rightname                   = 'consumable';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Consumable model', 'Consumable models', $nb);
    }
 
@@ -113,7 +113,7 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -138,7 +138,7 @@ class ConsumableItem extends CommonDBTM {
     * @return Nothing (display)
     *
     **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -214,7 +214,7 @@ class ConsumableItem extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -390,7 +390,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronConsumable($task=null) {
+   static function cronConsumable($task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;

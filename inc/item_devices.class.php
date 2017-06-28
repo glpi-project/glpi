@@ -79,7 +79,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * @since version 0.85
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       $device_type = static::getDeviceType();
       //TRANS: %s is the type of the component
@@ -158,7 +158,7 @@ class Item_Devices extends CommonDBRelation {
     * @return array of the specificities: index is the field name and the values are the attributs
     *                                     of the specificity (long name, short name, size)
    **/
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
 
       switch ($specif) {
          case 'serial' :
@@ -327,7 +327,7 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->canView()) {
          $nb = 0;
@@ -360,14 +360,14 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForItem($item, $withtemplate);
       return true;
    }
 
 
-   static function showForItem(CommonGLPI $item, $withtemplate=0) {
+   static function showForItem(CommonGLPI $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
       $is_device = ($item instanceof CommonDevice);
@@ -751,7 +751,7 @@ class Item_Devices extends CommonDBRelation {
     * @param $devices_id
     * @param $input          array to complete (permit to define values)
    **/
-   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input=[]) {
+   function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = []) {
       global $DB;
 
       if ($numberToAdd == 0) {
@@ -985,7 +985,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       return $values;
@@ -1014,7 +1014,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -1030,7 +1030,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * @since version 0.85
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {

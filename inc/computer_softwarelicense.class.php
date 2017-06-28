@@ -210,7 +210,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * @return integer number of installations
    **/
-   static function countForLicense($softwarelicenses_id, $entity='') {
+   static function countForLicense($softwarelicenses_id, $entity = '') {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
@@ -647,7 +647,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;
       switch ($item->getType()) {
@@ -666,7 +666,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'SoftwareLicense') {
          switch ($tabnum) {

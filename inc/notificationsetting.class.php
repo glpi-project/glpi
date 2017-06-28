@@ -43,7 +43,7 @@ abstract class NotificationSetting extends CommonDBTM {
    protected $displaylist  = false;
    static $rightname       = 'config';
 
-   static public function getTypeName($nb=0) {
+   static public function getTypeName($nb = 0) {
       throw new \RuntimeException('getTypeName must be implemented');
    }
 
@@ -78,7 +78,7 @@ abstract class NotificationSetting extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
       $ong = [];
       $this->addStandardTab(static::class, $ong, $options);
 
@@ -86,7 +86,7 @@ abstract class NotificationSetting extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       switch ($item->getType()) {
          case static::class:
             $tabs[1] = __('Setup');
@@ -96,7 +96,7 @@ abstract class NotificationSetting extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == static::class) {
          switch ($tabnum) {
             case 1 :

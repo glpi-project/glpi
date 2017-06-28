@@ -60,7 +60,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * @see CommonGLPI::getTypeName()
     */
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Object Lock', 'Object Locks', $nb);
    }
 
@@ -71,7 +71,7 @@ class ObjectLock extends CommonDBTM {
     * @param $locitemtype       (default ObjectLoc
     * @param $locitemid         (default 0)
    **/
-   function __construct( $locitemtype='ObjectLock', $locitemid=0 ) {
+   function __construct($locitemtype = 'ObjectLock', $locitemid = 0) {
 
       $this->itemtype     = $locitemtype;
       $this->itemid       = $locitemid;
@@ -271,7 +271,7 @@ class ObjectLock extends CommonDBTM {
     * Shows 'Read-only!' message and propose to request a lock on the item
     * This function is used by autoLockMode function
    **/
-   private function setReadOnlyMessage( ) {
+   private function setReadOnlyMessage() {
 
       echo Html::scriptBlock("
          function requestLock() {
@@ -419,7 +419,7 @@ class ObjectLock extends CommonDBTM {
     * Summary of revertProfile
     * Will revert normal user profile
    **/
-   static function revertProfile( ) {
+   static function revertProfile() {
       global $_SESSION;
 
       if (isset($_SESSION['glpilocksavedprofile'])) {
@@ -466,7 +466,7 @@ class ObjectLock extends CommonDBTM {
     * @param  $msg      : message to be shown
     * @param  $title    : if $title is '' then title bar it is not shown (default '')
    **/
-   private function displayLockMessage($msg, $title='') {
+   private function displayLockMessage($msg, $title = '') {
 
       $hideTitle = '';
       if ($title == '') {
@@ -584,7 +584,7 @@ class ObjectLock extends CommonDBTM {
     *
     * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
    **/
-   static function getRightsToAdd($itemtype, $interface='central') {
+   static function getRightsToAdd($itemtype, $interface = 'central') {
       global $CFG_GLPI;
 
       $ret = [];

@@ -98,7 +98,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
@@ -135,7 +135,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
    }
 
 
-   function getSender($options=[]) {
+   function getSender($options = []) {
 
       $mails = new UserEmail();
       if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)

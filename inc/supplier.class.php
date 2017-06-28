@@ -56,7 +56,7 @@ class Supplier extends CommonDBTM {
     *
     * @param $nb : number of item in the type
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Supplier', 'Suppliers', $nb);
    }
 
@@ -96,7 +96,7 @@ class Supplier extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -126,7 +126,7 @@ class Supplier extends CommonDBTM {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -205,7 +205,7 @@ class Supplier extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -427,7 +427,7 @@ class Supplier extends CommonDBTM {
     *
     * @param $withname boolean : also display name ? (false by default)
    **/
-   function getLinks($withname=false) {
+   function getLinks($withname = false) {
       global $CFG_GLPI;
 
       $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';

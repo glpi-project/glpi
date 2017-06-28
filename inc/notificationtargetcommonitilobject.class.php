@@ -46,7 +46,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param $object          (default null)
     * @param $options   array
    **/
-   function __construct($entity='', $event='', $object=null, $options=[]) {
+   function __construct($entity = '', $event = '', $object = null, $options = []) {
 
       parent::__construct($entity, $event, $object, $options);
 
@@ -298,7 +298,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addSupplier($sendprivate=false) {
+   function addSupplier($sendprivate = false) {
       global $DB;
 
       if (!$sendprivate
@@ -329,7 +329,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addValidationApprover($options=[]) {
+   function addValidationApprover($options = []) {
       global $DB;
 
       if (isset($options['validation_id'])) {
@@ -355,7 +355,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
    **/
-   function addValidationRequester($options=[]) {
+   function addValidationRequester($options = []) {
       global $DB;
 
       if (isset($options['validation_id'])) {
@@ -382,7 +382,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addFollowupAuthor($options=[]) {
+   function addFollowupAuthor($options = []) {
       global $DB;
 
       if (isset($options['followup_id'])) {
@@ -409,7 +409,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addTaskAuthor($options=[]) {
+   function addTaskAuthor($options = []) {
       global $DB;
 
             // In case of delete task pass user id
@@ -445,7 +445,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addTaskAssignUser($options=[]) {
+   function addTaskAssignUser($options = []) {
       global $DB;
 
       // In case of delete task pass user id
@@ -484,7 +484,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function addTaskAssignGroup($options=[]) {
+   function addTaskAssignGroup($options = []) {
       global $DB;
 
       // In case of delete task pass user id
@@ -509,7 +509,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
    **/
-   function addAdditionalTargets($event='') {
+   function addAdditionalTargets($event = '') {
 
       if ($event=='update') {
          $this->addTarget(Notification::OLD_TECH_IN_CHARGE,
@@ -681,7 +681,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events    = $this->getAllEvents();
@@ -741,7 +741,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return array
    **/
-   function getDataForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       global $CFG_GLPI, $DB;
 
       $objettype = strtolower($item->getType());
@@ -1453,7 +1453,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
    **/
-   function getSupplierAddress($sendprivate=false) {
+   function getSupplierAddress($sendprivate = false) {
       Toolbox::logDebug('getSupplierAddress() method is deprecated');
       $this->addSupplier($sendprivate);
    }
@@ -1467,7 +1467,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
    **/
-   function getValidationApproverAddress($options=[]) {
+   function getValidationApproverAddress($options = []) {
       Toolbox::logDebug('getValidationApproverAddress() method is deprecated');
       $this->addValidationApprover($options);
    }
@@ -1479,7 +1479,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
    **/
-   function getValidationRequesterAddress($options=[]) {
+   function getValidationRequesterAddress($options = []) {
       Toolbox::logDebug('getValidationRequesterAddress() method is deprecated');
       $this->addValidationRequester($options);
    }
@@ -1491,7 +1491,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function getFollowupAuthor($options=[]) {
+   function getFollowupAuthor($options = []) {
       Toolbox::logDebug('getFollowupAuthor() method is deprecated');
       $this->addFollowupAuthor($options);
    }
@@ -1505,7 +1505,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function getTaskAuthor($options=[]) {
+   function getTaskAuthor($options = []) {
       Toolbox::logDebug('getTaskAuthor() method is deprecated');
       $this->addTaskAuthor($options);
    }
@@ -1520,7 +1520,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function getTaskAssignUser($options=[]) {
+   function getTaskAssignUser($options = []) {
       Toolbox::logDebug('getTaskAssignUser() method is deprecated');
       $this->addTaskAssignUser($options);
    }
@@ -1537,7 +1537,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return void
     */
-   function getTaskAssignGroup($options=[]) {
+   function getTaskAssignGroup($options = []) {
       Toolbox::logDebug('getTaskAssignGroup() method is deprecated');
       $this->addTaskAssignGroup($options);
    }
@@ -1554,7 +1554,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @return array
     */
-   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, array $options, $simple = false) {
       Toolbox::logDebug('getDatasForObject() method is deprecated');
       return $this->getDataForObject($item, $options, $simple);
    }

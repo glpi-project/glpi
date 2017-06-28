@@ -70,7 +70,7 @@ class XHProf {
    /**
     * @param $msg (default '')
    **/
-   function __construct($msg='') {
+   function __construct($msg = '') {
       $this->start($msg);
    }
 
@@ -83,7 +83,7 @@ class XHProf {
    /**
     * @param $msg (default '')
    **/
-   function start($msg='') {
+   function start($msg = '') {
 
       if (!self::$run
           && function_exists('xhprof_enable')) {

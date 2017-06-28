@@ -157,7 +157,7 @@ class Alert extends CommonDBTM {
     *
     * @return void|string (see $options['display'])
     */
-   static function dropdownIntegerNever($name, $value, $options=[]) {
+   static function dropdownIntegerNever($name, $value, $options = []) {
 
       $p['min']      = 1;
       $p['max']      = 100;
@@ -197,7 +197,7 @@ class Alert extends CommonDBTM {
     *
     * @return integer|boolean
     */
-   static function alertExists($itemtype='', $items_id='', $type='') {
+   static function alertExists($itemtype = '', $items_id = '', $type = '') {
       global $DB;
 
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
@@ -219,7 +219,7 @@ class Alert extends CommonDBTM {
     *
     * @return mixed|boolean
     */
-   static function getAlertDate($itemtype='', $items_id='', $type='') {
+   static function getAlertDate($itemtype = '', $items_id = '', $type = '') {
       global $DB;
 
       $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);

@@ -49,7 +49,7 @@ class Contact_Supplier extends CommonDBRelation{
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Link Contact/Supplier', 'Links Contact/Supplier', $nb);
    }
 
@@ -61,7 +61,7 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
          $nb = 0;
@@ -83,7 +83,7 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Supplier' :

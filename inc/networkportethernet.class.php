@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Ethernet port');
    }
 
@@ -122,9 +122,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=null,
-                                             HTMLTableHeader $father=null,
-                                             array $options=[]) {
+                                             HTMLTableSuperHeader $internet_super = null,
+                                             HTMLTableHeader $father = null,
+                                             array $options = []) {
 
       $display_options = &$options['display_options'];
       $header          = $group->addHeader('Connected', __('Connected to'), $super);
@@ -148,8 +148,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father=null,
-                                                    array $options=[]) {
+                                                    HTMLTableCell $father = null,
+                                                    array $options = []) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
 
@@ -173,7 +173,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=[]) {
+                                      HTMLTableCell $father = null, array $options = []) {
 
       return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
    }
@@ -225,7 +225,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     *
     * @return array or string
    **/
-   static function getPortTypeName($val=null) {
+   static function getPortTypeName($val = null) {
 
       $tmp['']   = Dropdown::EMPTY_VALUE;
       $tmp['T']  = __('Twisted pair (RJ-45)');
@@ -294,7 +294,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     *
     * @return array or string
    **/
-   static function getPortSpeed($val=null) {
+   static function getPortSpeed($val = null) {
 
       $tmp = [0     => '',
                    //TRANS: %d is the speed
@@ -319,7 +319,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -341,7 +341,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $values          (defaul '')
     * @param $options   array
     */
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];

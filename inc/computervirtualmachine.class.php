@@ -51,7 +51,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Virtualization');
    }
 
@@ -59,7 +59,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
@@ -80,7 +80,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -94,7 +94,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
       self::showForComputer($item);
@@ -119,7 +119,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -469,7 +469,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @return the ID of the computer that have this uuid or false otherwise
    **/
-   static function findVirtualMachine($fields=[]) {
+   static function findVirtualMachine($fields = []) {
       global $DB;
 
       if (!isset($fields['uuid']) || empty($fields['uuid'])) {

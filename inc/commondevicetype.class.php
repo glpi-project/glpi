@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class CommonDeviceType extends CommonDropdown {
 
-   static function getFormURL($full=true) {
+   static function getFormURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -46,7 +46,7 @@ abstract class CommonDeviceType extends CommonDropdown {
       return $link;
    }
 
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');

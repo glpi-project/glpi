@@ -65,7 +65,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Predefined field', 'Predefined fields', $nb);
    }
 
@@ -128,7 +128,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
@@ -144,7 +144,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
@@ -161,7 +161,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     *
     * @return an array of predefined fields
    **/
-   function getPredefinedFields($ID, $withtypeandcategory=false) {
+   function getPredefinedFields($ID, $withtypeandcategory = false) {
       global $DB;
 
       $sql = "SELECT *
@@ -230,7 +230,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $ID = $tt->fields['id'];

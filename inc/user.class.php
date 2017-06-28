@@ -60,7 +60,7 @@ class User extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('User', 'Users', $nb);
    }
 
@@ -210,7 +210,7 @@ class User extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -226,7 +226,7 @@ class User extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       switch ($item->getType()) {
@@ -244,7 +244,7 @@ class User extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -832,7 +832,7 @@ class User extends CommonDBTM {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       // Update emails  (use _useremails set from UI, not _emails set from LDAP)
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
@@ -1392,7 +1392,7 @@ class User extends CommonDBTM {
     *
     * @return boolean : true if found / false if not founded
    **/
-   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login, $import=true) {
+   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login, $import = true) {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...
@@ -1861,7 +1861,7 @@ class User extends CommonDBTM {
     *
     * @return boolean : user found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Affiche un formulaire User
@@ -2480,7 +2480,7 @@ class User extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -2975,7 +2975,7 @@ class User extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -3000,7 +3000,7 @@ class User extends CommonDBTM {
     * @param $values             (defaut '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -3025,7 +3025,7 @@ class User extends CommonDBTM {
     *
     * @return array of groups id
    **/
-   static function getDelegateGroupsForUser($entities_id='') {
+   static function getDelegateGroupsForUser($entities_id = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_groups_users`.`groups_id`
@@ -3060,8 +3060,8 @@ class User extends CommonDBTM {
     *
     * @return mysql result set.
    **/
-   static function getSqlSearchResult ($count=true, $right="all", $entity_restrict=-1, $value=0,
-                                       $used=[], $search='', $start=0, $limit=-1) {
+   static function getSqlSearchResult ($count = true, $right = "all", $entity_restrict = -1, $value = 0,
+                                       $used = [], $search = '', $start = 0, $limit = -1) {
       global $DB, $CFG_GLPI;
 
       // No entity define : use active ones
@@ -3364,7 +3364,7 @@ class User extends CommonDBTM {
     *
     * @return rand value if displayed / string if not
    **/
-   static function dropdown($options=[]) {
+   static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
 
       // Default values
@@ -3542,7 +3542,7 @@ class User extends CommonDBTM {
     *
     * @return boolean
    **/
-   static function changeAuthMethod($IDs=[], $authtype=1 ,$server=-1) {
+   static function changeAuthMethod($IDs = [], $authtype = 1, $server = -1) {
       global $DB;
 
       if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
@@ -3825,7 +3825,7 @@ class User extends CommonDBTM {
    /**
     * @param $email  (default '')
    **/
-   static function getOrImportByEmail($email='') {
+   static function getOrImportByEmail($email = '') {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `users_id` as id
@@ -4404,7 +4404,7 @@ class User extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       //TRANS: short for : Add users from an external source

@@ -56,7 +56,7 @@ class Event extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Log', 'Logs', $nb);
    }
 
@@ -231,7 +231,7 @@ class Event extends CommonDBTM {
     *
     * @param $user   string  name user to search on message (default '')
     **/
-   static function showForUser($user="") {
+   static function showForUser($user = "") {
       global $DB, $CFG_GLPI;
 
       // Show events from $result in table form
@@ -320,7 +320,7 @@ class Event extends CommonDBTM {
     * @param $sort      order by clause occurences (eg: date) (defaut 'date')
     * @param $start     (default 0)
    **/
-   static function showList($target, $order='DESC', $sort='date', $start=0) {
+   static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
       global $DB, $CFG_GLPI;
 
       // Show events from $result in table form

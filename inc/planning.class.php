@@ -74,7 +74,7 @@ class Planning extends CommonGLPI {
     *
     * @param $nb
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Planning');
    }
 
@@ -118,7 +118,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong               = [];
       $ong['no_all_tab'] = true;
@@ -129,7 +129,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = self::getTypeName();
@@ -140,7 +140,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -180,7 +180,7 @@ class Planning extends CommonGLPI {
     * @param $value  default value (default '')
     * @param $display  display of send string ? (true by default)
    **/
-   static function dropdownState($name, $value='', $display=true) {
+   static function dropdownState($name, $value = '', $display = true) {
 
       $values = [static::INFO => _n('Information', 'Information', 1),
                       static::TODO => __('To do'),
@@ -200,7 +200,7 @@ class Planning extends CommonGLPI {
     * @param $except    array of items which not be into account array
     *                         ('Reminder'=>array(1,2,id_of_items))
    **/
-   static function checkAlreadyPlanned($users_id, $begin, $end, $except=[]) {
+   static function checkAlreadyPlanned($users_id, $begin, $end, $except = []) {
       global $CFG_GLPI;
 
       $planned = false;
@@ -259,7 +259,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
    **/
-   static function checkAvailability($params=[]) {
+   static function checkAvailability($params = []) {
       global $CFG_GLPI, $DB;
 
       if (!isset($params['itemtype'])) {
@@ -2025,7 +2025,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -2115,7 +2115,7 @@ class Planning extends CommonGLPI {
     *
     * @return icalendar string
    **/
-   static function generateIcal($who, $who_group, $limititemtype='') {
+   static function generateIcal($who, $who_group, $limititemtype = '') {
       global $CFG_GLPI;
 
       if (($who === 0)
@@ -2213,7 +2213,7 @@ class Planning extends CommonGLPI {
    /**
     * @since version 0.85
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values[self::READMY]    = __('See personnal planning');
       $values[self::READGROUP] = __('See schedule of people in my groups');

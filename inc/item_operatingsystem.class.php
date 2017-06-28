@@ -43,7 +43,7 @@ class Item_OperatingSystem extends CommonDBRelation {
    static public $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Item operating system', 'Item operating systems', $nb);
    }
 
@@ -81,7 +81,7 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
       switch ($item->getType()) {
          default:
@@ -98,7 +98,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'OperatingSystem' :
@@ -278,8 +278,8 @@ class Item_OperatingSystem extends CommonDBRelation {
 
    }
 
-   function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true,
-                             $getFromDBOrEmpty=true) {
+   function getConnexityItem($itemtype, $items_id, $getFromDB = true, $getEmpty = true,
+                             $getFromDBOrEmpty = true) {
       //overrided to set $getFromDBOrEmpty to true
       return parent::getConnexityItem($itemtype, $items_id, $getFromDB, $getEmpty, $getFromDBOrEmpty);
    }
@@ -297,7 +297,7 @@ class Item_OperatingSystem extends CommonDBRelation {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $DB;
 
       $colspan = 4;
@@ -389,7 +389,7 @@ class Item_OperatingSystem extends CommonDBRelation {
     *
     * @return void
     */
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
       $iterator = $DB->request([

@@ -47,7 +47,7 @@ class TicketTask  extends CommonITILTask {
    /**
     * @since version 0.84
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ticket task', 'Ticket tasks', $nb);
    }
 
@@ -197,7 +197,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=[]) {
+   static function populatePlanning($options = []) {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
@@ -225,7 +225,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
@@ -235,7 +235,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
@@ -261,7 +261,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @see CommonDBTM::showFormButtons()
    **/
-   function showFormButtons($options=[]) {
+   function showFormButtons($options = []) {
       global $CFG_GLPI;
 
       // for single object like config

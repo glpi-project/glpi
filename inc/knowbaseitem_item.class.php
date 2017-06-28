@@ -57,11 +57,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
    // From CommonDBTM
    public $dohistory          = true;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Knowledge base item', 'Knowledge base items', $nb);
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
       if ($_SESSION['glpishow_count_on_tabs']) {
          if ($item->getType() == KnowbaseItem::getType()) {
@@ -90,7 +90,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       return self::createTabEntry($type_name, $nb);
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForItem($item, $withtemplate);
       return true;
    }
@@ -102,7 +102,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
     * @param $withtemplate    integer  withtemplate param (default '')
 
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB;
 
       $item_id = $item->getID();
@@ -301,7 +301,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
     *
     * @return array of linked items
    **/
-   static function getItems(CommonDBTM $item, $start=0, $limit=0, $used = false) {
+   static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false) {
       global $DB;
 
       $options = [
@@ -370,7 +370,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
     * @param $newid        ID of the item cloned
     * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
       if (empty($newitemtype)) {

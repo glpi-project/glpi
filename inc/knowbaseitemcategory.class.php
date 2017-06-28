@@ -49,7 +49,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Knowledge base category', 'Knowledge base categories', $nb);
    }
 

@@ -153,7 +153,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item            CommonDBTM object
     * @param $relations_id    (default NULL)
    **/
-   static function getOpposite(CommonDBTM $item, &$relations_id=null) {
+   static function getOpposite(CommonDBTM $item, &$relations_id = null) {
       return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
    }
 
@@ -165,7 +165,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $items_id        ID of the item to search for its opposite
     * @param $relations_id    (default NULL)
     **/
-   static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id=null) {
+   static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null) {
       global $DB;
 
       if ($items_id < 0) {
@@ -351,7 +351,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   static function canRelation($method, $forceCheckBoth=false) {
+   static function canRelation($method, $forceCheckBoth = false) {
 
       $can1 = static::canConnexity($method, static::$checkItem_1_Rights, static::$itemtype_1,
                                    static::$items_id_1);
@@ -397,7 +397,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean
    **/
-   function canRelationItem($method, $methodNotItem, $check_entity=true, $forceCheckBoth=false) {
+   function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false) {
 
       $OneWriteIsEnough = (!$forceCheckBoth
                            && ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
@@ -741,7 +741,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return nothing
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if ((isset($this->input['_no_history']) && $this->input['_no_history'])
           || (!static::$logs_for_item_1
@@ -983,8 +983,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       if (isset($options[get_called_class().'_side'])) {
          $side = $options[get_called_class().'_side'];
@@ -1015,8 +1015,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -1061,7 +1061,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return boolean : true on success
    **/
-   function affectRelation($id, $peer, $items_id=0, $itemtype='') {
+   function affectRelation($id, $peer, $items_id = 0, $itemtype = '') {
 
       $input = [static::getIndexName() => $id];
 

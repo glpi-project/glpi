@@ -67,12 +67,12 @@ class NetworkName extends FQDNLabel {
    static $rightname                   = 'internet';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network name', 'Network names', $nb);
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong  = [];
       $this->addDefaultFormTab($ong);
@@ -93,7 +93,7 @@ class NetworkName extends FQDNLabel {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -294,7 +294,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       $this->post_workOnItem();
@@ -496,8 +496,8 @@ class NetworkName extends FQDNLabel {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
       if (isset($options['massiveactionnetworkname'])
@@ -536,8 +536,8 @@ class NetworkName extends FQDNLabel {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -673,7 +673,7 @@ class NetworkName extends FQDNLabel {
     * @param $item                     CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate=0) {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID = $item->getID();
@@ -806,7 +806,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'NetworkPort' :
@@ -852,7 +852,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {

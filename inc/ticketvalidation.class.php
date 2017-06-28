@@ -94,7 +94,7 @@ class TicketValidation  extends CommonITILValidation {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);

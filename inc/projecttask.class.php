@@ -64,7 +64,7 @@ class ProjectTask extends CommonDBChild {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Project task', 'Project tasks', $nb);
    }
 
@@ -151,7 +151,7 @@ class ProjectTask extends CommonDBChild {
    /**
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[READ], $values[CREATE], $values[UPDATE], $values[DELETE], $values[PURGE]);
@@ -163,7 +163,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -188,7 +188,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -357,7 +357,7 @@ class ProjectTask extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -992,7 +992,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -1016,7 +1016,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Project' :
@@ -1274,7 +1274,7 @@ class ProjectTask extends CommonDBChild {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=[]) {
+   static function populatePlanning($options = []) {
 
       global $DB, $CFG_GLPI;
 
@@ -1417,7 +1417,7 @@ class ProjectTask extends CommonDBChild {
     *
     * @return Nothing (display function)
     **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";

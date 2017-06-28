@@ -48,7 +48,7 @@ class Fieldblacklist extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
    }
 
@@ -127,7 +127,7 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -163,7 +163,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -221,7 +221,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $ID
     * @param $field array
    **/
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :
@@ -310,7 +310,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $itemtype          itemtype
     * @param $options    array    of options
    **/
-   static function dropdownField($itemtype, $options=[]) {
+   static function dropdownField($itemtype, $options = []) {
       global $DB;
 
       $p['name']    = 'field';
@@ -350,7 +350,7 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * @param $field  (default '')
    **/
-   function selectValues($field='') {
+   function selectValues($field = '') {
       global $DB, $CFG_GLPI;
 
       if ($field == '') {

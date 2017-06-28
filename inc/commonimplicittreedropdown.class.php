@@ -126,7 +126,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     *
     * @return nothing
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $this->alterElementInsideTree("update");
       parent::post_updateItem($history);

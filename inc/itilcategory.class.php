@@ -240,7 +240,7 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ticket category', 'Ticket categories', $nb);
    }
 
@@ -266,7 +266,7 @@ class ITILCategory extends CommonTreeDropdown {
     * @param $item         CommonGLPI object
     * @param $withtemplate (default 0)
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
@@ -279,7 +279,7 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'TicketTemplate') {
          self::showForTicketTemplate($item, $withtemplate);
@@ -292,7 +292,7 @@ class ITILCategory extends CommonTreeDropdown {
     * @param $tt           TicketTemplate object
     * @param $withtemplate (default '')
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $itilcategory = new self();

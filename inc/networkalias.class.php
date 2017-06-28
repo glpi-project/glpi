@@ -54,12 +54,12 @@ class NetworkAlias extends FQDNLabel {
    static public $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network alias', 'Network aliases', $nb);
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong  = [];
       $this->addDefaultFormTab($ong);
@@ -97,7 +97,7 @@ class NetworkAlias extends FQDNLabel {
     *
     * @return Nothing (display)
    **/
-   function showForm ($ID, $options=[]) {
+   function showForm ($ID, $options = []) {
 
       // Show only simple form to add / edit
       $showsimple = false;
@@ -159,8 +159,8 @@ class NetworkAlias extends FQDNLabel {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
       if (isset($options['dont_display'][$column_name])) {
@@ -188,8 +188,8 @@ class NetworkAlias extends FQDNLabel {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -247,7 +247,7 @@ class NetworkAlias extends FQDNLabel {
     * @param $item                     NetworkName object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForNetworkName(NetworkName $item, $withtemplate=0) {
+   static function showForNetworkName(NetworkName $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID = $item->getID();
@@ -444,7 +444,7 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'NetworkName' :
@@ -458,7 +458,7 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {

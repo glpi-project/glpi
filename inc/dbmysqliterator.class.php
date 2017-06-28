@@ -60,7 +60,7 @@ class DBmysqlIterator implements Iterator {
     *
     * @return void
     */
-   function __construct ($dbconnexion, $table, $crit="", $debug=false) {
+   function __construct ($dbconnexion, $table, $crit = "", $debug = false) {
 
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
@@ -288,7 +288,7 @@ class DBmysqlIterator implements Iterator {
     *
     * @return string
     */
-   private function analyseCrit ($crit, $bool="AND") {
+   private function analyseCrit ($crit, $bool = "AND") {
       static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
 
       if (!is_array($crit)) {

@@ -53,7 +53,7 @@ class Notepad extends CommonDBChild {
    static public $logs_for_parent = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       //TRANS: Always plural
       return _n('Note', 'Notes', $nb);
    }
@@ -103,7 +103,7 @@ class Notepad extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (Session::haveRight($item::$rightname, READNOTE)) {
          $nb = 0;
@@ -121,7 +121,7 @@ class Notepad extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       static::showForItem($item, $withtemplate);
    }
 
@@ -261,7 +261,7 @@ class Notepad extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $CFG_GLPI;
 
       if (!Session::haveRight($item::$rightname, READNOTE)) {

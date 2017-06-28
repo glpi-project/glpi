@@ -53,7 +53,7 @@ class Software extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Software', 'Software', $nb);
    }
 
@@ -68,7 +68,7 @@ class Software extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -84,7 +84,7 @@ class Software extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          $item->showMergeCandidates();
@@ -93,7 +93,7 @@ class Software extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -250,7 +250,7 @@ class Software extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -340,7 +340,7 @@ class Software extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -790,8 +790,8 @@ class Software extends CommonDBTM {
     *
     * @return the software's ID
    **/
-   function addSoftware($name, $manufacturer_id, $entity, $comment='',
-                        $is_recursive=false, $is_helpdesk_visible=null) {
+   function addSoftware($name, $manufacturer_id, $entity, $comment = '',
+                        $is_recursive = false, $is_helpdesk_visible = null) {
       global $DB, $CFG_GLPI;
 
       $input["name"]                = $name;
@@ -837,8 +837,8 @@ class Software extends CommonDBTM {
     * @param is_recursive           boolean  must the software be recursive (false by default)
     * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
    */
-   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='',
-                                  $is_recursive=false, $is_helpdesk_visible=null) {
+   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '',
+                                  $is_recursive = false, $is_helpdesk_visible = null) {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
@@ -887,7 +887,7 @@ class Software extends CommonDBTM {
     *
     * @return boolean (success)
    **/
-   function putInTrash($ID, $comment='') {
+   function putInTrash($ID, $comment = '') {
       global $CFG_GLPI;
 
       $this->getFromDB($ID);

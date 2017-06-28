@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
  **/
 class Lock {
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Lock', 'Locks', $nb);
    }
 
@@ -327,7 +327,7 @@ class Lock {
     * @param $item               CommonGLPI object
     * @param $withtemplate       (default 0)
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->isDynamic() && $item->canCreate()) {
          return Lock::getTypeName(Session::getPluralNumber());
@@ -341,7 +341,7 @@ class Lock {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->isDynamic()) {
          self::showForItem($item);
@@ -458,8 +458,8 @@ class Lock {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=null) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock';
 

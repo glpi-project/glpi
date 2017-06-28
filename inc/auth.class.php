@@ -138,7 +138,7 @@ class Auth extends CommonGLPI {
     *         1 (Exist in the DB with a password -> check first local connection and external after),
     *         2 (Exist in the DB with no password -> check only external auth)
     */
-   function userExists($options=[]) {
+   function userExists($options = []) {
       global $DB;
 
       $result = $DB->request('glpi_users',
@@ -372,7 +372,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean user login success
     */
-   function getAlternateAuthSystemsUserLogin($authtype=0) {
+   function getAlternateAuthSystemsUserLogin($authtype = 0) {
       global $CFG_GLPI;
 
       switch ($authtype) {
@@ -567,7 +567,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean (success)
    */
-   function Login($login_name, $login_password, $noauto=false, $remember_me = false) {
+   function Login($login_name, $login_password, $noauto = false, $remember_me = false) {
       global $DB, $CFG_GLPI;
 
       $this->getAuthMethods();
@@ -854,7 +854,7 @@ class Auth extends CommonGLPI {
    *
    * @return void (display)
    */
-   static function dropdown($options=[]) {
+   static function dropdown($options = []) {
       global $DB;
 
       $p['name']                = 'auths_id';
@@ -902,7 +902,7 @@ class Auth extends CommonGLPI {
     *
     * @return string
     */
-   static function getMethodName($authtype, $auths_id, $link=0, $name='') {
+   static function getMethodName($authtype, $auths_id, $link = 0, $name = '') {
 
       switch ($authtype) {
          case self::LDAP :
@@ -1060,7 +1060,7 @@ class Auth extends CommonGLPI {
     *
     * @return void|integer nothing if redirect is true, else Auth system ID
     */
-   static function checkAlternateAuthSystems($redirect=false, $redirect_string='') {
+   static function checkAlternateAuthSystems($redirect = false, $redirect_string = '') {
       global $CFG_GLPI;
 
       if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
@@ -1129,7 +1129,7 @@ class Auth extends CommonGLPI {
     *
     * @return void|boolean nothing if redirect is true, else false
     */
-   static function redirectIfAuthenticated($redirect=null) {
+   static function redirectIfAuthenticated($redirect = null) {
       global $CFG_GLPI;
 
       if (!Session::getLoginUserID()) {
@@ -1260,7 +1260,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='User') {
          self::showSynchronizationForm($item);

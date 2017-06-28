@@ -70,7 +70,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
    }
 
 
-   function getDatasForTemplate($event, $options=[]) {
+   function getDatasForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();

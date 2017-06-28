@@ -48,7 +48,7 @@ class QueuedNotification extends CommonDBTM {
    static $rightname = 'queuednotification';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Notification queue');
    }
 
@@ -75,7 +75,7 @@ class QueuedNotification extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null, $is_deleted=false) {
+   function getSpecificMassiveActions($checkitem = null, $is_deleted = false) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -381,7 +381,7 @@ class QueuedNotification extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -407,7 +407,7 @@ class QueuedNotification extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       if (!is_array($values)) {
          $values = [$field => $values];
       }
@@ -657,7 +657,7 @@ class QueuedNotification extends CommonDBTM {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("queuednotification", READ)) {

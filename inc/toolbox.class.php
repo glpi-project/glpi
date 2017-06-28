@@ -115,7 +115,7 @@ class Toolbox {
     *
     * @return substring
    **/
-   static function strpos($str, $tofound, $offset=0) {
+   static function strpos($str, $tofound, $offset = 0) {
       return mb_strpos($str, $tofound, $offset, "UTF-8");
    }
 
@@ -132,7 +132,7 @@ class Toolbox {
     *
     * @return string
    **/
-   static function str_pad($input, $pad_length, $pad_string=" ", $pad_type=STR_PAD_RIGHT) {
+   static function str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
 
        $diff = (strlen($input) - self::strlen($input));
        return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
@@ -160,7 +160,7 @@ class Toolbox {
     *
     * @return substring
    **/
-   static function substr($str, $start, $length=-1) {
+   static function substr($str, $start, $length = -1) {
 
       if ($length == -1) {
          $length = self::strlen($str)-$start;
@@ -214,7 +214,7 @@ class Toolbox {
     *
     * @return utf8 string
    **/
-   static function encodeInUtf8($string, $from_charset="ISO-8859-1") {
+   static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
 
       if (strcmp($from_charset, "auto") == 0) {
          $from_charset = mb_detect_encoding($string);
@@ -231,7 +231,7 @@ class Toolbox {
     *
     * @return converted string
    **/
-   static function decodeFromUtf8($string, $to_charset="ISO-8859-1") {
+   static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
@@ -426,7 +426,7 @@ class Toolbox {
     *
     * @return string if $log is false
    **/
-   static function backtrace($log='php-errors', $hide='', Array $skip=[]) {
+   static function backtrace($log = 'php-errors', $hide = '', Array $skip = []) {
 
       if (function_exists("debug_backtrace")) {
          $message = "  Backtrace :\n";
@@ -472,7 +472,7 @@ class Toolbox {
     * @param $text   string   text to log
     * @param $force  boolean  force log in file not seeing use_log_in_files config (false by default)
    **/
-   static function logInFile($name, $text, $force=false) {
+   static function logInFile($name, $text, $force = false) {
       global $CFG_GLPI;
 
       $user = '';
@@ -597,7 +597,7 @@ class Toolbox {
     *
     * @since version 0.84
    **/
-   static function setDebugMode($mode=null, $debug_sql=null, $debug_vars=null, $log_in_files=null) {
+   static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null) {
       global $CFG_GLPI;
 
       if (isset($mode)) {
@@ -761,7 +761,7 @@ class Toolbox {
     *
     * @return string  : Query string to append to a URL.
    **/
-   static function append_params($array, $separator='&', $parent='') {
+   static function append_params($array, $separator = '&', $parent = '') {
 
       $params = [];
       foreach ($array as $k => $v) {
@@ -785,7 +785,7 @@ class Toolbox {
     *
     * @return memory limit
    **/
-   static function getMemoryLimit($ininame='memory_limit') {
+   static function getMemoryLimit($ininame = 'memory_limit') {
 
       $mem = ini_get($ininame);
       preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
@@ -993,7 +993,7 @@ class Toolbox {
     *
     *  @return integer 0: OK, 1:Warning, 2:Error
    **/
-   static function checkSELinux($fordebug=false) {
+   static function checkSELinux($fordebug = false) {
       global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
@@ -1168,8 +1168,8 @@ class Toolbox {
     *
     * @return bool : true or false
    **/
-   static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71,
-                                 $img_y=0, $img_x=0, $img_width=0, $img_height=0, $max_size=500) {
+   static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71,
+                                 $img_y = 0, $img_x = 0, $img_width = 0, $img_height = 0, $max_size = 500) {
 
       //get img informations (dimensions and extension)
       $img_infos  = getimagesize($source_path);
@@ -1246,7 +1246,7 @@ class Toolbox {
     *
     * @return string explaining the result
    **/
-   static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
+   static function checkNewVersionAvailable($auto = true, $messageafterredirect = false) {
       global $CFG_GLPI;
 
       if (!$auto
@@ -1401,7 +1401,7 @@ class Toolbox {
     *
     * return string itemtype Form URL
    **/
-   static function getItemTypeFormURL($itemtype, $full=true) {
+   static function getItemTypeFormURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1430,7 +1430,7 @@ class Toolbox {
     *
     * return string itemtype search URL
    **/
-   static function getItemTypeSearchURL($itemtype, $full=true) {
+   static function getItemTypeSearchURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1464,7 +1464,7 @@ class Toolbox {
     *
     * return string itemtype tabs URL
    **/
-   static function getItemTypeTabsURL($itemtype, $full=true) {
+   static function getItemTypeTabsURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $filename = "/ajax/common.tabs.php";
@@ -1481,7 +1481,7 @@ class Toolbox {
     *
     * @return random string
    **/
-   static function getRandomString($length, $high=false) {
+   static function getRandomString($length, $high = false) {
 
       $factory = new RandomLib\Factory();
       if ($high) {
@@ -1540,7 +1540,7 @@ class Toolbox {
     *
     * @return content of the page (or empty)
    **/
-   static function getURLContent ($url, &$msgerr=null, $rec=0) {
+   static function getURLContent ($url, &$msgerr = null, $rec = 0) {
       global $CFG_GLPI;
 
       $content = "";
@@ -1847,7 +1847,7 @@ class Toolbox {
     *         norsh, secure and debug) : options are empty if not set
     *                                    and options have boolean values if set
    **/
-   static function parseMailServerConnectString($value, $forceport=false) {
+   static function parseMailServerConnectString($value, $forceport = false) {
 
       $tab = [];
       if (strstr($value, ":")) {
@@ -2135,7 +2135,7 @@ class Toolbox {
     *
     * @return boolean : string founded ?
    **/
-   static function inArrayCaseCompare($string, $datas=[]) {
+   static function inArrayCaseCompare($string, $datas = []) {
 
       if (count($datas)) {
          foreach ($datas as $tocheck) {
@@ -2203,7 +2203,7 @@ class Toolbox {
     *
     * @return nothing
    **/
-   static function createSchema($lang='en_GB') {
+   static function createSchema($lang = 'en_GB') {
       global $CFG_GLPI, $DB;
 
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
@@ -2388,7 +2388,7 @@ class Toolbox {
     * @return string (if $type not given) else boolean
     *
    **/
-   static function getMime($file, $type=false) {
+   static function getMime($file, $type = false) {
 
       static $finfo = null;
 
@@ -2490,7 +2490,7 @@ class Toolbox {
     *
     * @return string                the $content_text param after parsing
    **/
-   static function convertTagToImage($content_text, CommonDBTM $item, $doc_data=[]) {
+   static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = []) {
       global $CFG_GLPI;
 
       $document = new Document();
@@ -2583,7 +2583,7 @@ class Toolbox {
     *
     * @return html content
    **/
-   static function convertImageToTag($content_html, $force_update=false) {
+   static function convertImageToTag($content_html, $force_update = false) {
 
       if (!empty($content_html)) {
          preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);

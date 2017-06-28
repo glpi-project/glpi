@@ -56,7 +56,7 @@ class NotificationTemplate extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Notification template', 'Notification templates', $nb);
    }
 
@@ -74,7 +74,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -93,7 +93,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
@@ -186,7 +186,7 @@ class NotificationTemplate extends CommonDBTM {
     * @param $itemtype  display templates for this itemtype only
     * @param $value     the dropdown's default value (0 by default)
    **/
-   static function dropdownTemplates($name, $itemtype, $value=0) {
+   static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 
       self::dropdown(['name'       => $name,
@@ -219,8 +219,8 @@ class NotificationTemplate extends CommonDBTM {
     *
     * @return id of the template in templates_by_languages / false if computation failed
    **/
-   function getTemplateByLanguage(NotificationTarget $target, $user_infos=[],
-                                  $event='', $options=[]) {
+   function getTemplateByLanguage(NotificationTarget $target, $user_infos = [],
+                                  $event = '', $options = []) {
 
       $lang     = [];
       $language = $user_infos['language'];

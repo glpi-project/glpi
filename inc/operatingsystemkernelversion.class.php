@@ -38,7 +38,7 @@ class OperatingSystemKernelVersion extends CommonDropdown {
 
    public $can_be_translated = false;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Kernel version', 'Kernel versions', $nb);
    }
 
@@ -54,7 +54,7 @@ class OperatingSystemKernelVersion extends CommonDropdown {
       return $fields;
    }
 
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
       switch ($field['type']) {
          case 'oskernel':
             OperatingSystemKernel::dropdown(['value' => $this->fields['operatingsystemkernels_id']]);

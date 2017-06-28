@@ -64,7 +64,7 @@ class KnowbaseItem extends CommonDBVisible {
    static $rightname   = 'knowbase';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Knowledge base');
    }
 
@@ -161,7 +161,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $full path or relative one (true by default)
    **/
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -174,7 +174,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -190,7 +190,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -212,7 +212,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -390,7 +390,7 @@ class KnowbaseItem extends CommonDBVisible {
    *
    * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall=false) {
+   static function addVisibilityJoins($forceall = false) {
 
       $join = '';
 
@@ -485,7 +485,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall=false) {
+   static public function getVisibilityCriteria($forceall = false) {
 
       $join = [];
       $where = [];
@@ -637,7 +637,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return nothing (display the form)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // show kb item form
@@ -829,7 +829,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($options=[]) {
+   function showFull($options = []) {
       global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
@@ -1075,7 +1075,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return String : SQL request
    **/
-   static function getListRequest(array $params, $type='search') {
+   static function getListRequest(array $params, $type = 'search') {
       global $DB;
 
       // Lists kb Items
@@ -1260,7 +1260,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $options            $_GET
     * @param $type      string   search type : browse / search (default search)
    **/
-   static function showList($options, $type='search') {
+   static function showList($options, $type = 'search') {
       global $DB, $CFG_GLPI;
 
       // Default values of parameters
@@ -1721,7 +1721,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'central') {
          $values = parent::getRights();

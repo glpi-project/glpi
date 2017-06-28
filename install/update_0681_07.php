@@ -1855,7 +1855,7 @@ function update0681to07() {
 
 //######### Function coming from old tracking.function.php which is now deleted since GLPI 0.72
 //######### Theses functionS were used during the migration process
-function computeTicketTco($item_type,$item) {
+function computeTicketTco($item_type, $item) {
    global $DB;
 
    $totalcost = 0;

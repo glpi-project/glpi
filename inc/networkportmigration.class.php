@@ -51,7 +51,7 @@ class NetworkPortMigration extends CommonDBChild {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Network port migration');
    }
 
@@ -101,7 +101,7 @@ class NetworkPortMigration extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -122,7 +122,7 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       if (!self::canView()) {
@@ -320,7 +320,7 @@ class NetworkPortMigration extends CommonDBChild {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -477,8 +477,8 @@ class NetworkPortMigration extends CommonDBChild {
    static function getMigrationInstantiationHTMLTableHeaders(HTMLTableGroup $group,
                                                              HTMLTableSuperHeader $super,
                                                              HTMLTableSuperHeader $internet_super = null,
-                                                             HTMLTableHeader $father=null,
-                                                             array $options=[]) {
+                                                             HTMLTableHeader $father = null,
+                                                             array $options = []) {
       // TODO : study to display the correct informations for this undefined NetworkPort
       return null;
    }

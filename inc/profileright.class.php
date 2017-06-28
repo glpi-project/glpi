@@ -75,7 +75,7 @@ class ProfileRight extends CommonDBChild {
     * @param $profiles_id
     * @param $rights         array
    **/
-   static function getProfileRights($profiles_id, array $rights=[]) {
+   static function getProfileRights($profiles_id, array $rights = []) {
       global $DB;
 
       if (count($rights) == 0) {
@@ -183,7 +183,7 @@ class ProfileRight extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function updateProfileRightsAsOtherRights($newright, $initialright, $condition='') {
+   static function updateProfileRightsAsOtherRights($newright, $initialright, $condition = '') {
       global $DB;
 
       $profiles = [];
@@ -238,7 +238,7 @@ class ProfileRight extends CommonDBChild {
     * @param $profiles_id
     * @param $rights         array
     */
-   public static function updateProfileRights($profiles_id, array $rights=[]) {
+   public static function updateProfileRights($profiles_id, array $rights = []) {
 
       $me = new self();
       foreach ($rights as $name => $right) {
@@ -269,7 +269,7 @@ class ProfileRight extends CommonDBChild {
     *
     * @see CommonDBChild::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       // update current profile
       if (isset($_SESSION['glpiactiveprofile']['id'])
@@ -290,7 +290,7 @@ class ProfileRight extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       $itemtype = $options['searchopt']['rightclass'];
       $item     = new $itemtype();

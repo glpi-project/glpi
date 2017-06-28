@@ -45,7 +45,7 @@ class AuthMail extends CommonDBTM {
 
    static $rightname = 'config';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Mail server', 'Mail servers', $nb);
    }
 
@@ -162,7 +162,7 @@ class AuthMail extends CommonDBTM {
     *
     * @return void (display)
     */
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if (!Config::canUpdate()) {
          return false;
@@ -321,7 +321,7 @@ class AuthMail extends CommonDBTM {
     *
     * @return object identification object
     */
-   static function tryMailAuth($auth, $login, $password, $auths_id=0, $break=true) {
+   static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true) {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
@@ -356,7 +356,7 @@ class AuthMail extends CommonDBTM {
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($tabnum) {
          case 1 :

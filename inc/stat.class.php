@@ -51,7 +51,7 @@ class Stat extends CommonGLPI {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Statistics');
    }
 
@@ -73,7 +73,7 @@ class Stat extends CommonGLPI {
     * @param $type
     * @param $parent    (default 0)
    **/
-   static function getItems($itemtype, $date1, $date2, $type, $parent=0) {
+   static function getItems($itemtype, $date1, $date2, $type, $parent = 0) {
       global $CFG_GLPI, $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
@@ -285,7 +285,7 @@ class Stat extends CommonGLPI {
     * @param $value     array
     * @param $value2             (default '')
    **/
-   static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
 
       $export_data = [];
 
@@ -344,7 +344,7 @@ class Stat extends CommonGLPI {
     *
     * @since version 0.85 (before show with same parameters)
    **/
-   static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
       global $CFG_GLPI;
 
       // Set display type for export if define
@@ -691,8 +691,8 @@ class Stat extends CommonGLPI {
     * @param $value              (default '')
     * @param $value2             (default '')
     */
-   static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
-                                        $value2="") {
+   static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
+                                        $value2 = "") {
       global $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
@@ -1307,7 +1307,7 @@ class Stat extends CommonGLPI {
    /**
     * @since version 0.85
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values[READ] = __('Read');
       return $values;

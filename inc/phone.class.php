@@ -54,7 +54,7 @@ class Phone extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Phone', 'Phones', $nb);
    }
@@ -70,7 +70,7 @@ class Phone extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -165,7 +165,7 @@ class Phone extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $target       = $this->getFormURL();
@@ -359,7 +359,7 @@ class Phone extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
       if (static::canUpdate()) {

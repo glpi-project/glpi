@@ -91,7 +91,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Approval', 'Approvals', $nb);
    }
 
@@ -182,7 +182,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $hidetab = false;
       // Hide if no rights on validations
@@ -212,7 +212,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $validation = new static();
       $validation->showSummary($item);
@@ -334,7 +334,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $item    = new static::$itemtype();
@@ -426,7 +426,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return an array
    **/
-   static function getAllStatusArray($withmetaforsearch=false, $global=false) {
+   static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
       $tab = [self::WAITING  => __('Waiting for approval'),
                    self::REFUSED  => __('Refused'),
@@ -458,7 +458,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return nothing (display)
    **/
-   static function dropdownStatus($name, $options=[]) {
+   static function dropdownStatus($name, $options = []) {
 
       $p['value']    = self::WAITING;
       $p['global']   = false;
@@ -898,7 +898,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -1239,7 +1239,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1258,7 +1258,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values            (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1277,7 +1277,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[READ]);
@@ -1302,7 +1302,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return nothing (display)
    **/
-   static function dropdownValidator(array $options=[]) {
+   static function dropdownValidator(array $options = []) {
       global $CFG_GLPI;
 
       $params['name']               = '';
@@ -1356,7 +1356,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return array
    **/
-   static function getGroupUserHaveRights(array $options=[]) {
+   static function getGroupUserHaveRights(array $options = []) {
       global $DB;
 
       $params['entity']    = $_SESSION['glpiactive_entity'];

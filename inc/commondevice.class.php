@@ -53,7 +53,7 @@ abstract class CommonDevice extends CommonDropdown {
    public $dohistory           = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Component', 'Components', $nb);
    }
 
@@ -129,7 +129,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'registeredIDChooser' :
@@ -302,8 +302,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @return nothing (elements added to $base)
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $this_type = get_called_class();
 
@@ -341,8 +341,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=[]) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       global $CFG_GLPI;
 
@@ -446,7 +446,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since version 0.85
     */
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -513,13 +513,13 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $this->post_workOnItem();
       parent::post_updateItem($history);
    }
 
-   static function getFormURL($full=true) {
+   static function getFormURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -529,7 +529,7 @@ abstract class CommonDevice extends CommonDropdown {
       return $link;
    }
 
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');

@@ -144,8 +144,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return the item or false if we cannot load the item
    **/
-   function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true,
-                             $getFromDBOrEmpty=false) {
+   function getConnexityItem($itemtype, $items_id, $getFromDB = true, $getEmpty = true,
+                             $getFromDBOrEmpty = false) {
 
       return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB,
                                       $getEmpty, $getFromDBOrEmpty);
@@ -164,8 +164,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @return the item or false if we cannot load the item
    **/
-   static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB=true,
-                                    $getEmpty=true, $getFromDBOrEmpty=false) {
+   static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB = true,
+                                    $getEmpty = true, $getFromDBOrEmpty = false) {
 
       if (preg_match('/^itemtype/', $itemtype)) {
          if (isset($array[$itemtype])) {
@@ -316,7 +316,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return true if we have absolute right to create the current connexity
    **/
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
-                             &$item=null) {
+                             &$item = null) {
 
       // Do not get it twice
       if ($item == null) {
@@ -424,8 +424,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=null) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
 
       $unaffect = false;
       $affect   = false;

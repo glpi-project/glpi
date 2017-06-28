@@ -47,7 +47,7 @@ class MigrationCleaner extends CommonGLPI {
    static $rightname = 'networking';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Migration cleaner');
    }
 

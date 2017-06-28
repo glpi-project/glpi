@@ -167,7 +167,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array with session_token
     */
-   protected function initSession($params=[]) {
+   protected function initSession($params = []) {
       global $CFG_GLPI;
 
       $this->checkAppToken();
@@ -281,7 +281,7 @@ abstract class API extends CommonGLPI {
     *
     * @return boolean
     */
-   protected function changeActiveEntities($params=[]) {
+   protected function changeActiveEntities($params = []) {
 
       $this->initEndpoint();
 
@@ -354,7 +354,7 @@ abstract class API extends CommonGLPI {
     *
     * @return boolean
     */
-   protected function changeActiveProfile($params=[]) {
+   protected function changeActiveProfile($params = []) {
 
       $this->initEndpoint();
 
@@ -461,7 +461,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array    fields of found object
     */
-   protected function getItem($itemtype, $id, $params=[]) {
+   protected function getItem($itemtype, $id, $params = []) {
       global $CFG_GLPI, $DB;
 
       $this->initEndpoint();
@@ -934,7 +934,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array collection of fields
     */
-   protected function getItems($itemtype, $params = [], &$totalcount=0) {
+   protected function getItems($itemtype, $params = [], &$totalcount = 0) {
       global $DB;
 
       $this->initEndpoint();
@@ -1160,7 +1160,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array collection of glpi object's fields
     */
-   protected function getMultipleItems($params=[]) {
+   protected function getMultipleItems($params = []) {
 
       if (!is_array($params['items'])) {
          return $this->messageBadArrayError();
@@ -1188,7 +1188,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array all searchoptions of specified itemtype
     */
-   protected function listSearchOptions($itemtype, $params= []) {
+   protected function listSearchOptions($itemtype, $params = []) {
 
       $this->initEndpoint();
       $soptions = Search::getOptions($itemtype);
@@ -1236,7 +1236,7 @@ abstract class API extends CommonGLPI {
     *
     * @return string the unique id
     */
-   private function getSearchOptionUniqID($itemtype, $option=[]) {
+   private function getSearchOptionUniqID($itemtype, $option = []) {
 
       $uid_parts = [$itemtype];
 
@@ -1325,7 +1325,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array of raw rows from Search class
     */
-   protected function searchItems($itemtype, $params=[]) {
+   protected function searchItems($itemtype, $params = []) {
       global $DEBUG_SQL;
 
       $this->initEndpoint();
@@ -1518,7 +1518,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array of id
     */
-   protected function createItems($itemtype, $params=[]) {
+   protected function createItems($itemtype, $params = []) {
       $this->initEndpoint();
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
@@ -1716,7 +1716,7 @@ abstract class API extends CommonGLPI {
     *
     * @return boolean|boolean[]
     */
-   protected function deleteItems($itemtype, $params=[]) {
+   protected function deleteItems($itemtype, $params = []) {
 
       $this->initEndpoint();
       $default  = ['force_purge' => false,
@@ -1814,7 +1814,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   private function initEndpoint($unlock_session=true, $endpoint="") {
+   private function initEndpoint($unlock_session = true, $endpoint = "") {
 
       if ($endpoint === "") {
          $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
@@ -1856,7 +1856,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   private function logEndpointUsage($endpoint="") {
+   private function logEndpointUsage($endpoint = "") {
 
       $username = "";
       if (isset($_SESSION['glpiname'])) {
@@ -1970,7 +1970,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   protected function header($html=false, $title="") {
+   protected function header($html = false, $title = "") {
 
       // Send UTF8 Headers
       $content_type = "application/json";
@@ -2037,7 +2037,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array altered $fields
     */
-   protected static function parseDropdowns($fields, $params=[]) {
+   protected static function parseDropdowns($fields, $params = []) {
 
       // default params
       $default = ['expand_dropdowns' => false,
@@ -2186,7 +2186,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageNotfoundError($return_error=true) {
+   public function messageNotfoundError($return_error = true) {
 
       $this->returnError(__("Item not found"),
                          404,
@@ -2203,7 +2203,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageBadArrayError($return_error=true) {
+   public function messageBadArrayError($return_error = true) {
 
       $this->returnError(__("input parameter must be an array of objects"),
                          400,
@@ -2220,7 +2220,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageLostError($return_error=true) {
+   public function messageLostError($return_error = true) {
 
       $this->returnError(__("Method Not Allowed"),
                          405,
@@ -2237,7 +2237,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageRightError($return_error=true) {
+   public function messageRightError($return_error = true) {
 
       $this->returnError(__("You don't have permission to perform this action."),
                          401,
@@ -2254,7 +2254,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageSessionError($return_error=true) {
+   public function messageSessionError($return_error = true) {
       $this->returnError(__("session_token seems invalid"),
                          401,
                          "ERROR_SESSION_TOKEN_INVALID",
@@ -2270,7 +2270,7 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function messageSessionTokenMissing($return_error=true) {
+   public function messageSessionTokenMissing($return_error = true) {
 
       $this->returnError(__("parameter session_token is missing or empty"),
                          400,
@@ -2297,8 +2297,8 @@ abstract class API extends CommonGLPI {
     *
     * @return array
     */
-   public function returnError($message="Bad Request", $httpcode=400, $statuscode="ERROR",
-                               $docmessage=true, $return_response=true) {
+   public function returnError($message = "Bad Request", $httpcode = 400, $statuscode = "ERROR",
+                               $docmessage = true, $return_response = true) {
 
       if (empty($httpcode)) {
          $httpcode = 400;

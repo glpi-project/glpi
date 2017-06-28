@@ -84,7 +84,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Escalation level', 'Escalation levels', $nb);
    }
 
@@ -280,7 +280,7 @@ class SlaLevel extends RuleTicket {
     *
     * @return nothing
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $canedit = $this->can('sla', UPDATE);
 
@@ -341,7 +341,7 @@ class SlaLevel extends RuleTicket {
     *
     * @return nothing
    **/
-   static function dropdownExecutionTime($name, $options=[]) {
+   static function dropdownExecutionTime($name, $options = []) {
 
       $p['value']    = '';
       $p['max_time'] = 4*DAY_TIMESTAMP;
@@ -491,7 +491,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -507,7 +507,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'SLT') {
          $slalevel = new self();

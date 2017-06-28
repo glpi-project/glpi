@@ -261,7 +261,7 @@ class Session {
     * @param $itemtype    device type
     * @param $title       list title (default '')
    **/
-   static function initNavigateListItems($itemtype, $title="") {
+   static function initNavigateListItems($itemtype, $title = "") {
 
       if (empty($title)) {
          $title = __('List');
@@ -293,7 +293,7 @@ class Session {
     *
     * @return Nothing
    **/
-   static function changeActiveEntities($ID="all", $is_recursive=false) {
+   static function changeActiveEntities($ID = "all", $is_recursive = false) {
 
       $newentities = [];
       $newroots    = [];
@@ -534,7 +534,7 @@ class Session {
     *
     * @return nothing (make an include)
    **/
-   static function loadLanguage($forcelang='') {
+   static function loadLanguage($forcelang = '') {
       global $LANG, $CFG_GLPI, $TRANSLATE;
 
       $file = "";
@@ -644,7 +644,7 @@ class Session {
     * @return false if user is not logged in
     * @return int or string : int for user id, string for cron jobs
    **/
-   static function getLoginUserID($force_human=true) {
+   static function getLoginUserID($force_human = true) {
 
       if (!$force_human
           && self::isCron()) { // Check cron jobs
@@ -786,7 +786,7 @@ class Session {
     *
     * @return Nothing : display error if not permit
     **/
-   static function checkRightsOr($module, $rights=[]) {
+   static function checkRightsOr($module, $rights = []) {
       self::checkValidSessionId();
       if (!self::haveRightsOr($module, $rights)) {
          self::redirectIfNotLoggedIn();
@@ -861,7 +861,7 @@ class Session {
     *
     * @return Boolean : read access to entity
    **/
-   static function haveAccessToEntity($ID, $is_recursive=0) {
+   static function haveAccessToEntity($ID, $is_recursive = 0) {
 
       // Quick response when passing wrong ID : default value of getEntityID is -1
       if ($ID < 0) {
@@ -899,7 +899,7 @@ class Session {
     *
     * @return Boolean :
    **/
-   static function haveAccessToOneOfEntities($tab, $is_recursive=0) {
+   static function haveAccessToOneOfEntities($tab, $is_recursive = 0) {
 
       if (is_array($tab) && count($tab)) {
          foreach ($tab as $val) {
@@ -968,7 +968,7 @@ class Session {
     *
     * @return Boolean : session variable have more than the right specified for the module
     **/
-   static function haveRightsAnd($module, $rights=[]) {
+   static function haveRightsAnd($module, $rights = []) {
 
       foreach ($rights as $right) {
          if (!Session::haveRight($module, $right)) {
@@ -987,7 +987,7 @@ class Session {
     *
     * @return Boolean : session variable have more than the right specified for the module
     **/
-   static function haveRightsOr($module, $rights=[]) {
+   static function haveRightsOr($module, $rights = []) {
 
       foreach ($rights as $right) {
          if (Session::haveRight($module, $right)) {
@@ -1022,8 +1022,8 @@ class Session {
     * @param $message_type    Message type (INFO, WARNING, ERROR) (default INFO)
     * @param $reset           Clear previous added message (false by default)
    **/
-   static function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO,
-                                           $reset=false) {
+   static function addMessageAfterRedirect($msg, $check_once = false, $message_type = INFO,
+                                           $reset = false) {
 
       if (!empty($msg)) {
          if (self::isCron()) {

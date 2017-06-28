@@ -58,7 +58,7 @@ class Report extends CommonGLPI{
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Report', 'Reports', $nb);
    }
 
@@ -295,7 +295,7 @@ class Report extends CommonGLPI{
     * @param $extra                 (default '')
    **/
    static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
-                                                $where_crit, $order='', $field='', $extra='') {
+                                                $where_crit, $order = '', $field = '', $extra = '') {
       global $DB;
 
       // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
@@ -446,7 +446,7 @@ class Report extends CommonGLPI{
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = [ READ => __('Read')];
       return $values;

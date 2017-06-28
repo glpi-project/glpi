@@ -54,7 +54,7 @@ class CartridgeItem extends CommonDBTM {
 
    static $rightname                   = 'cartridge';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cartridge model', 'Cartridge models', $nb);
    }
 
@@ -105,7 +105,7 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -183,7 +183,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -257,7 +257,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -467,7 +467,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronCartridge($task=null) {
+   static function cronCartridge($task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;

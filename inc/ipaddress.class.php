@@ -80,7 +80,7 @@ class IPAddress extends CommonDBChild {
    /**
     * @param $ipaddress (default '')
    **/
-   function __construct($ipaddress='') {
+   function __construct($ipaddress = '') {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
@@ -105,7 +105,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('IP address', 'IP addresses', $nb);
    }
 
@@ -187,7 +187,7 @@ class IPAddress extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))
           || (isset($this->oldvalues['entities_id']))) {
@@ -217,7 +217,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function showForItem(CommonGLPI $item, $withtemplate=0) {
+   static function showForItem(CommonGLPI $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       if ($item->getType() == 'IPNetwork') {
@@ -288,7 +288,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'IPNetwork' :
@@ -322,7 +322,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return string
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
@@ -550,7 +550,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return true if the address is valid.
    **/
-   function setAddressFromString($address, $itemtype="", $items_id=-1) {
+   function setAddressFromString($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
       $this->disableAddress();
@@ -721,7 +721,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return true if the address is valid.
    **/
-   function setAddressFromBinary($address, $itemtype="", $items_id=-1) {
+   function setAddressFromBinary($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
       $this->disableAddress();
@@ -995,8 +995,8 @@ class IPAddress extends CommonDBChild {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -1037,8 +1037,8 @@ class IPAddress extends CommonDBChild {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       if (($item !== null)

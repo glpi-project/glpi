@@ -121,7 +121,7 @@ class RuleImportEntity extends Rule {
     *
     * @see Rule::displayAdditionalRuleCondition()
    **/
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
       global $PLUGIN_HOOKS;
 
       if ($criteria['field'] == '_source') {

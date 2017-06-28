@@ -66,7 +66,7 @@ class DropdownTranslation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canBeTranslated($item)) {
          $nb = 0;
@@ -84,7 +84,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if (DropdownTranslation::canBeTranslated($item)) {
          DropdownTranslation::showTranslations($item);
@@ -155,7 +155,7 @@ class DropdownTranslation extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if (!isset($this->input['_no_completename'])) {
          $translation = new self();
@@ -221,7 +221,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return true if translation can be added/update, false otherwise
    **/
-   function checkBeforeAddorUpdate($input, $add=true) {
+   function checkBeforeAddorUpdate($input, $add = true) {
       global $DB;
 
       $number = $this->getNumberOfTranslations($input['itemtype'], $input['items_id'],
@@ -241,7 +241,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return nothing
    **/
-   function generateCompletename($input, $add=true) {
+   function generateCompletename($input, $add = true) {
       global $DB;
       // Force completename translated : used for the first translation
       $_SESSION['glpi_dropdowntranslations'][$input['itemtype']]['completename'] = 'completename';
@@ -418,7 +418,7 @@ class DropdownTranslation extends CommonDBChild {
     * @param $ID               field (default -1)
     * @param $options   array
     */
-   function showForm($ID=-1, $options=[]) {
+   function showForm($ID = -1, $options = []) {
       global $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -487,7 +487,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the dropdown's random identifier
    **/
-   static function dropdownFields(CommonDBTM $item, $language='', $value='') {
+   static function dropdownFields(CommonDBTM $item, $language = '', $value = '') {
       global $DB;
 
       $options = [];
@@ -533,7 +533,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the translated value of the value in the default language
    **/
-   static function getTranslatedValue($ID, $itemtype, $field='name', $language='', $value='') {
+   static function getTranslatedValue($ID, $itemtype, $field = 'name', $language = '', $value = '') {
       global $DB;
 
       if ($language == '') {

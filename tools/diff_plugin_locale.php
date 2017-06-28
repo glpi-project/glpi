@@ -37,7 +37,7 @@
 
 $cmd = $_SERVER["argv"][0];
 
-function checkOne ($name, $tab="") {
+function checkOne ($name, $tab = "") {
    global $cmd;
 
    if (empty($tab)) {

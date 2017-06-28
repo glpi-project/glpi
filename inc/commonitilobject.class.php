@@ -298,7 +298,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer
    **/
-   function countUsers($type=0) {
+   function countUsers($type = 0) {
 
       if ($type > 0) {
          if (isset($this->users[$type])) {
@@ -325,7 +325,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer
    **/
-   function countGroups($type=0) {
+   function countGroups($type = 0) {
 
       if ($type > 0) {
          if (isset($this->groups[$type])) {
@@ -354,7 +354,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer
    **/
-   function countSuppliers($type=0) {
+   function countSuppliers($type = 0) {
 
       if ($type > 0) {
          if (isset($this->suppliers[$type])) {
@@ -1690,7 +1690,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return string id of the select
    **/
-   static function dropdownPriority(array $options=[]) {
+   static function dropdownPriority(array $options = []) {
 
       $p['name']      = 'priority';
       $p['value']     = 0;
@@ -2005,7 +2005,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getAllStatusArray($withmetaforsearch=false) {
+   static function getAllStatusArray($withmetaforsearch = false) {
 
       // To be overridden by class
       $tab = [];
@@ -2154,7 +2154,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing (display)
    **/
-   static function dropdownStatus(array $options=[]) {
+   static function dropdownStatus(array $options = []) {
 
       $p['name']      = 'status';
       $p['value']     = self::INCOMING;
@@ -2236,7 +2236,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showGroupsAssociated($type, $canedit, array $options=[]) {
+   function showGroupsAssociated($type, $canedit, array $options = []) {
       global $CFG_GLPI;
 
       $groupicon = self::getActorIcon('group', $type);
@@ -2288,7 +2288,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showSuppliersAssociated($type, $canedit, array $options=[]) {
+   function showSuppliersAssociated($type, $canedit, array $options = []) {
       global $CFG_GLPI;
 
       $showsupplierlink = 0;
@@ -2368,7 +2368,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return a string
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -2402,7 +2402,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $values          (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -3218,7 +3218,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showUsersAssociated($type, $canedit, array $options=[]) {
+   function showUsersAssociated($type, $canedit, array $options = []) {
       global $CFG_GLPI;
 
       $showuserlink = 0;
@@ -3317,8 +3317,8 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showActorAddForm($type, $rand_type, $entities_id, $is_hidden=[],
-                             $withgroup=true, $withsupplier=false, $inobject=true) {
+   function showActorAddForm($type, $rand_type, $entities_id, $is_hidden = [],
+                             $withgroup = true, $withsupplier = false, $inobject = true) {
       global $CFG_GLPI;
 
       $types = ['user'  => __('User')];
@@ -4064,7 +4064,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $itemtype
     * @param $link      (default 0)
    **/
-   static function getAssignName($ID, $itemtype, $link=0) {
+   static function getAssignName($ID, $itemtype, $link = 0) {
 
       switch ($itemtype) {
          case 'User' :
@@ -4095,7 +4095,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $knowbase_id_toload integer  load a kb article as solution (0 = no load by default)
     *                                     (default 0)
    **/
-   function showSolutionForm($knowbase_id_toload=0) {
+   function showSolutionForm($knowbase_id_toload = 0) {
       global $CFG_GLPI;
 
       $this->check($this->getField('id'), READ);
@@ -4262,7 +4262,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $no_stat_computation   boolean  do not cumpute take into account stat (false by default)
     * @param $users_id_lastupdater  integer  to force last_update id (default 0 = not used)
    **/
-   function updateDateMod($ID, $no_stat_computation=false, $users_id_lastupdater=0) {
+   function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -4528,7 +4528,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct users_ids which have itil object
    **/
-   function getUsedAuthorBetween($date1='', $date2='') {
+   function getUsedAuthorBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $linkclass = new $this->userlinkclass();
@@ -4573,7 +4573,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct recipents which have itil object
    **/
-   function getUsedRecipientBetween($date1='', $date2='') {
+   function getUsedRecipientBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_users`.`id` AS user_id,
@@ -4615,7 +4615,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct groups of tickets
    **/
-   function getUsedGroupBetween($date1='', $date2='') {
+   function getUsedGroupBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $linkclass = new $this->grouplinkclass();
@@ -4659,7 +4659,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct recipents which have tickets
    **/
-   function getUsedUserTitleOrTypeBetween($date1='', $date2='', $title=true) {
+   function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true) {
       global $DB;
 
       $linkclass = new $this->userlinkclass();
@@ -4710,7 +4710,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct priorities of tickets
    **/
-   function getUsedPriorityBetween($date1='', $date2='') {
+   function getUsedPriorityBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `priority`
@@ -4747,7 +4747,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct priorities of tickets
    **/
-   function getUsedUrgencyBetween($date1='', $date2='') {
+   function getUsedUrgencyBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `urgency`
@@ -4785,7 +4785,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct priorities of tickets
    **/
-   function getUsedImpactBetween($date1='', $date2='') {
+   function getUsedImpactBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `impact`
@@ -4822,7 +4822,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct request types of tickets
    **/
-   function getUsedRequestTypeBetween($date1='', $date2='') {
+   function getUsedRequestTypeBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `requesttypes_id`
@@ -4860,7 +4860,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct request types of tickets
    **/
-   function getUsedSolutionTypeBetween($date1='', $date2='') {
+   function getUsedSolutionTypeBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `solutiontypes_id`
@@ -4896,7 +4896,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct users which have any intervention assigned to.
    **/
-   function getUsedTechBetween($date1='',$date2='') {
+   function getUsedTechBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $linkclass = new $this->userlinkclass();
@@ -4946,7 +4946,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct users which have any followup assigned to.
    **/
-   function getUsedTechTaskBetween($date1='',$date2='') {
+   function getUsedTechTaskBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $tasktable = getTableForItemType($this->getType().'Task');
@@ -5004,7 +5004,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct enterprises which have any tickets assigned to.
    **/
-   function getUsedSupplierBetween($date1='', $date2='') {
+   function getUsedSupplierBetween($date1 = '', $date2 = '') {
       global $DB,$CFG_GLPI;
 
       $linkclass = new $this->supplierlinkclass();
@@ -5050,7 +5050,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array contains the distinct groups assigned to a tickets
    **/
-   function getUsedAssignGroupBetween($date1='', $date2='') {
+   function getUsedAssignGroupBetween($date1 = '', $date2 = '') {
       global $DB;
 
       $linkclass = new $this->grouplinkclass();
@@ -5098,7 +5098,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *      id_for_massaction      : default 0 means no massive action
     *      followups              : only for Tickets : show followup columns
     */
-   static function showShort($id, $options=[]) {
+   static function showShort($id, $options = []) {
       global $CFG_GLPI, $DB;
 
       $p['output_type']            = Search::HTML_OUTPUT;
@@ -5387,7 +5387,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $output_type     (default 'Search::HTML_OUTPUT')
     * @param $mass_id         id of the form to check all (default '')
     */
-   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
+   static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '') {
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);

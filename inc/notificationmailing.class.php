@@ -64,7 +64,7 @@ class NotificationMailing implements NotificationInterface {
     *
     * @return boolean
    **/
-   static function isUserAddressValid($address, $options=['checkdns'=>false]) {
+   static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
       $isValid = \PHPMailer::ValidateAddress($address);
 
       $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
@@ -114,7 +114,7 @@ class NotificationMailing implements NotificationInterface {
    }
 
 
-   function sendNotification($options=[]) {
+   function sendNotification($options = []) {
 
       $data = [];
       $data['itemtype']                             = $options['_itemtype'];

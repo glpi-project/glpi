@@ -52,7 +52,7 @@ class Contract extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Contract', 'Contracts', $nb);
    }
 
@@ -82,7 +82,7 @@ class Contract extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -169,7 +169,7 @@ class Contract extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID,$options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -556,7 +556,7 @@ class Contract extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -583,7 +583,7 @@ class Contract extends CommonDBTM {
     * @param $values          (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -610,7 +610,7 @@ class Contract extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1163,7 +1163,7 @@ class Contract extends CommonDBTM {
     *
     * @param $task for log, if NULL display (default NULL)
    **/
-   static function cronContract($task=null) {
+   static function cronContract($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {
@@ -1391,7 +1391,7 @@ class Contract extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   static function dropdown($options=[]) {
+   static function dropdown($options = []) {
       global $DB;
 
       //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
@@ -1493,7 +1493,7 @@ class Contract extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   static function dropdownContractRenewal($name, $value=0, $display=true) {
+   static function dropdownContractRenewal($name, $value = 0, $display = true) {
 
       $tmp[0] = __('Never');
       $tmp[1] = __('Tacit');
@@ -1583,7 +1583,7 @@ class Contract extends CommonDBTM {
     *
     * @return array or string
    **/
-   static function getAlertName($val=null) {
+   static function getAlertName($val = null) {
 
       $tmp[0]                                                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)]                                 = __('End');
@@ -1636,8 +1636,8 @@ class Contract extends CommonDBTM {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=null) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
       global $CFG_GLPI;
 
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {

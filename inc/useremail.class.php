@@ -52,7 +52,7 @@ class UserEmail  extends CommonDBChild {
    public $dohistory              = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Email', 'Emails', $nb);
    }
 
@@ -240,7 +240,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       // if default is set : unsed others for the users

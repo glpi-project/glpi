@@ -102,7 +102,7 @@ class NotificationTarget extends CommonDBChild {
     * @param mixed  $object  (default null)
     * @param array  $options Options
    **/
-   function __construct($entity='', $event='', $object=null, $options=[]) {
+   function __construct($entity = '', $event = '', $object = null, $options = []) {
 
       if ($entity === '') {
          $this->entity = (isset($_SESSION['glpiactive_entity'])?$_SESSION['glpiactive_entity']:0);
@@ -183,7 +183,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return boolean
    **/
-   function validateSendTo($event, array $infos, $notify_me=false) {
+   function validateSendTo($event, array $infos, $notify_me = false) {
 
       if (!$notify_me) {
          if (isset($infos['users_id'])
@@ -200,7 +200,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $event  (default '')
    **/
-   function getSubjectPrefix($event='') {
+   function getSubjectPrefix($event = '') {
 
       $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
                                               '', ''));
@@ -235,7 +235,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Recipient', 'Recipients', $nb);
    }
 
@@ -268,7 +268,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return a notificationtarget class or false
    **/
-   static function getInstance($item, $event='', $options=[]) {
+   static function getInstance($item, $event = '', $options = []) {
 
       if ($plug = isPluginItemType($item->getType())) {
          $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
@@ -303,7 +303,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return a notificationtarget class or false
    **/
-   static function getInstanceByType($itemtype, $event='', $options=[]) {
+   static function getInstanceByType($itemtype, $event = '', $options = []) {
 
       if (($itemtype)
           && ($item = getItemForItemtype($itemtype))) {
@@ -742,7 +742,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $label     (default '')
     * @param $type      (=Notification::USER_TYPE)
    **/
-   function addTarget ($target='', $label='', $type=Notification::USER_TYPE) {
+   function addTarget ($target = '', $label = '', $type = Notification::USER_TYPE) {
 
       $key                                               = $type.'_'.$target;
       // Value used for sort
@@ -822,7 +822,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   protected function addAdditionalTargets($event='') {
+   protected function addAdditionalTargets($event = '') {
    }
 
 
@@ -845,7 +845,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return the object associated with the itemtype
    **/
-   function getObjectItem($event='') {
+   function getObjectItem($event = '') {
       $this->target_object[] = $this->obj;
    }
 
@@ -860,7 +860,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final protected function addUserByField($field, $search_in_object=false) {
+   final protected function addUserByField($field, $search_in_object = false) {
       global $DB;
 
       $id = [];
@@ -953,7 +953,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return the sender's address
    **/
-   function getSender($options=[]) {
+   function getSender($options = []) {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
@@ -978,7 +978,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return the reply to address
    **/
-   final public function getReplyTo($options=[]) {
+   final public function getReplyTo($options = []) {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
@@ -1004,7 +1004,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final public function addForTarget($data, $options=[]) {
+   final public function addForTarget($data, $options = []) {
 
       //Look for all targets whose type is Notification::USER_TYPE
       switch ($data['type']) {
@@ -1098,7 +1098,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   protected function addDataForTemplate($event, $options=[]) {
+   protected function addDataForTemplate($event, $options = []) {
    }
 
 
@@ -1159,7 +1159,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $options   array
    **/
-   function addTagToList($options=[]) {
+   function addTagToList($options = []) {
 
       $p['tag']            = false;
       $p['value']          = true;
@@ -1205,7 +1205,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Notification::canView()) {
          $nb = 0;
@@ -1327,7 +1327,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'Group') {
          self::showForGroup($item);
@@ -1530,7 +1530,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   function getUserByField($field, $search_in_object=false) {
+   function getUserByField($field, $search_in_object = false) {
       Toolbox::logDebug('getUserByField() method is deprecated');
       $this->addUserByField($field, $search_in_object);
    }
@@ -1545,7 +1545,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   function getAddressesByTarget($data, $options=[]) {
+   function getAddressesByTarget($data, $options = []) {
       Toolbox::logDebug('getAddressesByTarget() method is deprecated');
       $this->addForTarget($data, $options);
    }

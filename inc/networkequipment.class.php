@@ -58,7 +58,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     * @param $nb  integer  number of item in the type (default 0)
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network device', 'Network devices', $nb);
    }
 
@@ -125,7 +125,7 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -260,7 +260,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -413,7 +413,7 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

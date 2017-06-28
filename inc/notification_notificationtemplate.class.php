@@ -54,11 +54,11 @@ class Notification_NotificationTemplate extends CommonDBChild {
    const MODE_XMPP      = 'xmpp';
    const MODE_IRC       = 'irc';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Template', 'Templates', $nb);
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Notification::canView()) {
          $nb = 0;
@@ -74,7 +74,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForNotification($item, $withtemplate);
       return true;
    }
@@ -88,7 +88,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForNotification(Notification $notif, $withtemplate='') {
+   static function showForNotification(Notification $notif, $withtemplate = '') {
       global $DB;
 
       $ID = $notif->getID();
@@ -176,7 +176,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("notification", UPDATE)) {
@@ -303,7 +303,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
       if (!is_array($values)) {
          $values = [$field => $values];
       }
@@ -321,7 +321,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];

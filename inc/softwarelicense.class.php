@@ -54,7 +54,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('License', 'Licenses', $nb);
    }
 
@@ -125,7 +125,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return validity indicator
    **/
-   static function computeValidityIndicator($ID, $number=-1) {
+   static function computeValidityIndicator($ID, $number = -1) {
 
       if (($number >= 0)
           && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
@@ -189,7 +189,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if (in_array("is_valid", $this->updates)) {
          Software::updateValidityIndicator($this->fields["softwares_id"]);
@@ -220,7 +220,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       return '';
    }
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -249,7 +249,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $softwares_id = -1;
@@ -468,7 +468,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -827,7 +827,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronSoftware($task=null) {
+   static function cronSoftware($task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;
@@ -922,7 +922,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return number of installations
    */
-   static function countForVersion($softwareversions_id, $entity='') {
+   static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
       $query = "SELECT COUNT(*)
@@ -1216,7 +1216,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -1248,7 +1248,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software' && self::canView()) {
          self::showForSoftware($item);
