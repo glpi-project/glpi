@@ -257,16 +257,16 @@ class Project extends CommonDBTM {
          ProjectCost::cloneProject($this->input["_oldID"], $this->fields['id']);
 
          // ADD Task
-         ProjectTask::cloneProject($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         ProjectTask::cloneProjectTask($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Documents
          Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Team
-         ProjectTeam::cloneProject($this->input["_oldID"], $this->fields['id']);
+         ProjectTeam::cloneProjectTeam($this->input["_oldID"], $this->fields['id']);
 
          // ADD Change
-         Change::cloneProject($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         Change_Project::cloneChangeProject($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          Contract::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);

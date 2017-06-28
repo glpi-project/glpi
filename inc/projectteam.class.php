@@ -131,7 +131,7 @@ class ProjectTeam extends CommonDBRelation {
     * @param $oldid
     * @param $newid
     **/
-   static function cloneProject ($oldid, $newid) {
+   static function cloneProjectTeam ($oldid, $newid) {
       global $DB;
 
       $query  = "SELECT *

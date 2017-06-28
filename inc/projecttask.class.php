@@ -155,7 +155,7 @@ class ProjectTask extends CommonDBChild {
     * @param $oldid
     * @param $newid
     **/
-   static function cloneProject ($oldid, $newid) {
+   static function cloneProjectTask ($oldid, $newid) {
       global $DB;
 
       $query  = "SELECT *

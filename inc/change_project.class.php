@@ -70,6 +70,30 @@ class Change_Project extends CommonDBRelation{
 
 
    /**
+    * Duplicate all changes from a project template to his clone
+    *
+    * @since version 0.84
+    *
+    * @param $oldid
+    * @param $newid
+    **/
+   static function cloneChangeProject ($oldid, $newid) {
+      global $DB;
+
+      $query  = "SELECT *
+                 FROM `glpi_changes_projects`
+                 WHERE `projects_id` = '$oldid'";
+      foreach ($DB->request($query) as $data) {
+         $cd                   = new Change_Project();
+         unset($data['id']);
+         $data['projects_id'] = $newid;
+         $data                 = Toolbox::addslashes_deep($data);
+         $cd->add($data);
+      }
+   }
+
+
+   /**
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
