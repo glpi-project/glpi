@@ -79,6 +79,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla");
 
-   $sla->display(array('id' => $_GET["id"]));
+   $sla->display(['id' => $_GET["id"]]);
    Html::footer();
 }

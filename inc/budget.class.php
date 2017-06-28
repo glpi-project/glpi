@@ -57,9 +57,9 @@ class Budget extends CommonDropdown{
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -77,8 +77,8 @@ class Budget extends CommonDropdown{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return array(1 => __('Main'),
-                            2 => _n('Item', 'Items', Session::getPluralNumber()));
+               return [1 => __('Main'),
+                            2 => _n('Item', 'Items', Session::getPluralNumber())];
          }
       }
       return '';
@@ -112,7 +112,7 @@ class Budget extends CommonDropdown{
     *
     * @return Nothing (display)
     **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $rowspan = 3;
       if ($ID > 0) {
@@ -130,7 +130,7 @@ class Budget extends CommonDropdown{
 
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('BudgetType', array('value' => $this->fields['budgettypes_id']));
+      Dropdown::show('BudgetType', ['value' => $this->fields['budgettypes_id']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -146,20 +146,20 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
-      Html::showDateField("begin_date", array('value' => $this->fields["begin_date"]));
+      Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
+      Html::showDateField("end_date", ['value' => $this->fields["end_date"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -339,7 +339,7 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       $num       = 0;
-      $itemtypes = array();
+      $itemtypes = [];
       for ($i = 0; $i < $number; $i++) {
          $itemtypes[] = $DB->result($result, $i, "itemtype");
       }
@@ -467,14 +467,14 @@ class Budget extends CommonDropdown{
                   echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $name, $nb)."</td>";
                   echo "<td class='center' colspan='2'>";
 
-                  $opt = array('order'      => 'ASC',
+                  $opt = ['order'      => 'ASC',
                                'is_deleted' => 0,
                                'reset'      => 'reset',
                                'start'      => 0,
                                'sort'       => 80,
-                               'criteria'   => array(0 => array('value'      => '$$$$'.$budgets_id,
+                               'criteria'   => [0 => ['value'      => '$$$$'.$budgets_id,
                                                                 'searchtype' => 'contains',
-                                                                'field'      => 50)));
+                                                                'field'      => 50]]];
 
                   echo "<a href='". $item->getSearchURL() . "?" .Toolbox::append_params($opt). "'>".
                         __('Device list')."</a></td>";
@@ -488,10 +488,10 @@ class Budget extends CommonDropdown{
                         if ($item instanceof Item_Devices) {
                            $tmpitem = new $item::$itemtype_2();
                            if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
-                              $name = $tmpitem->getLink(array('additional' => true));
+                              $name = $tmpitem->getLink(['additional' => true]);
                            }
                         } else {
-                           $name = $item->getLink(array('additional' => true));
+                           $name = $item->getLink(['additional' => true]);
                         }
                      }
                      echo "<tr class='tab_bg_1'>";
@@ -545,7 +545,7 @@ class Budget extends CommonDropdown{
       }
 
       // Type for which infocom are only template
-      $ignore = array('CartridgeItem', 'ConsumableItem', 'Software');
+      $ignore = ['CartridgeItem', 'ConsumableItem', 'Software'];
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_infocoms`
@@ -557,13 +557,13 @@ class Budget extends CommonDropdown{
       $result = $DB->query($query);
 
       $total               = 0;
-      $totalbytypes        = array();
+      $totalbytypes        = [];
 
-      $itemtypes           = array();
+      $itemtypes           = [];
 
-      $entities_values     = array();
-      $entitiestype_values = array();
-      $found_types         = array();
+      $entities_values     = [];
+      $entitiestype_values = [];
+      $found_types         = [];
 
       if ($DB->numrows($result)) {
          while ($types = $DB->fetch_assoc($result)) {

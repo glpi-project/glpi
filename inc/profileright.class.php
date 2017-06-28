@@ -58,8 +58,8 @@ class ProfileRight extends CommonDBChild {
       if (!isset($_SESSION['glpi_all_possible_rights'])
           ||(count($_SESSION['glpi_all_possible_rights']) == 0)) {
 
-         $_SESSION['glpi_all_possible_rights'] = array();
-         $rights = array();
+         $_SESSION['glpi_all_possible_rights'] = [];
+         $rights = [];
          $query  = "SELECT DISTINCT `name`
                     FROM `".self::getTable()."`";
          foreach ($DB->request($query) as $right) {
@@ -75,7 +75,7 @@ class ProfileRight extends CommonDBChild {
     * @param $profiles_id
     * @param $rights         array
    **/
-   static function getProfileRights($profiles_id, array $rights=array()) {
+   static function getProfileRights($profiles_id, array $rights=[]) {
       global $DB;
 
       if (count($rights) == 0) {
@@ -88,7 +88,7 @@ class ProfileRight extends CommonDBChild {
                     WHERE `profiles_id` = '$profiles_id'
                           AND `name` IN ('".implode("', '", $rights)."')";
       }
-      $rights = array();
+      $rights = [];
       foreach ($DB->request($query) as $right) {
          $rights[$right['name']] = $right['rights'];
       }
@@ -105,7 +105,7 @@ class ProfileRight extends CommonDBChild {
       global $DB;
 
       $ok = true;
-      $_SESSION['glpi_all_possible_rights'] = array();
+      $_SESSION['glpi_all_possible_rights'] = [];
 
       $query = "SELECT `id`
                 FROM `glpi_profiles`";
@@ -133,7 +133,7 @@ class ProfileRight extends CommonDBChild {
    static function deleteProfileRights(array $rights) {
       global $DB;
 
-      $_SESSION['glpi_all_possible_rights'] = array();
+      $_SESSION['glpi_all_possible_rights'] = [];
       $ok                                   = true;
       foreach ($rights as $name) {
          $query = "DELETE FROM `glpi_profilerights`
@@ -156,7 +156,7 @@ class ProfileRight extends CommonDBChild {
    static function updateProfileRightAsOtherRight($right, $value, $condition) {
       global $DB;
 
-      $profiles = array();
+      $profiles = [];
       $ok       = true;
       foreach ($DB->request('glpi_profilerights', $condition) as $data) {
          $profiles[] = $data['profiles_id'];
@@ -186,7 +186,7 @@ class ProfileRight extends CommonDBChild {
    static function updateProfileRightsAsOtherRights($newright, $initialright, $condition='') {
       global $DB;
 
-      $profiles = array();
+      $profiles = [];
       $ok       = true;
       if (empty($condition)) {
          $condition = "`name` = '$initialright'";
@@ -238,7 +238,7 @@ class ProfileRight extends CommonDBChild {
     * @param $profiles_id
     * @param $rights         array
     */
-   public static function updateProfileRights($profiles_id, array $rights=array()) {
+   public static function updateProfileRights($profiles_id, array $rights=[]) {
 
       $me = new self();
       foreach ($rights as $name => $right) {
@@ -246,14 +246,14 @@ class ProfileRight extends CommonDBChild {
             if ($me->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
                                              AND `name` = '$name'")) {
 
-               $input = array('id'          => $me->getID(),
-                              'rights'      => $right);
+               $input = ['id'          => $me->getID(),
+                              'rights'      => $right];
                $me->update($input);
 
             } else {
-               $input = array('profiles_id' => $profiles_id,
+               $input = ['profiles_id' => $profiles_id,
                               'name'        => $name,
-                              'rights'      => $right);
+                              'rights'      => $right];
                $me->add($input);
             }
          }
@@ -290,7 +290,7 @@ class ProfileRight extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       $itemtype = $options['searchopt']['rightclass'];
       $item     = new $itemtype();
@@ -320,7 +320,7 @@ class ProfileRight extends CommonDBChild {
     * @see CommonDBTM::getLogTypeID()
    **/
    function getLogTypeID() {
-      return array('Profile', $this->fields['profiles_id']);
+      return ['Profile', $this->fields['profiles_id']];
    }
 
 }

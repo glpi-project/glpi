@@ -90,7 +90,7 @@ class Alert extends CommonDBTM {
       return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
    }
 
-   static function dropdown($options = array()) {
+   static function dropdown($options = []) {
 
       $p = [];
       $p['name']           = 'alert';
@@ -124,7 +124,7 @@ class Alert extends CommonDBTM {
     *
     * @return void|string (see $options['display'])
     */
-   static function dropdownYesNo($options = array()) {
+   static function dropdownYesNo($options = []) {
 
       $p['name']           = 'alert';
       $p['value']          = 0;
@@ -157,12 +157,12 @@ class Alert extends CommonDBTM {
     *
     * @return void|string (see $options['display'])
     */
-   static function dropdownIntegerNever($name, $value, $options=array()) {
+   static function dropdownIntegerNever($name, $value, $options=[]) {
 
       $p['min']      = 1;
       $p['max']      = 100;
       $p['step']     = 1;
-      $p['toadd']    = array();
+      $p['toadd']    = [];
       $p['display']  = true;
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {

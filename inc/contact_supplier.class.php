@@ -108,7 +108,7 @@ class Contact_Supplier extends CommonDBRelation{
                     getEntitiesRestrictRequest(" AND ", "glpi_contacts", '',
                                                $_SESSION['glpiactiveentities'], true);
 
-      return countElementsInTable(array('glpi_contacts_suppliers', 'glpi_contacts'), $restrict);
+      return countElementsInTable(['glpi_contacts_suppliers', 'glpi_contacts'], $restrict);
    }
 
 
@@ -122,7 +122,7 @@ class Contact_Supplier extends CommonDBRelation{
                     getEntitiesRestrictRequest(" AND ", "glpi_suppliers", '',
                                                $_SESSION['glpiactiveentities'], true);
 
-      return countElementsInTable(array('glpi_contacts_suppliers', 'glpi_suppliers'), $restrict);
+      return countElementsInTable(['glpi_contacts_suppliers', 'glpi_suppliers'], $restrict);
    }
 
 
@@ -161,8 +161,8 @@ class Contact_Supplier extends CommonDBRelation{
 
       $result = $DB->query($query);
 
-      $suppliers = array();
-      $used = array();
+      $suppliers = [];
+      $used = [];
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $suppliers[$data['id']] = $data;
@@ -180,9 +180,9 @@ class Contact_Supplier extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='contacts_id' value='$instID'>";
-         Supplier::dropdown(array('used'        => $used,
+         Supplier::dropdown(['used'        => $used,
                                   'entity'      => $contact->fields["entities_id"],
-                                  'entity_sons' => $contact->fields["is_recursive"]));
+                                  'entity_sons' => $contact->fields["is_recursive"]]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -195,8 +195,8 @@ class Contact_Supplier extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -219,7 +219,7 @@ class Contact_Supplier extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = array();
+      $used = [];
       if ($number > 0) {
          Session::initNavigateListItems('Supplier',
                               //TRANS : %1$s is the itemtype name,
@@ -296,8 +296,8 @@ class Contact_Supplier extends CommonDBRelation{
 
       $result = $DB->query($query);
 
-      $contacts = array();
-      $used = array();
+      $contacts = [];
+      $used = [];
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $contacts[$data['ID_ent']] = $data;
@@ -315,9 +315,9 @@ class Contact_Supplier extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='suppliers_id' value='$instID'>";
 
-         Contact::dropdown(array('used'        => $used,
+         Contact::dropdown(['used'        => $used,
                                  'entity'      => $supplier->fields["entities_id"],
-                                 'entity_sons' => $supplier->fields["is_recursive"]));
+                                 'entity_sons' => $supplier->fields["is_recursive"]]);
 
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -331,8 +331,8 @@ class Contact_Supplier extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -358,7 +358,7 @@ class Contact_Supplier extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = array();
+      $used = [];
       if ($number) {
          Session::initNavigateListItems('Contact',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)

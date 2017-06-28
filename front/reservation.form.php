@@ -83,7 +83,7 @@ if (isset($_POST["update"])) {
       $_POST['users_id'] = Session::getLoginUserID();
    }
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-   $dates_to_add = array();
+   $dates_to_add = [];
    list($begin_year,$begin_month,$begin_day) = explode("-", $_POST['resa']["begin"]);
    if (isset($_POST['resa']["end"])) {
       // Compute dates to add.
@@ -104,7 +104,7 @@ if (isset($_POST["update"])) {
        && isset($_POST['users_id'])) {
 
       foreach ($_POST['items'] as $reservationitems_id) {
-         $input                        = array();
+         $input                        = [];
          $input['reservationitems_id'] = $reservationitems_id;
          $input['comment']             = $_POST['comment'];
 

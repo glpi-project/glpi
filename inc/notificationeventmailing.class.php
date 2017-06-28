@@ -200,12 +200,12 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                           sprintf(__('Fatal error: giving up delivery of email to %s'),
                                                 $current->fields['recipient']),
                                           $current->fields['name']."\n"));
-               $current->delete(array('id' => $current->fields['id']));
+               $current->delete(['id' => $current->fields['id']]);
             }
 
             $mmail->ClearAddresses();
-            $current->update(array('id'        => $current->fields['id'],
-                                'sent_try' => $current->fields['sent_try']+1));
+            $current->update(['id'        => $current->fields['id'],
+                                'sent_try' => $current->fields['sent_try']+1]);
          } else {
             //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile("mail",
@@ -215,9 +215,9 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                         $current->fields['name']."\n"));
             $mmail->ClearAddresses();
             $processed[] = $current->getID();
-            $current->update(array('id'        => $current->fields['id'],
-                                'sent_time' => $_SESSION['glpi_currenttime']));
-            $current->delete(array('id'        => $current->fields['id']));
+            $current->update(['id'        => $current->fields['id'],
+                                'sent_time' => $_SESSION['glpi_currenttime']]);
+            $current->delete(['id'        => $current->fields['id']]);
          }
       }
 

@@ -147,7 +147,7 @@ class XML {
          // OK... let's create XML;)
          fputs($fp, "   <fields>\n");
          $i = 0;
-         $FieldsVector = array();
+         $FieldsVector = [];
          while ($i < $DB->num_fields ($result)) {
             $name = $DB->field_name($result, $i);
             fputs($fp, "      <field>".$name."</field>\n");

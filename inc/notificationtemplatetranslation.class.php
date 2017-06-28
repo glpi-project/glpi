@@ -82,9 +82,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -137,14 +137,14 @@ class NotificationTemplateTranslation extends CommonDBChild {
             unset($used[$this->getField('language')]);
          }
       }
-      Dropdown::showLanguages("language", array('display_emptychoice' => true,
+      Dropdown::showLanguages("language", ['display_emptychoice' => true,
                                                 'value'               => $this->fields['language'],
-                                                'used'                => $used));
+                                                'used'                => $used]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, 'subject', array('size' => 100));
+      Html::autocompletionTextField($this, 'subject', ['size' => 100]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
@@ -172,7 +172,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
     * @param $template        NotificationTemplate object
     * @param $options   array
    **/
-   function showSummary(NotificationTemplate $template, $options=array()) {
+   function showSummary(NotificationTemplate $template, $options=[]) {
       global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
@@ -195,7 +195,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -209,7 +209,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<th>".__('Language')."</th></tr>";
 
       foreach ($DB->request('glpi_notificationtemplatetranslations',
-                            array('notificationtemplates_id' => $nID)) as $data) {
+                            ['notificationtemplates_id' => $nID]) as $data) {
 
          if ($this->getFromDB($data['id'])) {
             Session::addToNavigateListItems('NotificationTemplateTranslation', $data['id']);
@@ -330,7 +330,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
                                              'notificationtemplates_id='.$language_id);
-      $used           = array();
+      $used           = [];
 
       foreach ($used_languages as $used_language) {
          $used[$used_language['language']] = $used_language['language'];
@@ -357,7 +357,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                 <th>".__('Possible values')."</th>
             </tr>";
 
-      $tags = array();
+      $tags = [];
 
       foreach ($target->tag_descriptions as $tag_type => $infos) {
          foreach ($infos as $key => $val) {
@@ -453,8 +453,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
 
-      $oktypes = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'Crontask',
-                       'Problem', 'Project', 'Ticket', 'User');
+      $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'Crontask',
+                       'Problem', 'Project', 'Ticket', 'User'];
 
       if (!in_array($itemtype, $oktypes)) {
          // this itemtype doesn't work, need to be fixed
@@ -469,30 +469,30 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $event = Session::getSavedOption(__CLASS__, $key.'_event', '');
 
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."&nbsp;";
-      $item->dropdown(array('value'     => $id,
-                            'on_change' => 'reloadTab("'.$key.'="+this.value)'));
+      $item->dropdown(['value'     => $id,
+                            'on_change' => 'reloadTab("'.$key.'="+this.value)']);
       echo "</td><td>".NotificationEvent::getTypeName(1)."&nbsp;";
       NotificationEvent::dropdownEvents($item->getType(),
-                                        array('value'     => $event,
-                                              'on_change' => 'reloadTab("'.$key.'_event="+this.value)'));
+                                        ['value'     => $event,
+                                              'on_change' => 'reloadTab("'.$key.'_event="+this.value)']);
       echo "</td>";
 
       // Preview
       if ($event
           && $item->getFromDB($id)) {
-         $options = array('_debug' => true);
+         $options = ['_debug' => true];
 
          // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
-         $multi   = array('alert', 'alertnotclosed', 'end', 'notice',
-                          'periodicity', 'periodicitynotice');
+         $multi   = ['alert', 'alertnotclosed', 'end', 'notice',
+                          'periodicity', 'periodicitynotice'];
          if (in_array($event, $multi)) {
             // Won't work for Cardridge and Consumable
             $options['entities_id'] = $item->getEntityID();
-            $options['items']       = array($item->getID() => $item->fields);
+            $options['items']       = [$item->getID() => $item->fields];
          }
          $target = NotificationTarget::getInstance($item, $event, $options);
-         $infos  = array('language'=> $_SESSION['glpilanguage'],
-                         'additionnaloption' => array('usertype' => NotificationTarget::GLPI_USER));
+         $infos  = ['language'=> $_SESSION['glpilanguage'],
+                         'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]];
 
          $template->resetComputedTemplates();
          $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));

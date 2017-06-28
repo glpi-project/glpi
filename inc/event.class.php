@@ -103,12 +103,12 @@ class Event extends CommonDBTM {
    static function log($items_id, $type, $level, $service, $event) {
       global $DB;
 
-      $input = array('items_id' => intval($items_id),
+      $input = ['items_id' => intval($items_id),
                      'type'     => $DB->escape($type),
                      'date'     => $_SESSION["glpi_currenttime"],
                      'service'  => $DB->escape($service),
                      'level'    => intval($level),
-                     'message'  => $DB->escape($event));
+                     'message'  => $DB->escape($event)];
       $tmp = new self();
       return $tmp->add($input);
    }
@@ -140,21 +140,21 @@ class Event extends CommonDBTM {
    **/
    static function logArray() {
 
-      static $logItemtype = array();
-      static $logService  = array();
+      static $logItemtype = [];
+      static $logService  = [];
 
       if (count($logItemtype)) {
-         return array($logItemtype, $logService);
+         return [$logItemtype, $logService];
       }
 
-      $logItemtype = array('system'      => __('System'),
+      $logItemtype = ['system'      => __('System'),
                            'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
                            'planning'    => __('Planning'),
                            'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
                            'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber()));
+                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
 
-      $logService = array('inventory'    => __('Assets'),
+      $logService = ['inventory'    => __('Assets'),
                           'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                           'maintain'     => __('Assistance'),
                           'planning'     => __('Planning'),
@@ -167,9 +167,9 @@ class Event extends CommonDBTM {
                           'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
                           'document'     => _n('Document', 'Documents', Session::getPluralNumber()),
                           'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
-                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber()));
+                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];
 
-      return array($logItemtype, $logService);
+      return [$logItemtype, $logService];
    }
 
 
@@ -196,7 +196,7 @@ class Event extends CommonDBTM {
                Ajax::createIframeModalWindow('infocom'.$rand,
                                              $CFG_GLPI["root_doc"]."/front/infocom.form.php".
                                                 "?id=".$items_id,
-                                             array('height' => 600));
+                                             ['height' => 600]);
 
             case "devices" :
                echo $items_id;
@@ -327,12 +327,12 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = array("type"     => array(__('Source'), ""),
-                     "items_id" => array(__('ID'), ""),
-                     "date"     => array(__('Date'), ""),
-                     "service"  => array(__('Service'), "width='8%'"),
-                     "level"    => array(__('Level'), "width='8%'"),
-                     "message"  => array(__('Message'), "width='50%'"));
+      $items = ["type"     => [__('Source'), ""],
+                     "items_id" => [__('ID'), ""],
+                     "date"     => [__('Date'), ""],
+                     "service"  => [__('Service'), "width='8%'"],
+                     "level"    => [__('Level'), "width='8%'"],
+                     "message"  => [__('Message'), "width='50%'"]];
 
       // define default sorting
       if (!isset($items[$sort])) {

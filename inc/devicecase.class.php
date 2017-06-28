@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceCase
 class DeviceCase extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceCase', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceCase', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Case', 'Cases', $nb);
@@ -51,12 +51,12 @@ class DeviceCase extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'devicecasetypes_id',
+                         [['name'  => 'devicecasetypes_id',
                                      'label' => __('Type'),
-                                     'type'  => 'dropdownValue'),
-                              array('name'  => 'devicecasemodels_id',
+                                     'type'  => 'dropdownValue'],
+                              ['name'  => 'devicecasemodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -90,7 +90,7 @@ class DeviceCase extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -112,7 +112,7 @@ class DeviceCase extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -137,9 +137,9 @@ class DeviceCase extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'        => 'equal',
+      return ['designation'        => 'equal',
                    'manufacturers_id'   => 'equal',
-                   'devicecasetypes_id' => 'equal');
+                   'devicecasetypes_id' => 'equal'];
    }
 
 }

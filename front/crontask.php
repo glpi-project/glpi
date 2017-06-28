@@ -44,7 +44,7 @@ $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
    $name = sprintf(__('%1$s %2$s'), $crontask->fields['name'],
                    Html::getSimpleForm($crontask->getFormURL(),
-                                       array('execute' => $crontask->fields['name']),
+                                       ['execute' => $crontask->fields['name']],
                                              __('Execute')));
    Html::displayTitle($CFG_GLPI['root_doc'].'/pics/warning.png', __('Next run'),
                       sprintf(__('Next task to run: %s'), $name));

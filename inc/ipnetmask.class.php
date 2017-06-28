@@ -104,7 +104,7 @@ class IPNetmask extends IPAddress {
          $bits          = str_repeat("1", $nbBits).str_repeat("0", 128 - $nbBits);
          $this->version = $version;
          $this->textual = $netmask;
-         $this->binary  = array();
+         $this->binary  = [];
          for ($i = 0; $i  < 4; $i++) {
             $localBits      = substr($bits, 32 * $i, 32);
             $this->binary[] = bindec($localBits);
@@ -126,7 +126,7 @@ class IPNetmask extends IPAddress {
 
       if ($version == 4) {
          $mask    = decbin($this->binary[3]);
-         $textual = array();
+         $textual = [];
          for ($i = 0; $i < 4; $i++) {
             $textual[] = bindec(substr($mask, 8 * $i, 8));
          }

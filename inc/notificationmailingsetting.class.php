@@ -126,17 +126,17 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
          $out .= "<tr class='tab_bg_2'><td>" . __('Way of sending emails') . "</td><td>";
-         $mail_methods = array(MAIL_MAIL    => __('PHP'),
+         $mail_methods = [MAIL_MAIL    => __('PHP'),
                                MAIL_SMTP    => __('SMTP'),
                                MAIL_SMTPSSL => __('SMTP+SSL'),
-                               MAIL_SMTPTLS => __('SMTP+TLS'));
+                               MAIL_SMTPTLS => __('SMTP+TLS')];
          $out .= Dropdown::showFromArray(
             "smtp_mode",
             $mail_methods,
-            array(
+            [
                'value'     => $CFG_GLPI["smtp_mode"],
                'display'   => false
-            )
+            ]
          );
          $out .= "</td>";
          $out .= "<td >" . __("Check certificate") . "</td>";
@@ -184,7 +184,7 @@ class NotificationMailingSetting extends NotificationSetting {
       }
       $options['candel']     = false;
       if ($CFG_GLPI['notifications_mailing']) {
-         $options['addbuttons'] = array('test_smtp_send' => __('Send a test email to the administrator'));
+         $options['addbuttons'] = ['test_smtp_send' => __('Send a test email to the administrator')];
       }
       //do not satisfy display param since showFormButtons() will not :(
       echo $out;

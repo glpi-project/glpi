@@ -43,7 +43,7 @@ class NotificationSettingConfig extends CommonDBTM {
    protected $displaylist  = false;
    static $rightname       = 'config';
 
-   public function update(array $input, $history=1, $options=array()) {
+   public function update(array $input, $history=1, $options=[]) {
       if (isset($input['use_notifications'])) {
          $config = new Config();
          $tmp = [

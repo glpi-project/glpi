@@ -120,7 +120,7 @@ if (isset($_POST["add"])) {
       Html::header(Reminder::getTypeName(Session::getPluralNumber()), '', "tools", "reminder");
    }
 
-   $remind->display(array('id' =>$_GET["id"]));
+   $remind->display(['id' =>$_GET["id"]]);
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpFooter();

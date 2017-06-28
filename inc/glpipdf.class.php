@@ -84,7 +84,7 @@ class GLPIPDF extends TCPDF {
    **/
    public static function getFontList() {
 
-      $list = array();
+      $list = [];
       $path = TCPDF_FONTS::_getfontpath();
 
       foreach (glob($path.'/*.php') as $font) {

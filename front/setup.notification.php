@@ -32,8 +32,8 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('notification' => READ,
-                                    'config'       => UPDATE));
+Session::checkSeveralRightsOr(['notification' => READ,
+                                    'config'       => UPDATE]);
 
 Html::header(_n('Notification', 'Notifications', 2), $_SERVER['PHP_SELF'], "config", "notification");
 

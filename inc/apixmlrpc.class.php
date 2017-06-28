@@ -116,7 +116,7 @@ class APIXmlrpc extends API {
          $response =  $this->searchItems($this->parameters['itemtype'], $this->parameters);
 
          //add pagination headers
-         $additionalheaders                  = array();
+         $additionalheaders                  = [];
          $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." "
                                                .Toolbox::get_max_input_vars();
          if ($response['totalcount'] > 0) {
@@ -131,7 +131,7 @@ class APIXmlrpc extends API {
          return $this->returnResponse($response, $code, $additionalheaders);
 
       } else if (in_array($resource,
-                          array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {
+                          ["getItem", "getItems", "createItems", "updateItems", "deleteItems"])) {
          // commonDBTM manipulation
 
          // check itemtype parameter
@@ -152,7 +152,7 @@ class APIXmlrpc extends API {
 
             $response = $this->getItem($this->parameters['itemtype'], $this->parameters['id'], $this->parameters);
 
-            $additionalheaders = array();
+            $additionalheaders = [];
             if (isset($response['date_mod'])) {
                $datemod = strtotime($response['date_mod']);
                $additionalheaders['Last-Modified'] = gmdate("D, d M Y H:i:s", $datemod)." GMT";
@@ -176,7 +176,7 @@ class APIXmlrpc extends API {
                   $code = 206; // partial content
                }
             }
-            $additionalheaders                  = array();
+            $additionalheaders                  = [];
             $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".
                                                   Toolbox::get_max_input_vars();
             if ($totalcount > 0) {
@@ -188,7 +188,7 @@ class APIXmlrpc extends API {
          } else if ($resource === "createItems") { // create one or many CommonDBTM items
             $response = $this->createItems($this->parameters['itemtype'], $this->parameters);
 
-            $additionalheaders = array();
+            $additionalheaders = [];
             if (count($response) == 1) {
                // add a location targetting created element
                $additionalheaders['location'] = self::$api_url."/".$this->parameters['itemtype']."/".$response['id'];
@@ -235,7 +235,7 @@ class APIXmlrpc extends API {
     * @return string
     */
    public function parseIncomingParams() {
-      $parameters = array();
+      $parameters = [];
       $resource = "";
 
       $parameters = xmlrpc_decode_request(trim($this->getHttpBody()),
@@ -244,7 +244,7 @@ class APIXmlrpc extends API {
 
       $this->parameters = (isset($parameters[0]) && is_array($parameters[0])
                           ? $parameters[0]
-                          : array());
+                          : []);
 
       // transform input from array to object
       if (isset($this->parameters['input'])
@@ -274,7 +274,7 @@ class APIXmlrpc extends API {
     *
     * @return void
     */
-   protected function returnResponse($response, $httpcode = 200, $additionalheaders = array()) {
+   protected function returnResponse($response, $httpcode = 200, $additionalheaders = []) {
       if (empty($httpcode)) {
          $httpcode = 200;
       }
@@ -287,8 +287,8 @@ class APIXmlrpc extends API {
       self::header($this->debug);
 
       $response = $this->escapekeys($response);
-      $out = xmlrpc_encode_request(null, $response, array('encoding' => 'UTF-8',
-                                                          'escaping' => 'markup'));
+      $out = xmlrpc_encode_request(null, $response, ['encoding' => 'UTF-8',
+                                                          'escaping' => 'markup']);
       echo $out;
       exit;
    }
@@ -303,9 +303,9 @@ class APIXmlrpc extends API {
     *
     * @return array the escaped response.
     */
-   protected function escapekeys($response = array()) {
+   protected function escapekeys($response = []) {
       if (is_array($response)) {
-         $escaped_response = array();
+         $escaped_response = [];
          foreach ($response as $key => $value) {
             if (is_integer($key)) {
                $key = " ".$key;

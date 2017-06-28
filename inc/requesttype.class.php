@@ -49,28 +49,28 @@ class RequestType extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'is_active',
+      return [['name'  => 'is_active',
                          'label' => __('Active'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_helpdesk_default',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_helpdesk_default',
                          'label' => __('Default for tickets'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_followup_default',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_followup_default',
                          'label' => __('Default for followups'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_mail_default',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_mail_default',
                          'label' => __('Default for mail recipients'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_mailfollowup_default',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_mailfollowup_default',
                          'label' => __('Default for followup mail recipients'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_ticketheader',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_ticketheader',
                          'label' => __('Request source visible for tickets'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_ticketfollowup',
+                         'type'  => 'bool'],
+                   ['name'  => 'is_ticketfollowup',
                          'label' => __('Request source visible for followups'),
-                         'type'  => 'bool'),
-                         );
+                         'type'  => 'bool'],
+                         ];
    }
 
 
@@ -244,11 +244,11 @@ class RequestType extends CommonDropdown {
    static function getDefault($source) {
       global $DB;
 
-      if (!in_array($source, array('mail', 'mailfollowup', 'helpdesk', 'followup'))) {
+      if (!in_array($source, ['mail', 'mailfollowup', 'helpdesk', 'followup'])) {
          return 0;
       }
 
-      foreach ($DB->request('glpi_requesttypes', array('is_'.$source.'_default' => 1, 'is_active' => 1)) as $data) {
+      foreach ($DB->request('glpi_requesttypes', ['is_'.$source.'_default' => 1, 'is_active' => 1]) as $data) {
          return $data['id'];
       }
       return 0;

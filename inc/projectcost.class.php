@@ -262,7 +262,7 @@ class ProjectCost extends CommonDBChild {
          return $DB->fetch_assoc($result);
       }
 
-      return array();
+      return [];
    }
 
    /**
@@ -271,7 +271,7 @@ class ProjectCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -297,7 +297,7 @@ class ProjectCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";
       echo "<td>";
-      Html::showDateField("begin_date", array('value' => $this->fields['begin_date']));
+      Html::showDateField("begin_date", ['value' => $this->fields['begin_date']]);
       echo "</td>";
       $rowspan = 3;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
@@ -308,12 +308,12 @@ class ProjectCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateField("end_date", array('value' => $this->fields['end_date']));
+      Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
       echo "<td>";
-      Budget::dropdown(array('value' => $this->fields["budgets_id"]));
+      Budget::dropdown(['value' => $this->fields["budgets_id"]]);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -354,10 +354,10 @@ class ProjectCost extends CommonDBChild {
          echo "<div id='viewcost".$ID."_$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
-         $params = array('type'         => __CLASS__,
+         $params = ['type'         => __CLASS__,
                          'parenttype'   => 'Project',
                          'projects_id' => $ID,
-                         'id'           => -1);
+                         'id'           => -1];
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -396,14 +396,14 @@ class ProjectCost extends CommonDBChild {
                                             : $data['name']);
                echo "<td>";
                printf(__('%1$s %2$s'), $name,
-                        Html::showToolTip($data['comment'], array('display' => false)));
+                        Html::showToolTip($data['comment'], ['display' => false]));
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
                   echo "function viewEditCost" .$data['projects_id']."_". $data["id"]. "_$rand() {\n";
-                  $params = array('type'         => __CLASS__,
+                  $params = ['type'         => __CLASS__,
                                   'parenttype'   => 'Project',
                                   'projects_id' => $data["projects_id"],
-                                  'id'           => $data["id"]);
+                                  'id'           => $data["id"]];
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                          $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                   echo "};";

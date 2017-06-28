@@ -48,7 +48,7 @@ while ($t=$DB->fetch_array($result)) {
 
 $relations = getDbRelations();
 
-$query = array();
+$query = [];
 foreach ($relations as $totable => $rels) {
    foreach ($rels as $fromtable => $fromfield) {
 

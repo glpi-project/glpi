@@ -466,7 +466,7 @@ function loadDataset() {
    } else {
       printf("\nLoading GLPI dataset version %s\n", $data['_version']);
 
-      $ids = array();
+      $ids = [];
       foreach ($data as $type => $inputs) {
          if ($type[0] == '_') {
             continue;
@@ -476,7 +476,7 @@ function loadDataset() {
             foreach ($input as $k => $v) {
                // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
                $foreigntype = false;
-               $match = array();
+               $match = [];
                if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
                   $foreigntypetxt = array_pop($match);
                   if (substr($foreigntypetxt, 0, 1) !== '_') {

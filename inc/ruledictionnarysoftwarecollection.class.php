@@ -92,7 +92,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><td class='tab_bg_2 center'>" .
             __('Replay dictionary rules for manufacturers (----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
-      Manufacturer::dropdown(array('name' => 'manufacturer'));
+      Manufacturer::dropdown(['name' => 'manufacturer']);
       echo "</td></tr>\n";
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
@@ -110,7 +110,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
       global $DB;
 
       if (isCommandLine()) {
@@ -161,7 +161,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             }
 
             //Replay software dictionnary rules
-            $res_rule = $this->processAllRules($input, array(), array());
+            $res_rule = $this->processAllRules($input, [], []);
 
             if ((isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($input["name"])))
                 || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
@@ -172,7 +172,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                 || (isset($res_rule['manufacturer'])
                     && ($res_rule['manufacturer'] != $input['manufacturer']))) {
 
-               $IDs = array();
+               $IDs = [];
                //Find all the softwares in the database with the same name and manufacturer
                $sql = "SELECT `id`
                        FROM `glpi_softwares`
@@ -225,11 +225,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule=array()) {
+   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule=[]) {
       global $DB;
 
-      $new_softs  = array();
-      $delete_ids = array();
+      $new_softs  = [];
+      $delete_ids = [];
 
       foreach ($IDs as $ID) {
          $res_soft = $DB->query("SELECT `gs`.`id`,
@@ -280,7 +280,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       $input["entities_id"]  = $entity;
 
       if (empty($res_rule)) {
-         $res_rule = $this->processAllRules($input, array(), array());
+         $res_rule = $this->processAllRules($input, [], []);
       }
       $soft = new Software();
       if (isset($res_rules['_ignore_import']) && ($res_rules['_ignore_import'] == 1)) {
@@ -446,7 +446,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
                         WHERE `softwareversions_id_use` = '$version_id'");
             //Delete old version
             $old_version = new SoftwareVersion();
-            $old_version->delete(array("id" => $version_id));
+            $old_version->delete(["id" => $version_id]);
          }
       }
    }

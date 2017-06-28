@@ -68,15 +68,15 @@ class Fieldblacklist extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'itemtype',
+      return [['name'  => 'itemtype',
                          'label' => __('Type'),
-                         'type'  => 'blacklist_itemtype'),
-                   array('name'  => 'field',
+                         'type'  => 'blacklist_itemtype'],
+                   ['name'  => 'field',
                          'label' => _n('Field', 'Fields', 1),
-                         'type'  => 'blacklist_field'),
-                   array('name'  => 'value',
+                         'type'  => 'blacklist_field'],
+                   ['name'  => 'value',
                          'label' => __('Value'),
-                         'type'  => 'blacklist_value'));
+                         'type'  => 'blacklist_value']];
    }
 
 
@@ -127,10 +127,10 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'field':
@@ -163,10 +163,10 @@ class Fieldblacklist extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -221,7 +221,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $ID
     * @param $field array
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field=[]) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :
@@ -264,11 +264,11 @@ class Fieldblacklist extends CommonDropdown {
          }
          asort($options);
          $rand = Dropdown::showFromArray('itemtype', $options,
-                                         array('value'               => $this->fields['value'],
-                                               'display_emptychoice' => true));
+                                         ['value'               => $this->fields['value'],
+                                               'display_emptychoice' => true]);
 
-         $params = array('itemtype' => '__VALUE__',
-                         'id'       => $this->fields['id']);
+         $params = ['itemtype' => '__VALUE__',
+                         'id'       => $this->fields['id']];
          Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
                                        $params);
@@ -291,10 +291,10 @@ class Fieldblacklist extends CommonDropdown {
       }
 
       if ($rand = self::dropdownField($this->fields['itemtype'],
-                                      array('value' => $this->fields['field']))) {
-         $params = array('itemtype' => $this->fields['itemtype'],
+                                      ['value' => $this->fields['field']])) {
+         $params = ['itemtype' => $this->fields['itemtype'],
                          'id_field' => '__VALUE__',
-                         'id'       => $this->fields['id']);
+                         'id'       => $this->fields['id']];
          Ajax::updateItemOnSelectEvent("dropdown_field$rand", "span_values",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
                                        $params);
@@ -310,7 +310,7 @@ class Fieldblacklist extends CommonDropdown {
     * @param $itemtype          itemtype
     * @param $options    array    of options
    **/
-   static function dropdownField($itemtype, $options=array()) {
+   static function dropdownField($itemtype, $options=[]) {
       global $DB;
 
       $p['name']    = 'field';
@@ -324,7 +324,7 @@ class Fieldblacklist extends CommonDropdown {
       }
 
       if ($target = getItemForItemtype($itemtype)) {
-         $criteria = array();
+         $criteria = [];
          foreach ($DB->list_fields($target->getTable()) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
@@ -360,7 +360,7 @@ class Fieldblacklist extends CommonDropdown {
       if ($this->fields['itemtype'] != '') {
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             $searchOption = $item->getSearchOptionByField('field', $field);
-            $options      = array();
+            $options      = [];
             if (isset($this->fields['entity'])) {
                $options['entity']      = $this->fields['entity'];
                $options['entity_sons'] = $this->fields['is_recursive'];

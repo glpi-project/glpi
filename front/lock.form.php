@@ -43,9 +43,9 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
    if ($source_item->canCreate()) {
       $source_item->check($_POST['id'], UPDATE);
 
-      $actions = array("Computer_Item", "Computer_SoftwareLicense", "Computer_SoftwareVersion",
+      $actions = ["Computer_Item", "Computer_SoftwareLicense", "Computer_SoftwareVersion",
                        "ComputerDisk", "ComputerVirtualMachine", "NetworkPort", "NetworkName",
-                       "IPAddress");
+                       "IPAddress"];
       $devices = Item_Devices::getDeviceTypes();
       $actions = array_merge($actions, array_values($devices));
       foreach ($actions as $type) {
@@ -53,7 +53,7 @@ if (isset($_POST['itemtype']) && isset($_POST["unlock"])) {
             $item = new $type();
             foreach ($_POST[$type] as $key => $val) {
                //Force unlock
-               $item->restore(array('id' => $key));
+               $item->restore(['id' => $key]);
             }
          }
       }

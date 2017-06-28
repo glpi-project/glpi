@@ -55,15 +55,15 @@ class Holiday extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'begin_date',
+      return [['name'  => 'begin_date',
                          'label' => __('Start'),
-                         'type'  => 'date'),
-                   array('name'  => 'end_date',
+                         'type'  => 'date'],
+                   ['name'  => 'end_date',
                          'label' => __('End'),
-                         'type'  => 'date'),
-                   array('name'  => 'is_perpetual',
+                         'type'  => 'date'],
+                   ['name'  => 'is_perpetual',
                          'label' => __('Recurrent'),
-                         'type'  => 'bool'));
+                         'type'  => 'bool']];
    }
 
 

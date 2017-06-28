@@ -291,7 +291,7 @@ class KnowbaseItem_Comment extends CommonDBTM {
          $userdata = getUserName($user->getID(), 2);
          $html .= $user->getLink()."&nbsp;";
          $html .= Html::showToolTip($userdata["comment"],
-                                array('link' => $userdata['link'], 'display' => false));
+                                ['link' => $userdata['link'], 'display' => false]);
          $html .= "</span>";
          $html .= "</div>"; // h_user
          $html .= "</div>"; //h_info

@@ -79,14 +79,14 @@ function isAPI() {
 function isPluginItemType($classname) {
 
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/", $classname, $matches)) {
-      $plug           = array();
+      $plug           = [];
       $plug['plugin'] = $matches[1];
       $plug['class']  = $matches[2];
       return $plug;
 
    } else if (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
       $tab = explode('\\', $classname, 3);
-      $plug           = array();
+      $plug           = [];
       $plug['plugin'] = $tab[1];
       $plug['class']  = $tab[2];
       return $plug;
@@ -301,8 +301,8 @@ function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
  */
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD;
-   static $notfound = array('xStates'    => true,
-                            'xAllAssets' => true, );
+   static $notfound = ['xStates'    => true,
+                            'xAllAssets' => true, ];
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {

@@ -46,9 +46,9 @@ class Link extends CommonDBTM {
    public $dohistory                   = true;
 
    static $rightname = 'link';
-   static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
+   static $tags      = ['[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]');
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'];
 
 
    static function getTypeName($nb=0) {
@@ -77,7 +77,7 @@ class Link extends CommonDBTM {
             $restrict = "`glpi_links_itemtypes`.`links_id` = `glpi_links`.`id`
                          AND `glpi_links_itemtypes`.`itemtype` = '".$item->getType()."'".
                           getEntitiesRestrictRequest(" AND ", "glpi_links", '', '', false);
-            $nb = countElementsInTable(array('glpi_links_itemtypes','glpi_links'), $restrict);
+            $nb = countElementsInTable(['glpi_links_itemtypes','glpi_links'], $restrict);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -92,9 +92,9 @@ class Link extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Link_ItemType', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -134,7 +134,7 @@ class Link extends CommonDBTM {
    *
    * @return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -161,7 +161,7 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "link", array('size' => 84));
+      Html::autocompletionTextField($this, "link", ['size' => 84]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Open in a new window')."</td><td>";
@@ -337,11 +337,11 @@ class Link extends CommonDBTM {
       $replace_MAC = strstr($link, "[MAC]");
 
       if (!$replace_IP && !$replace_MAC) {
-         return array($link);
+         return [$link];
       }
       // Return several links id several IP / MAC
 
-      $ipmac = array();
+      $ipmac = [];
       if (get_class($item) == 'NetworkEquipment') {
          if ($replace_IP) {
             $query2 = "SELECT `glpi_ipaddresses`.`id`,
@@ -408,7 +408,7 @@ class Link extends CommonDBTM {
          }
       }
 
-      $links = array();
+      $links = [];
       if (count($ipmac) > 0) {
          foreach ($ipmac as $key => $val) {
             $tmplink = $link;
@@ -437,7 +437,7 @@ class Link extends CommonDBTM {
       if (count($links)) {
          return $links;
       }
-      return array($link);
+      return [$link];
    }
 
 
@@ -508,10 +508,10 @@ class Link extends CommonDBTM {
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data
    **/
-   static function getAllLinksFor($item, $params=array()) {
+   static function getAllLinksFor($item, $params=[]) {
       global $CFG_GLPI;
 
-      $computedlinks = array();
+      $computedlinks = [];
       if (!isset($params['name'])
           || !isset($params['link'])
           || !isset($params['data'])

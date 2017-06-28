@@ -61,23 +61,23 @@ if (isset($_POST['type']) && !empty($_POST['type'])
    switch ($_POST['type']) {
       case 'User' :
          echo "<td>";
-         User::dropdown(array('right' => $_POST['right'],
-                              'name'  => $prefix.'users_id'.$suffix));
+         User::dropdown(['right' => $_POST['right'],
+                              'name'  => $prefix.'users_id'.$suffix]);
          echo "</td>";
          $display = true;
          break;
 
       case 'Group' :
          echo "<td>";
-         $params             = array('rand' => $rand,
-                                     'name' => $prefix.'groups_id'.$suffix);
-         $params['toupdate'] = array('value_fieldname'
+         $params             = ['rand' => $rand,
+                                     'name' => $prefix.'groups_id'.$suffix];
+         $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",
                                      'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams' => array('items_id' => '__VALUE__',
+                                     'moreparams' => ['items_id' => '__VALUE__',
                                                            'type'     => $_POST['type'],
-                                                           'prefix'   => $_POST['prefix']));
+                                                           'prefix'   => $_POST['prefix']]];
 
          Group::dropdown($params);
          echo "</td><td>";
@@ -88,9 +88,9 @@ if (isset($_POST['type']) && !empty($_POST['type'])
 
       case 'Entity' :
          echo "<td>";
-         Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities'],
+         Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
                                 'value'  => $_SESSION['glpiactive_entity'],
-                                'name'   => $prefix.'entities_id'.$suffix));
+                                'name'   => $prefix.'entities_id'.$suffix]);
          echo "</td><td>";
          echo __('Child entities');
          echo "</td><td>";
@@ -107,17 +107,17 @@ if (isset($_POST['type']) && !empty($_POST['type'])
             $righttocheck = 'knowbase';
             $checkright   = KnowbaseItem::READFAQ;
          }
-         $params             = array('rand'      => $rand,
+         $params             = ['rand'      => $rand,
                                      'name'      => $prefix.'profiles_id'.$suffix,
                                      'condition' => "`glpi_profilerights`.`name` = '$righttocheck' ".
-                                                    " AND `glpi_profilerights`.`rights` & ".$checkright);
-         $params['toupdate'] = array('value_fieldname'
+                                                    " AND `glpi_profilerights`.`rights` & ".$checkright];
+         $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",
                                      'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams' => array('items_id' => '__VALUE__',
+                                     'moreparams' => ['items_id' => '__VALUE__',
                                                            'type'     => $_POST['type'],
-                                                           'prefix'   => $_POST['prefix']));
+                                                           'prefix'   => $_POST['prefix']]];
 
          Profile::dropdown($params);
          echo "</td><td>";

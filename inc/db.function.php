@@ -246,7 +246,7 @@ function getItemForItemtype($itemtype) {
 **/
 function getPlural($string) {
 
-   $rules = array(//'singular' => 'plural'
+   $rules = [//'singular' => 'plural'
                   'criterias$'         =>'criterias',// Special case (criterias) when getPLural is called on already plural form
                   'ch$'                =>'ches',
                   'ches$'              =>'ches',
@@ -263,7 +263,7 @@ function getPlural($string) {
                   'x$'                 =>'xes',
                   // 's$'                 =>'ses',
                   '([^s])$'            => '\1s',   // Add at the end if not exists
-                  );
+                  ];
 
    foreach ($rules as $singular => $plural) {
       $string = preg_replace("/$singular/", "$plural", $string, -1, $count);
@@ -284,7 +284,7 @@ function getPlural($string) {
 **/
 function getSingular($string) {
 
-   $rules = array(//'plural' => 'singular'
+   $rules = [//'plural' => 'singular'
                   'ches$'             => 'ch',
                   'ch$'               => 'ch',
                   'shes$'             => 'sh',
@@ -298,7 +298,7 @@ function getSingular($string) {
                   '([^aeiou])ies$'    => '\1y', // special case : category
                   '([^aeiou])y$'      => '\1y', // special case : category
                   'xes$'              =>'x',
-                  's$'                => ''); // Add at the end if not exists
+                  's$'                => '']; // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
       $string = preg_replace("/$plural/", "$singular", $string, -1, $count);
@@ -426,13 +426,13 @@ function countElementsInTableForEntity($table, $entity, $condition='') {
 function getAllDatasFromTable($table, $condition='', $usecache=false, $order='') {
    global $DB;
 
-   static $cache = array();
+   static $cache = [];
 
    if (empty($condition) && empty($order) && $usecache && isset($cache[$table])) {
       return $cache[$table];
    }
 
-   $datas = array();
+   $datas = [];
    $query = "SELECT *
              FROM `$table` ";
 
@@ -523,8 +523,8 @@ function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) 
    }
 
    if ($withcomment) {
-      return array("name"    => $name,
-                   "comment" => $comment);
+      return ["name"    => $name,
+                   "comment" => $comment];
    }
    return $name;
 }
@@ -605,8 +605,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
    }
 
    if ($withcomment) {
-      return array("name"    => $name,
-                   "comment" => $comment);
+      return ["name"    => $name,
+                   "comment" => $comment];
    }
    return $name;
 }
@@ -649,7 +649,7 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
          $name                   = $tmpname. $name;
       }
    }
-   return array($name, $level);
+   return [$name, $level];
 }
 
 
@@ -665,7 +665,7 @@ function getAncestorsOf($table, $items_id) {
    global $DB;
 
    // IDs to be present in the final array
-   $id_found      = array();
+   $id_found      = [];
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = FieldExists($table, "ancestors_cache");
 
@@ -768,7 +768,7 @@ function getSonsOf($table, $IDf) {
    // IDs to be present in the final array
    $id_found[$IDf] = $IDf;
    // current ID found to be added
-   $found = array();
+   $found = [];
    // First request init the  varriables
    $query = "SELECT `id`
              FROM `$table`
@@ -793,7 +793,7 @@ function getSonsOf($table, $IDf) {
 
       // CLear the found array
       unset($found);
-      $found = array();
+      $found = [];
 
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
@@ -849,9 +849,9 @@ function getTreeForItem($table, $IDf) {
    $parentIDfield = getForeignKeyFieldForTable($table);
 
    // IDs to be present in the final array
-   $id_found = array();
+   $id_found = [];
    // current ID found to be added
-   $found = array();
+   $found = [];
 
    // First request init the  varriables
    $query = "SELECT *
@@ -879,7 +879,7 @@ function getTreeForItem($table, $IDf) {
                 ORDER BY `name`";
       // CLear the found array
       unset($found);
-      $found = array();
+      $found = [];
 
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
@@ -909,7 +909,7 @@ function getTreeForItem($table, $IDf) {
 **/
 function contructTreeFromList($list, $root) {
 
-   $tree = array();
+   $tree = [];
    foreach ($list as $ID => $data) {
       if ($data['parent'] == $root) {
          unset($list[$ID]);
@@ -931,7 +931,7 @@ function contructTreeFromList($list, $root) {
 **/
 function contructListFromTree($tree, $parent=0) {
 
-   $list = array();
+   $list = [];
    foreach ($tree as $root => $data) {
       $list[$root] = $parent;
 
@@ -1260,9 +1260,9 @@ function getUserName($ID, $link=0) {
 
    $user = "";
    if ($link == 2) {
-      $user = array("name"    => "",
+      $user = ["name"    => "",
                     "link"    => "",
-                    "comment" => "");
+                    "comment" => ""];
    }
 
    if ($ID) {
@@ -1272,9 +1272,9 @@ function getUserName($ID, $link=0) {
       $result = $DB->query($query);
 
       if ($link == 2) {
-         $user = array("name"    => "",
+         $user = ["name"    => "",
                        "comment" => "",
-                       "link"    => "");
+                       "link"    => ""];
       }
 
       if ($DB->numrows($result) == 1) {
@@ -1287,47 +1287,47 @@ function getUserName($ID, $link=0) {
             $user["link"]    = $CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
             $user['comment'] = '';
 
-            $comments        = array();
-            $comments[]      = array('name'  => __('Name'),
-                                     'value' => $username);
+            $comments        = [];
+            $comments[]      = ['name'  => __('Name'),
+                                     'value' => $username];
             // Ident only if you have right to read user
             if (session::haveRight('user', READ)) {
-               $comments[]      = array('name'  => __('Login'),
-                                        'value' => $data["name"]);
+               $comments[]      = ['name'  => __('Login'),
+                                        'value' => $data["name"]];
             }
 
             $email           = UserEmail::getDefaultForUser($ID);
             if (!empty($email)) {
-               $comments[] = array('name'  => __('Email'),
-                                   'value' => $email);
+               $comments[] = ['name'  => __('Email'),
+                                   'value' => $email];
             }
 
             if (!empty($data["phone"])) {
-               $comments[] = array('name'  => __('Phone'),
-                                   'value' => $data["phone"]);
+               $comments[] = ['name'  => __('Phone'),
+                                   'value' => $data["phone"]];
             }
 
             if (!empty($data["mobile"])) {
-               $comments[] = array('name'  => __('Mobile phone'),
-                                   'value' => $data["mobile"]);
+               $comments[] = ['name'  => __('Mobile phone'),
+                                   'value' => $data["mobile"]];
             }
 
             if ($data["locations_id"] > 0) {
-               $comments[] = array('name'  => __('Location'),
+               $comments[] = ['name'  => __('Location'),
                                    'value' => Dropdown::getDropdownName("glpi_locations",
-                                                                        $data["locations_id"]));
+                                                                        $data["locations_id"])];
             }
 
             if ($data["usertitles_id"] > 0) {
-               $comments[] = array('name'  => _x('person', 'Title'),
+               $comments[] = ['name'  => _x('person', 'Title'),
                                    'value' => Dropdown::getDropdownName("glpi_usertitles",
-                                                                        $data["usertitles_id"]));
+                                                                        $data["usertitles_id"])];
             }
 
             if ($data["usercategories_id"] > 0) {
-               $comments[] = array('name'  => __('Category'),
+               $comments[] = ['name'  => __('Category'),
                                    'value' => Dropdown::getDropdownName("glpi_usercategories",
-                                                                        $data["usercategories_id"]));
+                                                                        $data["usercategories_id"])];
             }
             if (count($comments)) {
                $user['comment'] = $user['comment'];
@@ -1462,19 +1462,19 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
 
       if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
          $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
-         $autoNum = str_replace(array('\\y',
+         $autoNum = str_replace(['\\y',
                                       '\\Y',
                                       '\\m',
                                       '\\d',
                                       '_','%',
-                                      '\\g'),
-                                array(date('y'),
+                                      '\\g'],
+                                [date('y'),
                                       date('Y'),
                                       date('m'),
                                       date('d'),
                                       '\\_',
                                       '\\%',
-                                      ''),
+                                      ''],
                                 $autoNum);
          $mask = $mask[0];
          $pos  = strpos($autoNum, $mask) + 1;
@@ -1484,8 +1484,8 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
          if ($global == 1) {
             $query = "";
             $first = 1;
-            $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                           'Printer');
+            $types = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
+                           'Printer'];
 
             foreach ($types as $t) {
                $table = getTableForItemType($t);
@@ -1533,12 +1533,12 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
          } else {
             $newNo = 0;
          }
-         $objectName = str_replace(array($mask,
+         $objectName = str_replace([$mask,
                                          '\\_',
-                                         '\\%'),
-                                   array(Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
+                                         '\\%'],
+                                   [Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
                                          '_',
-                                         '%'),
+                                         '%'],
                                    $autoNum);
       }
    }
@@ -1628,7 +1628,7 @@ function importArrayFromDB($DATA) {
 
    // Use old scheme to decode
    if (!is_array($TAB)) {
-      $TAB = array();
+      $TAB = [];
 
       foreach (explode(" ", $DATA) as $ITEM) {
          $A = explode("=>", $ITEM);
@@ -1740,7 +1740,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
    }
 
    if ($is_recursive) {
-      $ancestors = array();
+      $ancestors = [];
       if (is_array($value)) {
          foreach ($value as $val) {
             $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val),
@@ -1825,7 +1825,7 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
    }
 
    if ($is_recursive) {
-      $ancestors = array();
+      $ancestors = [];
       if (is_array($value)) {
          foreach ($value as $val) {
             $ancestors = array_unique(array_merge(getAncestorsOf('glpi_entities', $val),

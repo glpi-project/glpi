@@ -64,7 +64,7 @@ class Search {
    const NULLVALUE = '__NULL__';
 
    static $output_type = self::HTML_OUTPUT;
-   static $search = array();
+   static $search = [];
 
    /**
     * Display search engine for an type
@@ -110,7 +110,7 @@ class Search {
     *
     * @return data array
    **/
-   static function getDatas($itemtype, $params, array $forcedisplay=array()) {
+   static function getDatas($itemtype, $params, array $forcedisplay=[]) {
 
       $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
       self::constructSQL($data);
@@ -132,12 +132,12 @@ class Search {
     *
     * @return array prepare to be used for a search (include criterias and others needed informations)
    **/
-   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay=array()) {
+   static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay=[]) {
       global $CFG_GLPI;
 
       // Default values of parameters
-      $p['criteria']            = array();
-      $p['metacriteria']        = array();
+      $p['criteria']            = [];
+      $p['metacriteria']        = [];
       $p['sort']                = '1'; //
       $p['order']               = 'ASC';//
       $p['start']               = 0;//
@@ -150,12 +150,12 @@ class Search {
       }
       $p['display_type']        = self::HTML_OUTPUT;
       $p['list_limit']          = $_SESSION['glpilist_limit'];
-      $p['massiveactionparams'] = array();
+      $p['massiveactionparams'] = [];
 
       foreach ($params as $key => $val) {
          switch ($key) {
             case 'order':
-               if (in_array($val, array('ASC', 'DESC'))) {
+               if (in_array($val, ['ASC', 'DESC'])) {
                   $p[$key] = $val;
                }
                break;
@@ -188,7 +188,7 @@ class Search {
          $p['start'] = 0;
       }
 
-      $data             = array();
+      $data             = [];
       $data['search']   = $p;
       $data['itemtype'] = $itemtype;
 
@@ -274,7 +274,7 @@ class Search {
 
       $limitsearchopt   = self::getCleanedOptions($itemtype);
       // Clean and reorder toview
-      $tmpview = array();
+      $tmpview = [];
       foreach ($data['toview'] as $key => $val) {
          if (isset($limitsearchopt[$val]) && !in_array($val, $tmpview)) {
             $tmpview[] = $val;
@@ -318,12 +318,12 @@ class Search {
          return false;
       }
 
-      $data['sql']['count']  = array();
+      $data['sql']['count']  = [];
       $data['sql']['search'] = '';
 
       $searchopt        = &self::getOptions($data['itemtype']);
 
-      $blacklist_tables = array();
+      $blacklist_tables = [];
       if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
          $itemtable          = $CFG_GLPI['union_search_type'][$data['itemtype']];
          $blacklist_tables[] = getTableForItemType($data['itemtype']);
@@ -355,7 +355,7 @@ class Search {
       $FROM = " FROM `$itemtable`";
 
       // Init already linked tables array in order not to link a table several times
-      $already_link_tables = array();
+      $already_link_tables = [];
       // Put reference table
       array_push($already_link_tables, $itemtable);
 
@@ -520,7 +520,7 @@ class Search {
                   $WHERE .= " ( ";
                   $first2 = true;
 
-                  $items = array();
+                  $items = [];
 
                   if (isset($criteria['field']) && $criteria['field'] == "all") {
                      $items = $searchopt;
@@ -567,7 +567,7 @@ class Search {
       // Preprocessing
       if (count($data['search']['metacriteria'])) {
          // Already link meta table in order not to linked a table several times
-         $already_link_tables2 = array();
+         $already_link_tables2 = [];
          $metanum              = count($data['toview'])-1;
 
          foreach ($data['search']['metacriteria'] as $key => $metacriteria) {
@@ -897,7 +897,7 @@ class Search {
       if (!isset($data['sql']) || !isset($data['sql']['search'])) {
          return false;
       }
-      $data['data'] = array();
+      $data['data'] = [];
 
       // Use a ReadOnly connection if available and configured to be used
       $DBread = DBConnection::getReadConnection();
@@ -977,13 +977,13 @@ class Search {
          }
 
          // Get columns
-         $data['data']['cols'] = array();
+         $data['data']['cols'] = [];
 
          $num       = 0;
          $searchopt = &self::getOptions($data['itemtype']);
 
          foreach ($data['toview'] as $key => $val) {
-            $data['data']['cols'][$num] = array();
+            $data['data']['cols'][$num] = [];
 
             $data['data']['cols'][$num]['itemtype']  = $data['itemtype'];
             $data['data']['cols'][$num]['id']        = $val;
@@ -994,7 +994,7 @@ class Search {
          }
 
          // Display columns Headers for meta items
-         $already_printed = array();
+         $already_printed = [];
 
          if (count($data['search']['metacriteria'])) {
             foreach ($data['search']['metacriteria'] as $metacriteria) {
@@ -1054,14 +1054,14 @@ class Search {
          $data['data']['warning']
             = "For compatibility keep raw data  (ITEM_X, META_X) at the top for the moment. Will be drop in next version";
 
-         $data['data']['rows']  = array();
-         $data['data']['items'] = array();
+         $data['data']['rows']  = [];
+         $data['data']['items'] = [];
 
          self::$output_type = $data['display_type'];
 
          while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
             $row = $DBread->fetch_assoc($result);
-            $newrow        = array();
+            $newrow        = [];
             $newrow['raw'] = $row;
 
             // Parse datas
@@ -1099,7 +1099,7 @@ class Search {
                      }
                   } else {
                      if (!isset($newrow[$j])) {
-                        $newrow[$j] = array();
+                        $newrow[$j] = [];
                      }
                      $split               = explode(self::LONGSEP, $val);
                      $newrow[$j]['count'] = count($split);
@@ -1168,10 +1168,10 @@ class Search {
       }
       // Contruct Pager parameters
       $globallinkto
-         = Toolbox::append_params(array('criteria'
+         = Toolbox::append_params(['criteria'
                                           => Toolbox::stripslashes_deep($data['search']['criteria']),
                                         'metacriteria'
-                                          => Toolbox::stripslashes_deep($data['search']['metacriteria'])),
+                                          => Toolbox::stripslashes_deep($data['search']['metacriteria'])],
                                   '&amp;');
       $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
                      $globallinkto;
@@ -1212,8 +1212,8 @@ class Search {
             $search_config_top    = "";
             $search_config_bottom = "";
             if (!isset($_GET['_in_modal'])
-                && Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
-                                                                DisplayPreference::GENERAL))) {
+                && Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL,
+                                                                DisplayPreference::GENERAL])) {
 
                $search_config_top = $search_config_bottom
                   = "<div class='pager_controls'><span class='fa fa-wrench pointer' title='".
@@ -1233,23 +1233,23 @@ class Search {
                                                    $CFG_GLPI["root_doc"].
                                                       "/front/displaypreference.form.php?itemtype=".
                                                       $data['itemtype'],
-                                                   array('title'
+                                                   ['title'
                                                             => __('Select default items to show'),
                                                          'reloadonclose'
                                                             => true,
                                                          'display'
-                                                            => false));
+                                                            => false]);
                $search_config_bottom
                   .= Ajax::createIframeModalWindow('search_config_bottom',
                                                    $CFG_GLPI["root_doc"].
                                                       "/front/displaypreference.form.php?itemtype=".
                                                       $data['itemtype'],
-                                                   array('title'
+                                                   ['title'
                                                             => __('Select default items to show'),
                                                          'reloadonclose'
                                                             => true,
                                                          'display'
-                                                            => false));
+                                                            => false]);
             }
 
             if ($item !== null && $item->maybeDeleted()) {
@@ -1340,7 +1340,7 @@ class Search {
          }
 
          // Display column Headers for toview items
-         $metanames = array();
+         $metanames = [];
          foreach ($data['data']['cols'] as $key => $val) {
             $linkto = '';
             if (!$val['meta']
@@ -1417,7 +1417,7 @@ class Search {
             $massiveaction_field = 'refID';
          }
 
-         $typenames = array();
+         $typenames = [];
          // Display Loop
          foreach ($data['data']['rows'] as $rowkey => $row) {
             // Column num
@@ -1611,7 +1611,7 @@ class Search {
                switch ($criteria['searchtype']) {
                   case "equals" :
                      if (in_array($searchopt[$criteria['field']]["field"],
-                                  array('name', 'completename'))) {
+                                  ['name', 'completename'])) {
                         $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $gdname);
                      } else {
                         $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
@@ -1620,7 +1620,7 @@ class Search {
 
                   case "notequals" :
                      if (in_array($searchopt[$criteria['field']]["field"],
-                                    array('name', 'completename'))) {
+                                    ['name', 'completename'])) {
                         $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $gdname);
                      } else {
                         $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $valuename);
@@ -1659,7 +1659,7 @@ class Search {
          }
       }
       if (count($data['search']['metacriteria'])) {
-         $metanames = array();
+         $metanames = [];
          foreach ($data['search']['metacriteria'] as $metacriteria) {
             $searchopt = &self::getOptions($metacriteria['itemtype']);
             if (!isset($metanames[$metacriteria['itemtype']])) {
@@ -1686,7 +1686,7 @@ class Search {
                   case "equals" :
                      if (in_array($searchopt[$metacriteria['link']]
                                              ["field"],
-                                    array('name', 'completename'))) {
+                                    ['name', 'completename'])) {
                         $titlecontain2 = sprintf(__('%1$s = %2$s'), $titlecontain2,
                                                    $gdname2);
                      } else {
@@ -1697,7 +1697,7 @@ class Search {
 
                   case "notequals" :
                      if (in_array($searchopt[$metacriteria['link']]["field"],
-                                    array('name', 'completename'))) {
+                                    ['name', 'completename'])) {
                         $titlecontain2 = sprintf(__('%1$s <> %2$s'), $titlecontain2,
                                                    $gdname2);
                      } else {
@@ -1755,13 +1755,13 @@ class Search {
    static function getMetaItemtypeAvailable ($itemtype) {
 
       // Display meta search items
-      $linked = array();
+      $linked = [];
       // Define meta search items to linked
 
       switch (static::getMetaReferenceItemtype($itemtype)) {
          case 'Computer' :
-            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer',
-                            'Software', 'User', 'Group', 'Budget');
+            $linked = ['Monitor', 'Peripheral', 'Phone', 'Printer',
+                            'Software', 'User', 'Group', 'Budget'];
             break;
 
          case 'Ticket' :
@@ -1781,7 +1781,7 @@ class Search {
          case "Peripheral" :
          case "Software" :
          case "Phone" :
-            $linked = array('Computer', 'User', 'Group', 'Budget');
+            $linked = ['Computer', 'User', 'Group', 'Budget'];
             break;
       }
       return $linked;
@@ -1795,8 +1795,8 @@ class Search {
    **/
    static function getMetaReferenceItemtype ($itemtype) {
 
-      $types = array('Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
-                     'Software', 'Phone');
+      $types = ['Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
+                     'Software', 'Phone'];
       foreach ($types as $type) {
          if (Toolbox::is_a($itemtype, $type)) {
             return $type;
@@ -1811,10 +1811,10 @@ class Search {
    **/
    static function getLogicalOperators() {
 
-      return array('AND'     => 'AND',
+      return ['AND'     => 'AND',
                    'OR'      => 'OR',
                    'AND NOT' => 'AND NOT',
-                   'OR NOT'  => 'OR NOT',);
+                   'OR NOT'  => 'OR NOT',];
    }
 
 
@@ -1834,8 +1834,8 @@ class Search {
       // Default values of parameters
       $p['sort']         = '';
       $p['is_deleted']   = 0;
-      $p['criteria']     = array();
-      $p['metacriteria'] = array();
+      $p['criteria']     = [];
+      $p['metacriteria'] = [];
       if (class_exists($itemtype)) {
          $p['target']       = $itemtype::getSearchURL();
       } else {
@@ -1843,7 +1843,7 @@ class Search {
       }
       $p['showreset']    = true;
       $p['showbookmark'] = true;
-      $p['addhidden']    = array();
+      $p['addhidden']    = [];
       $p['actionname']   = 'search';
       $p['actionvalue']  = _sx('button', 'Search');
 
@@ -1887,7 +1887,7 @@ class Search {
          include(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
-      $metanames = array();
+      $metanames = [];
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
       if (is_array($linked) && (count($linked) > 0)) {
@@ -1918,7 +1918,7 @@ class Search {
             //TODO: change that!
             Ajax::createIframeModalWindow('loadbookmark',
                                     SavedSearch::getSearchURL() . "?action=load&type=" . SavedSearch::SEARCH,
-                                    array('title'         => __('Load a bookmark')));
+                                    ['title'         => __('Load a bookmark')]);
             SavedSearch::showSaveButton(SavedSearch::SEARCH, $itemtype);
          }
 
@@ -1938,14 +1938,14 @@ class Search {
 
       if (count($p['addhidden'])) {
          foreach ($p['addhidden'] as $key => $val) {
-            echo Html::hidden($key, array('value' => $val));
+            echo Html::hidden($key, ['value' => $val]);
          }
       }
 
       // For dropdown
-      echo Html::hidden('itemtype', array('value' => $itemtype));
+      echo Html::hidden('itemtype', ['value' => $itemtype]);
       // Reset to start when submit new search
-      echo Html::hidden('start', array('value'    => 0));
+      echo Html::hidden('start', ['value'    => 0]);
 
       echo "</div>";
       Html::closeForm();
@@ -2007,8 +2007,8 @@ class Search {
             case "number" :
             case "decimal" :
             case "timestamp" :
-               $search  = array("/\&lt;/","/\&gt;/");
-               $replace = array("<",">");
+               $search  = ["/\&lt;/","/\&gt;/"];
+               $replace = ["<",">"];
                $val     = preg_replace($search, $replace, $val);
                if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                   if ($NOT) {
@@ -2194,7 +2194,7 @@ class Search {
    static function addDefaultToView($itemtype) {
       global $CFG_GLPI;
 
-      $toview = array();
+      $toview = [];
       $item   = null;
       if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
@@ -2727,8 +2727,8 @@ class Search {
                }
 
                if (Session::haveRightsOr('ticketvalidation',
-                                         array(TicketValidation::VALIDATEINCIDENT,
-                                               TicketValidation::VALIDATEREQUEST))) {
+                                         [TicketValidation::VALIDATEINCIDENT,
+                                               TicketValidation::VALIDATEREQUEST])) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
                                           = '".Session::getLoginUserID()."'";
                }
@@ -2789,7 +2789,7 @@ class Search {
             break;
 
          case 'Config':
-            $availableContexts = array('core') + $_SESSION['glpi_plugins'];
+            $availableContexts = ['core'] + $_SESSION['glpi_plugins'];
             $availableContexts = implode("', '", $availableContexts);
             $condition = "`context` IN ('$availableContexts')";
             break;
@@ -2950,7 +2950,7 @@ class Search {
 
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, ['equals', 'notequals'])) {
                   return " $link `$table`.`id`".$SEARCH;
                }
                return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
@@ -2963,7 +2963,7 @@ class Search {
                $name2 = 'firstname';
             }
 
-            if (in_array($searchtype, array('equals', 'notequals'))) {
+            if (in_array($searchtype, ['equals', 'notequals'])) {
                return " $link (`$table`.`id`".$SEARCH.
                                (($val == 0)?" OR `$table`.`id` IS".
                                    (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
@@ -3051,8 +3051,8 @@ class Search {
                            $SEARCH ) ";
 
          case "glpi_ipaddresses.name" :
-            $search  = array("/\&lt;/","/\&gt;/");
-            $replace = array("<",">");
+            $search  = ["/\&lt;/","/\&gt;/"];
+            $replace = ["<",">"];
             $val     = preg_replace($search, $replace, $val);
             if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                if ($nott) {
@@ -3073,7 +3073,7 @@ class Search {
             if ($val == 'all') {
                return "";
             }
-            $tocheck = array();
+            $tocheck = [];
             if ($item = getItemForItemtype($itemtype)) {
                switch ($val) {
                   case 'process' :
@@ -3115,7 +3115,7 @@ class Search {
             if (count($tocheck) == 0) {
                $statuses = $item->getAllStatusArray();
                if (isset($statuses[$val])) {
-                  $tocheck = array($val);
+                  $tocheck = [$val];
                }
             }
 
@@ -3172,7 +3172,7 @@ class Search {
             if ($val == 'all') {
                return "";
             }
-            $tocheck = array();
+            $tocheck = [];
             switch ($val) {
                case 'can' :
                   $tocheck = CommonITILValidation::getCanValidationStatusArray();
@@ -3184,7 +3184,7 @@ class Search {
 
             }
             if (count($tocheck) == 0) {
-               $tocheck = array($val);
+               $tocheck = [$val];
             }
             if (count($tocheck)) {
                if ($nott) {
@@ -3223,13 +3223,13 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemtypename" :
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, ['equals', 'notequals'])) {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
                break;
 
             case "itemlink" :
-               if (in_array($searchtype, array('equals', 'notequals', 'under', 'notunder'))) {
+               if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder'])) {
                   return " $link (`$table`.`id`".$SEARCH.') ';
                }
                break;
@@ -3239,7 +3239,7 @@ class Search {
             case "date_delay" :
                if ($searchopt[$ID]["datatype"] == 'datetime') {
                   // Specific search for datetime
-                  if (in_array($searchtype, array('equals', 'notequals'))) {
+                  if (in_array($searchtype, ['equals', 'notequals'])) {
                      $val = preg_replace("/:00$/", '', $val);
                      $val = '^'.$val;
                      if ($searchtype == 'notequals') {
@@ -3278,11 +3278,11 @@ class Search {
                                                          $add_minus)
                                                $delay_unit)";
                }
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, ['equals', 'notequals'])) {
                   return " $link ($date_computation ".$SEARCH.') ';
                }
-               $search  = array("/\&lt;/","/\&gt;/");
-               $replace = array("<",">");
+               $search  = ["/\&lt;/","/\&gt;/"];
+               $replace = ["<",">"];
                $val     = preg_replace($search, $replace, $val);
                if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                   if (is_numeric($regs[2])) {
@@ -3333,8 +3333,8 @@ class Search {
             case "number" :
             case "decimal" :
             case "timestamp" :
-               $search  = array("/\&lt;/", "/\&gt;/");
-               $replace = array("<", ">");
+               $search  = ["/\&lt;/", "/\&gt;/"];
+               $replace = ["<", ">"];
                $val     = preg_replace($search, $replace, $val);
 
                if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
@@ -3374,7 +3374,7 @@ class Search {
       }
 
       // Default case
-      if (in_array($searchtype, array('equals', 'notequals','under', 'notunder'))) {
+      if (in_array($searchtype, ['equals', 'notequals','under', 'notunder'])) {
 
          if ((!isset($searchopt[$ID]['searchequalsonfield'])
               || !$searchopt[$ID]['searchequalsonfield'])
@@ -3422,7 +3422,7 @@ class Search {
          case 'User' :
             return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                      "glpi_profiles_users", "profiles_users_id", 0, 0,
-                                     array('jointype' => 'child'));
+                                     ['jointype' => 'child']);
 
          case 'Reminder' :
             return Reminder::addVisibilityJoins();
@@ -3435,7 +3435,7 @@ class Search {
             $out  = '';
             $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_projecttaskteams", "projecttaskteams_id", 0, 0,
-                                      array('jointype' => 'child'));
+                                      ['jointype' => 'child']);
             return $out;
 
          case 'Project' :
@@ -3444,7 +3444,7 @@ class Search {
             if (!Session::haveRight("project", Project::READALL)) {
                $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                           "glpi_projectteams", "projectteams_id", 0, 0,
-                                          array('jointype' => 'child'));
+                                          ['jointype' => 'child']);
             }
             return $out;
 
@@ -3485,7 +3485,7 @@ class Search {
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (Session::haveRightsOr("ticket", array(Ticket::READMY, Ticket::READASSIGN))) { // show mine + assign to me
+               if (Session::haveRightsOr("ticket", [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
@@ -3499,8 +3499,8 @@ class Search {
                }
 
                if (Session::haveRightsOr('ticketvalidation',
-                                         array(TicketValidation::VALIDATEINCIDENT,
-                                               TicketValidation::VALIDATEREQUEST))) {
+                                         [TicketValidation::VALIDATEINCIDENT,
+                                               TicketValidation::VALIDATEREQUEST])) {
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
@@ -3594,7 +3594,7 @@ class Search {
     * @return Left join string
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
-                               $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field='') {
+                               $linkfield, $meta=0, $meta_type=0, $joinparams=[], $field='') {
 
       // Rename table for meta left join
       $AS = "";
@@ -3673,7 +3673,7 @@ class Search {
          if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin'])) {
 
             if (isset($joinparams['beforejoin']['table'])) {
-               $joinparams['beforejoin'] = array($joinparams['beforejoin']);
+               $joinparams['beforejoin'] = [$joinparams['beforejoin']];
             }
 
             foreach ($joinparams['beforejoin'] as $tab) {
@@ -3685,7 +3685,7 @@ class Search {
                      $interlinkfield = getForeignKeyFieldForTable($intertable);
                   }
 
-                  $interjoinparams = array();
+                  $interjoinparams = [];
                   if (isset($tab['joinparams'])) {
                      $interjoinparams = $tab['joinparams'];
                   }
@@ -3707,8 +3707,8 @@ class Search {
 
          $addcondition = '';
          if (isset($joinparams['condition'])) {
-            $from         = array("`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE");
-            $to           = array("`$rt`", "`$rt`", "`$nt`", "`$nt`");
+            $from         = ["`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE"];
+            $to           = ["`$rt`", "`$rt`", "`$nt`", "`$nt`"];
             $addcondition = str_replace($from, $to, $joinparams['condition']);
             $addcondition = $addcondition." ";
          }
@@ -3833,7 +3833,7 @@ class Search {
     * @return Meta Left join string
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
-                                   $nullornott, $joinparams=array()) {
+                                   $nullornott, $joinparams=[]) {
 
       $LINK = " INNER JOIN ";
       if ($nullornott) {
@@ -4048,7 +4048,7 @@ class Search {
     *
     * @return string to print
    **/
-   static function displayConfigItem($itemtype, $ID, $data=array(), $num=0) {
+   static function displayConfigItem($itemtype, $ID, $data=[], $num=0) {
 
       $searchopt  = &self::getOptions($itemtype);
 
@@ -4107,7 +4107,7 @@ class Search {
     * @return string to print
    **/
    static function giveItem($itemtype, $ID, array $data, $num, $meta=0,
-                            array $addobjectparams=array()) {
+                            array $addobjectparams=[]) {
       global $CFG_GLPI, $DB;
 
       $searchopt = &self::getOptions($itemtype);
@@ -4155,7 +4155,7 @@ class Search {
                    && isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
                   $out           = "";
                   $count_display = 0;
-                  $added         = array();
+                  $added         = [];
 
                   $showuserlink = 0;
                   if (Session::haveRight('user', READ)) {
@@ -4177,8 +4177,8 @@ class Search {
                               $tooltip  = "";
                               if (Session::haveRight('user', READ)) {
                                  $tooltip = Html::showToolTip($userdata["comment"],
-                                                              array('link'    => $userdata["link"],
-                                                                    'display' => false));
+                                                              ['link'    => $userdata["link"],
+                                                                    'display' => false]);
                               }
                               $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
                               $count_display++;
@@ -4213,8 +4213,8 @@ class Search {
                       && ($data[$num][0]['id'] > 0)) {
                      $userdata = getUserName($data[$num][0]['id'], 2);
                      $toadd    = Html::showToolTip($userdata["comment"],
-                                                   array('link'    => $userdata["link"],
-                                                         'display' => false));
+                                                   ['link'    => $userdata["link"],
+                                                         'display' => false]);
                   }
                   $usernameformat = formatUserName($data[$num][0]['id'], $data[$num][0]['name'],
                                                    $data[$num][0]['realname'],
@@ -4229,7 +4229,7 @@ class Search {
                   $out           = "";
 
                   $count_display = 0;
-                  $added         = array();
+                  $added         = [];
                   for ($k=0; $k<$data[$num]['count']; $k++) {
                      if (strlen(trim($data[$num][$k]['name'])) > 0
                          && !in_array($data[$num][$k]['name']."-".$data[$num][$k]['entities_id'],
@@ -4266,7 +4266,7 @@ class Search {
                if ($itemtype == 'User') {
 
                   $out           = "";
-                  $added         = array();
+                  $added         = [];
                   $count_display = 0;
                   for ($k=0; $k<$data[$num]['count']; $k++) {
                      if (isset($data[$num][$k]['name'])
@@ -4317,7 +4317,7 @@ class Search {
 
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
-               $displayed  = array();
+               $displayed  = [];
                for ($k=0; $k<$data[$num]['count']; $k++) {
 
                   $linkid = ($data[$num][$k]['tickets_id_2'] == $data['id'])
@@ -4607,13 +4607,13 @@ class Search {
             case 'glpi_items_tickets.items_id' :
             case 'glpi_items_problems.items_id' :
                if (!empty($data[$num])) {
-                  $items = array();
+                  $items = [];
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['itemtype'])
                                 && ($item = getItemForItemtype($val['itemtype']))) {
                            if ($item->getFromDB($val['name'])) {
-                              $items[] = $item->getLink(array('comments' => true));
+                              $items[] = $item->getLink(['comments' => true]);
                            }
                         }
                      }
@@ -4627,7 +4627,7 @@ class Search {
             case 'glpi_items_tickets.itemtype' :
             case 'glpi_items_problems.itemtype' :
                if (!empty($data[$num])) {
-                  $itemtypes = array();
+                  $itemtypes = [];
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['name'])) {
@@ -4677,9 +4677,9 @@ class Search {
                   $content = Toolbox::unclean_cross_side_scripting_deep($hdecode);
                   $out     = sprintf(__('%1$s %2$s'), $out,
                                      Html::showToolTip(nl2br(Html::Clean($content)),
-                                                             array('applyto' => $itemtype.
+                                                             ['applyto' => $itemtype.
                                                                                 $data[$num][0]['id'],
-                                                                   'display' => false)));
+                                                                   'display' => false]));
                   return $out;
                }
 
@@ -4840,8 +4840,8 @@ class Search {
                         $out .= sprintf(__('%1$s %2$s'),
                                         "<span id='text$rand'>".
                                           Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
-                                        Html::showToolTip($text, array('applyto' => "text$rand",
-                                                                       'display' => false)));
+                                        Html::showToolTip($text, ['applyto' => "text$rand",
+                                                                       'display' => false]));
 
                      } else {
                         $out .= $text;
@@ -5015,8 +5015,8 @@ class Search {
                $tmpdata[$field] = $data[$num][$k]['name'];
 
                $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
-                                                            array('html'      => true,
-                                                                  'searchopt' => $searchopt[$ID]));
+                                                            ['html'      => true,
+                                                                  'searchopt' => $searchopt[$ID]]);
             }
             if (!empty($specific)) {
                $out .= $specific;
@@ -5059,7 +5059,7 @@ class Search {
    static function resetSaveSearch() {
 
       unset($_SESSION['glpisearch']);
-      $_SESSION['glpisearch']       = array();
+      $_SESSION['glpisearch']       = [];
    }
 
 
@@ -5074,13 +5074,13 @@ class Search {
     *
     * @return parsed params array
    **/
-   static function manageParams($itemtype, $params=array(), $usesession=true,
+   static function manageParams($itemtype, $params=[], $usesession=true,
                                 $forcebookmark=false) {
       global $CFG_GLPI, $DB;
 
       $redirect = false;
 
-      $default_values = array();
+      $default_values = [];
 
       $default_values["start"]       = 0;
       $default_values["order"]       = "ASC";
@@ -5100,10 +5100,10 @@ class Search {
 
       }
 
-      $default_values["criteria"]    = array(0 => array('field' => $default_criteria,
+      $default_values["criteria"]    = [0 => ['field' => $default_criteria,
                                                         'link'  => 'contains',
-                                                        'value' => ''));
-      $default_values["metacriteria"]    = array();
+                                                        'value' => '']];
+      $default_values["metacriteria"]    = [];
 
       // Reorg search array
       // start
@@ -5126,8 +5126,8 @@ class Search {
           && method_exists($itemtype, 'getDefaultSearchRequest')) {
 
          $default_values = array_merge($default_values,
-                                       call_user_func(array($itemtype,
-                                                            'getDefaultSearchRequest')));
+                                       call_user_func([$itemtype,
+                                                            'getDefaultSearchRequest']));
       }
 
       // First view of the page or force bookmark : try to load a bookmark
@@ -5144,7 +5144,7 @@ class Search {
             if ($DB->numrows($result) > 0) {
                $IDtoload = $DB->result($result, 0, 0);
                // Set session variable
-               $_SESSION['glpisearch'][$itemtype] = array();
+               $_SESSION['glpisearch'][$itemtype] = [];
                // Load bookmark on main window
                $bookmark = new SavedSearch();
                // Only get datas for bookmarks
@@ -5162,7 +5162,7 @@ class Search {
           && count($params["criteria"])) {
 
          $tmp                = $params["criteria"];
-         $params["criteria"] = array();
+         $params["criteria"] = [];
          foreach ($tmp as $val) {
             $params["criteria"][] = $val;
          }
@@ -5173,7 +5173,7 @@ class Search {
           && count($params["metacriteria"])) {
 
          $tmp                    = $params["metacriteria"];
-         $params["metacriteria"] = array();
+         $params["metacriteria"] = [];
          foreach ($tmp as $val) {
             $params["metacriteria"][] = $val;
          }
@@ -5224,7 +5224,7 @@ class Search {
       global $CFG_GLPI;
 
       $options = &self::getOptions($itemtype, $withplugins);
-      $todel   = array();
+      $todel   = [];
 
       if (!Session::haveRight('infocom', $action)
           && InfoCom::canApplyOn($itemtype)) {
@@ -5424,15 +5424,15 @@ class Search {
             self::$search[$itemtype][60]['forcegroupby']  = true;
             self::$search[$itemtype][60]['usehaving']     = true;
             self::$search[$itemtype][60]['massiveaction'] = false;
-            self::$search[$itemtype][60]['joinparams']    = array('beforejoin'
-                                                              => array('table'
+            self::$search[$itemtype][60]['joinparams']    = ['beforejoin'
+                                                              => ['table'
                                                                         => 'glpi_items_tickets',
                                                                        'joinparams'
-                                                                        => array('jointype'
-                                                                                  => 'itemtype_item')),
-                                                             'condition'
+                                                                        => ['jointype'
+                                                                                  => 'itemtype_item']],
+                                                              'condition'
                                                               => getEntitiesRestrictRequest('AND',
-                                                                                            'NEWTABLE'));
+                                                                                            'NEWTABLE')];
 
             self::$search[$itemtype][140]['table']         = 'glpi_problems';
             self::$search[$itemtype][140]['field']         = 'id';
@@ -5441,15 +5441,15 @@ class Search {
             self::$search[$itemtype][140]['forcegroupby']  = true;
             self::$search[$itemtype][140]['usehaving']     = true;
             self::$search[$itemtype][140]['massiveaction'] = false;
-            self::$search[$itemtype][140]['joinparams']    = array('beforejoin'
-                                                              => array('table'
+            self::$search[$itemtype][140]['joinparams']    = ['beforejoin'
+                                                              => ['table'
                                                                         => 'glpi_items_problems',
                                                                        'joinparams'
-                                                                        => array('jointype'
-                                                                                  => 'itemtype_item')),
-                                                             'condition'
+                                                                        => ['jointype'
+                                                                                  => 'itemtype_item']],
+                                                              'condition'
                                                               => getEntitiesRestrictRequest('AND',
-                                                                                            'NEWTABLE'));
+                                                                                            'NEWTABLE')];
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])
@@ -5481,7 +5481,7 @@ class Search {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
-               self::$search[$itemtype] += array('plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber()));
+               self::$search[$itemtype] += ['plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber())];
                self::$search[$itemtype] += $plugsearch;
             }
          }
@@ -5525,7 +5525,7 @@ class Search {
             // }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
-               self::$search[$itemtype][$key]['joinparams'] = array();
+               self::$search[$itemtype][$key]['joinparams'] = [];
             }
          }
 
@@ -5561,8 +5561,8 @@ class Search {
    static function getActionsFor($itemtype, $field_num) {
 
       $searchopt = &self::getOptions($itemtype);
-      $actions   = array('contains'  => __('contains'),
-                         'searchopt' => array());
+      $actions   = ['contains'  => __('contains'),
+                         'searchopt' => []];
 
       if (isset($searchopt[$field_num])) {
          $actions['searchopt'] = $searchopt[$field_num];
@@ -5570,10 +5570,10 @@ class Search {
          // Force search type
          if (isset($actions['searchopt']['searchtype'])) {
             // Reset search option
-            $actions              = array();
+            $actions              = [];
             $actions['searchopt'] = $searchopt[$field_num];
             if (!is_array($actions['searchopt']['searchtype'])) {
-               $actions['searchopt']['searchtype'] = array($actions['searchopt']['searchtype']);
+               $actions['searchopt']['searchtype'] = [$actions['searchopt']['searchtype']];
             }
             foreach ($actions['searchopt']['searchtype'] as $searchtype) {
                switch ($searchtype) {
@@ -5613,10 +5613,10 @@ class Search {
             switch ($searchopt[$field_num]['datatype']) {
                case 'count' :
                case 'number' :
-                  $opt = array('contains'  => __('contains'),
+                  $opt = ['contains'  => __('contains'),
                                'equals'    => __('is'),
                                'notequals' => __('is not'),
-                               'searchopt' => $searchopt[$field_num]);
+                               'searchopt' => $searchopt[$field_num]];
                   // No is / isnot if no limits defined
                   if (!isset($searchopt[$field_num]['min'])
                       && !isset($searchopt[$field_num]['max'])) {
@@ -5626,30 +5626,30 @@ class Search {
                   return $opt;
 
                case 'bool' :
-                  return array('equals'    => __('is'),
+                  return ['equals'    => __('is'),
                                'notequals' => __('is not'),
                                'contains'  => __('contains'),
-                               'searchopt' => $searchopt[$field_num]);
+                               'searchopt' => $searchopt[$field_num]];
 
                case 'right' :
-                  return array('equals'    => __('is'),
+                  return ['equals'    => __('is'),
                                'notequals' => __('is not'),
-                               'searchopt' => $searchopt[$field_num]);
+                               'searchopt' => $searchopt[$field_num]];
 
                case 'itemtypename' :
-                  return array('equals'    => __('is'),
+                  return ['equals'    => __('is'),
                                'notequals' => __('is not'),
-                               'searchopt' => $searchopt[$field_num]);
+                               'searchopt' => $searchopt[$field_num]];
 
                case 'date' :
                case 'datetime' :
                case 'date_delay' :
-                  return array('equals'    => __('is'),
+                  return ['equals'    => __('is'),
                                'notequals' => __('is not'),
                                'lessthan'  => __('before'),
                                'morethan'  => __('after'),
                                'contains'  => __('contains'),
-                               'searchopt' => $searchopt[$field_num]);
+                               'searchopt' => $searchopt[$field_num]];
             }
          }
 
@@ -5662,16 +5662,16 @@ class Search {
 
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
-               return array('equals'    => __('is'),
+               return ['equals'    => __('is'),
                             'notequals' => __('is not'),
-                            'searchopt' => $searchopt[$field_num]);
+                            'searchopt' => $searchopt[$field_num]];
 
             case 'name' :
             case 'completename' :
-               $actions = array('contains'  => __('contains'),
+               $actions = ['contains'  => __('contains'),
                                 'equals'    => __('is'),
                                 'notequals' => __('is not'),
-                                'searchopt' => $searchopt[$field_num]);
+                                'searchopt' => $searchopt[$field_num]];
 
                // Specific case of TreeDropdown : add under
                $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
@@ -5808,8 +5808,8 @@ class Search {
                $out .= "...&nbsp;";
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-               $out .= Html::showToolTip($value, array('display'   => false,
-                                                      'autoclose' => false));
+               $out .= Html::showToolTip($value, ['display'   => false,
+                                                      'autoclose' => false]);
 
             } else {
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
@@ -5882,8 +5882,8 @@ class Search {
                $font       = $_SESSION['glpipdffont'];
                //$subsetting = false;
             }
-            $pdf->setHeaderFont(Array($font, 'B', 8));
-            $pdf->setFooterFont(Array($font, 'B', 8));
+            $pdf->setHeaderFont([$font, 'B', 8]);
+            $pdf->setFooterFont([$font, 'B', 8]);
 
             //set margins
             $pdf->SetMargins(10, 15, 10);
@@ -5958,9 +5958,9 @@ class Search {
 
          case self::SYLK_OUTPUT : // Sylk
             global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
-            $SYLK_ARRAY  = array();
-            $SYLK_HEADER = array();
-            $SYLK_SIZE   = array();
+            $SYLK_ARRAY  = [];
+            $SYLK_HEADER = [];
+            $SYLK_SIZE   = [];
             // entetes HTTP
             header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
             header('Pragma: private'); /// IE BUG + SSL
@@ -6157,7 +6157,7 @@ class Search {
 
       if (isset($joinparams['beforejoin'])) {
          if (isset($joinparams['beforejoin']['table'])) {
-            $joinparams['beforejoin'] = array($joinparams['beforejoin']);
+            $joinparams['beforejoin'] = [$joinparams['beforejoin']];
          }
          foreach ($joinparams['beforejoin'] as $tab) {
             if (isset($tab['table'])) {

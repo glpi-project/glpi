@@ -48,7 +48,7 @@ if (strpos($_SERVER['PHP_SELF'], "getDropdownNetpoint.php")) {
 Session::checkLoginUser();
 
 // Make a select box with preselected values
-$datas             = array();
+$datas             = [];
 $location_restrict = false;
 
 
@@ -131,8 +131,8 @@ $result = $DB->query($query);
 // Display first if no search
 if (empty($_POST['searchText']) && ($one_item < 0) || ($one_item == 0)) {
    if ($_POST['page'] == 1) {
-      array_push($datas, array('id'   => 0,
-                              'text' => Dropdown::EMPTY_VALUE));
+      array_push($datas, ['id'   => 0,
+                              'text' => Dropdown::EMPTY_VALUE]);
    }
 }
 
@@ -152,9 +152,9 @@ if ($DB->numrows($result)) {
          $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
       }
 
-      array_push($datas, array('id'    => $ID,
+      array_push($datas, ['id'    => $ID,
                                'text'  => $output,
-                               'title' => $title));
+                               'title' => $title]);
       $count++;
    }
 }

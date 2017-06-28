@@ -50,7 +50,7 @@ class NotificationTemplate extends CommonDBTM {
    public $signature = '';
 
    //Store templates for each language
-   public $templates_by_languages = array();
+   public $templates_by_languages = [];
 
    static $rightname = 'config';
 
@@ -74,9 +74,9 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -89,11 +89,11 @@ class NotificationTemplate extends CommonDBTM {
     * Reset already computed templates
    **/
    function resetComputedTemplates() {
-      $this->templates_by_languages = array();
+      $this->templates_by_languages = [];
    }
 
 
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
@@ -122,8 +122,8 @@ class NotificationTemplate extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td><td colspan='3'>";
       Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
-                              array('value' => ($this->fields['itemtype']
-                                                ?$this->fields['itemtype'] :'Ticket')));
+                              ['value' => ($this->fields['itemtype']
+                                                ?$this->fields['itemtype'] :'Ticket')]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
@@ -189,10 +189,10 @@ class NotificationTemplate extends CommonDBTM {
    static function dropdownTemplates($name, $itemtype, $value=0) {
       global $DB;
 
-      self::dropdown(array('name'       => $name,
+      self::dropdown(['name'       => $name,
                             'value'     => $value,
                             'comment'   => 1,
-                            'condition' => "`itemtype`='$itemtype'"));
+                            'condition' => "`itemtype`='$itemtype'"]);
    }
 
 
@@ -222,13 +222,13 @@ class NotificationTemplate extends CommonDBTM {
    function getTemplateByLanguage(NotificationTarget $target, $user_infos=[],
                                   $event='', $options=[]) {
 
-      $lang     = array();
+      $lang     = [];
       $language = $user_infos['language'];
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];
       } else {
-         $additionnaloption =  array();
+         $additionnaloption =  [];
       }
 
       $tid  = $language;
@@ -350,7 +350,7 @@ class NotificationTemplate extends CommonDBTM {
       //Template processed
       $output = "";
 
-      $cleandata = array();
+      $cleandata = [];
       // clean data for strtr
       foreach ($data as $field => $value) {
          if (!is_array($value)) {

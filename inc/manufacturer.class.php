@@ -54,7 +54,7 @@ class Manufacturer extends CommonDropdown {
     * @since version 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field=[]) {
 
       switch ($field['type']) {
          case 'registeredIDChooser':
@@ -70,12 +70,12 @@ class Manufacturer extends CommonDropdown {
    **/
    function getAdditionalFields() {
 
-      return array(array('name'  => 'none',
+      return [['name'  => 'none',
                          'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                        RegisteredID::showAddChildButtonForItemForm($this,
                                                                                    '_registeredID',
                                                                                    null, false),
-                         'type'  => 'registeredIDChooser'));
+                         'type'  => 'registeredIDChooser']];
    }
 
 
@@ -87,8 +87,8 @@ class Manufacturer extends CommonDropdown {
       if ((isset($this->input['_registeredID']))
           && (is_array($this->input['_registeredID']))) {
 
-         $input = array('itemtype' => $this->getType(),
-                        'items_id' => $this->getID());
+         $input = ['itemtype' => $this->getType(),
+                        'items_id' => $this->getID()];
 
          foreach ($this->input['_registeredID'] as $id => $registered_id) {
             $id_object     = new RegisteredID();
@@ -110,7 +110,7 @@ class Manufacturer extends CommonDropdown {
                   $id_object->update($input);
                   unset($input['id']);
                } else {
-                  $id_object->delete(array('id' => $id));
+                  $id_object->delete(['id' => $id]);
                }
             }
          }
@@ -153,9 +153,9 @@ class Manufacturer extends CommonDropdown {
       }
 
       $rulecollection = new RuleDictionnaryManufacturerCollection();
-      $output         = array();
-      $output         = $rulecollection->processAllRules(array("name" => stripslashes($old_name)),
-                                                         $output, array());
+      $output         = [];
+      $output         = $rulecollection->processAllRules(["name" => stripslashes($old_name)],
+                                                         $output, []);
       if (isset($output["name"])) {
          return $output["name"];
       }
@@ -180,7 +180,7 @@ class Manufacturer extends CommonDropdown {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column_name = __CLASS__;
 
@@ -201,7 +201,7 @@ class Manufacturer extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options = array()) {
+                                            HTMLTableCell $father=null, array $options = []) {
 
       $column_name = __CLASS__;
 

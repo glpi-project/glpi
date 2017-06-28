@@ -62,7 +62,7 @@ class KnowbaseItem_User extends CommonDBRelation {
    static function getUsers($knowbaseitems_id) {
       global $DB;
 
-      $users = array();
+      $users = [];
       $query = "SELECT `glpi_knowbaseitems_users`.*
                 FROM `glpi_knowbaseitems_users`
                 WHERE `knowbaseitems_id` = '$knowbaseitems_id'";

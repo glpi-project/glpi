@@ -103,7 +103,7 @@ class NotificationAjaxSetting extends NotificationSetting {
       }
       $options['candel']     = false;
       if ($CFG_GLPI['notifications_ajax']) {
-         $options['addbuttons'] = array('test_ajax_send' => __('Send a test ajax call to you'));
+         $options['addbuttons'] = ['test_ajax_send' => __('Send a test ajax call to you')];
       }
       $this->showFormButtons($options);
 

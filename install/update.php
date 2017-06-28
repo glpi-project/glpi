@@ -233,7 +233,7 @@ function display_new_locations() {
              ORDER BY NAME0 $ORDER_ALL";
    $result = $DB->query($query);
 
-   $data_old = array();
+   $data_old = [];
    echo "<table><tr>";
 
    for ($i=0; $i<=$MAX_LEVEL; $i++) {
@@ -329,7 +329,7 @@ function location_create_new($split_char, $add_first) {
       if (!empty($split_char)) {
          $splitter = explode($split_char, $data['name']);
       } else {
-         $splitter = array($data['name']);
+         $splitter = [$data['name']];
       }
 
       $up_ID = $root_ID;
@@ -500,7 +500,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 function updateDbUpTo031() {
    global $DB, $migration;
 
-   $ret = array();
+   $ret = [];
 
    // Before 0.31
    if (!TableExists("glpi_config") && !TableExists("glpi_configs")) {
@@ -582,7 +582,7 @@ function updateDbUpTo031() {
       $current_version = trim($DB->result($result, 0, 0));
       $glpilanguage    = trim($DB->result($result, 0, 1));
    } else {
-      $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
+      $configurationValues = Config::getConfigurationValues('core', ['version', 'language']);
 
       $current_version = $configurationValues['version'];
       $glpilanguage    = $configurationValues['language'];
@@ -841,9 +841,9 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
+   Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
                                                 'language'            => $glpilanguage,
-                                                'founded_new_version' => ''));
+                                                'founded_new_version' => '']);
 
    // Update process desactivate all plugins
    $plugin = new Plugin();

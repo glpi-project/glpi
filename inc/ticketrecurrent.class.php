@@ -93,9 +93,9 @@ class TicketRecurrent extends CommonDropdown {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -136,38 +136,38 @@ class TicketRecurrent extends CommonDropdown {
    **/
    function getAdditionalFields() {
 
-      return array(array('name'  => 'is_active',
+      return [['name'  => 'is_active',
                          'label' => __('Active'),
                          'type'  => 'bool',
-                         'list'  => false),
-                   array('name'  => 'tickettemplates_id',
+                         'list'  => false],
+                   ['name'  => 'tickettemplates_id',
                          'label' => _n('Ticket template', 'Ticket templates', 1),
                          'type'  => 'dropdownValue',
-                         'list'  => true),
-                   array('name'  => 'begin_date',
+                         'list'  => true],
+                   ['name'  => 'begin_date',
                          'label' => __('Start date'),
                          'type'  => 'datetime',
-                         'list'  => false),
-                   array('name'  => 'end_date',
+                         'list'  => false],
+                   ['name'  => 'end_date',
                          'label' => __('End date'),
                          'type'  => 'datetime',
-                         'list'  => false),
-                   array('name'  => 'periodicity',
+                         'list'  => false],
+                   ['name'  => 'periodicity',
                          'label' => __('Periodicity'),
                          'type'  => 'specific_timestamp',
                          'min'   => DAY_TIMESTAMP,
                          'step'  => DAY_TIMESTAMP,
-                         'max'   => 2*MONTH_TIMESTAMP),
-                   array('name'  => 'create_before',
+                         'max'   => 2*MONTH_TIMESTAMP],
+                   ['name'  => 'create_before',
                          'label' => __('Preliminary creation'),
                          'type'  => 'timestamp',
                          'max'   => 7*DAY_TIMESTAMP,
-                         'step'  => HOUR_TIMESTAMP),
-                   array('name'  => 'calendars_id',
+                         'step'  => HOUR_TIMESTAMP],
+                   ['name'  => 'calendars_id',
                          'label' => _n('Calendar', 'Calendars', 1),
                          'type'  => 'dropdownValue',
-                         'list'  => true),
-                  );
+                         'list'  => true],
+                  ];
    }
 
 
@@ -176,11 +176,11 @@ class TicketRecurrent extends CommonDropdown {
     *
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field=[]) {
 
       switch ($field['name']) {
          case 'periodicity' :
-            $possible_values = array();
+            $possible_values = [];
             for ($i=1; $i<24; $i++) {
                $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
             }
@@ -197,7 +197,7 @@ class TicketRecurrent extends CommonDropdown {
             }
 
             Dropdown::showFromArray($field['name'], $possible_values,
-                                    array('value' => $this->fields[$field['name']]));
+                                    ['value' => $this->fields[$field['name']]]);
             break;
       }
    }
@@ -209,10 +209,10 @@ class TicketRecurrent extends CommonDropdown {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
 
       switch ($field) {
@@ -410,9 +410,9 @@ class TicketRecurrent extends CommonDropdown {
 
       switch ($name) {
          case 'ticketrecurrent' :
-            return array('description' => self::getTypeName(Session::getPluralNumber()));
+            return ['description' => self::getTypeName(Session::getPluralNumber())];
       }
-      return array();
+      return [];
    }
 
 
@@ -510,7 +510,7 @@ class TicketRecurrent extends CommonDropdown {
       // Compute next creation date
       $tr = new self();
       if ($tr->getFromDB($data['id'])) {
-         $input                       = array();
+         $input                       = [];
          $input['id']                 = $data['id'];
          $input['next_creation_date'] = $tr->computeNextCreationDate($data['begin_date'],
                                                                      $data['end_date'],

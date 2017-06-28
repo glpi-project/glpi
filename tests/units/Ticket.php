@@ -40,54 +40,54 @@ class Ticket extends DbTestCase {
 
    public function ticketProvider() {
       return [
-         'single requester' => array(
-            array(
+         'single requester' => [
+            [
                '_users_id_requester' => '3'
-            ),
-         ),
-         'single unknown requester' => array(
-            array(
+            ],
+         ],
+         'single unknown requester' => [
+            [
                '_users_id_requester'         => '0',
-               '_users_id_requester_notif'   => array(
-                  'use_notification'   => array('1'),
-                  'alternative_email'  => array('unknownuser@localhost.local')
-               ),
-            ),
-         ),
-         'multiple requesters' => array(
-            array(
-               '_users_id_requester' => array('3', '5'),
-            ),
-         ),
-         'multiple mixed requesters' => array(
-            array(
-               '_users_id_requester'         => array('3', '5', '0'),
-               '_users_id_requester_notif'   => array(
-                  'use_notification'   => array('1', '0', '1'),
-                  'alternative_email'  => array('','', 'unknownuser@localhost.local')
-               ),
-            ),
-         ),
-         'single observer' => array(
-            array(
+               '_users_id_requester_notif'   => [
+                  'use_notification'   => ['1'],
+                  'alternative_email'  => ['unknownuser@localhost.local']
+               ],
+            ],
+         ],
+         'multiple requesters' => [
+            [
+               '_users_id_requester' => ['3', '5'],
+            ],
+         ],
+         'multiple mixed requesters' => [
+            [
+               '_users_id_requester'         => ['3', '5', '0'],
+               '_users_id_requester_notif'   => [
+                  'use_notification'   => ['1', '0', '1'],
+                  'alternative_email'  => ['','', 'unknownuser@localhost.local']
+               ],
+            ],
+         ],
+         'single observer' => [
+            [
                '_users_id_observer' => '3'
-            ),
-         ),
-         'multiple observers' => array(
-            array(
-               '_users_id_observer' => array('3', '5'),
-            ),
-         ),
-         'single assign' => array(
-            array(
+            ],
+         ],
+         'multiple observers' => [
+            [
+               '_users_id_observer' => ['3', '5'],
+            ],
+         ],
+         'single assign' => [
+            [
                '_users_id_assign' => '3'
-            ),
-         ),
-         'multiple assigns' => array(
-            array(
-               '_users_id_assign' => array('3', '5'),
-            ),
-         ),
+            ],
+         ],
+         'multiple assigns' => [
+            [
+               '_users_id_assign' => ['3', '5'],
+            ],
+         ],
       ];
    }
 
@@ -96,11 +96,11 @@ class Ticket extends DbTestCase {
     */
    public function testCreateTicketWithActors($ticketActors) {
       $ticket = new \Ticket();
-      $this->integer((int)$ticket->add(array(
+      $this->integer((int)$ticket->add([
             'name'         => 'ticket title',
             'description'  => 'a description',
             'content'      => ''
-      ) + $ticketActors))->isGreaterThan(0);
+      ] + $ticketActors))->isGreaterThan(0);
 
       $this->boolean($ticket->isNewItem())->isFalse();
       $ticketId = $ticket->getID();
@@ -108,7 +108,7 @@ class Ticket extends DbTestCase {
       foreach ($ticketActors as $actorType => $actorsList) {
          // Convert single actor (scalar value) to array
          if (!is_array($actorsList)) {
-            $actorsList = array($actorsList);
+            $actorsList = [$actorsList];
          }
 
          // Check all actors are assigned to the ticket

@@ -57,7 +57,7 @@ class ChangeTask extends CommonITILTask {
 
 
    static function canView() {
-      return Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
+      return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
    }
 
 
@@ -72,7 +72,7 @@ class ChangeTask extends CommonITILTask {
 
 
    function canEditAll() {
-      return Session::haveRightsOr('change', array(CREATE, UPDATE, DELETE, PURGE));
+      return Session::haveRightsOr('change', [CREATE, UPDATE, DELETE, PURGE]);
    }
 
 
@@ -153,7 +153,7 @@ class ChangeTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=array()) {
+   static function populatePlanning($options=[]) {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 

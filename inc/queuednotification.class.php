@@ -60,7 +60,7 @@ class QueuedNotification extends CommonDBTM {
 
 
    static function getForbiddenActionsForMenu() {
-      return array('add');
+      return ['add'];
    }
 
 
@@ -162,7 +162,7 @@ class QueuedNotification extends CommonDBTM {
                    AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
                    AND `recipient` = '".$input['recipient']."'";
          foreach ($DB->request($this->getTable(), $query) as $data) {
-            $this->delete(array('id' => $data['id']), 1);
+            $this->delete(['id' => $data['id']], 1);
          }
       }
 
@@ -381,10 +381,10 @@ class QueuedNotification extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'headers' :
@@ -407,9 +407,9 @@ class QueuedNotification extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -471,15 +471,15 @@ class QueuedNotification extends CommonDBTM {
 
       switch ($name) {
          case 'queuednotification' :
-            return array('description' => __('Send mails in queue'),
-                         'parameter'   => __('Maximum emails to send at once'));
+            return ['description' => __('Send mails in queue'),
+                         'parameter'   => __('Maximum emails to send at once')];
 
          case 'queuednotificationclean' :
-            return array('description' => __('Clean notification queue'),
-                         'parameter'   => __('Days to keep sent emails'));
+            return ['description' => __('Clean notification queue'),
+                         'parameter'   => __('Days to keep sent emails')];
 
       }
-      return array();
+      return [];
    }
 
 
@@ -657,7 +657,7 @@ class QueuedNotification extends CommonDBTM {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("queuednotification", READ)) {

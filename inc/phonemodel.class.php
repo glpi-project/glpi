@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class PhoneModel
 class PhoneModel extends CommonDropdown {
 
-   public $additional_fields_for_dictionnary = array('manufacturer');
+   public $additional_fields_for_dictionnary = ['manufacturer'];
 
 
    static function getTypeName($nb=0) {

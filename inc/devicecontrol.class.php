@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceControl extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceControl', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceControl', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Controller', 'Controllers', $nb);
@@ -53,21 +53,21 @@ class DeviceControl extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'is_raid',
+                         [['name'  => 'is_raid',
                                      'label' => __('RAID'),
-                                     'type'  => 'bool'),
-                               array('name'  => 'interfacetypes_id',
+                                     'type'  => 'bool'],
+                               ['name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'devicecontrolmodels_id',
+                                     'type'  => 'dropdownValue'],
+                               ['name'  => 'devicecontrolmodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'none',
+                                     'type'  => 'dropdownValue'],
+                               ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
                                                                                     null, false),
-                                     'type'  => 'registeredIDChooser')));
+                                     'type'  => 'registeredIDChooser']]);
    }
 
 
@@ -109,7 +109,7 @@ class DeviceControl extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -133,7 +133,7 @@ class DeviceControl extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 

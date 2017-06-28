@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceMotherboard
 class DeviceMotherboard extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceMotherboard', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceMotherboard', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('System board', 'System boards', $nb);
@@ -51,12 +51,12 @@ class DeviceMotherboard extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'chipset',
+                         [['name'  => 'chipset',
                                      'label' => __('Chipset'),
-                                     'type'  => 'text'),
-                              array('name'  => 'devicemotherboardmodels_id',
+                                     'type'  => 'text'],
+                              ['name'  => 'devicemotherboardmodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -90,7 +90,7 @@ class DeviceMotherboard extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -112,7 +112,7 @@ class DeviceMotherboard extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -137,9 +137,9 @@ class DeviceMotherboard extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'      => 'equal',
+      return ['designation'      => 'equal',
                    'manufacturers_id' => 'equal',
-                   'chipset'          => 'equal');
+                   'chipset'          => 'equal'];
    }
 
 }

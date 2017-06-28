@@ -45,7 +45,7 @@ if (!($item = getItemForItemtype($_POST['itemtype']))) {
 $item->checkGlobal(READ);
 
 $group     = "";
-$values    = array();
+$values    = [];
 $searchopt = Search::getCleanedOptions($_POST["itemtype"]);
 echo "<table width='100%'><tr><td width='40%'>";
 
@@ -63,7 +63,7 @@ foreach ($searchopt as $key => $val) {
    }
 }
 $rand     = Dropdown::showFromArray("metacriteria[".$_POST["num"]."][field]", $values,
-                                    array('value' => $_POST["field"]));
+                                    ['value' => $_POST["field"]]);
 $field_id = Html::cleanId("dropdown_metacriteria[".$_POST["num"]."][field]".$rand);
 
 echo "</td><td class='left'>";
@@ -75,12 +75,12 @@ $_POST['meta'] = 1;
 include (GLPI_ROOT."/ajax/searchoption.php");
 echo "</span>\n";
 
-$params = array('field'      => '__VALUE__',
+$params = ['field'      => '__VALUE__',
                 'itemtype'   => $_POST["itemtype"],
                 'num'        => $_POST["num"],
                 'value'      => $_POST["value"],
                 'searchtype' => $_POST["searchtype"],
-                'meta'       => 1);
+                'meta'       => 1];
 
 Ajax::updateItemOnSelectEvent($field_id,
                               "Search2Span".$_POST["itemtype"].$_POST["num"],

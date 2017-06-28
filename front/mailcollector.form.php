@@ -84,6 +84,6 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(MailCollector::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector");
-   $mailgate->display(array('id' =>$_GET["id"]));
+   $mailgate->display(['id' =>$_GET["id"]]);
    Html::footer();
 }

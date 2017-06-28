@@ -86,5 +86,5 @@ if (isset($_POST["add_action"])) {
 Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'admin',
              $rulecollection->menu_type, $rulecollection->menu_option);
 
-$rule->display(array('id' => $_GET["id"]));
+$rule->display(['id' => $_GET["id"]]);
 Html::footer();

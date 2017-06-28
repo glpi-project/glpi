@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
       Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), '', "tools", "rssfeed");
    }
 
-   $rssfeed->display(array('id' => $_GET["id"]));
+   $rssfeed->display(['id' => $_GET["id"]]);
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpFooter();

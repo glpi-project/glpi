@@ -70,11 +70,11 @@ class BlacklistedMailContent extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'content',
+      return [['name'  => 'content',
                          'label' => __('Content'),
                          'type'  => 'textarea',
                          'rows'  => 20,
-                         'list'  => true));
+                         'list'  => true]];
    }
 
 

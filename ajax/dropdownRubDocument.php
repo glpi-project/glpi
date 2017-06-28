@@ -45,7 +45,7 @@ Session::checkCentralAccess();
 
 // Make a select box
 if (isset($_POST["rubdoc"])) {
-   $used = array();
+   $used = [];
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
@@ -75,11 +75,11 @@ if (isset($_POST["rubdoc"])) {
    }
 
    Dropdown::show('Document',
-                  array('name'      => $_POST['myname'],
+                  ['name'      => $_POST['myname'],
                         'used'      => $used,
                         'width'     => '50%',
                         'entity'    => intval($_POST['entity']),
                         'rand'      => intval($_POST['rand']),
-                        'condition' => "glpi_documents.documentcategories_id='".intval($_POST["rubdoc"])."'"));
+                        'condition' => "glpi_documents.documentcategories_id='".intval($_POST["rubdoc"])."'"]);
 
 }

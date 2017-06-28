@@ -44,7 +44,7 @@ function update91to92() {
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2'));
@@ -614,8 +614,8 @@ function update91to92() {
    }
 
    /************** Auto login **************/
-   Config::setConfigurationValues('core', array('login_remember_time'    => 604800,
-                                                'login_remember_default' => 1));
+   Config::setConfigurationValues('core', ['login_remember_time'    => 604800,
+                                                'login_remember_default' => 1]);
 
    if (TableExists('glpi_bookmarks')) {
       $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
@@ -695,7 +695,7 @@ function update91to92() {
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   $ADDTODISPLAYPREF['SavedSearch'] = array(8, 9, 3, 10, 11);
+   $ADDTODISPLAYPREF['SavedSearch'] = [8, 9, 3, 10, 11];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
       foreach ($tab as $newval) {

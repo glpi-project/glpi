@@ -46,15 +46,15 @@ function update0722to0723() {
    displayMigrationMessage("0723"); // Start
 
    //// Correct search.constant numbers : problem in previous update
-   $updates = array();
+   $updates = [];
    // serial / otherserial
-   $updates[] = array('type'  => STATE_TYPE,
+   $updates[] = ['type'  => STATE_TYPE,
                       'from'  => 9,
-                      'to'    => 6);
+                      'to'    => 6];
 
-   $updates[] = array('type'  => STATE_TYPE,
+   $updates[] = ['type'  => STATE_TYPE,
                       'from'  => 8,
-                      'to'    => 5);
+                      'to'    => 5];
 
    foreach ($updates as $data) {
       $query = "UPDATE `glpi_display`
@@ -64,7 +64,7 @@ function update0722to0723() {
       $DB->queryOrDie($query, "0.72.3 reorder search.constant");
    }
 
-   $LINK_ID_TABLE = array(1  => "glpi_computers",
+   $LINK_ID_TABLE = [1  => "glpi_computers",
                           2  => "glpi_networking",
                           3  => "glpi_printers",
                           4  => "glpi_monitors",
@@ -99,7 +99,7 @@ function update0722to0723() {
                           39 => "glpi_softwareversions",
                           41 => "glpi_computerdisks",
                           42 => "glpi_networking_ports",
-                          43 => "glpi_followups");
+                          43 => "glpi_followups"];
 
    $query = "SELECT DISTINCT `device_type`
              FROM `glpi_doc_device`";

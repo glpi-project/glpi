@@ -73,9 +73,9 @@ class AuthMail extends CommonDBTM {
       return $input;
    }
 
-   function defineTabs($options = array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -162,7 +162,7 @@ class AuthMail extends CommonDBTM {
     *
     * @return void (display)
     */
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       if (!Config::canUpdate()) {
          return false;
@@ -348,7 +348,7 @@ class AuthMail extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && $item->can($item->getField('id'), READ)) {
-         $ong = array();
+         $ong = [];
          $ong[1] = _sx('button', 'Test');    // test connexion
 
          return $ong;

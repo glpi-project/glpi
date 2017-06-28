@@ -156,9 +156,9 @@ abstract class FQDNLabel extends CommonDBChild {
          $relation = "= '$label'";
       }
 
-      $IDs = array();
-      foreach (array('NetworkName'  => 'glpi_networknames',
-                     'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
+      $IDs = [];
+      foreach (['NetworkName'  => 'glpi_networknames',
+                     'NetworkAlias' => 'glpi_networkaliases'] as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
                    WHERE `name` $relation ";
@@ -188,11 +188,11 @@ abstract class FQDNLabel extends CommonDBChild {
     **/
    static function getItemsByFQDN($fqdn, $wildcard_search=false) {
 
-      $FQNDs_with_Items = array();
+      $FQNDs_with_Items = [];
 
       if (!$wildcard_search) {
          if (!FQDN::checkFQDN($fqdn)) {
-            return array();
+            return [];
          }
       }
 
@@ -210,7 +210,7 @@ abstract class FQDNLabel extends CommonDBChild {
             foreach ($IDs as $ID) {
                if ($FQDNlabel->getFromDB($ID)) {
                   $FQNDs_with_Items[] = array_merge(array_reverse($FQDNlabel->recursivelyGetItems()),
-                                                    array(clone $FQDNlabel));
+                                                    [clone $FQDNlabel]);
                }
             }
          }
@@ -251,8 +251,8 @@ abstract class FQDNLabel extends CommonDBChild {
          foreach ($labels_with_items as $items) {
             foreach ($items as $item) {
                if ($item->getEntityID() == $entity) {
-                  $result = array("id"       => $item->getID(),
-                                  "itemtype" => $item->getType());
+                  $result = ["id"       => $item->getID(),
+                                  "itemtype" => $item->getType()];
                   unset($labels_with_items);
                   return $result;
                }
@@ -260,6 +260,6 @@ abstract class FQDNLabel extends CommonDBChild {
          }
       }
 
-      return array();
+      return [];
    }
 }

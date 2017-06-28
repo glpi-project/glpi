@@ -86,23 +86,23 @@ class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $loc = new Location();
 
       // A
-      $id[0] = $loc->add(array('entities_id'  => $entity,
+      $id[0] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => 0,
-                               'name'         => 'A'));
+                               'name'         => 'A']);
       $this->assertGreaterThan(0, $id[0]);
 
       // A > AA
-      $id[1] = $loc->add(array('entities_id'  => $entity,
+      $id[1] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => $id[0],
-                               'name'         => 'AA'));
+                               'name'         => 'AA']);
       $this->assertGreaterThan(0, $id[1]);
       $this->assertTrue($loc->getFromDB($id[1]));
       $this->assertEquals('A > AA', $loc->fields['completename']);
 
       // A > BB
-      $id[2] = $loc->add(array('entities_id'  => $entity,
+      $id[2] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => $id[0],
-                               'name'         => 'BB'));
+                               'name'         => 'BB']);
       $this->assertGreaterThan(0, $id[2]);
       $this->assertTrue($loc->getFromDB($id[2]));
       $this->assertEquals('A > BB', $loc->fields['completename']);
@@ -129,15 +129,15 @@ class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey($id[0], $parent);
 
       // B
-      $id[3] = $loc->add(array('entities_id'  => $entity,
+      $id[3] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => 0,
-                               'name'         => 'B'));
+                               'name'         => 'B']);
       $this->assertGreaterThan(0, $id[3]);
 
       // B > CC
-      $id[4] = $loc->add(array('entities_id'  => $entity,
+      $id[4] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => $id[3],
-                               'name'         => 'CC'));
+                               'name'         => 'CC']);
       $this->assertGreaterThan(0, $id[4]);
       $this->assertTrue($loc->getFromDB($id[4]));
       $this->assertEquals('B > CC', $loc->fields['completename']);
@@ -147,16 +147,16 @@ class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey($id[4], $sons);
 
       // B > CC > XXX
-      $id[5] = $loc->add(array('entities_id'  => $entity,
+      $id[5] = $loc->add(['entities_id'  => $entity,
                                'locations_id' => $id[4],
-                               'name'         => 'XXX'));
+                               'name'         => 'XXX']);
       $this->assertGreaterThan(0, $id[5]);
       $this->assertTrue($loc->getFromDB($id[5]));
       $this->assertEquals('B > CC > XXX', $loc->fields['completename']);
 
       // B > CC => A > CC
-      $res = $loc->update(array('id'           => $id[4],
-                                'locations_id' => $id[0]));
+      $res = $loc->update(['id'           => $id[4],
+                                'locations_id' => $id[0]]);
       $this->assertTrue($res);
       $this->assertTrue($loc->getFromDB($id[4]));
       $this->assertEquals('A > CC', $loc->fields['completename']);
@@ -182,8 +182,8 @@ class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey($id[5], $sons);
 
       // Rename A => C
-      $res = $loc->update(array('id'   => $id[0],
-                                'name' => 'C'));
+      $res = $loc->update(['id'   => $id[0],
+                                'name' => 'C']);
       $this->assertTrue($res);
 
       // Check complete name of sons
@@ -195,8 +195,8 @@ class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
       $this->assertEquals(3, $loc->fields['level']);
 
       // Delete CC and move child under B
-      $res = $loc->delete(array('id' => $id[4],
-                                '_replace_by' => $id[3]));
+      $res = $loc->delete(['id' => $id[4],
+                                '_replace_by' => $id[3]]);
       $this->assertTrue($res);
 
       // Sons of B (B and XXX)

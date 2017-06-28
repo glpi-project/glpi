@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
            && isset($_POST['_method'])) {
    $method = 'execute'.$_POST['_method'];
    if (method_exists($dropdown, $method)) {
-      call_user_func(array(&$dropdown, $method), $_POST);
+      call_user_func([&$dropdown, $method], $_POST);
       Html::back();
    } else {
       Html::displayErrorAndDie(__('No selected element or badly defined operation'));
@@ -128,7 +128,7 @@ if (isset($_POST["add"])) {
    $dropdown->displayHeader();
 
    if (!isset($options)) {
-      $options = array();
+      $options = [];
    }
    $options['id'] = $_GET["id"];
    $dropdown->display($options);

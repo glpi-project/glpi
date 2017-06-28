@@ -58,7 +58,7 @@ class APIXmlrpc extends APIBaseClass {
    }
 
    protected function doHttpRequest($resource = "", $params = []) {
-      $headers = array("Content-Type" => "text/xml");
+      $headers = ["Content-Type" => "text/xml"];
       $request = xmlrpc_encode_request($resource, $params);
       return $this->http_client->post($this->base_uri, ['body'    => $request,
                                                        'headers' => $headers]);

@@ -43,7 +43,7 @@ header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-$res = array();
+$res = [];
 
 if (isset($_POST['str'])) {
    $query = "SELECT *

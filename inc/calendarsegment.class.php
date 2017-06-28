@@ -345,9 +345,9 @@ class CalendarSegment extends CommonDBChild {
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
          echo "</td><td class='center'>".__('Start').'</td><td>';
-         Dropdown::showHours("begin", array('value' => date('H').":00"));
+         Dropdown::showHours("begin", ['value' => date('H').":00"]);
          echo "</td><td class='center'>".__('End').'</td><td>';
-         Dropdown::showHours("end", array('value' => (date('H')+1).":00"));
+         Dropdown::showHours("end", ['value' => (date('H')+1).":00"]);
          echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -360,8 +360,8 @@ class CalendarSegment extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                           'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                           'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";

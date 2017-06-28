@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DevicePowerSupply
 class DevicePowerSupply extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DevicePowerSupply', 'Infocom');
+   static protected $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Power supply', 'Power supplies', $nb);
@@ -51,15 +51,15 @@ class DevicePowerSupply extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'is_atx',
+                         [['name'  => 'is_atx',
                                      'label' => __('ATX'),
-                                     'type'  => 'bool'),
-                               array('name'  => 'power',
+                                     'type'  => 'bool'],
+                               ['name'  => 'power',
                                      'label' => __('Power'),
-                                     'type'  => 'text'),
-                               array('name'  => 'devicepowersupplymodels_id',
+                                     'type'  => 'text'],
+                               ['name'  => 'devicepowersupplymodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -101,7 +101,7 @@ class DevicePowerSupply extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -123,7 +123,7 @@ class DevicePowerSupply extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 

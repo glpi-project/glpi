@@ -376,8 +376,8 @@ class DBConnection extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      return array('description' => __('Check the SQL replica'),
-                   'parameter'   => __('Max delay between master and slave (minutes)'));
+      return ['description' => __('Check the SQL replica'),
+                   'parameter'   => __('Max delay between master and slave (minutes)')];
    }
 
 
@@ -398,7 +398,7 @@ class DBConnection extends CommonDBTM {
          if (is_array($DBslave->dbhost)) {
             $hosts = $DBslave->dbhost;
          } else {
-            $hosts = array($DBslave->dbhost);
+            $hosts = [$DBslave->dbhost];
          }
 
          foreach ($hosts as $num => $name) {
@@ -416,9 +416,9 @@ class DBConnection extends CommonDBTM {
 
             if ($diff > ($task->fields['param']*60)) {
                //Raise event if replicate is not synchronized
-               $options = array('diff'        => $diff,
+               $options = ['diff'        => $diff,
                                 'name'        => $name,
-                                'entities_id' => 0); // entity to avoid warning in getReplyTo
+                                'entities_id' => 0]; // entity to avoid warning in getReplyTo
                NotificationEvent::raiseEvent('desynchronization', new self(), $options);
             }
          }
@@ -439,7 +439,7 @@ class DBConnection extends CommonDBTM {
       if (is_array($DBslave->dbhost)) {
          $hosts = $DBslave->dbhost;
       } else {
-         $hosts = array($DBslave->dbhost);
+         $hosts = [$DBslave->dbhost];
       }
 
       foreach ($hosts as $num => $name) {

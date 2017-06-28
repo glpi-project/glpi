@@ -98,7 +98,7 @@ class Auth extends CommonGLPI {
 
    static function getMenuContent() {
 
-      $menu = array();
+      $menu = [];
       if (Config::canUpdate()) {
             $menu['title']                              = __('Authentication');
             $menu['page']                               = '/front/setup.auth.php';
@@ -138,7 +138,7 @@ class Auth extends CommonGLPI {
     *         1 (Exist in the DB with a password -> check first local connection and external after),
     *         2 (Exist in the DB with no password -> check only external auth)
     */
-   function userExists($options=array()) {
+   function userExists($options=[]) {
       global $DB;
 
       $result = $DB->request('glpi_users',
@@ -219,14 +219,14 @@ class Auth extends CommonGLPI {
          $params['method']                             = AuthLDAP::IDENTIFIER_LOGIN;
          $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
          $infos = AuthLdap::searchUserDn($this->ldap_connection,
-                                         array('basedn'            => $ldap_method['basedn'],
+                                         ['basedn'            => $ldap_method['basedn'],
                                                'login_field'       => $ldap_method['login_field'],
                                                'search_parameters' => $params,
                                                'user_params'
-                                                   => array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'  => $login),
-                                               'condition'         => $ldap_method['condition'],
-                                               'user_dn'           => $this->user_dn));
+                                                   => ['method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                            'value'  => $login],
+                                                   'condition'         => $ldap_method['condition'],
+                                                   'user_dn'           => $this->user_dn]);
          $dn = $infos['dn'];
          if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
@@ -540,8 +540,8 @@ class Auth extends CommonGLPI {
    function getAuthMethods() {
 
       //Return all the authentication methods in an array
-      $this->authtypes = array('ldap' => getAllDatasFromTable('glpi_authldaps'),
-                               'mail' => getAllDatasFromTable('glpi_authmails'));
+      $this->authtypes = ['ldap' => getAllDatasFromTable('glpi_authldaps'),
+                               'mail' => getAllDatasFromTable('glpi_authmails')];
    }
 
    /**
@@ -592,7 +592,7 @@ class Auth extends CommonGLPI {
             $ldapservers = '';
             //if LDAP enabled too, get user's infos from LDAP
             if (Toolbox::canUseLdap()) {
-               $ldapservers = array();
+               $ldapservers = [];
                //User has already authenticate, at least once : it's ldap server if filled
                if (isset($this->user->fields["auths_id"])
                    && ($this->user->fields["auths_id"] > 0)) {
@@ -621,14 +621,14 @@ class Auth extends CommonGLPI {
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
                      $user_dn
                         = AuthLdap::searchUserDn($ds,
-                                                 array('basedn'      => $ldap_method["basedn"],
+                                                 ['basedn'      => $ldap_method["basedn"],
                                                        'login_field' => $ldap_method['login_field'],
                                                        'search_parameters'
                                                                      => $params,
                                                        'user_params'
-                                                         => array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                  'value'  => $login_name),
-                                                       'condition'   => $ldap_method["condition"]));
+                                                         => ['method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                  'value'  => $login_name],
+                                                         'condition'   => $ldap_method["condition"]]);
                      if ($user_dn) {
                         $this->user->fields['auths_id'] = $ldap_method['id'];
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
@@ -670,7 +670,7 @@ class Auth extends CommonGLPI {
             // exists=0 -> user doesn't yet exist
             // exists=1 -> user is present in DB with password
             // exists=2 -> user is present in DB but without password
-            $exists = $this->userExists(array('name' => addslashes($login_name)));
+            $exists = $this->userExists(['name' => addslashes($login_name)]);
 
             // Pas en premier car sinon on ne fait pas le blankpassword
             // First try to connect via le DATABASE
@@ -854,7 +854,7 @@ class Auth extends CommonGLPI {
    *
    * @return void (display)
    */
-   static function dropdown($options=array()) {
+   static function dropdown($options=[]) {
       global $DB;
 
       $p['name']                = 'auths_id';
@@ -999,7 +999,7 @@ class Auth extends CommonGLPI {
             }
             break;
       }
-      return array();
+      return [];
    }
 
    /**
@@ -1048,7 +1048,7 @@ class Auth extends CommonGLPI {
     * @return boolean
     */
    static function isAlternateAuth($authtype) {
-      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE));
+      return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE]);
    }
 
    /**
@@ -1210,9 +1210,9 @@ class Auth extends CommonGLPI {
          echo "<table class='tab_cadre'>";
          echo "<tr><th>".__('Change of the authentication method')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
-         $rand             = self::dropdown(array('name' => 'authtype'));
-         $paramsmassaction = array('authtype' => '__VALUE__',
-                                   'name'     => 'change_auth_method');
+         $rand             = self::dropdown(['name' => 'authtype']);
+         $paramsmassaction = ['authtype' => '__VALUE__',
+                                   'name'     => 'change_auth_method'];
          Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
@@ -1343,8 +1343,8 @@ class Auth extends CommonGLPI {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
       echo "<td>";
-      SsoVariable::dropdown(array('name'  => 'ssovariables_id',
-                                  'value' => $CFG_GLPI["ssovariables_id"]));
+      SsoVariable::dropdown(['name'  => 'ssovariables_id',
+                                  'value' => $CFG_GLPI["ssovariables_id"]]);
       echo "</td>";
       echo "</tr>\n";
 

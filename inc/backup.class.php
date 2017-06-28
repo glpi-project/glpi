@@ -73,10 +73,10 @@ class Backup extends CommonGLPI {
    **/
    function getRights($interface='central') {
 
-      $values = array(READ                => __('Read'),
+      $values = [READ                => __('Read'),
                       CREATE              => __('Create'),
                       PURGE               => _x('button', 'Delete permanently'),
-                      self::CHECKUPDATE   => __('Check for upgrade'));
+                      self::CHECKUPDATE   => __('Check for upgrade')];
       return $values;
    }
 

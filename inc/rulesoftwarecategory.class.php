@@ -67,7 +67,7 @@ class RuleSoftwareCategory extends Rule {
 
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -94,12 +94,12 @@ class RuleSoftwareCategory extends Rule {
 
    function getActions() {
 
-      $actions                                   = array();
+      $actions                                   = [];
 
       $actions['softwarecategories_id']['name']  = __('Category');
       $actions['softwarecategories_id']['type']  = 'dropdown';
       $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
-      $actions['softwarecategories_id']['force_actions'] = array('assign','regex_result');
+      $actions['softwarecategories_id']['force_actions'] = ['assign','regex_result'];
 
       $actions['_import_category']['name'] = __('Import category from inventory tool');
       $actions['_import_category']['type'] = 'yesonly';

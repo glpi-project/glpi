@@ -103,8 +103,8 @@ if (isset($_GET['getvcard'])) {
    Session::checkRight('user', User::UPDATEAUTHENT);
 
    $user->getFromDB($_POST["id"]);
-   AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                            'value'  => $user->fields["name"]),
+   AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                            'value'  => $user->fields["name"]],
                                       true, $user->fields["auths_id"], true);
    Html::back();
 
@@ -129,7 +129,7 @@ if (isset($_GET['getvcard'])) {
    if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key, DELETE)) {
-            $groupuser->delete(array('id' => $key));
+            $groupuser->delete(['id' => $key]);
          }
       }
    }
@@ -142,7 +142,7 @@ if (isset($_GET['getvcard'])) {
    Session::checkRight('user', User::UPDATEAUTHENT);
 
    if (isset($_POST["auths_id"])) {
-      User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
+      User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
    }
    Html::back();
 
@@ -169,15 +169,15 @@ if (isset($_GET['getvcard'])) {
       Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
       if (isset($_POST['login']) && !empty($_POST['login'])) {
-         AuthLdap::importUserFromServers(array('name' => $_POST['login']));
+         AuthLdap::importUserFromServers(['name' => $_POST['login']]);
       }
       Html::back();
    } else if (isset($_POST['add_ext_auth_simple'])) {
       if (isset($_POST['login']) && !empty($_POST['login'])) {
          Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
-         $input = array('name'     => $_POST['login'],
+         $input = ['name'     => $_POST['login'],
                      '_extauth' => 1,
-                     'add'      => 1);
+                     'add'      => 1];
          $user->check(-1, CREATE, $input);
          $newID = $user->add($input);
          Event::log($newID, "users", 4, "setup",
@@ -189,7 +189,7 @@ if (isset($_GET['getvcard'])) {
    } else {
       Session::checkRight("user", READ);
       Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
-      $user->display(array('id' => $_GET["id"]));
+      $user->display(['id' => $_GET["id"]]);
       Html::footer();
 
    }

@@ -50,6 +50,6 @@ if (!empty($_POST["test_ajax_send"])) {
 
 Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
 
-$notificationajax->display(array('id' => 1));
+$notificationajax->display(['id' => 1]);
 
 Html::footer();

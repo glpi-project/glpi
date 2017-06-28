@@ -53,56 +53,56 @@ class ITILCategory extends CommonTreeDropdown {
 
    function getAdditionalFields() {
 
-      $tab = array(array('name'      => $this->getForeignKeyField(),
+      $tab = [['name'      => $this->getForeignKeyField(),
                          'label'     => __('As child of'),
                          'type'      => 'parent',
-                         'list'      => false),
-                   array('name'      => 'users_id',
+                         'list'      => false],
+                   ['name'      => 'users_id',
                          'label'     => __('Technician in charge of the hardware'),
                          'type'      => 'UserDropdown',
                          'right'     => 'own_ticket',
-                         'list'      => true),
-                   array('name'      => 'groups_id',
+                         'list'      => true],
+                   ['name'      => 'groups_id',
                          'label'     => __('Group in charge of the hardware'),
                          'type'      => 'dropdownValue',
                          'condition' => '`is_assign`',
-                         'list'      => true),
-                   array('name'      => 'knowbaseitemcategories_id',
+                         'list'      => true],
+                   ['name'      => 'knowbaseitemcategories_id',
                          'label'     => __('Knowledge base'),
                          'type'      => 'dropdownValue',
-                         'list'      => true),
-                   array('name'      => 'is_helpdeskvisible',
+                         'list'      => true],
+                   ['name'      => 'is_helpdeskvisible',
                          'label'     => __('Visible in the simplified interface'),
                          'type'      => 'bool',
-                         'list'      => true),
-                   array('name'      => 'is_incident',
+                         'list'      => true],
+                   ['name'      => 'is_incident',
                          'label'     => __('Visible for an incident'),
                          'type'      => 'bool',
-                         'list'      => true),
-                   array('name'      => 'is_request',
+                         'list'      => true],
+                   ['name'      => 'is_request',
                          'label'     => __('Visible for a request'),
                          'type'      => 'bool',
-                         'list'      => true),
-                   array('name'      => 'is_problem',
+                         'list'      => true],
+                   ['name'      => 'is_problem',
                          'label'     => __('Visible for a problem'),
                          'type'      => 'bool',
-                         'list'      => true),
-                   array('name'      => 'is_change',
+                         'list'      => true],
+                   ['name'      => 'is_change',
                          'label'     => __('Visible for a change'),
                          'type'      => 'bool',
-                         'list'      => true),
-                   array('name'      => 'tickettemplates_id_demand',
+                         'list'      => true],
+                   ['name'      => 'tickettemplates_id_demand',
                          'label'     => __('Template for a request'),
                          'type'      => 'dropdownValue',
-                         'list'      => true),
-                   array('name'      => 'tickettemplates_id_incident',
+                         'list'      => true],
+                   ['name'      => 'tickettemplates_id_incident',
                          'label'     => __('Template for an incident'),
                          'type'      => 'dropdownValue',
-                         'list'      => true),
-                  );
+                         'list'      => true],
+                  ];
 
-      if (!Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE,
-                                                  Problem::READALL, Problem::READMY))) {
+      if (!Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE,
+                                                  Problem::READALL, Problem::READMY])) {
 
          unset($tab[7]);
       }
@@ -320,8 +320,8 @@ class ITILCategory extends CommonTreeDropdown {
          echo self::getTypeName($DB->numrows($result));
          echo "</a>";
          echo "</th></tr>";
-         $used_incident = array();
-         $used_demand   = array();
+         $used_incident = [];
+         $used_demand   = [];
          if ($DB->numrows($result)) {
             echo "<th>".__('Name')."</th>";
             echo "<th>".__('Incident')."</th>";
@@ -331,7 +331,7 @@ class ITILCategory extends CommonTreeDropdown {
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                $itilcategory->getFromDB($data['id']);
-               echo "<td>".$itilcategory->getLink(array('comments' => true))."</td>";
+               echo "<td>".$itilcategory->getLink(['comments' => true])."</td>";
                if ($data['tickettemplates_id_incident'] == $ID) {
                   echo "<td class='center'>
                         <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt=\"".__('OK').

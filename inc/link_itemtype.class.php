@@ -80,8 +80,8 @@ class Link_Itemtype extends CommonDBChild {
                 WHERE `links_id` = '$links_id'
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
-      $types  = array();
-      $used   = array();
+      $types  = [];
+      $used   = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $types[$data['id']]      = $data;
@@ -99,7 +99,7 @@ class Link_Itemtype extends CommonDBChild {
 
          echo "<tr class='tab_bg_2'><td class='right'>";
          echo "<input type='hidden' name='links_id' value='$links_id'>";
-         Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], array('used' => $used));
+         Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], ['used' => $used]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -112,8 +112,8 @@ class Link_Itemtype extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'      => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";

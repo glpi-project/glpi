@@ -36,11 +36,11 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
     */
    public function testImportSimple() {
 
-      $input=array('name'=>'', 'comment'=>"test import");
+      $input=['name'=>'', 'comment'=>"test import"];
       $id = Dropdown::import('DeviceCaseType', $input);
       $this->assertFalse($id>0);
 
-      $input=array('name'=>'PHP Unit test 1', 'comment'=>"test import");
+      $input=['name'=>'PHP Unit test 1', 'comment'=>"test import"];
       $id1 = Dropdown::import('DeviceCaseType', $input);
       $this->assertTrue($id1>0);
 
@@ -48,7 +48,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertTrue($id2>0);
       $this->assertTrue($id1==$id2);
 
-      $input=array('name'=>'PHP Unit test 2');
+      $input=['name'=>'PHP Unit test 2'];
       $id3 = Dropdown::import('DeviceCaseType', $input);
       $this->assertTrue($id3>0);
       $this->assertTrue($id3!=$id2);
@@ -71,41 +71,41 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $fk = 'itilcategories_id';
 
       // root entity - A - new
-      $id[0] = $obj->import(array('name'         => 'A',
+      $id[0] = $obj->import(['name'         => 'A',
                                   'is_recursive' => 1,
-                                  'entities_id'  => $ent0));
+                                  'entities_id'  => $ent0]);
       $this->assertGreaterThan(0, $id[0]);
       $this->assertTrue($obj->getFromDB($id[0]));
       $this->assertEquals(1, $obj->fields['is_recursive']);
 
       // root entity - B - new
-      $id[1] = $obj->import(array('name'         => 'B',
-                                  'entities_id'  => $ent0));
+      $id[1] = $obj->import(['name'         => 'B',
+                                  'entities_id'  => $ent0]);
       $this->assertGreaterThan(0, $id[1]);
       $this->assertTrue($obj->getFromDB($id[1]));
       $this->assertEquals(0, $obj->fields['is_recursive']);
 
       // child entity - A - existing
-      $id[2] = $obj->import(array('name'         => 'A',
-                                  'entities_id'  => $ent1));
+      $id[2] = $obj->import(['name'         => 'A',
+                                  'entities_id'  => $ent1]);
       $this->assertEquals($id[0], $id[2]);
 
       // child entity - B - new
-      $id[3] = $obj->import(array('name'         => 'B',
-                                  'entities_id'  => $ent1));
+      $id[3] = $obj->import(['name'         => 'B',
+                                  'entities_id'  => $ent1]);
       $this->assertGreaterThan($id[1], $id[3]);
 
       // child entity - B > C - exiting B + new C
-      $id[4] = $obj->import(array('completename' => 'B > C',
-                                  'entities_id'  => $ent1));
+      $id[4] = $obj->import(['completename' => 'B > C',
+                                  'entities_id'  => $ent1]);
       $this->assertGreaterThan($id[3], $id[4]);
       $this->assertTrue($obj->getFromDB($id[4]));
       $this->assertEquals('C', $obj->fields['name']);
       $this->assertEquals($id[3], $obj->fields[$fk]);
 
       // child entity - >B>>C>D - clean completename
-      $id[5] = $obj->import(array('completename' => '>B>> C>D',
-                                  'entities_id'  => $ent1));
+      $id[5] = $obj->import(['completename' => '>B>> C>D',
+                                  'entities_id'  => $ent1]);
       $this->assertGreaterThan($id[4], $id[5]);
       $this->assertTrue($obj->getFromDB($id[5]));
       $this->assertEquals('D', $obj->fields['name']);
@@ -128,45 +128,45 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
-      $idr[0] = $rule->add(array('name'      => 'test1',
+      $idr[0] = $rule->add(['name'      => 'test1',
                                  'sub_type'  => 'RuleDictionnaryManufacturer',
                                  'match'     => 'AND',
-                                 'is_active' => 1));
+                                 'is_active' => 1]);
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
       $this->assertTrue($rule->getFromDB($idr[0]));
       $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not set");
 
-      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+      $idc[0] = $crit->add(['rules_id'  => $idr[0],
                                  'criteria'  => 'name',
                                  'condition' => Rule::PATTERN_CONTAIN,
-                                 'pattern'   => 'indepnet'));
+                                 'pattern'   => 'indepnet']);
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
 
-      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
+      $ida[0] = $acte->add(['rules_id'    => $idr[0],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
-                                 'value'       => $out1='Indepnet'));
+                                 'value'       => $out1='Indepnet']);
       $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
 
       // Add another rule
-      $idr[1] = $rule->add(array('name'      => 'test2',
+      $idr[1] = $rule->add(['name'      => 'test2',
                                  'sub_type'  => 'RuleDictionnaryManufacturer',
                                  'match'     => 'AND',
-                                 'is_active' => 1));
+                                 'is_active' => 1]);
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create rule 2");
       $this->assertTrue($rule->getFromDB($idr[1]));
       $this->assertEquals(2, $rule->fields['ranking'], "Fail: ranking not set");
 
-      $idc[1] = $crit->add(array('rules_id'  => $idr[1],
+      $idc[1] = $crit->add(['rules_id'  => $idr[1],
                                  'criteria'  => 'name',
                                  'condition' => Rule::PATTERN_BEGIN,
-                                 'pattern'   => 'http:'));
+                                 'pattern'   => 'http:']);
       $this->assertGreaterThan(0, $idc[1], "Fail: can't create rule 2 criteria");
 
-      $ida[1] = $acte->add(array('rules_id'    => $idr[1],
+      $ida[1] = $acte->add(['rules_id'    => $idr[1],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
-                                 'value'       => $out2='Web Site'));
+                                 'value'       => $out2='Web Site']);
       $this->assertGreaterThan(0, $ida[1], "Fail: can't create rule 2 action");
 
       $manu = new Manufacturer();
@@ -195,11 +195,11 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
 
       // Set is_active=0, and clean cache
-      $this->assertTrue($rule->update(array('id' => $idr[0],
-                                            'is_active' => 0)), "Fail: update rule");
+      $this->assertTrue($rule->update(['id' => $idr[0],
+                                            'is_active' => 0]), "Fail: update rule");
       $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
-      $this->assertTrue($rule->update(array('id' => $idr[0],
-                                            'is_active' => 1)), "Fail: update rule");
+      $this->assertTrue($rule->update(['id' => $idr[0],
+                                            'is_active' => 1]), "Fail: update rule");
 
       // Import again and fill cache
       $id[3] = $manu->importExternal($in = 'http://www.glpi-project.org/');
@@ -273,10 +273,10 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals($nba+2, countElementsInTable('glpi_ruleactions'), "Fail: glpi_ruleactions content");
       $this->assertEquals($nbc+2, countElementsInTable('glpi_rulecriterias'), "Fail: glpi_ruleactions content");
 
-      $this->assertTrue($rule->delete(array('id'=>$idr[0])));
+      $this->assertTrue($rule->delete(['id'=>$idr[0]]));
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache not empty");
 
-      $this->assertTrue($rule->delete(array('id'=>$idr[1])));
+      $this->assertTrue($rule->delete(['id'=>$idr[1]]));
       $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
       $this->assertEquals($nbr, countElementsInTable('glpi_rules'), "Fail: glpi_rules not empty");
       $this->assertEquals($nba, countElementsInTable('glpi_ruleactions'), "Fail: glpi_ruleactions not empty");
@@ -302,51 +302,51 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $acte = new RuleAction();
 
       // Rule for Manufacturer
-      $idr[0] = $rulem->add(array('name'      => 'test1',
+      $idr[0] = $rulem->add(['name'      => 'test1',
                                   'sub_type'  => 'RuleDictionnaryManufacturer',
                                   'match'     => 'AND',
-                                  'is_active' => 1));
+                                  'is_active' => 1]);
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create manufacturer rule");
       $this->assertTrue($rulem->getFromDB($idr[0]));
       $this->assertEquals(1, $rulem->fields['ranking'], "Fail: ranking not set");
 
-      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+      $idc[0] = $crit->add(['rules_id'  => $idr[0],
                                  'criteria'  => 'name',
                                  'condition' => Rule::PATTERN_CONTAIN,
-                                 'pattern'   => 'indepnet'));
+                                 'pattern'   => 'indepnet']);
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create manufacturer rule criteria");
 
-      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
+      $ida[0] = $acte->add(['rules_id'    => $idr[0],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
-                                 'value'       => $outm='Indepnet'));
+                                 'value'       => $outm='Indepnet']);
       $this->assertGreaterThan(0, $ida[0], "Fail: can't create manufacturer rule action");
 
       // Rule for Software
-      $idr[1] = $rules->add(array('name'      => 'test2',
+      $idr[1] = $rules->add(['name'      => 'test2',
                                  'sub_type'  => 'RuleDictionnarySoftware',
                                  'match'     => 'AND',
-                                 'is_active' => 1));
+                                 'is_active' => 1]);
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create software rule");
       $this->assertTrue($rules->getFromDB($idr[1]));
       $this->assertEquals(1, $rules->fields['ranking'], "Fail: ranking not set");
 
-      $idc[1] = $crit->add(array('rules_id'  => $idr[1],
+      $idc[1] = $crit->add(['rules_id'  => $idr[1],
                                  'criteria'  => 'name',
                                  'condition' => Rule::REGEX_MATCH,
-                                 'pattern'   => '/^glpi (0\.[0-9]+)/'));
+                                 'pattern'   => '/^glpi (0\.[0-9]+)/']);
       $this->assertGreaterThan(0, $idc[1], "Fail: can't create software rule criteria");
 
-      $ida[1] = $acte->add(array('rules_id'    => $idr[1],
+      $ida[1] = $acte->add(['rules_id'    => $idr[1],
                                  'action_type' => 'assign',
                                  'field'       => 'name',
-                                 'value'       => $outs='GLPI'));
+                                 'value'       => $outs='GLPI']);
       $this->assertGreaterThan(0, $ida[1], "Fail: can't create software rule action");
 
-      $ida[2] = $acte->add(array('rules_id'    => $idr[1],
+      $ida[2] = $acte->add(['rules_id'    => $idr[1],
                                  'action_type' => 'regex_result',
                                  'field'       => 'version',
-                                 'value'       => $outv='#0'));
+                                 'value'       => $outv='#0']);
       $this->assertGreaterThan(0, $ida[2], "Fail: can't create software rule action");
 
       // Apply Rule to manufacturer
@@ -355,10 +355,10 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Apply Rule to software
       $rulecollection = new RuleDictionnarySoftwareCollection();
-      $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.78',
+      $res_rule = $rulecollection->processAllRules(["name"         => 'glpi 0.78',
                                                          "manufacturer" => $manu,
-                                                         "old_version"  => ''),
-                                                   array(), array());
+                                                         "old_version"  => ''],
+                                                   [], []);
       $this->assertArrayHasKey('name', $res_rule, "Fail: name not altered");
       $this->assertEquals('GLPI', $res_rule['name'], "Fail: name not correct");
 
@@ -366,8 +366,8 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals('0.78', $res_rule['version'], "Fail: version not correct");
 
       // Clean
-      $this->assertTrue($rulem->delete(array('id'=>$idr[0])));
-      $this->assertTrue($rules->delete(array('id'=>$idr[1])));
+      $this->assertTrue($rulem->delete(['id'=>$idr[0]]));
+      $this->assertTrue($rules->delete(['id'=>$idr[1]]));
    }
 
    /**
@@ -405,7 +405,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals($id[0], $id[2], "Fail: previous used (from another entity)");
 
       // Delete
-      $this->assertTrue($soft->delete(array('id'=>$id[2])), "Fail: can't delete software 3)");
+      $this->assertTrue($soft->delete(['id'=>$id[2]]), "Fail: can't delete software 3)");
       $this->assertTrue($soft->getFromDB($id[2]), "Fail: can't read new soft");
       $this->assertEquals(1, $soft->getField('is_deleted'), "Fail: soft not deleted");
 
@@ -416,14 +416,14 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
 
       // Import again => with recursive
-      $this->assertTrue($soft->update(array('id'           => $id[0],
-                                            'is_recursive' => 1)), "Fail: can't update software 1)");
+      $this->assertTrue($soft->update(['id'           => $id[0],
+                                            'is_recursive' => 1]), "Fail: can't update software 1)");
       $id[4] = $soft->addOrRestoreFromTrash('GLPI', 'Indepnet', $ent2);
       $this->assertEquals($id[0], $id[4], "Fail: previous not used");
 
       // Clean
-      $this->assertTrue($soft->delete(array('id'=>$id[0]), true), "Fail: can't delete software 1)");
-      $this->assertTrue($soft->delete(array('id'=>$id[2]), true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(['id'=>$id[0]], true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(['id'=>$id[2]], true), "Fail: can't delete software 1)");
    }
 
    /**
@@ -440,34 +440,34 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
 
-      $idcat[0] = Dropdown::import('SoftwareCategory', array('name'=>'Trashed'));
+      $idcat[0] = Dropdown::import('SoftwareCategory', ['name'=>'Trashed']);
       $this->assertGreaterThan(0, $idcat[0], "Fail: can't create SoftwareCategory");
 
-      $idcat[1] = Dropdown::import('SoftwareCategory', array('name'=>'OpenSource'));
+      $idcat[1] = Dropdown::import('SoftwareCategory', ['name'=>'OpenSource']);
       $this->assertGreaterThan(0, $idcat[1], "Fail: can't create SoftwareCategory");
 
       $rule = new RuleSoftwareCategory();
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
-      $idr[0] = $rule->add(array('name'      => 'OSS',
+      $idr[0] = $rule->add(['name'      => 'OSS',
                                  'sub_type'  => 'RuleSoftwareCategory',
                                  'match'     => 'AND',
-                                 'is_active' => 1));
+                                 'is_active' => 1]);
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
       $this->assertTrue($rule->getFromDB($idr[0]));
       $this->assertEquals(1, $rule->fields['ranking'], "Fail: ranking not set");
 
-      $idc[0] = $crit->add(array('rules_id'  => $idr[0],
+      $idc[0] = $crit->add(['rules_id'  => $idr[0],
                                  'criteria'  => 'manufacturer',
                                  'condition' => Rule::PATTERN_IS,
-                                 'pattern'   => 'Indepnet'));
+                                 'pattern'   => 'Indepnet']);
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
 
-      $ida[0] = $acte->add(array('rules_id'    => $idr[0],
+      $ida[0] = $acte->add(['rules_id'    => $idr[0],
                                  'action_type' => 'assign',
                                  'field'       => 'softwarecategories_id',
-                                 'value'       => $idcat[1]));
+                                 'value'       => $idcat[1]]);
       $this->assertGreaterThan(0, $ida[0], "Fail: can't create rule 1 action");
 
       // Createthe software
@@ -499,6 +499,6 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(0, $soft->getField('is_deleted'), "Fail: soft not restored");
 
       // Clean
-      $this->assertTrue($soft->delete(array('id'=>$id[0]), true), "Fail: can't delete software 1)");
+      $this->assertTrue($soft->delete(['id'=>$id[0]], true), "Fail: can't delete software 1)");
    }
 }

@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
-   $phone->display(array('id'           => $_GET["id"],
-                         'withtemplate' => $_GET["withtemplate"]));
+   $phone->display(['id'           => $_GET["id"],
+                         'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }

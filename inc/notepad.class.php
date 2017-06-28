@@ -60,7 +60,7 @@ class Notepad extends CommonDBChild {
 
 
    function getLogTypeID() {
-      return array($this->fields['itemtype'], $this->fields['items_id']);
+      return [$this->fields['itemtype'], $this->fields['items_id']];
    }
 
 
@@ -145,7 +145,7 @@ class Notepad extends CommonDBChild {
    static function getAllForItem(CommonDBTM $item) {
       global $DB;
 
-      $data = array();
+      $data = [];
       $query = "SELECT `glpi_notepads`.*, `glpi_users`.`picture`
                 FROM `glpi_notepads`
                 LEFT JOIN `glpi_users` ON (`glpi_notepads`.`users_id_lastupdater` = `glpi_users`.`id`)
@@ -283,8 +283,8 @@ class Notepad extends CommonDBChild {
          echo "<div class='boxnoteleft'></div>";
          echo "<form name='addnote_form$rand' id='addnote_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
-         echo Html::hidden('itemtype', array('value' => $item->getType()));
-         echo Html::hidden('items_id', array('value' => $item->getID()));
+         echo Html::hidden('itemtype', ['value' => $item->getType()]);
+         echo Html::hidden('items_id', ['value' => $item->getID()]);
 
          echo "<div class='boxnotecontent'>";
          echo "<div class='floatleft'>";
@@ -293,7 +293,7 @@ class Notepad extends CommonDBChild {
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
+         echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
          echo "</div>";
 
          Html::closeForm();
@@ -348,9 +348,9 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnoteright'>";
             if ($canedit) {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
-                                    array('purge' => 'purge'),
+                                    ['purge' => 'purge'],
                                     _x('button', 'Delete permanently'),
-                                    array('id'   => $note['id']),
+                                    ['id'   => $note['id']],
                                     'fa-times-circle',
                                     '',
                                      __('Confirm the final deletion?'));
@@ -365,12 +365,12 @@ class Notepad extends CommonDBChild {
 
                 echo "<div class='boxnoteleft'></div>";
                 echo "<div class='boxnotecontent'>";
-                echo Html::hidden('id', array('value' => $note['id']));
+                echo Html::hidden('id', ['value' => $note['id']]);
                 echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
                 echo "</div>"; // boxnotecontent
 
                 echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button', 'Update'), array('name' => 'update'));
+                echo Html::submit(_x('button', 'Update'), ['name' => 'update']);
                 echo "</div>"; // boxnoteright
 
                 Html::closeForm();

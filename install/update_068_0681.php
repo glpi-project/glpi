@@ -71,7 +71,7 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 drop glpi_repair_item");
    }
 
-   $tables = array("computers", "monitors", "networking", "peripherals", "phones", "printers");
+   $tables = ["computers", "monitors", "networking", "peripherals", "phones", "printers"];
    foreach ($tables as $tbl) {
       if (isIndex("glpi_".$tbl, "type")) {
          $query = "ALTER TABLE `glpi_$tbl`
@@ -461,8 +461,8 @@ function update068to0681() {
                 RENAME `glpi_dropdown_interface` ";
       $DB->queryOrDie($query, "0.68.1 alter dropdown_hdd_type -> dropdown_interface");
 
-      $values     = array("SATA", "IDE", "SCSI", "USB");
-      $interfaces = array();
+      $values     = ["SATA", "IDE", "SCSI", "USB"];
+      $interfaces = [];
       foreach ($values as $val) {
          $query = "SELECT *
                    FROM `glpi_dropdown_interface`

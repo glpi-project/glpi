@@ -69,9 +69,9 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete"])) {
    $item_ticket = new Item_Ticket();
-   $deleted = $item_ticket->deleteByCriteria(array('tickets_id' => $_POST['tickets_id'],
+   $deleted = $item_ticket->deleteByCriteria(['tickets_id' => $_POST['tickets_id'],
                                                    'items_id'   => $_POST['items_id'],
-                                                   'itemtype'   => $_POST['itemtype']));
+                                                   'itemtype'   => $_POST['itemtype']]);
    Html::back();
 }
 

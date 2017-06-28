@@ -53,16 +53,16 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    **/
    function getAdditionalFields() {
 
-      return array(array('name'  => $this->getForeignKeyField(),
+      return [['name'  => $this->getForeignKeyField(),
                          'label' => __('As child of'),
                          'type'  => 'parent',
-                         'list'  => false));
+                         'list'  => false]];
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
 
       $this->addStandardTab($this->getType(), $ong, $options);
@@ -163,8 +163,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $this->recursiveCleanSonsAboveID($parent);
       $tmp  = clone $this;
-      $crit = array('FIELDS'                    => 'id',
-                    $this->getForeignKeyField() => $this->fields["id"]);
+      $crit = ['FIELDS'                    => 'id',
+                    $this->getForeignKeyField() => $this->fields["id"]];
 
       foreach ($DB->request($this->getTable(), $crit) as $data) {
          $data[$this->getForeignKeyField()] = $parent;
@@ -226,7 +226,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."`
                       SET ";
-            $fieldsToUpdate = array();
+            $fieldsToUpdate = [];
 
             if ($updateName || $changeParent) {
                if (isset($currentNodeCompleteName)) {
@@ -403,7 +403,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr><th colspan='3'>".__('New child heading')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($this, "name", array('value' => ''));
+         Html::autocompletionTextField($this, "name", ['value' => '']);
 
          if ($entity_assign
              && ($this->getForeignKeyField() != 'entities_id')) {
@@ -441,8 +441,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo $header;
 
       $fk   = $this->getForeignKeyField();
-      $crit = array($fk     => $ID,
-                    'ORDER' => 'name');
+      $crit = [$fk     => $ID,
+                    'ORDER' => 'name'];
 
       if ($entity_assign) {
          if ($fk == 'entities_id') {
@@ -524,9 +524,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          case 'move_under' :
             $itemtype = $ma->getItemType(true);
             echo __('As child of');
-            Dropdown::show($itemtype, array('name'     => 'parent',
+            Dropdown::show($itemtype, ['name'     => 'parent',
                                             'comments' => 0,
-                                            'entity'   => $_SESSION['glpiactive_entity']));
+                                            'entity'   => $_SESSION['glpiactive_entity']]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
@@ -560,8 +560,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                      // Check if parent is not a child of the original one
                      if (!in_array($parent->getID(), getSonsOf($item->getTable(),
                                                                $item->getID()))) {
-                        if ($item->update(array('id' => $id,
-                                                $fk  => $parent->getID()))) {
+                        if ($item->update(['id' => $id,
+                                                $fk  => $parent->getID()])) {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

@@ -92,7 +92,7 @@ class Ticket_Ticket extends CommonDBRelation {
                 && isset($input['tickets_id_1'])) {
                if ($item->getFromDB($input['tickets_id_1'])) {
                   foreach ($ids as $id) {
-                     $input2                          = array();
+                     $input2                          = [];
                      $input2['id']                    = $input['tickets_id_1'];
                      $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
                      $input2['_link']['link']         = $input['link'];
@@ -137,15 +137,15 @@ class Ticket_Ticket extends CommonDBRelation {
               WHERE `tickets_id_1` = '$ID'
                     OR `tickets_id_2` = '$ID'";
 
-      $tickets = array();
+      $tickets = [];
 
       foreach ($DB->request($sql) as $data) {
          if ($data['tickets_id_1'] != $ID) {
-            $tickets[$data['id']] = array('link'       => $data['link'],
-                                          'tickets_id' => $data['tickets_id_1']);
+            $tickets[$data['id']] = ['link'       => $data['link'],
+                                          'tickets_id' => $data['tickets_id_1']];
          } else {
-            $tickets[$data['id']] = array('link'       => $data['link'],
-                                          'tickets_id' => $data['tickets_id_2']);
+            $tickets[$data['id']] = ['link'       => $data['link'],
+                                          'tickets_id' => $data['tickets_id_2']];
          }
       }
 
@@ -177,12 +177,12 @@ class Ticket_Ticket extends CommonDBRelation {
                if ($canupdate) {
                   $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
                                                          _x('button', 'Delete permanently'),
-                                                         array('id'         => $linkID,
-                                                               'tickets_id' => $ID),
+                                                         ['id'         => $linkID,
+                                                               'tickets_id' => $ID],
                                                          'fa-times-circle');
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
-                               $ticket->getLink(array('forceid' => true)));
+                               $ticket->getLink(['forceid' => true]));
                printf(__('%1$s %2$s'), $text, $icons);
 
             }
@@ -202,7 +202,7 @@ class Ticket_Ticket extends CommonDBRelation {
 
       $tmp[self::LINK_TO]        = __('Linked to');
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');
-      Dropdown::showFromArray($myname, $tmp, array('value' => $value));
+      Dropdown::showFromArray($myname, $tmp, ['value' => $value]);
    }
 
 
@@ -246,7 +246,7 @@ class Ticket_Ticket extends CommonDBRelation {
                if (($input['link'] == self::DUPLICATE_WITH)
                    && ($t['link'] == self::LINK_TO)) {
                   $tt = new Ticket_Ticket();
-                  $tt->delete(array("id" => $key));
+                  $tt->delete(["id" => $key]);
                } else { // No duplicate link
                   return false;
                }

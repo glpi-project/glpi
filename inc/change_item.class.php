@@ -88,7 +88,7 @@ class Change_Item extends CommonDBRelation{
                    AND `glpi_changes_items`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_changes", '', '', true);
 
-      $nb = countElementsInTable(array('glpi_changes_items', 'glpi_changes'), $restrict);
+      $nb = countElementsInTable(['glpi_changes_items', 'glpi_changes'], $restrict);
 
       return $nb;
    }
@@ -129,17 +129,17 @@ class Change_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         $types = array();
+         $types = [];
          foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+         Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                       => $types,
                                                      'entity_restrict'
                                                       => ($change->fields['is_recursive']
                                                           ?getSonsOf('glpi_entities',
                                                                      $change->fields['entities_id'])
-                                                          :$change->fields['entities_id'])));
+                                                          :$change->fields['entities_id'])]);
          echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
@@ -152,7 +152,7 @@ class Change_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 

@@ -154,7 +154,7 @@ class Notification extends CommonDBTM {
    static function getMenuContent() {
       global $CFG_GLPI;
 
-      $menu = array();
+      $menu = [];
 
       if (Notification::canView()
           || Config::canView()) {
@@ -182,9 +182,9 @@ class Notification extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
       $this->addStandardTab('NotificationTarget', $ong, $options);
@@ -194,7 +194,7 @@ class Notification extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -223,15 +223,15 @@ class Notification extends CommonDBTM {
       } else if (Config::canUpdate()
           && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
-                                          array('value' => $this->fields['itemtype']));
+                                          ['value' => $this->fields['itemtype']]);
       } else {
          $rand = Dropdown::showItemTypes('itemtype',
                                          array_diff($CFG_GLPI["notificationtemplates_types"],
-                                                    array('Crontask', 'DBConnection', 'User')),
-                                         array('value' => $this->fields['itemtype']));
+                                                    ['Crontask', 'DBConnection', 'User']),
+                                         ['value' => $this->fields['itemtype']]);
       }
 
-      $params = array('itemtype' => '__VALUE__');
+      $params = ['itemtype' => '__VALUE__'];
       Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationEvent.php",
                                     $params);
@@ -243,7 +243,7 @@ class Notification extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
       echo "<td><span id='show_events'>";
       NotificationEvent::dropdownEvents($this->fields['itemtype'],
-                                        array('value'=>$this->fields['event']));
+                                        ['value'=>$this->fields['event']]);
       echo "</span></td></tr>";
 
       $this->showFormButtons($options);
@@ -258,10 +258,10 @@ class Notification extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'event':
@@ -282,10 +282,10 @@ class Notification extends CommonDBTM {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -477,7 +477,7 @@ class Notification extends CommonDBTM {
    static function getMailingSignature($entity) {
       global $DB, $CFG_GLPI;
 
-      foreach ($DB->request('glpi_entities', array('id' => $entity)) as $data) {
+      foreach ($DB->request('glpi_entities', ['id' => $entity]) as $data) {
          if (!empty($data['mailing_signature'])) {
             return $data['mailing_signature'];
          }

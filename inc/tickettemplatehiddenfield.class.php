@@ -123,7 +123,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
                $a = new self();
-               $a->delete(array('id'=>$DB->result($result, 0, 0)));
+               $a->delete(['id'=>$DB->result($result, 0, 0)]);
             }
          }
       }
@@ -151,7 +151,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
-      $fields         = array();
+      $fields         = [];
 
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
@@ -208,8 +208,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')";
 
       if ($result = $DB->query($query)) {
-         $hiddenfields = array();
-         $used         = array();
+         $hiddenfields = [];
+         $used         = [];
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $hiddenfields[$data['id']] = $data;
@@ -226,7 +226,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a hidden field')."</th></tr>";
             echo "<tr class='tab_bg_2'><td class='right'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
-            Dropdown::showFromArray('num', $fields, array('used'=> $used));
+            Dropdown::showFromArray('num', $fields, ['used'=> $used]);
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
                          "\" class='submit'>";
@@ -241,8 +241,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                         'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                         'container'     => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";

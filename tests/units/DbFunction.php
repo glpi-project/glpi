@@ -51,17 +51,17 @@ class DbFunction extends DbTestCase {
 
    public function dataTableKey() {
 
-      return array(array('foo', ''),
-                   array('glpi_computers', 'computers_id'),
-                   array('glpi_users', 'users_id'),
-                   array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'));
+      return [['foo', ''],
+                   ['glpi_computers', 'computers_id'],
+                   ['glpi_users', 'users_id'],
+                   ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']];
    }
 
    public function dataTableForeignKey() {
 
-      return array(array('glpi_computers', 'computers_id'),
-                   array('glpi_users', 'users_id'),
-                   array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'));
+      return [['glpi_computers', 'computers_id'],
+                   ['glpi_users', 'users_id'],
+                   ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']];
    }
 
    /**
@@ -98,13 +98,13 @@ class DbFunction extends DbTestCase {
       require_once __DIR__ . '/../fixtures/pluginfoobar.php';
       require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
 
-      return array(array('glpi_computers', 'Computer', true),
-                   array('glpi_events', 'Glpi\\Event', true),
-                   array('glpi_users', 'User', true),
-                   array('glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true),
-                   array('glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false),
-                   array('glpi_plugin_foo_bars', 'PluginFooBar', true),
-                   array('glpi_plugin_foo_bazs', 'PluginFooBaz', false));
+      return [['glpi_computers', 'Computer', true],
+                   ['glpi_events', 'Glpi\\Event', true],
+                   ['glpi_users', 'User', true],
+                   ['glpi_plugin_bar_foos', 'GlpiPlugin\\Bar\\Foo', true],
+                   ['glpi_plugin_baz_foos', 'GlpiPlugin\\Baz\\Foo', false],
+                   ['glpi_plugin_foo_bars', 'PluginFooBar', true],
+                   ['glpi_plugin_foo_bazs', 'PluginFooBaz', false]];
    }
 
    /**
@@ -139,16 +139,16 @@ class DbFunction extends DbTestCase {
 
    public function dataPlural() {
 
-      return array(array('model', 'models'),
-                   array('address', 'addresses'),
-                   array('computer', 'computers'),
-                   array('thing', 'things'),
-                   array('criteria', 'criterias'),
-                   array('version', 'versions'),
-                   array('config', 'configs'),
-                   array('machine', 'machines'),
-                   array('memory', 'memories'),
-                   array('licence', 'licences'));
+      return [['model', 'models'],
+                   ['address', 'addresses'],
+                   ['computer', 'computers'],
+                   ['thing', 'things'],
+                   ['criteria', 'criterias'],
+                   ['version', 'versions'],
+                   ['config', 'configs'],
+                   ['machine', 'machines'],
+                   ['memory', 'memories'],
+                   ['licence', 'licences']];
    }
 
     /**
@@ -175,7 +175,7 @@ class DbFunction extends DbTestCase {
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
       $this->integer((int)countElementsInTable('glpi_configs'))->isGreaterThan(100);
-      $this->integer((int)countElementsInTable(array('glpi_configs', 'glpi_users')))->isGreaterThan(100);
+      $this->integer((int)countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100);
       $this->integer((int)countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100);
       $this->integer(
          (int)countElementsInTable(

@@ -62,8 +62,8 @@ abstract class NotificationEventAbstract {
       global $CFG_GLPI;
       if ($CFG_GLPI['notifications_' . $options['mode']]) {
          $entity = $notificationtarget->getEntity();
-         $processed    = array();
-         $notprocessed = array();
+         $processed    = [];
+         $notprocessed = [];
 
          $targets = getAllDatasFromTable(
             'glpi_notificationtargets',

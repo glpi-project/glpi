@@ -92,7 +92,7 @@ class UserEmail  extends CommonDBChild {
    static function getAllForUser($users_id) {
       global $DB;
 
-      $emails = array();
+      $emails = [];
 
       // Get default one
       foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'") as $data) {

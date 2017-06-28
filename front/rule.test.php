@@ -68,7 +68,7 @@ Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);
 
 if (isset($_POST["test_rule"])) {
-   $params = array();
+   $params = [];
    //Unset values that must not be processed by the rule
    unset($_POST["test_rule"]);
    unset($_POST["rules_id"]);

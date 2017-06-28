@@ -52,7 +52,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
       global $DB;
 
       // Model check : need to check using manufacturer extra data so specific function
@@ -78,7 +78,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
           && ($nb > $offset)) {
          // Step to refresh progressbar
          $step              = (($nb > 20) ? floor($nb/20) : 1);
-         $send              = array();
+         $send              = [];
          $send["tablename"] = $this->item_table;
 
          while ($data = $DB->fetch_assoc($result)) {
@@ -93,15 +93,15 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             //Replay Type dictionnary
             $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                           addslashes($data["name"]), -1, array(),
+                                           addslashes($data["name"]), -1, [],
                                            addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
                $type                = GetItemTypeForTable($this->item_table);
 
                if ($dropdown = getItemForItemtype($type)) {
-                  $dropdown->delete(array('id'          => $data['id'],
-                                          '_replace_by' => $ID));
+                  $dropdown->delete(['id'          => $data['id'],
+                                          '_replace_by' => $ID]);
                }
             }
             $i++;
@@ -172,7 +172,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
           && ($nb > $offset)) {
          // Step to refresh progressbar
          $step    = (($nb > 20) ? floor($nb/20) : 1);
-         $tocheck = array();
+         $tocheck = [];
 
          while ($data = $DB->fetch_assoc($result)) {
             if (!($i % $step)) {
@@ -244,7 +244,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
                if ($result = $DB->query($sql)) {
                   if ($DB->numrows($result)) {
                      // Get compatible cartridge type
-                     $carttype = array();
+                     $carttype = [];
                      while ($data = $DB->fetch_assoc($result)) {
                         $carttype[] = $data['cartridgeitems_id'];
                      }

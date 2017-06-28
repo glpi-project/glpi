@@ -47,7 +47,7 @@ Session::checkLoginUser();
 if (isset($_POST['data'])) {
    foreach ($_POST['data'] as $key =>  $values) {
       $unique_name = Rule::getUuid();
-      $response[$key] = array('tag' => Document::getImageTag($unique_name), 'name' => $unique_name);
+      $response[$key] = ['tag' => Document::getImageTag($unique_name), 'name' => $unique_name];
    }
 
    echo json_encode($response);

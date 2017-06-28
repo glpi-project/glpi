@@ -78,8 +78,8 @@ abstract class NotificationSetting extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
-      $ong = array();
+   function defineTabs($options=[]) {
+      $ong = [];
       $this->addStandardTab(static::class, $ong, $options);
 
       return $ong;

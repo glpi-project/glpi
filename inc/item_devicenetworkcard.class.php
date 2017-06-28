@@ -55,15 +55,15 @@ class Item_DeviceNetworkCard extends Item_Devices {
    **/
    static function getSpecificities($specif='') {
 
-      return array('mac'    => array('long name'  => __('MAC address'),
+      return ['mac'    => ['long name'  => __('MAC address'),
                                      'short name' => __('MAC address'),
                                      'size'       => 18,
                                      'id'         => 20,
-                                     'datatype'   => 'mac'),
+                                     'datatype'   => 'mac'],
                    'serial' => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),
                    'states_id' => parent::getSpecificities('states_id'),
-                   'busID'  => parent::getSpecificities('busID'));
+                   'busID'  => parent::getSpecificities('busID')];
    }
 }

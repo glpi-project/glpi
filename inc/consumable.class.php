@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
 class Consumable extends CommonDBChild {
 
    // From CommonDBTM
-   static protected $forward_entity_to = array('Infocom');
+   static protected $forward_entity_to = ['Infocom'];
    public $no_form_page                = true;
 
    static $rightname                   = 'consumable';
@@ -98,11 +98,11 @@ class Consumable extends CommonDBChild {
 
       $item = new ConsumableItem();
       if ($item->getFromDB($input["consumableitems_id"])) {
-         return array("consumableitems_id" => $item->fields["id"],
+         return ["consumableitems_id" => $item->fields["id"],
                       "entities_id"        => $item->getEntityID(),
-                      "date_in"            => date("Y-m-d"));
+                      "date_in"            => date("Y-m-d")];
       }
-      return array();
+      return [];
    }
 
 
@@ -188,16 +188,16 @@ class Consumable extends CommonDBChild {
       switch ($ma->getAction()) {
          case 'give' :
             if (isset($input["entities_id"])) {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
+               Dropdown::showSelectItemFromItemtypes(['itemtype_name'
                                                               => 'give_itemtype',
                                                            'items_id_name'
                                                               => 'give_items_id',
                                                            'entity_restrict'
                                                               => $input["entities_id"],
                                                            'itemtypes'
-                                                              => $CFG_GLPI["consumables_types"]));
+                                                              => $CFG_GLPI["consumables_types"]]);
                echo "<br><br>".Html::submit(_x('button', 'Give'),
-                                            array('name' => 'massiveaction'));
+                                            ['name' => 'massiveaction']);
                return true;
             }
       }
@@ -217,7 +217,7 @@ class Consumable extends CommonDBChild {
          case 'backtostock' :
             foreach ($ids as $id) {
                if ($item->can($id, UPDATE)) {
-                  if ($item->backToStock(array("id" => $id))) {
+                  if ($item->backToStock(["id" => $id])) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -433,9 +433,9 @@ class Consumable extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
-         Dropdown::showNumber('to_add', array('value' => 1,
+         Dropdown::showNumber('to_add', ['value' => 1,
                                               'min'   => 1,
-                                              'max'   => 100));
+                                              'max'   => 100]);
          echo " <input type='submit' name='add_several' value=\""._sx('button', 'Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";
@@ -510,14 +510,14 @@ class Consumable extends CommonDBChild {
          } else {
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'give'] = _x('button', 'Give');
          }
-         $entparam = array('entities_id' => $consitem->getEntityID());
+         $entparam = ['entities_id' => $consitem->getEntityID()];
          if ($consitem->isRecursive()) {
-            $entparam = array('entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID()));
+            $entparam = ['entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID())];
          }
-         $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'extraparams'      => $entparam);
+                           'extraparams'      => $entparam];
          Html::showMassiveActions($massiveactionparams);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }
@@ -613,7 +613,7 @@ class Consumable extends CommonDBChild {
                                                    getEntitiesRestrictRequest("WHERE",
                                                                            "glpi_consumableitems").")
                 GROUP BY `itemtype`, `items_id`, `consumableitems_id`";
-      $used = array();
+      $used = [];
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -631,7 +631,7 @@ class Consumable extends CommonDBChild {
                                                    getEntitiesRestrictRequest("WHERE",
                                                                            "glpi_consumableitems").")
                 GROUP BY `consumableitems_id`";
-      $new = array();
+      $new = [];
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -641,7 +641,7 @@ class Consumable extends CommonDBChild {
          }
       }
 
-      $types = array();
+      $types = [];
       $query = "SELECT *
                 FROM `glpi_consumableitems` ".
                 getEntitiesRestrictRequest("WHERE", "glpi_consumableitems");
@@ -654,7 +654,7 @@ class Consumable extends CommonDBChild {
          }
       }
       asort($types);
-      $total = array();
+      $total = [];
       if (count($types) > 0) {
          // Produce headline
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
@@ -741,7 +741,7 @@ class Consumable extends CommonDBChild {
    **/
    static function countForConsumableItem(ConsumableItem $item) {
 
-      return countElementsInTable(array('glpi_consumables'), ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
+      return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
    }
 
 

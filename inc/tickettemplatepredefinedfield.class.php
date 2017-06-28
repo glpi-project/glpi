@@ -121,7 +121,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
                $a = new self();
-               $a->delete(array('id'=>$DB->result($result, 0, 0)));
+               $a->delete(['id'=>$DB->result($result, 0, 0)]);
             }
          }
       }
@@ -172,7 +172,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
-      $fields         = array();
+      $fields         = [];
       $multiple       = self::getMultiplePredefinedValues();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
@@ -198,10 +198,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    static function getMultiplePredefinedValues() {
 
       $ticket = new Ticket();
-      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+      $fields = [$ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
                       $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'),
                       $ticket->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
-                     );
+                     ];
 
       return $fields;
    }
@@ -252,12 +252,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
 
-      $display_options = array('relative_dates' => true,
+      $display_options = ['relative_dates' => true,
                                'comments'       => true,
-                               'html'           => true);
+                               'html'           => true];
       if ($result = $DB->query($query)) {
-         $predeffields = array();
-         $used         = array();
+         $predeffields = [];
+         $used         = [];
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $predeffields[$data['id']] = $data;
@@ -284,19 +284,19 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                }
             }
 
-            $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
-                                                                              'toadd'));
+            $rand_dp  = Dropdown::showFromArray('num', $display_fields, ['used' => $used,
+                                                                              'toadd']);
             echo "</td><td class='top'>";
-            $paramsmassaction = array('id_field'         => '__VALUE__',
+            $paramsmassaction = ['id_field'         => '__VALUE__',
                                       'itemtype'         => 'Ticket',
                                       'inline'           => true,
                                       'submitname'       => _sx('button', 'Add'),
-                                      'options'          => array('relative_dates'     => 1,
+                                      'options'          => ['relative_dates'     => 1,
                                                                   'with_time'          => 1,
                                                                   'with_days'          => 0,
                                                                   'with_specific_date' => 0,
                                                                   'itemlink_as_string' => 1,
-                                                                  'entity'             => $tt->getEntityID()));
+                                                                  'entity'             => $tt->getEntityID()]];
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
@@ -312,8 +312,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                         'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                         'container'     => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";

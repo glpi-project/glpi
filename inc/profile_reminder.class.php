@@ -62,7 +62,7 @@ class Profile_Reminder extends CommonDBRelation {
    static function getProfiles($reminders_id) {
       global $DB;
 
-      $prof  = array();
+      $prof  = [];
       $query = "SELECT `glpi_profiles_reminders`.*
                 FROM `glpi_profiles_reminders`
                 WHERE `reminders_id` = '$reminders_id'";

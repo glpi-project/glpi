@@ -78,42 +78,42 @@ if (!isset($_GET["start"])) {
 $stat = new Stat();
 Stat::title();
 
-$requester = array('user'               => array('title' => __('Requester')),
-                   'users_id_recipient' => array('title' => __('Writer')),
-                   'group'              => array('title' => __('Group')),
-                   'group_tree'         => array('title' => __('Group tree')),
-                   'usertitles_id'      => array('title' => _x('person', 'Title')),
-                   'usercategories_id'  => array('title' => __('Category')));
+$requester = ['user'               => ['title' => __('Requester')],
+                   'users_id_recipient' => ['title' => __('Writer')],
+                   'group'              => ['title' => __('Group')],
+                   'group_tree'         => ['title' => __('Group tree')],
+                   'usertitles_id'      => ['title' => _x('person', 'Title')],
+                   'usercategories_id'  => ['title' => __('Category')]];
 
-$caract    = array('itilcategories_id'   => array('title' => __('Category')),
-                   'itilcategories_tree' => array('title' => __('Category tree')),
-                   'urgency'             => array('title' => __('Urgency')),
-                   'impact'              => array('title' => __('Impact')),
-                   'priority'            => array('title' => __('Priority')),
-                   'solutiontypes_id'    => array('title' => __('Solution type')));
+$caract    = ['itilcategories_id'   => ['title' => __('Category')],
+                   'itilcategories_tree' => ['title' => __('Category tree')],
+                   'urgency'             => ['title' => __('Urgency')],
+                   'impact'              => ['title' => __('Impact')],
+                   'priority'            => ['title' => __('Priority')],
+                   'solutiontypes_id'    => ['title' => __('Solution type')]];
 
 if ($_GET['itemtype'] == 'Ticket') {
-   $caract['type']            = array('title' => __('Type'));
-   $caract['requesttypes_id'] = array('title' => __('Request source'));
-   $caract['locations_id']    = array('title' => __('Location'));
-   $caract['locations_tree']  = array('title' => __('Location tree'));
+   $caract['type']            = ['title' => __('Type')];
+   $caract['requesttypes_id'] = ['title' => __('Request source')];
+   $caract['locations_id']    = ['title' => __('Location')];
+   $caract['locations_tree']  = ['title' => __('Location tree')];
 }
 
 
-$items = array(__('Requester')       => $requester,
+$items = [__('Requester')       => $requester,
                __('Characteristics') => $caract,
-               __('Assigned to')     => array('technicien'
-                                                   => array('title' => __('Technician as assigned')),
+               __('Assigned to')     => ['technicien'
+                                                   => ['title' => __('Technician as assigned')],
                                               'technicien_followup'
-                                                   => array('title' => __('Technician in tasks')),
+                                                   => ['title' => __('Technician in tasks')],
                                               'groups_id_assign'
-                                                   => array('title' => __('Group')),
+                                                   => ['title' => __('Group')],
                                               'groups_tree_assign'
-                                                   => array('title' => __('Group tree')),
+                                                   => ['title' => __('Group tree')],
                                               'suppliers_id_assign'
-                                                   => array('title' => __('Supplier'))));
+                                                   => ['title' => __('Supplier')]]];
 
-$values = array();
+$values = [];
 foreach ($items as $label => $tab) {
    foreach ($tab as $key => $val) {
       $values[$label][$key] = $val['title'];
@@ -126,10 +126,10 @@ echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
 
 echo "<table class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td rowspan='2' class='center' width='30%'>";
-Dropdown::showFromArray('type', $values, array('value' => $_GET['type']));
+Dropdown::showFromArray('type', $values, ['value' => $_GET['type']]);
 echo "</td>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateField("date1", array('value' => $_GET["date1"]));
+Html::showDateField("date1", ['value' => $_GET["date1"]]);
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
@@ -137,7 +137,7 @@ echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display r
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateField("date2", array('value' => $_GET["date2"]));
+Html::showDateField("date2", ['value' => $_GET["date2"]]);
 echo "</td><td class='center'>";
 echo "<input type='hidden' name='value2' value='".$_GET["value2"]."'>";
 Dropdown::showYesNo('showgraph', $_GET['showgraph']);
@@ -149,11 +149,11 @@ echo "</div>";
 
 $val    = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"],
                          $_GET["value2"]);
-$params = array('type'   => $_GET["type"],
+$params = ['type'   => $_GET["type"],
                 'date1'  => $_GET["date1"],
                 'date2'  => $_GET["date2"],
                 'value2' => $_GET["value2"],
-                'start'  => $_GET["start"]);
+                'start'  => $_GET["start"]];
 
 Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
                  "date1=".$_GET["date1"]."&amp;date2=".$_GET["date2"]."&amp;type=".$_GET["type"].

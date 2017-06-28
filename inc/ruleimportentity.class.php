@@ -101,7 +101,7 @@ class RuleImportEntity extends Rule {
    **/
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -110,7 +110,7 @@ class RuleImportEntity extends Rule {
       $criterias['_source']['table']            = '';
       $criterias['_source']['field']            = '_source';
       $criterias['_source']['name']             = __('Source');
-      $criterias['_source']['allow_condition']  = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
+      $criterias['_source']['allow_condition']  = [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT];
 
       return $criterias;
    }
@@ -125,7 +125,7 @@ class RuleImportEntity extends Rule {
       global $PLUGIN_HOOKS;
 
       if ($criteria['field'] == '_source') {
-         $tab = array();
+         $tab = [];
          foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
             $tab[$plug] = Plugin::getInfo($plug, 'name');
          }
@@ -159,7 +159,7 @@ class RuleImportEntity extends Rule {
    **/
    function getActions() {
 
-      $actions                             = array();
+      $actions                             = [];
 
       $actions['entities_id']['name']      = __('Entity');
       $actions['entities_id']['type']      = 'dropdown';

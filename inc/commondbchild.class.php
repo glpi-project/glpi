@@ -66,8 +66,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    static function getSQLRequestToSearchForItem($itemtype, $items_id) {
 
-      $conditions = array();
-      $fields     = array('`'.static::getIndexName().'`');
+      $conditions = [];
+      $fields     = ['`'.static::getIndexName().'`'];
 
       // Check item 1 type
       $condition_id = "`".static::$items_id."` = '$items_id'";
@@ -248,7 +248,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          case 'Name' :
          case 'Link' :
-            $items_elements  = array();
+            $items_elements  = [];
             foreach ($recursiveItems as $item) {
                if ($elementToDisplay == 'Name') {
                   $items_elements[] = $item->getName();
@@ -274,11 +274,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $item = $this->getItem();
       if ($item !== false) {
          if ($item instanceof CommonDBChild) {
-            return array_merge(array($item), $item->recursivelyGetItems());
+            return array_merge([$item], $item->recursivelyGetItems());
          }
-         return array($item);
+         return [$item];
       }
-      return array();
+      return [];
    }
 
 
@@ -423,8 +423,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       // True if item changed
-      if (!parent::checkAttachedItemChangesAllowed($input, array(static::$itemtype,
-                                                                 static::$items_id))) {
+      if (!parent::checkAttachedItemChangesAllowed($input, [static::$itemtype,
+                                                                 static::$items_id])) {
          return false;
       }
 
@@ -446,8 +446,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function getHistoryNameForItem(CommonDBTM $item, $case) {
 
-      return $this->getNameID(array('forceid'    => true,
-                                    'additional' => true));
+      return $this->getNameID(['forceid'    => true,
+                                    'additional' => true]);
    }
 
 
@@ -835,8 +835,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
    **/
    function affectChild($id, $items_id=0, $itemtype='') {
 
-      $input = array(static::getIndexName() => $id,
-                     static::$items_id      => $items_id);
+      $input = [static::getIndexName() => $id,
+                     static::$items_id      => $items_id];
 
       if (preg_match('/^itemtype/', static::$itemtype)) {
          $input[static::$itemtype] = $itemtype;

@@ -46,7 +46,7 @@ if (strpos($_SERVER['PHP_SELF'], "getDropdownNumber.php")) {
 
 Session::checkLoginUser();
 
-$used = array();
+$used = [];
 
 if (isset($_POST['used'])) {
    $used = $_POST['used'];
@@ -69,10 +69,10 @@ if (!isset($_POST['page'])) {
 if (isset($_POST['toadd'])) {
    $toadd = $_POST['toadd'];
 } else {
-   $toadd = array();
+   $toadd = [];
 }
 
-$data = array();
+$data = [];
 // Count real items returned
 $count = 0;
 
@@ -80,14 +80,14 @@ if ($_POST['page'] == 1) {
    if (count($toadd)) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
-            array_push($data, array('id'   => $key,
-                                     'text' => strval(stripslashes($val))));
+            array_push($data, ['id'   => $key,
+                                     'text' => strval(stripslashes($val))]);
          }
       }
    }
 }
 
-$values = array();
+$values = [];
 if (!empty($_POST['searchText'])) {
    for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
       if (strstr($i, $_POST['searchText'])) {
@@ -108,8 +108,8 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($i, $_POST['unit']);
       }
-      array_push($data, array('id'   => $i,
-                               'text' => strval($txt)));
+      array_push($data, ['id'   => $i,
+                               'text' => strval($txt)]);
       $count++;
    }
 
@@ -125,8 +125,8 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($value, $_POST['unit']);
       }
-      array_push($data, array('id'   => $value,
-                               'text' => strval(stripslashes($txt))));
+      array_push($data, ['id'   => $value,
+                               'text' => strval(stripslashes($txt))]);
       $count++;
    }
 }

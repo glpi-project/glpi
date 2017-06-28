@@ -78,9 +78,9 @@ class SavedSearch_Alert extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -98,7 +98,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       /*if (!Session::haveRight("savedsearch", UPDATE)) {
          return false;
@@ -303,7 +303,7 @@ class SavedSearch_Alert extends CommonDBChild {
          case 'send' :
             return ['description' => __('Saved searches alerts')];
       }
-      return array();
+      return [];
    }
 
    /**

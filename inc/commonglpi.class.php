@@ -57,7 +57,7 @@ class CommonGLPI {
 
    /// Need to get item to show tab
    public $get_item_to_display_tab = false;
-   static protected $othertabs     = array();
+   static protected $othertabs     = [];
 
 
    /**
@@ -98,7 +98,7 @@ class CommonGLPI {
       if (isset(self::$othertabs[$typeform])) {
          self::$othertabs[$typeform][] = $typetab;
       } else {
-         self::$othertabs[$typeform] = array($typetab);
+         self::$othertabs[$typeform] = [$typetab];
       }
    }
 
@@ -118,7 +118,7 @@ class CommonGLPI {
       if (isset(self::$othertabs[$typeform])) {
          return self::$othertabs[$typeform];
       }
-      return array();
+      return [];
    }
 
 
@@ -132,9 +132,9 @@ class CommonGLPI {
     *
     * @return array array containing the tabs
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       return $ong;
    }
@@ -150,10 +150,10 @@ class CommonGLPI {
     *
     * @return array array containing the tabs
    **/
-   final function defineAllTabs($options=array()) {
+   final function defineAllTabs($options=[]) {
       global $CFG_GLPI;
 
-      $onglets = array();
+      $onglets = [];
       // Tabs known by the object
       if ($this->isNewItem()) {
          $this->addDefaultFormTab($onglets);
@@ -205,7 +205,7 @@ class CommonGLPI {
                 && ($obj = getItemForItemtype($itemtype))) {
                $titles = $obj->getTabNameForItem($this, $withtemplate);
                if (!is_array($titles)) {
-                  $titles = array(1 => $titles);
+                  $titles = [1 => $titles];
                }
 
                foreach ($titles as $key => $val) {
@@ -250,7 +250,7 @@ class CommonGLPI {
    **/
    static function getMenuContent() {
 
-      $menu       = array();
+      $menu       = [];
 
       $type       = static::getType();
       $item       = new $type();
@@ -333,7 +333,7 @@ class CommonGLPI {
     * @return array array of forbidden actions
    **/
    static function getForbiddenActionsForMenu() {
-      return array();
+      return [];
    }
 
 
@@ -429,13 +429,13 @@ class CommonGLPI {
     *
     * @return boolean true
    **/
-   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options=array()) {
+   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options=[]) {
 
       switch ($tab) {
          // All tab
          case -1 :
             // get tabs and loop over
-            $ong = $item->defineAllTabs(array('withtemplate' => $withtemplate));
+            $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
 
             if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
                //on classical and vertical split; the main tab is always displayed
@@ -468,9 +468,9 @@ class CommonGLPI {
             $options['withtemplate'] = $withtemplate;
 
             if ($tabnum == 'main') {
-               Plugin::doHook('pre_show_item', array('item' => $item, 'options' => &$options));
+               Plugin::doHook('pre_show_item', ['item' => $item, 'options' => &$options]);
                $ret = $item->showForm($item->getID(), $options);
-               Plugin::doHook('post_show_item', array('item' => $item, 'options' => $options));
+               Plugin::doHook('post_show_item', ['item' => $item, 'options' => $options]);
                return $ret;
             }
 
@@ -478,9 +478,9 @@ class CommonGLPI {
                 && ($obj = getItemForItemtype($itemtype))) {
                $options['tabnum'] = $tabnum;
                $options['itemtype'] = $itemtype;
-               Plugin::doHook('pre_show_tab', array( 'item' => $item, 'options' => &$options));
+               Plugin::doHook('pre_show_tab', [ 'item' => $item, 'options' => &$options]);
                $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
-               Plugin::doHook('post_show_tab', array('item' => $item, 'options' => $options));
+               Plugin::doHook('post_show_tab', ['item' => $item, 'options' => $options]);
                return $ret;
             }
             break;
@@ -622,7 +622,7 @@ class CommonGLPI {
     *
     * @return boolean
    **/
-   function showPrimaryForm($options=array()) {
+   function showPrimaryForm($options=[]) {
 
       if (!method_exists($this, "showForm")) {
          return false;
@@ -641,9 +641,9 @@ class CommonGLPI {
       }
       echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
+      Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
       $this->showForm($options['id'], $options);
-      Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
+      Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
       echo "</div>";
       echo "</div>";
    }
@@ -659,7 +659,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function showTabsContent($options=array()) {
+   function showTabsContent($options=[]) {
       global $CFG_GLPI;
 
       // for objects not in table like central
@@ -703,23 +703,23 @@ class CommonGLPI {
 
       if (count($onglets)) {
          $tabpage = $this->getTabsURL();
-         $tabs    = array();
+         $tabs    = [];
 
          foreach ($onglets as $key => $val) {
-            $tabs[$key] = array('title'  => $val,
+            $tabs[$key] = ['title'  => $val,
                                 'url'    => $tabpage,
                                 'params' => "_target=$target&amp;_itemtype=".$this->getType().
-                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml");
+                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"];
          }
 
          // Not all tab for templates and if only 1 tab
          if ($display_all
              && empty($withtemplate)
              && (count($tabs) > 1)) {
-            $tabs[-1] = array('title'  => __('All'),
+            $tabs[-1] = ['title'  => __('All'),
                               'url'    => $tabpage,
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
-                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
+                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"];
          }
 
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
@@ -737,7 +737,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function showNavigationHeader($options=array()) {
+   function showNavigationHeader($options=[]) {
       global $CFG_GLPI;
 
       // for objects not in table like central
@@ -918,7 +918,7 @@ class CommonGLPI {
     * @return boolean
     */
    public static function isLayoutWithMain() {
-      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], array('classic', 'vsplit')));
+      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], ['classic', 'vsplit']));
    }
 
 
@@ -952,7 +952,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   function display($options=array()) {
+   function display($options=[]) {
       global $CFG_GLPI;
 
       if (isset($options['id'])
@@ -1033,7 +1033,7 @@ class CommonGLPI {
     *
     * @return void
    **/
-   static function updateDisplayOptions($input=array(), $sub_itemtype='') {
+   static function updateDisplayOptions($input=[], $sub_itemtype='') {
 
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
@@ -1064,9 +1064,9 @@ class CommonGLPI {
          if ($uid = Session::getLoginUserID()) {
             $user = new User();
             if ($user->getFromDB($uid)) {
-               $user->update(array('id' => $uid,
+               $user->update(['id' => $uid,
                                    'display_options'
-                                        => exportArrayToDB($_SESSION['glpi_display_options'])));
+                                        => exportArrayToDB($_SESSION['glpi_display_options'])]);
             }
          }
       }
@@ -1086,7 +1086,7 @@ class CommonGLPI {
 
       if (!isset($_SESSION['glpi_display_options'])) {
          // Load display_options from user table
-         $_SESSION['glpi_display_options'] = array();
+         $_SESSION['glpi_display_options'] = [];
          if ($uid = Session::getLoginUserID()) {
             $user = new User();
             if ($user->getFromDB($uid)) {
@@ -1095,12 +1095,12 @@ class CommonGLPI {
          }
       }
       if (!isset($_SESSION['glpi_display_options'][self::getType()])) {
-         $_SESSION['glpi_display_options'][self::getType()] = array();
+         $_SESSION['glpi_display_options'][self::getType()] = [];
       }
 
       if (!empty($sub_itemtype)) {
          if (!isset($_SESSION['glpi_display_options'][self::getType()][$sub_itemtype])) {
-            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = array();
+            $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype] = [];
          }
          $display_options = &$_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
       } else {
@@ -1187,7 +1187,7 @@ class CommonGLPI {
     * @return array all the options
    **/
    static function getAvailableDisplayOptions() {
-      return array();
+      return [];
    }
 
 
@@ -1213,10 +1213,10 @@ class CommonGLPI {
                                              $CFG_GLPI['root_doc'].
                                                 "/front/display.options.php?itemtype=".
                                                 static::getType()."&sub_itemtype=$sub_itemtype",
-                                             array('display'       => false,
+                                             ['display'       => false,
                                                    'width'         => 600,
                                                    'height'        => 500,
-                                                   'reloadonclose' => true));
+                                                   'reloadonclose' => true]);
 
       return $link;
    }

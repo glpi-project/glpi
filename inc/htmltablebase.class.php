@@ -47,9 +47,9 @@ class HTMLTableUnknownHeadersOrder extends Exception {}
 **/
 abstract class HTMLTableBase  {
 
-   private $headers = array();
-   private $headers_order = array();
-   private $headers_sub_order = array();
+   private $headers = [];
+   private $headers_order = [];
+   private $headers_sub_order = [];
    private $super;
 
 
@@ -86,9 +86,9 @@ abstract class HTMLTableBase  {
       }
 
       if (!isset($this->headers[$header_name])) {
-         $this->headers[$header_name]           = array();
+         $this->headers[$header_name]           = [];
          $this->headers_order[]                 = $header_name;
-         $this->headers_sub_order[$header_name] = array();
+         $this->headers_sub_order[$header_name] = [];
       }
       if (!isset($this->headers[$header_name][$subHeader_name])) {
          $this->headers_sub_order[$header_name][] = $subHeader_name;

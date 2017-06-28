@@ -55,8 +55,8 @@ class RegisteredID  extends CommonDBChild {
 
    static function getRegisteredIDTypes() {
 
-      return array('PCI' => __('PCI'),
-                   'USB' => __('USB'));
+      return ['PCI' => __('PCI'),
+                   'USB' => __('USB')];
    }
 
 

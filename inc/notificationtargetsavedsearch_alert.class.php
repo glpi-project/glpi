@@ -70,7 +70,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
    }
 
 
-   function getDatasForTemplate($event, $options=array()) {
+   function getDatasForTemplate($event, $options=[]) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
@@ -109,9 +109,9 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
       ];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
       asort($this->tag_descriptions);
    }
@@ -139,10 +139,10 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
                   $user->getFromDB($savedsearch->getField('users_id'));
                   // Send to user without any check on profile / entity
                   // Do not set users_id
-                  $data = array('name'     => $user->getName(),
+                  $data = ['name'     => $user->getName(),
                                 'email'    => $user->getDefaultEmail(),
                                 'language' => $user->getField('language'),
-                                'usertype' => $usertype);
+                                'usertype' => $usertype];
                   $this->addToRecipientsList($data);
             }
       }

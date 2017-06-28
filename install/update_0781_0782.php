@@ -51,12 +51,12 @@ function update0781to0782($output='HTML') {
    $migration->displayMessage(__('Data migration')); // Updating schema
 
    /// Add document types
-   $types = array('docx' => array('name' => 'Word XML',
-                                  'icon' => 'doc-dist.png'),
-                  'xlsx' => array('name' => 'Excel XML',
-                                  'icon' => 'xls-dist.png'),
-                  'pptx' => array('name' => 'PowerPoint XML',
-                                  'icon' => 'ppt-dist.png'));
+   $types = ['docx' => ['name' => 'Word XML',
+                                  'icon' => 'doc-dist.png'],
+                  'xlsx' => ['name' => 'Excel XML',
+                                  'icon' => 'xls-dist.png'],
+                  'pptx' => ['name' => 'PowerPoint XML',
+                                  'icon' => 'ppt-dist.png']];
 
    foreach ($types as $ext => $data) {
 
@@ -104,7 +104,7 @@ function update0781to0782($output='HTML') {
    }
 
    // For Rule::RULE_TRACKING_AUTO_ACTION
-   $changes['RuleMailCollector'] = array('X-Priority' => 'x-priority');
+   $changes['RuleMailCollector'] = ['X-Priority' => 'x-priority'];
 
    $DB->query("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {

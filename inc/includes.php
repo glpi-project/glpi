@@ -44,9 +44,9 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
-foreach (array('glpi_table_of', 'glpi_foreign_key_field_of') as $session_array_fields) {
+foreach (['glpi_table_of', 'glpi_foreign_key_field_of'] as $session_array_fields) {
    if (!isset($_SESSION[$session_array_fields])) {
-      $_SESSION[$session_array_fields] = array();
+      $_SESSION[$session_array_fields] = [];
    }
 }
 
@@ -69,10 +69,10 @@ Session::loadLanguage();
 if (isset($_SESSION['glpi_use_mode'])
     && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
    $SQL_TOTAL_REQUEST    = 0;
-   $DEBUG_SQL["queries"] = array();
-   $DEBUG_SQL["errors"]  = array();
-   $DEBUG_SQL["times"]   = array();
-   $DEBUG_AUTOLOAD       = array();
+   $DEBUG_SQL["queries"] = [];
+   $DEBUG_SQL["errors"]  = [];
+   $DEBUG_SQL["times"]   = [];
+   $DEBUG_AUTOLOAD       = [];
 }
 
 // Security system
@@ -106,7 +106,7 @@ if (isset($AJAX_INCLUDE)) {
 if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    // PLugin already included
    $PLUGINS_INCLUDED = 1;
-   $LOADED_PLUGINS   = array();
+   $LOADED_PLUGINS   = [];
    $plugin           = new Plugin();
    if (!isset($_SESSION["glpi_plugins"])) {
       $plugin->init();

@@ -45,10 +45,10 @@ abstract class APIBaseClass extends atoum {
    public function setUp() {
       // enable api config
       $config = new Config;
-      $config->update(array('id'                              => 1,
+      $config->update(['id'                              => 1,
                             'enable_api'                      => true,
                             'enable_api_login_credentials'    => true,
-                            'enable_api_login_external_token' => true));
+                            'enable_api_login_external_token' => true]);
    }
 
 
@@ -842,9 +842,9 @@ abstract class APIBaseClass extends atoum {
 
       // create a ticket for another user (glpi - super-admin)
       $ticket = new \Ticket;
-      $tickets_id = $ticket->add(array('name'                => 'test post-only',
+      $tickets_id = $ticket->add(['name'                => 'test post-only',
                                        'content'             => 'test post-only',
-                                       '_users_id_requester' => 2));
+                                       '_users_id_requester' => 2]);
       $this->integer((int)$tickets_id)->isGreaterThan(0);
 
       // try to access this ticket with post-only
@@ -869,7 +869,7 @@ abstract class APIBaseClass extends atoum {
          ->hasSize(1);
 
       // delete ticket
-      $ticket->delete(array('id' => $tickets_id), true);
+      $ticket->delete(['id' => $tickets_id], true);
    }
 
    /**
@@ -908,7 +908,7 @@ abstract class APIBaseClass extends atoum {
     */
    public function testUpdateItems() {
       $computers_id_collection = $this->testCreateItems();
-      $input    = array();
+      $input    = [];
       $computer = new Computer;
       foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id'          => $computers_id['id'],
@@ -977,7 +977,7 @@ abstract class APIBaseClass extends atoum {
     */
    public function testDeleteItems() {
       $computers_id_collection = $this->testCreateItems();
-      $input    = array();
+      $input    = [];
       $computer = new Computer;
       $lastComputer = array_pop($computers_id_collection);
       foreach ($computers_id_collection as $key => $computers_id) {
@@ -1074,15 +1074,15 @@ abstract class APIBaseClass extends atoum {
     * @tags    api
     */
    public function testProtectedConfigSettings() {
-      $sensitiveSettings = array(
+      $sensitiveSettings = [
             'proxy_passwd',
             'smtp_passwd',
-      );
+      ];
 
       // set a non empty value to the sessionts to check
       foreach ($sensitiveSettings as $name) {
-         Config::setConfigurationValues('core', array($name => 'not_empty_password'));
-         $value = Config::getConfigurationValues('core', array($name));
+         Config::setConfigurationValues('core', [$name => 'not_empty_password']);
+         $value = Config::getConfigurationValues('core', [$name]);
          $this->array($value)->hasKey($name);
          $this->string($value[$name])->isNotEmpty();
       }
@@ -1113,7 +1113,7 @@ abstract class APIBaseClass extends atoum {
       $this->variable($data['value'])->isNotEqualTo('');
 
       // Check a search does not disclose sensitive values
-      $criteria = array();
+      $criteria = [];
       $queryString = "";
       foreach ($rows as $row) {
          $queryString = "&criteria[0][link]=or&criteria[0][field]=1&criteria[0][searchtype]=equals&criteria[0][value]=".$row['name'];

@@ -83,7 +83,7 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
    }
 }
 
-$notvalidoptions = array('_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate');
+$notvalidoptions = ['_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate'];
 $options         = $_GET;
 foreach ($notvalidoptions as $key) {
    if (isset($options[$key])) {

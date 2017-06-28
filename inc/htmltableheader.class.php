@@ -46,7 +46,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    private $name;
    private $father;
-   private $itemtypes   = array();
+   private $itemtypes   = [];
    private $colSpan     = 1;
    private $numberCells = 0;
 

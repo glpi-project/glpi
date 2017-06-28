@@ -46,11 +46,11 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Alarms on expired licenses'));
+      return ['alert' => __('Alarms on expired licenses')];
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       $events                            = $this->getAllEvents();
 
@@ -60,7 +60,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                                                                      $options['entities_id']);
 
       foreach ($options['licenses'] as $id => $license) {
-         $tmp                       = array();
+         $tmp                       = [];
          $tmp['##license.item##']   = $license['softname'];
          $tmp['##license.name##']   = $license['name'];
          $tmp['##license.serial##'] = $license['serial'];
@@ -82,24 +82,24 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('license.expirationdate' => __('Expiration date'),
+      $tags = ['license.expirationdate' => __('Expiration date'),
                     'license.item'           => _n('Software', 'Software', 1),
                     'license.name'           => __('Name'),
                     'license.serial'         => __('Serial number'),
                     'license.entity'         => __('Entity'),
                     'license.url'            => __('URL'),
-                    'license.action'         => _n('Event', 'Events', 1));
+                    'license.action'         => _n('Event', 'Events', 1)];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'licenses',
+      $this->addTagToList(['tag'     => 'licenses',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

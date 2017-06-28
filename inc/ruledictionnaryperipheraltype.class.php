@@ -50,7 +50,7 @@ class RuleDictionnaryPeripheralType extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -69,9 +69,9 @@ class RuleDictionnaryPeripheralType extends RuleDictionnaryDropdown {
    **/
    function getActions() {
 
-      $actions                          = array();
+      $actions                          = [];
       $actions['name']['name']          = __('Type');
-      $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
+      $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];
 
       return $actions;
    }

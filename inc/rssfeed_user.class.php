@@ -62,7 +62,7 @@ class RSSFeed_User extends CommonDBRelation {
    static function getUsers($rssfeeds_id) {
       global $DB;
 
-      $users = array();
+      $users = [];
       $query = "SELECT `glpi_rssfeeds_users`.*
                 FROM `glpi_rssfeeds_users`
                 WHERE `rssfeeds_id` = '$rssfeeds_id'";

@@ -46,9 +46,9 @@ class HTMLTableRow extends HTMLTableEntity {
 
    private $group;
    private $empty              = true;
-   private $cells              = array();
+   private $cells              = [];
    private $numberOfSubRows    = 1;
-   private $linesWithAttributs = array();
+   private $linesWithAttributs = [];
 
 
    /**
@@ -103,7 +103,7 @@ class HTMLTableRow extends HTMLTableEntity {
 
       $header_name = $header->getCompositeName();
       if (!isset($this->cells[$header_name])) {
-         $this->cells[$header_name] = array();
+         $this->cells[$header_name] = [];
       }
 
       $cell = new HTMLTableCell($this, $header, $content, $father, $item);
@@ -174,7 +174,7 @@ class HTMLTableRow extends HTMLTableEntity {
          if (isset($this->linesWithAttributs[$i])) {
             $options = $this->linesWithAttributs[$i];
          } else {
-            $options = array();
+            $options = [];
          }
          echo "\t\t<tr class='tab_bg_1'>\n";
          foreach ($headers as $header) {

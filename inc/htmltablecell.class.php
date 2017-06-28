@@ -51,7 +51,7 @@ class HTMLTableCell extends HTMLTableEntity {
    private $row;
    private $header;
    private $father;
-   private $sons = array();
+   private $sons = [];
    private $item;
 
    // List of rows that have specific attributs
@@ -158,7 +158,7 @@ class HTMLTableCell extends HTMLTableEntity {
    function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header) {
 
       if (!isset($this->sons[$sons_header->getName()])) {
-         $this->sons[$sons_header->getName()] = array();
+         $this->sons[$sons_header->getName()] = [];
       }
       $this->sons[$sons_header->getName()][] = $son;
    }
@@ -250,7 +250,7 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $index
     * @param $options   array
    **/
-   function displayCell($index, array $options=array()) {
+   function displayCell($index, array $options=[]) {
 
       if (($index >= $this->start)
           && ($index < ($this->start + $this->numberOfLines))) {

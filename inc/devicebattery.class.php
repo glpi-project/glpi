@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 class DeviceBattery extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceBattery', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Battery', 'Batteries', $nb);
@@ -101,7 +101,7 @@ class DeviceBattery extends CommonDevice {
 
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -116,7 +116,7 @@ class DeviceBattery extends CommonDevice {
    }
 
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 

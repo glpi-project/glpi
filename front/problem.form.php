@@ -103,10 +103,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_assign'])) {
    $problem_user = new Problem_User();
    $problem->check($_POST['problems_id'], READ);
-   $input = array('problems_id'       => $_POST['problems_id'],
+   $input = ['problems_id'       => $_POST['problems_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
-                  'type'             => CommonITILActor::ASSIGN);
+                  'type'             => CommonITILActor::ASSIGN];
    $problem_user->add($input);
    Event::log($_POST['problems_id'], "problem", 4, "maintain",
               //TRANS: %s is the user login

@@ -128,24 +128,24 @@ if (($DB->numrows($result) == 0)
 function import(array $options) {
    global $CFG_GLPI;
 
-   $results = array(AuthLDAP::USER_IMPORTED     => 0,
+   $results = [AuthLDAP::USER_IMPORTED     => 0,
                     AuthLDAP::USER_SYNCHRONIZED => 0,
-                    AuthLDAP::USER_DELETED_LDAP => 0);
+                    AuthLDAP::USER_DELETED_LDAP => 0];
    //The ldap server id is passed in the script url (parameter server_id)
    $limitexceeded = false;
-   $actions_to_do = array();
+   $actions_to_do = [];
 
    switch ($options['action']) {
       case AuthLDAP::ACTION_IMPORT :
-         $actions_to_do = array(AuthLDAP::ACTION_IMPORT);
+         $actions_to_do = [AuthLDAP::ACTION_IMPORT];
         break;
 
       case AuthLDAP::ACTION_SYNCHRONIZE :
-         $actions_to_do = array(AuthLDAP::ACTION_SYNCHRONIZE);
+         $actions_to_do = [AuthLDAP::ACTION_SYNCHRONIZE];
         break;
 
       case AuthLDAP::ACTION_ALL :
-         $actions_to_do = array(AuthLDAP::ACTION_IMPORT,AuthLDAP::ACTION_ALL);
+         $actions_to_do = [AuthLDAP::ACTION_IMPORT,AuthLDAP::ACTION_ALL];
         break;
    }
 
@@ -157,8 +157,8 @@ function import(array $options) {
 
       if (is_array($users)) {
          foreach ($users as $user) {
-            $result = AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                               'value'  => $user["user"]),
+            $result = AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                               'value'  => $user["user"]],
                                                          $action_to_do,
                                                          $options['ldapservers_id']);
             if ($result) {

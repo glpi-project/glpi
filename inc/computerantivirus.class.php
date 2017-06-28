@@ -86,9 +86,9 @@ class ComputerAntivirus extends CommonDBChild {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -105,7 +105,7 @@ class ComputerAntivirus extends CommonDBChild {
    static function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      foreach ($DB->request('glpi_computerantiviruses', array('computers_id' => $oldid)) as $data) {
+      foreach ($DB->request('glpi_computerantiviruses', ['computers_id' => $oldid]) as $data) {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
@@ -223,7 +223,7 @@ class ComputerAntivirus extends CommonDBChild {
     *
     * @return bool TRUE if form is ok
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -275,7 +275,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Dropdown::show('Manufacturer', ['value' => $this->fields["manufacturers_id"]]);
       echo "</td>";
       echo "<td>".__('Up to date')."</td>";
       echo "<td>";
@@ -295,7 +295,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Expiration date')."</td>";
       echo "<td>";
-      Html::showDateField("date_expiration", array('value' => $this->fields['date_expiration']));
+      Html::showDateField("date_expiration", ['value' => $this->fields['date_expiration']]);
       echo "</td>";
       echo "<td colspan='2'></td>";
       echo "</tr>";
@@ -336,8 +336,8 @@ class ComputerAntivirus extends CommonDBChild {
 
       echo "<div class='spaced center'>";
 
-      if ($result = $DB->request('glpi_computerantiviruses', array('computers_id' => $ID,
-                                                                   'is_deleted'   => 0))) {
+      if ($result = $DB->request('glpi_computerantiviruses', ['computers_id' => $ID,
+                                                                   'is_deleted'   => 0])) {
          echo "<table class='tab_cadre_fixehov'>";
          $colspan = 7;
          if (Plugin::haveImport()) {
