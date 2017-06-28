@@ -644,11 +644,11 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
  * Get the ancestors of an item in a tree dropdown
  *
  * @param $table     string   table name
- * @param $items_id  array  The IDs of the items
+ * @param $items_id  mixed (array or string) The IDs of the items
  *
  * @return array of IDs of the ancestors
 **/
-function getAncestorsOfArray($table, $items_id) {
+function getAncestorsOf($table, $items_id) {
    global $DB;
 
    // IDs to be present in the final array
@@ -656,8 +656,11 @@ function getAncestorsOfArray($table, $items_id) {
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = FieldExists($table, "ancestors_cache");
 
-   if ($use_cache
-       && is_array($items_id)) {
+   if(!is_array($items_id)){
+      $items_id = array($items_id);
+   }
+
+   if ($use_cache) {
 
       $query = "SELECT `id`, `ancestors_cache`, `$parentIDfield`
                 FROM `$table`
@@ -698,113 +701,29 @@ function getAncestorsOfArray($table, $items_id) {
       return $id_found;
    }
 
-   if (is_array($items_id)) {
-      // Get the ancestors
-      // iterative solution for table without cache
-      foreach( $items_id as $id ) {
-         $IDf = $id;
-         while ($IDf > 0) {
-            // Get next elements
-            $query = "SELECT `$parentIDfield`
-                FROM `$table`
-                WHERE `id` = '$IDf'";
-
-            $result = $DB->query($query);
-            if ($DB->numrows($result)>0) {
-               $IDf = $DB->result($result,0,0);
-            } else {
-               $IDf = 0;
-            }
-
-            if (!isset($id_found[$IDf])
-                && (($IDf > 0) || ($table == 'glpi_entities'))) {
-               $id_found[$IDf] = $IDf;
-            } else {
-               $IDf = 0;
-            }
-         }
-      }
-   }
-
-   return $id_found;
-}
-
-
-/**
- * Get the ancestors of an item in a tree dropdown
- *
- * @param $table     string   table name
- * @param $items_id  integer  The ID of the item
- *
- * @return array of IDs of the ancestors
-**/
-function getAncestorsOf($table, $items_id) {
-   global $DB;
-
-   // IDs to be present in the final array
-   $id_found      = array();
-   $parentIDfield = getForeignKeyFieldForTable($table);
-   $use_cache     = FieldExists($table, "ancestors_cache");
-
-   if ($use_cache
-       && ($items_id > 0)) {
-
-      $query = "SELECT `ancestors_cache`, `$parentIDfield`
-                FROM `$table`
-                WHERE `id` = '$items_id'";
-
-      if (($result = $DB->query($query))
-          && ($DB->numrows($result) > 0)) {
-         $ancestors = trim($DB->result($result, 0, 0));
-         $parent    = $DB->result($result, 0, 1);
-
-         // Return datas from cache in DB
-         if (!empty($ancestors)) {
-            return importArrayFromDB($ancestors, true);
-         }
-
-         // Recursive solution for table with-cache
-         if ($parent > 0) {
-            $id_found = getAncestorsOf($table, $parent);
-         }
-
-         // ID=0 only exists for Entities
-         if (($parent > 0)
-             || ($table == 'glpi_entities')) {
-            $id_found[$parent] = $parent;
-         }
-
-         // Store cache datas in DB
-         $query = "UPDATE `$table`
-                   SET `ancestors_cache` = '".exportArrayToDB($id_found)."'
-                   WHERE `id` = '$items_id'";
-         $DB->query($query);
-      }
-
-      return $id_found;
-   }
-
-   // Get the leafs of previous founded item
+   // Get the ancestors
    // iterative solution for table without cache
-   $IDf = $items_id;
-   while ($IDf > 0) {
-      // Get next elements
-      $query = "SELECT `$parentIDfield`
-                FROM `$table`
-                WHERE `id` = '$IDf'";
+   foreach( $items_id as $id ) {
+      $IDf = $id;
+      while ($IDf > 0) {
+         // Get next elements
+         $query = "SELECT `$parentIDfield`
+               FROM `$table`
+               WHERE `id` = '$IDf'";
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
-         $IDf = $DB->result($result,0,0);
-      } else {
-         $IDf = 0;
-      }
+         $result = $DB->query($query);
+         if ($DB->numrows($result)>0) {
+            $IDf = $DB->result($result,0,0);
+         } else {
+            $IDf = 0;
+         }
 
-      if (!isset($id_found[$IDf])
-          && (($IDf > 0) || ($table == 'glpi_entities'))) {
-         $id_found[$IDf] = $IDf;
-      } else {
-         $IDf = 0;
+         if (!isset($id_found[$IDf])
+               && (($IDf > 0) || ($table == 'glpi_entities'))) {
+            $id_found[$IDf] = $IDf;
+         } else {
+            $IDf = 0;
+         }
       }
    }
 
@@ -1810,7 +1729,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
    if ($is_recursive) {
       $ancestors = array();
       if (is_array($value)) {
-         $ancestors = getAncestorsOfArray("glpi_entities", $value);         
+         $ancestors = getAncestorsOf("glpi_entities", $value);
          $ancestors = array_diff($ancestors, $value);
 
       } else if (strlen($value) == 0) {
