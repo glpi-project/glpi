@@ -47,34 +47,28 @@ Session::start();
 
 Config::detectRootDoc();
 
+loadGlpiConfig((isset($USEDBREPLICATE) ? true : false),
+      (isset($DBCONNECTION_REQUIRED) ? true : false),
+      (isset($TRY_OLD_CONFIG_FIRST) ? true : false));
 
-if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Session::loadLanguage();
-   // no translation
-   if (!isCommandLine()) {
-      Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
-      echo "<div class='center'>";
-      echo "<p>Error: GLPI seems to not be configured properly.</p>";
-      echo "<p>config_db.php file is missing.</p>";
-      echo "<p>Please restart the install process.</p>";
-      echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."'>Click here to proceed</a></p>";
-      echo "</div>";
-      Html::nullFooter();
+/**
+ * Load GLPI configuration. Dies on failures.
+ *
+ * @param boolean $usedbreplicate        use databasse replicate or not
+ * @param boolean $dbconnection_required requires database connection or not
+ * @param boolean $try_old_config_first  try old GLPI configuration first or not
+ *
+ * @return void
+ */
+function loadGlpiConfig($usedbreplicate, $dbconnection_required, $try_old_config_first) {
+   global $CFG_GLPI;
 
-   } else {
-      echo "Error: GLPI seems to not be configured properly.\n";
-      echo "config_db.php file is missing.\n";
-      echo "Please connect to GLPI web interface to complete the install process.\n";
-   }
-   die();
+   checkDBConfig();
 
-} else {
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
    //Database connection
-   DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                                       (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
-
+   DBConnection::establishDBConnection($usedbreplicate, $dbconnection_required);
 
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
@@ -87,11 +81,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
    }
 
-   $config_object  = new Config();
    $current_config = array();
 
    if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
-       && (isset($TRY_OLD_CONFIG_FIRST) // index case
+       && ($try_old_config_first // index case
            || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
 
       if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
@@ -99,68 +92,157 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
 
       // First try old config table : for update process management from < 0.80 to >= 0.80
-      $config_object->forceTable('glpi_config');
-
-      if ($config_object->getFromDB(1)) {
-         $current_config = $config_object->fields;
-      } else {
-         $config_object->forceTable('glpi_configs');
-         if ($config_object->getFromDB(1)) {
-            if (isset($config_object->fields['context'])) {
-               $current_config = Config::getConfigurationValues('core');
-            } else {
-               $current_config = $config_object->fields;
-            }
-            $config_ok = true;
-         }
-      }
+      $current_config = readOldGlpiConfig();
 
    } else { // Normal load process : use normal config table. If problem try old one
+      $current_config = readGlpiConfig();
+   }
+
+   if (count($current_config) > 0) {
+      applyGlpiConfig($current_config);
+   } else {
+      echo "Error accessing config table";
+      exit();
+   }
+
+   setDebugMode();
+
+   if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
+      Html::redirect($_SESSION["glpiroot"]);
+   }
+
+   // Override cfg_features by session value
+   applyGlpiConfigToSession();
+
+   // Check maintenance mode
+   checkMaintenanceMode();
+
+   // Check version
+   checkGlpiVersion();
+}
+
+/**
+ * Check if the database configuration exists. Dies if it does not.
+ *
+ * @return void
+ */
+function checkDBConfig() {
+   global $CFG_GLPI;
+
+   if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+      Session::loadLanguage();
+      // no translation
+      if (!isCommandLine()) {
+         Html::nullHeader("DB Error", $CFG_GLPI["root_doc"]);
+         echo "<div class='center'>";
+         echo "<p>Error: GLPI seems to not be configured properly.</p>";
+         echo "<p>config_db.php file is missing.</p>";
+         echo "<p>Please restart the install process.</p>";
+         echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."'>Click here to proceed</a></p>";
+         echo "</div>";
+         Html::nullFooter();
+
+      } else {
+         echo "Error: GLPI seems to not be configured properly.\n";
+         echo "config_db.php file is missing.\n";
+         echo "Please connect to GLPI web interface to complete the install process.\n";
+      }
+      die();
+   }
+}
+
+/**
+ * Read the configuration data from old GLPI schema
+ *
+ * @return string[]
+ */
+function readOldGlpiConfig() {
+   $config_object  = new Config();
+   $config_object->forceTable('glpi_config');
+
+   if ($config_object->getFromDB(1)) {
+      $current_config = $config_object->fields;
+   } else {
+      $config_object->forceTable('glpi_configs');
       if ($config_object->getFromDB(1)) {
          if (isset($config_object->fields['context'])) {
             $current_config = Config::getConfigurationValues('core');
          } else {
             $current_config = $config_object->fields;
          }
+      }
+   }
+
+   return $current_config;
+}
+
+/**
+ * Read the configuration from current schema
+ *
+ * @return string[]
+ */
+function readGlpiConfig() {
+   $config_object  = new Config();
+
+   if ($config_object->getFromDB(1)) {
+      if (isset($config_object->fields['context'])) {
+         $current_config = Config::getConfigurationValues('core');
       } else {
-         // Manage glpi_config table before 0.80
-         $config_object->forceTable('glpi_config');
-         if ($config_object->getFromDB(1)) {
-            $current_config = $config_object->fields;
-         }
+         $current_config = $config_object->fields;
       }
-   }
-
-   if (count($current_config) > 0) {
-      $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
-
-      if (isset($CFG_GLPI['priority_matrix'])) {
-         $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
-                                                          true);
-      }
-      if (isset($CFG_GLPI['lock_item_list'])) {
-          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
-      }
-      if (isset($CFG_GLPI['lock_lockprofile_id'])
-          && $CFG_GLPI["lock_use_lock_item"]
-          && ($CFG_GLPI["lock_lockprofile_id"] > 0)
-          && !isset($CFG_GLPI['lock_lockprofile']) ) {
-
-            $prof = new Profile();
-            $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
-            $prof->cleanProfile();
-            $CFG_GLPI['lock_lockprofile'] = $prof->fields;
-      }
-
-      // Path for icon of document type (web mode only)
-      if (isset($CFG_GLPI["root_doc"])) {
-         $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
-      }
-
    } else {
-      echo "Error accessing config table";
-      exit();
+      // Manage glpi_config table before 0.80
+      $config_object->forceTable('glpi_config');
+      if ($config_object->getFromDB(1)) {
+         $current_config = $config_object->fields;
+      }
    }
+   return $current_config;
+}
+
+/**
+ * Initialize configuration global vars
+ *
+ * @param string[] $current_config GLPI configuration from database
+ *
+ * @return void
+ */
+function applyGlpiConfig($current_config) {
+   global $CFG_GLPI;
+
+   $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
+
+   if (isset($CFG_GLPI['priority_matrix'])) {
+      $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
+            true);
+   }
+   if (isset($CFG_GLPI['lock_item_list'])) {
+      $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+   }
+   if (isset($CFG_GLPI['lock_lockprofile_id'])
+         && $CFG_GLPI["lock_use_lock_item"]
+         && ($CFG_GLPI["lock_lockprofile_id"] > 0)
+         && !isset($CFG_GLPI['lock_lockprofile']) ) {
+
+         $prof = new Profile();
+         $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
+         $prof->cleanProfile();
+         $CFG_GLPI['lock_lockprofile'] = $prof->fields;
+   }
+
+   // Path for icon of document type (web mode only)
+   if (isset($CFG_GLPI["root_doc"])) {
+      $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+   }
+}
+
+/**
+ * Configure debug mode
+ *
+ * @return void
+ */
+function setDebugMode() {
+   global $CFG_GLPI;
 
    if (isCommandLine()
        && isset($_SERVER['argv'])) {
@@ -173,19 +255,31 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
    Toolbox::setDebugMode();
+}
 
-   if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
-      Html::redirect($_SESSION["glpiroot"]);
-   }
+/**
+ * Initialize session from configuration data
+ *
+ * @return void
+ */
+function applyGlpiConfigToSession() {
+   global $CFG_GLPI;
 
-   // Override cfg_features by session value
    foreach ($CFG_GLPI['user_pref_field'] as $field) {
       if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
          $_SESSION["glpi$field"] = $CFG_GLPI[$field];
       }
    }
+}
 
-   // Check maintenance mode
+/**
+ * Show maintenance mode and dies if maintenance mode is enabled
+ *
+ * @return void
+ */
+function checkMaintenanceMode() {
+   global $CFG_GLPI;
+
    if (isset($CFG_GLPI["maintenance_mode"]) && $CFG_GLPI["maintenance_mode"]) {
       if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
          $_SESSION["glpiskipMaintenance"] = 1;
@@ -213,7 +307,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          exit();
       }
    }
-   // Check version
+}
+
+/**
+ * Ensure the version of GLPI matches the version found in the database. Dies if not.
+ *
+ * @return void
+ */
+function checkGlpiVersion() {
+   global $CFG_GLPI;
+
    if ((!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) != GLPI_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 
