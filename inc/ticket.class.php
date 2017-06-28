@@ -1543,7 +1543,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Get first item location
-      $item = NULL;
+      $item = null;
       if (isset($input["items_id"])
             && is_array($input["items_id"])
             && (count($input["items_id"]) > 0)) {
@@ -1644,7 +1644,7 @@ class Ticket extends CommonITILObject {
             break;
 
          case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
-            if ($item != NULL) {
+            if ($item != null) {
                // Auto assign tech from item
                if ((!isset($input['_users_id_assign']) || ($input['_users_id_assign'] == 0))
                    && $item->isField('users_id_tech')) {
@@ -1691,7 +1691,7 @@ class Ticket extends CommonITILObject {
                   $input['_groups_id_assign'] = $cat->getField('groups_id');
                }
             }
-            if ($item != NULL) {
+            if ($item != null) {
                // Auto assign tech from item
                if ((!isset($input['_users_id_assign']) || ($input['_users_id_assign'] == 0))
                    && $item->isField('users_id_tech')) {
@@ -2326,7 +2326,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

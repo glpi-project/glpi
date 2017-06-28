@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]) {
-      $item = NULL;
+      $item = null;
       switch ($_POST["_type"]) {
          case 'User' :
             if (isset($_POST['users_id']) && $_POST['users_id']) {

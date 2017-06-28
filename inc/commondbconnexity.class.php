@@ -316,10 +316,10 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @return true if we have absolute right to create the current connexity
    **/
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
-                             &$item=NULL) {
+                             &$item=null) {
 
       // Do not get it twice
-      if ($item == NULL) {
+      if ($item == null) {
          $item = $this->getConnexityItem($itemtype, $items_id);
       }
       if ($item_right != self::DONT_CHECK_ITEM_RIGHTS) {
@@ -425,7 +425,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=NULL) {
+                                                CommonDBTM $checkitem=null) {
 
       $unaffect = false;
       $affect   = false;

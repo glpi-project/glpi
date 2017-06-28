@@ -151,8 +151,8 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father group for the Internet Informations ...
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=NULL,
-                                             HTMLTableHeader $father=NULL,
+                                             HTMLTableSuperHeader $internet_super=null,
+                                             HTMLTableHeader $father=null,
                                              array $options=array()) {
 
       $display_options = &$options['display_options'];
@@ -170,11 +170,11 @@ class NetworkPortInstantiation extends CommonDBChild {
          $group->addHeader('MAC', __('MAC'), $super, $father);
       }
 
-      if (($internet_super !== NULL) && ($display_options['internet'])) {
+      if (($internet_super !== null) && ($display_options['internet'])) {
          NetworkName::getHTMLTableHeader('NetworkPort', $group, $internet_super, $father, $options);
       }
 
-      return NULL;
+      return null;
    }
 
 
@@ -192,11 +192,11 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father=NULL,
+                                                    HTMLTableCell $father=null,
                                                     array $options=array()) {
 
       self::getInstantiationHTMLTable($netport, $row, $father, $options);
-      return NULL;
+      return null;
 
    }
 
@@ -217,7 +217,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
-                                              HTMLTableCell $father=NULL, array $options=array()) {
+                                              HTMLTableCell $father=null, array $options=array()) {
 
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));
@@ -272,7 +272,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=null, array $options=array()) {
       global $DB;
 
       $display_options = $options['display_options'];
@@ -337,7 +337,7 @@ class NetworkPortInstantiation extends CommonDBChild {
          NetworkName::getHTMLTableCellsForItem($row, $netport, $father, $options);
       }
 
-      return NULL;
+      return null;
    }
 
 

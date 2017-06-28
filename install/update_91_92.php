@@ -228,7 +228,7 @@ function update91to92() {
    $migration->addKey("glpi_taskcategories", "knowbaseitemcategories_id");
 
    // #1476 - Add users_id on glpi_documents_items
-   $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => TRUE]);
+   $migration->addField("glpi_documents_items", "users_id", "integer", ['null' => true]);
    $migration->migrationOneTable("glpi_documents_items");
    $migration->addKey("glpi_documents_items", "users_id");
    $migration->addPostQuery("UPDATE `glpi_documents_items`,
@@ -953,7 +953,7 @@ Regards,',
       $mapping = [];
       foreach ($DB->request(['SELECT' => ['id', 'os_kernel_version'],
                              'FROM'   => 'glpi_computers',
-                             'NOT'   => ['os_kernel_version' => NULL]]) as $data) {
+                             'NOT'   => ['os_kernel_version' => null]]) as $data) {
          $key = md5($data['os_kernel_version']);
          if (!isset($mapping[$key])) {
             $mapping[$key] = [];

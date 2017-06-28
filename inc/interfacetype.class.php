@@ -59,8 +59,8 @@ class InterfaceType extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super=null,
+                                      HTMLTableHeader $father=null, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -80,8 +80,8 @@ class InterfaceType extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
+                                            HTMLTableCell $father=null, array $options=array()) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {

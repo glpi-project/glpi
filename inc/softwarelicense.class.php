@@ -468,7 +468,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -827,7 +827,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronSoftware($task=NULL) {
+   static function cronSoftware($task=null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;

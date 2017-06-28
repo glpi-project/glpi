@@ -827,7 +827,7 @@ class SLT extends CommonDBChild {
          }
       }
 
-      return NULL;
+      return null;
    }
 
 
@@ -890,7 +890,7 @@ class SLT extends CommonDBChild {
             }
          }
       }
-      return NULL;
+      return null;
    }
 
 

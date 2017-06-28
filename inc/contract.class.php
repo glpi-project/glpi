@@ -556,7 +556,7 @@ class Contract extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1163,7 +1163,7 @@ class Contract extends CommonDBTM {
     *
     * @param $task for log, if NULL display (default NULL)
    **/
-   static function cronContract($task=NULL) {
+   static function cronContract($task=null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {
@@ -1583,7 +1583,7 @@ class Contract extends CommonDBTM {
     *
     * @return array or string
    **/
-   static function getAlertName($val=NULL) {
+   static function getAlertName($val=null) {
 
       $tmp[0]                                                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)]                                 = __('End');
@@ -1637,7 +1637,7 @@ class Contract extends CommonDBTM {
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=NULL) {
+                                                CommonDBTM $checkitem=null) {
       global $CFG_GLPI;
 
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {

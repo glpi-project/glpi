@@ -418,7 +418,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return string to display
    **/
-   function getEndHiddenFieldValue($field, &$ticket=NULL) {
+   function getEndHiddenFieldValue($field, &$ticket=null) {
 
       $output = '';
       if ($this->isHiddenField($field)) {
@@ -549,7 +549,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

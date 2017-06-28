@@ -139,7 +139,7 @@ class XML {
          }
          $result = $DB->query($strqry);
 
-         if ($result == FALSE) {
+         if ($result == false) {
             $this->IsError     = 1;
             $this->ErrorString = "Error in SQL Query: ".$strqry;
             return -1;

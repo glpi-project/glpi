@@ -741,7 +741,7 @@ class Dropdown {
    **/
    static function getDeviceItemTypes() {
       global $CFG_GLPI;
-      static $optgroup = NULL;
+      static $optgroup = null;
 
       if (!Session::haveRight('device', READ)) {
          return array();
@@ -766,7 +766,7 @@ class Dropdown {
    **/
    static function getStandardDropdownItemTypes() {
       global $CFG_GLPI;
-      static $optgroup = NULL;
+      static $optgroup = null;
 
       if (is_null($optgroup)) {
          $optgroup = array(

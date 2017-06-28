@@ -67,17 +67,17 @@ function checkFormsInFile($file) {
       $line = fgets($handle);
       $i++;
       //       echo $i.$line;
-      if ((stripos($line, '<form ') !== FALSE)
-          || (stripos($line, 'Html::openMassiveActionsForm(') !== FALSE)
-          || (stripos($line, 'showFormHeader(') !== FALSE)) {
+      if ((stripos($line, '<form ') !== false)
+          || (stripos($line, 'Html::openMassiveActionsForm(') !== false)
+          || (stripos($line, 'showFormHeader(') !== false)) {
          $lastopen = $i;
          if ($inform) {
             echo "$file line $i : open form in form\n";
          }
          $inform = true;
       }
-      if ((stripos($line, 'Html::closeForm(') !== FALSE)
-          || (stripos($line, 'showFormButtons(') !== FALSE)) {
+      if ((stripos($line, 'Html::closeForm(') !== false)
+          || (stripos($line, 'showFormButtons(') !== false)) {
          if (!$inform) {
             echo "$file line $i : close not opened form\n";
          }

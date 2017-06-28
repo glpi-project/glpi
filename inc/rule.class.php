@@ -547,7 +547,7 @@ class Rule extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -574,7 +574,7 @@ class Rule extends CommonDBTM {
 
       switch ($ma->getAction()) {
          case 'duplicate' :
-            $entity_assign = False;
+            $entity_assign = false;
             foreach ($ma->getitems() as $itemtype => $ids) {
                if ($item = getItemForItemtype($itemtype)) {
                   if ($item->isEntityAssign()) {

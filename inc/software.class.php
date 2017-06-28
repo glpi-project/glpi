@@ -340,7 +340,7 @@ class Software extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -791,7 +791,7 @@ class Software extends CommonDBTM {
     * @return the software's ID
    **/
    function addSoftware($name, $manufacturer_id, $entity, $comment='',
-                        $is_recursive=false, $is_helpdesk_visible=NULL) {
+                        $is_recursive=false, $is_helpdesk_visible=null) {
       global $DB, $CFG_GLPI;
 
       $input["name"]                = $name;
@@ -838,7 +838,7 @@ class Software extends CommonDBTM {
     * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='',
-                                  $is_recursive=false, $is_helpdesk_visible=NULL) {
+                                  $is_recursive=false, $is_helpdesk_visible=null) {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity

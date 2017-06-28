@@ -1122,7 +1122,7 @@ class Session {
 
       if (empty($CURRENTCSRFTOKEN)) {
          do {
-            $CURRENTCSRFTOKEN = md5(uniqid(rand(), TRUE));
+            $CURRENTCSRFTOKEN = md5(uniqid(rand(), true));
          } while ($CURRENTCSRFTOKEN == '');
       }
 

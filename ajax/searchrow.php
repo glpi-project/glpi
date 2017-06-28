@@ -92,7 +92,7 @@ if (isset($_POST["itemtype"])
       }
 
       // Instanciate an object to access method
-      $item = NULL;
+      $item = null;
       if ($_POST["itemtype"] != 'AllAssets') {
          $item = getItemForItemtype($_POST["itemtype"]);
       }

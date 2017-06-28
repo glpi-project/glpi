@@ -94,18 +94,18 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=NULL,
-                                             HTMLTableHeader $father=NULL,
+                                             HTMLTableSuperHeader $internet_super=null,
+                                             HTMLTableHeader $father=null,
                                              array $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, NULL, $options);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, null, $options);
 
       $group->addHeader('ESSID', __('ESSID'), $super);
       $group->addHeader('Mode', __('Wifi mode'), $super);
       $group->addHeader('Version', __('Wifi protocol version'), $super);
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
-      return NULL;
+      return null;
    }
 
 
@@ -113,9 +113,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=null, array $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
+      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, null, $options);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'ESSID'),
                     Dropdown::getDropdownName("glpi_wifinetworks",
@@ -126,7 +126,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
-      return NULL;
+      return null;
    }
 
 

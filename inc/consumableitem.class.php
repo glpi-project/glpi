@@ -214,7 +214,7 @@ class ConsumableItem extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -390,7 +390,7 @@ class ConsumableItem extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronConsumable($task=NULL) {
+   static function cronConsumable($task=null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;

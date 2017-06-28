@@ -608,7 +608,7 @@ class ReservationItem extends CommonDBChild {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronReservation($task=NULL) {
+   static function cronReservation($task=null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {

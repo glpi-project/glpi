@@ -123,8 +123,8 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=NULL,
-                                             HTMLTableHeader $father=NULL,
+                                             HTMLTableSuperHeader $internet_super=null,
+                                             HTMLTableHeader $father=null,
                                              array $options=array()) {
 
       $display_options = &$options['display_options'];
@@ -149,7 +149,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getPeerInstantiationHTMLTable()
     **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father=NULL,
+                                                    HTMLTableCell $father=null,
                                                     array $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
@@ -172,7 +172,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
     **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=NULL, array $options=array()) {
+                                      HTMLTableCell $father=null, array $options=array()) {
 
       return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
    }
@@ -269,7 +269,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
     *
     * @return array or string
    **/
-   static function getPortSpeed($val=NULL) {
+   static function getPortSpeed($val=null) {
 
       $tmp = array(0     => '',
                    //TRANS: %d is the speed

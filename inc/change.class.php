@@ -173,7 +173,7 @@ class Change extends CommonITILObject {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
       $isadmin = static::canUpdate();

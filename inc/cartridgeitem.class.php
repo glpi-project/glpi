@@ -257,7 +257,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -467,7 +467,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronCartridge($task=NULL) {
+   static function cronCartridge($task=null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;

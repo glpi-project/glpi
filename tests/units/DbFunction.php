@@ -363,14 +363,14 @@ class DbFunction extends DbTestCase {
       // See all, really all
       $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
       $this->string(getEntitiesRestrictRequest('AND', 'glpi_computers'))->isEmpty();
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');
 
       // See all
       $this->setEntity('_test_root_entity', true);
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1, 2, 3)');
 
@@ -378,7 +378,7 @@ class DbFunction extends DbTestCase {
       $this->setEntity('_test_root_entity', false);
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1)');
 
@@ -386,14 +386,14 @@ class DbFunction extends DbTestCase {
       $this->setEntity('_test_child_1', false);
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (2)');
 
       // Child without table
       $this->string(getEntitiesRestrictRequest('WHERE'))
          ->isIdenticalTo("WHERE ( `entities_id` IN ('2')  ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria());
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria());
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `entities_id` IN (2)');
 
@@ -401,32 +401,32 @@ class DbFunction extends DbTestCase {
       $this->setEntity('_test_child_2', false);
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN ('0','1')) ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
 
       //Child + parent on glpi_entities
-      $it = new \DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+      $it = new \DBmysqlIterator(null, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))');
 
       //Child + parent -- automatic recusrivity detection
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
 
       // Child + parent without table
       $this->string(getEntitiesRestrictRequest('WHERE', '', '', '', true))
          ->isIdenticalTo("WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN ('0','1')) ) ");
-      $it = new \DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
+      $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (3) OR (`is_recursive` = 1 AND `entities_id` IN (0, 1)))');
 
-      $it = new \DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+      $it = new \DBmysqlIterator(null, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))');
 
-      $it = new \DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+      $it = new \DBmysqlIterator(null, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7');
    }

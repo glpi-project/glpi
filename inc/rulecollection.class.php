@@ -52,7 +52,7 @@ class RuleCollection extends CommonDBTM {
    /// Rule collection can be replay (for dictionnary)
    public $can_replay_rules                      = false;
    /// List of rules of the rule collection
-   public $RuleList                              = NULL;
+   public $RuleList                              = null;
    /// Menu type
    public $menu_type                             = "rule";
    /// Menu option
@@ -220,7 +220,7 @@ class RuleCollection extends CommonDBTM {
    function getCollectionDatas($retrieve_criteria=0, $retrieve_action=0, $condition = 0) {
       global $DB;
 
-      if ($this->RuleList === NULL) {
+      if ($this->RuleList === null) {
          $this->RuleList = SingletonRuleList::getInstance($this->getRuleClassName(),
                                                           $this->entity);
       }
@@ -1437,7 +1437,7 @@ class RuleCollection extends CommonDBTM {
    function processAllRules($input=array() ,$output=array(), $params=array(), $options=array()) {
 
       $p['condition']     = 0;
-      $p['only_criteria'] = NULL;
+      $p['only_criteria'] = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1839,7 +1839,7 @@ class RuleCollection extends CommonDBTM {
          if ($item = getItemForItemtype($typeclass)) {
             return $item;
          }
-         return NULL;
+         return null;
       }
    }
 

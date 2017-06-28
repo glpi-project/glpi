@@ -338,7 +338,7 @@ class Migration {
 
       $params['update']    = '';
       $params['condition'] = '';
-      $params['value']     = NULL;
+      $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
       $params['after']     = '';
@@ -402,7 +402,7 @@ class Migration {
    **/
    function changeField($table, $oldfield, $newfield, $type, $options = []) {
 
-      $params['value']     = NULL;
+      $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
 
