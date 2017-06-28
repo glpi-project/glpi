@@ -53,25 +53,25 @@ echo "<tr><th colspan='4'>".__('Hardware under contract')." </th></tr>";
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center' width='20%'>". __('Item type')."</td>";
 echo "<td width='30%'>";
-$values = array(0 => __('All'));
+$values = [0 => __('All')];
 foreach ($CFG_GLPI["contract_types"] as $itemtype) {
    if ($item = getItemForItemtype($itemtype)) {
       $values[$itemtype] = $item->getTypeName();
    }
 }
-Dropdown::showFromArray('item_type', $values, array('value'    => 0,
-                                                   'multiple' => true));
+Dropdown::showFromArray('item_type', $values, ['value'    => 0,
+                                                   'multiple' => true]);
 echo "</td> ";
 
 echo "<td class='center' width='20%'>". __('Date')."</td>";
 echo "<td width='30%'>";
 $y      = date("Y");
-$values = array( 0 => __('All'));
+$values = [ 0 => __('All')];
 for ($i=($y-10); $i<($y+10); $i++) {
    $values[$i] = $i;
 }
-Dropdown::showFromArray('year', $values, array('value'    => $y,
-                                              'multiple' => true));
+Dropdown::showFromArray('year', $values, ['value'    => $y,
+                                              'multiple' => true]);
 
 echo "</td></tr>";
 

@@ -48,7 +48,7 @@ class Document extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('Document_Item');
+   static protected $forward_entity_to = ['Document_Item'];
 
    static $rightname                   = 'document';
    static $tag_prefix                  = '#';
@@ -177,9 +177,9 @@ class Document extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
@@ -294,9 +294,9 @@ class Document extends CommonDBTM {
           && !empty($this->input["itemtype"])) {
 
          $docitem = new Document_Item();
-         $docitem->add(array('documents_id' => $this->fields['id'],
+         $docitem->add(['documents_id' => $this->fields['id'],
                              'itemtype'     => $this->input["itemtype"],
-                             'items_id'     => $this->input["items_id"]));
+                             'items_id'     => $this->input["items_id"]]);
 
          Event::log($this->fields['id'], "documents", 4, "document",
                   //TRANS: %s is the user login
@@ -339,7 +339,7 @@ class Document extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -385,7 +385,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Heading')."</td>";
       echo "<td>";
-      DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
+      DocumentCategory::dropdown(['value' => $this->fields["documentcategories_id"]]);
       echo "</td>";
       if ($ID > 0) {
          echo "<td>".sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'))."</td>";
@@ -488,7 +488,7 @@ class Document extends CommonDBTM {
       $open  = '';
       $close = '';
       if (self::canView()
-          || self::canViewFile(array('tickets_id' =>$this->fields['tickets_id']))) {
+          || self::canViewFile(['tickets_id' =>$this->fields['tickets_id']])) {
          $open  = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
                     $this->fields['id'].$params."' alt=\"".$initfileout."\"
                     title=\"".$initfileout."\"target='_blank'>";
@@ -1232,7 +1232,7 @@ class Document extends CommonDBTM {
          }
 
          if (count($uploaded_files)) {
-            Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
+            Dropdown::showFromArray($myname, $uploaded_files, ['display_emptychoice' => true]);
          } else {
             echo __('No file available');
          }
@@ -1293,12 +1293,12 @@ class Document extends CommonDBTM {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdown($options=array()) {
+   static function dropdown($options=[]) {
       global $DB, $CFG_GLPI;
 
       $p['name']    = 'documents_id';
       $p['entity']  = '';
-      $p['used']    = array();
+      $p['used']    = [];
       $p['display'] = true;
 
       if (is_array($options) && count($options)) {
@@ -1322,22 +1322,22 @@ class Document extends CommonDBTM {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
-      $values = array();
+      $values = [];
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
-      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'               => '30%',
+      $out  = Dropdown::showFromArray('_rubdoc', $values, ['width'               => '30%',
                                                                 'rand'                => $rand,
                                                                 'display'             => false,
-                                                                'display_emptychoice' => true));
+                                                                'display_emptychoice' => true]);
       $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
-      $params   = array('rubdoc' => '__VALUE__',
+      $params   = ['rubdoc' => '__VALUE__',
                         'entity' => $p['entity'],
                         'rand'   => $rand,
                         'myname' => $p['name'],
-                        'used'   => $p['used']);
+                        'used'   => $p['used']];
 
       $out .= Ajax::updateItemOnSelectEvent($field_id, "show_".$p['name'].$rand,
                                             $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",

@@ -55,39 +55,39 @@ class WifiNetwork extends CommonDropdown {
 
    static function getWifiCardVersion() {
 
-      return array(''          => '',
+      return [''          => '',
                    'a'         => 'a',
                    'a/b'       => 'a/b',
                    'a/b/g'     => 'a/b/g',
                    'a/b/g/n'   => 'a/b/g/n',
-                   'a/b/g/n/y' => 'a/b/g/n/y');
+                   'a/b/g/n/y' => 'a/b/g/n/y'];
    }
 
 
    static function getWifiCardModes() {
 
-      return array(''          => Dropdown::EMPTY_VALUE,
+      return [''          => Dropdown::EMPTY_VALUE,
                    'ad-hoc'    => __('Ad-hoc'),
                    'managed'   => __('Managed'),
                    'master'    => __('Master'),
                    'repeater'  => __('Repeater'),
                    'secondary' => __('Secondary'),
                    'monitor'   => __('Monitor'),
-                   'auto'      => __('Automatic'));
+                   'auto'      => __('Automatic')];
    }
 
 
    static function getWifiNetworkModes() {
 
-      return array(''               => Dropdown::EMPTY_VALUE,
+      return [''               => Dropdown::EMPTY_VALUE,
                    'infrastructure' => __('Infrastructure (with access point)'),
-                   'ad-hoc'         => __('Ad-hoc (without access point)'));
+                   'ad-hoc'         => __('Ad-hoc (without access point)')];
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong  = array();
+      $ong  = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkPort', $ong, $options);
 
@@ -97,22 +97,22 @@ class WifiNetwork extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'essid',
+      return [['name'  => 'essid',
                          'label' => __('ESSID'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'mode',
+                         'list'  => true],
+                   ['name'  => 'mode',
                          'label' => __('Wifi network type'),
                          'type'  => 'wifi_mode',
-                         'list'  => true));
+                         'list'  => true]];
    }
 
 
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field=[]) {
 
       if ($field['type'] == 'wifi_mode') {
          Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),
-                                 array('value' => $this->fields[$field['name']]));
+                                 ['value' => $this->fields[$field['name']]]);
 
       }
    }

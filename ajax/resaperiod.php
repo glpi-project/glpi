@@ -50,17 +50,17 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
    switch ($_POST['type']) {
       case 'day' :
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
+         Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
          echo "</td></tr>";
          break;
 
       case 'week' :
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
+         Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
          echo "</td></tr></table>";
          echo "<table class='tab_glpi'>";
          echo "<tr class='center'><td>&nbsp;</td>";
-         $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+         $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
          foreach ($days as $day) {
             echo "<th>".__($day)."</th>";
          }
@@ -74,12 +74,12 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
 
       case 'month' :
          echo "<tr><td colspan='2'>";
-         $values = array('date' => __('Each month, same date'),
-                         'day'  => __('Each month, same day of week'));
+         $values = ['date' => __('Each month, same date'),
+                         'day'  => __('Each month, same day of week')];
          Dropdown::showFromArray('periodicity[subtype]', $values);
          echo "</td></tr>";
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
+         Html::showDateField('periodicity[end]', ['value' => $_POST['end']]);
          echo "</td></tr>";
 
    }

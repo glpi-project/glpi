@@ -38,7 +38,7 @@ use \DbTestCase;
 
 class Search extends DbTestCase {
 
-   private function doSearch($itemtype, $params, array $forcedisplay = array()) {
+   private function doSearch($itemtype, $params, array $forcedisplay = []) {
       global $DEBUG_SQL;
 
       // check param itemtype exists (to avoid search errors)
@@ -61,7 +61,7 @@ class Search extends DbTestCase {
       $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
 
       // append existing errors to returned data
-      $data['last_errors'] = array();
+      $data['last_errors'] = [];
       if (isset($DEBUG_SQL['errors'])) {
          $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
          unset($DEBUG_SQL['errors']);
@@ -85,7 +85,7 @@ class Search extends DbTestCase {
     * @return array
     */
    private function getClasses($function = false) {
-      $classes = array();
+      $classes = [];
       foreach (new \DirectoryIterator('inc/') as $fileInfo) {
          if ($fileInfo->isDot()) {
             continue;
@@ -117,21 +117,21 @@ class Search extends DbTestCase {
 
 
    public function testMetaComputerSoftwareLicense() {
-      $search_params = array('is_deleted'   => 0,
+      $search_params = ['is_deleted'   => 0,
                              'start'        => 0,
-                             'criteria'     => array(0 => array('field'      => 'view',
+                             'criteria'     => [0 => ['field'      => 'view',
                                                                 'searchtype' => 'contains',
-                                                                'value'      => '')),
-                             'metacriteria' => array(0 => array('link'       => 'AND',
+                                                                'value'      => '']],
+                             'metacriteria' => [0 => ['link'       => 'AND',
                                                                 'itemtype'   => 'Software',
                                                                 'field'      => 163,
                                                                 'searchtype' => 'contains',
-                                                                'value'      => '>0'),
-                                                     1 => array('link'       => 'AND',
+                                                                'value'      => '>0'],
+                                                     1 => ['link'       => 'AND',
                                                                 'itemtype'   => 'Software',
                                                                 'field'      => 160,
                                                                 'searchtype' => 'contains',
-                                                                'value'      => 'firefox')));
+                                                                'value'      => 'firefox']]];
 
       $data = $this->doSearch('Computer', $search_params);
 
@@ -143,36 +143,36 @@ class Search extends DbTestCase {
    }
 
    public function testMetaComputerUser() {
-      $search_params = array('is_deleted'   => 0,
+      $search_params = ['is_deleted'   => 0,
                              'start'        => 0,
                              'search'       => 'Search',
-                             'criteria'     => array(0 => array('field'      => 'view',
+                             'criteria'     => [0 => ['field'      => 'view',
                                                                 'searchtype' => 'contains',
-                                                                'value'      => '')),
+                                                                'value'      => '']],
                                                      // user login
-                             'metacriteria' => array(0 => array('link'       => 'AND',
+                             'metacriteria' => [0 => ['link'       => 'AND',
                                                                 'itemtype'   => 'User',
                                                                 'field'      => 1,
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 2),
+                                                                'value'      => 2],
                                                      // user profile
-                                                     1 => array('link'       => 'AND',
+                                                     1 => ['link'       => 'AND',
                                                                 'itemtype'   => 'User',
                                                                 'field'      => 20,
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 4),
+                                                                'value'      => 4],
                                                      // user entity
-                                                     2 => array('link'       => 'AND',
+                                                     2 => ['link'       => 'AND',
                                                                 'itemtype'   => 'User',
                                                                 'field'      => 80,
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 0),
+                                                                'value'      => 0],
                                                      // user profile
-                                                     3 => array('link'       => 'AND',
+                                                     3 => ['link'       => 'AND',
                                                                 'itemtype'   => 'User',
                                                                 'field'      => 13,
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 1)));
+                                                                'value'      => 1]]];
 
       $data = $this->doSearch('Computer', $search_params);
 
@@ -184,28 +184,28 @@ class Search extends DbTestCase {
    }
 
    public function testUser() {
-      $search_params = array('is_deleted'   => 0,
+      $search_params = ['is_deleted'   => 0,
                              'start'        => 0,
                              'search'       => 'Search',
                                                      // profile
-                             'criteria'     => array(0 => array('field'      => '20',
+                             'criteria'     => [0 => ['field'      => '20',
                                                                 'searchtype' => 'contains',
-                                                                'value'      => 'super-admin'),
+                                                                'value'      => 'super-admin'],
                                                      // login
-                                                     1 => array('link'       => 'AND',
+                                                     1 => ['link'       => 'AND',
                                                                 'field'      => '1',
                                                                 'searchtype' => 'contains',
-                                                                'value'      => 'glpi'),
+                                                                'value'      => 'glpi'],
                                                      // entity
-                                                     2 => array('link'       => 'AND',
+                                                     2 => ['link'       => 'AND',
                                                                 'field'      => '80',
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 0),
+                                                                'value'      => 0],
                                                      // is not not active
-                                                     3 => array('link'       => 'AND',
+                                                     3 => ['link'       => 'AND',
                                                                 'field'      => '8',
                                                                 'searchtype' => 'notequals',
-                                                                'value'      => 0)));
+                                                                'value'      => 0]]];
       $data = $this->doSearch('User', $search_params);
 
       // check for sql error (data key missing or empty)
@@ -263,11 +263,11 @@ class Search extends DbTestCase {
 
          foreach ($options as $key=>$data) {
             if (is_int($key)) {
-               $input = array(
+               $input = [
                    'itemtype' => $itemtype,
                    'users_id' => 0,
                    'num' => $key,
-               );
+               ];
                 $displaypref->add($input);
                $number++;
             }
@@ -276,10 +276,10 @@ class Search extends DbTestCase {
                  "`itemtype`='".$itemtype."' AND `users_id`=0"))->isIdenticalTo($number);
 
          // do a search query
-         $search_params = array('is_deleted'   => 0,
+         $search_params = ['is_deleted'   => 0,
                                 'start'        => 0,
-                                'criteria'     => array(),
-                                'metacriteria' => array());
+                                'criteria'     => [],
+                                'metacriteria' => []];
          $data = $this->doSearch($itemtype, $search_params);
          // check for sql error (data key missing or empty)
          $this->array($data)
@@ -317,32 +317,32 @@ class Search extends DbTestCase {
 
       foreach ($itemtypeslist as $itemtype) {
          // do a search query
-         $search_params = array('is_deleted'   => 0,
+         $search_params = ['is_deleted'   => 0,
                                 'start'        => 0,
-                                'criteria'     => array(0 => array('field'      => 'view',
+                                'criteria'     => [0 => ['field'      => 'view',
                                                                    'searchtype' => 'contains',
-                                                                   'value'      => '')),
-                                'metacriteria' => array());
-         $metacriteria = array();
+                                                                   'value'      => '']],
+                                'metacriteria' => []];
+         $metacriteria = [];
          $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
             foreach ($item->getSearchOptions() as $key=>$data) {
                if (is_int($key)) {
                   if (isset($data['datatype']) && $data['datatype'] == 'bool') {
-                     $metacriteria[] = array(
+                     $metacriteria[] = [
                          'link'       => 'AND',
                          'field'      => $key,
                          'searchtype' => 'equals',
                          'value'      => 0,
-                     );
+                     ];
                   } else {
-                     $metacriteria[] = array(
+                     $metacriteria[] = [
                          'link'       => 'AND',
                          'field'      => $key,
                          'searchtype' => 'contains',
                          'value'      => 'f',
-                     );
+                     ];
                   }
                }
             }
@@ -358,18 +358,18 @@ class Search extends DbTestCase {
    }
 
    public function testIsNotifyComputerGroup() {
-      $search_params = array('is_deleted'   => 0,
+      $search_params = ['is_deleted'   => 0,
                              'start'        => 0,
                              'search'       => 'Search',
-                             'criteria'     => array(0 => array('field'      => 'view',
+                             'criteria'     => [0 => ['field'      => 'view',
                                                                 'searchtype' => 'contains',
-                                                                'value'      => '')),
+                                                                'value'      => '']],
                                                      // group is_notify
-                             'metacriteria' => array(0 => array('link'       => 'AND',
+                             'metacriteria' => [0 => ['link'       => 'AND',
                                                                 'itemtype'   => 'Group',
                                                                 'field'      => 20,
                                                                 'searchtype' => 'equals',
-                                                                'value'      => 1)));
+                                                                'value'      => 1]]];
       $this->login();
       $this->setEntity('_test_root_entity', true);
 

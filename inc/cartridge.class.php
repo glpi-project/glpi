@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 class Cartridge extends CommonDBChild {
 
    // From CommonDBTM
-   static protected $forward_entity_to = array('Infocom');
+   static protected $forward_entity_to = ['Infocom'];
    public $dohistory                   = true;
    public $no_form_page                = true;
 
@@ -82,7 +82,7 @@ class Cartridge extends CommonDBChild {
                $input['maxpages'] = '';
             }
             echo "<input type='text' name='pages' value=\"".$input['maxpages']."\" size='6'>";
-            echo "<br><br>".Html::submit(_x('button', 'Update'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Update'), ['name' => 'massiveaction']);
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);
@@ -111,9 +111,9 @@ class Cartridge extends CommonDBChild {
          return false;
       }
 
-      return array("cartridgeitems_id" => $item->fields["id"],
+      return ["cartridgeitems_id" => $item->fields["id"],
                    "entities_id"       => $item->getEntityID(),
-                   "date_in"           => date("Y-m-d"));
+                   "date_in"           => date("Y-m-d")];
    }
 
 
@@ -133,8 +133,8 @@ class Cartridge extends CommonDBChild {
              && (($this->fields['pages'] > $printer->getField('last_pages_counter'))
                  || ($this->oldvalues['pages'] == $printer->getField('last_pages_counter')))) {
 
-            $printer->update(array('id'                 => $printer->getID(),
-                                   'last_pages_counter' => $this->fields['pages'] ));
+            $printer->update(['id'                 => $printer->getID(),
+                                   'last_pages_counter' => $this->fields['pages'] ]);
          }
       }
       parent::post_updateItem($history);
@@ -184,7 +184,7 @@ class Cartridge extends CommonDBChild {
          case 'backtostock' :
             foreach ($ids as $id) {
                if ($item->can($id, UPDATE)) {
-                  if ($item->backToStock(array("id" => $id))) {
+                  if ($item->backToStock(["id" => $id])) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -202,8 +202,8 @@ class Cartridge extends CommonDBChild {
             if (isset($input['pages'])) {
                foreach ($ids as $key) {
                   if ($item->can($key, UPDATE)) {
-                     if ($item->update(array('id' => $key,
-                                             'pages' => $input['pages']))) {
+                     if ($item->update(['id' => $key,
+                                             'pages' => $input['pages']])) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -655,18 +655,18 @@ class Cartridge extends CommonDBChild {
          if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('purge' => _x('button', 'Delete permanently'),
+            $actions = ['purge' => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                                      => __('Enable the financial and administrative information')
-                             );
+                             ];
             if ($show_old) {
                $actions['Cartridge'.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock']
                      = __('Back to stock');
             }
-            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                                          'specific_actions' => $actions,
                                          'container'        => 'mass'.__CLASS__.$rand,
-                                         'rand'             => $rand);
+                                         'rand'             => $rand];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
@@ -706,7 +706,7 @@ class Cartridge extends CommonDBChild {
          echo $header_begin.$header_top.$header_end;
       }
 
-      $pages = array();
+      $pages = [];
 
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
@@ -826,9 +826,9 @@ class Cartridge extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2' width='20%'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
-         Dropdown::showNumber('to_add', array('value' => 1,
+         Dropdown::showNumber('to_add', ['value' => 1,
                                               'min'   => 1,
-                                              'max'   => 100));
+                                              'max'   => 100]);
          echo "</td><td>";
          echo " <input type='submit' name='add' value=\"".__s('Add cartridges')."\"
                 class='submit'>";
@@ -896,9 +896,9 @@ class Cartridge extends CommonDBChild {
          if (CartridgeItem::dropdownForPrinter($printer)) {
             //TRANS : multiplier
             echo "</td><td>".__('x')."&nbsp;";
-            Dropdown::showNumber("nbcart", array('value' => 1,
+            Dropdown::showNumber("nbcart", ['value' => 1,
                                                  'min'   => 1,
-                                                 'max'   => 5));
+                                                 'max'   => 5]);
             $installok = true;
             echo "</td><td><input type='submit' name='install' value=\""._sx('button', 'Install')."\"
                           ".($installok?'':'disabled')." class='submit'>";
@@ -920,22 +920,22 @@ class Cartridge extends CommonDBChild {
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          if (!$old) {
-            $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'
+            $actions = [__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'
                                        => __('End of life'),
                              __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'backtostock'
                                        => __('Back to stock')
-                            );
+                            ];
          } else {
-            $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'updatepages'
+            $actions = [__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'updatepages'
                                       => __('Update printer counter'),
-                             'purge' => _x('button', 'Delete permanently'));
+                             'purge' => _x('button', 'Delete permanently')];
          }
-         $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'rand'             => $rand,
-                           'extraparams'      => array('maxpages'
-                                                       => $printer->fields['last_pages_counter']));
+                           'extraparams'      => ['maxpages'
+                                                       => $printer->fields['last_pages_counter']]];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -993,10 +993,10 @@ class Cartridge extends CommonDBChild {
          if ($canedit) {
             echo "\n<script type='text/javascript' >\n";
             echo "function viewEditCartridge". $data["id"]."$rand() {\n";
-            $params = array('type'        => __CLASS__,
+            $params = ['type'        => __CLASS__,
                             'parenttype'  => 'Printer',
                             'printers_id' => $printer->fields["id"],
-                            'id'          => $data["id"]);
+                            'id'          => $data["id"]];
             Ajax::updateItemJsCode("viewcartridge$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
@@ -1080,7 +1080,7 @@ class Cartridge extends CommonDBChild {
     * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -1119,10 +1119,10 @@ class Cartridge extends CommonDBChild {
 
       echo "<td>".__('Use date')."</td><td>";
       if ($is_used && !$is_old) {
-         Html::showDateField("date_use", array('value'      => $this->fields["date_use"],
+         Html::showDateField("date_use", ['value'      => $this->fields["date_use"],
                                                'maybeempty' => false,
                                                'canedit'    => true,
-                                               'min'        => $this->fields["date_in"]));
+                                               'min'        => $this->fields["date_in"]]);
       } else {
          echo Html::convDate($this->fields["date_use"]);
       }
@@ -1131,10 +1131,10 @@ class Cartridge extends CommonDBChild {
       if ($is_old) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('End date')."</td><td>";
-         Html::showDateField("date_out", array('value'      => $this->fields["date_out"],
+         Html::showDateField("date_out", ['value'      => $this->fields["date_out"],
                                                'maybeempty' => false,
                                                'canedit'    => true,
-                                               'min'        => $this->fields["date_use"]));
+                                               'min'        => $this->fields["date_use"]]);
          echo "</td>";
          echo "<td>".__('Printer counter')."</td><td>";
          echo "<input type='text' name='pages' value=\"".$this->fields['pages']."\">";
@@ -1200,7 +1200,7 @@ class Cartridge extends CommonDBChild {
 
    static function countForCartridgeItem(CartridgeItem $item) {
 
-      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
+      return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
    }
 
 
@@ -1209,7 +1209,7 @@ class Cartridge extends CommonDBChild {
    **/
    static function countForPrinter(Printer $item) {
 
-      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.printers_id' => $item->getField('id')]);
+      return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
    }
 
 

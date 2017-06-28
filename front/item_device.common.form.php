@@ -77,7 +77,7 @@ if (isset($_POST["purge"])) {
    Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", get_class($item_device));
 
    if (!isset($options)) {
-      $options = array();
+      $options = [];
    }
    $options['id'] = $_GET["id"];
    $item_device->display($options);

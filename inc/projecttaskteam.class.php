@@ -60,7 +60,7 @@ class ProjectTaskTeam extends CommonDBRelation {
    static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   static public $available_types     = array('User', 'Group', 'Supplier', 'Contact');
+   static public $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
    /**
@@ -107,7 +107,7 @@ class ProjectTaskTeam extends CommonDBRelation {
    **/
    static function countForProject(Project $item) {
 
-      return countElementsInTable(array('glpi_projecttaskteams'), ['glpi_projecttaskteams.projecttasks_id' => $item->getField('id')]);
+      return countElementsInTable(['glpi_projecttaskteams'], ['glpi_projecttaskteams.projecttasks_id' => $item->getField('id')]);
    }
 
 
@@ -129,14 +129,14 @@ class ProjectTaskTeam extends CommonDBRelation {
    static function getTeamFor($projects_id) {
       global $DB;
 
-      $team = array();
+      $team = [];
       $query = "SELECT `glpi_projecttaskteams`.*
                 FROM `glpi_projecttaskteams`
                 WHERE `projecttasks_id` = '$projects_id'";
 
       foreach ($DB->request($query) as $data) {
          if (!isset($team[$data['itemtype']])) {
-            $team[$data['itemtype']] = array();
+            $team[$data['itemtype']] = [];
          }
          $team[$data['itemtype']][] = $data;
       }
@@ -144,7 +144,7 @@ class ProjectTaskTeam extends CommonDBRelation {
       // Define empty types
       foreach (static::$available_types as $type) {
          if (!isset($team[$type])) {
-            $team[$type] = array();
+            $team[$type] = [];
          }
       }
 

@@ -47,7 +47,7 @@ foreach ($CFG_GLPI['languages'] as $key => $val) {
 
 // Get missing
 $dir   = opendir(GLPI_ROOT.'/locales');
-$files = array();
+$files = [];
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")) {
       if (preg_match("/(.*)\.mo$/i", $file, $reg)) {

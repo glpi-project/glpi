@@ -112,5 +112,5 @@ if (class_exists($_POST["itemtype"])
          $values[$ID] = $output_long;
       }
    }
-   Dropdown::showFromArray($_POST['myname'], $values, array('display_emptychoice' => true));
+   Dropdown::showFromArray($_POST['myname'], $values, ['display_emptychoice' => true]);
 }

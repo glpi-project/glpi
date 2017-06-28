@@ -44,9 +44,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
-   public $private_profiles = array();
+   public $private_profiles = [];
 
-   public $html_tags        = array('##problem.solution.description##');
+   public $html_tags        = ['##problem.solution.description##'];
 
 
    /**
@@ -54,14 +54,14 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
    **/
    function getEvents() {
 
-      $events = array('new'            => __('New problem'),
+      $events = ['new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
                       'solved'         => __('Problem solved'),
                       'add_task'       => __('New task'),
                       'update_task'    => __('Update of a task'),
                       'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
-                      'delete'         => __('Deleting a problem'));
+                      'delete'         => __('Deleting a problem')];
 
       $events = array_merge($events, parent::getEvents());
       asort($events);
@@ -84,12 +84,12 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $restrict = "`problems_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
 
-         $data['tickets'] = array();
+         $data['tickets'] = [];
          if (count($tickets)) {
             $ticket = new Ticket();
             foreach ($tickets as $row) {
                if ($ticket->getFromDB($row['tickets_id'])) {
-                  $tmp = array();
+                  $tmp = [];
 
                   $tmp['##ticket.id##']
                                     = $row['tickets_id'];
@@ -113,12 +113,12 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $restrict = "`problems_id`='".$item->getField('id')."'";
          $changes  = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
-         $data['changes'] = array();
+         $data['changes'] = [];
          if (count($changes)) {
             $change = new Change();
             foreach ($changes as $row) {
                if ($change->getFromDB($row['changes_id'])) {
-                  $tmp = array();
+                  $tmp = [];
                   $tmp['##change.id##']
                                     = $row['changes_id'];
                   $tmp['##change.date##']
@@ -141,12 +141,12 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $restrict = "`problems_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems', $restrict);
 
-         $data['items'] = array();
+         $data['items'] = [];
          if (count($items)) {
             foreach ($items as $row) {
                if ($item2 = getItemForItemtype($row['itemtype'])) {
                   if ($item2->getFromDB($row['items_id'])) {
-                     $tmp = array();
+                     $tmp = [];
                      $tmp['##item.itemtype##']    = $item2->getTypeName();
                      $tmp['##item.name##']        = $item2->getField('name');
                      $tmp['##item.serial##']      = $item2->getField('serial');
@@ -205,7 +205,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('problem.numberoftickets'   => _x('quantity', 'Number of tickets'),
+      $tags = ['problem.numberoftickets'   => _x('quantity', 'Number of tickets'),
                     'problem.numberofchanges'   => _x('quantity', 'Number of changes'),
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),
@@ -218,41 +218,41 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'item.contact'              => __('Alternate username'),
                     'item.contactnumber'        => __('Alternate username number'),
                     'item.user'                 => __('User'),
-                    'item.group'                => __('Group'),);
+                    'item.group'                => __('Group'),];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS));
+                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS]);
       }
 
       //Foreach global tags
-      $tags = array('tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+      $tags = ['tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'items'    => _n('Item', 'Items', Session::getPluralNumber()));
+                    'items'    => _n('Item', 'Items', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'     => $tag,
+         $this->addTagToList(['tag'     => $tag,
                                    'label'   => $label,
                                    'value'   => false,
-                                   'foreach' => true));
+                                   'foreach' => true]);
       }
 
       //Tags with just lang
-      $tags = array('problem.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+      $tags = ['problem.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'problem.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
-                    'problem.items'    => _n('Item', 'Items', Session::getPluralNumber()));
+                    'problem.items'    => _n('Item', 'Items', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       //Tags without lang
-      $tags = array('ticket.id'        => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+      $tags = ['ticket.id'        => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
                     'ticket.date'      => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
                     'ticket.url'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('URL')),
                     'ticket.title'     => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
@@ -262,13 +262,13 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'change.url'       => sprintf(__('%1$s: %2$s'), __('Change'), __('URL')),
                     'change.title'     => sprintf(__('%1$s: %2$s'), __('Change'), __('Title')),
                     'change.content'   => sprintf(__('%1$s: %2$s'), __('Change'), __('Description')),
-                    );
+                    ];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
-                                   'lang'  => false));
+                                   'lang'  => false]);
       }
       asort($this->tag_descriptions);
    }

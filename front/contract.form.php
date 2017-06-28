@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Contract::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contract");
-   $contract->display(array('id'           => $_GET["id"],
-                            'withtemplate' => $_GET["withtemplate"]));
+   $contract->display(['id'           => $_GET["id"],
+                            'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }

@@ -44,7 +44,7 @@ function update080to0801() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.80.1'));
@@ -81,7 +81,7 @@ function update080to0801() {
    }
    $migration->dropKey('glpi_groups_tickets', 'unicity');
    $migration->migrationOneTable('glpi_groups_tickets');
-   $migration->addKey("glpi_groups_tickets", array('tickets_id', 'type','groups_id'),
+   $migration->addKey("glpi_groups_tickets", ['tickets_id', 'type','groups_id'],
                       "unicity", "UNIQUE");
 
    // Clean duplicates
@@ -117,7 +117,7 @@ function update080to0801() {
    $migration->dropKey('glpi_tickets_users', 'tickets_id');
    $migration->migrationOneTable('glpi_tickets_users');
    $migration->addKey("glpi_tickets_users",
-                      array('tickets_id', 'type','users_id','alternative_email'),
+                      ['tickets_id', 'type','users_id','alternative_email'],
                       "unicity", "UNIQUE");
 
    $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");

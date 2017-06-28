@@ -51,7 +51,7 @@ if (isset($_GET['node'])) {
       $target = "central.php";
    }
 
-   $nodes = array();
+   $nodes = [];
 
    // Get ancestors of current entity
    $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);

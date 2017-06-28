@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceGenericModel
 class DeviceGenericModel extends CommonDeviceModel {
 
-   var $additional_fields_for_dictionnary = array('manufacturer');
+   var $additional_fields_for_dictionnary = ['manufacturer'];
 
 
    static function getTypeName($nb=0) {

@@ -43,14 +43,14 @@ function update0855to090() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.90'));
    $migration->setVersion('0.90');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -67,22 +67,22 @@ function update0855to090() {
    }
 
    // Add Color selector
-   Config::setConfigurationValues('core', array('palette' => 'auror'));
+   Config::setConfigurationValues('core', ['palette' => 'auror']);
    $migration->addField("glpi_users", "palette", "char(20) DEFAULT NULL");
 
    // add layout config
-   Config::setConfigurationValues('core', array('layout' => 'lefttab'));
+   Config::setConfigurationValues('core', ['layout' => 'lefttab']);
    $migration->addField("glpi_users", "layout", "char(20) DEFAULT NULL");
 
    // add timeline config
-   Config::setConfigurationValues('core', array('ticket_timeline' => 1));
-   Config::setConfigurationValues('core', array('ticket_timeline_keep_replaced_tabs' => 0));
+   Config::setConfigurationValues('core', ['ticket_timeline' => 1]);
+   Config::setConfigurationValues('core', ['ticket_timeline_keep_replaced_tabs' => 0]);
    $migration->addField("glpi_users", "ticket_timeline", "tinyint(1) DEFAULT NULL");
    $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", "tinyint(1) DEFAULT NULL");
 
    // clean unused parameter
    $migration->dropField("glpi_users", "dropdown_chars_limit");
-   Config::deleteConfigurationValues('core', array('name' => 'dropdown_chars_limit'));
+   Config::deleteConfigurationValues('core', ['name' => 'dropdown_chars_limit']);
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

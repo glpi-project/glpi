@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Migration {
 
-   private   $change     = array();
+   private   $change     = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -134,8 +134,8 @@ class Migration {
            "</script>\n";
 
       $this->flushLogDisplayMessage();
-      $this->lastMessage = array('time' => time(),
-                                 'msg'  => $msg);
+      $this->lastMessage = ['time' => time(),
+                                 'msg'  => $msg];
 
       Html::glpi_flush();
    }
@@ -215,7 +215,7 @@ class Migration {
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
-               } else if (in_array($default_value, array('0', '1'))) {
+               } else if (in_array($default_value, ['0', '1'])) {
                   $format .= " DEFAULT '$default_value'";
                } else {
                   trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
@@ -589,8 +589,8 @@ class Migration {
       if (TableExists("$table")
           && is_array($input) && (count($input) > 0)) {
 
-         $fields = array();
-         $values = array();
+         $fields = [];
+         $values = [];
          foreach ($input as $field => $value) {
             if (FieldExists($table, $field)) {
                $fields[] = "`$field`";
@@ -738,7 +738,7 @@ class Migration {
     *
     * @return void
    **/
-   function updateDisplayPrefs($toadd=array(), $todel=array()) {
+   function updateDisplayPrefs($toadd=[], $todel=[]) {
       global $DB;
 
       //TRANS: %s is the table or item to migrate

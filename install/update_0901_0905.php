@@ -43,14 +43,14 @@ function update0901to0905() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.90.5'));
    $migration->setVersion('0.90.5');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?

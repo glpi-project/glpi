@@ -146,7 +146,7 @@ class Group extends CommonTreeDropdown {
          $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
-               $ong = array();
+               $ong = [];
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
                                              ['groups_id' => $item->getID()]);
@@ -199,9 +199,9 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
 
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Group', $ong, $options);
@@ -235,7 +235,7 @@ class Group extends CommonTreeDropdown {
    *
    * @return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -252,10 +252,10 @@ class Group extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('As child of')."</td><td>";
-      self::dropdown(array('value'  => $this->fields['groups_id'],
+      self::dropdown(['value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
                            'entity' => $this->fields['entities_id'],
-                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : array())));
+                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : [])]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -325,7 +325,7 @@ class Group extends CommonTreeDropdown {
    function title() {
       global $CFG_GLPI;
 
-      $buttons = array();
+      $buttons = [];
       if (Group::canUpdate()
           && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLdap::useAuthLdap()) {
@@ -381,10 +381,10 @@ class Group extends CommonTreeDropdown {
                 && isset($input['check_itemtype'])) {
                if ($group = getItemForItemtype($input['check_itemtype'])) {
                   if ($group->getFromDB($input['check_items_id'])) {
-                     self::dropdown(array('entity'    => $group->fields["entities_id"],
-                                          'used'      => array($group->fields["id"]),
+                     self::dropdown(['entity'    => $group->fields["entities_id"],
+                                          'used'      => [$group->fields["id"]],
                                           'condition' => ($input['is_tech'] ? '`is_assign`'
-                                                                            : '`is_itemgroup`')));
+                                                                            : '`is_itemgroup`')]);
                      echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                                     _sx('button', 'Move')."'>";
                      return true;
@@ -412,8 +412,8 @@ class Group extends CommonTreeDropdown {
                 && isset($input['groups_id'])) {
                foreach ($ids as $id) {
                   if ($item->can($id, UPDATE)) {
-                     if ($item->update(array('id'            => $id,
-                                             $input["field"] => $input["groups_id"]))) {
+                     if ($item->update(['id'            => $id,
+                                             $input["field"] => $input["groups_id"]])) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -567,7 +567,7 @@ class Group extends CommonTreeDropdown {
     * @param $ID
    **/
    function showLDAPForm($ID) {
-      $options = array();
+      $options = [];
       $this->initForm($ID, $options);
 
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
@@ -603,8 +603,8 @@ class Group extends CommonTreeDropdown {
          echo "</td></tr>";
       }
 
-      $options = array('colspan' => 1,
-                       'candel'  => false);
+      $options = ['colspan' => 1,
+                       'candel'  => false];
       $this->showFormButtons($options);
    }
 
@@ -644,7 +644,7 @@ class Group extends CommonTreeDropdown {
          $grprestrict = "`$field` $grprestrict1";
       }
       // Count the total of item
-      $nb  = array();
+      $nb  = [];
       $tot = 0;
       $join = $select = '';
       $savfield = $field;
@@ -693,7 +693,7 @@ class Group extends CommonTreeDropdown {
       if ($start >= $tot) {
          $start = 0;
       }
-      $res = array();
+      $res = [];
       foreach ($types as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -718,8 +718,8 @@ class Group extends CommonTreeDropdown {
                       LIMIT $start,$max";
 
             foreach ($DB->request($query) as $data) {
-               $res[] = array('itemtype' => $itemtype,
-                              'items_id' => $data['id']);
+               $res[] = ['itemtype' => $itemtype,
+                              'items_id' => $data['id']];
                $max--;
             }
             // For next type
@@ -767,30 +767,30 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Type')."&nbsp;";
       Dropdown::showItemType($types,
-                             array('value'      => $type,
+                             ['value'      => $type,
                                    'name'       => 'onlytype',
                                    'plural'     => true,
                                    'on_change'  => 'reloadTab("start=0&onlytype="+this.value)',
-                                   'checkright' => true));
+                                   'checkright' => true]);
       if ($this->haveChildren()) {
          echo "</td><td class='center'>".__('Child groups')."&nbsp;";
          Dropdown::showYesNo('tree', $tree, -1,
-                             array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+                             ['on_change' => 'reloadTab("start=0&tree="+this.value)']);
       } else {
          $tree = 0;
       }
       if ($this->getField('is_usergroup')) {
          echo "</td><td class='center'>".User::getTypeName(Session::getPluralNumber())."&nbsp;";
          Dropdown::showYesNo('user', $user, -1,
-                             array('on_change' => 'reloadTab("start=0&user="+this.value)'));
+                             ['on_change' => 'reloadTab("start=0&user="+this.value)']);
       } else {
          $user = 0;
       }
       echo "</td></tr></table>";
 
-      $datas = array();
+      $datas = [];
       if ($type) {
-         $types = array($type);
+         $types = [$type];
       }
       $start  = (isset($_GET['start']) ? intval($_GET['start']) : 0);
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
@@ -807,18 +807,18 @@ class Group extends CommonTreeDropdown {
              || ($item->canView($data['items_id'])
                  && self::canUpdate())) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            echo Html::hidden('field', array('value'                 => $field,
-                                             'data-glpicore-ma-tags' => 'common'));
+            echo Html::hidden('field', ['value'                 => $field,
+                                             'data-glpicore-ma-tags' => 'common']);
 
-            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
+            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
                                          'check_itemtype'   => 'Group',
                                          'check_items_id'   => $ID,
                                          'container'        => 'mass'.__CLASS__.$rand,
-                                         'extraparams'      => array('is_tech' => $tech,
-                                                                  'massive_action_fields' => array('field')),
-                                         'specific_actions' => array(__CLASS__.
+                                         'extraparams'      => ['is_tech' => $tech,
+                                                                  'massive_action_fields' => ['field']],
+                                         'specific_actions' => [__CLASS__.
                                                                     MassiveAction::CLASS_ACTION_SEPARATOR.
-                                                                    'changegroup' => __('Move')) );
+                                                                    'changegroup' => __('Move')] ];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
@@ -856,18 +856,18 @@ class Group extends CommonTreeDropdown {
                Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);
             }
             echo "</td><td>".$item->getTypeName(1);
-            echo "</td><td>".$item->getLink(array('comments' => true));
+            echo "</td><td>".$item->getLink(['comments' => true]);
             echo "</td><td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
             if ($tree || $user) {
                echo "</td><td>";
                if ($grp = $item->getField($field)) {
                   if ($group->getFromDB($grp)) {
-                     echo $group->getLink(array('comments' => true));
+                     echo $group->getLink(['comments' => true]);
                   }
 
                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
                   if ($tuser->getFromDB($usr)) {
-                     echo $tuser->getLink(array('comments' => true));
+                     echo $tuser->getLink(['comments' => true]);
                   }
                }
             }

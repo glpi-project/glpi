@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 */
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
-   static protected $forward_entity_to = array('Consumable', 'Infocom');
+   static protected $forward_entity_to = ['Consumable', 'Infocom'];
    protected $usenotepad               = true;
 
    static $rightname                   = 'consumable';
@@ -75,7 +75,7 @@ class ConsumableItem extends CommonDBTM {
    static function getAdditionalMenuLinks() {
 
       if (static::canView()) {
-         return array('summary' => '/front/consumableitem.php?synthese=yes');
+         return ['summary' => '/front/consumableitem.php?synthese=yes'];
       }
       return false;
    }
@@ -113,9 +113,9 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Consumable', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -138,7 +138,7 @@ class ConsumableItem extends CommonDBTM {
     * @return Nothing (display)
     *
     **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -151,7 +151,7 @@ class ConsumableItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      ConsumableItemType::dropdown(array('value' => $this->fields["consumableitemtypes_id"]));
+      ConsumableItemType::dropdown(['value' => $this->fields["consumableitemtypes_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -161,16 +161,16 @@ class ConsumableItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Technician in charge of the hardware')."</td>";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
+      User::dropdown(['name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+                           'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='4'>
@@ -180,27 +180,27 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
+      Group::dropdown(['name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+                            'condition' => '`is_assign`']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Stock location')."</td>";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alert threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber('alarm_threshold', array('value' => $this->fields["alarm_threshold"],
+      Dropdown::showNumber('alarm_threshold', ['value' => $this->fields["alarm_threshold"],
                                                     'min'   => 0,
                                                     'max'   => 100,
                                                     'step'  => 1,
-                                                    'toadd' => array('-1' => __('Never'))));
+                                                    'toadd' => ['-1' => __('Never')]]);
 
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
@@ -379,7 +379,7 @@ class ConsumableItem extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      return array('description' => __('Send alarms on consumables'));
+      return ['description' => __('Send alarms on consumables')];
    }
 
 
@@ -396,8 +396,8 @@ class ConsumableItem extends CommonDBTM {
       $cron_status = 1;
 
       if ($CFG_GLPI["use_notifications"]) {
-         $message = array();
-         $items   = array();
+         $message = [];
+         $items   = [];
          $alert   = new Alert();
 
          foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
@@ -419,7 +419,7 @@ class ConsumableItem extends CommonDBTM {
                                   AND (`glpi_alerts`.`date` IS NULL
                                        OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
-            $items   = array();
+            $items   = [];
 
             foreach ($DB->request($query_alert) as $consumable) {
                if (($unused=Consumable::getUnusedNumber($consumable["consID"]))
@@ -434,7 +434,7 @@ class ConsumableItem extends CommonDBTM {
 
                   // if alert exists -> delete
                   if (!empty($consumable["alertID"])) {
-                     $alert->delete(array("id" => $consumable["alertID"]));
+                     $alert->delete(["id" => $consumable["alertID"]]);
                   }
                }
             }
@@ -482,7 +482,7 @@ class ConsumableItem extends CommonDBTM {
 
 
    function getEvents() {
-      return array('alert' => __('Send alarms on consumables'));
+      return ['alert' => __('Send alarms on consumables')];
    }
 
 
@@ -492,15 +492,15 @@ class ConsumableItem extends CommonDBTM {
    function showDebug() {
 
       // see query_alert in cronConsumable()
-      $item = array('consID'    => $this->fields['id'],
+      $item = ['consID'    => $this->fields['id'],
                     'entity'    => $this->fields['entities_id'],
                     'ref'       => $this->fields['ref'],
                     'name'      => $this->fields['name'],
-                    'threshold' => $this->fields['alarm_threshold']);
+                    'threshold' => $this->fields['alarm_threshold']];
 
-      $options = array();
+      $options = [];
       $options['entities_id'] = $this->getEntityID();
-      $options['items']       = array($item);
+      $options['items']       = [$item];
       NotificationEvent::debugEvent($this, $options);
    }
 

@@ -59,10 +59,10 @@ class RuleRightParameter extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'value',
+      return [['name'  => 'value',
                          'label' => _n('Criterion', 'Criteria', 1),
                          'type'  => 'text',
-                         'list'  => false));
+                         'list'  => false]];
    }
 
 

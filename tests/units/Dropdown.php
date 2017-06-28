@@ -132,16 +132,16 @@ class Dropdown extends DbTestCase {
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = array('name'    => $cat->fields['name']." > ".$subCat->fields['name'],
+      $expected = ['name'    => $cat->fields['name']." > ".$subCat->fields['name'],
                         'comment' => "<span class='b'>Complete name</span>: ".$cat->fields['name']." > "
                                     .$subCat->fields['name']."<br><span class='b'>&nbsp;Comments&nbsp;</span>"
-                                    .$subCat->fields['comment']);
+                                    .$subCat->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $expected = array('name'    => $cat->fields['name']." > ".$subCat->fields['name'],
-                        'comment' => $subCat->fields['comment']);
+      $expected = ['name'    => $cat->fields['name']." > ".$subCat->fields['name'],
+                        'comment' => $subCat->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
 
@@ -149,8 +149,8 @@ class Dropdown extends DbTestCase {
       $CFG_GLPI['translate_dropdowns'] = 1;
       $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
       $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-      $expected = array('name'    => 'FR - _cat_1 > FR - _subcat_1',
-                        'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1');
+      $expected = ['name'    => 'FR - _cat_1 > FR - _subcat_1',
+                        'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'];
       $ret = \Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
       // switch back to default language
@@ -166,8 +166,8 @@ class Dropdown extends DbTestCase {
       $ret = \Dropdown::getDropdownName( 'glpi_computers', $computer->getID());
       $this->string($ret)->isIdenticalTo($computer->getName());
 
-      $expected = array('name'    => $computer->getName(),
-                        'comment' => $computer->fields['comment']);
+      $expected = ['name'    => $computer->getName(),
+                        'comment' => $computer->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_computers', $computer->getID(), true);
       $this->array($ret)->isIdenticalTo($expected);
 
@@ -179,17 +179,17 @@ class Dropdown extends DbTestCase {
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = array('name'    => $contact->getName(),
+      $expected = ['name'    => $contact->getName(),
                         'comment' => "Comment for contact _contact01_name<br><span class='b'>".
                                     "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>".
                                     "Mobile phone: </span>0623456789<br><span class='b'>Fax: </span>0123456787<br>".
-                                    "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com");
+                                    "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com"];
       $ret = \Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $expected = array('name'    => $contact->getName(),
-                        'comment' => $contact->fields['comment']);
+      $expected = ['name'    => $contact->getName(),
+                        'comment' => $contact->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
 
@@ -201,15 +201,15 @@ class Dropdown extends DbTestCase {
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = array('name'    => $supplier->getName(),
+      $expected = ['name'    => $supplier->getName(),
                         'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>".
-                                     "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com");
+                                     "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com"];
       $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $expected = array('name'    => $supplier->getName(),
-                        'comment' => $supplier->fields['comment']);
+      $expected = ['name'    => $supplier->getName(),
+                        'comment' => $supplier->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
 
@@ -222,8 +222,8 @@ class Dropdown extends DbTestCase {
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = array('name'    => $expected,
-                        'comment' => "Comment for netpoint _netpoint01");
+      $expected = ['name'    => $expected,
+                        'comment' => "Comment for netpoint _netpoint01"];
       $ret = \Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
@@ -239,16 +239,16 @@ class Dropdown extends DbTestCase {
       $this->string($ret)->isIdenticalTo($expected);
 
       // test of return with comments
-      $expected = array('name'    =>  $budget->getName(),
+      $expected = ['name'    =>  $budget->getName(),
                         'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: ".
                                        "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>".
-                                       "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 ");
+                                       "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 "];
       $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true );
       $this->array($ret)->isIdenticalTo($expected);
 
       // test of return without $tooltip
-      $expected = array('name'    => $budget->getName(),
-                        'comment' => $budget->fields['comment']);
+      $expected = ['name'    => $budget->getName(),
+                        'comment' => $budget->fields['comment']];
       $ret = \Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true, true, false );
       $this->array($ret)->isIdenticalTo($expected);
    }

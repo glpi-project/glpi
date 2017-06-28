@@ -176,7 +176,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("notification", UPDATE)) {
@@ -303,9 +303,9 @@ class Notification_NotificationTemplate extends CommonDBChild {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'mode':
@@ -321,10 +321,10 @@ class Notification_NotificationTemplate extends CommonDBChild {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 

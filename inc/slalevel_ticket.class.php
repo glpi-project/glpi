@@ -87,7 +87,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                        AND `glpi_slts`.`type` = '$sltType'";
 
       foreach ($DB->request($query1) as $data) {
-         $this->delete(array('id' => $data['id']));
+         $this->delete(['id' => $data['id']]);
       }
    }
 
@@ -103,9 +103,9 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       switch ($name) {
          case 'slaticket' :
-            return array('description' => __('Automatic actions of SLA'));
+            return ['description' => __('Automatic actions of SLA')];
       }
-      return array();
+      return [];
    }
 
 
@@ -189,7 +189,7 @@ class SlaLevel_Ticket extends CommonDBTM {
          if (($ticket->fields[$sltField] > 0)) {
             if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
-               $slalevelticket->delete(array('id' => $data['id']));
+               $slalevelticket->delete(['id' => $data['id']]);
 
             } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
                // No execution if ticket has been taken into account
@@ -207,7 +207,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                      }
                      // Process rules
                      if ($doit) {
-                        $input = $slalevel->executeActions($input, array());
+                        $input = $slalevel->executeActions($input, []);
                      }
                   }
 
@@ -216,22 +216,22 @@ class SlaLevel_Ticket extends CommonDBTM {
                                                      $data['slalevels_id']);
                   $slt->addLevelToDo($ticket, $next);
                   // Action done : drop the line
-                  $slalevelticket->delete(array('id' => $data['id']));
+                  $slalevelticket->delete(['id' => $data['id']]);
 
                   $ticket->update($input);
                } else {
                   // Drop line
-                  $slalevelticket->delete(array('id' => $data['id']));
+                  $slalevelticket->delete(['id' => $data['id']]);
                }
             }
          } else {
             // Drop line
-            $slalevelticket->delete(array('id' => $data['id']));
+            $slalevelticket->delete(['id' => $data['id']]);
          }
 
       } else {
          // Drop line
-         $slalevelticket->delete(array('id' => $data['id']));
+         $slalevelticket->delete(['id' => $data['id']]);
       }
    }
 

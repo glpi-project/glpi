@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class TicketSatisfaction extends CommonDBTM {
 
    public $dohistory         = true;
-   public $history_blacklist = array('date_answered');
+   public $history_blacklist = ['date_answered'];
 
 
    static function getTypeName($nb=0) {
@@ -58,7 +58,7 @@ class TicketSatisfaction extends CommonDBTM {
 
 
    function getLogTypeID() {
-      return array('Ticket', $this->fields['tickets_id']);
+      return ['Ticket', $this->fields['tickets_id']];
    }
 
 
@@ -103,7 +103,7 @@ class TicketSatisfaction extends CommonDBTM {
    function showForm($ticket) {
 
       $tid                 = $ticket->fields['id'];
-      $options             = array();
+      $options             = [];
       $options['colspan']  = 1;
 
       // for external inquest => link
@@ -250,10 +250,10 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'type':
@@ -271,18 +271,18 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $values                (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
       switch ($field) {
          case 'type' :
             $options['value'] = $values[$field];
-            $typeinquest = array(1 => __('Internal survey'),
-                                 2 => __('External survey'));
+            $typeinquest = [1 => __('Internal survey'),
+                                 2 => __('External survey')];
             return Dropdown::showFromArray($name, $typeinquest, $options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);

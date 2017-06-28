@@ -58,14 +58,14 @@ class ProjectState extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'     => 'color',
+      return [['name'     => 'color',
                          'label'    => __('Color'),
                          'type'     => 'color',
-                         'list'     => true),
-                   array('name'     => 'is_finished',
+                         'list'     => true],
+                   ['name'     => 'is_finished',
                          'label'    => __('Finished state'),
                          'type'     => 'bool',
-                         'list'     => true),);
+                         'list'     => true],];
    }
 
 

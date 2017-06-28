@@ -53,9 +53,9 @@ class NotificationTargetProjectTask extends NotificationTarget {
    **/
    function getEvents() {
 
-      $events = array('new'               => __('New project task'),
+      $events = ['new'               => __('New project task'),
                       'update'            => __('Update of a project task'),
-                      'delete'            => __('Deletion of a project task'));
+                      'delete'            => __('Deletion of a project task')];
       asort($events);
       return $events;
    }
@@ -130,8 +130,8 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $user = new User;
       foreach ($DB->request($query) as $data) {
          if ($user->getFromDB($data['items_id'])) {
-            $this->addToRecipientsList(array('language' => $user->getField('language'),
-                                            'users_id' => $user->getField('id')));
+            $this->addToRecipientsList(['language' => $user->getField('language'),
+                                            'users_id' => $user->getField('id')]);
          }
       }
    }
@@ -172,10 +172,10 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $contact = new Contact();
       foreach ($DB->request($query) as $data) {
          if ($contact->getFromDB($data['items_id'])) {
-            $this->addToRecipientsList(array("email"    => $contact->fields["email"],
+            $this->addToRecipientsList(["email"    => $contact->fields["email"],
                                             "name"     => $contact->getName(),
                                             "language" => $CFG_GLPI["language"],
-                                            'usertype' => NotificationTarget::ANONYMOUS_USER));
+                                            'usertype' => NotificationTarget::ANONYMOUS_USER]);
          }
       }
    }
@@ -196,16 +196,16 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $supplier = new Supplier();
       foreach ($DB->request($query) as $data) {
          if ($supplier->getFromDB($data['items_id'])) {
-            $this->addToRecipientsList(array("email"    => $supplier->fields["email"],
+            $this->addToRecipientsList(["email"    => $supplier->fields["email"],
                                             "name"     => $supplier->getName(),
                                             "language" => $CFG_GLPI["language"],
-                                            'usertype' => NotificationTarget::ANONYMOUS_USER));
+                                            'usertype' => NotificationTarget::ANONYMOUS_USER]);
          }
       }
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
       global $CFG_GLPI, $DB;
 
       //----------- Reservation infos -------------- //
@@ -295,12 +295,12 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $restrict = "`projecttasks_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_projecttaskteams', $restrict);
 
-      $this->data['teammembers'] = array();
+      $this->data['teammembers'] = [];
       if (count($items)) {
          foreach ($items as $data) {
             if ($item2 = getItemForItemtype($data['itemtype'])) {
                if ($item2->getFromDB($data['items_id'])) {
-                  $tmp                               = array();
+                  $tmp                               = [];
                   $tmp['##teammember.itemtype##']    = $item2->getTypeName();
                   $tmp['##teammember.name##']        = $item2->getName();
                   $this->data['teammembers'][]      = $tmp;
@@ -316,9 +316,9 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $restrict            .= " ORDER BY `date` DESC, `id` ASC";
 
       $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict);
-      $this->data['tasks'] = array();
+      $this->data['tasks'] = [];
       foreach ($tasks as $task) {
-         $tmp                            = array();
+         $tmp                            = [];
          $tmp['##task.creationdate##']   = Html::convDateTime($task['date']);
          $tmp['##task.lastupdatedate##'] = Html::convDateTime($task['date_mod']);
          $tmp['##task.name##']           = $task['name'];
@@ -355,10 +355,10 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       // History infos
 
-      $this->data['log'] = array();
+      $this->data['log'] = [];
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
-         $tmp                                = array();
+         $tmp                                = [];
          $tmp["##projecttask.log.date##"]    = $data['date_mod'];
          $tmp["##projecttask.log.user##"]    = $data['user_name'];
          $tmp["##projecttask.log.field##"]   = $data['field'];
@@ -372,12 +372,12 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $restrict = "`projecttasks_id`='".$item->getField('id')."'";
       $tickets  = getAllDatasFromTable('glpi_projecttasks_tickets', $restrict);
 
-      $this->data['tickets'] = array();
+      $this->data['tickets'] = [];
       if (count($tickets)) {
          $ticket = new Ticket();
          foreach ($tickets as $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
-               $tmp                    = array();
+               $tmp                    = [];
 
                $tmp['##ticket.id##']   = $data['tickets_id'];
                $tmp['##ticket.date##'] = $ticket->getField('date');
@@ -403,10 +403,10 @@ class NotificationTargetProjectTask extends NotificationTarget {
                 WHERE `glpi_documents_items`.`itemtype` =  'ProjectTask'
                       AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
 
-      $this->data["documents"] = array();
+      $this->data["documents"] = [];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $tmp                      = array();
+            $tmp                      = [];
             $tmp['##document.id##']   = $data['id'];
             $tmp['##document.name##'] = $data['name'];
             $tmp['##document.weblink##']
@@ -452,7 +452,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('projecttask.url'                 => __('URL'),
+      $tags_all = ['projecttask.url'                 => __('URL'),
                         'projecttask.action'              => _n('Event', 'Events', 1),
                         'projecttask.name'                => __('Name'),
                         'projecttask.project'             => __('Project'),
@@ -503,16 +503,16 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                                                      _x('name', 'Update')),
                         'projecttask.numberoftickets'     => _x('quantity', 'Number of tickets'),
                         'projecttask.numberofdocuments'   => _x('quantity', 'Number of documents'),
-                     );
+                     ];
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       //Tags without lang
-      $tags = array('ticket.id'               => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+      $tags = ['ticket.id'               => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
                     'ticket.date'             => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
                     'ticket.url'              => sprintf(__('%1$s: %2$s'), __('Ticket'), ('URL')),
                     'ticket.title'            => sprintf(__('%1$s: %2$s'), __('Ticket'),
@@ -545,40 +545,40 @@ class NotificationTargetProjectTask extends NotificationTarget {
                     'teammember.itemtype'    => sprintf(__('%1$s: %2$s'),
                                                         _n('Team member', 'Team members', 1),
                                                         __('Type'))
-                     );
+                     ];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
-                                   'lang'  => false));
+                                   'lang'  => false]);
       }
 
       //Tags with just lang
-      $tags = array('projecttask.entity'   => __('Entity'),
+      $tags = ['projecttask.entity'   => __('Entity'),
                     'projecttask.log'      => __('Historical'),
                     'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'projecttask.team'     => __('Project team'),
-                    'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()));
+                    'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       //Foreach global tags
-      $tags = array('log'         => __('Historical'),
+      $tags = ['log'         => __('Historical'),
                     'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()));
+                    'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'     => $tag,
+         $this->addTagToList(['tag'     => $tag,
                                    'label'   => $label,
                                    'value'   => false,
-                                   'foreach' => true));
+                                   'foreach' => true]);
       }
       asort($this->tag_descriptions);
    }

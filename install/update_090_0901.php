@@ -43,14 +43,14 @@ function update090to0901() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.90.1'));
    $migration->setVersion('0.90.1');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -68,7 +68,7 @@ function update090to0901() {
    }
 
    // Add missing fill in 0.90 empty version
-   $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
+   $migration->addField("glpi_entities", 'inquest_duration', "integer", ['value' => 0]);
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

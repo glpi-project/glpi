@@ -137,8 +137,8 @@ class Change_Problem extends CommonDBRelation{
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
 
-      $changes = array();
-      $used    = array();
+      $changes = [];
+      $used    = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $changes[$data['id']] = $data;
@@ -156,9 +156,9 @@ class Change_Problem extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Change::dropdown(array('used'        => $used,
+         Change::dropdown(['used'        => $used,
                                 'entity'      => $problem->getEntityID(),
-                                'entity_sons' => $problem->isRecursive()));
+                                'entity_sons' => $problem->isRecursive()]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
@@ -175,8 +175,8 @@ class Change_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -194,9 +194,9 @@ class Change_Problem extends CommonDBRelation{
          $i = 0;
          foreach ($changes as $data) {
             Session::addToNavigateListItems('Change', $data["id"]);
-            Change::showShort($data['id'], array('row_num'                => $i,
+            Change::showShort($data['id'], ['row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']));
+                                                 'id_for_massiveaction'   => $data['linkID']]);
             $i++;
          }
          Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
@@ -239,8 +239,8 @@ class Change_Problem extends CommonDBRelation{
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
 
-      $problems = array();
-      $used     = array();
+      $problems = [];
+      $used     = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $problems[$data['id']] = $data;
@@ -259,8 +259,8 @@ class Change_Problem extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Problem::dropdown(array('used'   => $used,
-                                 'entity' => $change->getEntityID()));
+         Problem::dropdown(['used'   => $used,
+                                 'entity' => $change->getEntityID()]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr></table>";
@@ -271,8 +271,8 @@ class Change_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -290,9 +290,9 @@ class Change_Problem extends CommonDBRelation{
          $i = 0;
          foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], array('row_num'               => $i,
+            Problem::showShort($data['id'], ['row_num'               => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']));
+                                                 'id_for_massiveaction'   => $data['linkID']]);
             $i++;
          }
          Problem::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);

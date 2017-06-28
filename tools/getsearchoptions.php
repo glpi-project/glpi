@@ -71,7 +71,7 @@ if (isset($_GET['lang'])) {
 }
 
 $opts = &Search::getOptions($_GET['type']);
-$sort = array();
+$sort = [];
 $group = 'N/A';
 
 foreach ($opts as $ref => $opt) {

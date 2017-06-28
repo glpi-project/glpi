@@ -96,9 +96,9 @@ class ComputerDisk extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -140,7 +140,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -194,7 +194,7 @@ class ComputerDisk extends CommonDBChild {
       Html::autocompletionTextField($this, "mountpoint");
       echo "</td><td>".__('File system')."</td>";
       echo "<td>";
-      FileSystem::dropdown(array('value' => $this->fields["filesystems_id"]));
+      FileSystem::dropdown(['value' => $this->fields["filesystems_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -304,8 +304,8 @@ class ComputerDisk extends CommonDBChild {
                if ($data['totalsize'] > 0) {
                   $percent = round(100*$data['freesize']/$data['totalsize']);
                }
-               Html::displayProgressBar('100', $percent, array('simple'       => true,
-                                                               'forcepadding' => false));
+               Html::displayProgressBar('100', $percent, ['simple'       => true,
+                                                               'forcepadding' => false]);
                echo "</td>";
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);

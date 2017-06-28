@@ -57,7 +57,7 @@ class RuleTicketCollection extends RuleCollection {
     * @since version 0.84
     **/
    static function canView() {
-      return Session::haveRightsOr(self::$rightname, array(READ, RuleTicket::PARENT));
+      return Session::haveRightsOr(self::$rightname, [READ, RuleTicket::PARENT]);
    }
 
 
@@ -108,11 +108,11 @@ class RuleTicketCollection extends RuleCollection {
       if (isset($input['_head']['x-priority'])) {
          $input['_x-priority'] = $input['_head']['x-priority'];
       }
-      $input['_groups_id_of_requester'] = array();
+      $input['_groups_id_of_requester'] = [];
       // Get groups of users
       if (isset($input['_users_id_requester'])) {
          if (!is_array($input['_users_id_requester'])) {
-            $requesters = array($input['_users_id_requester']);
+            $requesters = [$input['_users_id_requester']];
          } else {
             $requesters = $input['_users_id_requester'];
          }

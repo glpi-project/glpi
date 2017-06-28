@@ -62,7 +62,7 @@ class Profile_RSSFeed extends CommonDBRelation {
    static function getProfiles($rssfeeds_id) {
       global $DB;
 
-      $prof  = array();
+      $prof  = [];
       $query = "SELECT `glpi_profiles_rssfeeds`.*
                 FROM `glpi_profiles_rssfeeds`
                 WHERE `rssfeeds_id` = '$rssfeeds_id'";

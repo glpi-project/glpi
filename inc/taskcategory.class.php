@@ -53,14 +53,14 @@ class TaskCategory extends CommonTreeDropdown {
 
       $tab = parent::getAdditionalFields();
 
-      $tab[] = array('name'  => 'is_active',
+      $tab[] = ['name'  => 'is_active',
                      'label' => __('Active'),
-                     'type'  => 'bool');
+                     'type'  => 'bool'];
 
-      $tab[] = array('name'  => 'knowbaseitemcategories_id',
+      $tab[] = ['name'  => 'knowbaseitemcategories_id',
                      'label' => KnowbaseItemCategory::getTypeName(),
                      'type'  => 'dropdownValue',
-                     'list'  => true);
+                     'list'  => true];
 
       return $tab;
    }

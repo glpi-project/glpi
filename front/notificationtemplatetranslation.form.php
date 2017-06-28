@@ -76,9 +76,9 @@ if (isset($_POST["add"])) {
                 "notificationtemplate");
 
    if ($_GET["id"] == '') {
-      $options = array("notificationtemplates_id" => $_GET["notificationtemplates_id"]);
+      $options = ["notificationtemplates_id" => $_GET["notificationtemplates_id"]];
    } else {
-      $options = array();
+      $options = [];
    }
    $options['id'] = $_GET["id"];
    $language->display($options);

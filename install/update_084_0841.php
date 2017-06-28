@@ -43,14 +43,14 @@ function update084to0841() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.1'));
    $migration->setVersion('0.84.1');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -68,12 +68,12 @@ function update084to0841() {
    }
 
    // Convert html fields from numeric encoding to raw encoding
-   $fields_to_clean = array('glpi_knowbaseitems'                    => 'answer',
+   $fields_to_clean = ['glpi_knowbaseitems'                    => 'answer',
                             'glpi_tickets'                          => 'solution',
                             'glpi_problems'                         => 'solution',
                             'glpi_reminders'                        => 'text',
                             'glpi_solutiontemplates'                => 'content',
-                            'glpi_notificationtemplatetranslations' => 'content_text');
+                            'glpi_notificationtemplatetranslations' => 'content_text'];
    foreach ($fields_to_clean as $table => $field) {
       foreach ($DB->request($table) as $data) {
          $text  = Toolbox::unclean_html_cross_side_scripting_deep($data[$field]);
@@ -107,8 +107,8 @@ function update084to0841() {
 
    // add delete_problem
    $migration->addField('glpi_profiles', 'delete_problem', 'char',
-                        array('after'  => 'edit_all_problem',
-                              'update' => 'edit_all_problem'));
+                        ['after'  => 'edit_all_problem',
+                              'update' => 'edit_all_problem']);
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

@@ -53,7 +53,7 @@ class SavedSearch extends CommonDBTM {
 
 
    static function getForbiddenActionsForMenu() {
-      return array('add');
+      return ['add'];
    }
 
 
@@ -91,7 +91,7 @@ class SavedSearch extends CommonDBTM {
             $values = [self::COUNT_AUTO  => __('Auto'),
                        self::COUNT_YES   => __('Yes'),
                        self::COUNT_NO    => __('No')];
-            Dropdown::showFromArray('do_count', $values, array('width' => '20%'));
+            Dropdown::showFromArray('do_count', $values, ['width' => '20%']);
             break;
 
          case 'change_entity':
@@ -169,7 +169,7 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
       $ong = [];
       $this->addDefaultFormTab($ong)
@@ -283,7 +283,7 @@ class SavedSearch extends CommonDBTM {
                                        $index,
                                        Toolbox::strlen($taburl["path"]) - $index);
 
-      $query_tab = array();
+      $query_tab = [];
 
       if (isset($taburl["query"])) {
          parse_str($taburl["query"], $query_tab);
@@ -341,7 +341,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $ID = $this->getID();
 
@@ -378,7 +378,7 @@ class SavedSearch extends CommonDBTM {
 
       echo "<tr><td class='tab_bg_1'>".__('Name')."</td>";
       echo "<td class='tab_bg_1'>";
-      Html::autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
+      Html::autocompletionTextField($this, "name", ['user' => $this->fields["users_id"]]);
       echo "</td>";
       if (Session::haveRight("config", UPDATE)) {
          echo "<td class='tab_bg_1'>".__('Do count')."</td>".
@@ -386,7 +386,7 @@ class SavedSearch extends CommonDBTM {
          $values = [self::COUNT_AUTO  => __('Auto'),
                     self::COUNT_YES   => __('Yes'),
                     self::COUNT_NO    => __('No')];
-         Dropdown::showFromArray('do_count', $values, array('value' => $this->getField('do_count')));
+         Dropdown::showFromArray('do_count', $values, ['value' => $this->getField('do_count')]);
       } else {
          echo "<td colspan='2'>";
       }
@@ -574,7 +574,7 @@ class SavedSearch extends CommonDBTM {
    function getParameters($ID) {
 
       if ($this->getFromDB($ID)) {
-         $query_tab = array();
+         $query_tab = [];
          parse_str($this->fields["query"], $query_tab);
          $query_tab['savedsearches_id'] = $ID;
          if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
@@ -718,7 +718,7 @@ class SavedSearch extends CommonDBTM {
          }
       }
 
-      $ordered = array();
+      $ordered = [];
 
       // get personal order
       $user               = new User();
@@ -729,7 +729,7 @@ class SavedSearch extends CommonDBTM {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
       if (!is_array($personalorder)) {
-         $personalorder = array();
+         $personalorder = [];
       }
 
       // Add on personal order
@@ -1025,7 +1025,7 @@ class SavedSearch extends CommonDBTM {
    static function getUsedItemtypes() {
       global $DB;
 
-      $types= array();
+      $types= [];
       foreach ($DB->request("SELECT DISTINCT(`itemtype`)
                              FROM `" . static::getTable() . "`") as $data) {
          $types[] = $data['itemtype'];
@@ -1056,10 +1056,10 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'do_count':
@@ -1079,10 +1079,10 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -1106,7 +1106,7 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void|string
    **/
-   static function dropdownDoCount(array $options=array()) {
+   static function dropdownDoCount(array $options=[]) {
 
       $p['name']      = 'do_count';
       $p['value']     = self::COUNT_AUTO;
@@ -1196,7 +1196,7 @@ class SavedSearch extends CommonDBTM {
          case 'countAll' :
             return ['description' => __('Update all bookmarks execution time')];
       }
-      return array();
+      return [];
    }
 
 
@@ -1273,7 +1273,7 @@ class SavedSearch extends CommonDBTM {
 
          $search = new Search();
          //Do the same as self::getParameters() but getFromDB is useless
-         $query_tab = array();
+         $query_tab = [];
          parse_str($this->getField('query'), $query_tab);
 
          $params = null;

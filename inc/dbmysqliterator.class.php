@@ -203,13 +203,13 @@ class DBmysqlIterator implements Iterator {
 
          // ORDER BY
          if (is_array($orderby)) {
-            $cleanorderby = array();
+            $cleanorderby = [];
             foreach ($orderby as $o) {
                $new = '';
                $tmp = explode(' ', $o);
                $new .= self::quoteName($tmp[0]);
                // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
+               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                   $new .= ' '.$tmp[1];
                }
                $cleanorderby[] = $new;
@@ -221,7 +221,7 @@ class DBmysqlIterator implements Iterator {
             $tmp = explode(' ', $orderby);
             $this->sql .= self::quoteName($tmp[0]);
             // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
+            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                $this->sql .= ' '.$tmp[1];
             }
          }

@@ -43,11 +43,11 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
 
    function getEvents() {
-      return array('refuse' => __('Alert on duplicate record'));
+      return ['refuse' => __('Alert on duplicate record')];
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       //User who tries to add or update an item in DB
       $action = ($options['action_user'] ?__('Add the item') :__('Update the item'));
@@ -80,18 +80,18 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('unicity.message'     => __('Message'),
+      $tags = ['unicity.message'     => __('Message'),
                     'unicity.action_user' => __('Doer'),
                     'unicity.action_type' => __('Intended action'),
                     'unicity.date'        => __('Date'),
                     'unicity.itemtype'    => __('Type'),
                     'unicity.entity'      => __('Entity'),
-                    'unicity.action'      => __('Alert on duplicate record'));
+                    'unicity.action'      => __('Alert on duplicate record')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       asort($this->tag_descriptions);

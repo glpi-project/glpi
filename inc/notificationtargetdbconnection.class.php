@@ -56,11 +56,11 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getEvents() {
-      return array('desynchronization' => __('Desynchronization SQL replica'));
+      return ['desynchronization' => __('Desynchronization SQL replica')];
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       if ($options['diff'] > 1000000000) {
          $tmp = __("Can't connect to the database.");
@@ -81,26 +81,26 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('dbconnection.delay' => __('Difference between master and slave'));
+      $tags = ['dbconnection.delay' => __('Difference between master and slave')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       //Tags with just lang
-      $tags = array('dbconnection.title'
+      $tags = ['dbconnection.title'
                                  => __('Slave database out of sync!'),
                     'dbconnection.delay'
-                                 => __('The slave database is desynchronized. The difference is of:'));
+                                 => __('The slave database is desynchronized. The difference is of:')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       asort($this->tag_descriptions);

@@ -46,11 +46,11 @@ class NotificationTargetInfocom extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Alarms on financial and administrative information'));
+      return ['alert' => __('Alarms on financial and administrative information')];
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       $events                                 = $this->getAllEvents();
 
@@ -59,7 +59,7 @@ class NotificationTargetInfocom extends NotificationTarget {
       $this->data['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
-         $tmp = array();
+         $tmp = [];
 
          if ($obj = getItemForItemtype($item['itemtype'])) {
             $tmp['##infocom.itemtype##']
@@ -85,22 +85,22 @@ class NotificationTargetInfocom extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('infocom.action'         => _n('Event', 'Events', 1),
+      $tags = ['infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => __('Associated item'),
                     'infocom.expirationdate' => __('Expiration date'),
-                    'infocom.entity'         => __('Entity'));
+                    'infocom.entity'         => __('Entity')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'items',
+      $this->addTagToList(['tag'     => 'items',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

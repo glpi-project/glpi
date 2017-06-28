@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 class SingletonRuleList {
    /// Items list
-   public $list = array();
+   public $list = [];
    /// Items loaded ?
    public $load = 0;
 
@@ -53,7 +53,7 @@ class SingletonRuleList {
     * @return unique instance of an object
    **/
    public static function &getInstance($type, $entity) {
-      static $instances = array();
+      static $instances = [];
 
       if (!isset($instances[$type][$entity])) {
          $instances[$type][$entity] = new self();

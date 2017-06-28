@@ -37,10 +37,10 @@
 // since version 0.83.3
 define('GLPI_ROOT', realpath('..'));
 
-$dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
+$dirs = [GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
               GLPI_ROOT.'/front/',
-              GLPI_ROOT.'/install/');
+              GLPI_ROOT.'/install/'];
 
 foreach ($dirs as $dir) {
    if ($handle = opendir($dir)) {

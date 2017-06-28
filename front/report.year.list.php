@@ -54,7 +54,7 @@ if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
 }
 
 if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
-   $query = array();
+   $query = [];
    foreach ($_POST["item_type"] as $key => $val) {
       if (in_array($val, $items)) {
          $itemtable = getTableForItemType($val);

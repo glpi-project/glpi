@@ -51,6 +51,6 @@ if (!empty($_POST["test_smtp_send"])) {
 
 Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
 
-$notificationmail->display(array('id' => 1));
+$notificationmail->display(['id' => 1]);
 
 Html::footer();

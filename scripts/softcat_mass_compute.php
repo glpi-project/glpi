@@ -52,7 +52,7 @@ if ($result=$DB->query($query)) {
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
          if (!$ONLY_UNDEFINED || $data['softwarecategories_id']==0) {
-            $params = array();
+            $params = [];
 
             //Get software name and manufacturer
             $soft->getFromDB($data['id']);

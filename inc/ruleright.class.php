@@ -70,11 +70,11 @@ class RuleRight extends Rule {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name') . "</td><td>";
-      Html::autocompletionTextField($this, "name", array('value' => '',
-                                                         'size'  => 33));
+      Html::autocompletionTextField($this, "name", ['value' => '',
+                                                         'size'  => 33]);
       echo '</td><td>'.__('Description') . "</td><td>";
-      Html::autocompletionTextField($this, "description", array('value' => '',
-                                                                'size'  => 33));
+      Html::autocompletionTextField($this, "description", ['value' => '',
+                                                                'size'  => 33]);
       echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch();
       echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
@@ -117,7 +117,7 @@ class RuleRight extends Rule {
       $output_src   = $output;
 
       if (count($this->actions)) {
-         $entity = array();
+         $entity = [];
          foreach ($this->actions as $action) {
 
             switch ($action->fields["action_type"]) {
@@ -204,12 +204,12 @@ class RuleRight extends Rule {
          if (count($entity)) {
             if ($right != '') {
                foreach ($entity as $entID) {
-                  $output["_ldap_rules"]["rules_entities_rights"][] = array($entID, $right,
-                                                                            $is_recursive);
+                  $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
+                                                                            $is_recursive];
                }
             } else {
                foreach ($entity as $entID) {
-                  $output["_ldap_rules"]["rules_entities"][] = array($entID, $is_recursive);
+                  $output["_ldap_rules"]["rules_entities"][] = [$entID, $is_recursive];
                }
             }
          } else if ($right != '') {
@@ -231,7 +231,7 @@ class RuleRight extends Rule {
     * @see Rule::getCriterias()
    **/
    function getCriterias() {
-      static $criterias = array();
+      static $criterias = [];
 
       if (!count($criterias)) {
          $criterias['common']                   = __('Global criteria');
@@ -286,7 +286,7 @@ class RuleRight extends Rule {
    **/
    function getActions() {
 
-      $actions                                              = array();
+      $actions                                              = [];
 
       $actions['entities_id']['name']                       = __('Entity');
       $actions['entities_id']['type']                       = 'dropdown';
@@ -294,22 +294,22 @@ class RuleRight extends Rule {
 
       $actions['_affect_entity_by_dn']['name']              = __('Entity based on LDAP information');
       $actions['_affect_entity_by_dn']['type']              = 'text';
-      $actions['_affect_entity_by_dn']['force_actions']     = array('regex_result');
+      $actions['_affect_entity_by_dn']['force_actions']     = ['regex_result'];
       $actions['_affect_entity_by_dn']['duplicatewith']     = 'entities_id';
 
       $actions['_affect_entity_by_tag']['name']             = __('Entity from TAG');
       $actions['_affect_entity_by_tag']['type']             = 'text';
-      $actions['_affect_entity_by_tag']['force_actions']    = array('regex_result');
+      $actions['_affect_entity_by_tag']['force_actions']    = ['regex_result'];
       $actions['_affect_entity_by_tag']['duplicatewith']    = 'entities_id';
 
       $actions['_affect_entity_by_domain']['name']          = __('Entity from mail domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
-      $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_domain']['force_actions'] = ['regex_result'];
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
 
       $actions['_affect_entity_by_completename']['name']          = __('Entity from complete name');
       $actions['_affect_entity_by_completename']['type']          = 'text';
-      $actions['_affect_entity_by_completename']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_completename']['force_actions'] = ['regex_result'];
       $actions['_affect_entity_by_completename']['duplicatewith'] = 'entities_id';
 
       $actions['profiles_id']['name']                       = _n('Profile', 'Profiles', Session::getPluralNumber());

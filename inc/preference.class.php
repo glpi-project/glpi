@@ -48,9 +48,9 @@ class Preference extends CommonGLPI {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab('User', $ong, $options);
       $this->addStandardTab('Config', $ong, $options);
       $this->addStandardTab('DisplayPreference', $ong, $options);

@@ -59,7 +59,7 @@ class Group_User extends CommonDBRelation{
    static function getUserGroups($users_id, $condition='') {
       global $DB;
 
-      $groups = array();
+      $groups = [];
       $query  = "SELECT `glpi_groups`.*,
                         `glpi_groups_users`.`id` AS IDD,
                         `glpi_groups_users`.`id` AS linkID,
@@ -90,7 +90,7 @@ class Group_User extends CommonDBRelation{
    static function getGroupUsers($groups_id, $condition='') {
       global $DB;
 
-      $users = array();
+      $users = [];
       $query = "SELECT `glpi_users`.*,
                        `glpi_groups_users`.`id` AS IDD,
                        `glpi_groups_users`.`id` AS linkID,
@@ -130,7 +130,7 @@ class Group_User extends CommonDBRelation{
       $rand    = mt_rand();
 
       $groups  = self::getUserGroups($ID);
-      $used    = array();
+      $used    = [];
       if (!empty($groups)) {
          foreach ($groups as $data) {
             $used[$data["id"]] = $data["id"];
@@ -159,9 +159,9 @@ class Group_User extends CommonDBRelation{
 
          $nb = countElementsInTableForEntity("glpi_groups", $strict_entities, '`is_usergroup`');
          if ($nb > count($used)) {
-            Group::dropdown(array('entity'    => $strict_entities,
+            Group::dropdown(['entity'    => $strict_entities,
                                   'used'      => $used,
-                                  'condition' => '`is_usergroup`'));
+                                  'condition' => '`is_usergroup`']);
             echo "</td><td>".__('Manager')."</td><td>";
             Dropdown::showYesNo('is_manager');
 
@@ -187,8 +187,8 @@ class Group_User extends CommonDBRelation{
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                           'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
+                           'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -300,9 +300,9 @@ class Group_User extends CommonDBRelation{
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add a user')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
 
-         User::dropdown(array('right'  => "all",
+         User::dropdown(['right'  => "all",
                               'entity' => $entityrestrict,
-                              'used'   => $used_ids));
+                              'used'   => $used_ids]);
 
          echo "</td><td>".__('Manager')."</td><td>";
          Dropdown::showYesNo('is_manager', (($crit == 'is_manager') ? 1 : 0));
@@ -415,8 +415,8 @@ class Group_User extends CommonDBRelation{
       $user    = new User();
       $crit    = Session::getSavedOption(__CLASS__, 'criterion', '');
       $tree    = Session::getSavedOption(__CLASS__, 'tree', 0);
-      $used    = array();
-      $ids     = array();
+      $used    = [];
+      $ids     = [];
 
       // Retrieve member list
       $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
@@ -430,16 +430,16 @@ class Group_User extends CommonDBRelation{
       echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo _n('Criterion', 'Criteria', 1)."&nbsp;";
-      $crits = array('is_manager'      => __('Manager'),
-                     'is_userdelegate' => __('Delegatee'));
+      $crits = ['is_manager'      => __('Manager'),
+                     'is_userdelegate' => __('Delegatee')];
       Dropdown::showFromArray('crit', $crits,
-                              array('value'               => $crit,
+                              ['value'               => $crit,
                                     'on_change'           => 'reloadTab("start=0&criterion="+this.value)',
-                                    'display_emptychoice' => true));
+                                    'display_emptychoice' => true]);
       if ($group->haveChildren()) {
          echo "</td><td class='center'>".__('Child groups');
          Dropdown::showYesNo('tree', $tree, -1,
-                             array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+                             ['on_change' => 'reloadTab("start=0&tree="+this.value)']);
       } else {
          $tree = 0;
       }
@@ -465,9 +465,9 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'    => min($number-$start,
+            $massiveactionparams = ['num_displayed'    => min($number-$start,
                                                                    $_SESSION['glpilist_limit']),
-                                         'container'        => 'mass'.__CLASS__.$rand);
+                                         'container'        => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -511,7 +511,7 @@ class Group_User extends CommonDBRelation{
             if ($tree) {
                echo "</td><td>";
                if ($tmpgrp->getFromDB($data['groups_id'])) {
-                  echo $tmpgrp->getLink(array('comments' => true));
+                  echo $tmpgrp->getLink(['comments' => true]);
                }
             }
             echo "</td><td class='center'>";
@@ -564,8 +564,8 @@ class Group_User extends CommonDBRelation{
 
       $specificities                           = parent::getRelationMassiveActionsSpecificities();
 
-      $specificities['select_items_options_1'] = array('right'     => 'all');
-      $specificities['select_items_options_2'] = array('condition' => '`is_usergroup`');
+      $specificities['select_items_options_1'] = ['right'     => 'all'];
+      $specificities['select_items_options_2'] = ['condition' => '`is_usergroup`'];
 
       // Define normalized action for add_item and remove_item
       $specificities['normalized']['add'][]    = 'add_supervisor';
@@ -589,13 +589,13 @@ class Group_User extends CommonDBRelation{
                                                                  array $ids, array $input) {
       switch ($action) {
          case 'add_supervisor' :
-            return array('is_manager' => 1);
+            return ['is_manager' => 1];
 
          case 'add_delegatee' :
-            return array('is_userdelegate' => 1);
+            return ['is_userdelegate' => 1];
       }
 
-      return array();
+      return [];
    }
 
 

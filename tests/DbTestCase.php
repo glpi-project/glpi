@@ -40,7 +40,7 @@ class DbTestCase extends atoum {
       global $DB;
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
-      $DB->objcreated = array();
+      $DB->objcreated = [];
 
       // By default, no session, not connected
       $_SESSION = [

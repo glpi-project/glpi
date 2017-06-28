@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceGeneric
 class DeviceGeneric extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceGeneric', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceGeneric', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Generic device', 'Generic devices', $nb);
@@ -49,9 +49,9 @@ class DeviceGeneric extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'devicegenerictypes_id',
+                         [['name'  => 'devicegenerictypes_id',
                                      'label' => __('Type'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -77,7 +77,7 @@ class DeviceGeneric extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -99,7 +99,7 @@ class DeviceGeneric extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -124,11 +124,11 @@ class DeviceGeneric extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'       => 'equal',
+      return ['designation'       => 'equal',
                    'manufacturers_id'  => 'equal',
                    'devicecasetypes_id' => 'equal',
                    'locations_id'      => 'equal',
-                   );
+                   ];
    }
 
 }

@@ -46,7 +46,7 @@ include ('../inc/includes.php');
 // No debug mode
 $_SESSION['glpi_use_mode'] == Session::NORMAL_MODE;
 
-$types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
+$types = ['Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
                'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
                'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
                'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
@@ -62,7 +62,7 @@ $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareV
                'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
                'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
                'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
-               'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+               'ComputerDisk', 'ComputerVirtualMachine', 'Infocom'];
 $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
 $types = array_merge($types, $CFG_GLPI["device_types"]);
 $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);

@@ -55,7 +55,7 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canView() {
-      return Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
+      return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
    }
 
 
@@ -80,7 +80,7 @@ class ProblemTask extends CommonITILTask {
 
 
    function canEditAll() {
-      return Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE, PURGE));
+      return Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, PURGE]);
    }
 
 
@@ -159,7 +159,7 @@ class ProblemTask extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=array()) {
+   static function populatePlanning($options=[]) {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 

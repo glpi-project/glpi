@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceDrive
 class DeviceDrive extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceDrive', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
 
    static function getTypeName($nb=0) {
       return _n('Drive', 'Drives', $nb);
@@ -51,18 +51,18 @@ class DeviceDrive extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'is_writer',
+                         [['name'  => 'is_writer',
                                      'label' => __('Writing ability'),
-                                     'type'  => 'bool'),
-                               array('name'  => 'speed',
+                                     'type'  => 'bool'],
+                               ['name'  => 'speed',
                                      'label' => __('Speed'),
-                                     'type'  => 'text'),
-                               array('name'  => 'interfacetypes_id',
+                                     'type'  => 'text'],
+                               ['name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'devicedrivemodels_id',
+                                     'type'  => 'dropdownValue'],
+                               ['name'  => 'devicedrivemodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -112,7 +112,7 @@ class DeviceDrive extends CommonDevice {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=array()) {
+                                      HTMLTableHeader $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -138,7 +138,7 @@ class DeviceDrive extends CommonDevice {
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
    function getHTMLTableCellForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                    HTMLTableCell $father=null, array $options=array()) {
+                                    HTMLTableCell $father=null, array $options=[]) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -173,9 +173,9 @@ class DeviceDrive extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'       => 'equal',
+      return ['designation'       => 'equal',
                    'manufacturers_id'  => 'equal',
-                   'interfacetypes_id' => 'equal');
+                   'interfacetypes_id' => 'equal'];
    }
 
 }

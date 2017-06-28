@@ -208,7 +208,7 @@ if (!TableExists("glpi_configs")) {
    $current_version = trim($DB->result($result, 0, 0));
    $glpilanguage    = trim($DB->result($result, 0, 1));
 } else {
-   $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
+   $configurationValues = Config::getConfigurationValues('core', ['version', 'language']);
 
    $current_version     = $configurationValues['version'];
    $glpilanguage        = $configurationValues['language'];
@@ -370,8 +370,8 @@ switch ($current_version) {
 if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
-                                                'founded_new_version' => ''));
+   Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
+                                                'founded_new_version' => '']);
 
    // Update process desactivate all plugins
    $plugin = new Plugin();

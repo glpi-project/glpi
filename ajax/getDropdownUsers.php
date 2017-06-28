@@ -56,7 +56,7 @@ if (!isset($_POST['all'])) {
    $_POST['all'] = 0;
 }
 
-$used = array();
+$used = [];
 
 if (isset($_POST['used'])) {
    $used = $_POST['used'];
@@ -93,7 +93,7 @@ if ($one_item < 0) {
              WHERE `glpi_users`.`id` = '$one_item';";
    $result = $DB->query($query);
 }
-$users = array();
+$users = [];
 
 // Count real items returned
 $count = 0;
@@ -116,17 +116,17 @@ if (!function_exists('dpuser_cmp')) {
 uasort($users, 'dpuser_cmp');
 */
 
-$datas = array();
+$datas = [];
 
 // Display first if empty search
 if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
    if (($one_item < 0) || ($one_item == 0)) {
       if ($_POST['all'] == 0) {
-         array_push($datas, array('id'   => 0,
-                                  'text' => Dropdown::EMPTY_VALUE));
+         array_push($datas, ['id'   => 0,
+                                  'text' => Dropdown::EMPTY_VALUE]);
       } else if ($_POST['all'] == 1) {
-         array_push($datas, array('id'   => 0,
-                                  'text' => __('All')));
+         array_push($datas, ['id'   => 0,
+                                  'text' => __('All')]);
       }
    }
 }
@@ -135,9 +135,9 @@ if (count($users)) {
    foreach ($users as $ID => $output) {
       $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
-      array_push($datas, array('id'    => $ID,
+      array_push($datas, ['id'    => $ID,
                                'text'  => $output,
-                               'title' => $title));
+                               'title' => $title]);
       $count++;
    }
 }

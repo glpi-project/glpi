@@ -46,12 +46,12 @@ class Computer extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine',
+   static protected $forward_entity_to = ['ComputerDisk','ComputerVirtualMachine',
                                                'Computer_SoftwareVersion', 'Infocom',
-                                               'NetworkPort', 'ReservationItem');
+                                               'NetworkPort', 'ReservationItem'];
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   public $devices                     = array();
+   public $devices                     = [];
 
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
@@ -90,9 +90,9 @@ class Computer extends CommonDBTM {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong)
          ->addStandardTab(__CLASS__, $ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
@@ -347,7 +347,7 @@ class Computer extends CommonDBTM {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
@@ -377,57 +377,57 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
       echo "<td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
+      State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_computer`",
-                            'rand'      => $randDropdown));
+                            'rand'      => $randDropdown]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_locations_id$randDropdown'>".__('Location')."</label></td>";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
+      Location::dropdown(['value'  => $this->fields["locations_id"],
                                'entity' => $this->fields["entities_id"],
-                               'rand' => $randDropdown));
+                               'rand' => $randDropdown]);
       echo "</td>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_computertypes_id$randDropdown'>".__('Type')."</label></td>";
       echo "<td>";
-      ComputerType::dropdown(array('value' => $this->fields["computertypes_id"], 'rand' => $randDropdown));
+      ComputerType::dropdown(['value' => $this->fields["computertypes_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_users_id_tech$randDropdown'>".__('Technician in charge of the hardware')."</label></td>";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
+      User::dropdown(['name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"],
-                           'rand'   => $randDropdown));
+                           'rand'   => $randDropdown]);
       echo "</td>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_manufacturers_id$randDropdown'>".__('Manufacturer')."</label></td>";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"], 'rand' => $randDropdown));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_groups_id_tech$randDropdown'>".__('Group in charge of the hardware')."</label></td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
+      Group::dropdown(['name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
                             'condition' => '`is_assign`',
-                            'rand' => $randDropdown));
+                            'rand' => $randDropdown]);
 
       echo "</td>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_computermodels_id$randDropdown'>".__('Model')."</label></td>";
       echo "<td>";
-      ComputerModel::dropdown(array('value' => $this->fields["computermodels_id"], 'rand' => $randDropdown));
+      ComputerModel::dropdown(['value' => $this->fields["computermodels_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -469,25 +469,25 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_users_id$randDropdown'>".__('User')."</label></td>";
       echo "<td>";
-      User::dropdown(array('value'  => $this->fields["users_id"],
+      User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all',
-                           'rand'   => $randDropdown));
+                           'rand'   => $randDropdown]);
       echo "</td>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_networks_id$randDropdown'>".__('Network')."</label></td>";
       echo "<td>";
-      Network::dropdown(array('value' => $this->fields["networks_id"], 'rand' => $randDropdown));
+      Network::dropdown(['value' => $this->fields["networks_id"], 'rand' => $randDropdown]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_groups_id$randDropdown'>".__('Group')."</label></td>";
       echo "<td>";
-      Group::dropdown(array('value'     => $this->fields["groups_id"],
+      Group::dropdown(['value'     => $this->fields["groups_id"],
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`',
-                            'rand'      => $randDropdown));
+                            'rand'      => $randDropdown]);
 
       echo "</td>";
 
@@ -505,9 +505,9 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_domains_id$randDropdown'>".__('Domain')."</label></td>";
       echo "<td >";
-      Domain::dropdown(array('value'  => $this->fields["domains_id"],
+      Domain::dropdown(['value'  => $this->fields["domains_id"],
                              'entity' => $this->fields["entities_id"],
-                             'rand'   => $randDropdown));
+                             'rand'   => $randDropdown]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -521,7 +521,7 @@ class Computer extends CommonDBTM {
       $randDropdown = mt_rand();
       echo "<td><label for='dropdown_autoupdatesystems_id$randDropdown'>".__('Update Source')."</label></td>";
       echo "<td >";
-      AutoUpdateSystem::dropdown(array('value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown));
+      AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown]);
       echo "</td></tr>";
       // Display auto inventory informations
       if (!empty($ID)
@@ -550,7 +550,7 @@ class Computer extends CommonDBTM {
       $query = "SELECT `itemtype`, `items_id`
                 FROM `glpi_computers_items`
                 WHERE `computers_id` = '" . $this->fields['id']."'";
-      $tab = array();
+      $tab = [];
       foreach ($DB->request($query) as $data) {
          $tab[$data['itemtype']][$data['items_id']] = $data['items_id'];
       }
@@ -794,8 +794,8 @@ class Computer extends CommonDBTM {
           'name'              => _n('Component', 'Components', Session::getPluralNumber())
       ];
 
-      $items_device_joinparams   = array('jointype'          => 'itemtype_item',
-                                         'specific_itemtype' => 'Computer');
+      $items_device_joinparams   = ['jointype'          => 'itemtype_item',
+                                         'specific_itemtype' => 'Computer'];
 
       $tab[] = [
          'id'                 => '17',

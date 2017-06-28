@@ -68,8 +68,8 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTableMain extends HTMLTableBase {
 
 
-   private $groups    = array();
-   private $itemtypes = array();
+   private $groups    = [];
+   private $itemtypes = [];
 
 
    function __construct() {

@@ -92,7 +92,7 @@ class Item_Project extends CommonDBRelation{
                    AND `glpi_items_projects`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_projects", '', '', true);
 
-      $nb = countElementsInTable(array('glpi_items_projects', 'glpi_projects'), $restrict);
+      $nb = countElementsInTable(['glpi_items_projects', 'glpi_projects'], $restrict);
 
       return $nb;
    }
@@ -133,13 +133,13 @@ class Item_Project extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+         Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                       => $CFG_GLPI["project_asset_types"],
                                                      'entity_restrict'
                                                       => ($project->fields['is_recursive']
                                                           ?getSonsOf('glpi_entities',
                                                                      $project->fields['entities_id'])
-                                                          :$project->fields['entities_id'])));
+                                                          :$project->fields['entities_id'])]);
          echo "</td><td class='center' width='30%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='projects_id' value='$instID'>";
@@ -152,7 +152,7 @@ class Item_Project extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";

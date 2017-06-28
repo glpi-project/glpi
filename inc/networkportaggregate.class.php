@@ -55,7 +55,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
          $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
       } else {
-         $input['networkports_id_list'] = exportArrayToDB(array());
+         $input['networkports_id_list'] = exportArrayToDB([]);
       }
       return parent::prepareInputForAdd($input);
    }
@@ -66,7 +66,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
          $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
       } else {
-         $input['networkports_id_list'] = exportArrayToDB(array());
+         $input['networkports_id_list'] = exportArrayToDB([]);
       }
       return parent::prepareInputForAdd($input);
    }
@@ -93,7 +93,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super=null,
                                              HTMLTableHeader $father=null,
-                                             array $options=array()) {
+                                             array $options=[]) {
 
       $group->addHeader('Origin', __('Origin port'), $super);
 
@@ -107,7 +107,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=array()) {
+                                      HTMLTableCell $father=null, array $options=[]) {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {

@@ -43,7 +43,7 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    function getEvents() {
-      return array('passwordforget' => __('Forgotten password?'));
+      return ['passwordforget' => __('Forgotten password?')];
    }
 
 
@@ -71,17 +71,17 @@ class NotificationTargetUser extends NotificationTarget {
                   }
                   // Send to user without any check on profile / entity
                   // Do not set users_id
-                  $data = array('name'     => $this->obj->getName(),
+                  $data = ['name'     => $this->obj->getName(),
                                 'email'    => $this->obj->getDefaultEmail(),
                                 'language' => $this->obj->getField('language'),
-                                'usertype' => $usertype);
+                                'usertype' => $usertype];
                   $this->addToRecipientsList($data);
             }
       }
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
@@ -108,30 +108,30 @@ class NotificationTargetUser extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('user.name'              => __('Login'),
+      $tags = ['user.name'              => __('Login'),
                     'user.realname'          => __('Name'),
                     'user.firstname'         => __('First name'),
                     'user.token'             => __('Token'),
                     'user.passwordforgeturl' => __('URL'),
-                    'user.action'            => _n('Event', 'Events', 1));
+                    'user.action'            => _n('Event', 'Events', 1)];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       // Only lang
-      $lang = array('passwordforget.information'
+      $lang = ['passwordforget.information'
                         => __('You have been made a request to reset your account password.'),
                     'passwordforget.link'
-                        => __('Just follow this link (you have one day):'));
+                        => __('Just follow this link (you have one day):')];
 
       foreach ($lang as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       asort($this->tag_descriptions);

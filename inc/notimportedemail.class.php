@@ -92,7 +92,7 @@ class NotImportedEmail extends CommonDBTM {
          case 'import_email' :
             Entity::dropdown();
             echo "<br><br>";
-            echo Html::submit(_x('button', 'Import'), array('name' => 'massiveaction'));
+            echo Html::submit(_x('button', 'Import'), ['name' => 'massiveaction']);
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);
@@ -236,9 +236,9 @@ class NotImportedEmail extends CommonDBTM {
    **/
    static function getAllReasons() {
 
-      return array(self::MATCH_NO_RULE => __('Unable to affect the email to an entity'),
+      return [self::MATCH_NO_RULE => __('Unable to affect the email to an entity'),
                    self::USER_UNKNOWN  => __('Email not found. Impossible import'),
-                   self::FAILED_INSERT => __('Failed operation'));
+                   self::FAILED_INSERT => __('Failed operation')];
    }
 
 
@@ -249,18 +249,18 @@ class NotImportedEmail extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'reason' :
             return self::getReason($values[$field]);
 
          case 'messageid' :
-            $clean = array('<' => '',
-                           '>' => '');
+            $clean = ['<' => '',
+                           '>' => ''];
             return strtr($values[$field], $clean);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -275,10 +275,10 @@ class NotImportedEmail extends CommonDBTM {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 

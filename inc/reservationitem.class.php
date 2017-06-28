@@ -63,7 +63,7 @@ class ReservationItem extends CommonDBChild {
    static function canView() {
       global $CFG_GLPI;
 
-      return Session::haveRightsOr(self::$rightname, array(READ, self::RESERVEANITEM));
+      return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
    }
 
 
@@ -88,7 +88,7 @@ class ReservationItem extends CommonDBChild {
     * @since version 0.85
    **/
    static function getForbiddenActionsForMenu() {
-      return array('add');
+      return ['add'];
    }
 
 
@@ -100,7 +100,7 @@ class ReservationItem extends CommonDBChild {
    static function getAdditionalMenuLinks() {
 
       if (static::canView()) {
-         return array('showall' => Reservation::getSearchURL(false));
+         return ['showall' => Reservation::getSearchURL(false)];
       }
       return false;
    }
@@ -306,28 +306,28 @@ class ReservationItem extends CommonDBChild {
 
          if ($ri->fields["is_active"]) {
             Html::showSimpleForm(static::getFormURL(), 'update', __('Make unavailable'),
-                                 array('id'        => $ri->fields['id'],
-                                       'is_active' => 0));
+                                 ['id'        => $ri->fields['id'],
+                                       'is_active' => 0]);
          } else {
             Html::showSimpleForm(static::getFormURL(), 'update', __('Make available'),
-                                 array('id'        => $ri->fields['id'],
-                                       'is_active' => 1));
+                                 ['id'        => $ri->fields['id'],
+                                       'is_active' => 1]);
          }
 
          echo '</td><td>';
          Html::showSimpleForm(static::getFormURL(), 'purge', __('Prohibit reservations'),
-                              array('id' => $ri->fields['id']), '', '',
-                              array(__('Are you sure you want to return this non-reservable item?'),
-                                    __('That will remove all the reservations in progress.')));
+                              ['id' => $ri->fields['id']], '', '',
+                              [__('Are you sure you want to return this non-reservable item?'),
+                                    __('That will remove all the reservations in progress.')]);
 
          echo "</td>";
       } else {
          echo "<td class='center'>";
          Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
-                              array('items_id'     => $item->getID(),
+                              ['items_id'     => $item->getID(),
                                     'itemtype'     => $item->getType(),
                                     'entities_id'  => $item->getEntityID(),
-                                    'is_recursive' => $item->isRecursive(),));
+                                    'is_recursive' => $item->isRecursive(),]);
          echo "</td>";
       }
       echo "</tr></table>";
@@ -335,7 +335,7 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       if (!self::canView()) {
          return false;
@@ -390,7 +390,7 @@ class ReservationItem extends CommonDBChild {
       $ri         = new self();
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
-      $values     = array();
+      $values     = [];
 
       if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
          $_POST = $_SESSION['glpi_saved']['ReservationItem'];
@@ -421,8 +421,8 @@ class ReservationItem extends CommonDBChild {
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-      Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST['reserve']["begin"],
-                                                      'maybeempty' => false));
+      Html::showDateTimeField("reserve[begin]", ['value'      =>  $_POST['reserve']["begin"],
+                                                      'maybeempty' => false]);
       echo "</td><td rowspan='3'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
@@ -431,14 +431,14 @@ class ReservationItem extends CommonDBChild {
       $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
-      $rand = Dropdown::showTimeStamp("reserve[_duration]", array('min'        => 0,
+      $rand = Dropdown::showTimeStamp("reserve[_duration]", ['min'        => 0,
                                                           'max'        => 48*HOUR_TIMESTAMP,
                                                           'value'      => $default_delay,
-                                                          'emptylabel' => __('Specify an end date')));
+                                                          'emptylabel' => __('Specify an end date')]);
       echo "<br><div id='date_end$rand'></div>";
-      $params = array('duration'     => '__VALUE__',
+      $params = ['duration'     => '__VALUE__',
                      'end'          => $_POST['reserve']["end"],
-                     'name'         => "reserve[end]");
+                     'name'         => "reserve[end]"];
 
       Ajax::updateItemOnSelectEvent("dropdown_reserve[_duration]$rand", "date_end$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
@@ -477,8 +477,8 @@ class ReservationItem extends CommonDBChild {
       }
 
       Dropdown::showFromArray("reservation_types", $values,
-                              array('value'               => $_POST['reservation_types'],
-                                    'display_emptychoice' => true));
+                              ['value'               => $_POST['reservation_types'],
+                                    'display_emptychoice' => true]);
 
       echo "</td></tr>";
       echo "</table>";
@@ -578,8 +578,8 @@ class ReservationItem extends CommonDBChild {
       if ($ok) {
          echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
          if (isset($_POST['reserve'])) {
-            echo Html::hidden('begin', array('value' => $_POST['reserve']["begin"]));
-            echo Html::hidden('end', array('value'   => $_POST['reserve']["end"]));
+            echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
+            echo Html::hidden('end', ['value'   => $_POST['reserve']["end"]]);
          }
          echo "<input type='submit' value=\""._sx('button', 'Add')."\" class='submit'></td></tr>\n";
 
@@ -597,7 +597,7 @@ class ReservationItem extends CommonDBChild {
     * @return an array
    **/
    static function cronInfo($name) {
-      return array('description' => __('Alerts on reservations'));
+      return ['description' => __('Alerts on reservations')];
    }
 
 
@@ -615,10 +615,10 @@ class ReservationItem extends CommonDBChild {
          return 0;
       }
 
-      $message        = array();
+      $message        = [];
       $cron_status    = 0;
-      $items_infos    = array();
-      $items_messages = array();
+      $items_infos    = [];
+      $items_messages = [];
 
       foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
          $secs = $value * HOUR_TIMESTAMP;
@@ -660,8 +660,8 @@ class ReservationItem extends CommonDBChild {
       foreach ($items_infos as $entity => $items) {
          $resitem = new self();
          if (NotificationEvent::raiseEvent("alert", new Reservation(),
-                                           array('entities_id' => $entity,
-                                                 'items'       => $items))) {
+                                           ['entities_id' => $entity,
+                                                 'items'       => $items])) {
             $message     = $items_messages[$entity];
             $cron_status = 1;
             if ($task) {
@@ -739,9 +739,9 @@ class ReservationItem extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
       $ong['no_all_tab'] = true;
       return $ong;

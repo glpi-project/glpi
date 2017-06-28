@@ -313,7 +313,7 @@ function update06to065() {
                 ORDER BY `id_tracking`";
       $result = $DB->query($query);
 
-      $used_followups = array();
+      $used_followups = [];
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
             $found = -1;
@@ -407,7 +407,7 @@ function update06to065() {
       $DB->queryOrDie($query, "0.65 alter comments in glpi_infocoms");
    }
 
-   $new_model = array("monitors", "networking", "peripherals", "printers");
+   $new_model = ["monitors", "networking", "peripherals", "printers"];
    foreach ($new_model as $model) {
       if (!TableExists("glpi_dropdown_model_$model")) {
          // model=type pour faciliter la gestion en post mise ???jour : ya plus qu'a deleter les elements non voulu
@@ -549,9 +549,9 @@ function update06to065() {
    }
 
    // add field notes in tables
-   $new_notes = array("cartridges_type", "computers", "consumables_type", "contacts", "contracts",
+   $new_notes = ["cartridges_type", "computers", "consumables_type", "contacts", "contracts",
                       "docs", "enterprises", "monitors", "networking", "peripherals", "printers",
-                      "software");
+                      "software"];
 
    foreach ($new_notes as $notes) {
       if (!FieldExists("glpi_$notes", "notes", false)) {
@@ -644,7 +644,7 @@ function update06to065() {
       $DB->queryOrDie($query, "0.65 alter specificity in glpi_computer_device");
    }
 
-   $inv_table = array("computers", "monitors", "networking", "peripherals", "printers");
+   $inv_table = ["computers", "monitors", "networking", "peripherals", "printers"];
    foreach ($inv_table as $table) {
       if (FieldExists("glpi_$table", "comments", false)) {
          $query = "UPDATE `glpi_$table`
@@ -730,8 +730,8 @@ function update06to065() {
       $DB->queryOrDie($query, "0.65 alter various fields in contracts");
    }
 
-   $device = array("case", "control", "drive", "gfxcard", "hdd", "iface", "moboard", "power", "pci",
-                   "processor", "ram", "sndcard");
+   $device = ["case", "control", "drive", "gfxcard", "hdd", "iface", "moboard", "power", "pci",
+                   "processor", "ram", "sndcard"];
 
    foreach ($device as $dev) {
       if (FieldExists("glpi_device_$dev", "comment", false)) {
@@ -1175,9 +1175,9 @@ function update06to065() {
    }
 
    // ADD INDEX
-   $tbl = array("cartridges_type", "computers", "consumables_type", "contacts", "contracts",
+   $tbl = ["cartridges_type", "computers", "consumables_type", "contacts", "contracts",
                 "docs", "enterprises", "monitors", "networking", "peripherals", "printers",
-                "software", "users");
+                "software", "users"];
 
    foreach ($tbl as $t) {
       if (!isIndex("glpi_$t", "name")) {

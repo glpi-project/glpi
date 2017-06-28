@@ -51,13 +51,13 @@ class NotificationTargetObjectLock extends NotificationTarget {
 
 
    function getEvents() {
-      return array('unlock'               => __('Unlock Item Request'));
+      return ['unlock'               => __('Unlock Item Request')];
    }
 
 
    function getTags() {
 
-      $tags = array('objectlock.action'               => _n('Event', 'Events', 1),
+      $tags = ['objectlock.action'               => _n('Event', 'Events', 1),
                     'objectlock.name'                 => __('Item Name'),
                     'objectlock.id'                   => __('Item ID'),
                     'objectlock.type'                 => __('Item Type'),
@@ -66,12 +66,12 @@ class NotificationTargetObjectLock extends NotificationTarget {
                     'objectlock.lockedby.firstname'   => __('Firstname of locking user'),
                     'objectlock.requester.lastname'   => __('Requester Lastname'),
                     'objectlock.requester.firstname'  => __('Requester Firstname'),
-                    'objectlock.url'                  => __('Item URL'));
+                    'objectlock.url'                  => __('Item URL')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
       asort($this->tag_descriptions);
    }
@@ -92,13 +92,13 @@ class NotificationTargetObjectLock extends NotificationTarget {
 
       $user = new User();
       if ($user->getFromDB($this->obj->fields['users_id'])) {
-         $this->addToRecipientsList(array('language' => $user->getField('language'),
-                                         'users_id' => $user->getID()));
+         $this->addToRecipientsList(['language' => $user->getField('language'),
+                                         'users_id' => $user->getID()]);
       }
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
       global $CFG_GLPI;
 
       $events = $this->getEvents();
@@ -135,7 +135,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
    }
 
 
-   function getSender($options=array()) {
+   function getSender($options=[]) {
 
       $mails = new UserEmail();
       if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
@@ -144,9 +144,9 @@ class NotificationTargetObjectLock extends NotificationTarget {
           && $mails->getFromDBByQuery(" WHERE users_id = ".$_SESSION['glpiID']."
                                               AND is_default = 1 " )) {
 
-            $ret = array('email' => $mails->fields['email'],
+            $ret = ['email' => $mails->fields['email'],
                          'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                                                   $_SESSION["glpifirstname"]));
+                                                   $_SESSION["glpifirstname"])];
       } else {
          $ret = parent::getSender($options);
       }

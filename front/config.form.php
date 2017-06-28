@@ -64,5 +64,5 @@ if (!empty($_GET['reset_apcu'])) {
 }
 
 Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
-$config->display(array('id' => 1));
+$config->display(['id' => 1]);
 Html::footer();

@@ -69,17 +69,17 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    static function getCreateRights() {
-      return array(CREATE);
+      return [CREATE];
    }
 
 
    static function getPurgeRights() {
-      return array(PURGE);
+      return [PURGE];
    }
 
 
    static function getValidateRights() {
-      return array(static::VALIDATE);
+      return [static::VALIDATE];
    }
 
 
@@ -276,8 +276,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
          }
 
          if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-            $options = array('validation_id'     => $this->fields["id"],
-                             'validation_status' => $this->fields["status"]);
+            $options = ['validation_id'     => $this->fields["id"],
+                             'validation_status' => $this->fields["status"]];
             $mailsend = NotificationEvent::raiseEvent('validation', $item, $options);
          }
          if ($mailsend) {
@@ -298,7 +298,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      $forbid_fields = array();
+      $forbid_fields = [];
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if (($input["status"] == self::REFUSED)
              && (!isset($input["comment_validation"])
@@ -314,12 +314,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $input["validation_date"] = $_SESSION["glpi_currenttime"];
          }
 
-         $forbid_fields = array('entities_id', 'users_id', static::$items_id, 'users_id_validate',
-                                'comment_submission', 'submission_date', 'is_recursive');
+         $forbid_fields = ['entities_id', 'users_id', static::$items_id, 'users_id_validate',
+                                'comment_submission', 'submission_date', 'is_recursive'];
 
       } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
-         $forbid_fields = array('entities_id', static::$items_id, 'status', 'comment_validation',
-                                'validation_date', 'is_recursive');
+         $forbid_fields = ['entities_id', static::$items_id, 'status', 'comment_validation',
+                                'validation_date', 'is_recursive'];
       }
 
       if (count($forbid_fields)) {
@@ -345,8 +345,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($item->getFromDB($this->fields[static::$items_id])) {
          if (count($this->updates)
              && $donotif) {
-            $options  = array('validation_id'     => $this->fields["id"],
-                              'validation_status' => $this->fields["status"]);
+            $options  = ['validation_id'     => $this->fields["id"],
+                              'validation_status' => $this->fields["status"]];
             NotificationEvent::raiseEvent('validation_answer', $item, $options);
          }
 
@@ -385,7 +385,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($field == 'status') {
          $username = getUserName($this->fields["users_id_validate"]);
 
-         $result   = array('0', '', '');
+         $result   = ['0', '', ''];
          if ($this->fields["status"] == self::ACCEPTED) {
             //TRANS: %s is the username
             $result[2] = sprintf(__('Approval granted by %s'), $username);
@@ -428,9 +428,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
    **/
    static function getAllStatusArray($withmetaforsearch=false, $global=false) {
 
-      $tab = array(self::WAITING  => __('Waiting for approval'),
+      $tab = [self::WAITING  => __('Waiting for approval'),
                    self::REFUSED  => __('Refused'),
-                   self::ACCEPTED => __('Granted'));
+                   self::ACCEPTED => __('Granted')];
       if ($global) {
          $tab[self::NONE] = __('Not subject to approval');
 
@@ -458,7 +458,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return nothing (display)
    **/
-   static function dropdownStatus($name, $options=array()) {
+   static function dropdownStatus($name, $options=[]) {
 
       $p['value']    = self::WAITING;
       $p['global']   = false;
@@ -632,15 +632,15 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       global $CFG_GLPI;
 
-      $types            = array('user'  => __('User'),
-                                'group' => __('Group'));
+      $types            = ['user'  => __('User'),
+                                'group' => __('Group')];
 
       $rand             = Dropdown::showFromArray("validatortype", $types,
-                                                  array('display_emptychoice' => true));
+                                                  ['display_emptychoice' => true]);
 
-      $paramsmassaction = array('validatortype' => '__VALUE__',
+      $paramsmassaction = ['validatortype' => '__VALUE__',
                                 'entity'        => $_SESSION['glpiactive_entity'],
-                                'right'         => array('validate_request', 'validate_incident'));
+                                'right'         => ['validate_request', 'validate_incident']];
 
       Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", "show_massiveaction_field",
                                     $CFG_GLPI["root_doc"].
@@ -683,12 +683,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $valid = new static();
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
-                  $input2 = array(static::$items_id      => $id,
-                                  'comment_submission'   => $input['comment_submission']);
+                  $input2 = [static::$items_id      => $id,
+                                  'comment_submission'   => $input['comment_submission']];
                   if ($valid->can(-1, CREATE, $input2)) {
                      $users = $input['users_id_validate'];
                      if (!is_array($users)) {
-                        $users = array($users);
+                        $users = [$users];
                      }
                      $ok = true;
                      foreach ($users as $user) {
@@ -736,7 +736,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tID    = $item->fields['id'];
 
-      $tmp    = array(static::$items_id => $tID);
+      $tmp    = [static::$items_id => $tID];
       $canadd = $this->can(-1, CREATE, $tmp);
       $rand   = mt_rand();
 
@@ -754,7 +754,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<td colspan='2'>";
       if (Session::haveRightsOr(static::$rightname, TicketValidation::getCreateRights())) {
          self::dropdownStatus("global_validation",
-                              array('value'    => $item->fields["global_validation"]));
+                              ['value'    => $item->fields["global_validation"]]);
       } else {
          echo TicketValidation::getStatus($item->fields["global_validation"]);
       }
@@ -796,10 +796,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand() {\n";
-         $params = array('type'             => $this->getType(),
+         $params = ['type'             => $this->getType(),
                          'parenttype'       => static::$itemtype,
                          static::$items_id  => $tID,
-                         'id'               => -1);
+                         'id'               => -1];
          Ajax::updateItemJsCode("viewvalidation" . $tID . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
                                 $params);
@@ -816,9 +816,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
+      $colonnes = [_x('item', 'State'), __('Request date'), __('Approval requester'),
                      __('Request comments'), __('Approval status'),
-                     __('Approver'), __('Approval comments'));
+                     __('Approver'), __('Approval comments')];
       $nb_colonnes = count($colonnes);
 
       echo "<table class='tab_cadre_fixehov'>";
@@ -861,10 +861,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
             if ($canedit) {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" .$item->fields['id']. $row["id"]. "$rand() {\n";
-               $params = array('type'             => $this->getType(),
+               $params = ['type'             => $this->getType(),
                                'parenttype'       => static::$itemtype,
                                static::$items_id  => $this->fields[static::$items_id],
-                               'id'               => $row["id"]);
+                               'id'               => $row["id"]];
                Ajax::updateItemJsCode("viewvalidation" . $item->fields['id'] . "$rand",
                                       $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
                                       $params);
@@ -898,7 +898,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -947,11 +947,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<input type='hidden' name='users_id_validate' value='".
                    $this->fields['users_id_validate']."'>";
          } else {
-            $users_id_validate  = array();
-            $params             = array('id'                 => $this->fields["id"],
+            $users_id_validate  = [];
+            $params             = ['id'                 => $this->fields["id"],
                                         'entity'             => $this->getEntityID(),
                                         'right'              => $validation_right,
-                                        'users_id_validate'  => $users_id_validate);
+                                        'users_id_validate'  => $users_id_validate];
             self::dropdownValidator($params);
          }
          echo "</td></tr>";
@@ -990,7 +990,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Status of my validation')."</td>";
             echo "<td>";
-            self::dropdownStatus("status", array('value' => $this->fields["status"]));
+            self::dropdownStatus("status", ['value' => $this->fields["status"]]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1000,7 +1000,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "</td></tr>";
 
          } else {
-            $status = array(self::REFUSED,self::ACCEPTED);
+            $status = [self::REFUSED,self::ACCEPTED];
             if (in_array($this->fields["status"], $status)) {
                echo "<tr class='tab_bg_1'>";
                echo "<td>".__('Approval comments')."</td>";
@@ -1016,7 +1016,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    function getSearchOptionsNew() {
-      $tab = array();
+      $tab = [];
 
       $tab[] = [
          'id'                 => 'common',
@@ -1239,10 +1239,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'status':
@@ -1258,10 +1258,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $values            (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -1302,23 +1302,23 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return nothing (display)
    **/
-   static function dropdownValidator(array $options=array()) {
+   static function dropdownValidator(array $options=[]) {
       global $CFG_GLPI;
 
       $params['name']               = '';
       $params['id']                 = 0;
       $params['entity']             = $_SESSION['glpiactive_entity'];
-      $params['right']              = array('validate_request', 'validate_incident');
+      $params['right']              = ['validate_request', 'validate_incident'];
       $params['groups_id']          = 0;
-      $params['users_id_validate']  = array();
+      $params['users_id_validate']  = [];
       $params['applyto']            = 'show_validator_field';
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
 
-      $types = array('user'  => __('User'),
-                     'group' => __('Group'));
+      $types = ['user'  => __('User'),
+                     'group' => __('Group')];
 
       $type  = '';
       if (isset($params['users_id_validate']['groups_id'])) {
@@ -1328,8 +1328,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       $rand = Dropdown::showFromArray("validatortype", $types,
-                                      array('value'               => $type,
-                                            'display_emptychoice' => true));
+                                      ['value'               => $type,
+                                            'display_emptychoice' => true]);
 
       if ($type) {
          $params['validatortype'] = $type;
@@ -1356,14 +1356,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @return array
    **/
-   static function getGroupUserHaveRights(array $options=array()) {
+   static function getGroupUserHaveRights(array $options=[]) {
       global $DB;
 
       $params['entity']    = $_SESSION['glpiactive_entity'];
       if (static::$itemtype == 'Ticket') {
-         $params['right']  = array('validate_request', 'validate_incident');
+         $params['right']  = ['validate_request', 'validate_incident'];
       } else {
-         $params['right']  = array('validate');
+         $params['right']  = ['validate'];
       }
       $params['groups_id'] = 0;
 
@@ -1371,7 +1371,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $params[$key] = $val;
       }
 
-      $list       = array();
+      $list       = [];
       $restrict   = "";
 
       $res = User::getSqlSearchResult (false, $params['right'], $params['entity']);
@@ -1404,9 +1404,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
       // Percent of validation
       $validation_percent = $item->fields['validation_percent'];
 
-      $statuses           = array(self::ACCEPTED => 0,
+      $statuses           = [self::ACCEPTED => 0,
                                   self::WAITING  => 0,
-                                  self::REFUSED  => 0);
+                                  self::REFUSED  => 0];
       $restrict           = "`".static::$items_id."` = '".$item->getID()."'";
       $validations        = getAllDatasFromTable(static::getTable(), $restrict);
 
@@ -1447,7 +1447,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $nb  = countElementsInTable(static::getTable(), [static::$items_id => $tID]);
 
-      $stats = array();
+      $stats = [];
       foreach ($tab as $status => $name) {
          $validations = countElementsInTable(static::getTable(), [static::$items_id => $tID,
                                                                  'status'          => $status]);
@@ -1531,7 +1531,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @return an array
     **/
    static function getCanValidationStatusArray() {
-      return array(self::NONE, self::ACCEPTED);
+      return [self::NONE, self::ACCEPTED];
    }
 
 
@@ -1543,7 +1543,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @return an array
     **/
    static function getAllValidationStatusArray() {
-      return array(self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED);
+      return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
    }
 
 }

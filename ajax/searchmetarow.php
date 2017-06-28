@@ -48,7 +48,7 @@ Session::checkLoginUser();
 if (isset($_POST["itemtype"])
     && isset($_POST["num"]) ) {
 
-   $metacriteria = array();
+   $metacriteria = [];
 
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])
        && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])) {
@@ -85,8 +85,8 @@ if (isset($_POST["itemtype"])
    }
    Dropdown::showFromArray("metacriteria[".$_POST["num"]."][link]",
                            Search::getLogicalOperators(),
-                           array('value' => $value,
-                                 'width' => '40%'));
+                           ['value' => $value,
+                                 'width' => '40%']);
 
    // Display select of the linked item type available
    foreach ($linked as $key) {
@@ -103,20 +103,20 @@ if (isset($_POST["itemtype"])
    }
 
    $rand = Dropdown::showItemTypes("metacriteria[".$_POST["num"]."][itemtype]", $linked,
-                                    array('width' => '50%',
-                                          'value' => $value));
+                                    ['width' => '50%',
+                                          'value' => $value]);
    $field_id = Html::cleanId("dropdown_metacriteria[".$_POST["num"]."][itemtype]$rand");
    echo "</td><td>";
    // Ajax script for display search met& item
    echo "<span id='show_".$_POST["itemtype"]."_".$_POST["num"]."_$rand'>&nbsp;</span>\n";
 
-   $params = array('itemtype'   => '__VALUE__',
+   $params = ['itemtype'   => '__VALUE__',
                    'num'        => $_POST["num"],
                    'field'      => (isset($metacriteria['field']) ? $metacriteria['field'] : ""),
                    'value'      => (isset($metacriteria['value'])
                                     ? stripslashes($metacriteria['value']) : ""),
                    'searchtype' => (isset($metacriteria['searchtype'])
-                                    ? $metacriteria['searchtype'] : ""));
+                                    ? $metacriteria['searchtype'] : "")];
 
    Ajax::updateItemOnSelectEvent($field_id,
                                  "show_".$_POST["itemtype"]."_".$_POST["num"]."_$rand",

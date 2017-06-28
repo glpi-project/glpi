@@ -49,7 +49,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    function getNetworkCardInterestingFields() {
-      return array('link.`mac`' => 'mac');
+      return ['link.`mac`' => 'mac'];
    }
 
 
@@ -90,7 +90,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Ethernet port type') . "</td><td>\n";
       Dropdown::showFromArray('type', self::getPortTypeName(),
-                              array('value' => $this->fields['type']));
+                              ['value' => $this->fields['type']]);
       echo "</td>";
       echo "<td>" . __('Ethernet port speed') . "</td><td>\n";
 
@@ -103,8 +103,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       Dropdown::showFromArray('speed', $standard_speeds,
-                              array('value' => $this->fields['speed'],
-                                    'other' => $speed));
+                              ['value' => $this->fields['speed'],
+                                    'other' => $speed]);
       echo "</td>";
       echo "</tr>\n";
 
@@ -124,7 +124,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
                                              HTMLTableSuperHeader $internet_super=null,
                                              HTMLTableHeader $father=null,
-                                             array $options=array()) {
+                                             array $options=[]) {
 
       $display_options = &$options['display_options'];
       $header          = $group->addHeader('Connected', __('Connected to'), $super);
@@ -149,7 +149,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                                     HTMLTableCell $father=null,
-                                                    array $options=array()) {
+                                                    array $options=[]) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
 
@@ -173,7 +173,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=array()) {
+                                      HTMLTableCell $father=null, array $options=[]) {
 
       return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
    }
@@ -296,13 +296,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    **/
    static function getPortSpeed($val=null) {
 
-      $tmp = array(0     => '',
+      $tmp = [0     => '',
                    //TRANS: %d is the speed
                    10    => sprintf(__('%d Mbit/s'), 10),
                    100   => sprintf(__('%d Mbit/s'), 100),
                    //TRANS: %d is the speed
                    1000  => sprintf(__('%d Gbit/s'), 1),
-                   10000 => sprintf(__('%d Gbit/s'), 10));
+                   10000 => sprintf(__('%d Gbit/s'), 10)];
 
       if (is_null($val)) {
          return $tmp;
@@ -319,10 +319,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'type':
@@ -341,10 +341,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $values          (defaul '')
     * @param $options   array
     */
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 

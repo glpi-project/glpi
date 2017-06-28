@@ -98,8 +98,8 @@ function update065to068() {
                 ) TYPE=MyISAM";
       $DB->queryOrDie($query, "0.68 add profiles");
 
-      $helpdesk_link_type = array(COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PERIPHERAL_TYPE,
-                                  PHONE_TYPE,PRINTER_TYPE);
+      $helpdesk_link_type = [COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PERIPHERAL_TYPE,
+                                  PHONE_TYPE,PRINTER_TYPE];
       $checksum = 0;
       foreach ($helpdesk_link_type as $val) {
          $checksum += pow(2, $val);
@@ -152,10 +152,10 @@ function update065to068() {
       $DB->queryOrDie($query, "0.68 drop post_only_followup in glpi_config");
    }
 
-   $profiles = array("post-only"    => 1,
+   $profiles = ["post-only"    => 1,
                      "normal"       => 2,
                      "admin"        => 3,
-                     "super-admin"  => 4);
+                     "super-admin"  => 4];
 
    if (!TableExists("glpi_users_profiles")) {
       $query = "CREATE TABLE `glpi_users_profiles` (
@@ -449,7 +449,7 @@ function update065to068() {
    } // fin convert
 
    // Add Level To Dropdown
-   $dropdowntree_tables = array("glpi_dropdown_kbcategories", "glpi_dropdown_locations");
+   $dropdowntree_tables = ["glpi_dropdown_kbcategories", "glpi_dropdown_locations"];
    foreach ($dropdowntree_tables as $t) {
       if (!FieldExists($t, "level", false)) {
          $query = "ALTER TABLE `$t`
@@ -475,7 +475,7 @@ function update065to068() {
       $DB->queryOrDie($query, "0.68 add smtp config");
    }
 
-   $map_lang = array("french"       => "fr_FR",
+   $map_lang = ["french"       => "fr_FR",
                      "english"      => "en_GB",
                      "deutsch"      => "de_DE",
                      "italian"      => "it_IT",
@@ -485,7 +485,7 @@ function update065to068() {
                      "hungarian"    => "hu_HU",
                      "polish"       => "po_PO",
                      "rumanian"     => "ro_RO",
-                     "russian"      => "ru_RU");
+                     "russian"      => "ru_RU"];
 
    foreach ($map_lang as $old => $new) {
       $query = "UPDATE `glpi_users`
@@ -661,8 +661,8 @@ function update065to068() {
    }
 
    // Link user and group to hardware
-   $new_link = array("computers", "monitors", "networking", "peripherals", "phones", "printers",
-                     "software");
+   $new_link = ["computers", "monitors", "networking", "peripherals", "phones", "printers",
+                     "software"];
 
    foreach ($new_link as $table) {
       if (!FieldExists("glpi_$table", "FK_users", false)) {
@@ -874,9 +874,9 @@ function update065to068() {
    }
 
    // Update contract periodicity and facturation
-   $values = array("4" => "6",
+   $values = ["4" => "6",
                    "5" => "12",
-                   "6" => "24");
+                   "6" => "24"];
 
    foreach ($values as $key => $val) {
       $query = "UPDATE `glpi_contracts`
@@ -961,7 +961,7 @@ function rembo($string) {
       $string                 = implode('<">', $outside);
    }
 
-   $pattern = array('#\[b\](.*?)\[/b\]#s',
+   $pattern = ['#\[b\](.*?)\[/b\]#s',
                     '#\[i\](.*?)\[/i\]#s',
                     '#\[u\](.*?)\[/u\]#s',
                     '#\[s\](.*?)\[/s\]#s',
@@ -969,9 +969,9 @@ function rembo($string) {
                     '#\[g\](.*?)\[/g\]#s',
                     '#\[email\](.*?)\[/email\]#',
                     '#\[email=(.*?)\](.*?)\[/email\]#',
-                    '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
+                    '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s'];
 
-   $replace = array('<span class="b">$1</span>',
+   $replace = ['<span class="b">$1</span>',
                     '<em>$1</em>',
                     '<span class="souligne">$1</span>',
                     '<span class="barre">$1</span>',
@@ -979,7 +979,7 @@ function rembo($string) {
                     '<big>$1</big>',
                     '<a href="mailto:$1">$1</a>',
                     '<a href="mailto:$1">$2</a>',
-                    '<span style="color: $1">$2</span>');
+                    '<span style="color: $1">$2</span>'];
 
    // This thing takes a while! :)
    $string = preg_replace($pattern, $replace, $string);
@@ -1067,6 +1067,6 @@ function split_text($text, $start, $end) {
       $outside[] = $temp[1];
    }
 
-   return array($inside, $outside);
+   return [$inside, $outside];
 }
 

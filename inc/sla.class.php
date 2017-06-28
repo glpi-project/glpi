@@ -46,7 +46,7 @@ class SLA extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('SLT');
+   static protected $forward_entity_to = ['SLT'];
 
    static $rightname                   = 'sla';
 
@@ -67,9 +67,9 @@ class SLA extends CommonDBTM {
       }
    }
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('SLT', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -93,7 +93,7 @@ class SLA extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $rowspan = 2;
 
@@ -102,7 +102,7 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
+      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -111,9 +111,9 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
       echo "<td>";
 
-      Calendar::dropdown(array('value'      => $this->fields["calendars_id"],
+      Calendar::dropdown(['value'      => $this->fields["calendars_id"],
                                'emptylabel' => __('24/7'),
-                               'toadd'      => array('-1' => __('Calendar of the ticket'))));
+                               'toadd'      => ['-1' => __('Calendar of the ticket')]]);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -166,7 +166,7 @@ class SLA extends CommonDBTM {
    **/
    static function getMenuContent() {
 
-      $menu = array();
+      $menu = [];
       if (Config::canUpdate()) {
             $menu['title']                                  = self::getTypeName(1);
             $menu['page']                                   = '/front/sla.php';

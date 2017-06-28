@@ -80,9 +80,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @param $tagged
    **/
    function assignVlan($port, $vlan, $tagged) {
-      $input = array('networkports_id' => $port,
+      $input = ['networkports_id' => $port,
                      'vlans_id'        => $vlan,
-                     'tagged'          => $tagged);
+                     'tagged'          => $tagged];
 
       return $this->add($input);
    }
@@ -110,8 +110,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
                 WHERE `networkports_id` = '$ID'";
 
       $result = $DB->query($query);
-      $vlans  = array();
-      $used   = array();
+      $vlans  = [];
+      $used   = [];
       if ($number = $DB->numrows($result)) {
          while ($line = $DB->fetch_assoc($result)) {
             $used[$line["id"]]       = $line["id"];
@@ -127,7 +127,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
          echo "<tr class='tab_bg_1'><td class='right'>";
          echo "<input type='hidden' name='networkports_id' value='$ID'>";
-         Vlan::dropdown(array('used' => $used));
+         Vlan::dropdown(['used' => $used]);
          echo "</td>";
          echo "<td class='right'>".__('Tagged')."</td>";
          echo "<td class='left'><input type='checkbox' name='tagged' value='1'></td>";
@@ -143,8 +143,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -166,7 +166,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      $used = array();
+      $used = [];
       foreach ($vlans as $data) {
          echo "<tr class='tab_bg_1'>";
          if ($canedit) {
@@ -207,7 +207,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function getVlansForNetworkPort($portID) {
       global $DB;
 
-      $vlans = array();
+      $vlans = [];
       $query = "SELECT `vlans_id`
                 FROM `glpi_networkports_vlans`
                 WHERE `networkports_id` = '$portID'";
@@ -271,7 +271,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
 
       if ($ma->getAction() == 'add') {
-         echo "<br><br>". __('Tagged'). Html::getCheckbox(array('name' => 'tagged'));
+         echo "<br><br>". __('Tagged'). Html::getCheckbox(['name' => 'tagged']);
       }
    }
 
@@ -284,9 +284,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item,
                                                                  array $ids, array $input) {
       if ($action == 'add') {
-         return array('tagged' => $input['tagged']);
+         return ['tagged' => $input['tagged']];
       }
-      return array();
+      return [];
    }
 
 }

@@ -47,7 +47,7 @@ class Peripheral extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+   static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem'];
 
    static $rightname                   = 'peripheral';
    protected $usenotepad               = true;
@@ -73,9 +73,9 @@ class Peripheral extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
@@ -166,7 +166,7 @@ class Peripheral extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
       global $CFG_GLPI;
 
       $target       = $this->getFormURL();
@@ -182,50 +182,50 @@ class Peripheral extends CommonDBTM {
       $objectName = autoName($this->fields["name"], "name",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, "name", array('value' => $objectName));
+      Html::autocompletionTextField($this, "name", ['value' => $objectName]);
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
+      State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_peripheral`"));
+                            'condition' => "`is_visible_peripheral`"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>\n";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]]);
       echo "</td>\n";
       echo "<td>".__('Type')."</td>\n";
       echo "<td>";
-      PeripheralType::dropdown(array('value' => $this->fields["peripheraltypes_id"]));
+      PeripheralType::dropdown(['value' => $this->fields["peripheraltypes_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Technician in charge of the hardware')."</td>\n";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
+      User::dropdown(['name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+                           'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>\n";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
+      Group::dropdown(['name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+                            'condition' => '`is_assign`']);
       echo "</td>";
       echo "<td>".__('Model')."</td>\n";
       echo "<td>";
-      PeripheralModel::dropdown(array('value' => $this->fields["peripheralmodels_id"]));
+      PeripheralModel::dropdown(['value' => $this->fields["peripheralmodels_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -251,33 +251,33 @@ class Peripheral extends CommonDBTM {
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
+      Html::autocompletionTextField($this, "otherserial", ['value' => $objectName]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User')."</td>\n";
       echo "<td>";
-      User::dropdown(array('value'  => $this->fields["users_id"],
+      User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+                           'right'  => 'all']);
       echo "</td>\n";
       echo "<td>".__('Management type')."</td>\n";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
-                                 array('withtemplate' => $withtemplate,
+                                 ['withtemplate' => $withtemplate,
                                        'value'        => $this->fields["is_global"],
                                        'management_restrict'
                                                       => $CFG_GLPI["peripherals_management_restrict"],
-                                       'target'       => $target));
+                                       'target'       => $target]);
       echo "</td></tr>\n";
 
       $rowspan        = 2;
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
-      Group::dropdown(array('value'     => $this->fields["groups_id"],
+      Group::dropdown(['value'     => $this->fields["groups_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`'));
+                            'condition' => '`is_itemgroup`']);
       echo "</td>\n";
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>\n";
       echo "<td rowspan='$rowspan'>
@@ -318,7 +318,7 @@ class Peripheral extends CommonDBTM {
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
                       AND `items_id` = '" . $this->fields['id']."'";
-      $tab = array();
+      $tab = [];
       foreach ($DB->request($query) as $data) {
          $tab['Computer'][$data['computers_id']] = $data['computers_id'];
       }

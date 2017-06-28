@@ -57,7 +57,7 @@ if (DBConnection::isDBSlaveActive()) {
    if (is_array($DBslave->dbhost)) {
       $hosts = $DBslave->dbhost;
    } else {
-      $hosts = array($DBslave->dbhost);
+      $hosts = [$DBslave->dbhost];
    }
 
    foreach ($hosts as $num => $name) {
@@ -221,7 +221,7 @@ if (($ok_master || $ok_slave )
    }
 
    // hook for plugin
-   $param = array('ok' => $ok);
+   $param = ['ok' => $ok];
    Plugin::doHook("status", $param);
    if (isset($param['ok'])) {
       $ok = $param['ok'];

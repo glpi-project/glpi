@@ -45,7 +45,7 @@ class Contract extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = array('ContractCost');
+   static protected $forward_entity_to = ['ContractCost'];
 
    static $rightname                   = 'contract';
    protected $usenotepad               = true;
@@ -82,9 +82,9 @@ class Contract extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('ContractCost', $ong, $options);
       $this->addStandardTab('Contract_Supplier', $ong, $options);
@@ -169,7 +169,7 @@ class Contract extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID,$options=array()) {
+   function showForm($ID,$options=[]) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -179,7 +179,7 @@ class Contract extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".__('Contract type')."</td><td >";
-      ContractType::dropdown(array('value' => $this->fields["contracttypes_id"]));
+      ContractType::dropdown(['value' => $this->fields["contracttypes_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -192,15 +192,15 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
-      Html::showDateField("begin_date", array('value' => $this->fields["begin_date"]));
+      Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
       echo "</td>";
       echo "<td>".__('Initial contract period')."</td><td>";
-      Dropdown::showNumber("duration", array('value' => $this->fields["duration"],
+      Dropdown::showNumber("duration", ['value' => $this->fields["duration"],
                                              'min'   => 1,
                                              'max'   => 120,
                                              'step'  => 1,
-                                             'toadd' => array(0 => Dropdown::EMPTY_VALUE),
-                                             'unit'  => 'month'));
+                                             'toadd' => [0 => Dropdown::EMPTY_VALUE],
+                                             'unit'  => 'month']);
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"], 0, true);
@@ -209,12 +209,12 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Notice')."</td><td>";
-      Dropdown::showNumber("notice", array('value' => $this->fields["notice"],
+      Dropdown::showNumber("notice", ['value' => $this->fields["notice"],
                                            'min'   => 0,
                                            'max'   => 120,
                                            'step'  => 1,
-                                           'toadd' => array(),
-                                           'unit'  => 'month'));
+                                           'toadd' => [],
+                                           'unit'  => 'month']);
       if (!empty($this->fields["begin_date"])
           && ($this->fields["notice"] > 0)) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
@@ -229,49 +229,49 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Contract renewal period')."</td><td>";
       Dropdown::showNumber("periodicity",
-                           array('value' => $this->fields["periodicity"],
+                           ['value' => $this->fields["periodicity"],
                                  'min'   => 12,
                                  'max'   => 60,
                                  'step'  => 12,
-                                 'toadd' => array(0 => Dropdown::EMPTY_VALUE,
+                                 'toadd' => [0 => Dropdown::EMPTY_VALUE,
                                                   1 => sprintf(_n('%d month', '%d months', 1), 1),
                                                   2 => sprintf(_n('%d month', '%d months', 2), 2),
                                                   3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)),
-                                 'unit'  => 'month'));
+                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)],
+                                 'unit'  => 'month']);
       echo "</td>";
       echo "<td>".__('Invoice period')."</td>";
       echo "<td>";
       Dropdown::showNumber("billing",
-                           array('value' => $this->fields["billing"],
+                           ['value' => $this->fields["billing"],
                                  'min'   => 12,
                                  'max'   => 60,
                                  'step'  => 12,
-                                 'toadd' => array(0 => Dropdown::EMPTY_VALUE,
+                                 'toadd' => [0 => Dropdown::EMPTY_VALUE,
                                                   1 => sprintf(_n('%d month', '%d months', 1), 1),
                                                   2 => sprintf(_n('%d month', '%d months', 2), 2),
                                                   3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)),
-                                 'unit'  => 'month'));
+                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)],
+                                 'unit'  => 'month']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
       self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
       echo "</td>";
       echo "<td>".__('Max number of items')."</td><td>";
-      Dropdown::showNumber("max_links_allowed", array('value' => $this->fields["max_links_allowed"],
+      Dropdown::showNumber("max_links_allowed", ['value' => $this->fields["max_links_allowed"],
                                                       'min'   => 1,
                                                       'max'   => 200,
                                                       'step'  => 1,
-                                                      'toadd' => array(0 => __('Unlimited'))));
+                                                      'toadd' => [0 => __('Unlimited')]]);
       echo "</td></tr>";
 
       if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Email alarms')."</td>";
          echo "<td>";
-         self::dropdownAlert(array('name'  => "alert",
-                                   'value' => $this->fields["alert"]));
+         self::dropdownAlert(['name'  => "alert",
+                                   'value' => $this->fields["alert"]]);
          Alert::displayLastAlert(__CLASS__, $ID);
          echo "</td>";
          echo "<td colspan='2'>&nbsp;</td>";
@@ -292,10 +292,10 @@ class Contract extends CommonDBTM {
       echo "<td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("week_begin_hour", array('value' => $this->fields["week_begin_hour"]));
+      Dropdown::showHours("week_begin_hour", ['value' => $this->fields["week_begin_hour"]]);
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span></td><td width='20%'>";
-      Dropdown::showHours("week_end_hour", array('value' => $this->fields["week_end_hour"]));
+      Dropdown::showHours("week_end_hour", ['value' => $this->fields["week_end_hour"]]);
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -308,12 +308,12 @@ class Contract extends CommonDBTM {
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
       Dropdown::showHours("saturday_begin_hour",
-                          array('value' => $this->fields["saturday_begin_hour"]));
+                          ['value' => $this->fields["saturday_begin_hour"]]);
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
       echo "</td><td width='20%'>";
       Dropdown::showHours("saturday_end_hour",
-                          array('value' => $this->fields["saturday_end_hour"]));
+                          ['value' => $this->fields["saturday_end_hour"]]);
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -325,11 +325,11 @@ class Contract extends CommonDBTM {
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_begin_hour", array('value' => $this->fields["monday_begin_hour"]));
+      Dropdown::showHours("monday_begin_hour", ['value' => $this->fields["monday_begin_hour"]]);
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("monday_end_hour", array('value' => $this->fields["monday_end_hour"]));
+      Dropdown::showHours("monday_end_hour", ['value' => $this->fields["monday_end_hour"]]);
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -583,10 +583,10 @@ class Contract extends CommonDBTM {
     * @param $values          (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -610,10 +610,10 @@ class Contract extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'alert' :
@@ -1080,13 +1080,13 @@ class Contract extends CommonDBTM {
       $options['order'] = 'DESC';
       $options['start'] = 0;
 
-      $options['criteria'][0] = array('field'      => 12,
+      $options['criteria'][0] = ['field'      => 12,
                                       'value'      => '<0',
-                                      'searchtype' => 'contains');
-      $options['criteria'][1] = array('field'      => 12,
+                                      'searchtype' => 'contains'];
+      $options['criteria'][1] = ['field'      => 12,
                                       'link'       => 'AND',
                                       'value'      => '>-30',
-                                      'searchtype' => 'contains');
+                                      'searchtype' => 'contains'];
 
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
                  Toolbox::append_params($options, '&amp;')."\">".
@@ -1154,7 +1154,7 @@ class Contract extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      return array('description' => __('Send alarms on contracts'));
+      return ['description' => __('Send alarms on contracts')];
    }
 
 
@@ -1170,14 +1170,14 @@ class Contract extends CommonDBTM {
          return 0;
       }
 
-      $message       = array();
-      $items_notice  = array();
-      $items_end     = array();
+      $message       = [];
+      $items_notice  = [];
+      $items_end     = [];
       $cron_status   = 0;
 
-      $contract_infos[Alert::END]    = array();
-      $contract_infos[Alert::NOTICE] = array();
-      $contract_messages             = array();
+      $contract_infos[Alert::END]    = [];
+      $contract_infos[Alert::NOTICE] = [];
+      $contract_messages             = [];
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
@@ -1218,8 +1218,8 @@ class Contract extends CommonDBTM {
                              AND `glpi_alerts`.`date` IS NULL
                              AND `glpi_contracts`.`entities_id` = '".$entity."'";
 
-         $querys = array('notice' => $query_notice,
-                         'end'    => $query_end);
+         $querys = ['notice' => $query_notice,
+                         'end'    => $query_end];
 
          foreach ($querys as $type => $query) {
             foreach ($DB->request($query) as $data) {
@@ -1262,7 +1262,7 @@ class Contract extends CommonDBTM {
             if (!empty($data['begin_date'])
                 && $data['periodicity']
                 && ($end_alert > date('Y-m-d'))) {
-               $todo = array('periodicity' => Alert::PERIODICITY);
+               $todo = ['periodicity' => Alert::PERIODICITY];
                if ($data['alert']&pow(2, Alert::NOTICE)) {
                   $todo['periodicitynotice'] = Alert::NOTICE;
                }
@@ -1323,15 +1323,15 @@ class Contract extends CommonDBTM {
             }
          }
       }
-      foreach (array('notice'            => Alert::NOTICE,
+      foreach (['notice'            => Alert::NOTICE,
                      'end'               => Alert::END,
                      'periodicity'       => Alert::PERIODICITY,
-                     'periodicitynotice' => Alert::NOTICE) as $event => $type ) {
+                     'periodicitynotice' => Alert::NOTICE] as $event => $type ) {
          if (isset($contract_infos[$event]) && count($contract_infos[$event])) {
             foreach ($contract_infos[$event] as $entity => $contracts) {
                if (NotificationEvent::raiseEvent($event, new self(),
-                                                 array('entities_id' => $entity,
-                                                       'items'       => $contracts))) {
+                                                 ['entities_id' => $entity,
+                                                       'items'       => $contracts])) {
                   $message     = $contract_messages[$event][$entity];
                   $cron_status = 1;
                   $entityname  = Dropdown::getDropdownName("glpi_entities", $entity);
@@ -1391,7 +1391,7 @@ class Contract extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   static function dropdown($options=array()) {
+   static function dropdown($options=[]) {
       global $DB;
 
       //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
@@ -1400,7 +1400,7 @@ class Contract extends CommonDBTM {
       $p['entity']         = '';
       $p['rand']           = mt_rand();
       $p['entity_sons']    = false;
-      $p['used']           = array();
+      $p['used']           = [];
       $p['nochecklimit']   = false;
       $p['on_change']      = '';
       $p['display']        = true;
@@ -1452,7 +1452,7 @@ class Contract extends CommonDBTM {
 
       $group  = '';
       $prev   = -1;
-      $values = array();
+      $values = [];
       while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)
@@ -1475,10 +1475,10 @@ class Contract extends CommonDBTM {
          }
       }
       return Dropdown::showFromArray($p['name'], $values,
-                                     array('value'               => $p['value'],
+                                     ['value'               => $p['value'],
                                            'on_change'           => $p['on_change'],
                                            'display'             => $p['display'],
-                                           'display_emptychoice' => true));
+                                           'display_emptychoice' => true]);
    }
 
 
@@ -1498,8 +1498,8 @@ class Contract extends CommonDBTM {
       $tmp[0] = __('Never');
       $tmp[1] = __('Tacit');
       $tmp[2] = __('Express');
-      return Dropdown::showFromArray($name, $tmp, array('value'   => $value,
-                                                        'display' => $display));
+      return Dropdown::showFromArray($name, $tmp, ['value'   => $value,
+                                                        'display' => $display]);
    }
 
 
@@ -1563,7 +1563,7 @@ class Contract extends CommonDBTM {
          }
       }
 
-      $tab = array();
+      $tab = [];
       if ($p['inherit_parent']) {
          $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
@@ -1615,8 +1615,8 @@ class Contract extends CommonDBTM {
    function showDebug() {
 
       $options['entities_id'] = $this->getEntityID();
-      $options['contracts']   = array();
-      $options['items']       = array();
+      $options['contracts']   = [];
+      $options['items']       = [];
       NotificationEvent::debugEvent($this, $options);
    }
 
@@ -1624,9 +1624,9 @@ class Contract extends CommonDBTM {
    function getUnallowedFieldsForUnicity() {
 
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         array('begin_date', 'duration', 'entities_id', 'monday_begin_hour',
+                         ['begin_date', 'duration', 'entities_id', 'monday_begin_hour',
                                'monday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
-                               'week_begin_hour', 'week_end_hour'));
+                               'week_begin_hour', 'week_end_hour']);
    }
 
 

@@ -58,9 +58,9 @@ if (!isset($item->fields[$_GET['field']]) || !$item->canView()) {
 
 // Security : blacklist fields
 if (in_array($table.'.'.$_GET['field'],
-             array('glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
+             ['glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
                    'glpi_configs.value', 'glpi_mailcollectors.login',
-                   'glpi_mailcollectors.passwd', 'glpi_users.name', 'glpi_users.password'))) {
+                   'glpi_mailcollectors.passwd', 'glpi_users.name', 'glpi_users.password'])) {
    exit();
 }
 
@@ -91,7 +91,7 @@ $query = "SELECT DISTINCT `".$_GET['field']."` AS VAL
                 $entity
           ORDER BY `".$_GET['field']."`";
 
-$values = array();
+$values = [];
 if ($result=$DB->query($query)) {
 
 

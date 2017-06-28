@@ -36,8 +36,8 @@ include_once ('Dropdown/AllTests.php');
 
 class Framework_GLPI extends PHPUnit_Framework_TestSuite {
 
-   public $tables = array();
-   public $sharedFixture = array();
+   public $tables = [];
+   public $sharedFixture = [];
 
    public static function suite() {
       $suite = new Framework_GLPI('Framework_Version');
@@ -64,15 +64,15 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
       }
       $DB->free_result($result);
 
-      $tab  = array();
+      $tab  = [];
       $auth = new Auth();
       // First session
       $auth->login('glpi', 'glpi');
 
       // Create entity tree
       $entity = new Entity();
-      $tab['entity'][0] = $entity->add(array('name' => 'PHP Unit root',
-                                             'entities_id' => 0));
+      $tab['entity'][0] = $entity->add(['name' => 'PHP Unit root',
+                                             'entities_id' => 0]);
 
       if (!$tab['entity'][0]                                   // Crash detection
           || !FieldExists('glpi_profiles', 'notification')   // Schema detection
@@ -88,17 +88,17 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
          die(" done\nTry again\n");
       }
 
-      $tab['entity'][1] = $entity->add(array('name'        => 'PHP Unit Child 1',
-                                             'entities_id' => $tab['entity'][0]));
+      $tab['entity'][1] = $entity->add(['name'        => 'PHP Unit Child 1',
+                                             'entities_id' => $tab['entity'][0]]);
 
-      $tab['entity'][2] = $entity->add(array('name'        => 'PHP Unit Child 2',
-                                             'entities_id' => $tab['entity'][0]));
+      $tab['entity'][2] = $entity->add(['name'        => 'PHP Unit Child 2',
+                                             'entities_id' => $tab['entity'][0]]);
 
-      $tab['entity'][3] = $entity->add(array('name'        => 'PHP Unit Child 2.1',
-                                             'entities_id' => $tab['entity'][2]));
+      $tab['entity'][3] = $entity->add(['name'        => 'PHP Unit Child 2.1',
+                                             'entities_id' => $tab['entity'][2]]);
 
-      $tab['entity'][4] = $entity->add(array('name'        => 'PHP Unit Child 2.2',
-                                             'entities_id' => $tab['entity'][2]));
+      $tab['entity'][4] = $entity->add(['name'        => 'PHP Unit Child 2.2',
+                                             'entities_id' => $tab['entity'][2]]);
 
       // New session with all the entities
       $auth->login('glpi', 'glpi') or die("Login glpi/glpi invalid !\n");

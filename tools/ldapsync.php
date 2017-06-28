@@ -114,10 +114,10 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
          $sql .= " AND glpi_users.auths_id = $server";
       }
 
-      $users   = array();
-      $results = array(AuthLDAP::USER_IMPORTED     => 0,
+      $users   = [];
+      $results = [AuthLDAP::USER_IMPORTED     => 0,
                        AuthLDAP::USER_SYNCHRONIZED => 0,
-                       AuthLDAP::USER_DELETED_LDAP => 0);
+                       AuthLDAP::USER_DELETED_LDAP => 0];
 
       $req = $DB->request($sql);
       $i   = 0;
@@ -126,8 +126,8 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
       foreach ($req as $row) {
          $i++;
 
-         $result = AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'  => $row['name']),
+         $result = AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                            'value'  => $row['name']],
                                                       AuthLDAP::ACTION_SYNCHRONIZE,
                                                       $row['auths_id']);
          if ($result) {
@@ -230,15 +230,15 @@ if (isset($_GET['verbose'])) {
 }
 $server = 0;
 if (isset($_GET['entity'])) {
-   $crit = array('id' => $_GET['entity']);
+   $crit = ['id' => $_GET['entity']];
 
 } else if (isset($_GET['server'])) {
    if (is_numeric($_GET['server'])) {
       $server = $_GET['server'];
-      $crit   = array('authldaps_id' => $server);
+      $crit   = ['authldaps_id' => $server];
    } else {
       $server = AuthLdap::getDefault();
-      $crit   = array('authldaps_id' => array(0, $server));
+      $crit   = ['authldaps_id' => [0, $server]];
       if ($verb) {
          printf("+ Use default LDAP server: %d\n", $server);
       }
@@ -267,9 +267,9 @@ if (isset($_GET['mailadmin'])) {
 
 $tps  = microtime(true);
 $nb   = 0;
-$pids = array();
+$pids = [];
 
-$rows = array();
+$rows = [];
 foreach ($DB->request('glpi_entities', $crit) as $row) {
    $rows[] = $row;
 }

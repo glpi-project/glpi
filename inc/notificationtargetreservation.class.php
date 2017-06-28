@@ -46,10 +46,10 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    function getEvents() {
-      return array('new'    => __('New reservation'),
+      return ['new'    => __('New reservation'),
                    'update' => __('Update of a reservation'),
                    'delete' => __('Deletion of a reservation'),
-                   'alert'  => __('Reservation expired'));
+                   'alert'  => __('Reservation expired')];
    }
 
 
@@ -68,7 +68,7 @@ class NotificationTargetReservation extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
       //----------- Reservation infos -------------- //
       $events                                  = $this->getAllEvents();
 
@@ -118,7 +118,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                                                             $options['entities_id']);
 
          foreach ($options['items'] as $id => $item) {
-            $tmp = array();
+            $tmp = [];
             if ($obj = getItemForItemtype($item['itemtype'])) {
                $tmp['##reservation.itemtype##']
                                     = $obj->getTypeName(1);
@@ -145,47 +145,47 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('reservation.item'     => __('Associated item'),
+      $tags_all = ['reservation.item'     => __('Associated item'),
                         'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => __('URL'),
                         'reservation.itemurl'  => __('URL of item reserved'),
-                        'reservation.action'   => _n('Event', 'Events', 1));
+                        'reservation.action'   => _n('Event', 'Events', 1)];
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $tags_except_alert = array('reservation.user'        => __('Writer'),
+      $tags_except_alert = ['reservation.user'        => __('Writer'),
                                  'reservation.begin'       => __('Start date'),
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => __('Entity'),
                                  'reservation.item.name'   => __('Associated item'),
-                                 'reservation.item.tech'   => __('Technician in charge of the hardware'));
+                                 'reservation.item.tech'   => __('Technician in charge of the hardware')];
 
       foreach ($tags_except_alert as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('new', 'update', 'delete')));
+                                   'events' => ['new', 'update', 'delete']]);
       }
 
-      $this->addTagToList(array('tag'     => 'items',
+      $this->addTagToList(['tag'     => 'items',
                                 'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true,
-                                'events'  => array('alert')));
+                                'events'  => ['alert']]);
 
-      $tag_alert = array('reservation.expirationdate' => __('End date'),
-                         'reservation.entity'         => __('Entity'));
+      $tag_alert = ['reservation.expirationdate' => __('End date'),
+                         'reservation.entity'         => __('Entity')];
 
       foreach ($tag_alert as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('alert')));
+                                   'events' => ['alert']]);
       }
 
       asort($this->tag_descriptions);

@@ -82,7 +82,7 @@ class PlanningRecall extends CommonDBChild {
          if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
             // Only disabled by config
             if ($task->isDisabled() != 1) {
-               if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP),
+               if (Session::haveRightsOr("planning", [Planning::READMY, Planning::READGROUP],
                                                            Planning::READALL)) {
                   $_SESSION['glpiplanningreminder_isavailable'] = 1;
                }
@@ -154,13 +154,13 @@ class PlanningRecall extends CommonDBChild {
                                strtotime($item->fields[$data['field']]) - $data['before_time']);
                   if ($data['before_time'] >= 0) {
                      if ($pr->can($pr->fields['id'], UPDATE)) {
-                        $pr->update(array('id'          => $pr->fields['id'],
+                        $pr->update(['id'          => $pr->fields['id'],
                                           'before_time' => $data['before_time'],
-                                          'when'        => $when));
+                                          'when'        => $when]);
                      }
                   } else {
                      if ($pr->can($pr->fields['id'], PURGE)) {
-                        $pr->delete(array('id' => $pr->fields['id']));
+                        $pr->delete(['id' => $pr->fields['id']]);
                      }
                   }
                }
@@ -222,7 +222,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
-   static function dropdown($options=array()) {
+   static function dropdown($options=[]) {
       global $DB, $CFG_GLPI;
 
       // Default values
@@ -247,24 +247,24 @@ class PlanningRecall extends CommonDBChild {
          $p['value'] = $pr->fields['before_time'];
       }
 
-      $possible_values                       = array();
+      $possible_values                       = [];
       $possible_values[Entity::CONFIG_NEVER] = __('None');
 
-      $min_values = array(0, 15, 30, 45);
+      $min_values = [0, 15, 30, 45];
       foreach ($min_values as $val) {
          $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $val),
                                                            $val);
       }
 
-      $h_values = array(1, 2, 3, 4, 12);
+      $h_values = [1, 2, 3, 4, 12];
       foreach ($h_values as $val) {
          $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $val), $val);
       }
-      $d_values = array(1, 2);
+      $d_values = [1, 2];
       foreach ($d_values as $val) {
          $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $val), $val);
       }
-      $w_values = array(1);
+      $w_values = [1];
       foreach ($w_values as $val) {
          $possible_values[$val*7*DAY_TIMESTAMP] = sprintf(_n('%d week', '%d weeks', $val), $val);
       }
@@ -272,7 +272,7 @@ class PlanningRecall extends CommonDBChild {
       ksort($possible_values);
 
       Dropdown::showFromArray('_planningrecall[before_time]', $possible_values,
-                              array('value' => $p['value']));
+                              ['value' => $p['value']]);
       echo "<input type='hidden' name='_planningrecall[itemtype]' value='".$p['itemtype']."'>";
       echo "<input type='hidden' name='_planningrecall[items_id]' value='".$p['items_id']."'>";
       echo "<input type='hidden' name='_planningrecall[users_id]' value='".$p['users_id']."'>";
@@ -295,7 +295,7 @@ class PlanningRecall extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
-   static function specificForm($options=array()) {
+   static function specificForm($options=[]) {
       global $CFG_GLPI;
 
       // Default values
@@ -335,9 +335,9 @@ class PlanningRecall extends CommonDBChild {
 
       switch ($name) {
          case 'planningrecall' :
-            return array('description' => __('Send planning recalls'));
+            return ['description' => __('Send planning recalls')];
       }
-      return array();
+      return [];
    }
 
 

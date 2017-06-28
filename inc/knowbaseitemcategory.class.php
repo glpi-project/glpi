@@ -107,7 +107,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          if (!isset($_SESSION['glpi_faqcategories'])) {
 
             $_SESSION['glpi_faqcategories'] = '(0)';
-            $tmp   = array();
+            $tmp   = [];
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
                       FROM `glpi_knowbaseitems`
                       ".KnowbaseItem::addVisibilityJoins()."

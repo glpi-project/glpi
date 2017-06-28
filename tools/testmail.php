@@ -42,7 +42,7 @@ if (isset($_SERVER['argc'])) {
       $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
-$NEEDED_ITEMS = array("mailgate", "mailing");
+$NEEDED_ITEMS = ["mailgate", "mailing"];
 
 include ('../inc/includes.php');
 

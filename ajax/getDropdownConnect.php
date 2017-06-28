@@ -48,14 +48,14 @@ if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromt
 }
 
 $fromitem->checkGlobal(UPDATE);
-$used = array();
+$used = [];
 if (isset( $_POST["used"])) {
    $used = $_POST["used"];
 
    if (isset($used[$_POST['itemtype']])) {
       $used = $used[$_POST['itemtype']];
    } else {
-      $used = array();
+      $used = [];
    }
 }
 
@@ -65,7 +65,7 @@ if (!$item = getItemForItemtype($_POST['itemtype'])) {
    exit;
 }
 
-$datas = array();
+$datas = [];
 
 $where = "";
 
@@ -153,22 +153,22 @@ $result = $DB->query($query);
 
 // Display first if no search
 if (empty($_POST['searchText'])) {
-   array_push($datas, array('id'   => 0,
-                            'text' => Dropdown::EMPTY_VALUE));
+   array_push($datas, ['id'   => 0,
+                            'text' => Dropdown::EMPTY_VALUE]);
 }
 if ($DB->numrows($result)) {
    $prev       = -1;
-   $datastoadd = array();
+   $datastoadd = [];
 
    while ($data = $DB->fetch_assoc($result)) {
       if ($multi && ($data["entities_id"] != $prev)) {
          if (count($datastoadd)) {
-            array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
-                                     'children' => $datastoadd));
+            array_push($datas, ['text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                                     'children' => $datastoadd]);
          }
          $prev = $data["entities_id"];
          // Reset last level displayed :
-         $datastoadd = array();
+         $datastoadd = [];
       }
       $output = $data['name'];
       $ID     = $data['id'];
@@ -183,14 +183,14 @@ if ($DB->numrows($result)) {
       if (!empty($data['otherserial'])) {
          $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
       }
-      array_push($datastoadd, array('id'    => $ID,
-                                    'text'  => $output));
+      array_push($datastoadd, ['id'    => $ID,
+                                    'text'  => $output]);
    }
 
    if ($multi) {
       if (count($datastoadd)) {
-         array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
-                                  'children' => $datastoadd));
+         array_push($datas, ['text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                  'children' => $datastoadd]);
       }
    } else {
       if (count($datastoadd)) {

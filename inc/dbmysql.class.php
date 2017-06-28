@@ -174,7 +174,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -231,7 +231,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL prepare error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -391,7 +391,7 @@ class DBmysql {
     * @return mixed list of fields
     */
    function list_fields($table, $usecache=true) {
-      static $cache = array();
+      static $cache = [];
 
       if ($usecache && isset($cache[$table])) {
          return $cache[$table];
@@ -399,13 +399,13 @@ class DBmysql {
       $result = $this->query("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
-            $cache[$table] = array();
+            $cache[$table] = [];
             while ($data = $result->fetch_assoc()) {
                $cache[$table][$data["Field"]] = $data;
             }
             return $cache[$table];
          }
-         return array();
+         return [];
       }
       return false;
    }
@@ -602,7 +602,7 @@ class DBmysql {
     */
    public function getInfo() {
       // No translation, used in sysinfo
-      $ret = array();
+      $ret = [];
       $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
       if (($data = $req->next())) {
@@ -696,7 +696,7 @@ class DBmysql {
    */
    static public function checkForCrashedTables() {
       global $DB;
-      $crashed_tables = array();
+      $crashed_tables = [];
 
       $result_tables = $DB->list_tables();
 
@@ -706,9 +706,9 @@ class DBmysql {
          if ($DB->numrows($result) > 0) {
             $row = $DB->fetch_array($result);
             if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
-               $crashed_tables[] = array('table'    => $row[0],
+               $crashed_tables[] = ['table'    => $row[0],
                                          'Msg_type' => $row['Msg_type'],
-                                         'Msg_text' => $row['Msg_text']);
+                                         'Msg_text' => $row['Msg_text']];
             }
          }
       }

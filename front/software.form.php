@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
-   $soft->display(array('id'           => $_GET["id"],
-                        'withtemplate' => $_GET["withtemplate"]));
+   $soft->display(['id'           => $_GET["id"],
+                        'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }

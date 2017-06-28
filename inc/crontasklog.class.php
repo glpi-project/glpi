@@ -78,7 +78,7 @@ class CronTaskLog extends CommonDBTM{
          $nb = 0;
          switch ($item->getType()) {
             case 'CronTask' :
-               $ong    = array();
+               $ong    = [];
                $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb =  countElementsInTable($this->getTable(),

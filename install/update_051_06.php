@@ -187,7 +187,7 @@ function update051to06() {
                 ADD `assign_type` TINYINT DEFAULT '0' NOT NULL AFTER `assign` ";
       $DB->queryOrDie($query, "0.6 add assign_type in tracking");
 
-      $users = array();
+      $users = [];
       // Load All users
       $query = "SELECT `ID`, `name`
                 FROM `glpi_users`";
@@ -204,7 +204,7 @@ function update051to06() {
       $DB->queryOrDie($query, "0.6 prepare for alter category tracking");
 
       // Load tracking authors tables
-      $authors = array();
+      $authors = [];
       $query   = "SELECT `ID`, `author`
                   FROM `glpi_tracking`";
       $result  = $DB->query($query);
@@ -229,7 +229,7 @@ function update051to06() {
                 CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
       $DB->queryOrDie($query, "0.6 alter author in tracking");
 
-      $assign = array();
+      $assign = [];
 
       // Load tracking assign tables
       $query  = "SELECT `ID`, `assign`
@@ -258,7 +258,7 @@ function update051to06() {
                 CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
       $DB->queryOrDie($query, "0.6 alter assign in tracking");
 
-      $authors = array();
+      $authors = [];
       // Load followup authors tables
       $query  = "SELECT `ID`, `author`
                  FROM `glpi_followups`";
@@ -403,7 +403,7 @@ function update051to06() {
       $query  = "SELECT *
                  FROM `glpi_dropdown_ram_type`";
       $result = $DB->query($query);
-      $val    = array();
+      $val    = [];
       while ($data=$DB->fetch_array($result)) {
          $val[$data['name']] = $data['ID'];
       }

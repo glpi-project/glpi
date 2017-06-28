@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 class CartridgeItem extends CommonDBTM {
 
    // From CommonDBTM
-   static protected $forward_entity_to = array('Cartridge', 'Infocom');
+   static protected $forward_entity_to = ['Cartridge', 'Infocom'];
    public $dohistory                   = true;
    protected $usenotepad               = true;
 
@@ -105,9 +105,9 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
@@ -183,7 +183,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options=[]) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -195,7 +195,7 @@ class CartridgeItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      CartridgeItemType::dropdown(array('value' => $this->fields["cartridgeitemtypes_id"]));
+      CartridgeItemType::dropdown(['value' => $this->fields["cartridgeitemtypes_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -205,16 +205,16 @@ class CartridgeItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Technician in charge of the hardware')."</td>";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
+      User::dropdown(['name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+                           'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='4'>
@@ -224,27 +224,27 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
+      Group::dropdown(['name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+                            'condition' => '`is_assign`']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Stock location')."</td>";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alert threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber('alarm_threshold', array('value' => $this->fields["alarm_threshold"],
+      Dropdown::showNumber('alarm_threshold', ['value' => $this->fields["alarm_threshold"],
                                                     'min'   => 0,
                                                     'max'   => 100,
                                                     'step'  => 1,
-                                                    'toadd' => array('-1' => __('Never'))));
+                                                    'toadd' => ['-1' => __('Never')]]);
       Alert::displayLastAlert('CartridgeItem', $ID);
       echo "</td></tr>";
 
@@ -456,7 +456,7 @@ class CartridgeItem extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      return array('description' => __('Send alarms on cartridges'));
+      return ['description' => __('Send alarms on cartridges')];
    }
 
 
@@ -472,7 +472,7 @@ class CartridgeItem extends CommonDBTM {
 
       $cron_status = 1;
       if ($CFG_GLPI["use_notifications"]) {
-         $message = array();
+         $message = [];
          $alert   = new Alert();
 
          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
@@ -494,7 +494,7 @@ class CartridgeItem extends CommonDBTM {
                                   AND (`glpi_alerts`.`date` IS NULL
                                        OR (`glpi_alerts`.`date`+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
-            $items   = array();
+            $items   = [];
 
             foreach ($DB->request($query_alert) as $cartridge) {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
@@ -507,7 +507,7 @@ class CartridgeItem extends CommonDBTM {
 
                   // if alert exists -> delete
                   if (!empty($cartridge["alertID"])) {
-                     $alert->delete(array("id" => $cartridge["alertID"]));
+                     $alert->delete(["id" => $cartridge["alertID"]]);
                   }
                }
             }
@@ -582,7 +582,7 @@ class CartridgeItem extends CommonDBTM {
                                                    $printer->fields["entities_id"], true)."
                 GROUP BY tID
                 ORDER BY `name`, `ref`";
-      $datas = array();
+      $datas = [];
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data= $DB->fetch_assoc($result)) {
@@ -601,7 +601,7 @@ class CartridgeItem extends CommonDBTM {
 
 
    function getEvents() {
-      return array('alert' => __('Send alarms on cartridges'));
+      return ['alert' => __('Send alarms on cartridges')];
    }
 
 
@@ -611,15 +611,15 @@ class CartridgeItem extends CommonDBTM {
    function showDebug() {
 
       // see query_alert in cronCartridge()
-      $item = array('cartID'    => $this->fields['id'],
+      $item = ['cartID'    => $this->fields['id'],
                     'entity'    => $this->fields['entities_id'],
                     'ref'       => $this->fields['ref'],
                     'name'      => $this->fields['name'],
-                    'threshold' => $this->fields['alarm_threshold']);
+                    'threshold' => $this->fields['alarm_threshold']];
 
-      $options = array();
+      $options = [];
       $options['entities_id'] = $this->getEntityID();
-      $options['items']       = array($item);
+      $options['items']       = [$item];
       NotificationEvent::debugEvent($this, $options);
    }
 

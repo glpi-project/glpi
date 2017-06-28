@@ -53,9 +53,9 @@ class Knowbase extends CommonGLPI {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options=[]) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       $ong['no_all_tab'] = true;

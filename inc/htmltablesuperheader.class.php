@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTableSuperHeader extends HTMLTableHeader {
 
    /// The headers of each column
-   private $headerSets = array();
+   private $headerSets = [];
    /// The table that owns the current super header
    private $table;
 

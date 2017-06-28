@@ -54,7 +54,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return string
    **/
-   static function dropdownEvents($itemtype, $options=array()) {
+   static function dropdownEvents($itemtype, $options=[]) {
 
       $p['name']                = 'event';
       $p['display']             = true;
@@ -67,7 +67,7 @@ class NotificationEvent extends CommonDBTM {
          }
       }
 
-      $events = array();
+      $events = [];
       $target = NotificationTarget::getInstanceByType($itemtype);
       if ($target) {
          $events = $target->getAllEvents();
@@ -88,7 +88,7 @@ class NotificationEvent extends CommonDBTM {
    **/
    static function getEventName($itemtype, $event) {
 
-      $events = array();
+      $events = [];
       $target = NotificationTarget::getInstanceByType($itemtype);
       if ($target) {
          $events = $target->getAllEvents();
@@ -110,7 +110,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return boolean
    **/
-   static function raiseEvent($event, $item, $options=array(), $label='') {
+   static function raiseEvent($event, $item, $options=[], $label='') {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
@@ -186,14 +186,14 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return void
    **/
-   static function debugEvent($item, $options=array()) {
+   static function debugEvent($item, $options=[]) {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>"._n('Notification', 'Notifications', Session::getPluralNumber()).
             "</th><th colspan='2'><font color='blue'> (".$item->getTypeName(1).")</font></th></tr>";
 
-      $events = array();
+      $events = [];
       if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
          $events = $target->getAllEvents();
 

@@ -95,10 +95,10 @@ class Contract_Item extends CommonDBRelation{
       return _n('Link Contract/Item', 'Links Contract/Item', $nb);
    }
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'items_id':
@@ -107,7 +107,7 @@ class Contract_Item extends CommonDBRelation{
                   $tmp = Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
                                                    $values[$field], 1);
                   return sprintf(__('%1$s %2$s'), $tmp['name'],
-                                 Html::showToolTip($tmp['comment'], array('display' => false)));
+                                 Html::showToolTip($tmp['comment'], ['display' => false]));
 
                }
                return Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
@@ -127,10 +127,10 @@ class Contract_Item extends CommonDBRelation{
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -202,9 +202,9 @@ class Contract_Item extends CommonDBRelation{
       $nb = 0;
 
       foreach ($DB->request('glpi_contracts_items',
-                            array('DISTINCT FIELDS' => "itemtype",
+                            ['DISTINCT FIELDS' => "itemtype",
                                   'WHERE'           => "`glpi_contracts_items`.`contracts_id`
-                                                         = '".$item->getField('id')."'")) as $data) {
+                                                         = '".$item->getField('id')."'"]) as $data) {
          $itemt = getItemForItemtype($data['itemtype']);
 
          $query = "SELECT COUNT(*) AS cpt
@@ -236,7 +236,7 @@ class Contract_Item extends CommonDBRelation{
    static function getItemsForContract($contract_id, $entities_id) {
       global $DB;
 
-      $items = array();
+      $items = [];
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_contracts_items`
@@ -246,7 +246,7 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $data    = array();
+      $data    = [];
       $totalnb = 0;
       for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
@@ -352,13 +352,13 @@ class Contract_Item extends CommonDBRelation{
       }
 
       foreach ($DB->request('glpi_contracts_items',
-                            array('FIELDS' => 'contracts_id',
+                            ['FIELDS' => 'contracts_id',
                                   'WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'")) as $data) {
+                                                AND `itemtype` = '$itemtype'"]) as $data) {
          $contractitem = new self();
-         $contractitem->add(array('contracts_id' => $data["contracts_id"],
+         $contractitem->add(['contracts_id' => $data["contracts_id"],
                                   'itemtype'     => $newitemtype,
-                                  'items_id'     => $newid));
+                                  'items_id'     => $newid]);
       }
    }
 
@@ -399,8 +399,8 @@ class Contract_Item extends CommonDBRelation{
 
       $result = $DB->query($query);
 
-      $contracts = array();
-      $used      = array();
+      $contracts = [];
+      $used      = [];
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $contracts[$data['id']]      = $data;
@@ -418,9 +418,9 @@ class Contract_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a contract')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-         Contract::dropdown(array('entity'  => $item->getEntityID(),
+         Contract::dropdown(['entity'  => $item->getEntityID(),
                                   'used'    => $used,
-                                  'expired' => false));
+                                  'expired' => false]);
 
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -434,8 +434,8 @@ class Contract_Item extends CommonDBRelation{
       if ($withtemplate != 2) {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                                         'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                                         'container'     => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
       }
@@ -554,9 +554,9 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $data    = array();
+      $data    = [];
       $totalnb = 0;
-      $used    = array();
+      $used    = [];
       for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
@@ -612,26 +612,26 @@ class Contract_Item extends CommonDBRelation{
 
             if ($nb > $_SESSION['glpilist_limit']) {
 
-               $opt = array('order'      => 'ASC',
+               $opt = ['order'      => 'ASC',
                             'is_deleted' => 0,
                             'reset'      => 'reset',
                             'start'      => 0,
                             'sort'       => 80,
-                            'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
+                            'criteria'   => [0 => ['value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
-                                                             'field'      => 29)));
+                                                             'field'      => 29]]];
 
                $url  = $item::getSearchURL();
                $url .= (strpos($url, '?') ? '&':'?');
                $url .= Toolbox::append_params($opt);
                $link = "<a href='$url'>" . __('Device list')."</a>";
 
-               $data[$itemtype] = array('longlist' => true,
+               $data[$itemtype] = ['longlist' => true,
                                         'name'     => sprintf(__('%1$s: %2$s'),
                                                               $item->getTypeName($nb), $nb),
-                                        'link'     => $link);
+                                        'link'     => $link];
             } else if ($nb > 0) {
-               $data[$itemtype] = array();
+               $data[$itemtype] = [];
                while ($objdata = $DB->fetch_assoc($result_linked)) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
@@ -653,7 +653,7 @@ class Contract_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td class='right'>";
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+         Dropdown::showSelectItemFromItemtypes(['itemtypes'
                                                        => $CFG_GLPI["contract_types"],
                                                      'entity_restrict'
                                                        => ($contract->fields['is_recursive']
@@ -663,7 +663,7 @@ class Contract_Item extends CommonDBRelation{
                                                      'checkright'
                                                        => true,
                                                      'used'
-                                                       => $used));
+                                                       => $used]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
@@ -676,7 +676,7 @@ class Contract_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $totalnb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";

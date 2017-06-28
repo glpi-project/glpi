@@ -48,7 +48,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
    function getEvents() {
-      return array('planningrecall' => __('Planning recall'));
+      return ['planningrecall' => __('Planning recall')];
    }
 
 
@@ -87,14 +87,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
          $user = new User();
          if ($item->isField('users_id_tech')
              && $user->getFromDB($item->getField('users_id_tech'))) {
-            $this->addToRecipientsList(array('language' => $user->getField('language'),
-                                            'users_id' => $user->getField('id')));
+            $this->addToRecipientsList(['language' => $user->getField('language'),
+                                            'users_id' => $user->getField('id')]);
          }
       }
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       $events                             = $this->getAllEvents();
       $target_object                      = reset($this->target_object);;
@@ -175,7 +175,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('recall.action'            => _n('Event', 'Events', 1),
+      $tags_all = ['recall.action'            => _n('Event', 'Events', 1),
                         'recall.item.user'         => __('Writer'),
                         'recall.item.date_mod'     => __('Last update'),
                         'recall.item.name'         => __('Title'),
@@ -186,12 +186,12 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
                         'recall.planning.begin'    => __('Start date'),
                         'recall.planning.state'    => __('Status'),
                         'recall.planning.end'      => __('End date'),
-                        );
+                        ];
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       asort($this->tag_descriptions);

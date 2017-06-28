@@ -46,18 +46,18 @@ class NotificationTargetCrontask extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Monitoring of automatic actions'));
+      return ['alert' => __('Monitoring of automatic actions')];
    }
 
 
-   function addDataForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options=[]) {
 
       $events                             = $this->getAllEvents();
       $this->data['##crontask.action##'] = $events[$event];
 
       $cron                               = new Crontask();
       foreach ($options['items'] as $id => $crontask) {
-         $tmp                      = array();
+         $tmp                      = [];
          $tmp['##crontask.name##'] = '';
 
          if ($isplug=isPluginItemType($crontask["itemtype"])) {
@@ -82,30 +82,30 @@ class NotificationTargetCrontask extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('crontask.action'      => __('Monitoring of automatic actions'),
+      $tags = ['crontask.action'      => __('Monitoring of automatic actions'),
                     'crontask.url'         => __('URL'),
                     'crontask.name'        => __('Name'),
-                    'crontask.description' => __('Description'));
+                    'crontask.description' => __('Description')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'crontasks',
+      $this->addTagToList(['tag'     => 'crontasks',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       //Tags with just lang
-      $tags = array('crontask.warning'
-                     => __('The following automatic actions are in error. They require intervention.'));
+      $tags = ['crontask.warning'
+                     => __('The following automatic actions are in error. They require intervention.')];
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
       asort($this->tag_descriptions);
    }

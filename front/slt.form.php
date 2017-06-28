@@ -80,6 +80,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SLT::getTypeName(1), $_SERVER['PHP_SELF'], "config", "sla", "slt");
 
-   $slt->display(array('id' => $_GET["id"]));
+   $slt->display(['id' => $_GET["id"]]);
    Html::footer();
 }

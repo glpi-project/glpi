@@ -193,10 +193,10 @@ class KnowbaseItem_Item extends CommonDBRelation {
       if ($canedit) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams
-            = array('num_displayed'
+            = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
                     'container'
-                        => 'mass'.__CLASS__.$rand);
+                        => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -347,7 +347,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $options['LIMIT'] = intval($limit);
       }
 
-      $linked_items = array();
+      $linked_items = [];
       $results = $DB->request($options);
       foreach ($results as $data) {
          if ($used === false) {
@@ -378,13 +378,13 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
 
       foreach ($DB->request('glpi_knowbaseitems_items',
-                            array('FIELDS' => 'knowbaseitems_id',
+                            ['FIELDS' => 'knowbaseitems_id',
                                   'WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'")) as $data) {
+                                                AND `itemtype` = '$itemtype'"]) as $data) {
          $kb_link = new self();
-         $kb_link->add(array('knowbaseitems_id' => $data['knowbaseitems_id'],
+         $kb_link->add(['knowbaseitems_id' => $data['knowbaseitems_id'],
                                   'itemtype'    => $newitemtype,
-                                  'items_id'    => $newid));
+                                  'items_id'    => $newid]);
       }
    }
 

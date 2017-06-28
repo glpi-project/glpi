@@ -51,7 +51,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    }
 
    $default_email = "";
-   $emails        = array();
+   $emails        = [];
    if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
       $supplier = new Supplier();
       if ($supplier->getFromDB($_POST["value"])) {
@@ -102,7 +102,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
-      $emailtab = array();
+      $emailtab = [];
       foreach ($emails as $new_email) {
          if ($new_email != $default_email) {
             $emailtab[$new_email] = $new_email;
@@ -111,8 +111,8 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
          }
       }
       $email_string = Dropdown::showFromArray($_POST['field']."[alternative_email][]", $emailtab,
-                                              array('value'   => '',
-                                                    'display' => false));
+                                              ['value'   => '',
+                                                    'display' => false]);
    } else {
       $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email][]'
                         value='".$default_email."'>";
