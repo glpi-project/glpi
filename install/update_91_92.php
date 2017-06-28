@@ -1226,6 +1226,41 @@ Regards,',
       }
    }
 
+   //Firmware for phones
+   if (fieldExists('glpi_phones', 'firmware')) {
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'firmware'],
+         'FROM'   => 'glpi_phones',
+         'NOT'    => ['firmware' => null]
+      ]);
+
+      $firmwares = [];
+      while ($row = $iterator->next()) {
+         if (!isset($firmwares[$row['firmware']])) {
+            $fw = new DeviceFirmware();
+            if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
+               $firmwares[$row['firmware']] = $fw->getID();
+            } else {
+               $id = $fw->add([
+                  'designation'              => $row['firmware'],
+                  'devicefirmwaretypes_id'   => '3' //type "firmware"
+               ]);
+               $firmwares[$row['firmware']] = $id;
+            }
+         }
+
+         //add link
+         $item_fw = new Item_DeviceFirmware();
+         $item_fw->add([
+            'itemtype'           => 'Phone',
+            'items_id'           => $row['id'],
+            'devicefirmwares_id' => $firmwares[$row['firmware']]
+         ]);
+      }
+
+      $migration->dropField('glpi_phones', 'firmware');
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
