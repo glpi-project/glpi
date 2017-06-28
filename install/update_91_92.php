@@ -257,7 +257,8 @@ function update91to92() {
               'glpi_devicesoundcardmodels',
               'glpi_devicegenericmodels',
               'glpi_devicebatterymodels',
-              'glpi_devicefirmwaremodels'];
+              'glpi_devicefirmwaremodels',
+              'glpi_devicesensormodels'];
 
    foreach ($tables as $table) {
       if (!TableExists($table)) {
@@ -503,6 +504,77 @@ function update91to92() {
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('1','BIOS',NULL,NULL,NULL);");
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('2','UEFI',NULL,NULL,NULL);");
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('3','Firmware',NULL,NULL,NULL);");
+   }
+
+   //Device sensors
+   if (!TableExists('glpi_devicesensors')) {
+      $query = "CREATE TABLE `glpi_devicesensors` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `devicesensortypes_id` int(11) NOT NULL DEFAULT '0',
+                  `devicesensormodels_id` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `designation` (`designation`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `devicesensortypes_id` (`devicesensortypes_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `states_id` (`states_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->queryOrDie($query, "9.2 add table glpi_devicesensors");
+   }
+
+   if (!TableExists('glpi_items_devicesensors')) {
+      $query = "CREATE TABLE `glpi_items_devicesensors` (
+                   `id` INT(11) NOT NULL AUTO_INCREMENT,
+                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `devicesensors_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
+                   `entities_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `locations_id` INT(11) NOT NULL DEFAULT '0',
+                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   PRIMARY KEY (`id`),
+                   INDEX `computers_id` (`items_id`),
+                   INDEX `devicesensors_id` (`devicesensors_id`),
+                   INDEX `is_deleted` (`is_deleted`),
+                   INDEX `is_dynamic` (`is_dynamic`),
+                   INDEX `entities_id` (`entities_id`),
+                   INDEX `is_recursive` (`is_recursive`),
+                   INDEX `serial` (`serial`),
+                   INDEX `item` (`itemtype`, `items_id`),
+                   INDEX `otherserial` (`otherserial`)
+                )
+                COLLATE='utf8_unicode_ci'
+                ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_items_devicesensors");
+   }
+
+   if (!TableExists('glpi_devicesensortypes')) {
+      $query = "CREATE TABLE `glpi_devicesensortypes` (
+                  `id` INT(11) NOT NULL AUTO_INCREMENT,
+                  `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                  `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+                   PRIMARY KEY (`id`),
+                   INDEX `name` (`name`)
+                )
+                COLLATE='utf8_unicode_ci' ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_devicesensortypes");
    }
 
    //Father/son for Software licenses

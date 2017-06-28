@@ -447,6 +447,12 @@ function loadDataset() {
             'entities_id'         => '_test_root_entity',
             'is_recursive'        => 1,
          ]
+      ], 'DeviceSensor' => [
+         [
+            'designation'        => '_test_sensor_1',
+            'entities_id'        => '_test_root_entity',
+            'is_recursive'       => 1
+         ]
       ]
    ];
 
