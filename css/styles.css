@@ -630,6 +630,16 @@ input.submit[type=reset] {
    opacity: .3;
 }
 
+#page .protected {
+   padding-right: 50px;
+}
+
+#page .fa.disclose {
+   position: relative;
+   left: -40px;
+   top: 2px
+}
+
 /* ################--------------- Layout  ---------------#################### */
 .layout_classic.form div.navigationheader,
 .layout_vsplit.form div.navigationheader {

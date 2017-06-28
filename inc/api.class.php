@@ -1210,6 +1210,12 @@ abstract class API extends CommonGLPI {
                                             'datatype'              => isset($option['datatype'])
                                                                        ?$option['datatype']
                                                                        :"",
+                                            'nosearch'              => isset($option['nosearch'])
+                                                                       ?$option['nosearch']
+                                                                       :false,
+                                            'nodisplay'             => isset($option['nodisplay'])
+                                                                       ?$option['nodisplay']
+                                                                       :false,
                                             'available_searchtypes' => $available_searchtypes];
             $cleaned_soptions[$sID]['uid'] = $this->getSearchOptionUniqID($itemtype,
                                                                                $option);
@@ -1351,6 +1357,11 @@ abstract class API extends CommonGLPI {
                   || !array_key_exists($criteria['field'], $soptions)) {
                return $this->returnError(__("Bad field ID in search criteria"));
             }
+
+            if (isset($soptions[$criteria['field']]) && isset($soptions[$criteria['field']]['nosearch'])
+                && $soptions[$criteria['field']]['nosearch']) {
+               return $this->returnError(__("Forbidden field ID in search criteria"));
+            }
          }
       }
 
@@ -1362,6 +1373,12 @@ abstract class API extends CommonGLPI {
          $params['forcedisplay'] = array_combine($params['forcedisplay'], $params['forcedisplay']);
       } else {
          $params['forcedisplay'] = [];
+      }
+      foreach ($params['forcedisplay'] as $forcedisplay) {
+         if (isset($soptions[$forcedisplay]) && isset($soptions[$forcedisplay]['nodisplay'])
+             && $soptions[$forcedisplay]['nodisplay']) {
+            return $this->returnError(__("Forbidden field ID in forcedisplay"));
+         }
       }
 
       // transform range parameter in start and limit variables

@@ -50,7 +50,8 @@ class State extends CommonTreeDropdown {
                                            'Peripheral'       => 'is_visible_peripheral',
                                            'Phone'            => 'is_visible_phone',
                                            'NetworkEquipment' => 'is_visible_networkequipment',
-                                           'SoftwareLicense'  => 'is_visible_softwarelicense'];
+                                           'SoftwareLicense'  => 'is_visible_softwarelicense',
+                                           'Line'             => 'is_visible_line'];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';

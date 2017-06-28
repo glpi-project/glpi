@@ -1133,6 +1133,100 @@ abstract class APIBaseClass extends atoum {
 
    /**
     * @tags    api
+    */
+   public function testProtectedDeviceSimcardFields() {
+      global $DB;
+
+      $sensitiveFields = [
+            'pin',
+            'pin2',
+            'puk',
+            'puk2',
+      ];
+
+      $obj = new \Item_DeviceSimcard();
+
+      // Add
+      $computer = getItemByTypeName('Computer', '_test_pc01');
+      $this->object($computer)->isInstanceOf('\Computer');
+      $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
+      $this->integer((int) $deviceSimcard->getID())->isGreaterThan(0);
+      $this->object($deviceSimcard)->isInstanceOf('\Devicesimcard');
+      $input = [
+            'itemtype'           => 'Computer',
+            'items_id'           => $computer->getID(),
+            'devicesimcards_id'  => $deviceSimcard->getID(),
+            'entities_id'        => 0,
+            'pin'                => '1234',
+            'pin2'               => '2345',
+            'puk'                => '3456',
+            'puk2'               => '4567',
+      ];
+      $id = $obj->add($input);
+      $this->integer($id)->isGreaterThan(0);
+
+      //drop update access on item_devicesimcard
+      $query = "UPDATE glpi_profilerights SET rights = 2 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
+      $DB->query($query);
+
+      // Profile changed then login
+      $backupSessionToken = $this->session_token;
+      $this->initSessionCredentials();
+      $limitedSessionToken = $this->session_token;
+
+      //reset rights. Done here so ACLs are reset even if tests fails.
+      $query = "UPDATE glpi_profilerights SET rights = 3 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
+      $DB->query($query);
+      $this->session_token = $backupSessionToken;
+
+      // test getItem does not disclose sensitive fields when READ disabled
+      $data = $this->query('getItem',
+                           ['itemtype' => 'Item_DeviceSimcard',
+                            'id'       => $id,
+                            'headers'  => ['Session-Token' => $limitedSessionToken]]);
+      foreach ($sensitiveFields as $field) {
+         $this->array($data)->notHasKey($field);
+      }
+
+      // test getItem discloses sensitive fields when READ enabled
+      $data = $this->query('getItem',
+                           ['itemtype' => 'Item_DeviceSimcard',
+                            'id'       => $id,
+                            'headers'  => ['Session-Token' => $this->session_token]]);
+      foreach ($sensitiveFields as $field) {
+         $this->array($data)->hasKey($field);
+      }
+
+      // test searching a sensitive field as criteria id forbidden
+      $data = $this->query('search',
+                           ['itemtype' => 'Item_DeviceSimcard',
+                            'headers'  => ['Session-Token' => $this->session_token],
+                            'query'    => ['criteria' => [
+                                                          0 => ['field'      => 15,
+                                                                'searchtype' => 'equals',
+                                                                'value'      => $input['pin']
+                                                               ]
+                                                         ]
+                                          ]
+                           ],
+                           400,
+                           'ERROR');
+
+      // test forcing display of a sensitive field
+      $data = $this->query('search',
+                           ['itemtype' => 'Item_DeviceSimcard',
+                            'headers'  => ['Session-Token' => $this->session_token],
+                            'query'    => [
+                                           'forcedisplay'  => [15]
+                            ]
+                           ],
+                           400,
+                           'ERROR');
+
+   }
+
+   /**
+    * @tags    api
     * @covers  API::getGlpiConfig
     */
    public function testGetGlpiConfig() {
