@@ -55,7 +55,3 @@ notifications:
 branches:
   except:
     - /^0\..*$/
-addons:
-  hosts:
-    - ldap-master
-    - ldap-slave
