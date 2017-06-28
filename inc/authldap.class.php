@@ -1224,7 +1224,7 @@ class AuthLDAP extends CommonDBTM {
       global $CFG_GLPI;
 
       //Check if timestamp is well format, otherwise return ''
-      if (!preg_match("/[\d][A-Z]/", $ldapstamp)) {
+      if (!preg_match("/[\d]{14}(\.[\d]{0,4})*Z/", $ldapstamp)) {
          return '';
       }
 
