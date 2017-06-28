@@ -295,12 +295,6 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Firmware', 'Firmware', 1)."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "firmware");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('quantity', 'Number of lines')."</td><td>";
       Html::autocompletionTextField($this, "number_line");
       echo "</td></tr>\n";
@@ -532,10 +526,22 @@ class Phone extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '32',
-         'table'              => $this->getTable(),
-         'field'              => 'firmware',
-         'name'               => __('Firmware'),
-         'datatype'           => 'string'
+         'table'              => 'glpi_devicefirmwares',
+         'field'              => 'id',
+         'name'               => _n('Firmware', 'Firmware', 1),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicefirmwares',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item',
+                  'specific_itemtype'  => 'Phone'
+               ]
+            ]
+         ]
       ];
 
       $tab[] = [

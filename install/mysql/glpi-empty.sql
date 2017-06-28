@@ -5871,7 +5871,6 @@ CREATE TABLE `glpi_phones` (
   `comment` text COLLATE utf8_unicode_ci,
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `firmware` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `phonetypes_id` int(11) NOT NULL DEFAULT '0',
   `phonemodels_id` int(11) NOT NULL DEFAULT '0',
