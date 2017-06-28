@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3628e02f92e1cd2e966f31f4e561770e",
+    "content-hash": "9ad20c655b7ce18edd83fcd2092e5ddc",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -1511,16 +1511,16 @@
         },
         {
             "name": "glpi-project/coding-standard",
-            "version": "0.5",
+            "version": "0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/coding-standard.git",
-                "reference": "e19495c896a01199a2fec2e65b7613310598cf96"
+                "reference": "66f7dd920c3572d8d4a03371997c3a635045f196"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/coding-standard/zipball/e19495c896a01199a2fec2e65b7613310598cf96",
-                "reference": "e19495c896a01199a2fec2e65b7613310598cf96",
+                "url": "https://api.github.com/repos/glpi-project/coding-standard/zipball/66f7dd920c3572d8d4a03371997c3a635045f196",
+                "reference": "66f7dd920c3572d8d4a03371997c3a635045f196",
                 "shasum": ""
             },
             "require": {
@@ -1534,7 +1534,7 @@
             "authors": [
                 {
                     "name": "Teclib'",
-                    "email": "contact@teclib.com",
+                    "email": "glpi@teclib.com",
                     "homepage": "https://teclib.com"
                 }
             ],
@@ -1544,7 +1544,7 @@
                 "glpi",
                 "phpcs"
             ],
-            "time": "2017-01-06T11:10:46+00:00"
+            "time": "2017-06-27T13:38:52+00:00"
         },
         {
             "name": "grasmash/yaml-expander",
