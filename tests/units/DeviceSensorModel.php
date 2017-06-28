@@ -53,9 +53,9 @@ class DeviceSensorModel extends DbTestCase {
 
       // Add
       $in = [
-            'name'                     => $this->method,
-            'comment'                  => $this->getUniqueString(),
-            'product_number'           => $this->getUniqueString(),
+         'name'                     => $this->method,
+         'comment'                  => $this->getUniqueString(),
+         'product_number'           => $this->getUniqueString(),
       ];
       $id = $obj->add($in);
       $this->integer((int)$id)->isGreaterThan(0);
@@ -81,10 +81,10 @@ class DeviceSensorModel extends DbTestCase {
       // Update
       $id = $obj->getID();
       $in = [
-            'id'                       => $id,
-            'name'                     => $this->method,
-            'comment'                  => $this->getUniqueString(),
-            'product_number'           => $this->getUniqueString(),
+         'id'                       => $id,
+         'name'                     => $this->method,
+         'comment'                  => $this->getUniqueString(),
+         'product_number'           => $this->getUniqueString(),
       ];
       $this->boolean($obj->update($in))->isTrue();
       $this->boolean($obj->getFromDB($id))->isTrue();
@@ -101,13 +101,13 @@ class DeviceSensorModel extends DbTestCase {
 
       // Add
       $id = $obj->add([
-            'name'                     => $this->method,
+         'name'                     => $this->method,
       ]);
       $this->integer($id)->isGreaterThan(0);
 
       // Delete
       $in = [
-            'id'                       => $obj->getID(),
+         'id'                       => $obj->getID(),
       ];
       $this->boolean($obj->delete($in))->isTrue();
    }

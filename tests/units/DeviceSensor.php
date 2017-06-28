@@ -53,10 +53,10 @@ class DeviceSensor extends DbTestCase {
 
       // Add
       $in = [
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesensortypes_id'     => $this->getUniqueInteger(),
-            'devicesensormodels_id'    => $this->getUniqueInteger(),
+         'designation'              => $this->method,
+         'manufacturers_id'         => $this->getUniqueInteger(),
+         'devicesensortypes_id'     => $this->getUniqueInteger(),
+         'devicesensormodels_id'    => $this->getUniqueInteger(),
       ];
       $id = $obj->add($in);
       $this->integer((int)$id)->isGreaterThan(0);
@@ -75,18 +75,18 @@ class DeviceSensor extends DbTestCase {
 
       // Add
       $id = $obj->add([
-            'designation' => $this->getUniqueString(),
+         'designation' => $this->getUniqueString(),
       ]);
       $this->integer($id)->isGreaterThan(0);
 
       // Update
       $id = $obj->getID();
       $in = [
-            'id'                       => $id,
-            'designation'              => $this->method,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'devicesensortypes_id'     => $this->getUniqueInteger(),
-            'devicesensormodels_id'    => $this->getUniqueInteger(),
+         'id'                    => $id,
+         'designation'           => $this->method,
+         'manufacturers_id'      => $this->getUniqueInteger(),
+         'devicesensortypes_id'  => $this->getUniqueInteger(),
+         'devicesensormodels_id' => $this->getUniqueInteger(),
       ];
       $this->boolean($obj->update($in))->isTrue();
       $this->boolean($obj->getFromDB($id))->isTrue();
@@ -103,13 +103,13 @@ class DeviceSensor extends DbTestCase {
 
       // Add
       $id = $obj->add([
-            'designation' => $this->method,
+         'designation' => $this->method,
       ]);
       $this->integer($id)->isGreaterThan(0);
 
       // Delete
       $in = [
-            'id'                       => $obj->getID(),
+         'id'                       => $obj->getID(),
       ];
       $this->boolean($obj->delete($in))->isTrue();
    }
