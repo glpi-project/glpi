@@ -68,7 +68,7 @@ if ($_POST['softwares_id'] > 0) {
    $result = $DB->query($query);
    $number = $DB->numrows($result);
 
-   $values = array();
+   $values = [];
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $ID = $data['id'];
@@ -85,5 +85,5 @@ if ($_POST['softwares_id'] > 0) {
       }
    }
 
-   Dropdown::showFromArray($_POST['myname'], $values, array('display_emptychoice' => true));
+   Dropdown::showFromArray($_POST['myname'], $values, ['display_emptychoice' => true]);
 }

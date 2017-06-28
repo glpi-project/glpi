@@ -62,7 +62,7 @@ class Group_RSSFeed extends CommonDBRelation {
    static function getGroups($rssfeeds_id) {
       global $DB;
 
-      $groups = array();
+      $groups = [];
       $query  = "SELECT `glpi_groups_rssfeeds`.*
                  FROM `glpi_groups_rssfeeds`
                  WHERE `rssfeeds_id` = '$rssfeeds_id'";

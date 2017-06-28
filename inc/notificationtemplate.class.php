@@ -50,13 +50,13 @@ class NotificationTemplate extends CommonDBTM {
    public $signature = '';
 
    //Store templates for each language
-   public $templates_by_languages = array();
+   public $templates_by_languages = [];
 
    static $rightname = 'config';
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Notification template', 'Notification templates', $nb);
    }
 
@@ -74,9 +74,9 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -89,11 +89,11 @@ class NotificationTemplate extends CommonDBTM {
     * Reset already computed templates
    **/
    function resetComputedTemplates() {
-      $this->templates_by_languages = array();
+      $this->templates_by_languages = [];
    }
 
 
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canUpdate()) {
@@ -122,8 +122,8 @@ class NotificationTemplate extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td><td colspan='3'>";
       Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
-                              array('value' => ($this->fields['itemtype']
-                                                ?$this->fields['itemtype'] :'Ticket')));
+                              ['value' => ($this->fields['itemtype']
+                                                ?$this->fields['itemtype'] :'Ticket')]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
@@ -186,13 +186,13 @@ class NotificationTemplate extends CommonDBTM {
     * @param $itemtype  display templates for this itemtype only
     * @param $value     the dropdown's default value (0 by default)
    **/
-   static function dropdownTemplates($name, $itemtype, $value=0) {
+   static function dropdownTemplates($name, $itemtype, $value = 0) {
       global $DB;
 
-      self::dropdown(array('name'       => $name,
+      self::dropdown(['name'       => $name,
                             'value'     => $value,
                             'comment'   => 1,
-                            'condition' => "`itemtype`='$itemtype'"));
+                            'condition' => "`itemtype`='$itemtype'"]);
    }
 
 
@@ -219,16 +219,16 @@ class NotificationTemplate extends CommonDBTM {
     *
     * @return id of the template in templates_by_languages / false if computation failed
    **/
-   function getTemplateByLanguage(NotificationTarget $target, $user_infos=[],
-                                  $event='', $options=[]) {
+   function getTemplateByLanguage(NotificationTarget $target, $user_infos = [],
+                                  $event = '', $options = []) {
 
-      $lang     = array();
+      $lang     = [];
       $language = $user_infos['language'];
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];
       } else {
-         $additionnaloption =  array();
+         $additionnaloption =  [];
       }
 
       $tid  = $language;
@@ -350,7 +350,7 @@ class NotificationTemplate extends CommonDBTM {
       //Template processed
       $output = "";
 
-      $cleandata = array();
+      $cleandata = [];
       // clean data for strtr
       foreach ($data as $field => $value) {
          if (!is_array($value)) {
@@ -506,21 +506,23 @@ class NotificationTemplate extends CommonDBTM {
 
 
    /**
-    * @param $target              NotificationTarget object
-    * @param $tid          string template computed id
-    * @param $user_infos   array
-    * @param $options      array
+    * @param NotificationTarget $target     Target instance
+    * @param string             $tid        template computed id
+    * @param mixed              $to         Recipient
+    * @param array              $user_infos Extra user infos
+    * @param array              $options    Options
+    *
+    * @return array
    **/
-   function getDataToSend(NotificationTarget $target, $tid, array $user_infos, array $options) {
+   function getDataToSend(NotificationTarget $target, $tid, $to, array $user_infos, array $options) {
 
       $language   = $user_infos['language'];
-      $user_email = $user_infos['email'];
       $user_name  = $user_infos['username'];
 
       $sender     = $target->getSender($options);
       $replyto    = $target->getReplyTo($options);
 
-      $mailing_options['to']          = $user_email;
+      $mailing_options['to']          = $to;
       $mailing_options['toname']      = $user_name;
       $mailing_options['from']        = $sender['email'];
       $mailing_options['fromname']    = $sender['name'];

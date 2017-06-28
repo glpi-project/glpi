@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
 } else {//print computer information
    Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
    //show computer form to add
-   $computer->display(array('id'           => $_GET["id"],
-                            'withtemplate' => $_GET["withtemplate"]));
+   $computer->display(['id'           => $_GET["id"],
+                            'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }

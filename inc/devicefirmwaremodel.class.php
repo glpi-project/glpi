@@ -36,10 +36,10 @@ if (!defined('GLPI_ROOT')) {
 
 class DeviceFirmwareModel extends CommonDeviceModel {
 
-   var $additional_fields_for_dictionnary = array('manufacturer');
+   var $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Device firmware model', 'Device firmware models', $nb);
    }
 }

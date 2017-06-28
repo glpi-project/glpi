@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Migration {
 
-   private   $change     = array();
+   private   $change     = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -134,8 +134,8 @@ class Migration {
            "</script>\n";
 
       $this->flushLogDisplayMessage();
-      $this->lastMessage = array('time' => time(),
-                                 'msg'  => $msg);
+      $this->lastMessage = ['time' => time(),
+                                 'msg'  => $msg];
 
       Html::glpi_flush();
    }
@@ -187,7 +187,7 @@ class Migration {
     *
     * @return void
    **/
-   function displayWarning($msg, $red=false) {
+   function displayWarning($msg, $red = false) {
 
       echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
             Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
@@ -206,7 +206,7 @@ class Migration {
     *
     * @return string
    **/
-   private function fieldFormat($type, $default_value, $nodefault=false) {
+   private function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
       switch ($type) {
@@ -215,7 +215,7 @@ class Migration {
             if (!$nodefault) {
                if (is_null($default_value)) {
                   $format .= " DEFAULT '0'";
-               } else if (in_array($default_value, array('0', '1'))) {
+               } else if (in_array($default_value, ['0', '1'])) {
                   $format .= " DEFAULT '$default_value'";
                } else {
                   trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
@@ -338,7 +338,7 @@ class Migration {
 
       $params['update']    = '';
       $params['condition'] = '';
-      $params['value']     = NULL;
+      $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
       $params['after']     = '';
@@ -402,7 +402,7 @@ class Migration {
    **/
    function changeField($table, $oldfield, $newfield, $type, $options = []) {
 
-      $params['value']     = NULL;
+      $params['value']     = null;
       $params['nodefault'] = false;
       $params['comment']   = '';
 
@@ -479,7 +479,7 @@ class Migration {
     *
     * @return void
    **/
-   function addKey($table, $fields, $indexname='', $type='INDEX', $len=0) {
+   function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0) {
 
       // si pas de nom d'index, on prend celui du ou des champs
       if (!$indexname) {
@@ -589,8 +589,8 @@ class Migration {
       if (TableExists("$table")
           && is_array($input) && (count($input) > 0)) {
 
-         $fields = array();
-         $values = array();
+         $fields = [];
+         $values = [];
          foreach ($input as $field => $value) {
             if (FieldExists($table, $field)) {
                $fields[] = "`$field`";
@@ -738,7 +738,7 @@ class Migration {
     *
     * @return void
    **/
-   function updateDisplayPrefs($toadd=array(), $todel=array()) {
+   function updateDisplayPrefs($toadd = [], $todel = []) {
       global $DB;
 
       //TRANS: %s is the table or item to migrate
@@ -854,16 +854,20 @@ class Migration {
     * @return boolean
     */
    public function backupTables($tables) {
+
       $backup_tables = false;
       foreach ($tables as $table) {
          // rename new tables if exists ?
          if (TableExists($table)) {
             $this->dropTable("backup_$table");
-            $this->displayWarning("$table table already exists. ".
-                                       "A backup have been done to backup_$table.");
+            $this->displayWarning(sprintf(__('%1$s table already exists. A backup have been done to %2$s'),
+                                          $table, "backup_$table"));
             $backup_tables = true;
             $this->renameTable("$table", "backup_$table");
          }
+      }
+      if ($backup_tables) {
+         $this->displayWarning("You can delete backup tables if you have no need of them.", true);
       }
       return $backup_tables;
    }

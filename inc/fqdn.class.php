@@ -49,19 +49,19 @@ class FQDN extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Internet domain', 'Internet domains', $nb);
    }
 
 
    function getAdditionalFields() {
 
-      return array(array('name'    => 'fqdn',
+      return [['name'    => 'fqdn',
                          'label'   => __('FQDN'),
                          'type'    => 'text',
                          'comment'
                           => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
-                         'list'    => true));
+                         'list'    => true]];
    }
 
 
@@ -109,9 +109,9 @@ class FQDN extends CommonDropdown {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkAlias', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -141,7 +141,7 @@ class FQDN extends CommonDropdown {
     * @return if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
     *         if $wildcard_search == true : an array of the id of the fqdn
    **/
-   static function getFQDNIDByFQDN($fqdn, $wildcard_search=false) {
+   static function getFQDNIDByFQDN($fqdn, $wildcard_search = false) {
       global $DB;
 
       if (empty($fqdn)) {
@@ -164,7 +164,7 @@ class FQDN extends CommonDropdown {
                 FROM `glpi_fqdns`
                 WHERE `fqdn` $relation ";
 
-      $fqdns_id_list = array();
+      $fqdns_id_list = [];
       foreach ($DB->request($query) as $line) {
          $fqdns_id_list[] = $line['id'];
       }

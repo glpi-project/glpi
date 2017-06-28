@@ -69,16 +69,16 @@ class RSSFeed extends CommonDBVisible {
    public $dohistory                   = true;
 
    // For visibility checks
-   protected $users     = array();
-   protected $groups    = array();
-   protected $profiles  = array();
-   protected $entities  = array();
+   protected $users     = [];
+   protected $groups    = [];
+   protected $profiles  = [];
+   protected $entities  = [];
 
    static $rightname    = 'rssfeed_public';
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       if (Session::haveRight('rssfeed_public', READ)) {
          return _n('RSS feed', 'RSS feed', $nb);
@@ -201,7 +201,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall=false) {
+   static function addVisibilityJoins($forceall = false) {
 
       if (!self::canView()) {
          return '';
@@ -287,10 +287,10 @@ class RSSFeed extends CommonDBVisible {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'refresh_rate':
@@ -306,10 +306,10 @@ class RSSFeed extends CommonDBVisible {
     * @param $values             (default '')
     * @param $options      array
     **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -445,13 +445,13 @@ class RSSFeed extends CommonDBVisible {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
          $nb = 0;
          switch ($item->getType()) {
             case 'RSSFeed' :
-               $showtab = array(1 => __('Content'));
+               $showtab = [1 => __('Content')];
                if (session::haveRight('rssfeed_public', UPDATE)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
@@ -469,9 +469,9 @@ class RSSFeed extends CommonDBVisible {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -485,7 +485,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'RSSFeed' :
@@ -571,7 +571,7 @@ class RSSFeed extends CommonDBVisible {
     * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Test _rss cache directory. I permission trouble : unable to edit
@@ -603,8 +603,8 @@ class RSSFeed extends CommonDBVisible {
          echo "<td>".__('Name')."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "name",
-                                       array('entity' => -1,
-                                             'user'   => $this->fields["users_id"]));
+                                       ['entity' => -1,
+                                             'user'   => $this->fields["users_id"]]);
          echo "</td><td colspan ='2'>&nbsp;</td></tr>\n";
       }
 
@@ -635,26 +635,26 @@ class RSSFeed extends CommonDBVisible {
       echo "<td>".__('Refresh rate')."</td>";
       echo "<td>";
       Dropdown::showTimeStamp("refresh_rate",
-                              array('value'                => $this->fields["refresh_rate"],
+                              ['value'                => $this->fields["refresh_rate"],
                                     'min'                  => HOUR_TIMESTAMP,
                                     'max'                  => DAY_TIMESTAMP,
                                     'step'                 => HOUR_TIMESTAMP,
                                     'display_emptychoice'  => false,
-                                    'toadd'                => array(5*MINUTE_TIMESTAMP,
+                                    'toadd'                => [5*MINUTE_TIMESTAMP,
                                                                     15*MINUTE_TIMESTAMP,
                                                                     30*MINUTE_TIMESTAMP,
-                                                                    45*MINUTE_TIMESTAMP)));
+                                                                    45*MINUTE_TIMESTAMP]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Number of items displayed')."</td>";
       echo "<td>";
-      Dropdown::showNumber("max_items", array('value'                => $this->fields["max_items"],
+      Dropdown::showNumber("max_items", ['value'                => $this->fields["max_items"],
                                               'min'                  => 5,
                                               'max'                  => 100,
                                               'step'                 => 5,
-                                              'toadd'                => array(1),
-                                              'display_emptychoice'  => false));
+                                              'toadd'                => [1],
+                                              'display_emptychoice'  => false]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -683,7 +683,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @param $error   (false by default
     **/
-   function setError($error=false) {
+   function setError($error = false) {
 
       if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
          return;
@@ -691,13 +691,13 @@ class RSSFeed extends CommonDBVisible {
 
       // Set error if not set
       if ($error && !$this->fields['have_error']) {
-         $this->update(array('id'         => $this->fields['id'],
-                             'have_error' => 1));
+         $this->update(['id'         => $this->fields['id'],
+                             'have_error' => 1]);
       }
       // Unset error if set
       if (!$error && $this->fields['have_error']) {
-         $this->update(array('id'         => $this->fields['id'],
-                             'have_error' => 0));
+         $this->update(['id'         => $this->fields['id'],
+                             'have_error' => 0]);
       }
    }
 
@@ -736,8 +736,8 @@ class RSSFeed extends CommonDBVisible {
                                    1000);
             echo "</span>";
             Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                               array('applyto' => "rssitem$rand",
-                                     'display' => true));
+                               ['applyto' => "rssitem$rand",
+                                     'display' => true]);
             echo "</td></tr>";
          }
          echo "</table>";
@@ -773,8 +773,8 @@ class RSSFeed extends CommonDBVisible {
             if (!empty($link)) {
                echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
                Html::showSimpleForm($this->getFormURL(), 'update', _x('button', 'Use'),
-                                    array('id'  => $this->getID(),
-                                          'url' => $newurl));
+                                    ['id'  => $this->getID(),
+                                          'url' => $newurl]);
                echo "<br>";
             }
          }
@@ -791,7 +791,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return feed object
    **/
-   static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
+   static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP) {
       global $CFG_GLPI;
 
       $feed = new SimplePie();
@@ -800,7 +800,7 @@ class RSSFeed extends CommonDBVisible {
 
       // proxy support
       if (!empty($CFG_GLPI["proxy_name"])) {
-         $prx_opt = array();
+         $prx_opt = [];
          $prx_opt[CURLOPT_PROXY]     = $CFG_GLPI["proxy_name"];
          $prx_opt[CURLOPT_PROXYPORT] = $CFG_GLPI["proxy_port"];
          if (!empty($CFG_GLPI["proxy_user"])) {
@@ -837,7 +837,7 @@ class RSSFeed extends CommonDBVisible {
     *
     * @return Nothing (display function)
     **/
-   static function showListForCentral($personal=true) {
+   static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;
 
       $users_id             = Session::getLoginUserID();
@@ -888,7 +888,7 @@ class RSSFeed extends CommonDBVisible {
       }
 
       $result  = $DB->query($query);
-      $items   = array();
+      $items   = [];
       $rssfeed = new self();
       if ($nb = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
@@ -919,7 +919,7 @@ class RSSFeed extends CommonDBVisible {
       echo "</div></th></tr>\n";
 
       if ($nb) {
-         usort($items, array('SimplePie', 'sort_items'));
+         usort($items, ['SimplePie', 'sort_items']);
          foreach ($items as $item) {
             echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
@@ -947,8 +947,8 @@ class RSSFeed extends CommonDBVisible {
             }
             echo "</div>";
             Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($item->get_content()),
-                                                                        array('applyto' => "rssitem$rand",
-                                                                              'display' => true));
+                                                                        ['applyto' => "rssitem$rand",
+                                                                              'display' => true]);
             echo "</td></tr>";
          }
       }
@@ -961,10 +961,10 @@ class RSSFeed extends CommonDBVisible {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'helpdesk') {
-         $values = array(READ => __('Read'));
+         $values = [READ => __('Read')];
       } else {
          $values = parent::getRights();
       }

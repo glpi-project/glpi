@@ -56,12 +56,12 @@ if (isset($_POST["itemtype"])
    }
    echo "<br>";
    $field_id = Html::cleanId("dropdown_".$_POST['myname'].$rand);
-   $p = array('itemtype'            => $_POST["itemtype"],
+   $p = ['itemtype'            => $_POST["itemtype"],
               'entity_restrict'     => $_POST['entity_restrict'],
               'table'               => $table,
               'multiple'            => $_POST["multiple"],
               'myname'              => $_POST["myname"],
-              'rand'                => $_POST["rand"]);
+              'rand'                => $_POST["rand"]];
 
    if (isset($_POST["used"]) && !empty($_POST["used"])) {
       if (isset($_POST["used"][$_POST["itemtype"]])) {
@@ -74,8 +74,8 @@ if (isset($_POST["itemtype"])
                              $p);
 
    // Auto update summary of active or just solved tickets
-   $params = array('items_id' => '__VALUE__',
-                   'itemtype' => $_POST['itemtype']);
+   $params = ['items_id' => '__VALUE__',
+                   'itemtype' => $_POST['itemtype']];
    Ajax::updateItemOnSelectEvent($field_id, "item_ticket_selection_information",
                                  $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                  $params);

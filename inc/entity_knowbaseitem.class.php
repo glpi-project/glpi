@@ -62,7 +62,7 @@ class Entity_KnowbaseItem extends CommonDBRelation {
    static function getEntities($knowbaseitems_id) {
       global $DB;
 
-      $ent   = array();
+      $ent   = [];
       $query = "SELECT `glpi_entities_knowbaseitems`.*
                 FROM `glpi_entities_knowbaseitems`
                 WHERE `knowbaseitems_id` = '$knowbaseitems_id'";

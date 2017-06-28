@@ -45,7 +45,7 @@ class BusinessCriticity  extends CommonTreeDropdown {
 
    public $can_be_translated = true;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Business criticity', 'Business criticities', $nb);
    }
 }

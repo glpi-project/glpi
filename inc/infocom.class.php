@@ -106,7 +106,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       //TRANS: Always plural
       return __('Financial and administrative information');
    }
@@ -121,14 +121,14 @@ class Infocom extends CommonDBChild {
 
 
    function getLogTypeID() {
-      return array($this->fields['itemtype'], $this->fields['items_id']);
+      return [$this->fields['itemtype'], $this->fields['items_id']];
    }
 
 
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
       if (Session::haveRight(self::$rightname, READ)) {
@@ -158,7 +158,7 @@ class Infocom extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Supplier' :
@@ -182,14 +182,14 @@ class Infocom extends CommonDBChild {
                     getEntitiesRestrictRequest(" AND ", "glpi_infocoms", '',
                                                $_SESSION['glpiactiveentities']);
 
-      return countElementsInTable(array('glpi_infocoms'), $restrict);
+      return countElementsInTable(['glpi_infocoms'], $restrict);
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'sink_type' :
@@ -211,10 +211,10 @@ class Infocom extends CommonDBChild {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -274,7 +274,7 @@ class Infocom extends CommonDBChild {
     *
     * @return nothing
    **/
-   static function manageDateOnStatusChange(CommonDBTM $item, $action_add=true) {
+   static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
       global $CFG_GLPI;
 
       $itemtype = get_class($item);
@@ -283,13 +283,13 @@ class Infocom extends CommonDBChild {
       //Autofill date on item's status change ?
       $infocom = new self();
       $infocom->getFromDB($changes['id']);
-      $tmp           = array('itemtype' => $itemtype,
-                             'items_id' => $changes['id']);
+      $tmp           = ['itemtype' => $itemtype,
+                             'items_id' => $changes['id']];
       $add_or_update = false;
 
       //For each date that can be automatically filled
       foreach (self::getAutoManagemendDatesFields() as $date => $date_field) {
-         $resp   = array();
+         $resp   = [];
          $result = Entity::getUsedConfig($date, $changes['entities_id']);
 
          //Date must be filled if status corresponds to the one defined in the config
@@ -323,7 +323,7 @@ class Infocom extends CommonDBChild {
     *
     * @return nothing
    **/
-   static function autofillDates(&$infocoms=array(), $field='', $action=0, $params=array()) {
+   static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = []) {
 
       if (isset($infocoms[$field])) {
          switch ($action) {
@@ -366,12 +366,12 @@ class Infocom extends CommonDBChild {
    **/
    static function getAutoManagemendDatesFields() {
 
-      return array('autofill_buy_date'         => 'buy_date',
+      return ['autofill_buy_date'         => 'buy_date',
                    'autofill_use_date'         => 'use_date',
                    'autofill_delivery_date'    => 'delivery_date',
                    'autofill_warranty_date'    => 'warranty_date',
                    'autofill_order_date'       => 'order_date',
-                   'autofill_decommission_date' => 'decommission_date');
+                   'autofill_decommission_date' => 'decommission_date'];
    }
 
 
@@ -442,7 +442,7 @@ class Infocom extends CommonDBChild {
     * @param $name
    **/
    static function cronInfo($name) {
-      return array('description' => __('Send alarms on financial and administrative information'));
+      return ['description' => __('Send alarms on financial and administrative information')];
    }
 
 
@@ -453,17 +453,17 @@ class Infocom extends CommonDBChild {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronInfocom($task=NULL) {
+   static function cronInfocom($task = null) {
       global $DB, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_mailing"]) {
+      if (!$CFG_GLPI["use_notifications"]) {
          return 0;
       }
 
-      $message        = array();
+      $message        = [];
       $cron_status    = 0;
-      $items_infos    = array();
-      $items_messages = array();
+      $items_infos    = [];
+      $items_messages = [];
 
       foreach (Entity::getEntitiesToNotify('use_infocoms_alert') as $entity => $value) {
          $before    = Entity::getUsedConfig('send_infocoms_alert_before_delay', $entity);
@@ -508,8 +508,8 @@ class Infocom extends CommonDBChild {
       }
 
       foreach ($items_infos as $entity => $items) {
-         if (NotificationEvent::raiseEvent("alert", new self(), array('entities_id' => $entity,
-                                                                      'items'       => $items))) {
+         if (NotificationEvent::raiseEvent("alert", new self(), ['entities_id' => $entity,
+                                                                      'items'       => $items])) {
             $message     = $items_messages[$entity];
             $cron_status = 1;
             if ($task) {
@@ -556,7 +556,7 @@ class Infocom extends CommonDBChild {
     *
     * @return array or string
    **/
-   static function getAlertName($val=NULL) {
+   static function getAlertName($val = null) {
 
       $tmp[0]                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
@@ -594,7 +594,7 @@ class Infocom extends CommonDBChild {
          }
       }
 
-      $tab = array();
+      $tab = [];
       if ($p['inherit_parent']) {
          $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
@@ -612,15 +612,15 @@ class Infocom extends CommonDBChild {
     * @param $value     default value (default 0)
     * @param $display   display or get string (true by default)
    **/
-   static function dropdownAmortType($name, $value=0, $display=true) {
+   static function dropdownAmortType($name, $value = 0, $display = true) {
 
-      $values = array(2 => __('Linear'),
-                      1 => __('Decreasing'));
+      $values = [2 => __('Linear'),
+                      1 => __('Decreasing')];
 
       return Dropdown::showFromArray($name, $values,
-                                     array('value'               => $value,
+                                     ['value'               => $value,
                                            'display'             => $display,
-                                           'display_emptychoice' => true));
+                                           'display_emptychoice' => true]);
    }
 
 
@@ -653,7 +653,7 @@ class Infocom extends CommonDBChild {
     *
     * @return float
    **/
-   static function showTco($ticket_tco, $value, $date_achat="") {
+   static function showTco($ticket_tco, $value, $date_achat = "") {
       if ($ticket_tco == NOT_AVAILABLE) {
          return '-';
       }
@@ -720,7 +720,7 @@ class Infocom extends CommonDBChild {
          Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,
                                        $CFG_GLPI["root_doc"]."/front/infocom.form.php".
                                           "?itemtype=$itemtype&items_id=$device_id",
-                                       array('height' => 600));
+                                       ['height' => 600]);
       }
    }
 
@@ -740,7 +740,7 @@ class Infocom extends CommonDBChild {
     * @return float or array
    **/
    static function Amort($type_amort, $va, $duree, $coef, $date_achat, $date_use, $date_tax,
-                         $view="n") {
+                         $view = "n") {
       // By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
 
       // Attention date mise en service/dateachat ->amort lineaire  et $prorata en jour !!
@@ -921,7 +921,7 @@ class Infocom extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $CFG_GLPI;
 
       // Show Infocom or blank form
@@ -941,15 +941,15 @@ class Infocom extends CommonDBChild {
          }
 
          if (!strpos($_SERVER['PHP_SELF'], "infocoms-show")
-             && in_array($item->getType(), array('CartridgeItem', 'ConsumableItem', 'Software'))) {
+             && in_array($item->getType(), ['CartridgeItem', 'ConsumableItem', 'Software'])) {
             echo "<div class='firstbloc center'>".
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.').
                  "</div>";
          }
          if (!$ic->getFromDBforDevice($item->getType(), $dev_ID)) {
-            $input = array('itemtype'    => $item->getType(),
+            $input = ['itemtype'    => $item->getType(),
                            'items_id'    => $dev_ID,
-                           'entities_id' => $item->getEntityID());
+                           'entities_id' => $item->getEntityID()];
 
             if ($ic->can(-1, CREATE, $input)
                 && ($withtemplate != 2)) {
@@ -960,8 +960,8 @@ class Infocom extends CommonDBChild {
 
                Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
                                     'add', __('Enable the financial and administrative information'),
-                                     array('itemtype' => $item->getType(),
-                                           'items_id' => $dev_ID));
+                                     ['itemtype' => $item->getType(),
+                                           'items_id' => $dev_ID]);
                echo "</td></tr></table></div>";
             }
 
@@ -981,40 +981,40 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".__('Asset lifecycle')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Order date')."</td><td>";
-            Html::showDateField("order_date", array('value'      => $ic->fields["order_date"],
+            Html::showDateField("order_date", ['value'      => $ic->fields["order_date"],
                                                     'maybeempty' => true,
-                                                    'canedit'    => $editcalendar));
+                                                    'canedit'    => $editcalendar]);
             echo "</td>";
             echo "<td>".__('Date of purchase')."</td><td>";
-            Html::showDateField("buy_date", array('value'      => $ic->fields["buy_date"],
+            Html::showDateField("buy_date", ['value'      => $ic->fields["buy_date"],
                                                   'maybeempty' => true,
-                                                  'canedit'    => $editcalendar));
+                                                  'canedit'    => $editcalendar]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Delivery date')."</td><td>";
-            Html::showDateField("delivery_date", array('value'      => $ic->fields["delivery_date"],
+            Html::showDateField("delivery_date", ['value'      => $ic->fields["delivery_date"],
                                                        'maybeempty' => true,
-                                                       'canedit'    => $editcalendar));
+                                                       'canedit'    => $editcalendar]);
             echo "</td>";
             echo "<td>".__('Startup date')."</td><td>";
-            Html::showDateField("use_date", array('value'      => $ic->fields["use_date"],
+            Html::showDateField("use_date", ['value'      => $ic->fields["use_date"],
                                                   'maybeempty' => true,
-                                                  'canedit'    => $editcalendar));
+                                                  'canedit'    => $editcalendar]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Date of last physical inventory')."</td><td>";
             Html::showDateField("inventory_date",
-                                array('value'      => $ic->fields["inventory_date"],
+                                ['value'      => $ic->fields["inventory_date"],
                                       'maybeempty' => true,
-                                      'canedit'    => $editcalendar));
+                                      'canedit'    => $editcalendar]);
             echo "</td>";
             echo "<td>".__('Decommission date')."</td><td>";
             Html::showDateField("decommission_date",
-                                array('value'      => $ic->fields["decommission_date"],
+                                ['value'      => $ic->fields["decommission_date"],
                                       'maybeempty' => true,
-                                      'canedit'    => $editcalendar));
+                                      'canedit'    => $editcalendar]);
             echo "</td></tr>";
 
             echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
@@ -1025,16 +1025,16 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
             } else {
-               Supplier::dropdown(array('value'  => $ic->fields["suppliers_id"],
+               Supplier::dropdown(['value'  => $ic->fields["suppliers_id"],
                                         'entity' => $item->getEntityID(),
-                                        'width'  => '70%'));
+                                        'width'  => '70%']);
             }
             echo "</td>";
             if (Budget::canView()) {
                echo "<td>".__('Budget')."</td><td >";
-               Budget::dropdown(array('value'    => $ic->fields["budgets_id"],
+               Budget::dropdown(['value'    => $ic->fields["budgets_id"],
                                       'entity'   => $item->getEntityID(),
-                                      'comments' => 1));
+                                      'comments' => 1]);
             } else {
                echo "<td colspan='2'>";
             }
@@ -1043,29 +1043,29 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Order number')."</td>";
             echo "<td >";
-            Html::autocompletionTextField($ic, "order_number", array('option' => $option));
+            Html::autocompletionTextField($ic, "order_number", ['option' => $option]);
             echo "</td>";
             $tplmark = '';
             if ($item->isTemplate()
                 || in_array($item->getType(),
-                            array('CartridgeItem', 'ConsumableItem', 'Software'))) {
+                            ['CartridgeItem', 'ConsumableItem', 'Software'])) {
                $tplmark = $item->getAutofillMark('immo_number', ['withtemplate' => $withtemplate], $ic->getField('immo_number'));
             }
             echo "<td>".sprintf(__('%1$s%2$s'), __('Immobilization number'), $tplmark)."</td>";
             echo "<td>";
             $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate == 2),
                                    'Infocom', $item->getEntityID());
-            Html::autocompletionTextField($ic, "immo_number", array('value'  => $objectName,
-                                                                    'option' => $option));
+            Html::autocompletionTextField($ic, "immo_number", ['value'  => $objectName,
+                                                                    'option' => $option]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Invoice number')."</td>";
             echo "<td>";
-            Html::autocompletionTextField($ic, "bill", array('option' => $option));
+            Html::autocompletionTextField($ic, "bill", ['option' => $option]);
             echo "</td>";
             echo "<td>".__('Delivery form')."</td><td>";
-            Html::autocompletionTextField($ic, "delivery_number", array('option' => $option));
+            Html::autocompletionTextField($ic, "delivery_number", ['option' => $option]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1103,32 +1103,32 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                printf(_n('%d year', '%d years', $ic->fields["sink_time"]), $ic->fields["sink_time"]);
             } else {
-               Dropdown::showNumber("sink_time", array('value' => $ic->fields["sink_time"],
+               Dropdown::showNumber("sink_time", ['value' => $ic->fields["sink_time"],
                                                        'max'   => 15,
-                                                       'unit'  => 'year'));
+                                                       'unit'  => 'year']);
             }
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Amortization coefficient')."</td>";
             echo "<td>";
-            Html::autocompletionTextField($ic, "sink_coeff", array('size'   => 14,
-                                                                   'option' => $option));
+            Html::autocompletionTextField($ic, "sink_coeff", ['size'   => 14,
+                                                                   'option' => $option]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
+            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
                                                   'ConsumableItem', 'Software',
-                                                  'SoftwareLicense'))) {
+                                                  'SoftwareLicense'])) {
                echo "<td>".__('TCO (value + tracking cost)')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
             } else {
                 echo "<td colspan='2'>";
             }
             echo "</td>";
-            if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
+            if (!in_array($item->getType(), ['Cartridge', 'CartridgeItem', 'Consumable',
                                                   'ConsumableItem', 'Software',
-                                                  'SoftwareLicense'))) {
+                                                  'SoftwareLicense'])) {
                echo "<td>".__('Monthly TCO')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
                                   $ic->fields["buy_date"]);
@@ -1139,7 +1139,7 @@ class Infocom extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Business criticity')."</td><td>";
-            Dropdown::show('BusinessCriticity', array('value' => $ic->fields['businesscriticities_id']));
+            Dropdown::show('BusinessCriticity', ['value' => $ic->fields['businesscriticities_id']]);
             echo "</td>";
             echo "<td colspan='2'>";
             echo "</td></tr>";
@@ -1147,9 +1147,9 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".__('Warranty information')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Start date of warranty')."</td><td>";
-            Html::showDateField("warranty_date", array('value'      => $ic->fields["warranty_date"],
+            Html::showDateField("warranty_date", ['value'      => $ic->fields["warranty_date"],
                                                        'maybeempty' => true,
-                                                       'canedit'    => $editcalendar));
+                                                       'canedit'    => $editcalendar]);
             echo "</td>";
 
             echo "<td>".__('Warranty duration')."</td><td>";
@@ -1164,12 +1164,12 @@ class Infocom extends CommonDBChild {
 
             } else {
                Dropdown::showNumber("warranty_duration",
-                                    array('value' => $ic->fields["warranty_duration"],
+                                    ['value' => $ic->fields["warranty_duration"],
                                           'min'   => 0,
                                           'max'   => 120,
                                           'step'  => 1,
-                                          'toadd' => array(-1 => __('Lifelong')),
-                                          'unit'  => 'month'));
+                                          'toadd' => [-1 => __('Lifelong')],
+                                          'unit'  => 'month']);
             }
             $tmpdat = self::getWarrantyExpir($ic->fields["warranty_date"],
                                              $ic->fields["warranty_duration"], 0, true);
@@ -1181,14 +1181,14 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Warranty information')."</td>";
             echo "<td >";
-            Html::autocompletionTextField($ic, "warranty_info", array('option' => $option));
+            Html::autocompletionTextField($ic, "warranty_info", ['option' => $option]);
             echo "</td>";
 
-            if ($CFG_GLPI['use_mailing']) {
+            if ($CFG_GLPI['use_notifications']) {
                echo "<td>".__('Alarms on financial and administrative information')."</td>";
                echo "<td>";
-               self::dropdownAlert(array('name'    => "alert",
-                                         'value'   => $ic->fields["alert"]));
+               self::dropdownAlert(['name'    => "alert",
+                                         'value'   => $ic->fields["alert"]]);
                Alert::displayLastAlert('Infocom', $ic->fields['id']);
             } else {
                echo "</td><td colspan='2'>";
@@ -1236,35 +1236,35 @@ class Infocom extends CommonDBChild {
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin        = array('table'      => 'glpi_softwarelicenses',
-                                       'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = ['table'      => 'glpi_softwarelicenses',
+                                       'joinparams' => ['jointype' => 'child']];
             $specific_itemtype = 'SoftwareLicense';
             break;
 
          case 'CartridgeItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin        = array('table'      => 'glpi_cartridges',
-                                       'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = ['table'      => 'glpi_cartridges',
+                                       'joinparams' => ['jointype' => 'child']];
             $specific_itemtype = 'Cartridge';
             break;
 
          case 'ConsumableItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin        = array('table'      => 'glpi_consumables',
-                                       'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = ['table'      => 'glpi_consumables',
+                                       'joinparams' => ['jointype' => 'child']];
             $specific_itemtype = 'Consumable';
             break;
       }
 
-      $joinparams        = array('jointype'          => 'itemtype_item',
-                                 'specific_itemtype' => $specific_itemtype);
-      $complexjoinparams = array();
+      $joinparams        = ['jointype'          => 'itemtype_item',
+                                 'specific_itemtype' => $specific_itemtype];
+      $complexjoinparams = [];
       if (count($beforejoin)) {
          $complexjoinparams['beforejoin'][] = $beforejoin;
          $joinparams['beforejoin']          = $beforejoin;
       }
-      $complexjoinparams['beforejoin'][] = array('table'      => 'glpi_infocoms',
-                                                 'joinparams' => $joinparams);
+      $complexjoinparams['beforejoin'][] = ['table'      => 'glpi_infocoms',
+                                                 'joinparams' => $joinparams];
 
       $tab = [];
 
@@ -1785,13 +1785,13 @@ class Infocom extends CommonDBChild {
    **/
    function showDebug() {
 
-      $item = array('item_name'          => '',
+      $item = ['item_name'          => '',
                     'warrantyexpiration' => '',
                     'itemtype'           => $this->fields['itemtype'],
-                    'items_id'           => $this->fields['items_id']);
+                    'items_id'           => $this->fields['items_id']];
 
       $options['entities_id'] = $this->getEntityID();
-      $options['items']       = array($item);
+      $options['items']       = [$item];
       NotificationEvent::debugEvent($this, $options);
    }
 
@@ -1804,7 +1804,7 @@ class Infocom extends CommonDBChild {
     * @param $newid        ID of the item cloned
     * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
       $ic = new self();
@@ -1820,8 +1820,8 @@ class Infocom extends CommonDBChild {
             $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
                                              $input['entities_id']);
          }
-         $date_fields = array('buy_date', 'delivery_date', 'inventory_date', 'order_date',
-                              'use_date', 'warranty_date');
+         $date_fields = ['buy_date', 'delivery_date', 'inventory_date', 'order_date',
+                              'use_date', 'warranty_date'];
          foreach ($date_fields as $f) {
             if (empty($input[$f])) {
                unset($input[$f]);
@@ -1843,7 +1843,7 @@ class Infocom extends CommonDBChild {
     *
     * @return expiration date string
    **/
-   static function getWarrantyExpir($from, $addwarranty, $deletenotice=0, $color=false) {
+   static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false) {
 
       // Life warranty
       if (($addwarranty == -1)
@@ -1851,7 +1851,7 @@ class Infocom extends CommonDBChild {
          return __('Never');
       }
 
-      if (($from == NULL) || empty($from)) {
+      if (($from == null) || empty($from)) {
          return "";
       }
 
@@ -1868,8 +1868,8 @@ class Infocom extends CommonDBChild {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem = NULL) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
 
@@ -1895,8 +1895,8 @@ class Infocom extends CommonDBChild {
                $itemtype = $item->getType();
                foreach ($ids as  $key) {
                   if (!$ic->getFromDBforDevice($itemtype, $key)) {
-                     $input = array('itemtype' => $itemtype,
-                                    'items_id' => $key);
+                     $input = ['itemtype' => $itemtype,
+                                    'items_id' => $key];
                      if ($ic->can(-1, CREATE, $input)) {
                         if ($ic->add($input)) {
                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);

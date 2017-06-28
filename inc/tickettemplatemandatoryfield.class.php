@@ -48,7 +48,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    public $dohistory = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
@@ -81,7 +81,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
@@ -97,7 +97,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
@@ -123,7 +123,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
                $a = new self();
-               $a->delete(array('id' => $DB->result($result, 0, 0)));
+               $a->delete(['id' => $DB->result($result, 0, 0)]);
             }
          }
       }
@@ -140,7 +140,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @return an array of mandatory fields
    **/
-   function getMandatoryFields($ID, $withtypeandcategory=true) {
+   function getMandatoryFields($ID, $withtypeandcategory = true) {
       global $DB;
 
       $sql = "SELECT *
@@ -151,7 +151,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
-      $fields         = array();
+      $fields         = [];
 
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
@@ -186,7 +186,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
       global $DB;
 
       $ID = $tt->fields['id'];
@@ -210,8 +210,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')";
 
       if ($result = $DB->query($query)) {
-         $mandatoryfields = array();
-         $used            = array();
+         $mandatoryfields = [];
+         $used            = [];
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $mandatoryfields[$data['id']] = $data;
@@ -237,7 +237,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                }
             }
 
-            Dropdown::showFromArray('num', $select_fields, array('used' => $used));
+            Dropdown::showFromArray('num', $select_fields, ['used' => $used]);
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').
                          "\" class='submit'>";
@@ -251,8 +251,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                         'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                         'container'     => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";

@@ -239,11 +239,11 @@ function update0681to07() {
    }
 
    // Add entity tags to tables
-   $tables = array("glpi_cartridges_type", "glpi_computers", "glpi_consumables_type",
+   $tables = ["glpi_cartridges_type", "glpi_computers", "glpi_consumables_type",
                    "glpi_contacts", "glpi_contracts", "glpi_docs", "glpi_dropdown_locations",
                    "glpi_dropdown_netpoint", "glpi_enterprises", "glpi_groups", "glpi_monitors",
                    "glpi_networking", "glpi_peripherals", "glpi_phones", "glpi_printers",
-                   "glpi_reminder", "glpi_software", "glpi_tracking");
+                   "glpi_reminder", "glpi_software", "glpi_tracking"];
     // "glpi_kbitems","glpi_dropdown_kbcategories", -> easier to manage
     // "glpi_followups" -> always link to tracking ?
     // "glpi_licenses" -> always link to software ?
@@ -265,7 +265,7 @@ function update0681to07() {
    }
 
    // Regenerate Indexes :
-   $tables = array( "glpi_dropdown_locations" );
+   $tables = [ "glpi_dropdown_locations" ];
    foreach ($tables as $tbl) {
       if (isIndex($tbl, "name")) {
          $query = "ALTER TABLE `$tbl`
@@ -413,13 +413,13 @@ function update0681to07() {
 
    // Clean state_item -> add a field from tables
    if (TableExists("glpi_state_item")) {
-      $state_type = array(SOFTWARE_TYPE   => 'glpi_software',
+      $state_type = [SOFTWARE_TYPE   => 'glpi_software',
                           COMPUTER_TYPE   => 'glpi_computers',
                           PRINTER_TYPE    => 'glpi_printers',
                           MONITOR_TYPE    => 'glpi_monitors',
                           PERIPHERAL_TYPE => 'glpi_peripherals',
                           NETWORKING_TYPE => 'glpi_networking',
-                          PHONE_TYPE      => 'glpi_phones');
+                          PHONE_TYPE      => 'glpi_phones'];
 
       foreach ($state_type as $type => $table) {
          if (!FieldExists($table, "state", false)) {
@@ -464,13 +464,13 @@ function update0681to07() {
    }
 
    // Add ticket_tco for hardwares
-   $tco_tbl = array(SOFTWARE_TYPE   => 'glpi_software',
+   $tco_tbl = [SOFTWARE_TYPE   => 'glpi_software',
                     COMPUTER_TYPE   => 'glpi_computers',
                     PRINTER_TYPE    => 'glpi_printers',
                     MONITOR_TYPE    => 'glpi_monitors',
                     PERIPHERAL_TYPE => 'glpi_peripherals',
                     NETWORKING_TYPE => 'glpi_networking',
-                    PHONE_TYPE      => 'glpi_phones');
+                    PHONE_TYPE      => 'glpi_phones'];
 
    foreach ($tco_tbl as $type => $table) {
       if (!FieldExists($table, "ticket_tco", false)) {
@@ -720,13 +720,13 @@ function update0681to07() {
 
    //// Enum clean
    // Enum 0-1
-   $enum01          = array();
-   $template_tables = array("glpi_computers", "glpi_networking", "glpi_printers", "glpi_monitors",
-                            "glpi_peripherals", "glpi_software", "glpi_phones", "glpi_ocs_config");
+   $enum01          = [];
+   $template_tables = ["glpi_computers", "glpi_networking", "glpi_printers", "glpi_monitors",
+                            "glpi_peripherals", "glpi_software", "glpi_phones", "glpi_ocs_config"];
 
    foreach ($template_tables as $table) {
       if (!isset($enum01[$table])) {
-         $enum01[$table] = array();
+         $enum01[$table] = [];
       }
       $enum01[$table][] = "is_template";
    }
@@ -786,14 +786,14 @@ function update0681to07() {
    $enumYN["N"]["glpi_software"][]       = "is_update"; // N
    $enumYN["Y"]["glpi_type_docs"][]      = "upload"; // Y
 
-   $deleted_tables = array("glpi_computers", "glpi_networking", "glpi_printers", "glpi_monitors",
+   $deleted_tables = ["glpi_computers", "glpi_networking", "glpi_printers", "glpi_monitors",
                            "glpi_peripherals", "glpi_software", "glpi_cartridges_type",
                            "glpi_contracts", "glpi_contacts", "glpi_enterprises", "glpi_docs",
-                           "glpi_phones", "glpi_consumables_type" );
+                           "glpi_phones", "glpi_consumables_type" ];
 
    foreach ($deleted_tables as $table) {
       if (!isset($enum01[$table])) {
-         $enum01[$table] = array();
+         $enum01[$table] = [];
       }
       $enumYN["N"][$table][] = "deleted";
    }
@@ -1288,7 +1288,7 @@ function update0681to07() {
                          AND `buy` ='".$data['buy']."'";
          $result2 = $DB->query($query);
          if ($DB->numrows($result2)) {
-            $licIDs = array();
+            $licIDs = [];
             while ($data2=$DB->fetch_array($result2)) {
                $licIDs[] = $data2['ID'];
             }
@@ -1490,33 +1490,33 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 add glpi_link fields in glpi_ocs_config");
    }
 
-   $intnull = array("glpi_alerts"                     => array("device_type", "FK_device", "type"),
-                    "glpi_cartridges_type"            => array("tech_num"),
-                    "glpi_computers"                  => array("FK_users", "FK_groups"),
-                    "glpi_consumables_type"           => array("tech_num"),
-                    "glpi_contacts"                   => array("type"),
-                    "glpi_device_case"                => array("type"),
-                    "glpi_device_control"             => array("interface"),
-                    "glpi_device_drive"               => array("interface"),
-                    "glpi_dropdown_kbcategories"      => array("level"),
-                    "glpi_dropdown_locations"         => array("level"),
-                    "glpi_dropdown_tracking_category" => array("level"),
-                    "glpi_entities"                   => array("level"),
-                    "glpi_infocoms"                   => array("FK_enterprise", "budget"),
-                    "glpi_monitors"                   => array("type", "model", "FK_users",
-                                                               "FK_groups"),
-                    "glpi_networking"                 => array("type", "model", "firmware",
-                                                               "FK_users", "FK_groups"),
-                    "glpi_networking_ports"           => array("iface", "netpoint"),
-                    "glpi_ocs_link"                   => array("ocs_server_id"),
-                    "glpi_peripherals"                => array("model", "FK_users", "FK_groups"),
-                    "glpi_phones"                     => array("model", "FK_users", "FK_groups"),
-                    "glpi_printers"                   => array("type", "model", "FK_users",
-                                                               "FK_groups"),
-                    "glpi_software"                   => array("location", "platform", "FK_users",
-                                                               "FK_groups"),
-                    "glpi_tracking"                   => array("computer"),
-                    "glpi_users_groups"               => array("FK_users", "FK_groups"));
+   $intnull = ["glpi_alerts"                     => ["device_type", "FK_device", "type"],
+                    "glpi_cartridges_type"            => ["tech_num"],
+                    "glpi_computers"                  => ["FK_users", "FK_groups"],
+                    "glpi_consumables_type"           => ["tech_num"],
+                    "glpi_contacts"                   => ["type"],
+                    "glpi_device_case"                => ["type"],
+                    "glpi_device_control"             => ["interface"],
+                    "glpi_device_drive"               => ["interface"],
+                    "glpi_dropdown_kbcategories"      => ["level"],
+                    "glpi_dropdown_locations"         => ["level"],
+                    "glpi_dropdown_tracking_category" => ["level"],
+                    "glpi_entities"                   => ["level"],
+                    "glpi_infocoms"                   => ["FK_enterprise", "budget"],
+                    "glpi_monitors"                   => ["type", "model", "FK_users",
+                                                               "FK_groups"],
+                    "glpi_networking"                 => ["type", "model", "firmware",
+                                                               "FK_users", "FK_groups"],
+                    "glpi_networking_ports"           => ["iface", "netpoint"],
+                    "glpi_ocs_link"                   => ["ocs_server_id"],
+                    "glpi_peripherals"                => ["model", "FK_users", "FK_groups"],
+                    "glpi_phones"                     => ["model", "FK_users", "FK_groups"],
+                    "glpi_printers"                   => ["type", "model", "FK_users",
+                                                               "FK_groups"],
+                    "glpi_software"                   => ["location", "platform", "FK_users",
+                                                               "FK_groups"],
+                    "glpi_tracking"                   => ["computer"],
+                    "glpi_users_groups"               => ["FK_users", "FK_groups"]];
 
    foreach ($intnull as $table => $fields) {
       foreach ($fields as $field) {
@@ -1719,7 +1719,7 @@ function update0681to07() {
       $DB->queryOrDie($query, "0.7 add expand_soft_not_categorized in glpi_config");
    }
 
-   $LINK_ID_TABLE = array(1  => "glpi_computers",
+   $LINK_ID_TABLE = [1  => "glpi_computers",
                           2  => "glpi_networking",
                           3  => "glpi_printers",
                           4  => "glpi_monitors",
@@ -1754,7 +1754,7 @@ function update0681to07() {
                           39 => "glpi_softwareversions",
                           41 => "glpi_computerdisks",
                           42 => "glpi_networking_ports",
-                          43 => "glpi_followups");
+                          43 => "glpi_followups"];
 
    // Clean history
    $query = "SELECT DISTINCT `device_type`
@@ -1855,7 +1855,7 @@ function update0681to07() {
 
 //######### Function coming from old tracking.function.php which is now deleted since GLPI 0.72
 //######### Theses functionS were used during the migration process
-function computeTicketTco($item_type,$item) {
+function computeTicketTco($item_type, $item) {
    global $DB;
 
    $totalcost = 0;

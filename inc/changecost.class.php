@@ -56,7 +56,7 @@ class ChangeCost extends CommonITILCost {
 
 
    static function canView() {
-      return Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
+      return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
    }
 
 

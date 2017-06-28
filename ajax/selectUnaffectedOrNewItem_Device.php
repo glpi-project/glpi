@@ -65,7 +65,7 @@ if ($_POST['items_id']
    if ($result->numrows() == 0) {
       echo __('No unaffected device !');
    } else {
-      $devices = array();
+      $devices = [];
       foreach ($result as $row) {
          $name = $row['name'];
          if (empty($name)) {
@@ -74,10 +74,10 @@ if ($_POST['items_id']
          $devices[$row['id']] = $name;
 
       }
-      dropdown::showFromArray($linktype::getForeignKeyField(), $devices, array('multiple' => true));
+      dropdown::showFromArray($linktype::getForeignKeyField(), $devices, ['multiple' => true]);
    }
    echo "</td><td>";
-   Dropdown::showNumber('new_devices', array('min'   => 0, 'max'   => 10));
+   Dropdown::showNumber('new_devices', ['min'   => 0, 'max'   => 10]);
    echo "</td></tr></table>";
 
 }

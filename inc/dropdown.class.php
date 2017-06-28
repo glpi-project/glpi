@@ -79,7 +79,7 @@ class Dropdown {
     *
     * @return boolean : false if error and random id if OK
    **/
-   static function show($itemtype, $options=array()) {
+   static function show($itemtype, $options = []) {
       global $DB, $CFG_GLPI;
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
@@ -95,12 +95,12 @@ class Dropdown {
       $params['entity_sons']          = false;
       $params['toupdate']             = '';
       $params['width']                = '';
-      $params['used']                 = array();
-      $params['toadd']                = array();
+      $params['used']                 = [];
+      $params['toadd']                = [];
       $params['on_change']            = '';
       $params['condition']            = '';
       $params['rand']                 = mt_rand();
-      $params['displaywith']          = array();
+      $params['displaywith']          = [];
       //Parameters about choice 0
       //Empty choice's label
       $params['emptylabel']           = self::EMPTY_VALUE;
@@ -109,7 +109,7 @@ class Dropdown {
       $params['display']              = true;
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
-      $params['specific_tags']        = array();
+      $params['specific_tags']        = [];
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
@@ -160,7 +160,7 @@ class Dropdown {
       if (!$item instanceof CommonTreeDropdown) {
          $name = Toolbox::unclean_cross_side_scripting_deep($name);
       }
-      $p = array('value'                => $params['value'],
+      $p = ['value'                => $params['value'],
                  'valuename'            => $name,
                  'width'                => $params['width'],
                  'itemtype'             => $itemtype,
@@ -174,7 +174,7 @@ class Dropdown {
                  'on_change'            => $params['on_change'],
                  'permit_select_parent' => $params['permit_select_parent'],
                  'specific_tags'        => $params['specific_tags'],
-                );
+                ];
 
       $output = "<span class='no-wrap'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
@@ -185,9 +185,9 @@ class Dropdown {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
          $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
-         $options_tooltip = array('contentid' => $comment_id,
+         $options_tooltip = ['contentid' => $comment_id,
                                   'linkid'    => $link_id,
-                                  'display'   => false);
+                                  'display'   => false];
 
          if ($item->canView()) {
             if ($params['value']
@@ -219,7 +219,7 @@ class Dropdown {
                            ><span class='sr-only'>" . __s('Add') . "</span></span>";
                $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
                                                         $item->getFormURL(),
-                                                        array('display' => false));
+                                                        ['display' => false]);
          }
          // Display specific Links
          if ($itemtype == "Supplier") {
@@ -228,8 +228,8 @@ class Dropdown {
             }
          }
 
-         $paramscomment = array('value' => '__VALUE__',
-                                'table' => $table);
+         $paramscomment = ['value' => '__VALUE__',
+                                'table' => $table];
          if ($item->isField('knowbaseitemcategories_id')
              && Session::haveRight('knowbase', READ)) {
 
@@ -281,7 +281,7 @@ class Dropdown {
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
-   static function getDropdownName($table, $id, $withcomment=0, $translate=true, $tooltip=true) {
+   static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true) {
       global $DB, $CFG_GLPI;
 
       $item = getItemForItemtype(getItemTypeForTable($table));
@@ -447,8 +447,8 @@ class Dropdown {
          $name    = preg_replace($search, $replace, $name);
       }*/
       if ($withcomment) {
-         return array('name'     => $name,
-                      'comment'  => $comment);
+         return ['name'     => $name,
+                      'comment'  => $comment];
       }
 
       return $name;
@@ -466,7 +466,7 @@ class Dropdown {
    static function getDropdownArrayNames($table, $ids) {
       global $DB, $CFG_GLPI;
 
-      $tabs = array();
+      $tabs = [];
 
       if (count($ids)) {
          $itemtype = getItemTypeForTable($table);
@@ -507,11 +507,11 @@ class Dropdown {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function showItemTypes($name, $types=array(), $options=array()) {
+   static function showItemTypes($name, $types = [], $options = []) {
       global $CFG_GLPI;
 
       $params['value']               = '';
-      $params['used']                = array();
+      $params['used']                = [];
       $params['emptylabel']          = self::EMPTY_VALUE;
       $params['display']             = true;
       $params['width']               = '80%';
@@ -524,7 +524,7 @@ class Dropdown {
          }
       }
 
-      $values = array();
+      $values = [];
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
@@ -548,7 +548,7 @@ class Dropdown {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownUsedItemTypes($name, $itemtype_ref, $options=array()) {
+   static function dropdownUsedItemTypes($name, $itemtype_ref, $options = []) {
       global $DB;
 
       $p['value'] = 0;
@@ -563,13 +563,13 @@ class Dropdown {
       $query = "SELECT DISTINCT `".$p['field']."`
                 FROM `".getTableForItemType($itemtype_ref)."`";
 
-      $tabs = array();
+      $tabs = [];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tabs[$data[$p['field']]] = $data[$p['field']];
          }
       }
-      return self::showItemTypes($name, $tabs, array('value' => $p['value']));
+      return self::showItemTypes($name, $tabs, ['value' => $p['value']]);
    }
 
 
@@ -583,12 +583,12 @@ class Dropdown {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownIcons($myname, $value, $store_path, $display=true) {
+   static function dropdownIcons($myname, $value, $store_path, $display = true) {
 
       $output = '';
       if (is_dir($store_path)) {
          if ($dh = opendir($store_path)) {
-            $files = array();
+            $files = [];
 
             while (($file = readdir($dh)) !== false) {
                $files[] = $file;
@@ -603,8 +603,8 @@ class Dropdown {
                }
             }
             Dropdown::showFromArray($myname, $values,
-                                    array('value'               => $value,
-                                          'display_emptychoice' => true));
+                                    ['value'               => $value,
+                                          'display_emptychoice' => true]);
 
          } else {
             //TRANS: %s is the store path
@@ -629,13 +629,13 @@ class Dropdown {
     * @param $name   select name
     * @param $value  default value (default '')
    **/
-   static function showGMT($name, $value='') {
+   static function showGMT($name, $value = '') {
 
-      $elements = array(-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
+      $elements = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
                         '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
-                        '+8', '+9', '+9.5', '+10', '+11', '+12', '+13');
+                        '+8', '+9', '+9.5', '+10', '+11', '+12', '+13'];
 
-      $values = array();
+      $values = [];
       foreach ($elements as $element) {
          if ($element != 0) {
             $values[$element*HOUR_TIMESTAMP] = sprintf(__('%1$s %2$s'), __('GMT'),
@@ -646,7 +646,7 @@ class Dropdown {
             $values[$element*HOUR_TIMESTAMP] = __('GMT');
          }
       }
-      Dropdown::showFromArray($name, $values, array('value' => $value));
+      Dropdown::showFromArray($name, $values, ['value' => $value]);
    }
 
 
@@ -661,7 +661,7 @@ class Dropdown {
     *
     * @return rand value
    **/
-   static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
+   static function showYesNo($name, $value = 0, $restrict_to = -1, $params = []) {
 
       if (!array_key_exists ('use_checkbox', $params)) {
          // TODO: switch to true when Html::showCheckbox() is validated
@@ -675,8 +675,8 @@ class Dropdown {
             $rand = mt_rand();
          }
 
-         $options = array('name' => $name,
-                          'id'   => Html::cleanId("dropdown_".$name.$rand));
+         $options = ['name' => $name,
+                          'id'   => Html::cleanId("dropdown_".$name.$rand)];
 
          switch ($restrict_to) {
             case 0 :
@@ -695,8 +695,13 @@ class Dropdown {
                break;
          }
 
-         Html::showCheckbox($options);
+         $output = Html::getCheckbox($options);
+         if (!isset($options['display']) || $options['display'] == 'true') {
+            echo $output;
          return $rand;
+         } else {
+            return $output;
+      }
       }
 
       if ($restrict_to != 0) {
@@ -736,19 +741,19 @@ class Dropdown {
    **/
    static function getDeviceItemTypes() {
       global $CFG_GLPI;
-      static $optgroup = NULL;
+      static $optgroup = null;
 
       if (!Session::haveRight('device', READ)) {
-         return array();
+         return [];
       }
 
       if (is_null($optgroup)) {
-         $devices = array();
+         $devices = [];
          foreach (CommonDevice::getDeviceTypes() as $device_type) {
             $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
          }
          asort($devices);
-         $optgroup = array(_n('Component', 'Components', Session::getPluralNumber()) => $devices);
+         $optgroup = [_n('Component', 'Components', Session::getPluralNumber()) => $devices];
       }
       return $optgroup;
    }
@@ -761,11 +766,11 @@ class Dropdown {
    **/
    static function getStandardDropdownItemTypes() {
       global $CFG_GLPI;
-      static $optgroup = NULL;
+      static $optgroup = null;
 
       if (is_null($optgroup)) {
-         $optgroup = array(
-             __('Common') => array(
+         $optgroup = [
+             __('Common') => [
                  'Location'               => _n('Location', 'Locations',
                                                 Session::getPluralNumber()),
                  'State'                  => _n('Status of items',
@@ -776,9 +781,9 @@ class Dropdown {
                  'Blacklist'              => _n('Blacklist', 'Blacklists',
                                                 Session::getPluralNumber()),
                  'BlacklistedMailContent' => __('Blacklisted mail content')
-             ),
+             ],
 
-             __('Assistance') => array(
+             __('Assistance') => [
                 'ITILCategory'        => _n('Ticket category',
                                             'Ticket categories',
                                             Session::getPluralNumber()),
@@ -802,9 +807,9 @@ class Dropdown {
                                             Session::getPluralNumber()),
                 'ProjectTaskTemplate' => _n('Project task template', 'Project task templates',
                                             Session::getPluralNumber()),
-             ),
+             ],
 
-             _n('Type', 'Types', Session::getPluralNumber()) => array(
+             _n('Type', 'Types', Session::getPluralNumber()) => [
                  'ComputerType'         => _n('Computer type',
                                               'Computers types',
                                               Session::getPluralNumber()),
@@ -850,9 +855,9 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'BudgetType'           => _n('Budget type', 'Budget types',
                                               Session::getPluralNumber())
-             ),
+             ],
 
-             __('Model') => array(
+             __('Model') => [
                  'ComputerModel'         => _n('Computer model',
                                                'Computer models',
                                                Session::getPluralNumber()),
@@ -898,9 +903,9 @@ class Dropdown {
                                                    'Device processor models', Session::getPluralNumber()),
                   'DeviceSoundCardModel'     => _n('Device sound card model',
                                                    'Device sound card models', Session::getPluralNumber()),
-               ),
+               ],
 
-             _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => array(
+             _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                  'VirtualMachineType'   => _n('Virtualization system',
                                               'Virtualization systems',
                                               Session::getPluralNumber()),
@@ -910,9 +915,9 @@ class Dropdown {
                  'VirtualMachineState'  => _n('State of the virtual machine',
                                               'States of the virtual machine',
                                               Session::getPluralNumber())
-             ),
+             ],
 
-             __('Management') => array(
+             __('Management') => [
                  'DocumentCategory' => _n('Document heading',
                                           'Document headings',
                                           Session::getPluralNumber()),
@@ -921,41 +926,53 @@ class Dropdown {
                  'BusinessCriticity' => _n('Business criticity', 'Business criticities',
                                           Session::getPluralNumber())
 
-             ),
+             ],
 
-             __('Tools') => array(
+             __('Tools') => [
                  'KnowbaseItemCategory' => _n('Knowledge base category',
                                               'Knowledge base categories',
                                               Session::getPluralNumber())
-             ),
+             ],
 
-             __('Calendar') => array(
+             __('Calendar') => [
                  'Calendar' => _n('Calendar', 'Calendars',
                                   Session::getPluralNumber()),
                  'Holiday'  => _n('Close time', 'Close times',
                                   Session::getPluralNumber())
-             ),
+             ],
 
-             _n('Operating system', 'Operating systems', Session::getPluralNumber()) => array(
+             _n('Operating system', 'Operating systems', Session::getPluralNumber()) => [
                  'OperatingSystem'    => _n('Operating system',
                                             'Operating systems',
                                             Session::getPluralNumber()),
                  'OperatingSystemVersion'
-                                      => _n('Version of the operating system',
-                                            'Versions of the operating system',
+                                      => _n('Version',
+                                            'Versions',
                                             Session::getPluralNumber()),
                  'OperatingSystemServicePack'
                                       => _n('Service pack', 'Service packs',
                                             Session::getPluralNumber()),
                  'OperatingSystemArchitecture'
-                                      => _n('Operating system architecture',
-                                            'Operating system architectures',
+                                      => _n('Architecture',
+                                            'Architectures',
+                                            Session::getPluralNumber()),
+                 'OperatingSystemEdition'
+                                      => _n('Edition',
+                                            'Editions',
+                                             Session::getPluralNumber()),
+                 'OperatingSystemKernel'
+                                      => _n('Kernel',
+                                            'Kernels',
+                                            Session::getPluralNumber()),
+                 'OperatingSystemKernelVersion'
+                                      => _n('Kernel version',
+                                            'Kernel versions',
                                             Session::getPluralNumber()),
                  'AutoUpdateSystem'   => _n('Update source', 'Update sources',
                                             Session::getPluralNumber())
-             ),
+             ],
 
-             __('Networking') => array(
+             __('Networking') => [
                  'NetworkInterface'         => _n('Network interface',
                                                   'Network interfaces',
                                                   Session::getPluralNumber()),
@@ -968,9 +985,9 @@ class Dropdown {
                  'Network'                  => _n('Network', 'Networks',
                                                   Session::getPluralNumber()),
                  'Vlan'                     => __('VLAN')
-             ),
+             ],
 
-             __('Internet') => array(
+             __('Internet') => [
                  'IPNetwork'    => _n('IP network', 'IP networks',
                                       Session::getPluralNumber()),
                  'FQDN'         => _n('Internet domain', 'Internet domains',
@@ -979,39 +996,39 @@ class Dropdown {
                                       Session::getPluralNumber()),
                  'NetworkName'  => _n('Network name', 'Network names',
                                       Session::getPluralNumber())
-             ),
+             ],
 
-             _n('Software', 'Software', 1) => array(
+             _n('Software', 'Software', 1) => [
                  'SoftwareCategory' => _n('Software category',
                                           'Software categories',
                                           Session::getPluralNumber())
-             ),
+             ],
 
-             __('User') => array(
+             __('User') => [
                  'UserTitle'     => _n('User title', 'Users titles',
                                        Session::getPluralNumber()),
                  'UserCategory'  => _n('User category', 'User categories',
                                        Session::getPluralNumber())
-             ),
+             ],
 
-             __('Authorizations assignment rules') => array(
+             __('Authorizations assignment rules') => [
                  'RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria',
                                             Session::getPluralNumber())
-             ),
+             ],
 
-             __('Fields unicity') => array(
+             __('Fields unicity') => [
                  'Fieldblacklist' => _n('Ignored value for the unicity',
                                         'Ignored values for the unicity',
                                         Session::getPluralNumber())
-             ),
+             ],
 
-             __('External authentications') => array(
+             __('External authentications') => [
                  'SsoVariable' => _n('Field storage of the login in the HTTP request',
                                      'Fields storage of the login in the HTTP request',
                                      Session::getPluralNumber())
-             )
+             ]
 
-         ); //end $opt
+         ]; //end $opt
 
          $plugdrop = Plugin::getDropdowns();
 
@@ -1047,7 +1064,7 @@ class Dropdown {
     * @param $optgroup  array    (group of dropdown) of array (itemtype => localized name)
     * @param $value     string   URL of selected current value (default '')
    **/
-   static function showItemTypeMenu($title, $optgroup, $value='') {
+   static function showItemTypeMenu($title, $optgroup, $value = '') {
 
       echo "<table class='tab_cadre' width='50%'>";
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
@@ -1064,10 +1081,10 @@ class Dropdown {
          }
       }
       Dropdown::showFromArray('dpmenu', $values,
-                              array('on_change'
+                              ['on_change'
                                        => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
                                     'value'               => $selected,
-                                    'display_emptychoice' => true));
+                                    'display_emptychoice' => true]);
 
       echo "</td></tr>";
       echo "</table><br>";
@@ -1122,10 +1139,10 @@ class Dropdown {
     *    - display_emptychoice : allow selection of no language
     *    - emptylabel          : specific string to empty label if display_emptychoice is true
    **/
-   static function showLanguages($myname, $options=array()) {
+   static function showLanguages($myname, $options = []) {
       global $CFG_GLPI;
 
-      $values = array();
+      $values = [];
       if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
          if (isset($options['emptylabel'])) {
             $values[''] = $options['emptylabel'];
@@ -1175,7 +1192,7 @@ class Dropdown {
     * @since 0.85 update prototype
     *@return Nothing (display)
     **/
-   static function showHours($name, $options=array()) {
+   static function showHours($name, $options = []) {
       global $CFG_GLPI;
 
       $p['value']          = '';
@@ -1213,7 +1230,7 @@ class Dropdown {
          $end        = (int) $plan_end[0];
       }
 
-      $values   = array();
+      $values   = [];
       $selected = '';
 
       for ($i=$begin; $i<$end; $i++) {
@@ -1261,7 +1278,7 @@ class Dropdown {
     *
     * @return integer rand for select id
    **/
-   static function showItemType($types='', $options=array()) {
+   static function showItemType($types = '', $options = []) {
       global $CFG_GLPI;
 
       $params['name']                = 'itemtype';
@@ -1286,7 +1303,7 @@ class Dropdown {
       if (!is_array($types)) {
          $types = $CFG_GLPI["state_types"];
       }
-      $options = array();
+      $options = [];
 
       foreach ($types as $type) {
          if ($item = getItemForItemtype($type)) {
@@ -1300,11 +1317,11 @@ class Dropdown {
 
       if (count($options)) {
          return Dropdown::showFromArray($params['name'], $options,
-                                        array('value'               => $params['value'],
+                                        ['value'               => $params['value'],
                                               'on_change'           => $params['on_change'],
                                               'toupdate'            => $params['toupdate'],
                                               'display_emptychoice' => $params['display_emptychoice'],
-                                              'emptylabel'          => $params['emptylabel']));
+                                              'emptylabel'          => $params['emptylabel']]);
       }
       return 0;
    }
@@ -1326,9 +1343,9 @@ class Dropdown {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
-                                $onlyglobal=false, $checkright=false, $itemtypename = 'itemtype') {
-      $options = array();
+   static function showAllItems($myname, $value_type = 0, $value = 0, $entity_restrict = -1, $types = '',
+                                $onlyglobal = false, $checkright = false, $itemtypename = 'itemtype') {
+      $options = [];
       $options['itemtype_name']   = $itemtypename;
       $options['items_id_name']   = $myname;
       $options['itemtypes']       = $types;
@@ -1366,10 +1383,10 @@ class Dropdown {
     *
     * @return randomized value used to generate HTML IDs
    **/
-   static function showSelectItemFromItemtypes(array $options=array()) {
+   static function showSelectItemFromItemtypes(array $options = []) {
       global $CFG_GLPI;
 
-      $params = array();
+      $params = [];
       $params['itemtype_name']       = 'itemtype';
       $params['items_id_name']       = 'items_id';
       $params['itemtypes']           = '';
@@ -1379,7 +1396,7 @@ class Dropdown {
       $params['checkright']          = false;
       $params['showItemSpecificity'] = '';
       $params['emptylabel']          = self::EMPTY_VALUE;
-      $params['used']                = array();
+      $params['used']                = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1388,15 +1405,15 @@ class Dropdown {
       }
 
       $rand = self::showItemType($params['itemtypes'],
-                                 array('checkright' => $params['checkright'],
+                                 ['checkright' => $params['checkright'],
                                        'name'       => $params['itemtype_name'],
-                                       'emptylabel' => $params['emptylabel']));
+                                       'emptylabel' => $params['emptylabel']]);
 
       if ($rand) {
-         $p = array('idtable'             => '__VALUE__',
+         $p = ['idtable'             => '__VALUE__',
                     'name'                => $params['items_id_name'],
                     'entity_restrict'     => $params['entity_restrict'],
-                    'showItemSpecificity' => $params['showItemSpecificity']);
+                    'showItemSpecificity' => $params['showItemSpecificity']];
 
          // manage condition
          if ($params['onlyglobal']) {
@@ -1449,7 +1466,7 @@ class Dropdown {
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
    **/
-   static function showNumber($myname, $options=array()) {
+   static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
 
       $p['value']     = 0;
@@ -1457,12 +1474,12 @@ class Dropdown {
       $p['min']       = 0;
       $p['max']       = 100;
       $p['step']      = 1;
-      $p['toadd']     = array();
+      $p['toadd']     = [];
       $p['unit']      = '';
       $p['display']   = true;
       $p['width']     = '';
       $p['on_change'] = '';
-      $p['used']      = array();
+      $p['used']      = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1479,7 +1496,7 @@ class Dropdown {
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
-      $param = array('value'               => $p['value'],
+      $param = ['value'               => $p['value'],
                      'valuename'           => $valuename,
                      'width'               => $p['width'],
                      'on_change'           => $p['on_change'],
@@ -1488,7 +1505,7 @@ class Dropdown {
                      'min'                 => $p['min'],
                      'max'                 => $p['max'],
                      'step'                => $p['step'],
-                     'toadd'               => $p['toadd']);
+                     'toadd'               => $p['toadd']];
 
       $out   = Html::jsAjaxDropdown($myname, $field_id,
                                     $CFG_GLPI['root_doc']."/ajax/getDropdownNumber.php",
@@ -1572,14 +1589,14 @@ class Dropdown {
     *                            - display : boolean if false get string
     * @deprecated since 0.84 use Dropdown::showNumber instead
    **/
-   static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
-                               $options=array()) {
+   static function showInteger($myname, $value, $min = 0, $max = 100, $step = 1, $toadd = [],
+                               $options = []) {
 
-      $opt = array('value' => $value,
+      $opt = ['value' => $value,
                    'min'   => $min,
                    'max'   => $max,
                    'step'  => $step,
-                   'toadd' => $toadd);
+                   'toadd' => $toadd];
       if (count($options)) {
          foreach ($options as $key => $val) {
             $opt[$key] = $val;
@@ -1607,7 +1624,7 @@ class Dropdown {
     *    - display         : boolean / display or return string
     *    - width           : string / display width of the item
    **/
-   static function showTimeStamp($myname, $options=array()) {
+   static function showTimeStamp($myname, $options = []) {
       global $CFG_GLPI;
 
       $params['value']               = 0;
@@ -1617,7 +1634,7 @@ class Dropdown {
       $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
       $params['emptylabel']          = self::EMPTY_VALUE;
       $params['addfirstminutes']     = false;
-      $params['toadd']               = array();
+      $params['toadd']               = [];
       $params['inhours']             = false;
       $params['display']             = true;
       $params['display_emptychoice'] = true;
@@ -1649,7 +1666,7 @@ class Dropdown {
          $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
       }
 
-      $values = array();
+      $values = [];
 
       if ($params['value']) {
          $values[$params['value']] = '';
@@ -1711,12 +1728,12 @@ class Dropdown {
          }
       }
       return Dropdown::showFromArray($myname, $values,
-                                     array('value'                => $params['value'],
+                                     ['value'                => $params['value'],
                                             'display'             => $params['display'],
                                             'width'               => $params['width'],
                                             'display_emptychoice' => $params['display_emptychoice'],
                                             'rand'                => $params['rand'],
-                                            'emptylabel'          => $params['emptylabel']));
+                                            'emptylabel'          => $params['emptylabel']]);
    }
 
 
@@ -1734,10 +1751,10 @@ class Dropdown {
       echo "<script type='text/javascript' >\n";
       echo "function setPrivate$rand() {\n";
 
-         $params = array('is_private'   => 1,
+         $params = ['is_private'   => 1,
                          'is_recursive' => $is_recursive,
                          'entities_id'  => $entity,
-                         'rand'         => $rand);
+                         'rand'         => $rand];
 
          Ajax::updateItemJsCode('private_switch'.$rand,
                                 $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
@@ -1745,10 +1762,10 @@ class Dropdown {
 
       echo "function setPublic$rand() {\n";
 
-         $params = array('is_private'   => 0,
+         $params = ['is_private'   => 0,
                          'is_recursive' => $is_recursive,
                          'entities_id'  => $entity,
-                         'rand'         => $rand);
+                         'rand'         => $rand];
          Ajax::updateItemJsCode('private_switch'.$rand,
                                 $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
       echo "};";
@@ -1770,19 +1787,19 @@ class Dropdown {
     *
     * @param $enabled (default 0)
    **/
-   static function showAdvanceDateRestrictionSwitch($enabled=0) {
+   static function showAdvanceDateRestrictionSwitch($enabled = 0) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
       $url  = $CFG_GLPI["root_doc"]."/ajax/ldapdaterestriction.php";
       echo "<script type='text/javascript' >\n";
       echo "function activateRestriction() {\n";
-         $params = array('enabled'=> 1);
+         $params = ['enabled'=> 1];
          Ajax::updateItemJsCode('date_restriction', $url, $params);
       echo "};";
 
       echo "function deactivateRestriction() {\n";
-         $params = array('enabled' => 0);
+         $params = ['enabled' => 0];
          Ajax::updateItemJsCode('date_restriction', $url, $params);
       echo "};";
       echo "</script>";
@@ -1824,13 +1841,13 @@ class Dropdown {
     *       'optgroupname2' => array('key3' => 'val3',
     *                                'key4' => 'val4'))
    **/
-   static function showFromArray($name, array $elements, $options=array()) {
+   static function showFromArray($name, array $elements, $options = []) {
 
       $param['value']               = '';
-      $param['values']              = array('');
+      $param['values']              = [''];
       $param['tooltip']             = '';
-      $param['option_tooltips']     = array();
-      $param['used']                = array();
+      $param['option_tooltips']     = [];
+      $param['used']                = [];
       $param['readonly']            = false;
       $param['on_change']           = '';
       $param['width']               = '';
@@ -1841,10 +1858,11 @@ class Dropdown {
       $param['rand']                = mt_rand();
       $param['emptylabel']          = self::EMPTY_VALUE;
       $param['display_emptychoice'] = false;
+      $param['disabled']            = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
-            $options['values'] = array($options['value']);
+            $options['values'] = [$options['value']];
             unset($options['value']);
          }
          foreach ($options as $key => $val) {
@@ -1859,7 +1877,7 @@ class Dropdown {
          // If $param['other'] is a string, then we must highlight "other" option
          if (is_string($param['other'])) {
             if (!$param["multiple"]) {
-               $param['values'] = array($other_select_option);
+               $param['values'] = [$other_select_option];
             } else {
                $param['values'][] = $other_select_option;
             }
@@ -1869,7 +1887,7 @@ class Dropdown {
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
       if ($param["display_emptychoice"]) {
-         $elements = array( 0 => $param['emptylabel'] ) + $elements;
+         $elements = [ 0 => $param['emptylabel'] ] + $elements;
       }
 
       if ($param["multiple"]) {
@@ -1882,7 +1900,7 @@ class Dropdown {
       // readonly mode
       $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
       if ($param['readonly']) {
-         $to_display = array();
+         $to_display = [];
          foreach ($param['values'] as $value) {
             $output .= "<input type='hidden' name='$field_name' value='$value'>";
             if (isset($elements[$value])) {
@@ -1908,6 +1926,10 @@ class Dropdown {
 
          if ($param["multiple"]) {
             $output .= " multiple";
+         }
+
+         if ($param["disabled"]) {
+            $output .= " disabled='disabled'";
          }
 
          $output .= '>';
@@ -1996,7 +2018,7 @@ class Dropdown {
       }
 
       // Width set on select
-      $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
+      $output .= Html::jsAdaptDropdown($field_id, ['width' => $param["width"]]);
 
       if ($param["multiple"]) {
          // Hack for All / None because select2 does not provide it
@@ -2043,7 +2065,7 @@ class Dropdown {
     * - value value of global state
     * - management_restrict global management restrict mode
    **/
-   static function showGlobalSwitch($ID, $attrs=array()) {
+   static function showGlobalSwitch($ID, $attrs = []) {
       global $CFG_GLPI;
 
       $params['management_restrict'] = 0;
@@ -2064,9 +2086,9 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;";
             Html::showSimpleForm($params['target'], 'unglobalize', __('Use unitary management'),
-                                 array('id' => $ID), '', '',
-                                 array(__('Do you really want to use unitary management for this item?'),
-                                       __('Duplicate the element as many times as there are connections')));
+                                 ['id' => $ID], '', '',
+                                 [__('Do you really want to use unitary management for this item?'),
+                                       __('Duplicate the element as many times as there are connections')]);
             echo "&nbsp;";
 
             echo "<span class='fa fa-info pointer'".
@@ -2077,9 +2099,9 @@ class Dropdown {
       } else {
          if ($params['management_restrict'] == 2) {
             $rand = mt_rand();
-            $values = array(MANAGEMENT_UNITARY => __('Unit management'),
-                            MANAGEMENT_GLOBAL  => __('Global management'));
-            Dropdown::showFromArray($params['name'], $values, array('value' => $params['value']));
+            $values = [MANAGEMENT_UNITARY => __('Unit management'),
+                            MANAGEMENT_GLOBAL  => __('Global management')];
+            Dropdown::showFromArray($params['name'], $values, ['value' => $params['value']]);
          } else {
             // Templates edition
             if (!empty($params['withtemplate'])) {
@@ -2126,8 +2148,8 @@ class Dropdown {
     *
     * @return integer : dropdown id.
    **/
-   static function importExternal($itemtype, $value, $entities_id=-1, $external_params=array(),
-                                  $comment='', $add=true) {
+   static function importExternal($itemtype, $value, $entities_id = -1, $external_params = [],
+                                  $comment = '', $add = true) {
 
       if (!($item = getItemForItemtype($itemtype))) {
          return false;
@@ -2142,7 +2164,7 @@ class Dropdown {
     *
     * @return the label corresponding to it, or ""
    **/
-   static function getGlobalSwitch($value=0) {
+   static function getGlobalSwitch($value = 0) {
 
       switch ($value) {
          case 0 :
@@ -2188,7 +2210,7 @@ class Dropdown {
     *
     * @param $onchange  String   optional, for ajax (default '')
    **/
-   static function showListLimit($onchange='', $display=true) {
+   static function showListLimit($onchange = '', $display = true) {
       global $CFG_GLPI;
 
       if (isset($_SESSION['glpilist_limit'])) {
@@ -2197,7 +2219,7 @@ class Dropdown {
          $list_limit = $CFG_GLPI['list_limit'];
       }
 
-      $values = array();
+      $values = [];
 
       for ($i=5; $i<20; $i+=5) {
          $values[$i] = $i;
@@ -2225,9 +2247,9 @@ class Dropdown {
       }
       ksort($values);
       return self::showFromArray('glpilist_limit', $values,
-                                 array('on_change' => $onchange,
+                                 ['on_change' => $onchange,
                                        'value'     => $list_limit,
-                                       'display'   => $display));
+                                       'display'   => $display]);
    }
 
 }

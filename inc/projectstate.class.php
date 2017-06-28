@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class ProjectState extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Project state', 'Project states', $nb);
    }
 
@@ -58,14 +58,14 @@ class ProjectState extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'     => 'color',
+      return [['name'     => 'color',
                          'label'    => __('Color'),
                          'type'     => 'color',
-                         'list'     => true),
-                   array('name'     => 'is_finished',
+                         'list'     => true],
+                   ['name'     => 'is_finished',
                          'label'    => __('Finished state'),
                          'type'     => 'bool',
-                         'list'     => true),);
+                         'list'     => true],];
    }
 
 

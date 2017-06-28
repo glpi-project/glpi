@@ -73,6 +73,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Link::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "link");
 
-   $link->display(array('id' => $_GET["id"]));
+   $link->display(['id' => $_GET["id"]]);
    Html::footer();
 }

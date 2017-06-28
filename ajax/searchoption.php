@@ -76,7 +76,7 @@ if (isset($_POST["itemtype"])
 
    $randsearch   = -1;
    $dropdownname = "searchtype$fieldname".$_POST["itemtype"].$_POST["num"];
-   $searchopt    = array();
+   $searchopt    = [];
 
    echo "<table><tr><td>";
    if (count($actions)>0) {
@@ -90,7 +90,7 @@ if (isset($_POST["itemtype"])
       }
       $randsearch = Dropdown::showFromArray($fieldname."[".$_POST["num"]."][searchtype]",
                                             $actions,
-                                            array('value'  => $_POST["searchtype"]));
+                                            ['value'  => $_POST["searchtype"]]);
       $fieldsearch_id = Html::cleanId("dropdown_".$fieldname."[".$_POST["num"]."][searchtype]$randsearch");
    }
    echo "</td><td>";
@@ -103,13 +103,13 @@ if (isset($_POST["itemtype"])
    echo "</span>\n";
    echo "</td></tr></table>";
 
-   $paramsaction = array('searchtype' => '__VALUE__',
+   $paramsaction = ['searchtype' => '__VALUE__',
                          'field'      => $_POST["field"],
                          'itemtype'   => $_POST["itemtype"],
                          'num'        => $_POST["num"],
                          'value'      => rawurlencode($_POST['value']),
                          'searchopt'  => $searchopt,
-                         'meta'       => $_POST['meta']);
+                         'meta'       => $_POST['meta']];
 
    Ajax::updateItemOnSelectEvent($fieldsearch_id,
                                  "span$dropdownname",

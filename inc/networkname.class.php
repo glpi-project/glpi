@@ -56,7 +56,7 @@ class NetworkName extends FQDNLabel {
    static public $items_id              = 'items_id';
    public $dohistory                    = true;
 
-   static protected $forward_entity_to  = array('IPAddress', 'NetworkAlias');
+   static protected $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
 
    static public $canDeleteOnItemClean  = false;
 
@@ -67,14 +67,14 @@ class NetworkName extends FQDNLabel {
    static $rightname                   = 'internet';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network name', 'Network names', $nb);
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong  = array();
+      $ong  = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkAlias', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -93,7 +93,7 @@ class NetworkName extends FQDNLabel {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -119,7 +119,7 @@ class NetworkName extends FQDNLabel {
       $this->displayRecursiveItems($recursiveItems, "Link");
       if ((count($recursiveItems) > 0) && $this->canUpdate()) {
          Html::showSimpleForm($this->getFormURL(), 'unaffect', _sx('button', 'Dissociate'),
-                              array('id' => $ID));
+                              ['id' => $ID]);
       }
 
       echo "</td></tr>\n";
@@ -131,10 +131,10 @@ class NetworkName extends FQDNLabel {
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
-                     array('value'       => $this->fields["fqdns_id"],
+                     ['value'       => $this->fields["fqdns_id"],
                            'name'        => 'fqdns_id',
                            'entity'      => $this->getEntityID(),
-                           'displaywith' => array('view')));
+                           'displaywith' => ['view']]);
       echo "</td>\n</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -264,8 +264,8 @@ class NetworkName extends FQDNLabel {
 
       if ((isset($this->input['_ipaddresses']))
           && (is_array($this->input['_ipaddresses']))) {
-         $input = array('itemtype' => 'NetworkName',
-                        'items_id' => $this->getID());
+         $input = ['itemtype' => 'NetworkName',
+                        'items_id' => $this->getID()];
          foreach ($this->input['_ipaddresses'] as $id => $ip) {
             $ipaddress     = new IPAddress();
             $input['name'] = $ip;
@@ -279,7 +279,7 @@ class NetworkName extends FQDNLabel {
                   $ipaddress->update($input);
                   unset($input['id']);
                } else {
-                  $ipaddress->delete(array('id' => $id));
+                  $ipaddress->delete(['id' => $id]);
                }
             }
          }
@@ -294,7 +294,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       $this->post_workOnItem();
@@ -306,11 +306,11 @@ class NetworkName extends FQDNLabel {
             $ip = new IPAddress();
             // Update IPAddress
             foreach ($DB->request('glpi_ipaddresses',
-                                  array('itemtype' => 'NetworkName',
-                                        'items_id' => $this->getID())) as $data) {
-               $ip->update(array('id'       => $data['id'],
+                                  ['itemtype' => 'NetworkName',
+                                        'items_id' => $this->getID()]) as $data) {
+               $ip->update(['id'       => $data['id'],
                                  'itemtype' => 'NetworkName',
-                                 'items_id' => $this->getID()));
+                                 'items_id' => $this->getID()]);
             }
          }
       }
@@ -371,9 +371,9 @@ class NetworkName extends FQDNLabel {
       global $DB;
 
       $networkName = new self();
-      return $networkName->update(array('id'       => $networkNameID,
+      return $networkName->update(['id'       => $networkNameID,
                                         'items_id' => $items_id,
-                                        'itemtype' => $itemtype));
+                                        'itemtype' => $itemtype]);
    }
 
 
@@ -443,7 +443,7 @@ class NetworkName extends FQDNLabel {
          echo "<a href='".$name->getLinkURL()."'>".self::getTypeName(1)."</a>";
          echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>&nbsp;\n";
          Html::showSimpleForm($name->getFormURL(), 'unaffect', _sx('button', 'Dissociate'),
-                              array('id' => $name->getID()),
+                              ['id' => $name->getID()],
                               $CFG_GLPI["root_doc"].'/pics/sub_dropdown.png');
       } else {
          echo self::getTypeName(1);
@@ -453,15 +453,15 @@ class NetworkName extends FQDNLabel {
       echo "</tr><tr class='tab_bg_1'>";
 
       echo "<td>" . self::getTypeName(1) . "</td><td>\n";
-      Html::autocompletionTextField($name, "name", array('name' => 'NetworkName_name'));
+      Html::autocompletionTextField($name, "name", ['name' => 'NetworkName_name']);
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
-                     array('value'       => $name->fields["fqdns_id"],
+                     ['value'       => $name->fields["fqdns_id"],
                            'name'        => 'NetworkName_fqdns_id',
                            'entity'      => $name->getEntityID(),
-                           'displaywith' => array('view')));
+                           'displaywith' => ['view']]);
       echo "</td>\n";
 
       echo "</tr><tr class='tab_bg_1'>\n";
@@ -496,8 +496,8 @@ class NetworkName extends FQDNLabel {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
       if (isset($options['massiveactionnetworkname'])
@@ -536,8 +536,8 @@ class NetworkName extends FQDNLabel {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -673,7 +673,7 @@ class NetworkName extends FQDNLabel {
     * @param $item                     CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate=0) {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID = $item->getID();
@@ -700,8 +700,8 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
          echo __('Not associated');
          echo "</td><td class='left'>";
-         self::dropdown(array('name'      => 'addressID',
-                              'condition' => '`items_id`=0'));
+         self::dropdown(['name'      => 'addressID',
+                              'condition' => '`items_id`=0']);
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button', 'Associate').
                 "' class='submit'>";
@@ -719,7 +719,7 @@ class NetworkName extends FQDNLabel {
          echo "</div>\n";
       }
 
-      $table_options = array('createRow' => true);
+      $table_options = ['createRow' => true];
 
       if (($item->getType() == 'FQDN')
           || ($item->getType() == 'NetworkEquipment')) {
@@ -736,12 +736,12 @@ class NetworkName extends FQDNLabel {
          }
 
          if ($item->getType() == 'FQDN') {
-            $table_options['column_links'] = array('NetworkName'
+            $table_options['column_links'] = ['NetworkName'
                                                          => 'javascript:reloadTab("order=name");',
                                                    'NetworkAlias'
                                                          => 'javascript:reloadTab("order=alias");',
                                                    'IPAddress'
-                                                         => 'javascript:reloadTab("order=ip");');
+                                                         => 'javascript:reloadTab("order=ip");'];
          }
 
          $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
@@ -761,11 +761,11 @@ class NetworkName extends FQDNLabel {
                                                                      self::getTypeName(Session::getPluralNumber()));
       $t_group                                   = $table->createGroup('Main', '');
 
-      self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
+      self::getHTMLTableHeader(__CLASS__, $t_group, $column, null, $table_options);
 
       $t_row   = $t_group->createRow();
 
-      self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
+      self::getHTMLTableCellsForItem($t_row, $item, null, $table_options);
 
       if ($table->getNumberOfRows() > 0) {
          $number = $table->getNumberOfRows();
@@ -780,15 +780,15 @@ class NetworkName extends FQDNLabel {
                                                 $item->getTypeName(1), $item->getName()));
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                              'container'        => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+                              'container'        => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 
-         $table->display(array('display_title_for_each_group'          => false,
+         $table->display(['display_title_for_each_group'          => false,
                                'display_thead'                         => false,
                                'display_tfoot'                         => false,
-                               'display_header_on_foot_for_each_group' => true));
+                               'display_header_on_foot_for_each_group' => true]);
 
          if ($canedit && $number) {
             $massiveactionparams['ontop'] = false;
@@ -806,7 +806,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'NetworkPort' :
@@ -852,7 +852,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {

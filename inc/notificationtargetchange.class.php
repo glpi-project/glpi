@@ -46,9 +46,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
-   public $private_profiles = array();
+   public $private_profiles = [];
 
-   public $html_tags        = array('##change.solution.description##');
+   public $html_tags        = ['##change.solution.description##'];
 
 
    /**
@@ -56,7 +56,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
    **/
    function getEvents() {
 
-      $events = array('new'               => __('New change'),
+      $events = ['new'               => __('New change'),
                       'update'            => __('Update of a change'),
                       'solved'            => __('Change solved'),
                       'validation'        => __('Validation request'),
@@ -65,7 +65,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                       'update_task'       => __('Update of a task'),
                       'delete_task'       => __('Deletion of a task'),
                       'closed'            => __('Closure of a change'),
-                      'delete'            => __('Deleting a change'));
+                      'delete'            => __('Deleting a change')];
 
       $events = array_merge($events, parent::getEvents());
       asort($events);
@@ -73,94 +73,91 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
    }
 
 
-   /**
-    * @see NotificationTargetCommonITILObject::getDatasForObject()
-   **/
-   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       global $CFG_GLPI;
 
-      // Common ITIL datas
-      $datas                         = parent::getDatasForObject($item, $options, $simple);
+      // Common ITIL data
+      $data = parent::getDataForObject($item, $options, $simple);
 
-      // Specific datas
-      $datas['##change.urlvalidation##']
+      // Specific data
+      $data['##change.urlvalidation##']
                      = $this->formatURL($options['additionnaloption']['usertype'],
                                         "change_".$item->getField("id")."_ChangeValidation$1");
-      $datas['##change.globalvalidation##']
+      $data['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));
 
-      $datas['##change.impactcontent##']      = $item->getField("impactcontent");
-      $datas['##change.controlistcontent##']  = $item->getField("controlistcontent");
-      $datas['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
-      $datas['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
-      $datas['##change.checklistcontent##']   = $item->getField("checklistcontent");
+      $data['##change.impactcontent##']      = $item->getField("impactcontent");
+      $data['##change.controlistcontent##']  = $item->getField("controlistcontent");
+      $data['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
+      $data['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
+      $data['##change.checklistcontent##']   = $item->getField("checklistcontent");
 
-      // $datas["##problem.impacts##"]  = $item->getField('impactcontent');
-      // $datas["##problem.causes##"]   = $item->getField('causecontent');
-      // $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
+      // $data["##problem.impacts##"]  = $item->getField('impactcontent');
+      // $data["##problem.causes##"]   = $item->getField('causecontent');
+      // $data["##problem.symptoms##"] = $item->getField('symptomcontent');
 
       // Complex mode
       if (!$simple) {
          $restrict = "`changes_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_changes_tickets', $restrict);
 
-         $datas['tickets'] = array();
+         $data['tickets'] = [];
          if (count($tickets)) {
             $ticket = new Ticket();
-            foreach ($tickets as $data) {
-               if ($ticket->getFromDB($data['tickets_id'])) {
-                  $tmp = array();
-                  $tmp['##ticket.id##']      = $data['tickets_id'];
+            foreach ($tickets as $row) {
+               if ($ticket->getFromDB($row['tickets_id'])) {
+                  $tmp = [];
+                  $tmp['##ticket.id##']      = $row['tickets_id'];
                   $tmp['##ticket.date##']    = $ticket->getField('date');
                   $tmp['##ticket.title##']   = $ticket->getField('name');
                   $tmp['##ticket.url##']     = $this->formatURL($options['additionnaloption']['usertype'],
-                                                                "Ticket_".$data['tickets_id']);
+                                                                "Ticket_".$row['tickets_id']);
                   $tmp['##ticket.content##'] = $ticket->getField('content');
 
-                  $datas['tickets'][] = $tmp;
+                  $data['tickets'][] = $tmp;
                }
             }
          }
 
-         $datas['##change.numberoftickets##'] = count($datas['tickets']);
+         $data['##change.numberoftickets##'] = count($data['tickets']);
 
          $restrict = "`changes_id`='".$item->getField('id')."'";
          $problems = getAllDatasFromTable('glpi_changes_problems', $restrict);
 
-         $datas['problems'] = array();
+         $data['problems'] = [];
          if (count($problems)) {
             $problem = new Problem();
-            foreach ($problems as $data) {
-               if ($problem->getFromDB($data['problems_id'])) {
-                  $tmp = array();
+            foreach ($problems as $row) {
+               if ($problem->getFromDB($row['problems_id'])) {
+                  $tmp = [];
                   $tmp['##problem.id##']
-                                       = $data['problems_id'];
+                                       = $row['problems_id'];
                   $tmp['##problem.date##']
                                        = $problem->getField('date');
                   $tmp['##problem.title##']
                                        = $problem->getField('name');
                   $tmp['##problem.url##']
                                        = $this->formatURL($options['additionnaloption']['usertype'],
-                                                          "Problem_".$data['problems_id']);
+                                                          "Problem_".$row['problems_id']);
                   $tmp['##problem.content##']
                                        = $problem->getField('content');
 
-                  $datas['problems'][] = $tmp;
+                  $data['problems'][] = $tmp;
                }
             }
          }
 
-         $datas['##change.numberofproblems##'] = count($datas['problems']);
+         $data['##change.numberofproblems##'] = count($data['problems']);
 
          $restrict = "`changes_id` = '".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_changes_items', $restrict);
 
-         $datas['items'] = array();
+         $data['items'] = [];
          if (count($items)) {
-            foreach ($items as $data) {
-               if ($item2 = getItemForItemtype($data['itemtype'])) {
-                  if ($item2->getFromDB($data['items_id'])) {
-                     $tmp = array();
+            foreach ($items as $row) {
+               if ($item2 = getItemForItemtype($row['itemtype'])) {
+                  if ($item2->getFromDB($row['items_id'])) {
+                     $tmp = [];
                      $tmp['##item.itemtype##']    = $item2->getTypeName();
                      $tmp['##item.name##']        = $item2->getField('name');
                      $tmp['##item.serial##']      = $item2->getField('serial');
@@ -201,13 +198,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                         $tmp['##item.model##'] = $item2->getField($modelfield);
                      }
 
-                     $datas['items'][] = $tmp;
+                     $data['items'][] = $tmp;
                   }
                }
             }
          }
 
-         $datas['##change.numberofitems##'] = count($datas['items']);
+         $data['##change.numberofitems##'] = count($data['items']);
 
          //Validation infos
          $restrict = "`changes_id`='".$item->getField('id')."'";
@@ -219,9 +216,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
          $validations = getAllDatasFromTable('glpi_changevalidations', $restrict);
-         $datas['validations'] = array();
+         $data['validations'] = [];
          foreach ($validations as $validation) {
-            $tmp = array();
+            $tmp = [];
             $tmp['##validation.submission.title##']
                                  //TRANS: %s is the user name
                      = sprintf(__('An approval request has been submitted by %s'),
@@ -256,11 +253,11 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
             $tmp['##validation.commentvalidation##']
                      = $validation['comment_validation'];
 
-            $datas['validations'][] = $tmp;
+            $data['validations'][] = $tmp;
          }
 
       }
-      return $datas;
+      return $data;
    }
 
 
@@ -269,7 +266,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('change.numberoftickets'    => _x('quantity', 'Number of tickets'),
+      $tags = ['change.numberoftickets'    => _x('quantity', 'Number of tickets'),
                     'change.numberofproblems'   => _x('quantity', 'Number of problems'),
                     'change.impactcontent'      => __('Impact'),
                     'change.controlistcontent'  => __('Control list'),
@@ -288,17 +285,17 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'item.contactnumber'        => __('Alternate username number'),
                     'item.user'                 => __('User'),
                     'item.group'                => __('Group'),
-                    'change.globalvalidation'   => __('Global approval status'),);
+                    'change.globalvalidation'   => __('Global approval status'),];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS));
+                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS]);
       }
 
       //Events specific for validation
-      $tags = array('validation.author'            => __('Requester'),
+      $tags = ['validation.author'            => __('Requester'),
                     'validation.status'            => __('Status of the approval request'),
                     'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
                                                               __('Date')),
@@ -309,60 +306,60 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'validation.validator'         => __('Decision-maker'),
                     'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), __('Validation'),
                                                              __('Comments'))
-      );
+      ];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('validation', 'validation_answer')));
+                                   'events' => ['validation', 'validation_answer']]);
       }
 
       //Tags without lang for validation
-      $tags = array('validation.submission.title'
+      $tags = ['validation.submission.title'
                                     => __('A validation request has been submitted'),
                     'validation.answer.title'
                                     => __('An answer to a validation request was produced'),
                     'change.urlvalidation'
                                     => sprintf(__('%1$s: %2$s'), __('Validation request'),
-                                               __('URL')));
+                                               __('URL'))];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
                                    'lang'  => false,
-                                   'events' => array('validation', 'validation_answer')));
+                                   'events' => ['validation', 'validation_answer']]);
       }
 
       //Foreach global tags
-      $tags = array('tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+      $tags = ['tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
                     'items'       => _n('Item', 'Items', Session::getPluralNumber()),
                     'validations' => _n('Validation', 'Validations', Session::getPluralNumber()),
-                    'documents'   => _n('Document', 'Documents', Session::getPluralNumber()));
+                    'documents'   => _n('Document', 'Documents', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'     => $tag,
+         $this->addTagToList(['tag'     => $tag,
                                    'label'   => $label,
                                    'value'   => false,
-                                   'foreach' => true));
+                                   'foreach' => true]);
       }
 
       //Tags with just lang
-      $tags = array('change.tickets'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+      $tags = ['change.tickets'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'change.problems'  => _n('Problem', 'Problems', Session::getPluralNumber()),
-                    'items'            => _n('Item', 'Items', Session::getPluralNumber()));
+                    'items'            => _n('Item', 'Items', Session::getPluralNumber())];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       //Tags without lang
-      $tags = array('ticket.id'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+      $tags = ['ticket.id'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
                     'ticket.date'     => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
                     'ticket.url'      => sprintf(__('%1$s: %2$s'), __('Ticket'), __('URL')),
                     'ticket.title'    => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
@@ -372,13 +369,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'problem.url'     => sprintf(__('%1$s: %2$s'), __('Problem'), __('URL')),
                     'problem.title'   => sprintf(__('%1$s: %2$s'), __('Problem'), __('Title')),
                     'problem.content' => sprintf(__('%1$s: %2$s'), __('Problem'), __('Description')),
-                    );
+                    ];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
-                                   'lang'  => false));
+                                   'lang'  => false]);
       }
       asort($this->tag_descriptions);
    }

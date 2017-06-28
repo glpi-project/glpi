@@ -60,7 +60,7 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Time range', 'Time ranges', $nb);
    }
 
@@ -345,9 +345,9 @@ class CalendarSegment extends CommonDBChild {
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
          echo "</td><td class='center'>".__('Start').'</td><td>';
-         Dropdown::showHours("begin", array('value' => date('H').":00"));
+         Dropdown::showHours("begin", ['value' => date('H').":00"]);
          echo "</td><td class='center'>".__('End').'</td><td>';
-         Dropdown::showHours("end", array('value' => (date('H')+1).":00"));
+         Dropdown::showHours("end", ['value' => (date('H')+1).":00"]);
          echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -360,8 +360,8 @@ class CalendarSegment extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                           'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                           'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -406,7 +406,7 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -423,7 +423,7 @@ class CalendarSegment extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Calendar') {
          self::showForCalendar($item);

@@ -48,23 +48,23 @@ class DocumentType  extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'icon',
+      return [['name'  => 'icon',
                          'label' => __('Icon'),
-                         'type'  => 'icon'),
-                   array('name'  => 'is_uploadable',
+                         'type'  => 'icon'],
+                   ['name'  => 'is_uploadable',
                          'label' => __('Authorized upload'),
-                         'type'  => 'bool'),
-                   array('name'    => 'ext',
+                         'type'  => 'bool'],
+                   ['name'    => 'ext',
                          'label'   => __('Extension'),
                          'type'    => 'text',
-                         'comment' => __('May be a regular expression')),
-                   array('name'  => 'mime',
+                         'comment' => __('May be a regular expression')],
+                   ['name'  => 'mime',
                          'label' => __('MIME type'),
-                         'type'  => 'text'));
+                         'type'  => 'text']];
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Document type', 'Document types', $nb);
    }
 
@@ -117,11 +117,11 @@ class DocumentType  extends CommonDropdown {
    /**
     * @since version 0.84
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
       global $CFG_GLPI;
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
 
       switch ($field) {
@@ -143,10 +143,10 @@ class DocumentType  extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -164,7 +164,7 @@ class DocumentType  extends CommonDropdown {
     * @param array $options list of options with theses possible keys:
     *                        - bool 'display', echo the generated html or return it
    **/
-   static function showAvailableTypesLink($options = array()) {
+   static function showAvailableTypesLink($options = []) {
       global $CFG_GLPI;
 
       $p['display'] = true;

@@ -59,7 +59,7 @@ class IPAddress extends CommonDBChild {
    static public $items_id       = 'items_id';
    public $dohistory             = false;
 
-   public $history_blacklist     = array('binary_0', 'binary_1', 'binary_2', 'binary_3');
+   public $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
 
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
    protected $version = '';
@@ -68,7 +68,7 @@ class IPAddress extends CommonDBChild {
    protected $textual = '';
    /// $this->binary (bytes[4]) : binary version for the SQL requests. For IPv4 addresses, the
    /// first three bytes are set to [0, 0, 0xffff]
-   protected $binary  = array(0, 0, 0, 0);
+   protected $binary  = [0, 0, 0, 0];
 
    static $rightname  = 'internet';
 
@@ -80,7 +80,7 @@ class IPAddress extends CommonDBChild {
    /**
     * @param $ipaddress (default '')
    **/
-   function __construct($ipaddress='') {
+   function __construct($ipaddress = '') {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
@@ -105,7 +105,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('IP address', 'IP addresses', $nb);
    }
 
@@ -187,7 +187,7 @@ class IPAddress extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if ((isset($this->oldvalues['name']))
           || (isset($this->oldvalues['entities_id']))) {
@@ -217,7 +217,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function showForItem(CommonGLPI $item, $withtemplate=0) {
+   static function showForItem(CommonGLPI $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       if ($item->getType() == 'IPNetwork') {
@@ -254,7 +254,7 @@ class IPAddress extends CommonDBChild {
                                                                         $itemtype::getTypeName(Session::getPluralNumber()));
 
                self::getHTMLTableHeader($item->getType(), $table_options['group_'.$itemtype],
-                                        $item_column, NULL, $table_options);
+                                        $item_column, null, $table_options);
 
             }
          }
@@ -262,9 +262,9 @@ class IPAddress extends CommonDBChild {
          $table_options['group_None'] = $table->createGroup('Main', __('Other kind of items'));
 
          self::getHTMLTableHeader($item->getType(), $table_options['group_None'], $item_column,
-                                  NULL, $table_options);
+                                  null, $table_options);
 
-         self::getHTMLTableCellsForItem(NULL, $item, NULL, $table_options);
+         self::getHTMLTableCellsForItem(null, $item, null, $table_options);
 
          if ($table->getNumberOfRows() > 0) {
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
@@ -274,9 +274,9 @@ class IPAddress extends CommonDBChild {
                                            //        %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'),
                                                    $item->getTypeName(1), $item->getName()));
-            $table->display(array('display_title_for_each_group' => $order_by_itemtype,
+            $table->display(['display_title_for_each_group' => $order_by_itemtype,
                                   'display_super_for_each_group' => false,
-                                  'display_tfoot'                => false));
+                                  'display_tfoot'                => false]);
 
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
          } else {
@@ -288,7 +288,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'IPNetwork' :
@@ -322,7 +322,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return string
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
@@ -435,7 +435,7 @@ class IPAddress extends CommonDBChild {
 
       $this->version    = $array[$versionField];
       $this->textual    = $array[$textualField];
-      $this->binary     = array();
+      $this->binary     = [];
       $this->binary[0]  = ($array[$binaryField."_0"] + 0);
       $this->binary[1]  = ($array[$binaryField."_1"] + 0);
       $this->binary[2]  = ($array[$binaryField."_2"] + 0);
@@ -499,7 +499,7 @@ class IPAddress extends CommonDBChild {
    static function getIPv4ToIPv6Address($address) {
 
       if (is_numeric($address)) {
-         return array(0, 0, 0xffff, $address);
+         return [0, 0, 0xffff, $address];
       }
       if ((is_array($address)) && (count($address) == 4)) {
          return self::getIPv4ToIPv6Address($address[3]);
@@ -550,7 +550,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return true if the address is valid.
    **/
-   function setAddressFromString($address, $itemtype="", $items_id=-1) {
+   function setAddressFromString($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
       $this->disableAddress();
@@ -666,7 +666,7 @@ class IPAddress extends CommonDBChild {
                if (count($singletons) != 3) {
                   return false;
                }
-               $singletons = array('');
+               $singletons = [''];
                break;
 
             default:
@@ -679,7 +679,7 @@ class IPAddress extends CommonDBChild {
 
          $numberEmpty = 9 - count($singletons); // = 8 - (count($singletons) - 1)
 
-         $epanded = array();
+         $epanded = [];
          foreach ($singletons as $singleton) {
             if ($singleton === '') {
                $epanded = array_merge($epanded, array_fill(0, $numberEmpty, 0));
@@ -688,7 +688,7 @@ class IPAddress extends CommonDBChild {
             }
          }
 
-         $binary = array();
+         $binary = [];
          for ($i = 0; $i < 4; $i++) {
             $binary[$i] = $epanded[2 * $i + 0] * 65536 + $epanded[2 * $i + 1];
          }
@@ -721,7 +721,7 @@ class IPAddress extends CommonDBChild {
     *
     * @return true if the address is valid.
    **/
-   function setAddressFromBinary($address, $itemtype="", $items_id=-1) {
+   function setAddressFromBinary($address, $itemtype = "", $items_id = -1) {
       global $DB;
 
       $this->disableAddress();
@@ -746,8 +746,8 @@ class IPAddress extends CommonDBChild {
             }
          }
       }
-      $binary      = array();
-      $textual     = array();
+      $binary      = [];
+      $textual     = [];
       $currentNull = "";
       foreach ($address as $singleton) {
          if (is_numeric($singleton)) {
@@ -791,24 +791,24 @@ class IPAddress extends CommonDBChild {
       if ($this->getVersion() == 4) {
          $hexValue = str_pad($textual[6], 4, "0", STR_PAD_LEFT).str_pad($textual[7], 4, "0",
                                                                         STR_PAD_LEFT);
-         $textual  = array();
+         $textual  = [];
          for ($i = 0; $i < 4; $i++) {
             $textual[] = hexdec($hexValue[2*$i+0].$hexValue[2*$i+1]);
          }
          $textual = implode('.', $textual);
       } else {
-         foreach (array("11111111", "1111111", "111111", "11111", "1111", "111", "11") as $elt) {
+         foreach (["11111111", "1111111", "111111", "11111", "1111", "111", "11"] as $elt) {
             $pos = strpos($currentNull, $elt);
             if ($pos !== false) {
                $first = array_slice($textual, 0, $pos);
                if (count($first) == 0) {
-                  $first = array("");
+                  $first = [""];
                }
                $second = array_slice($textual, $pos + strlen($elt));
                if (count($second) == 0) {
-                  $second = array("");
+                  $second = [""];
                }
-               $textual = array_merge($first, array(""), $second);
+               $textual = array_merge($first, [""], $second);
                break;
             }
          }
@@ -892,7 +892,7 @@ class IPAddress extends CommonDBChild {
       $address = new self();
 
       if (!$address->setAddressFromString($IPaddress)) {
-         return array();
+         return [];
       }
 
       $query = "SELECT `gip`.`id`
@@ -903,11 +903,11 @@ class IPAddress extends CommonDBChild {
       for ($i = $startIndex; $i < 4; ++$i) {
          $query .= "AND `gip`.`binary_$i` = '".$binaryIP[$i]."'";
       }
-      $addressesWithItems = array();
+      $addressesWithItems = [];
       foreach ($DB->request($query) as $result) {
          if ($address->getFromDB($result['id'])) {
             $addressesWithItems[] = array_merge(array_reverse($address->recursivelyGetItems()),
-                                                array(clone $address));
+                                                [clone $address]);
          }
       }
       return $addressesWithItems;
@@ -947,15 +947,15 @@ class IPAddress extends CommonDBChild {
          foreach ($addressesWithItems as $items) {
             foreach ($items as $item) {
                if ($item->getEntityID() == $entity) {
-                  $result = array("id"       => $item->getID(),
-                                  "itemtype" => $item->getType());
+                  $result = ["id"       => $item->getID(),
+                                  "itemtype" => $item->getType()];
                   unset($addressesWithItems);
                   return $result;
                }
             }
          }
       }
-      return array();
+      return [];
    }
 
 
@@ -995,8 +995,8 @@ class IPAddress extends CommonDBChild {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -1037,14 +1037,14 @@ class IPAddress extends CommonDBChild {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
-      if (($item !== NULL)
+      if (($item !== null)
           && ($item->getType() == 'IPNetwork')) {
 
-         $queries = array();
+         $queries = [];
          foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
             $queries[] = "(SELECT ADDR.`binary_0` AS binary_0,
@@ -1160,7 +1160,7 @@ class IPAddress extends CommonDBChild {
          $networkname = new NetworkName();
          $networkport = new NetworkPort();
 
-         $item = NULL;
+         $item = null;
          foreach ($DB->request($query) as $line) {
 
             unset($row);
@@ -1204,7 +1204,7 @@ class IPAddress extends CommonDBChild {
                $item->getFromDB($line['addr_item_id']);
                if ($item instanceof CommonDBChild) {
                   $items    = $item->recursivelyGetItems();
-                  $elements = array($item->getLink());
+                  $elements = [$item->getLink()];
                   foreach ($items as $item_) {
                      $elements[] = $item_->getLink();
                   }

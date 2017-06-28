@@ -52,12 +52,12 @@ class Item_DeviceMotherboard extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities($specif='') {
-      return array('serial' => parent::getSpecificities('serial'),
+   static function getSpecificities($specif = '') {
+      return ['serial' => parent::getSpecificities('serial'),
                   'otherserial' => parent::getSpecificities('otherserial'),
                   'locations_id' => parent::getSpecificities('locations_id'),
                    'states_id' => parent::getSpecificities('states_id')
-                  );
+                  ];
    }
 
 }

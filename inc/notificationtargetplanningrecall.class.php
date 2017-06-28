@@ -48,28 +48,28 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
    function getEvents() {
-      return array('planningrecall' => __('Planning recall'));
+      return ['planningrecall' => __('Planning recall')];
    }
 
 
    /**
-    * @see NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::addNotificationTargets()
    **/
-   function getNotificationTargets($entity) {
+   function addNotificationTargets($entity) {
       $this->addTarget(Notification::AUTHOR, __('Requester'));
       $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
    }
 
    /**
-    * @see NotificationTarget::getSpecificTargets()
+    * @see NotificationTarget::addSpecificTargets()
    **/
-   function getSpecificTargets($data, $options) {
+   function addSpecificTargets($data, $options) {
       switch ($data['type']) {
          case Notification::USER_TYPE :
             switch ($data['items_id']) {
                //Send to the ITIL object followup author
                case Notification::TASK_ASSIGN_TECH :
-                  $this->getTaskAssignUser($options);
+                  $this->addTaskAssignUser($options);
                   break;
             }
          break;
@@ -81,96 +81,93 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     *
     * @param $options array
    **/
-   function getTaskAssignUser() {
+   function addTaskAssignUser() {
       $item = new $this->obj->fields['itemtype'];
       if ($item->getFromDB($this->obj->fields['items_id'])) {
          $user = new User();
          if ($item->isField('users_id_tech')
              && $user->getFromDB($item->getField('users_id_tech'))) {
-            $this->addToAddressesList(array('language' => $user->getField('language'),
-                                            'users_id' => $user->getField('id')));
+            $this->addToRecipientsList(['language' => $user->getField('language'),
+                                            'users_id' => $user->getField('id')]);
          }
       }
    }
 
 
-   /**
-    * @see NotificationTarget::getDatasForTemplate()
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                             = $this->getAllEvents();
       $target_object                      = reset($this->target_object);;
 
-      $this->datas['##recall.action##']   = $events[$event];
-      $this->datas['##recall.itemtype##'] = $target_object->getTypeName(1);
-      $this->datas['##recall.item.URL##'] = '';
+      $this->data['##recall.action##']   = $events[$event];
+      $this->data['##recall.itemtype##'] = $target_object->getTypeName(1);
+      $this->data['##recall.item.URL##'] = '';
       // For task show parent link
       if (($target_object instanceof CommonDBChild)
           || ($target_object instanceof CommonITILTask)) {
 
          $item2   = $target_object->getItem();
-         $this->datas['##recall.item.url##']
+         $this->data['##recall.item.url##']
                   = $this->formatURL($options['additionnaloption']['usertype'],
                                      $item2->getType()."_".$item2->getID());
 
       } else {
-         $this->datas['##recall.item.url##']
+         $this->data['##recall.item.url##']
                   = $this->formatURL($options['additionnaloption']['usertype'],
                                      $target_object->getType().
                                           "_".$target_object->getID());
       }
-      $this->datas['##recall.item.name##'] = '';
+      $this->data['##recall.item.name##'] = '';
 
       if ($target_object->isField('name')) {
-         $this->datas['##recall.item.name##'] = $target_object->getField('name');
+         $this->data['##recall.item.name##'] = $target_object->getField('name');
       } else {
          if (($item2 = $target_object->getItem())
              && $item2->isField('name')) {
-            $this->datas['##recall.item.name##'] = $item2->getField('name');
+            $this->data['##recall.item.name##'] = $item2->getField('name');
          }
       }
 
-      $this->datas['##recall.item.content##'] = '';
+      $this->data['##recall.item.content##'] = '';
       if ($target_object->isField('content')) {
-         $this->datas['##recall.item.content##'] = $target_object->getField('content');
+         $this->data['##recall.item.content##'] = $target_object->getField('content');
       }
       if ($target_object->isField('text')) {
-         $this->datas['##recall.item.content##'] = $target_object->getField('text');
+         $this->data['##recall.item.content##'] = $target_object->getField('text');
       }
-      $this->datas['##recall.item.private##'] = '';
+      $this->data['##recall.item.private##'] = '';
       if ($target_object->isField('is_private')) {
-         $this->datas['##recall.item.private##']
+         $this->data['##recall.item.private##']
                      = Dropdown::getYesNo($target_object->getField('is_private'));
       }
 
-      $this->datas['##recall.item.date_mod##'] = '';
+      $this->data['##recall.item.date_mod##'] = '';
       if ($target_object->isField('date_mod')) {
-         $this->datas['##recall.item.date_mod##']
+         $this->data['##recall.item.date_mod##']
                      = Html::convDateTime($target_object->getField('date_mod'));
       }
 
-      $this->datas['##recall.item.user##'] = '';
+      $this->data['##recall.item.user##'] = '';
       $user_tmp                            = new User();
       if ($user_tmp->getFromDB($target_object->getField('users_id'))) {
-         $this->datas['##recall.item.user##'] = $user_tmp->getName();
+         $this->data['##recall.item.user##'] = $user_tmp->getName();
       }
 
-      $this->datas['##recall.planning.state##'] = '';
+      $this->data['##recall.planning.state##'] = '';
       if ($target_object->isField('state')) {
-         $this->datas['##recall.planning.state##']
+         $this->data['##recall.planning.state##']
                      = Planning::getState($target_object->getField('state'));
       }
 
-      $this->datas['##recall.planning.begin##']
+      $this->data['##recall.planning.begin##']
                   = Html::convDateTime($target_object->getField('begin'));
-      $this->datas['##recall.planning.end##']
+      $this->data['##recall.planning.end##']
                   = Html::convDateTime($target_object->getField('end'));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -178,7 +175,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('recall.action'            => _n('Event', 'Events', 1),
+      $tags_all = ['recall.action'            => _n('Event', 'Events', 1),
                         'recall.item.user'         => __('Writer'),
                         'recall.item.date_mod'     => __('Last update'),
                         'recall.item.name'         => __('Title'),
@@ -189,12 +186,12 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
                         'recall.planning.begin'    => __('Start date'),
                         'recall.planning.state'    => __('Status'),
                         'recall.planning.end'      => __('End date'),
-                        );
+                        ];
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       asort($this->tag_descriptions);
@@ -210,7 +207,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     *
     * @return the object associated with the itemtype
    **/
-   function getObjectItem($event='') {
+   function getObjectItem($event = '') {
 
       if ($this->obj) {
          if (($item = getItemForItemtype($this->obj->getField('itemtype')))

@@ -54,7 +54,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static public $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Installation', 'Installations', $nb);
    }
 
@@ -110,19 +110,19 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          case 'add' :
             Software::dropdownSoftwareToInstall('peer_softwareversions_id',
                                                 $_SESSION["glpiactive_entity"]);
-            echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction'])."</span>";
             return true;
 
          case 'move_version' :
             $input = $ma->getInput();
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
-                  $options = array('softwares_id' => $input['options']['move']['softwares_id']);
+                  $options = ['softwares_id' => $input['options']['move']['softwares_id']];
                   if (isset($input['options']['move']['used'])) {
                      $options['used'] = $input['options']['move']['used'];
                   }
                   SoftwareVersion::dropdownForOneSoftware($options);
-                  echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
+                  echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                   return true;
                }
             }
@@ -148,9 +148,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                foreach ($ids as $id) {
                   if ($item->can($id, UPDATE)) {
                      //Process rules
-                     if ($item->update(array('id' => $id,
+                     if ($item->update(['id' => $id,
                                              'softwareversions_id'
-                                                  => $input['softwareversions_id']))) {
+                                                  => $input['softwareversions_id']])) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -172,9 +172,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                foreach ($ids as $id) {
                   if ($item->can($id, UPDATE)) {
                      //Process rules
-                     if ($itemtoadd->add(array('computers_id' => $id,
+                     if ($itemtoadd->add(['computers_id' => $id,
                                                'softwareversions_id'
-                                                              => $_POST['peer_softwareversions_id']))) {
+                                                              => $_POST['peer_softwareversions_id']])) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -224,7 +224,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return number of installations
    **/
-   static function countForVersion($softwareversions_id, $entity='') {
+   static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
@@ -317,10 +317,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          return false;
       }
 
-      $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
+      $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
       $canshowcomputer = Computer::canView();
 
-      $refcolumns = array('vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
+      $refcolumns = ['vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
                           'compname'          => __('Name'),
                           'entity'            => __('Entity'),
                           'serial'            => __('Serial number'),
@@ -330,7 +330,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           'groupe,compname'   => __('Group'),
                           'username,compname' => __('User'),
                           'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
-                          'date_instal'       => __('Installation date'));
+                          'date_install'      => __('Installation date')];
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
       }
@@ -469,20 +469,20 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
-                  = array('num_displayed'
+                  = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
                           'container'
                            => 'mass'.__CLASS__.$rand,
                           'specific_actions'
-                           => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_version'
+                           => [__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_version'
                                           => _x('button', 'Move'),
-                                    'purge' => _x('button', 'Delete permanently')));
+                                    'purge' => _x('button', 'Delete permanently')]];
                // Options to update version
                $massiveactionparams['extraparams']['options']['move']['softwares_id'] = $softwares_id;
                if ($crit=='softwares_id') {
-                  $massiveactionparams['extraparams']['options']['move']['used'] = array();
+                  $massiveactionparams['extraparams']['options']['move']['used'] = [];
                } else {
-                  $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
+                  $massiveactionparams['extraparams']['options']['move']['used'] = [$searchID];
                }
 
                Html::showMassiveActions($massiveactionparams);
@@ -656,7 +656,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       if (!Software::canView()) {
@@ -665,7 +665,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
-      $canedit      = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
+      $canedit      = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
       $entities_id  = $comp->fields["entities_id"];
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
@@ -742,10 +742,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Category')."</td><td>";
-      SoftwareCategory::dropdown(array('value'      => $crit,
-                                       'toadd'      => array('-1' =>  __('All categories')),
+      SoftwareCategory::dropdown(['value'      => $crit,
+                                       'toadd'      => ['-1' =>  __('All categories')],
                                        'emptylabel' => __('Uncategorized software'),
-                                       'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+                                       'on_change'  => 'reloadTab("start=0&criterion="+this.value)']);
       echo "</td></tr></table></div>";
       $number = $DB->numrows($result);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
@@ -753,7 +753,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $start = 0;
       }
 
-      $installed = array();
+      $installed = [];
 
       if ($number) {
          echo "<div class='spaced'>";
@@ -763,12 +763,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
-               = array('num_displayed'
+               = ['num_displayed'
                          => min($_SESSION['glpilist_limit'], $number),
                        'container'
                          => 'mass'.__CLASS__.$rand,
                        'specific_actions'
-                         => array('purge' => _x('button', 'Delete permanently')));
+                         => ['purge' => _x('button', 'Delete permanently')]];
 
             Html::showMassiveActions($massiveactionparams);
          }
@@ -876,15 +876,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
 
-            $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                              'install' => _x('button', 'Install'));
+            $actions = ['Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                              'install' => _x('button', 'Install')];
             if (SoftwareLicense::canUpdate()) {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
 
-            $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
                                          'container'        => 'massSoftwareLicense'.$rand,
-                                         'specific_actions' => $actions);
+                                         'specific_actions' => $actions];
 
             Html::showMassiveActions($massiveactionparams);
          }
@@ -982,7 +982,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            OR (`glpi_softwarelicenses`.`softwareversions_id_use` = '0'
                                AND `glpi_softwarelicenses`.`softwareversions_id_buy` = '$verid'))";
 
-      $licids = array();
+      $licids = [];
       foreach ($DB->request($query) as $licdata) {
          $licids[]  = $licdata['id'];
          $licserial = $licdata['serial'];
@@ -1001,7 +1001,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                          "<tr><td>". __('Comments').'</td><td>'.$licdata['comment']."</td></tr>".
                          "</table>";
 
-            Html::showToolTip($comment, array('link' => $link));
+            Html::showToolTip($comment, ['link' => $link]);
             echo "<br>";
          }
       }
@@ -1081,7 +1081,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                  "<tr><td>".__('Serial number')."</td><td>".$data['serial']."</td></tr>".
                  "<tr><td>". __('Comments')."</td><td>".$data['comment']."</td></tr></table>";
 
-      Html::showToolTip($comment, array('link' => $link));
+      Html::showToolTip($comment, ['link' => $link]);
       echo "</td></tr>\n";
    }
 
@@ -1095,13 +1095,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   function upgrade($instID, $softwareversions_id, $dohistory=1) {
+   function upgrade($instID, $softwareversions_id, $dohistory = 1) {
 
       if ($this->getFromDB($instID)) {
          $computers_id = $this->fields['computers_id'];
-         $this->delete(array('id' => $instID));
-         $this->add(array('computers_id'        => $computers_id,
-                          'softwareversions_id' => $softwareversions_id));
+         $this->delete(['id' => $instID]);
+         $this->add(['computers_id'        => $computers_id,
+                          'softwareversions_id' => $softwareversions_id]);
       }
    }
 
@@ -1133,7 +1133,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nb = 0;
       switch ($item->getType()) {
@@ -1151,9 +1151,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForVersion($item->getID());
                }
-               return array(1 => __('Summary'),
+               return [1 => __('Summary'),
                             2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                                      $nb));
+                                                      $nb)];
             }
             break;
 
@@ -1178,7 +1178,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software') {
          self::showForSoftware($item);

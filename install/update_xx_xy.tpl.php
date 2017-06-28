@@ -45,7 +45,7 @@ function updateXXtoXY() {
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), 'XY'));
@@ -54,7 +54,7 @@ function updateXXtoXY() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?

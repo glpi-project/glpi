@@ -43,13 +43,13 @@ function update0831to0833() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    $migration->displayTitle(sprintf(__('Update to %s'), '0.83.3'));
    $migration->setVersion('0.83.3');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?

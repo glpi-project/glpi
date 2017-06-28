@@ -55,42 +55,42 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2) {
+   static function clean($value, $striptags = true, $keep_bad = 2) {
       $value = Html::entity_decode_deep($value);
 
       // Clean MS office tags
-      $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
+      $value = str_replace(["<![if !supportLists]>", "<![endif]>"], '', $value);
 
       if ($striptags) {
          // Strip ToolTips
-         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si',
+         $specialfilter = ['@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si',
                                 '@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si',
                                 '@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si',
-                                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si');
+                                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'];
          $value         = preg_replace($specialfilter, '', $value);
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
          $value = preg_replace("/(&nbsp;| |\xC2\xA0)+/", " ", $value);
       }
 
-      $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+      $search = ['@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
                       '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
                       '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
                       '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                       );
+                       ];
       $value = preg_replace($search, '', $value);
 
       // Neutralize not well formatted html tags
       $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
 
       include_once(GLPI_HTMLAWED);
-      $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
+      $value = htmLawed($value, ['elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
-                                      ));
+                                      ]);
 
-      $value = str_replace(array("\r\n", "\r"), "\n", $value);
+      $value = str_replace(["\r\n", "\r"], "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
       return trim($value);
@@ -106,7 +106,7 @@ class Html {
    **/
    static function entity_decode_deep($value) {
 
-      return (is_array($value) ? array_map(array(__CLASS__, 'entity_decode_deep'), $value)
+      return (is_array($value) ? array_map([__CLASS__, 'entity_decode_deep'], $value)
                                : html_entity_decode($value, ENT_QUOTES, "UTF-8"));
    }
 
@@ -120,7 +120,7 @@ class Html {
    **/
    static function entities_deep($value) {
 
-      return (is_array($value) ? array_map(array(__CLASS__, 'entities_deep'), $value)
+      return (is_array($value) ? array_map([__CLASS__, 'entities_deep'], $value)
                                : htmlentities($value, ENT_QUOTES, "UTF-8"));
    }
 
@@ -133,10 +133,10 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDate($time, $format=null) {
+   static function convDate($time, $format = null) {
 
       if (is_null($time) || $time == 'NULL' || trim($time) == '') {
-         return NULL;
+         return null;
       }
 
       if (!isset($_SESSION["glpidate_format"])) {
@@ -182,10 +182,10 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDateTime($time, $format=null) {
+   static function convDateTime($time, $format = null) {
 
       if (is_null($time) || ($time == 'NULL')) {
-         return NULL;
+         return null;
       }
 
       return self::convDate($time, $format).' '. substr($time, 11, 5);
@@ -227,7 +227,7 @@ class Html {
    **/
    static function nl2br_deep($value) {
 
-      return (is_array($value) ? array_map(array(__CLASS__, 'nl2br_deep'), $value)
+      return (is_array($value) ? array_map([__CLASS__, 'nl2br_deep'], $value)
                                : nl2br($value));
    }
 
@@ -240,7 +240,7 @@ class Html {
     *
     * @return cut string
    **/
-   static function resume_text($string, $length=255) {
+   static function resume_text($string, $length = 255) {
 
       if (Toolbox::strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
@@ -258,7 +258,7 @@ class Html {
     *
     * @return cut string
     **/
-   static function resume_name($string, $length=255) {
+   static function resume_name($string, $length = 255) {
 
       if (strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."...";
@@ -278,18 +278,18 @@ class Html {
    static function cleanPostForTextArea($value) {
 
       if (is_array($value)) {
-         return array_map(array(__CLASS__, __METHOD__), $value);
+         return array_map([__CLASS__, __METHOD__], $value);
       }
-      $order   = array('\r\n',
+      $order   = ['\r\n',
                        '\n',
                        "\\'",
                        '\"',
-                       '\\\\');
-      $replace = array("\n",
+                       '\\\\'];
+      $replace = ["\n",
                        "\n",
                        "'",
                        '"',
-                       "\\");
+                       "\\"];
       return str_replace($order, $replace, $value);
    }
 
@@ -304,7 +304,7 @@ class Html {
     *
     * @return formatted number
    **/
-   static function formatNumber($number, $edit=false, $forcedecimal=-1) {
+   static function formatNumber($number, $edit = false, $forcedecimal = -1) {
       global $CFG_GLPI;
 
       // Php 5.3 : number_format() expects parameter 1 to be double,
@@ -355,7 +355,7 @@ class Html {
     *
     * @return string
    **/
-   static function timestampToString($time, $display_sec=true, $use_days=true) {
+   static function timestampToString($time, $display_sec = true, $use_days = true) {
 
       $sign = '';
       if ($time < 0) {
@@ -488,7 +488,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function redirectToLogin($params='') {
+   static function redirectToLogin($params = '') {
       global $CFG_GLPI;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
@@ -666,14 +666,14 @@ class Html {
     *
     * @return nothing
    **/
-   static function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
+   static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
       $ref_pic_text = htmlentities($ref_pic_text, ENT_QUOTES, 'UTF-8');
 
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
          $ref_pic_text = self::clean($ref_pic_text);
-         echo "<td>".Html::image($ref_pic_link, array('alt' => $ref_pic_text))."</td>";
+         echo "<td>".Html::image($ref_pic_link, ['alt' => $ref_pic_text])."</td>";
       }
 
       if ($ref_title != "") {
@@ -719,7 +719,7 @@ class Html {
     *
     * @return void
    **/
-   static function displayDebugInfos($with_session=true, $ajax=false) {
+   static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
       // Only for debug mode so not need to be translated
@@ -843,7 +843,7 @@ class Html {
     *
     * @return nothing as function kill script
    **/
-   static function displayErrorAndDie ($message, $minimal=false) {
+   static function displayErrorAndDie ($message, $minimal = false) {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
@@ -858,7 +858,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", array('alt' => __('Warning')));
+      echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", ['alt' => __('Warning')]);
       echo "<br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
@@ -874,7 +874,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function addConfirmationOnAction($string, $additionalactions='') {
+   static function addConfirmationOnAction($string, $additionalactions = '') {
 
       return "onclick=\"".Html::getConfirmationOnActionScript($string, $additionalactions)."\"";
    }
@@ -891,10 +891,10 @@ class Html {
     *
     * @return confirmation script
    **/
-   static function getConfirmationOnActionScript($string, $additionalactions='') {
+   static function getConfirmationOnActionScript($string, $additionalactions = '') {
 
       if (!is_array($string)) {
-         $string = array($string);
+         $string = [$string];
       }
       $string            = Toolbox::addslashes_deep($string);
       $additionalactions = trim($additionalactions);
@@ -937,11 +937,11 @@ class Html {
     *
     * @return nothing (display)
     **/
-   static function progressBar($id, array $options=array()) {
+   static function progressBar($id, array $options = []) {
 
-      $params            = array();
+      $params            = [];
       $params['create']  = false;
-      $params['message'] = NULL;
+      $params['message'] = null;
       $params['percent'] = -1;
 
       if (is_array($options) && count($options)) {
@@ -959,7 +959,7 @@ class Html {
          echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
       }
 
-      if ($params['message'] !== NULL) {
+      if ($params['message'] !== null) {
          echo Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
                                 addslashes($params['message'])."\");");
       }
@@ -983,9 +983,9 @@ class Html {
     *
     * @return nothing
     **/
-   static function createProgressBar($msg="&nbsp;") {
+   static function createProgressBar($msg = "&nbsp;") {
 
-      $options = array('create' => true);
+      $options = ['create' => true];
       if ($msg != "&nbsp;") {
          $options['message'] = $msg;
       }
@@ -1000,9 +1000,9 @@ class Html {
     *
     * @return nothing
    **/
-   static function changeProgressBarMessage($msg="&nbsp;") {
+   static function changeProgressBarMessage($msg = "&nbsp;") {
 
-      self::progressBar('doaction_progress', array('message' => $msg));
+      self::progressBar('doaction_progress', ['message' => $msg]);
       self::glpi_flush();
    }
 
@@ -1016,9 +1016,9 @@ class Html {
     *
     * @return nothing
    **/
-   static function changeProgressBarPosition($crt, $tot, $msg="") {
+   static function changeProgressBarPosition($crt, $tot, $msg = "") {
 
-      $options = array();
+      $options = [];
 
       if (!$tot) {
          $options['percent'] = 0;
@@ -1049,7 +1049,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function displayProgressBar($width, $percent, $options=array()) {
+   static function displayProgressBar($width, $percent, $options = []) {
       global $CFG_GLPI;
 
       $param['title']        = __('Progress');
@@ -1102,7 +1102,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function includeHeader($title='', $sector = 'none', $item = 'none', $option = '') {
+   static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // complete title with id if exist
@@ -1137,6 +1137,10 @@ class Html {
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
       echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
+      if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
+         Html::requireJs('notifications_ajax');
+      }
+
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
          $jslibs = [];
@@ -1154,9 +1158,9 @@ class Html {
 
          if (in_array('fullcalendar', $jslibs)) {
             echo Html::css('lib/jqueryplugins/fullcalendar/fullcalendar.css',
-                           array('media' => ''));
+                           ['media' => '']);
             echo Html::css('/lib/jqueryplugins/fullcalendar/fullcalendar.print.css',
-                           array('media' => 'print'));
+                           ['media' => 'print']);
             Html::requireJs('fullcalendar');
          }
 
@@ -1194,6 +1198,9 @@ class Html {
       //file upload is required... almost everywhere.
       Html::requireJs('fileupload');
 
+      // load fuzzy search everywhere
+      Html::requireJs('fuzzy');
+
       echo Html::css('css/jquery-glpi.css');
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
@@ -1218,7 +1225,7 @@ class Html {
       echo "<!--[if lte IE 8]>";
       echo Html::css('css/styles_ie.css');
       echo "<![endif]-->";
-      echo Html::css('css/print.css', array('media' => 'print'));
+      echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
@@ -1271,34 +1278,34 @@ class Html {
    static function getMenuInfos() {
 
       $menu['assets']['title']       = __('Assets');
-      $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
+      $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
                                              'NetworkEquipment', 'Peripheral', 'Printer',
-                                             'CartridgeItem', 'ConsumableItem', 'Phone' );
+                                             'CartridgeItem', 'ConsumableItem', 'Phone' ];
 
       $menu['helpdesk']['title']     = __('Assistance');
-      $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
-                                             'Planning', 'Stat', 'TicketRecurrent');
+      $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
+                                             'Planning', 'Stat', 'TicketRecurrent'];
 
       $menu['management']['title']   = __('Management');
-      $menu['management']['types']   = array('SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                                'Document');
+      $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
+                                                'Document'];
 
       $menu['tools']['title']        = __('Tools');
-      $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+      $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                              'ReservationItem', 'Report', 'MigrationCleaner',
-                                             'SavedSearch');
+                                             'SavedSearch'];
 
       $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['types']      = array();
+      $menu['plugins']['types']      = [];
 
       $menu['admin']['title']        = __('Administration');
-      $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
-                                             'Profile', 'QueuedMail', 'Backup', 'Event');
+      $menu['admin']['types']        = ['User', 'Group', 'Entity', 'Rule',
+                                             'Profile', 'QueuedNotification', 'Backup', 'Glpi\\Event'];
 
       $menu['config']['title']       = __('Setup');
-      $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
+      $menu['config']['types']       = ['CommonDropdown', 'CommonDevice', 'Notification',
                                              'SLA', 'Config', 'Control', 'Crontask', 'Auth',
-                                             'MailCollector', 'Link', 'Plugin');
+                                             'MailCollector', 'Link', 'Plugin'];
 
       // Special items
       $menu['preference']['title']   = __('My settings');
@@ -1307,53 +1314,23 @@ class Html {
       return $menu;
    }
 
-
    /**
-    * Print a nice HTML head for every page
+    * Generate menu array in $_SESSION['glpimenu'] and return the array
     *
-    * @param $title     title of the page
-    * @param $url       not used anymore (default '')
-    * @param $sector    sector in which the page displayed is (default 'none')
-    * @param $item      item corresponding to the page displayed (default 'none')
-    * @param $option    option corresponding to the page displayed (default '')
-   **/
-   static function header($title, $url='', $sector="none", $item="none", $option="") {
-      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+    * @since  9.2
+    *
+    * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+    * @return array          the menu array
+    */
+   static function generateMenuSession($force = false) {
+      global $PLUGIN_HOOKS;
+      $menu = [];
 
-      // If in modal : display popHeader
-      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-         return self::popHeader($title, $url);
-      }
-      // Print a nice HTML-head for every page
-      if ($HEADER_LOADED) {
-         return;
-      }
-      $HEADER_LOADED = true;
-      // Force lower case for sector and item
-      $sector = strtolower($sector);
-      $item   = strtolower($item);
-
-      self::includeHeader($title, $sector, $item, $option);
-
-      $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
-          && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!CommonGLPI::isLayoutExcludedPage()) {
-            $body_class.= " form";
-         } else {
-            $body_class = "";
-         }
-      }
-      // Body
-      echo "<body class='$body_class'>";
-      // Generate array for menu and check right
-      if (!isset($_SESSION['glpimenu'])
+      if ($force
+          || !isset($_SESSION['glpimenu'])
           || !is_array($_SESSION['glpimenu'])
           || (count($_SESSION['glpimenu']) == 0)) {
 
-         // INVENTORY
-         //don't change order in array
-         $showallassets                 = false;
          $menu = self::getMenuInfos();
 
          // Permit to plugins to add entry to others sector !
@@ -1383,7 +1360,7 @@ class Html {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                         if (!isset($menu[$category]['content'])) {
-                           $menu[$category]['content'] = array();
+                           $menu[$category]['content'] = [];
                         }
                         $menu[$category]['content'] += $data;
                      } else {
@@ -1403,8 +1380,8 @@ class Html {
             }
          }
 
-         $allassets = array('Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
-                            'Printer');
+         $allassets = ['Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
+                            'Printer'];
 
          foreach ($allassets as $type) {
             if (isset($menu['assets']['content'][strtolower($type)])) {
@@ -1422,14 +1399,59 @@ class Html {
          $menu = $_SESSION['glpimenu'];
       }
 
-      $already_used_shortcut = array('1');
+      return $menu;
+   }
+
+
+   /**
+    * Print a nice HTML head for every page
+    *
+    * @param $title     title of the page
+    * @param $url       not used anymore (default '')
+    * @param $sector    sector in which the page displayed is (default 'none')
+    * @param $item      item corresponding to the page displayed (default 'none')
+    * @param $option    option corresponding to the page displayed (default '')
+   **/
+   static function header($title, $url = '', $sector = "none", $item = "none", $option = "") {
+      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+
+      // If in modal : display popHeader
+      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+         return self::popHeader($title, $url);
+      }
+      // Print a nice HTML-head for every page
+      if ($HEADER_LOADED) {
+         return;
+      }
+      $HEADER_LOADED = true;
+      // Force lower case for sector and item
+      $sector = strtolower($sector);
+      $item   = strtolower($item);
+
+      self::includeHeader($title, $sector, $item, $option);
+
+      $body_class = "layout_".$_SESSION['glpilayout'];
+      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
+          && isset($_GET['id']) && ($_GET['id'] > 0)) {
+         if (!CommonGLPI::isLayoutExcludedPage()) {
+            $body_class.= " form";
+         } else {
+            $body_class = "";
+         }
+      }
+      // Generate array for menu and check right
+      $menu = self::generateMenuSession();
+
+      // Body
+      echo "<body class='$body_class'>";
+      $already_used_shortcut = ['1'];
 
       echo "<div id='header'>";
       echo "<div id='header_top'>";
       echo "<div id='c_logo'>";
       echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
-                      array('accesskey' => '1',
-                            'title'     => __('Home')));
+                      ['accesskey' => '1',
+                            'title'     => __('Home')]);
       echo "</div>";
 
       /// Prefs / Logout link
@@ -1464,8 +1486,9 @@ class Html {
             ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
          );
          echo "<li id='debug_mode'>";
-         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class' title='$title'>";
-         echo "<span class='sr-only'>" . _('Change mode')  . "</span>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
+                title='$title'>";
+         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
          echo "</a>";
          echo "</li>";
       }
@@ -1482,15 +1505,17 @@ class Html {
             'icon_txt'  => __('Manage saved searches')
          ]
       );
-      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
+             __s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
-      echo "<li id='help_link'><a href='".
-                 (empty($CFG_GLPI["central_doc_url"])
-                   ? "http://glpi-project.org/help-central"
-                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\" class='fa fa-question'>".
-                  "<span class='sr-only'>" . __s('Help') . "</span>";
+      echo "<li id='help_link'>".
+           "<a href='".(empty($CFG_GLPI["central_doc_url"])
+                         ? "http://glpi-project.org/help-central"
+                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+                            __s('Help')."\" class='fa fa-question'>".
+           "<span class='sr-only'>" . __s('Help') . "</span>";
       echo "</a></li>";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
@@ -1581,8 +1606,9 @@ class Html {
       echo "<ul>";
 
       // Display item
-      echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
-            __('Home')."</a></li>";
+      echo "<li class='breadcrumb_item'>".
+           "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
+             __('Home')."</a></li>";
 
       if (isset($menu[$sector])) {
          $link = "/front/central.php";
@@ -1590,7 +1616,8 @@ class Html {
          if (isset($menu[$sector]['default'])) {
             $link = $menu[$sector]['default'];
          }
-         echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
+         echo "<li class='breadcrumb_item'>".
+              "<a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
                     $menu[$sector]['title']."</a></li>";
       }
 
@@ -1606,7 +1633,8 @@ class Html {
          }
 
          if (isset($menu[$sector]['content'][$item]['page'])) {
-            echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+            echo "<li class='breadcrumb_item'>".
+                 "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
                        ($with_option?"":"class='here'")." title=\"".
                        $menu[$sector]['content'][$item]['title']."\" >".
                        $menu[$sector]['content'][$item]['title']."</a>".
@@ -1614,16 +1642,17 @@ class Html {
          }
 
          if ($with_option) {
-            echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"].
-                       $menu[$sector]['content'][$item]['options'][$option]['page'].
-                       "' class='here' title=\"".
-                       $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+            echo "<li class='breadcrumb_item'>".
+                 "<a href='".$CFG_GLPI["root_doc"].
+                      $menu[$sector]['content'][$item]['options'][$option]['page'].
+                      "' class='here' title=\"".
+                      $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
             echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
                                    17);
             echo "</a></li>";
          }
 
-         $links = array();
+         $links = [];
          // Item with Option case
          if (!empty($option)
              && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
@@ -1645,8 +1674,9 @@ class Html {
                               title='" . __('Add') ."'><i class='fa fa-plus'></i>
                               <span class='sr-only'>" . __('Add') . "</span></a>";
          } else {
-            echo "<a href='#' class='pointer disabled' title='" . __('Add is disabled')  . "'><i class='fa fa-plus'></i>
-               <span class='sr-only'>" . __('Add is disabled') . "</span></a>";
+            echo "<a href='#' class='pointer disabled' title='".__('Add is disabled')."'>".
+                 "<i class='fa fa-plus'></i>".
+                 "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
          }
          echo "</span>";
 
@@ -1657,8 +1687,9 @@ class Html {
                               title='" . __s('Search') ."'><i class='fa fa-search'></i>
                               <span class='sr-only'>" . __s('Search') . "</span></a>";
          } else {
-            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')  . "'><i class='fa fa-search'></i>
-               <span class='sr-only'>" . __('Search is disabled') . "</span></a>";
+            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')."'>".
+                 "<i class='fa fa-search'></i>".
+                 "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
          }
          echo "</span>";
          // Links
@@ -1673,32 +1704,32 @@ class Html {
                   case "template" :
                      echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                      array('alt' => __('Manage templates...'),
-                                            'url' => $CFG_GLPI["root_doc"].$val));
+                                      ['alt' => __('Manage templates...'),
+                                            'url' => $CFG_GLPI["root_doc"].$val]);
                      echo "</span>";
                      break;
 
                   case "showall" :
                      echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
-                                      array('alt' => __('Show all'),
-                                            'url' => $CFG_GLPI["root_doc"].$val));
+                                      ['alt' => __('Show all'),
+                                            'url' => $CFG_GLPI["root_doc"].$val]);
                      echo "</span>";
                      break;
 
                   case "summary" :
                      echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
-                                      array('alt' => __('Summary'),
-                                            'url' => $CFG_GLPI["root_doc"].$val));
+                                      ['alt' => __('Summary'),
+                                            'url' => $CFG_GLPI["root_doc"].$val]);
                      echo "</span>";
                      break;
 
                   case "config" :
                      echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
-                                      array('alt' => __('Setup'),
-                                            'url' => $CFG_GLPI["root_doc"].$val));
+                                      ['alt' => __('Setup'),
+                                            'url' => $CFG_GLPI["root_doc"].$val]);
                      echo "</span>";
                      break;
 
@@ -1727,12 +1758,12 @@ class Html {
       echo "</div>\n"; // fin header
 
       // Back to top button
-      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>
-               <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
-               <a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='" . __('Back to top of the page')  . "'>
-                  <span class='sr-only'>Top of the page</span>
-               </a>
-         </span>";
+      echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>".
+           "<i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>".
+           "<a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='".
+              __('Back to top of the page')."'>".
+           "<span class='sr-only'>Top of the page</span>".
+           "</a></span>";
 
       echo "<div id='page' >";
 
@@ -1754,7 +1785,7 @@ class Html {
     *
     * @param $keepDB booleen, closeDBConnections if false (false by default)
    **/
-   static function footer($keepDB=false) {
+   static function footer($keepDB = false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
       // If in modal : display popHeader
@@ -1842,7 +1873,7 @@ class Html {
     * @param $title        title of the page
     * @param $links array  of links to display
    **/
-   static function simpleHeader($title, $links=array()) {
+   static function simpleHeader($title, $links = []) {
       global $CFG_GLPI, $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
@@ -1906,7 +1937,7 @@ class Html {
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
    **/
-   static function helpHeader($title, $url='') {
+   static function helpHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
 
       // Print a nice HTML-head for help page
@@ -1981,7 +2012,7 @@ class Html {
          ]
       );
       echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . _('Saved searches')  . "</span>";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
       echo "</a></li>";
 
       echo "<li id='help_link'><a href='".
@@ -2008,14 +2039,14 @@ class Html {
       echo "<div id='c_menu'>";
 
       // Build the navigation-elements
-      $menu = array();
+      $menu = [];
 
       //  Create ticket
       if (Session::haveRight("ticket", CREATE)) {
          $menu['create_ticket']['id']      = "menu2";
          $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
          $menu['create_ticket']['title']   = __s('Create a ticket');
-         $menu['create_ticket']['content'] = array(true);
+         $menu['create_ticket']['content'] = [true];
       }
 
       //  Tickets
@@ -2025,7 +2056,7 @@ class Html {
          $menu['tickets']['id']      = "menu3";
          $menu['tickets']['default'] = '/front/ticket.php';
          $menu['tickets']['title']   = _n('Ticket', 'Tickets', Session::getPluralNumber());
-         $menu['tickets']['content'] = array(true);
+         $menu['tickets']['content'] = [true];
       }
 
       // Reservation
@@ -2033,7 +2064,7 @@ class Html {
          $menu['reservation']['id']      = "menu4";
          $menu['reservation']['default'] = '/front/reservationitem.php';
          $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
-         $menu['reservation']['content'] = array(true);
+         $menu['reservation']['content'] = [true];
       }
 
       // FAQ
@@ -2041,7 +2072,7 @@ class Html {
          $menu['faq']['id']      = "menu5";
          $menu['faq']['default'] = '/front/helpdesk.faq.php';
          $menu['faq']['title']   = __s('FAQ');
-         $menu['faq']['content'] = array(true);
+         $menu['faq']['content'] = [true];
       }
 
       echo "<ul id='menu'>";
@@ -2064,7 +2095,7 @@ class Html {
       $menu['plugins']['id']      = "menu5";
       $menu['plugins']['default'] = "#";
       $menu['plugins']['title']   = _sn('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['content'] = array();
+      $menu['plugins']['content'] = [];
       if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
           && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
 
@@ -2114,7 +2145,7 @@ class Html {
              __('Home')."</a></li>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-         $opt                              = array();
+         $opt                              = [];
          $opt['reset']                     = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
          $opt['criteria'][0]['searchtype'] = 'equals';
@@ -2199,7 +2230,7 @@ class Html {
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
    **/
-   static function nullHeader($title, $url='') {
+   static function nullHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if ($HEADER_LOADED) {
@@ -2262,7 +2293,7 @@ class Html {
     * @param $url     not used anymore (default '')
     * @param $iframed indicate if page loaded in iframe - css target (default false)
    **/
-   static function popHeader($title, $url='', $iframed = false) {
+   static function popHeader($title, $url = '', $iframed = false) {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
@@ -2309,7 +2340,7 @@ class Html {
     *          - title    : displayed label
     *          - shortcut : keyboard shortcut letter
     */
-   static function displayMenuAll($menu = array()) {
+   static function displayMenuAll($menu = []) {
       global $CFG_GLPI,$PLUGIN_HOOKS;
 
       // Display MENU ALL
@@ -2386,7 +2417,7 @@ class Html {
 
       flush();
       if (function_exists("ob_flush")
-          && (ob_get_length() !== FALSE)) {
+          && (ob_get_length() !== false)) {
          ob_flush();
       }
    }
@@ -2412,7 +2443,7 @@ class Html {
     * @param $onright            display on right of the list (false by default)
     * \deprecated since 0.84
    **/
-   static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
+   static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false) {
       global $CFG_GLPI;
 
       if ($fixed) {
@@ -2453,7 +2484,7 @@ class Html {
     * @param $confirm array of confirmation string (optional)
     * \deprecated since 0.84
    **/
-   static function closeArrowMassives($actions, $confirm=array()) {
+   static function closeArrowMassives($actions, $confirm = []) {
 
       if (count($actions)) {
          foreach ($actions as $name => $label) {
@@ -2482,7 +2513,7 @@ class Html {
     *
     * @return nothing / display item
    **/
-   static function checkAllAsCheckbox($container_id, $rand='') {
+   static function checkAllAsCheckbox($container_id, $rand = '') {
       echo Html::getCheckAllAsCheckbox($container_id, $rand);
    }
 
@@ -2497,7 +2528,7 @@ class Html {
     *
     * @return Get checkbox string
    **/
-   static function getCheckAllAsCheckbox($container_id, $rand='') {
+   static function getCheckAllAsCheckbox($container_id, $rand = '') {
 
       if (empty($rand)) {
          $rand = mt_rand();
@@ -2537,7 +2568,7 @@ class Html {
    **/
    static function getCriterionForMassiveCheckboxes(array $options) {
 
-      $params                    = array();
+      $params                    = [];
       $params['tag_for_massive'] = '';
       $params['container_id']    = '';
 
@@ -2595,7 +2626,7 @@ class Html {
    static function getCheckbox(array $options) {
       global $CFG_GLPI;
 
-      $params                    = array();
+      $params                    = [];
       $params['title']           = '';
       $params['name']            = '';
       $params['rand']            = mt_rand();
@@ -2605,8 +2636,8 @@ class Html {
       $params['massive_tags']    = '';
       $params['checked']         = false;
       $params['zero_on_empty']   = true;
-      $params['specific_tags']   = array();
-      $params['criterion']       = array();
+      $params['specific_tags']   = [];
+      $params['criterion']       = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2617,7 +2648,7 @@ class Html {
       $out = "<span class='form-group-checkbox'>";
       $out.= "<input type='checkbox' class='new_checkbox' ";
 
-      foreach (array('id', 'name', 'title', 'value') as $field) {
+      foreach (['id', 'name', 'title', 'value'] as $field) {
          if (!empty($params[$field])) {
             $out .= " $field='".$params[$field]."'";
          }
@@ -2681,7 +2712,7 @@ class Html {
     *
     * @return nothing (display only)
    **/
-   static function showCheckbox(array $options=array()) {
+   static function showCheckbox(array $options = []) {
       echo self::getCheckbox($options);
    }
 
@@ -2697,7 +2728,7 @@ class Html {
     *
     * @return get checkbox
    **/
-   static function getMassiveActionCheckBox($itemtype, $id, array $options=array()) {
+   static function getMassiveActionCheckBox($itemtype, $id, array $options = []) {
 
       $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
       if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
@@ -2721,7 +2752,7 @@ class Html {
     *
     * @return show checkbox
    **/
-   static function showMassiveActionCheckBox($itemtype, $id, array $options=array()) {
+   static function showMassiveActionCheckBox($itemtype, $id, array $options = []) {
       echo Html::getMassiveActionCheckBox($itemtype, $id, $options);
    }
 
@@ -2735,7 +2766,7 @@ class Html {
     *
     * @return nothing / display item
    **/
-   static function openMassiveActionsForm($name='') {
+   static function openMassiveActionsForm($name = '') {
       echo Html::getOpenMassiveActionsForm($name);
    }
 
@@ -2749,7 +2780,7 @@ class Html {
     *
     * @return open form string
    **/
-   static function getOpenMassiveActionsForm($name='') {
+   static function getOpenMassiveActionsForm($name = '') {
       global $CFG_GLPI;
 
       if (empty($name)) {
@@ -2772,14 +2803,17 @@ class Html {
     * must contains :
     *    - container       : DOM ID of the container of the item checkboxes (since version 0.85)
     * may contains :
-    *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
+    *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit.
+    *                        (default -1 not to check)
     *    - ontop           : boolean true if displayed on top (default true)
     *    - fixed           : boolean true if used with fixed table display (default true)
     *    - forcecreate     : boolean force creation of modal window (default = false).
     *            Modal is automatically created when displayed the ontop item.
     *            If only a bottom one is displayed use it
-    *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype (default empty)
-    *    - check_items_id   : integer ID of the alternate item used to check right / optional (default empty)
+    *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype
+    *                         (default empty)
+    *    - check_items_id   : integer ID of the alternate item used to check right / optional
+    *                         (default empty)
     *    - is_deleted       : boolean is massive actions for deleted items ?
     *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
     *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
@@ -2792,7 +2826,7 @@ class Html {
     *
     * @return bool|string     the html if display parameter is false, or true
    **/
-   static function showMassiveActions($options=array()) {
+   static function showMassiveActions($options = []) {
       global $CFG_GLPI;
 
       /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
@@ -2804,11 +2838,11 @@ class Html {
       $p['check_itemtype']    = '';
       $p['check_items_id']    = '';
       $p['is_deleted']        = false;
-      $p['extraparams']       = array();
+      $p['extraparams']       = [];
       $p['width']             = 800;
       $p['height']            = 400;
-      $p['specific_actions']  = array();
-      $p['add_actions']       = array();
+      $p['specific_actions']  = [];
+      $p['add_actions']       = [];
       $p['confirm']           = '';
       $p['rand']              = '';
       $p['container']         = '';
@@ -2900,13 +2934,13 @@ class Html {
 
             $out .= Ajax::createModalWindow('massiveaction_window'.$identifier,
                                             $url,
-                                            array('title'           => $p['title'],
+                                            ['title'           => $p['title'],
                                                   'container'       => 'massiveactioncontent'.$identifier,
                                                   'extraparams'     => $p['extraparams'],
                                                   'width'           => $p['width'],
                                                   'height'          => $p['height'],
                                                   'js_modal_fields' => $js_modal_fields,
-                                                  'display'         => false));
+                                                  'display'         => false]);
          }
          $out .= "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
@@ -2928,7 +2962,7 @@ class Html {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
-            $_SESSION['glpimassiveactionselected'] = array();
+            $_SESSION['glpimassiveactionselected'] = [];
          }
       }
 
@@ -2955,14 +2989,14 @@ class Html {
     * @return rand value used
     * \deprecated since 0.84 used Html::showDateField instead
    **/
-   static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
-                                    $minDate='', $maxDate='', $displayYear=true) {
-      return self::showDateField($element, array('value'       => $value,
+   static function showDateFormItem($element, $value = '', $maybeempty = true, $can_edit = true,
+                                    $minDate = '', $maxDate = '', $displayYear = true) {
+      return self::showDateField($element, ['value'       => $value,
                                                  'maybeempty'  => $maybeempty,
                                                  'canedit'     => $can_edit,
                                                  'min'         => $minDate,
                                                  'max'         => $maxDate,
-                                                 'showyear' => $displayYear));
+                                                 'showyear' => $displayYear]);
    }
 
 
@@ -2985,7 +3019,7 @@ class Html {
     *
     * @return rand value used if displayes else string
    **/
-   static function showDateField($name, $options=array()) {
+   static function showDateField($name, $options = []) {
       global $CFG_GLPI;
 
       $p['value']      = '';
@@ -3006,8 +3040,8 @@ class Html {
       $output = "<div class='no-wrap'>";
       $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
-      $output .= Html::hidden($name, array('value' => $p['value'],
-                                           'id'    => "hiddendate".$p['rand']));
+      $output .= Html::hidden($name, ['value' => $p['value'],
+                                           'id'    => "hiddendate".$p['rand']]);
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
                       "' id='resetdate".$p['rand']."'>" .
@@ -3087,7 +3121,7 @@ class Html {
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
    **/
-   static function showColorField($name, $options=array()) {
+   static function showColorField($name, $options = []) {
       $p['value']      = '';
       $p['rand']       = mt_rand();
       $p['display']    = true;
@@ -3130,18 +3164,18 @@ class Html {
     * @return rand value used
     * \deprecated since 0.84 used Html::showDateTimeField instead
    **/
-   static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
-                                        $can_edit=true, $minDate='', $maxDate='', $minTime='',
-                                        $maxTime='') {
+   static function showDateTimeFormItem($element, $value = '', $time_step = -1, $maybeempty = true,
+                                        $can_edit = true, $minDate = '', $maxDate = '', $minTime = '',
+                                        $maxTime = '') {
 
-      return self::showDateTimeField($element, array('value'      => $value,
+      return self::showDateTimeField($element, ['value'      => $value,
                                                      'timestep'   => $time_step,
                                                      'maybeempty' => $maybeempty,
                                                      'canedit'    => $can_edit,
                                                      'mindate'    => $minDate,
                                                      'maxdate'    => $maxDate,
                                                      'mintime'    => $minTime,
-                                                     'maxtime'    => $maxTime));
+                                                     'maxtime'    => $maxTime]);
    }
 
 
@@ -3168,7 +3202,7 @@ class Html {
     *
     * @return rand value used if displayes else string
    **/
-   static function showDateTimeField($name, $options = array()) {
+   static function showDateTimeField($name, $options = []) {
       global $CFG_GLPI;
 
       $p['value']      = '';
@@ -3237,7 +3271,7 @@ class Html {
          $output .= " required='required'";
       }
       $output .= ">";
-      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
+      $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddendate".$p['rand']]);
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
                       "' id='resetdate".$p['rand']."'>" .
@@ -3323,7 +3357,7 @@ class Html {
     *
     * @return rand value of dropdown
    **/
-   static function showGenericDateTimeSearch($element, $value='', $options=array()) {
+   static function showGenericDateTimeSearch($element, $value = '', $options = []) {
       global $CFG_GLPI;
 
       $p['with_time']          = false;
@@ -3366,19 +3400,19 @@ class Html {
       $dates      = Html::getGenericDateTimeSearchItems($p);
 
       $output    .= Dropdown::showFromArray("_select_$element", $dates,
-                                                  array('value'   => $value,
+                                                  ['value'   => $value,
                                                         'display' => false,
-                                                        'rand'    => $rand));
+                                                        'rand'    => $rand]);
       $field_id   = Html::cleanId("dropdown__select_$element$rand");
 
       $output    .= "</td><td width='50%'>";
       $contentid  = Html::cleanId("displaygenericdate$element$rand");
       $output    .= "<span id='$contentid'></span>";
 
-      $params     = array('value'         => '__VALUE__',
+      $params     = ['value'         => '__VALUE__',
                           'name'          => $element,
                           'withtime'      => $p['with_time'],
-                          'specificvalue' => $specific_value);
+                          'specificvalue' => $specific_value];
 
       $output    .= Ajax::updateItemOnSelectEvent($field_id, $contentid,
                                                   $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
@@ -3422,7 +3456,7 @@ class Html {
          }
       }
 
-      $dates = array();
+      $dates = [];
       if ($params['with_time']) {
          $dates['NOW'] = __('Now');
          if ($params['with_days']) {
@@ -3516,7 +3550,7 @@ class Html {
     * @return computed date / datetime value
     * @see showGenericDateTimeSearch
    **/
-   static function computeGenericDateTimeSearch($val, $force_day=false, $specifictime='') {
+   static function computeGenericDateTimeSearch($val, $force_day = false, $specifictime = '') {
 
       if (empty($specifictime)) {
          $specifictime = strtotime($_SESSION["glpi_currenttime"]);
@@ -3572,7 +3606,7 @@ class Html {
 
       // Search on +- x days, hours...
       if (preg_match("/^(-?)(\d+)(\w+)$/", $val, $matches)) {
-         if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
+         if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'])) {
             $nb = intval($matches[2]);
             if ($matches[1] == '-') {
                $nb = -$nb;
@@ -3626,15 +3660,15 @@ class Html {
 
       if (count($_SESSION["glpiprofiles"])>1) {
          echo '<li class="profile-selector"><form name="form" method="post" action="'.$target.'">';
-         $values = array();
+         $values = [];
          foreach ($_SESSION["glpiprofiles"] as $key => $val) {
             $values[$key] = $val['name'];
          }
 
          Dropdown::showFromArray('newprofile', $values,
-                                 array('value'     => $_SESSION["glpiactiveprofile"]["id"],
+                                 ['value'     => $_SESSION["glpiactiveprofile"]["id"],
                                        'width'     => '150px',
-                                       'on_change' => 'submit()'));
+                                       'on_change' => 'submit()']);
          Html::closeForm();
          echo '</li>';
       }
@@ -3642,8 +3676,8 @@ class Html {
       if (Session::isMultiEntitiesMode()) {
          echo "<li class='profile-selector'>";
          Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
-                                 array('title'       => __('Select the desired entity'),
-                                       'extraparams' => array('target' => $target)));
+                                 ['title'       => __('Select the desired entity'),
+                                       'extraparams' => ['target' => $target]]);
          echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
@@ -3673,7 +3707,7 @@ class Html {
     *
     * @return nothing (print out an HTML div)
    **/
-   static function showToolTip($content, $options=array()) {
+   static function showToolTip($content, $options = []) {
       global $CFG_GLPI;
 
       $param['applyto']    = '';
@@ -3742,9 +3776,9 @@ class Html {
       if (!empty($param['popup'])) {
          $out .= Ajax::createIframeModalWindow('tooltippopup'.$rand,
                                                $param['popup'],
-                                               array('display' => false,
+                                               ['display' => false,
                                                      'width'   => 600,
-                                                     'height'  => 300));
+                                                     'height'  => 300]);
       }
       $js = "";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
@@ -3791,7 +3825,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
+   static function autocompletionTextField(CommonDBTM $item, $field, $options = []) {
       global $CFG_GLPI;
 
       $params['name']   = $field;
@@ -3877,7 +3911,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true, $readonly=false) {
+   static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
@@ -4001,7 +4035,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info='', $display=true) {
+   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true) {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4094,7 +4128,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function printCleanArray($tab, $pad=0,$jsexpand=false) {
+   static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
 
       if (count($tab)) {
          echo "<table class='tab_cadre'>";
@@ -4159,8 +4193,8 @@ class Html {
     * @return nothing (print a pager)
     *
    **/
-   static function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
-                              $item_type_output_param=0, $additional_info='') {
+   static function printPager($start, $numrows, $target, $parameters, $item_type_output = 0,
+                              $item_type_output_param = 0, $additional_info = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4232,11 +4266,11 @@ class Html {
 
          echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'>";
-         echo Html::hidden('item_type', array('value' => $item_type_output));
+         echo Html::hidden('item_type', ['value' => $item_type_output]);
 
          if ($item_type_output_param != 0) {
             echo Html::hidden('item_type_param',
-                              array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
+                              ['value' => Toolbox::prepareArrayForInput($item_type_output_param)]);
          }
 
          $parameters = trim($parameters, '&amp;');
@@ -4250,7 +4284,7 @@ class Html {
          for ($i=0; $i < $count_split; $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
-            echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
+            echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), ['value' => urldecode(Toolbox::substr($split[$i], $pos+1))]);
          }
 
          Dropdown::showOutputFormat();
@@ -4292,7 +4326,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function printPagerForm($action="", $display=true) {
+   static function printPagerForm($action = "", $display = true) {
 
       $out = '';
       if ($action) {
@@ -4356,8 +4390,8 @@ class Html {
     *
     * @since version 0.84
    **/
-   static function getSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
-                                 $btoption='', $confirm='') {
+   static function getSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
+                                 $btoption = '', $confirm = '') {
 
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
@@ -4365,11 +4399,11 @@ class Html {
       $fields['_glpi_simple_form'] = 1;
       $button                      = $btname;
       if (!is_array($btname)) {
-         $button          = array();
+         $button          = [];
          $button[$btname] = $btname;
       }
       $fields          = array_merge($button, $fields);
-      $javascriptArray = array();
+      $javascriptArray = [];
       foreach ($fields as $name => $value) {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
@@ -4430,8 +4464,8 @@ class Html {
     *
     * @since version 0.83.3
    **/
-   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='',
-                                  $btoption='', $confirm='') {
+   static function showSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
+                                  $btoption = '', $confirm = '') {
 
       echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption, $confirm);
    }
@@ -4446,12 +4480,12 @@ class Html {
     *
     * @return String
    **/
-   static function closeForm ($display=true) {
+   static function closeForm ($display = true) {
       global $CFG_GLPI;
 
       $out = "\n";
       if (GLPI_USE_CSRF_CHECK) {
-         $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()))."\n";
+         $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()])."\n";
       }
 
       if (isset($CFG_GLPI['checkbox-zero-on-empty']) && $CFG_GLPI['checkbox-zero-on-empty']) {
@@ -4546,7 +4580,7 @@ class Html {
     * @return String
    **/
    static function cleanId($id) {
-      return str_replace(array('[',']'), '_', $id);
+      return str_replace(['[',']'], '_', $id);
    }
 
 
@@ -4602,7 +4636,7 @@ class Html {
     *
     * @return String
    **/
-   static function jsAdaptDropdown($id, $params=array()) {
+   static function jsAdaptDropdown($id, $params = []) {
       global $CFG_GLPI;
 
       $width = '';
@@ -4649,7 +4683,7 @@ class Html {
     *
     * @return String
    **/
-   static function jsAjaxDropdown($name, $field_id, $url, $params=array()) {
+   static function jsAjaxDropdown($name, $field_id, $url, $params = []) {
       global $CFG_GLPI;
 
       if (!isset($params['value'])) {
@@ -4675,7 +4709,7 @@ class Html {
       unset($params['value']);
       unset($params['valuename']);
 
-      $options = array('value' => $value, 'id' => $field_id);
+      $options = ['value' => $value, 'id' => $field_id];
       if (!empty($params['specific_tags'])) {
          foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {
@@ -4789,7 +4823,7 @@ class Html {
     *               `$options['url']`.
     * @return string completed img tag
    **/
-   static function image($path, $options=array()) {
+   static function image($path, $options = []) {
 
       if (!isset($options['title'])) {
          $options['title'] = '';
@@ -4835,7 +4869,7 @@ class Html {
     *     - `confirmaction` optional action to do on confirmation
     * @return string an `a` element.
    **/
-   static function link($text, $url, $options=array()) {
+   static function link($text, $url, $options = []) {
 
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
@@ -4875,7 +4909,7 @@ class Html {
     *
     * @return string A generated hidden input
    **/
-   static function hidden($fieldName, $options=array()) {
+   static function hidden($fieldName, $options = []) {
 
       if ((isset($options['value'])) && (is_array($options['value']))) {
          $result = '';
@@ -4901,7 +4935,7 @@ class Html {
     *
     * @return string A generated hidden input
    **/
-   static function input($fieldName, $options=array()) {
+   static function input($fieldName, $options = []) {
 
       return sprintf('<input type="text" name="%1$s" %2$s />',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
@@ -4922,7 +4956,7 @@ class Html {
     *
     * @return string A HTML submit button
    **/
-   static function submit($caption, $options=array()) {
+   static function submit($caption, $options = []) {
 
       $image = false;
       if (isset($options['image'])) {
@@ -4972,10 +5006,10 @@ class Html {
     *
     * @return string Composed attributes.
    **/
-   static function parseAttributes($options=array()) {
+   static function parseAttributes($options = []) {
 
       if (!is_string($options)) {
-         $attributes = array();
+         $attributes = [];
 
          foreach ($options as $key => $value) {
             $attributes[] = Html::formatAttribute($key, $value);
@@ -5066,7 +5100,7 @@ class Html {
     *
     * @return String of script tags
    **/
-   static function script($url, $options=array(), $minify = true) {
+   static function script($url, $options = [], $minify = true) {
       $version = GLPI_VERSION;
       if (isset($options['version'])) {
          $version = $options['version'];
@@ -5099,7 +5133,7 @@ class Html {
     *
     * @return string CSS link tag
    **/
-   static function css($url, $options=array(), $minify = true) {
+   static function css($url, $options = [], $minify = true) {
 
       if (!isset($options['media']) || $options['media'] == '') {
          $options['media'] = 'screen';
@@ -5134,7 +5168,7 @@ class Html {
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
     */
-   static function fileForRichText($options=array()) {
+   static function fileForRichText($options = []) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_rich_text"]) {
@@ -5206,7 +5240,7 @@ class Html {
     *
     * @return void|string   the html if display parameter is false
    **/
-   static function file($options=array()) {
+   static function file($options = []) {
       global $CFG_GLPI;
 
       $randupload             = mt_rand();
@@ -5220,7 +5254,7 @@ class Html {
       $p['pasteZone']         = false;
       $p['dropZone']          = 'dropdoc'.$randupload;
       $p['rand']              = $randupload;
-      $p['values']            = array();
+      $p['values']            = [];
       $p['display']           = true;
 
       if (is_array($options) && count($options)) {
@@ -5350,7 +5384,7 @@ class Html {
     *
     * @return mixed          the html if display paremeter is false or true
     */
-   static function textarea($options=array()) {
+   static function textarea($options = []) {
       //default options
       $p['name']              = 'text';
       $p['filecontainer']     = 'fileupload_info';
@@ -5413,7 +5447,8 @@ class Html {
     * @param $columns   array   of column field name => column label
     * @param $rows      array    of field name => array(
     *      'label' the label of the row
-    *       'columns' an array of specific information regaring current row and given column indexed by column field_name
+    *      'columns' an array of specific information regaring current row
+    *                and given column indexed by column field_name
     *                 * a string if only have to display a string
     *                 * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
     * @param $options   array   possible:
@@ -5425,7 +5460,7 @@ class Html {
     *
     * @return random value used to generate the ids
    **/
-   static function showCheckboxMatrix(array $columns, array $rows, array $options=array()) {
+   static function showCheckboxMatrix(array $columns, array $rows, array $options = []) {
 
       $param['title']                = '';
       $param['first_cell']           = '&nbsp;';
@@ -5434,7 +5469,7 @@ class Html {
       $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
       $param['table_class']          = 'tab_cadre_fixehov';
-      $param['cell_class_method']    = NULL;
+      $param['cell_class_method']    = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -5442,7 +5477,7 @@ class Html {
          }
       }
 
-      $cb_options = array('title' => __s('Check/uncheck all'));
+      $cb_options = ['title' => __s('Check/uncheck all')];
 
       $number_columns = (count($columns) + 1);
       if ($param['row_check_all']) {
@@ -5460,8 +5495,8 @@ class Html {
       echo "\t<tr class='tab_bg_1'>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
       foreach ($columns as $col_name => $column) {
-         $nb_cb_per_col[$col_name] = array('total'   => 0,
-                                           'checked' => 0);
+         $nb_cb_per_col[$col_name] = ['total'   => 0,
+                                           'checked' => 0];
          $col_id                   = Html::cleanId('col_label_'.$col_name.'_'.$param['rand']);
 
          echo "\t\t<td class='center b";
@@ -5470,12 +5505,12 @@ class Html {
          }
          echo "' id='$col_id' width='$width%'>";
          if (!is_array($column)) {
-            $columns[$col_name] = $column = array('label' => $column);
+            $columns[$col_name] = $column = ['label' => $column];
          }
          if (isset($column['short'])
              && isset($column['long'])) {
             echo $column['short'];
-            self::showToolTip($column['long'], array('applyto' => $col_id));
+            self::showToolTip($column['long'], ['applyto' => $col_id]);
          } else {
             echo $column['label'];
          }
@@ -5517,8 +5552,8 @@ class Html {
             }
             echo "</td>\n";
 
-            $nb_cb_per_row = array('total'   => 0,
-                                   'checked' => 0);
+            $nb_cb_per_row = ['total'   => 0,
+                                   'checked' => 0];
 
             foreach ($columns as $col_name => $column) {
                $class = '';
@@ -5542,7 +5577,7 @@ class Html {
                      if (!array_key_exists('readonly', $content)) {
                         $content['readonly'] = false;
                      }
-                     $content['massive_tags'] = array();
+                     $content['massive_tags'] = [];
                      if ($param['row_check_all']) {
                         $content['massive_tags'][] = 'row_'.$row_name.'_'.$param['rand'];
                      }
@@ -5577,8 +5612,8 @@ class Html {
          if (($param['row_check_all'])
              && (!is_string($row))
              && ($nb_cb_per_row['total'] > 1)) {
-            $cb_options['criterion']    = array('tag_for_massive' => 'row_'.$row_name.'_'.
-                                                $param['rand']);
+            $cb_options['criterion']    = ['tag_for_massive' => 'row_'.$row_name.'_'.
+                                                $param['rand']];
             $cb_options['massive_tags'] = 'table_'.$param['rand'];
             $cb_options['id']           = Html::cleanId('cb_checkall_row_'.$row_name.'_'.
                                                         $param['rand']);
@@ -5598,8 +5633,8 @@ class Html {
          foreach ($columns as $col_name => $column) {
             echo "\t\t<td class='center'>";
             if ($nb_cb_per_col[$col_name]['total'] > 1) {
-               $cb_options['criterion']    = array('tag_for_massive' => 'col_'.$col_name.'_'.
-                                                   $param['rand']);
+               $cb_options['criterion']    = ['tag_for_massive' => 'col_'.$col_name.'_'.
+                                                   $param['rand']];
                $cb_options['massive_tags'] = 'table_'.$param['rand'];
                $cb_options['id']           = Html::cleanId('cb_checkall_col_'.$col_name.'_'.
                                                            $param['rand']);
@@ -5613,7 +5648,7 @@ class Html {
          }
 
          if ($param['row_check_all']) {
-            $cb_options['criterion']    = array('tag_for_massive' => 'table_'.$param['rand']);
+            $cb_options['criterion']    = ['tag_for_massive' => 'table_'.$param['rand']];
             $cb_options['massive_tags'] = '';
             $cb_options['id']           = Html::cleanId('cb_checkall_table_'.$param['rand']);
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
@@ -5717,7 +5752,7 @@ class Html {
     * @param $noCallback     string      function that will be called when 'No' is pressed
     *                                    (default null)
    **/
-   static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
+   static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null) {
 
       return "
          // the Dialog and its properties.
@@ -5830,7 +5865,7 @@ class Html {
     * @param $okCallback   string   function that will be called when 'Ok' is pressed
     *                               (default null)
    **/
-   static function jsAlertCallback( $msg, $title, $okCallback=null) {
+   static function jsAlertCallback($msg, $title, $okCallback = null) {
       return "
          // Dialog and its properties.
          $('<div/>').dialog({
@@ -5975,6 +6010,14 @@ class Html {
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
             $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.js';
             break;
+         case 'notifications_ajax';
+            $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
+            break;
+         case 'fuzzy':
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy/fuzzy-min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
+            break;
          default:
             $found = false;
             if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
@@ -6047,6 +6090,19 @@ class Html {
             'root_doc': '".$CFG_GLPI["root_doc"]."',
          };
       ");
+
+      if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
+         $options = [
+            'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
+            'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
+            'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false)
+         ];
+         $js = "$(function() {
+            notifications_ajax = new GLPINotificationsAjax(". json_encode($options) . ");
+            notifications_ajax.start();
+         });";
+         echo Html::scriptBlock($js);
+      }
 
       // add Ajax display message after redirect
       Html::displayAjaxMessageAfterRedirect();
@@ -6141,5 +6197,73 @@ class Html {
       }
 
       return $text;
+   }
+
+   /**
+    * Manage events from js/fuzzysearch.js
+    *
+    * @since 9.2
+    *
+    * @param string $action action to switch (should be actually 'getHtml' or 'getList')
+    *
+    * @return nothing (display)
+    */
+   static function fuzzySearch($action = '') {
+      global $CFG_GLPI;
+
+      switch ($action) {
+         case 'getHtml':
+            return "<div id='fuzzysearch'>
+                    <input type='text' placeholder='".__("Start typing to find a menu")."'>
+                    <ul class='results'></ul>
+                    <i class='fa fa-2x fa-close'></i>
+                    </div>
+                    <div class='ui-widget-overlay ui-front fuzzymodal' style='z-index: 100;'>
+                    </div>";
+            break;
+
+         default;
+            $fuzzy_entries = [];
+
+            // retrieve menu
+            foreach ($_SESSION['glpimenu'] as $firstlvl) {
+               if (isset($firstlvl['content'])) {
+                  foreach ($firstlvl['content'] as $menu) {
+                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                        $fuzzy_entries[] = [
+                           'url'   => $menu['page'],
+                           'title' => $firstlvl['title']." > ".$menu['title']
+                        ];
+
+                        if (isset($menu['options'])) {
+                           foreach ($menu['options'] as $submenu) {
+                              if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                 $fuzzy_entries[] = [
+                                    'url'   => $submenu['page'],
+                                    'title' => $firstlvl['title']." > ".
+                                               $menu['title']." > ".
+                                               $submenu['title']
+                                 ];
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+
+               if (isset($firstlvl['default'])) {
+                  if (strlen($menu['title']) > 0) {
+                     $fuzzy_entries[] = [
+                        'url'   => $firstlvl['default'],
+                        'title' => $firstlvl['title']
+                     ];
+                  }
+               }
+            }
+
+            // return the entries to ajax call
+            return json_encode($fuzzy_entries);
+            break;
+      }
    }
 }

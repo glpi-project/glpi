@@ -57,9 +57,9 @@ class APIClient extends CommonDBTM {
       return _n("API client", "API clients", $nb);
    }
 
-   function defineTabs($options = array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong)
            ->addStandardTab('Log', $ong, $options);
 
@@ -148,7 +148,7 @@ class APIClient extends CommonDBTM {
       return $tab;
    }
 
-   static function getSpecificValueToDisplay($field, $values, array $options = array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       switch ($field) {
          case 'dolog_method' :
@@ -171,7 +171,7 @@ class APIClient extends CommonDBTM {
     *
     * @return void
     */
-   function showForm ($ID, $options=array()) {
+   function showForm ($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -197,7 +197,7 @@ class APIClient extends CommonDBTM {
       echo "<td>";
       Dropdown::showFromArray("dolog_method",
                               self::getLogMethod(),
-                              array('value' => $this->fields["dolog_method"]));
+                              ['value' => $this->fields["dolog_method"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -285,10 +285,10 @@ class APIClient extends CommonDBTM {
     */
    static function getLogMethod() {
 
-      return array(self::DOLOG_DISABLED   => __('Disabled'),
+      return [self::DOLOG_DISABLED   => __('Disabled'),
                    self::DOLOG_HISTORICAL => __('Historical'),
                    self::DOLOG_LOGS       => _n('Log', 'Logs',
-                                                Session::getPluralNumber()));
+                                                Session::getPluralNumber())];
    }
 
    /**

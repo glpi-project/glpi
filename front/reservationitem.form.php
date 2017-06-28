@@ -39,7 +39,7 @@ use Glpi\Event;
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-Session::checkRightsOr('reservation', array(CREATE, UPDATE, DELETE, PURGE));
+Session::checkRightsOr('reservation', [CREATE, UPDATE, DELETE, PURGE]);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = '';

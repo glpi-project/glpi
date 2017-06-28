@@ -62,7 +62,7 @@ class Entity_RSSFeed extends CommonDBRelation {
    static function getEntities($rssfeeds_id) {
       global $DB;
 
-      $ent   = array();
+      $ent   = [];
       $query = "SELECT `glpi_entities_rssfeeds`.*
                 FROM `glpi_entities_rssfeeds`
                 WHERE `rssfeeds_id` = '$rssfeeds_id'";

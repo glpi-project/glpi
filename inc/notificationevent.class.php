@@ -43,16 +43,18 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationEvent extends CommonDBTM {
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Event', 'Events', $nb);
    }
 
 
    /**
-    * @param $itemtype
-    * @param $options   array to pass to showFromArray or $value
+    * @param string $itemtype Item type
+    * @param array  $options  array to pass to showFromArray or $value
+    *
+    * @return string
    **/
-   static function dropdownEvents($itemtype, $options=array()) {
+   static function dropdownEvents($itemtype, $options = []) {
 
       $p['name']                = 'event';
       $p['display']             = true;
@@ -65,7 +67,7 @@ class NotificationEvent extends CommonDBTM {
          }
       }
 
-      $events = array();
+      $events = [];
       $target = NotificationTarget::getInstanceByType($itemtype);
       if ($target) {
          $events = $target->getAllEvents();
@@ -79,14 +81,14 @@ class NotificationEvent extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $itemtype string name of the type
-    * @param $event   string name of the event
+    * @param string $itemtype name of the type
+    * @param string $event    name of the event
     *
     * @return string
    **/
    static function getEventName($itemtype, $event) {
 
-      $events = array();
+      $events = [];
       $target = NotificationTarget::getInstanceByType($itemtype);
       if ($target) {
          $events = $target->getAllEvents();
@@ -99,44 +101,44 @@ class NotificationEvent extends CommonDBTM {
 
 
    /**
-    * Raise a notification event event
+    * Raise a notification event
     *
-    * @param $event           the event raised for the itemtype
-    * @param $item            the object which raised the event
-    * @param $options array   of options used
-    * @param $label           used for debugEvent() (default '')
+    * @param string     $event   the event raised for the itemtype
+    * @param CommonDBTM $item    the object which raised the event
+    * @param array      $options array   of options used
+    * @param string     $label   used for debugEvent() (default '')
+    *
+    * @return boolean
    **/
-   static function raiseEvent($event, $item, $options=array(), $label='') {
+   static function raiseEvent($event, $item, $options = [], $label = '') {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
-      if ($CFG_GLPI["use_mailing"]) {
-         $email_processed    = array();
-         $email_notprocessed = array();
-         //Get template's information
-         $template           = new NotificationTemplate();
-
+      if ($CFG_GLPI["use_notifications"]) {
          $notificationtarget = NotificationTarget::getInstance($item, $event, $options);
          if (!$notificationtarget) {
             return false;
          }
+
+         //Process more infos (for example for tickets)
+         $notificationtarget->addAdditionnalInfosForTarget();
+
+         //Get template's information
+         $template           = new NotificationTemplate();
+
          $entity             = $notificationtarget->getEntity();
          //Foreach notification
-         foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
-                  as $data) {
-            $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                            'notifications_id = '.$data['id']);
+         $notifications = Notification::getNotificationsByEventAndType(
+            $event,
+            $item->getType(),
+            $entity
+         );
 
+         foreach ($notifications as $data) {
             $notificationtarget->clearAddressesList();
-
-            //Process more infos (for example for tickets)
-            $notificationtarget->addAdditionnalInfosForTarget();
-
+            $notificationtarget->setMode($data['mode']);
             $template->getFromDB($data['notificationtemplates_id']);
             $template->resetComputedTemplates();
-
-            //Set notification's signature (the one which corresponds to the entity)
-            $template->setSignature(Notification::getMailingSignature($entity));
 
             $notify_me = false;
             if (Session::isCron()) {
@@ -147,60 +149,30 @@ class NotificationEvent extends CommonDBTM {
                $notify_me = $_SESSION['glpinotification_to_myself'];
             }
 
-            //Foreach notification targets
-            foreach ($targets as $target) {
-               //Get all users affected by this notification
-               $notificationtarget->getAddressesByTarget($target, $options);
-
-               foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
-                  if ($label
-                      || $notificationtarget->validateSendTo($event, $users_infos, $notify_me)) {
-                     //If the user have not yet been notified
-                     if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
-                        //If ther user's language is the same as the template's one
-                        if (isset($email_notprocessed[$users_infos['language']]
-                                                     [$users_infos['email']])) {
-                           unset($email_notprocessed[$users_infos['language']]
-                                                    [$users_infos['email']]);
-                        }
-                        $options['item'] = $item;
-                        if ($tid = $template->getTemplateByLanguage($notificationtarget,
-                                                                    $users_infos, $event,
-                                                                    $options)) {
-                           //Send notification to the user
-                           if ($label == '') {
-                              $datas = $template->getDataToSend($notificationtarget, $tid,
-                                                                $users_infos, $options);
-                              $datas['_notificationtemplates_id'] = $data['notificationtemplates_id'];
-                              $datas['_itemtype']                 = $item->getType();
-                              $datas['_items_id']                 = $item->getID();
-                              $datas['_entities_id']              = $entity;
-
-                              Notification::send($datas);
-                           } else {
-                              $notificationtarget->getFromDB($target['id']);
-                              echo "<tr class='tab_bg_2'><td>".$label."</td>";
-                              echo "<td>".$notificationtarget->getNameID()."</td>";
-                              echo "<td>".sprintf(__('%1$s (%2$s)'), $template->getName(),
-                                                  $users_infos['language'])."</td>";
-                              echo "<td>".$users_infos['email']."</td>";
-                              echo "</tr>";
-                           }
-                           $email_processed[$users_infos['language']][$users_infos['email']]
-                                                                     = $users_infos;
-
-                        } else {
-                           $email_notprocessed[$users_infos['language']][$users_infos['email']]
-                                                                        = $users_infos;
-                        }
-                     }
-                  }
-               }
+            $options['mode'] = $data['mode'];
+            $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');
+            if (class_exists($eventclass)) {
+               $eventclass::raise(
+                  $event,
+                  $item,
+                  $options,
+                  $label,
+                  $data,
+                  $notificationtarget->setEvent($eventclass),
+                  $template,
+                  $notify_me
+               );
+            } else {
+               Toolbox::logDebug('Missing event class for mode ' . $data['mode'] . ' (' . $eventclass . ')');
+               $label = Notification_NotificationTemplate::getMode($data['mode'])['label'];
+               Session::addMessageAfterRedirect(
+                  sprintf(__('Unable to send notification using %1$s'), $label),
+                  true,
+                  ERROR
+               );
             }
          }
       }
-      unset($email_processed);
-      unset($email_notprocessed);
       $template = null;
       return true;
    }
@@ -209,24 +181,27 @@ class NotificationEvent extends CommonDBTM {
    /**
     * Display debug information for an object
     *
-    * @param $item            the object
-    * @param $options   array
+    * @param CommonDBTM $item    Object instance
+    * @param array      $options Options
+    *
+    * @return void
    **/
-   static function debugEvent($item, $options=array()) {
+   static function debugEvent($item, $options = []) {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>"._n('Notification', 'Notifications', Session::getPluralNumber()).
+      echo "<tr><th colspan='3'>"._n('Notification', 'Notifications', Session::getPluralNumber()).
             "</th><th colspan='2'><font color='blue'> (".$item->getTypeName(1).")</font></th></tr>";
 
-      $events = array();
+      $events = [];
       if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
          $events = $target->getAllEvents();
 
          if (count($events)>0) {
             echo "<tr><th>".self::getTypeName(Session::getPluralNumber()).'</th><th>'._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
             echo "<th>"._n('Notification template', 'Notification templates', Session::getPluralNumber())."</th>".
-                 "<th>"._n('Email', 'Emails', Session::getPluralNumber())."</th></tr>";
+                 "<th>".__('Mode')."</th>" .
+                 "<th>"._n('Recipient', 'Recipients', 1)."</th></tr>";
 
             foreach ($events as $event => $label) {
                self::raiseEvent($event, $item, $options, $label);

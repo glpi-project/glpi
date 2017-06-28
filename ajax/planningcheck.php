@@ -56,5 +56,5 @@ if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
                                     $CFG_GLPI["root_doc"].
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=User&users_id=".$_POST['users_id'],
-                                    array('title'  => __('Availability')));
+                                    ['title'  => __('Availability')]);
 }

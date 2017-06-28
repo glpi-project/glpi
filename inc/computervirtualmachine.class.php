@@ -51,7 +51,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Virtualization');
    }
 
@@ -59,7 +59,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
@@ -80,9 +80,9 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
 
       return $ong;
@@ -94,7 +94,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
       self::showForComputer($item);
@@ -119,7 +119,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -172,18 +172,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Virtualization system')."</td>";
       echo "<td>";
-      VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
+      VirtualMachineType::dropdown(['value' => $this->fields['virtualmachinetypes_id']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Virtualization model')."</td>";
       echo "<td>";
-      VirtualMachineSystem::dropdown(array('value' => $this->fields['virtualmachinesystems_id']));
+      VirtualMachineSystem::dropdown(['value' => $this->fields['virtualmachinesystems_id']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('State of the virtual machine')."</td>";
       echo "<td>";
-      VirtualMachineState::dropdown(array('value' => $this->fields['virtualmachinestates_id']));
+      VirtualMachineState::dropdown(['value' => $this->fields['virtualmachinestates_id']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -197,7 +197,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($link_computer = self::findVirtualMachine($this->fields)) {
          $computer = new Computer();
          if ($computer->getFromDB($link_computer)) {
-            echo $computer->getLink(array('comments' => true));
+            echo $computer->getLink(['comments' => true]);
          } else {
             echo NOT_AVAILABLE;
          }
@@ -286,7 +286,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                              '</td></tr>';
                   $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].
                              '</td></tr></table>';
-                  echo "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
+                  echo "&nbsp; ".Html::showToolTip($tooltip, ['display' => false]);
 
                } else {
                   echo $computer->fields['name'];
@@ -401,7 +401,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].
                              '</td></tr></table>';
 
-                  $url .= "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
+                  $url .= "&nbsp; ".Html::showToolTip($tooltip, ['display' => false]);
                } else {
                   $url = $computer->fields['name'];
                }
@@ -447,9 +447,9 @@ class ComputerVirtualMachine extends CommonDBChild {
       //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
       //On unix is flips first block of uuid and on windows flips 3 first blocks...
       $in      = " IN ('".strtolower($uuid)."'";
-      $regexes = array("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
+      $regexes = ["/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
                        "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"
-                                                                    => "$4$3$2$1-$6$5-$8$7$9");
+                                                                    => "$4$3$2$1-$6$5-$8$7$9"];
       foreach ($regexes as $pattern => $replace) {
          $reverse_uuid = preg_replace($pattern, $replace, $uuid);
          if ($reverse_uuid) {
@@ -469,7 +469,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     *
     * @return the ID of the computer that have this uuid or false otherwise
    **/
-   static function findVirtualMachine($fields=array()) {
+   static function findVirtualMachine($fields = []) {
       global $DB;
 
       if (!isset($fields['uuid']) || empty($fields['uuid'])) {

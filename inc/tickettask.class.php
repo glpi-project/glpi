@@ -47,7 +47,7 @@ class TicketTask  extends CommonITILTask {
    /**
     * @since version 0.84
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ticket task', 'Ticket tasks', $nb);
    }
 
@@ -61,7 +61,7 @@ class TicketTask  extends CommonITILTask {
 
    static function canView() {
 
-      return (Session::haveRightsOr(self::$rightname, array(parent::SEEPUBLIC, parent::SEEPRIVATE))
+      return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -94,7 +94,7 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if (Session::haveRightsOr(self::$rightname, array(parent::SEEPRIVATE, parent::SEEPUBLIC))) {
+      if (Session::haveRightsOr(self::$rightname, [parent::SEEPRIVATE, parent::SEEPUBLIC])) {
          return true;
       }
 
@@ -197,7 +197,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=array()) {
+   static function populatePlanning($options = []) {
       return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
@@ -225,7 +225,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
@@ -235,7 +235,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
@@ -261,7 +261,7 @@ class TicketTask  extends CommonITILTask {
     *
     * @see CommonDBTM::showFormButtons()
    **/
-   function showFormButtons($options=array()) {
+   function showFormButtons($options = []) {
       global $CFG_GLPI;
 
       // for single object like config
@@ -308,8 +308,8 @@ class TicketTask  extends CommonITILTask {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
                echo Html::submit(_x('button', 'Delete permanently'),
-                                 array('name'    => 'purge',
-                                       'confirm' => __('Confirm the final deletion?')));
+                                 ['name'    => 'purge',
+                                       'confirm' => __('Confirm the final deletion?')]);
             }
          }
 

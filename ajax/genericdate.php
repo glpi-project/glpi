@@ -46,9 +46,9 @@ Session::checkLoginUser();
 if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
 
    if ($_POST['withtime']) {
-      Html::showDateTimeField($_POST['name'], array('value' => $_POST['specificvalue']));
+      Html::showDateTimeField($_POST['name'], ['value' => $_POST['specificvalue']]);
    } else {
-      Html::showDateField($_POST['name'], array('value' => $_POST['specificvalue']));
+      Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
    }
 
 } else {

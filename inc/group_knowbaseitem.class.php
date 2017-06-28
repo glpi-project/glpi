@@ -62,7 +62,7 @@ class Group_KnowbaseItem extends CommonDBRelation {
    static function getGroups($knowbaseitems_id) {
       global $DB;
 
-      $groups = array();
+      $groups = [];
       $query  = "SELECT `glpi_groups_knowbaseitems`.*
                  FROM `glpi_groups_knowbaseitems`
                  WHERE knowbaseitems_id = '$knowbaseitems_id'";

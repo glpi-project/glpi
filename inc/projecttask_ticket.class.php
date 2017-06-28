@@ -64,12 +64,12 @@ class ProjectTask_Ticket extends CommonDBRelation{
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
          $nb = 0;
@@ -93,7 +93,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'ProjectTask' :
@@ -158,8 +158,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_tickets`.`name`";
       $result = $DB->query($query);
 
-      $tickets = array();
-      $used    = array();
+      $tickets = [];
+      $used    = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $tickets[$data['id']] = $data;
@@ -181,11 +181,11 @@ class ProjectTask_Ticket extends CommonDBRelation{
                         NOT IN ('".implode("', '",
                                            array_merge(Ticket::getSolvedStatusArray(),
                                                        Ticket::getClosedStatusArray()))."')";
-         Ticket::dropdown(array('used'        => $used,
+         Ticket::dropdown(['used'        => $used,
                                 'entity'      => $projecttask->getEntityID(),
                                 'entity_sons' => $projecttask->isRecursive(),
                                 'condition'   => $condition,
-                                'displaywith' => array('id')));
+                                'displaywith' => ['id']]);
 
          echo "</td><td width='20%'>";
          echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?_projecttasks_id=$ID'>";
@@ -203,8 +203,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'        => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'        => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -222,10 +222,10 @@ class ProjectTask_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], array('followups'              => false,
+            Ticket::showShort($data['id'], ['followups'              => false,
                                                  'row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']));
+                                                 'id_for_massiveaction'   => $data['linkID']]);
             $i++;
          }
       }
@@ -264,8 +264,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_projecttasks`.`name`";
       $result = $DB->query($query);
 
-      $pjtasks = array();
-      $used    = array();
+      $pjtasks = [];
+      $used    = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $pjtasks[$data['id']] = $data;
@@ -276,7 +276,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
 
       if ($numrows) {
-         $columns = array('projectname'      => Project::getTypeName(Session::getPluralNumber()),
+         $columns = ['projectname'      => Project::getTypeName(Session::getPluralNumber()),
                           'name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
                           'tname'            => __('Type'),
                           'sname'            => __('Status'),
@@ -285,7 +285,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                           'plan_end_date'    => __('Planned end date'),
                           'planned_duration' => __('Planned duration'),
                           '_effect_duration' => __('Effective duration'),
-                          'fname'            => __('Father'),);
+                          'fname'            => __('Father'),];
 
          if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
             $order = "DESC";
@@ -360,8 +360,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                             (empty($data['projectname'])?"(".$data['projects_id'].")":"")."</a>";
                   echo sprintf(__('%1$s %2$s'), $link,
                                Html::showToolTip($data['projectcontent'],
-                                                 array('display' => false,
-                                                       'applyto' => "Project".$data["projects_id"].$rand)));
+                                                 ['display' => false,
+                                                       'applyto' => "Project".$data["projects_id"].$rand]));
                   echo "</td>";
                   echo "<td>";
                   $link = "<a id='ProjectTask".$data["id"].$rand."' href='projecttask.form.php?id=".
@@ -369,8 +369,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                             (empty($data['name'])?"(".$data['id'].")":"")."</a>";
                   echo sprintf(__('%1$s %2$s'), $link,
                                Html::showToolTip($data['content'],
-                                                 array('display' => false,
-                                                       'applyto' => "ProjectTask".$data["id"].$rand)));
+                                                 ['display' => false,
+                                                       'applyto' => "ProjectTask".$data["id"].$rand]));
                   echo "</td>";
                   echo "<td>".$data['tname']."</td>";
                   echo "<td";

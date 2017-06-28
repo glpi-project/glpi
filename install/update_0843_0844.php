@@ -43,14 +43,14 @@ function update0843to0844() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.4'));
    $migration->setVersion('0.84.4');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -68,7 +68,7 @@ function update0843to0844() {
    }
 
    // Upgrade ticket bookmarks and clean _glpi_csrf_token
-   $status = array ('new'           => CommonITILObject::INCOMING,
+   $status =  ['new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
                     'plan'          => CommonITILObject::PLANNED,
                     'waiting'       => CommonITILObject::WAITING,
@@ -79,7 +79,7 @@ function update0843to0844() {
                     'evaluation'    => CommonITILObject::EVALUATION,
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
-                    'qualification' => CommonITILObject::QUALIFICATION);
+                    'qualification' => CommonITILObject::QUALIFICATION];
 
    // Migrate templates : back for validation
    $query = "SELECT `glpi_notificationtemplatetranslations`.*

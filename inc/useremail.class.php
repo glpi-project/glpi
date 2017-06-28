@@ -52,7 +52,7 @@ class UserEmail  extends CommonDBChild {
    public $dohistory              = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Email', 'Emails', $nb);
    }
 
@@ -92,7 +92,7 @@ class UserEmail  extends CommonDBChild {
    static function getAllForUser($users_id) {
       global $DB;
 
-      $emails = array();
+      $emails = [];
 
       // Get default one
       foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'") as $data) {
@@ -240,7 +240,7 @@ class UserEmail  extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       // if default is set : unsed others for the users

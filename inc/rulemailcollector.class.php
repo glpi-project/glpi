@@ -67,7 +67,7 @@ class RuleMailCollector extends Rule {
    **/
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -140,7 +140,7 @@ class RuleMailCollector extends Rule {
       $criterias['KNOWN_DOMAIN']['type']              = 'yesno';
       $criterias['KNOWN_DOMAIN']['virtual']           = true;
       $criterias['KNOWN_DOMAIN']['id']                = 'entitydatas';
-      $criterias['KNOWN_DOMAIN']['allow_condition']   = array(Rule::PATTERN_IS);
+      $criterias['KNOWN_DOMAIN']['allow_condition']   = [Rule::PATTERN_IS];
 
       $criterias['PROFILES']['field']                 = 'name';
       $criterias['PROFILES']['name']                  = __('User featuring the profile');
@@ -148,7 +148,7 @@ class RuleMailCollector extends Rule {
       $criterias['PROFILES']['type']                  = 'dropdown';
       $criterias['PROFILES']['virtual']               = true;
       $criterias['PROFILES']['id']                    = 'profiles';
-      $criterias['PROFILES']['allow_condition']          = array(Rule::PATTERN_IS);
+      $criterias['PROFILES']['allow_condition']          = [Rule::PATTERN_IS];
 
       if (Session::isMultiEntitiesMode()) {
          $criterias['UNIQUE_PROFILE']['field']           = 'name';
@@ -157,7 +157,7 @@ class RuleMailCollector extends Rule {
          $criterias['UNIQUE_PROFILE']['type']            = 'dropdown';
          $criterias['UNIQUE_PROFILE']['virtual']         = true;
          $criterias['UNIQUE_PROFILE']['id']              = 'profiles';
-         $criterias['UNIQUE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
+         $criterias['UNIQUE_PROFILE']['allow_condition'] = [Rule::PATTERN_IS];
       }
 
       $criterias['ONE_PROFILE']['field']              = 'name';
@@ -166,7 +166,7 @@ class RuleMailCollector extends Rule {
       $criterias['ONE_PROFILE']['type']               = 'yesonly';
       $criterias['ONE_PROFILE']['virtual']            = true;
       $criterias['ONE_PROFILE']['id']                 = 'profiles';
-      $criterias['ONE_PROFILE']['allow_condition']    = array(Rule::PATTERN_IS);
+      $criterias['ONE_PROFILE']['allow_condition']    = [Rule::PATTERN_IS];
 
       return $criterias;
    }
@@ -177,7 +177,7 @@ class RuleMailCollector extends Rule {
    **/
    function getActions() {
 
-      $actions                                              = array();
+      $actions                                              = [];
 
       $actions['entities_id']['name']                       = __('Entity');
       $actions['entities_id']['type']                       = 'dropdown';
@@ -185,11 +185,11 @@ class RuleMailCollector extends Rule {
 
       $actions['_affect_entity_by_domain']['name']          = __('Entity from domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
-      $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_domain']['force_actions'] = ['regex_result'];
 
       $actions['_affect_entity_by_tag']['name']             = __('Entity from TAG');
       $actions['_affect_entity_by_tag']['type']             = 'text';
-      $actions['_affect_entity_by_tag']['force_actions']    = array('regex_result');
+      $actions['_affect_entity_by_tag']['force_actions']    = ['regex_result'];
 
       $actions['_affect_entity_by_user_entity']['name']     = __("Entity based on user's profile");
       $actions['_affect_entity_by_user_entity']['type']     = 'yesonly';
@@ -212,7 +212,7 @@ class RuleMailCollector extends Rule {
    /**
     * @see Rule::executeActions()
    **/
-   function executeActions($output,$params) {
+   function executeActions($output, $params) {
 
       if (count($this->actions)) {
 
@@ -250,7 +250,7 @@ class RuleMailCollector extends Rule {
                         }
 
                         if ($profile) {
-                           $entities = array();
+                           $entities = [];
                            if (isset($params['_users_id_requester'])) { // Not set when testing
                               $entities
                                  = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],

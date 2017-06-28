@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class SupplierType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Third party type', 'Third party types', $nb);
    }
 

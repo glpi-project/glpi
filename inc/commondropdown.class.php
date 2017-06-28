@@ -66,7 +66,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $nb
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Dropdown', 'Dropdowns', $nb);
    }
 
@@ -101,7 +101,7 @@ abstract class CommonDropdown extends CommonDBTM {
    static function getMenuContent() {
       global $CFG_GLPI;
 
-      $menu = array();
+      $menu = [];
       if (get_called_class() == 'CommonDropdown') {
          $menu['title']             = static::getTypeName(Session::getPluralNumber());
          $menu['shortcut']          = 'n';
@@ -109,7 +109,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $menu['config']['default'] = '/front/dropdown.php';
 
          $dps = Dropdown::getStandardDropdownItemTypes();
-         $menu['options'] = array();
+         $menu['options'] = [];
 
          foreach ($dps as $tab) {
             foreach ($tab as $key => $val) {
@@ -140,18 +140,18 @@ abstract class CommonDropdown extends CommonDBTM {
    **/
    function getAdditionalFields() {
       if (FieldExists($this->getTable(), 'product_number')) {
-         return array(array('name' => 'product_number',
+         return [['name' => 'product_number',
                             'type' => 'text',
-                            'label' => __('Product Number')));
+                            'label' => __('Product Number')]];
       } else {
          return [];
       }
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       if ($this->dohistory) {
          $this->addStandardTab('Log', $ong, $options);
@@ -225,7 +225,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
@@ -281,10 +281,10 @@ abstract class CommonDropdown extends CommonDBTM {
 
          switch ($field['type']) {
             case 'UserDropdown' :
-               $param = array('name'   => $field['name'],
+               $param = ['name'   => $field['name'],
                               'value'  => $this->fields[$field['name']],
                               'right'  => 'interface',
-                              'entity' => $this->fields["entities_id"]);
+                              'entity' => $this->fields["entities_id"]];
                if (isset($field['right'])) {
                   $params['right'] = $field['right'];
                }
@@ -293,9 +293,9 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'dropdownValue' :
-               $params = array('value'  => $this->fields[$field['name']],
+               $params = ['value'  => $this->fields[$field['name']],
                                'name'   => $field['name'],
-                               'entity' => $this->getEntityID());
+                               'entity' => $this->getEntityID()];
                if (isset($field['condition'])) {
                   $params['condition'] = $field['condition'];
                }
@@ -322,11 +322,11 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'integer' :
-               Dropdown::showNumber($field['name'], array('value' => $this->fields[$field['name']]));
+               Dropdown::showNumber($field['name'], ['value' => $this->fields[$field['name']]]);
                break;
 
             case 'timestamp' :
-               $param = array('value' => $this->fields[$field['name']]);
+               $param = ['value' => $this->fields[$field['name']]];
                if (isset($field['min'])) {
                   $param['min'] = $field['min'];
                }
@@ -346,11 +346,11 @@ abstract class CommonDropdown extends CommonDBTM {
                   $restrict = $this->getEntityID();
                }
                Dropdown::show(getItemTypeForTable($this->getTable()),
-                              array('value'  => $this->fields[$field['name']],
+                              ['value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],
                                     'entity' => $restrict,
                                     'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID)
-                                                       : array())));
+                                                       : [])]);
                break;
 
             case 'icon' :
@@ -367,16 +367,16 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'color' :
-               Html::showColorField($field['name'], array('value' => $this->fields[$field['name']]));
+               Html::showColorField($field['name'], ['value' => $this->fields[$field['name']]]);
                break;
 
             case 'date' :
-               Html::showDateField($field['name'], array('value' => $this->fields[$field['name']]));
+               Html::showDateField($field['name'], ['value' => $this->fields[$field['name']]]);
                break;
 
             case 'datetime' :
                Html::showDateTimeField($field['name'],
-                                       array('value' => $this->fields[$field['name']]));
+                                       ['value' => $this->fields[$field['name']]]);
                break;
 
             case 'password':
@@ -407,7 +407,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
    }
 
 
@@ -608,17 +608,17 @@ abstract class CommonDropdown extends CommonDBTM {
          // TreeDropdown => default replacement is parent
          $fk = $this->getForeignKeyField();
          Dropdown::show(getItemTypeForTable($this->getTable()),
-                        array('name'   => '_replace_by',
+                        ['name'   => '_replace_by',
                               'value'  => $this->fields[$fk],
                               'entity' => $this->getEntityID(),
                               'used'   => getSonsOf($this->getTable(), $ID),
-                              'width'   => '100%'));
+                              'width'   => '100%']);
 
       } else {
          Dropdown::show(getItemTypeForTable($this->getTable()),
-                        array('name'   => '_replace_by',
+                        ['name'   => '_replace_by',
                               'entity' => $this->getEntityID(),
-                              'used'   => array($ID)));
+                              'used'   => [$ID]]);
       }
       echo "<input type='hidden' name='id' value='$ID' />";
       echo "</td><td>";
@@ -707,15 +707,15 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return integer : dropdown id.
    **/
-   function importExternal($value, $entities_id=-1, $external_params=array(), $comment="",
-                           $add=true) {
+   function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
+                           $add = true) {
 
       $value = trim($value);
       if (strlen($value) == 0) {
          return 0;
       }
 
-      $ruleinput      = array("name" => stripslashes($value));
+      $ruleinput      = ["name" => stripslashes($value)];
       $rulecollection = RuleCollection::getClassByType($this->getType(), true);
 
       foreach ($this->additional_fields_for_dictionnary as $field) {
@@ -742,7 +742,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $input["entities_id"] = $entities_id;
 
       if ($rulecollection) {
-         $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), array(), array());
+         $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), [], []);
          if (isset($res_rule["name"])) {
             $input["name"] = $res_rule["name"];
          }
@@ -754,7 +754,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -783,7 +783,7 @@ abstract class CommonDropdown extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'merge' :
             echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
-            echo "<br><br>".Html::submit(_x('button', 'Merge'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
             return true;
       }
 
@@ -805,8 +805,8 @@ abstract class CommonDropdown extends CommonDBTM {
             foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
                   if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
-                     if ($item->update(array('id'           => $key,
-                                             'is_recursive' => 1))) {
+                     if ($item->update(['id'           => $key,
+                                             'is_recursive' => 1])) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -829,8 +829,8 @@ abstract class CommonDropdown extends CommonDBTM {
                         // Delete old
                         if ($newid > 0) {
                            // delete with purge for dropdown with dustbin (Budget)
-                           $item->delete(array('id'          => $key,
-                                               '_replace_by' => $newid), 1);
+                           $item->delete(['id'          => $key,
+                                               '_replace_by' => $newid], 1);
                         }
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
@@ -853,7 +853,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $withname  boolean  also display name ? (false by default)
    **/
-   function getLinks($withname=false) {
+   function getLinks($withname = false) {
       global $CFG_GLPI;
 
       $ret = '';

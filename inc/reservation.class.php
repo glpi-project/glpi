@@ -54,7 +54,7 @@ class Reservation extends CommonDBChild {
    /**
     * @param $nb  integer  for singular or plural
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Reservation', 'Reservations', $nb);
    }
 
@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
           && Session::haveRight("reservation", READ)) {
@@ -77,7 +77,7 @@ class Reservation extends CommonDBChild {
     * @param $tabnum       (default1)
     * @param $withtemplate (default0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'User') {
          self::showForUser($_GET["id"]);
@@ -96,7 +96,7 @@ class Reservation extends CommonDBChild {
               || Session::haveRight("reservation", DELETE))) {
 
          // Processing Email
-         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             NotificationEvent::raiseEvent("delete", $this);
          }
       }
@@ -144,11 +144,11 @@ class Reservation extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       if (count($this->updates)
-          && $CFG_GLPI["use_mailing"]
+          && $CFG_GLPI["use_notifications"]
           && !isset($this->input['_disablenotif'])) {
          NotificationEvent::raiseEvent("update", $this);
          //$mail = new MailingResa($this,"update");
@@ -191,7 +191,7 @@ class Reservation extends CommonDBChild {
    function post_addItem() {
       global $CFG_GLPI;
 
-      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"]) {
+      if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
          NotificationEvent::raiseEvent("new", $this);
       }
 
@@ -274,7 +274,7 @@ class Reservation extends CommonDBChild {
     *
     * @return nothing
    **/
-   function displayError($type,$ID) {
+   function displayError($type, $ID) {
 
       echo "<br><div class='center'>";
       switch ($type) {
@@ -358,7 +358,7 @@ class Reservation extends CommonDBChild {
                          AND `group` = '".$this->fields['group']."' ";
          $rr = clone $this;
          foreach ($DB->request($query) as $data) {
-            $rr->delete(array('id' => $data['id']));
+            $rr->delete(['id' => $data['id']]);
          }
       }
    }
@@ -369,7 +369,7 @@ class Reservation extends CommonDBChild {
     *
     * @param $ID   ID of the reservation item (if empty display all) (default '')
    **/
-   static function showCalendar($ID="") {
+   static function showCalendar($ID = "") {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -458,7 +458,7 @@ class Reservation extends CommonDBChild {
       } else {
          $fev = 28;
       }
-      $nb_jour = array(31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+      $nb_jour = [31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
       // Datas used to put right information in columns
       $jour_debut_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
@@ -597,7 +597,7 @@ class Reservation extends CommonDBChild {
     *     - item  reservation items ID for creation process
     *     - date date for creation process
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -654,7 +654,7 @@ class Reservation extends CommonDBChild {
          $r->getFromDB($itemID);
          $type = $r->fields["itemtype"];
          $name = NOT_AVAILABLE;
-         $item = NULL;
+         $item = null;
 
          if ($item = getItemForItemtype($r->fields["itemtype"])) {
             $type = $item->getTypeName();
@@ -662,7 +662,7 @@ class Reservation extends CommonDBChild {
             if ($item->getFromDB($r->fields["items_id"])) {
                $name = $item->getName();
             } else {
-               $item = NULL;
+               $item = null;
             }
          }
 
@@ -681,35 +681,35 @@ class Reservation extends CommonDBChild {
          echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
          echo "<td>";
          if (empty($ID)) {
-            User::dropdown(array('value'  => Session::getLoginUserID(),
+            User::dropdown(['value'  => Session::getLoginUserID(),
                                  'entity' => $item->getEntityID(),
-                                 'right'  => 'all'));
+                                 'right'  => 'all']);
          } else {
-            User::dropdown(array('value'  => $resa->fields["users_id"],
+            User::dropdown(['value'  => $resa->fields["users_id"],
                                  'entity' => $item->getEntityID(),
-                                 'right'  => 'all'));
+                                 'right'  => 'all']);
          }
          echo "</td></tr>\n";
       }
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       $rand_begin = Html::showDateTimeField("resa[begin]",
-                                            array('value'      => $resa->fields["begin"],
+                                            ['value'      => $resa->fields["begin"],
                                                   'timestep'   => -1,
-                                                  'maybeempty' => false));
+                                                  'maybeempty' => false]);
       echo "</td></tr>\n";
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
       $rand = Dropdown::showTimeStamp("resa[_duration]",
-                                      array('min'        => 0,
+                                      ['min'        => 0,
                                             'max'        => 24*HOUR_TIMESTAMP,
                                             'value'      => $default_delay,
-                                            'emptylabel' => __('Specify an end date')));
+                                            'emptylabel' => __('Specify an end date')]);
       echo "<br><div id='date_end$rand'></div>";
-      $params = array('duration'     => '__VALUE__',
+      $params = ['duration'     => '__VALUE__',
                       'end'          => $resa->fields["end"],
-                      'name'         => "resa[end]");
+                      'name'         => "resa[end]"];
 
       Ajax::updateItemOnSelectEvent("dropdown_resa[_duration]$rand", "date_end$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
@@ -724,15 +724,15 @@ class Reservation extends CommonDBChild {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
          echo "<td>";
-         $values   = array(''      => _x('periodicity', 'None'),
+         $values   = [''      => _x('periodicity', 'None'),
                            'day'   => _x('periodicity', 'Daily'),
                            'week'  => _x('periodicity', 'Weekly'),
-                           'month' => _x('periodicity', 'Monthly'));
+                           'month' => _x('periodicity', 'Monthly')];
          $rand     = Dropdown::showFromArray('periodicity[type]', $values);
          $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
 
-         $params   = array('type'     => '__VALUE__',
-                           'end'      => $resa->fields["end"]);
+         $params   = ['type'     => '__VALUE__',
+                           'end'      => $resa->fields["end"]];
 
          Ajax::updateItemOnSelectEvent($field_id, "resaperiodcontent$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);
@@ -753,7 +753,7 @@ class Reservation extends CommonDBChild {
 
       } else {
          if (($resa->fields["users_id"] == Session::getLoginUserID())
-             || Session::haveRightsOr(static::$rightname, array(PURGE, UPDATE))) {
+             || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE])) {
             echo "<tr class='tab_bg_2'>";
             if (($resa->fields["users_id"] == Session::getLoginUserID())
                 || Session::haveRight(static::$rightname, PURGE)) {
@@ -791,8 +791,8 @@ class Reservation extends CommonDBChild {
     * @param $end               begin of the initial reservation
     * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
    **/
-   static function computePeriodicities ($begin, $end, $options=array()) {
-      $toadd = array();
+   static function computePeriodicities ($begin, $end, $options = []) {
+      $toadd = [];
 
       if (isset($options['type']) && isset($options['end'])) {
          $begin_time = strtotime($begin);
@@ -811,19 +811,19 @@ class Reservation extends CommonDBChild {
                break;
 
             case 'week' :
-               $dates = array();
+               $dates = [];
 
                // No days set add 1 week
                if (!isset($options['days'])) {
-                  $dates = array(array('begin' => strtotime('+1 week', $begin_time),
-                                       'end'   => strtotime('+1 week', $end_time)));
+                  $dates = [['begin' => strtotime('+1 week', $begin_time),
+                                       'end'   => strtotime('+1 week', $end_time)]];
                } else {
                   if (is_array($options['days'])) {
                      $begin_hour = $begin_time- strtotime(date('Y-m-d', $begin_time));
                      $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
                      foreach ($options['days'] as $day => $val) {
-                        $dates[] = array('begin' => strtotime("next $day", $begin_time)+$begin_hour,
-                                         'end'   => strtotime("next $day", $end_time)+$end_hour);
+                        $dates[] = ['begin' => strtotime("next $day", $begin_time)+$begin_hour,
+                                         'end'   => strtotime("next $day", $end_time)+$end_hour];
                      }
                   }
                }
@@ -1022,8 +1022,8 @@ class Reservation extends CommonDBChild {
                                   href='reservation.form.php?id=".$row['id']."'>";
                   $modif_end  = "</a>";
                   $modif_end .= Html::showToolTip($row["comment"],
-                                                  array('applyto' => "content_".$ID.$rand,
-                                                        'display' => false));
+                                                  ['applyto' => "content_".$ID.$rand,
+                                                        'display' => false]);
                }
 
                echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><span class='b'>".
@@ -1045,7 +1045,7 @@ class Reservation extends CommonDBChild {
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
     * @param $withtemplate    withtemplate param (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $resaID = 0;

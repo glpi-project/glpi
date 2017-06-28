@@ -49,7 +49,7 @@ class ComputerDisk extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Volume', 'Volumes', $nb);
    }
 
@@ -63,7 +63,7 @@ class ComputerDisk extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'Computer')
@@ -84,7 +84,7 @@ class ComputerDisk extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForComputer($item, $withtemplate);
       return true;
@@ -96,9 +96,9 @@ class ComputerDisk extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -140,7 +140,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
@@ -194,7 +194,7 @@ class ComputerDisk extends CommonDBChild {
       Html::autocompletionTextField($this, "mountpoint");
       echo "</td><td>".__('File system')."</td>";
       echo "<td>";
-      FileSystem::dropdown(array('value' => $this->fields["filesystems_id"]));
+      FileSystem::dropdown(['value' => $this->fields["filesystems_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -223,7 +223,7 @@ class ComputerDisk extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB;
 
       $ID = $comp->fields['id'];
@@ -304,8 +304,8 @@ class ComputerDisk extends CommonDBChild {
                if ($data['totalsize'] > 0) {
                   $percent = round(100*$data['freesize']/$data['totalsize']);
                }
-               Html::displayProgressBar('100', $percent, array('simple'       => true,
-                                                               'forcepadding' => false));
+               Html::displayProgressBar('100', $percent, ['simple'       => true,
+                                                               'forcepadding' => false]);
                echo "</td>";
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);

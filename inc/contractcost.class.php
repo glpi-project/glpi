@@ -48,7 +48,7 @@ class ContractCost extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cost', 'Costs', $nb);
    }
 
@@ -90,7 +90,7 @@ class ContractCost extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'Contract')
@@ -110,7 +110,7 @@ class ContractCost extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForContract($item, $withtemplate);
       return true;
@@ -265,7 +265,7 @@ class ContractCost extends CommonDBChild {
          return $DB->fetch_assoc($result);
       }
 
-      return array();
+      return [];
    }
 
    /**
@@ -274,7 +274,7 @@ class ContractCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
 
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -300,7 +300,7 @@ class ContractCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";
       echo "<td>";
-      Html::showDateField("begin_date", array('value' => $this->fields['begin_date']));
+      Html::showDateField("begin_date", ['value' => $this->fields['begin_date']]);
       echo "</td>";
       $rowspan = 3;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
@@ -311,12 +311,12 @@ class ContractCost extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateField("end_date", array('value' => $this->fields['end_date']));
+      Html::showDateField("end_date", ['value' => $this->fields['end_date']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
       echo "<td>";
-      Budget::dropdown(array('value' => $this->fields["budgets_id"]));
+      Budget::dropdown(['value' => $this->fields["budgets_id"]]);
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -333,7 +333,7 @@ class ContractCost extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForContract(Contract $contract, $withtemplate='') {
+   static function showForContract(Contract $contract, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $ID = $contract->fields['id'];
@@ -353,14 +353,15 @@ class ContractCost extends CommonDBChild {
 
       $rand   = mt_rand();
 
-      if ($canedit) {
+      if ($canedit
+          && ($withtemplate != 2)) {
          echo "<div id='viewcost".$ID."_$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
-         $params = array('type'         => __CLASS__,
+         $params = ['type'         => __CLASS__,
                          'parenttype'   => 'Contract',
                          'contracts_id' => $ID,
-                         'id'           => -1);
+                         'id'           => -1];
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -399,14 +400,14 @@ class ContractCost extends CommonDBChild {
                                             : $data['name']);
                echo "<td>";
                printf(__('%1$s %2$s'), $name,
-                        Html::showToolTip($data['comment'], array('display' => false)));
+                        Html::showToolTip($data['comment'], ['display' => false]));
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
                   echo "function viewEditCost" .$data['contracts_id']."_". $data["id"]. "_$rand() {\n";
-                  $params = array('type'         => __CLASS__,
+                  $params = ['type'         => __CLASS__,
                                   'parenttype'   => 'Contract',
                                   'contracts_id' => $data["contracts_id"],
-                                  'id'           => $data["id"]);
+                                  'id'           => $data["id"]];
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                          $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                   echo "};";

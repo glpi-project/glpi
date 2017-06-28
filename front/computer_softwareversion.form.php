@@ -47,8 +47,8 @@ if (isset($_POST["add"])) {
    if (isset($_POST["computers_id"]) && $_POST["computers_id"]
        && isset($_POST["softwareversions_id"]) && $_POST["softwareversions_id"]) {
 
-      if ($newID = $inst->add(array('computers_id'        => $_POST["computers_id"],
-                                    'softwareversions_id' => $_POST["softwareversions_id"]))) {
+      if ($newID = $inst->add(['computers_id'        => $_POST["computers_id"],
+                                    'softwareversions_id' => $_POST["softwareversions_id"]])) {
 
          Event::log($_POST["computers_id"], "computers", 5, "inventory",
                     //TRANS: %s is the user login

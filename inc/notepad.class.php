@@ -53,14 +53,14 @@ class Notepad extends CommonDBChild {
    static public $logs_for_parent = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       //TRANS: Always plural
       return _n('Note', 'Notes', $nb);
    }
 
 
    function getLogTypeID() {
-      return array($this->fields['itemtype'], $this->fields['items_id']);
+      return [$this->fields['itemtype'], $this->fields['items_id']];
    }
 
 
@@ -126,7 +126,7 @@ class Notepad extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (Session::haveRight($item::$rightname, READNOTE)) {
          $nb = 0;
@@ -144,8 +144,8 @@ class Notepad extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      static::showForItem($item);
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      static::showForItem($item, $withtemplate);
    }
 
 
@@ -168,7 +168,7 @@ class Notepad extends CommonDBChild {
    static function getAllForItem(CommonDBTM $item) {
       global $DB;
 
-      $data = array();
+      $data = [];
       $query = "SELECT `glpi_notepads`.*, `glpi_users`.`picture`
                 FROM `glpi_notepads`
                 LEFT JOIN `glpi_users` ON (`glpi_notepads`.`users_id_lastupdater` = `glpi_users`.`id`)
@@ -284,7 +284,7 @@ class Notepad extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $CFG_GLPI;
 
       if (!Session::haveRight($item::$rightname, READNOTE)) {
@@ -299,14 +299,15 @@ class Notepad extends CommonDBChild {
          $showuserlink = 1;
       }
 
-      if ($canedit) {
+      if ($canedit
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='boxnote center'>";
 
          echo "<div class='boxnoteleft'></div>";
          echo "<form name='addnote_form$rand' id='addnote_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
-         echo Html::hidden('itemtype', array('value' => $item->getType()));
-         echo Html::hidden('items_id', array('value' => $item->getID()));
+         echo Html::hidden('itemtype', ['value' => $item->getType()]);
+         echo Html::hidden('items_id', ['value' => $item->getID()]);
 
          echo "<div class='boxnotecontent'>";
          echo "<div class='floatleft'>";
@@ -315,7 +316,7 @@ class Notepad extends CommonDBChild {
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
+         echo Html::submit(_x('button', 'Add'), ['name' => 'add']);
          echo "</div>";
 
          Html::closeForm();
@@ -370,9 +371,9 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnoteright'>";
             if ($canedit) {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
-                                    array('purge' => 'purge'),
+                                    ['purge' => 'purge'],
                                     _x('button', 'Delete permanently'),
-                                    array('id'   => $note['id']),
+                                    ['id'   => $note['id']],
                                     'fa-times-circle',
                                     '',
                                      __('Confirm the final deletion?'));
@@ -387,12 +388,12 @@ class Notepad extends CommonDBChild {
 
                 echo "<div class='boxnoteleft'></div>";
                 echo "<div class='boxnotecontent'>";
-                echo Html::hidden('id', array('value' => $note['id']));
+                echo Html::hidden('id', ['value' => $note['id']]);
                 echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
                 echo "</div>"; // boxnotecontent
 
                 echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button', 'Update'), array('name' => 'update'));
+                echo Html::submit(_x('button', 'Update'), ['name' => 'update']);
                 echo "</div>"; // boxnoteright
 
                 Html::closeForm();

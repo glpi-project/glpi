@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTicketCategories.php")) {
    die("Sorry. You can't access this file directly");
 }
 
-$opt = array('entity' => $_POST["entity_restrict"]);
+$opt = ['entity' => $_POST["entity_restrict"]];
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    $opt['condition'] = "`is_helpdeskvisible`='1' AND ";

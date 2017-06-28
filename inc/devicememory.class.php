@@ -41,9 +41,9 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceMemory', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Memory', 'Memories', $nb);
    }
 
@@ -51,20 +51,20 @@ class DeviceMemory extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'size_default',
+                         [['name'  => 'size_default',
                                      'label' => __('Size by default'),
                                      'type'  => 'text',
-                                     'unit'  => __('Mio')),
-                               array('name'  => 'frequence',
+                                     'unit'  => __('Mio')],
+                               ['name'  => 'frequence',
                                      'label' => __('Frequency'),
                                      'type'  => 'text',
-                                     'unit'  => __('MHz')),
-                               array('name'  => 'devicememorytypes_id',
+                                     'unit'  => __('MHz')],
+                               ['name'  => 'devicememorytypes_id',
                                      'label' => __('Type'),
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'devicememorymodels_id',
+                                     'type'  => 'dropdownValue'],
+                               ['name'  => 'devicememorymodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -115,7 +115,7 @@ class DeviceMemory extends CommonDevice {
    **/
    function prepareInputForAddOrUpdate($input) {
 
-      foreach (array('size_default') as $field) {
+      foreach (['size_default'] as $field) {
          if (isset($input[$field]) && !is_numeric($input[$field])) {
             $input[$field] = 0;
          }
@@ -148,8 +148,8 @@ class DeviceMemory extends CommonDevice {
     * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -173,8 +173,8 @@ class DeviceMemory extends CommonDevice {
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -184,7 +184,7 @@ class DeviceMemory extends CommonDevice {
 
       switch ($item->getType()) {
          case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
             if ($this->fields["devicememorytypes_id"]) {
                $row->addCell($row->getHeaderByName('devicememory_type'),
                              Dropdown::getDropdownName("glpi_devicememorytypes",
@@ -210,10 +210,10 @@ class DeviceMemory extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'          => 'equal',
+      return ['designation'          => 'equal',
                    'devicememorytypes_id' => 'equal',
                    'manufacturers_id'     => 'equal',
-                   'frequence'            => 'delta:10');
+                   'frequence'            => 'delta:10'];
    }
 
 }

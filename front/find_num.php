@@ -98,11 +98,11 @@ if (isset($_POST["send"])) {
    echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
    echo " </tr>";
 
-   $types = array('Computer'         => __('Computer'),
+   $types = ['Computer'         => __('Computer'),
                   'NetworkEquipment' => __('Network device'),
                   'Printer'          => __('Printer'),
                   'Monitor'          => __('Monitor'),
-                  'Peripheral'       => __('Device'));
+                  'Peripheral'       => __('Device')];
    foreach ($types as $type => $label) {
       $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
                 FROM `".getTableForItemType($type)."`

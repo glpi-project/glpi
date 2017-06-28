@@ -62,7 +62,7 @@ class KnowbaseItem_Profile extends CommonDBRelation {
    static function getProfiles($knowbaseitems_id) {
       global $DB;
 
-      $prof  = array();
+      $prof  = [];
       $query = "SELECT `glpi_knowbaseitems_profiles`.*
                 FROM `glpi_knowbaseitems_profiles`
                 WHERE `knowbaseitems_id` = '$knowbaseitems_id'";

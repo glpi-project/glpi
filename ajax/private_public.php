@@ -67,7 +67,7 @@ if (isset($_POST['is_private'])) {
          echo "<input type='hidden' name='is_private' value='0'>\n";
          echo __('Public');
          echo "</td><td>";
-         Entity::dropdown(array('value' => $val));
+         Entity::dropdown(['value' => $val]);
          echo "</td><td>". __('Child entities')."</td><td>";
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
          echo "</td><td>";

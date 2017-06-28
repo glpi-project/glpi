@@ -99,10 +99,10 @@ if (isset($_POST["add"])) {
    $change_user = new Change_User();
 
    $change->check($_POST['changes_id'], READ);
-   $input = array('changes_id'       => $_POST['changes_id'],
+   $input = ['changes_id'       => $_POST['changes_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
-                  'type'             => CommonITILActor::ASSIGN);
+                  'type'             => CommonITILActor::ASSIGN];
    $change_user->add($input);
    Event::log($_POST['changes_id'], "change", 4, "maintain",
               //TRANS: %s is the user login

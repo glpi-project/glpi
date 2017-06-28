@@ -43,14 +43,14 @@ function update0845to0846() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.6'));
    $migration->setVersion('0.84.6');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -75,7 +75,7 @@ function update0845to0846() {
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
 
-   $status  = array('new'           => CommonITILObject::INCOMING,
+   $status  = ['new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
                     'plan'          => CommonITILObject::PLANNED,
                     'waiting'       => CommonITILObject::WAITING,
@@ -86,7 +86,7 @@ function update0845to0846() {
                     'evaluation'    => CommonITILObject::EVALUATION,
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
-                    'qualification' => CommonITILObject::QUALIFICATION);
+                    'qualification' => CommonITILObject::QUALIFICATION];
    // Migrate datas
    foreach ($status as $old => $new) {
       $query = "UPDATE `glpi_tickettemplatepredefinedfields`
@@ -95,10 +95,10 @@ function update0845to0846() {
                       AND `num` = 12";
       $DB->queryOrDie($query, "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new");
    }
-   foreach (array('glpi_ipaddresses', 'glpi_networknames') as $table) {
+   foreach (['glpi_ipaddresses', 'glpi_networknames'] as $table) {
       $migration->dropKey($table, 'item');
       $migration->migrationOneTable($table);
-      $migration->addKey($table, array('itemtype', 'items_id', 'is_deleted'), 'item');
+      $migration->addKey($table, ['itemtype', 'items_id', 'is_deleted'], 'item');
    }
 
    // must always be at the end

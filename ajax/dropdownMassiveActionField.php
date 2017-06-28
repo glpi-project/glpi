@@ -44,8 +44,8 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
 }
 
 if (InfoCom::canApplyOn($_POST["itemtype"])) {
-   Session::checkSeveralRightsOr(array($_POST["itemtype"] => UPDATE,
-                                       "infocom"          => UPDATE));
+   Session::checkSeveralRightsOr([$_POST["itemtype"] => UPDATE,
+                                       "infocom"          => UPDATE]);
 } else {
    $item->checkGlobal(UPDATE);
 }
@@ -80,8 +80,8 @@ if (isset($_POST["itemtype"])
       // Specific for plugin which add link to core object
        || ($plug = isPluginItemType(getItemTypeForTable($search['table'])))) {
       $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
-                                       array('itemtype' => $_POST["itemtype"],
-                                             'options'  => $search));
+                                       ['itemtype' => $_POST["itemtype"],
+                                             'options'  => $search]);
    }
 
    $fieldname = '';
@@ -93,8 +93,8 @@ if (isset($_POST["itemtype"])
       $fieldname = $search["linkfield"];
    }
    if (!$plugdisplay) {
-      $options = array();
-      $values  = array();
+      $options = [];
+      $values  = [];
       // For ticket template or aditional options of massive actions
       if (isset($_POST['options'])) {
          $options = $_POST['options'];

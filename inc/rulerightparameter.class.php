@@ -59,10 +59,10 @@ class RuleRightParameter extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'value',
+      return [['name'  => 'value',
                          'label' => _n('Criterion', 'Criteria', 1),
                          'type'  => 'text',
-                         'list'  => false));
+                         'list'  => false]];
    }
 
 
@@ -81,7 +81,7 @@ class RuleRightParameter extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('LDAP criterion', 'LDAP criteria', $nb);
    }
 

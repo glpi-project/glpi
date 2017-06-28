@@ -30,6 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
+
+define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
+define('GLPI_URI', 'http://localhost:8088');
+
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
 }
@@ -37,7 +42,7 @@ global $CFG_GLPI;
 
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/API/APIBaseClass.php';
+include_once __DIR__ . '/APIBaseClass.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
@@ -66,7 +71,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.1',
+      '_version' => '4.2',
 
       // Type => array of entries
       'Entity' => [
@@ -111,6 +116,10 @@ function loadDataset() {
             'name'         => '_test_soft2',
             'entities_id'  => '_test_child_2',
             'is_recursive' => 0,
+         ], [
+            'name'         => '_test_soft_3',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
          ]
 
       ], 'SoftwareVersion' => [
@@ -224,6 +233,14 @@ function loadDataset() {
          [
             'name'         => '_location01',
             'comment'      => 'Comment for location _location01'
+         ],
+         [
+            'name'         => '_location01 > _sublocation01',
+            'comment'      => 'Comment for location _sublocation01'
+         ],
+         [
+            'name'         => '_location02',
+            'comment'      => 'Comment for location _sublocation02'
          ]
       ], 'Netpoint' => [
          [
@@ -350,6 +367,10 @@ function loadDataset() {
             'is_uploadable' => '1',
             'ext'           => 'md'
          ]
+      ], 'Manufacturer' => [
+         [
+            'name'          => 'My Manufacturer',
+         ]
       ], 'SoftwareLicense' => [
          [
             'name'         => '_test_softlic_1',
@@ -427,6 +448,8 @@ function loadDataset() {
    $_SESSION['glpishowallentities'] = 1;
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
+   $_SESSION['glpiactiveentities']  = [0];
+   $_SESSION['glpiactiveentities_string'] = "'0'";
    $CFG_GLPI['root_doc']            = '/glpi';
 
    // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
@@ -443,7 +466,7 @@ function loadDataset() {
    } else {
       printf("\nLoading GLPI dataset version %s\n", $data['_version']);
 
-      $ids = array();
+      $ids = [];
       foreach ($data as $type => $inputs) {
          if ($type[0] == '_') {
             continue;
@@ -453,10 +476,12 @@ function loadDataset() {
             foreach ($input as $k => $v) {
                // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
                $foreigntype = false;
-               $match = array();
+               $match = [];
                if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
-                  $foreigntype = array_pop( $match );
-                  $foreigntype = getItemTypeForTable( "glpi_$foreigntype" );
+                  $foreigntypetxt = array_pop($match);
+                  if (substr($foreigntypetxt, 0, 1) !== '_') {
+                     $foreigntype = getItemTypeForTable("glpi_$foreigntypetxt");
+                  }
                }
                if ($foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$foreigntype][$v];
@@ -498,10 +523,11 @@ function loadDataset() {
  * @param boolean $onlyid
  * @return the item, or its id
  */
-function getItemByTypeName($type, $name, $onlyid=false) {
+function getItemByTypeName($type, $name, $onlyid = false) {
 
    $item = getItemForItemtype($type);
-   if ($item->getFromDBByQuery("WHERE `name`='$name'")) {
+   $nameField = $type::getNameField();
+   if ($item->getFromDBByQuery("WHERE `$nameField`='$name'")) {
       return ($onlyid ? $item->getField('id') : $item);
    }
    return false;

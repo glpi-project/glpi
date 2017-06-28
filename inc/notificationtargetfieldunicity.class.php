@@ -43,42 +43,36 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
 
    function getEvents() {
-      return array('refuse' => __('Alert on duplicate record'));
+      return ['refuse' => __('Alert on duplicate record')];
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       //User who tries to add or update an item in DB
       $action = ($options['action_user'] ?__('Add the item') :__('Update the item'));
-      $this->datas['##unicity.action_type##'] = $action;
-      $this->datas['##unicity.action_user##'] = $options['action_user'];
-      $this->datas['##unicity.date##']        = Html::convDateTime($options['date']);
+      $this->data['##unicity.action_type##'] = $action;
+      $this->data['##unicity.action_user##'] = $options['action_user'];
+      $this->data['##unicity.date##']        = Html::convDateTime($options['date']);
 
       if ($item = getItemForItemtype($options['itemtype'])) {
-         $this->datas['##unicity.itemtype##'] = $item->getTypeName(1);
-         $this->datas['##unicity.message##']
+         $this->data['##unicity.itemtype##'] = $item->getTypeName(1);
+         $this->data['##unicity.message##']
                   = Html::clean($item->getUnicityErrorMessage($options['label'],
                                                               $options['field'],
                                                               $options['double']));
       }
-      $this->datas['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
       if ($options['refuse']) {
-         $this->datas['##unicity.action##'] = __('Record into the database denied');
+         $this->data['##unicity.action##'] = __('Record into the database denied');
       } else {
-         $this->datas['##unicity.action##'] = __('Item successfully added but duplicate record on');
+         $this->data['##unicity.action##'] = __('Item successfully added but duplicate record on');
       }
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -86,18 +80,18 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('unicity.message'     => __('Message'),
+      $tags = ['unicity.message'     => __('Message'),
                     'unicity.action_user' => __('Doer'),
                     'unicity.action_type' => __('Intended action'),
                     'unicity.date'        => __('Date'),
                     'unicity.itemtype'    => __('Type'),
                     'unicity.entity'      => __('Entity'),
-                    'unicity.action'      => __('Alert on duplicate record'));
+                    'unicity.action'      => __('Alert on duplicate record')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
       asort($this->tag_descriptions);

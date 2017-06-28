@@ -50,7 +50,7 @@ class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown {
    **/
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -69,9 +69,9 @@ class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown {
    **/
    function getActions() {
 
-      $actions                          = array();
+      $actions                          = [];
       $actions['name']['name']          = __('Type');
-      $actions['name']['force_actions'] = array('assign', 'regex_result', 'append_regex_result');
+      $actions['name']['force_actions'] = ['assign', 'regex_result', 'append_regex_result'];
 
       return $actions;
    }

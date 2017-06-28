@@ -43,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceNetworkCard extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceNetworkCard', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network card', 'Network cards', $nb);
    }
 
@@ -57,30 +57,30 @@ class DeviceNetworkCard extends CommonDevice {
    **/
    function getImportCriteria() {
 
-      return array('designation'      => 'equal',
+      return ['designation'      => 'equal',
                    'manufacturers_id' => 'equal',
-                   'mac'              => 'equal');
+                   'mac'              => 'equal'];
    }
 
 
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'mac_default',
+                         [['name'  => 'mac_default',
                                      'label' => __('MAC address by default'),
-                                     'type'  => 'text'),
-                               array('name'  => 'bandwidth',
+                                     'type'  => 'text'],
+                               ['name'  => 'bandwidth',
                                      'label' => __('Flow'),
-                                     'type'  => 'text'),
-                               array('name'  => 'devicenetworkcardmodels_id',
+                                     'type'  => 'text'],
+                               ['name'  => 'devicenetworkcardmodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'none',
+                                     'type'  => 'dropdownValue'],
+                               ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
-                                                                                    NULL, false),
-                                     'type'  => 'registeredIDChooser')));
+                                                                                    null, false),
+                                     'type'  => 'registeredIDChooser']]);
    }
 
 
@@ -152,8 +152,8 @@ class DeviceNetworkCard extends CommonDevice {
     * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -179,8 +179,8 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -207,8 +207,8 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -218,7 +218,7 @@ class DeviceNetworkCard extends CommonDevice {
 
       switch ($item->getType()) {
          case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
             if ($this->fields["bandwidth"]) {
                $row->addCell($row->getHeaderByName('devicenetworkcard_bandwidth'),
                              $this->fields["bandwidth"], $father);

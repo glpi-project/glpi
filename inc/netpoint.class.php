@@ -53,14 +53,14 @@ class Netpoint extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'locations_id',
+      return [['name'  => 'locations_id',
                          'label' => __('Location'),
                          'type'  => 'dropdownValue',
-                         'list'  => true));
+                         'list'  => true]];
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Network outlet', 'Network outlets', $nb);
    }
 
@@ -112,8 +112,8 @@ class Netpoint extends CommonDropdown {
     *
     * @return nothing (display the select box)
    **/
-   static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
-                                    $entity_restrict=-1, $devtype='') {
+   static function dropdownNetpoint($myname, $value = 0, $locations_id = -1, $display_comment = 1,
+                                    $entity_restrict = -1, $devtype = '') {
       global $CFG_GLPI;
 
       $rand          = mt_rand();
@@ -131,11 +131,11 @@ class Netpoint extends CommonDropdown {
       }
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param    = array('value'               => $value,
+      $param    = ['value'               => $value,
                         'valuename'           => $name,
                         'entity_restrict'     => $entity_restrict,
                         'devtype'             => $devtype,
-                        'locations_id'        => $locations_id);
+                        'locations_id'        => $locations_id];
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
                                 $param);
@@ -143,7 +143,7 @@ class Netpoint extends CommonDropdown {
       // Display comment
       if ($display_comment) {
          $comment_id = Html::cleanId("comment_".$myname.$rand);
-         Html::showToolTip($comment, array('contentid' => $comment_id));
+         Html::showToolTip($comment, ['contentid' => $comment_id]);
 
          $item = new self();
          if ($item->canCreate()) {
@@ -154,8 +154,8 @@ class Netpoint extends CommonDropdown {
                                           $item->getFormURL());
 
          }
-         $paramscomment = array('value' => '__VALUE__',
-                                'table' => "glpi_netpoints");
+         $paramscomment = ['value' => '__VALUE__',
+                                'table' => "glpi_netpoints"];
          echo Ajax::updateItemOnSelectEvent($field_id, $comment_id,
                                             $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                             $paramscomment, false);
@@ -218,7 +218,7 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -235,7 +235,7 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'Location') {
          self::showForLocation($item);
@@ -274,7 +274,7 @@ class Netpoint extends CommonDropdown {
          echo "<tr class='tab_bg_2 center'>";
          echo "<td class='b'>"._n('Network outlet', 'Network outlets', 1)."</td>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($item, "name", array('value' => ''));
+         Html::autocompletionTextField($item, "name", ['value' => '']);
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
@@ -289,13 +289,13 @@ class Netpoint extends CommonDropdown {
          echo "<td class='b'>"._n('Network outlet', 'Network outlets', Session::getPluralNumber())."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
-         Dropdown::showNumber('_from', array('value' => 0,
+         Dropdown::showNumber('_from', ['value' => 0,
                                              'min'   => 0,
-                                             'max'   => 400));
+                                             'max'   => 400]);
          echo "&nbsp;-->&nbsp;";
-         Dropdown::showNumber('_to', array('value' => 0,
+         Dropdown::showNumber('_to', ['value' => 0,
                                            'min'   => 0,
-                                           'max'   => 400));
+                                           'max'   => 400]);
          echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
@@ -323,12 +323,12 @@ class Netpoint extends CommonDropdown {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
-               = array('num_displayed'
+               = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $number),
                        'container'
                            => 'mass'.__CLASS__.$rand,
                        'specific_actions'
-                           => array('purge' => _x('button', 'Delete permanently')));
+                           => ['purge' => _x('button', 'Delete permanently')]];
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -344,10 +344,10 @@ class Netpoint extends CommonDropdown {
          echo "<th>".__('Comments')."</th>"; // Comment
          echo "</tr>\n";
 
-         $crit = array('locations_id' => $ID,
+         $crit = ['locations_id' => $ID,
                        'ORDER'        => 'name',
                        'START'        => $start,
-                       'LIMIT'        => $_SESSION['glpilist_limit']);
+                       'LIMIT'        => $_SESSION['glpilist_limit']];
 
          Session::initNavigateListItems('Netpoint',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -394,8 +394,8 @@ class Netpoint extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -416,8 +416,8 @@ class Netpoint extends CommonDropdown {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, $options = []) {
 
       $column_name = __CLASS__;
 

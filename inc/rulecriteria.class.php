@@ -61,7 +61,7 @@ class RuleCriteria extends CommonDBChild {
    /**
     * @param $rule_type (default 'Rule)
    **/
-   function __construct($rule_type='Rule') {
+   function __construct($rule_type = 'Rule') {
       static::$itemtype = $rule_type;
    }
 
@@ -90,7 +90,7 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return Title of the rule
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Criterion', 'Criteria', $nb);
    }
 
@@ -117,8 +117,8 @@ class RuleCriteria extends CommonDBChild {
       parent::post_addItem();
       if (isset($this->input['rules_id'])
           && ($realrule = Rule::getRuleObjectByID($this->input['rules_id']))) {
-         $realrule->update(array('id'       => $this->input['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']));
+         $realrule->update(['id'       => $this->input['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']]);
       }
    }
 
@@ -133,8 +133,8 @@ class RuleCriteria extends CommonDBChild {
       parent::post_purgeItem();
       if (isset($this->fields['rules_id'])
           && ($realrule = Rule::getRuleObjectByID($this->fields['rules_id']))) {
-         $realrule->update(array('id'       => $this->fields['rules_id'],
-                                 'date_mod' => $_SESSION['glpi_currenttime']));
+         $realrule->update(['id'       => $this->fields['rules_id'],
+                                 'date_mod' => $_SESSION['glpi_currenttime']]);
       }
    }
 
@@ -195,10 +195,10 @@ class RuleCriteria extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'criteria' :
@@ -251,11 +251,11 @@ class RuleCriteria extends CommonDBChild {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -309,26 +309,23 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Get all criterias for a given rule
     *
-    * @param $ID the rule_description ID
+    * @param $rules_id the rule ID
     *
     * @return an array of RuleCriteria objects
    **/
-   function getRuleCriterias($ID) {
+   function getRuleCriterias($rules_id) {
       global $DB;
 
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              WHERE `".static::$items_id."` = '$ID'
-              ORDER BY `id`";
-
-      $result     = $DB->query($sql);
-      $rules_list = array();
-      while ($rule = $DB->fetch_assoc($result)) {
+      $rules_list = [];
+      $params = ['FROM'  => $this->getTable(),
+                 'WHERE' => [static::$items_id => $rules_id],
+                 'ORDER' => 'id'
+                ];
+      foreach ($DB->request($params) as $rule) {
          $tmp          = new self();
          $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }
-
       return $rules_list;
    }
 
@@ -452,14 +449,14 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::REGEX_MATCH :
-            $results = array();
+            $results = [];
             // Permit use < and >
             $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
             if (preg_match_all($pattern."i", $field, $results)>0) {
                // Drop $result[0] : complete match result
                array_shift($results);
                // And add to $regex_result array
-               $res = array();
+               $res = [];
                foreach ($results as $data) {
                   $res[] = $data[0];
                }
@@ -496,7 +493,7 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID, $itemtype, $criterion='') {
+   static function getConditionByID($ID, $itemtype, $criterion = '') {
 
       $conditions = self::getConditions($itemtype, $criterion);
       if (isset($conditions[$ID])) {
@@ -512,9 +509,9 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return array of criteria
    **/
-   static function getConditions($itemtype, $criterion='') {
+   static function getConditions($itemtype, $criterion = '') {
 
-      $criteria =  array(Rule::PATTERN_IS              => __('is'),
+      $criteria =  [Rule::PATTERN_IS              => __('is'),
                          Rule::PATTERN_IS_NOT          => __('is not'),
                          Rule::PATTERN_CONTAIN         => __('contains'),
                          Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
@@ -523,9 +520,9 @@ class RuleCriteria extends CommonDBChild {
                          Rule::REGEX_MATCH             => __('regular expression matches'),
                          Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
                          Rule::PATTERN_EXISTS          => __('exists'),
-                         Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist'));
+                         Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')];
 
-      $extra_criteria = call_user_func(array($itemtype, 'addMoreCriteria'), $criterion);
+      $extra_criteria = call_user_func([$itemtype, 'addMoreCriteria'], $criterion);
 
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
@@ -556,25 +553,25 @@ class RuleCriteria extends CommonDBChild {
     * @param $itemtype
     * @param $params    array
    **/
-   static function dropdownConditions($itemtype, $params=array()) {
+   static function dropdownConditions($itemtype, $params = []) {
 
       $p['name']             = 'condition';
       $p['criterion']        = '';
-      $p['allow_conditions'] = array();
+      $p['allow_conditions'] = [];
       $p['value']            = '';
       $p['display']          = true;
 
       foreach ($params as $key => $value) {
          $p[$key] = $value;
       }
-      $elements = array();
+      $elements = [];
       foreach (self::getConditions($itemtype, $p['criterion']) as $pattern => $label) {
          if (empty($p['allow_conditions'])
              || (!empty($p['allow_conditions']) && in_array($pattern, $p['allow_conditions']))) {
             $elements[$pattern] = $label;
          }
       }
-      return Dropdown::showFromArray($p['name'], $elements, array('value' => $p['value']));
+      return Dropdown::showFromArray($p['name'], $elements, ['value' => $p['value']]);
    }
 
 
@@ -586,7 +583,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $options array    of possible options:
     *     - rule Object : the rule
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Yllen: you always have parent for criteria
@@ -610,10 +607,10 @@ class RuleCriteria extends CommonDBChild {
       echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".
              $this->fields[$rule->getRuleIdField()]."'>";
 
-      $rand   = $rule->dropdownCriteria(array('value' => $this->fields['criteria']));
-      $params = array('criteria' => '__VALUE__',
+      $rand   = $rule->dropdownCriteria(['value' => $this->fields['criteria']]);
+      $params = ['criteria' => '__VALUE__',
                       'rand'     => $rand,
-                      'sub_type' => $rule->getType());
+                      'sub_type' => $rule->getType()];
 
       Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
                                     $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
@@ -637,7 +634,7 @@ class RuleCriteria extends CommonDBChild {
                   "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
          Ajax::createIframeModalWindow('addcriterion'.$rand,
                                        Toolbox::getItemTypeFormURL($itemtype),
-                                       array('reloadonclose' => true));
+                                       ['reloadonclose' => true]);
       }
 
       echo "</td></tr>";

@@ -50,11 +50,11 @@ class KnowbaseItem extends CommonDBVisible {
    public $dohistory    = true;
 
    // For visibility checks
-   protected $users     = array();
-   protected $groups    = array();
-   protected $profiles  = array();
-   protected $entities  = array();
-   protected $items     = array();
+   protected $users     = [];
+   protected $groups    = [];
+   protected $profiles  = [];
+   protected $entities  = [];
+   protected $items     = [];
 
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
@@ -64,7 +64,7 @@ class KnowbaseItem extends CommonDBVisible {
    static $rightname   = 'knowbase';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Knowledge base');
    }
 
@@ -94,7 +94,7 @@ class KnowbaseItem extends CommonDBVisible {
 
    static function canCreate() {
 
-      return Session::haveRightsOr(self::$rightname, array(CREATE, self::PUBLISHFAQ));
+      return Session::haveRightsOr(self::$rightname, [CREATE, self::PUBLISHFAQ]);
    }
 
 
@@ -102,14 +102,14 @@ class KnowbaseItem extends CommonDBVisible {
     * @since version 0.85
    **/
    static function canUpdate() {
-      return Session::haveRightsOr(self::$rightname, array(UPDATE, self::KNOWBASEADMIN));
+      return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
    }
 
 
    static function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
+      return (Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -125,7 +125,7 @@ class KnowbaseItem extends CommonDBVisible {
       }
 
       if ($this->fields["is_faq"]) {
-         return ((Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
+         return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
@@ -161,7 +161,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @param $full path or relative one (true by default)
    **/
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -174,9 +174,9 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -190,7 +190,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -212,7 +212,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -262,7 +262,7 @@ class KnowbaseItem extends CommonDBVisible {
           && !empty($this->input["_visibility"]["_type"])) {
 
          $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
-         $item                                           = NULL;
+         $item                                           = null;
 
          switch ($this->input["_visibility"]['_type']) {
             case 'User' :
@@ -369,7 +369,7 @@ class KnowbaseItem extends CommonDBVisible {
 
    public function haveVisibilityAccess() {
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRightsOr(self::$rightname, array(self::READFAQ, READ))) {
+      if (!Session::haveRightsOr(self::$rightname, [self::READFAQ, READ])) {
          return false;
       }
 
@@ -390,7 +390,7 @@ class KnowbaseItem extends CommonDBVisible {
    *
    * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall=false) {
+   static function addVisibilityJoins($forceall = false) {
 
       $join = '';
 
@@ -485,7 +485,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return array
     */
-   static public function getVisibilityCriteria($forceall=false) {
+   static public function getVisibilityCriteria($forceall = false) {
 
       $join = [];
       $where = [];
@@ -576,7 +576,7 @@ class KnowbaseItem extends CommonDBVisible {
          }
       }
 
-      $criteria = ['JOIN' => $join];
+      $criteria = ['LEFT JOIN' => $join];
       if (count($where)) {
          $criteria['WHERE'] = ['OR' => $where];
       }
@@ -637,12 +637,12 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return nothing (display the form)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // show kb item form
       if (!Session::haveRightsOr(self::$rightname,
-                                 array(UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN))) {
+                                 [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
       }
 
@@ -676,7 +676,7 @@ class KnowbaseItem extends CommonDBVisible {
       echo "<td>".__('Category name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-      KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
+      KnowbaseItemCategory::dropdown(['value' => $this->fields["knowbaseitemcategories_id"]]);
       echo "</td>";
       echo "<td>";
       if ($this->fields["date"]) {
@@ -726,16 +726,16 @@ class KnowbaseItem extends CommonDBVisible {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Visible since')."</td><td>";
-      Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
+      Html::showDateTimeField("begin_date", ['value'       => $this->fields["begin_date"],
                                                   'timestep'    => 1,
                                                   'maybeempty' => true,
-                                                  'canedit'    => $canedit));
+                                                  'canedit'    => $canedit]);
       echo "</td>";
       echo "<td>".__('Visible until')."</td><td>";
-      Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
+      Html::showDateTimeField("end_date", ['value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
                                                 'maybeempty' => true,
-                                                'canedit'    => $canedit));
+                                                'canedit'    => $canedit]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -753,7 +753,7 @@ class KnowbaseItem extends CommonDBVisible {
       $rows = 30;
       if (isset($options['_in_modal']) && $options['_in_modal']) {
          $rows = 15;
-         echo Html::hidden('_in_modal', array('value' => 1));
+         echo Html::hidden('_in_modal', ['value' => 1]);
       }
       Html::textarea(['name'              => 'answer',
                       'value'             => $this->fields["answer"],
@@ -768,13 +768,13 @@ class KnowbaseItem extends CommonDBVisible {
          echo "<tr class='tab_bg_1'>";
          echo "<td>"._n('Target', 'Targets', 1)."</td>";
          echo "<td>";
-         $types   = array('Entity', 'Group', 'Profile', 'User');
+         $types   = ['Entity', 'Group', 'Profile', 'User'];
          $addrand = Dropdown::showItemTypes('_visibility[_type]', $types);
          echo "</td><td colspan='2'>";
-         $params  = array('type'     => '__VALUE__',
+         $params  = ['type'     => '__VALUE__',
                           'right'    => 'knowbase',
                           'prefix'   => '_visibility',
-                          'nobutton' => 1);
+                          'nobutton' => 1];
 
          Ajax::updateItemOnSelectEvent("dropdown__visibility__type_".$addrand, "visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php",
@@ -829,7 +829,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($options=array()) {
+   function showFull($options = []) {
       global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
@@ -939,7 +939,7 @@ class KnowbaseItem extends CommonDBVisible {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
+          && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])) {
          return false;
       }
 
@@ -986,7 +986,7 @@ class KnowbaseItem extends CommonDBVisible {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
+          && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])) {
          return false;
       }
 
@@ -1007,7 +1007,7 @@ class KnowbaseItem extends CommonDBVisible {
          echo "<form method='get' action='".$this->getSearchURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => $params["knowbaseitemcategories_id"]));
+         KnowbaseItemCategory::dropdown(['value' => $params["knowbaseitemcategories_id"]]);
          echo "</td><td class='left'>";
          echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
          echo "</tr></table>";
@@ -1035,7 +1035,7 @@ class KnowbaseItem extends CommonDBVisible {
       global $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,
-                                 array(UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN))) {
+                                 [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN])) {
          return false;
       }
       $params['unpublished'] = 'my';
@@ -1051,12 +1051,12 @@ class KnowbaseItem extends CommonDBVisible {
       echo "<form method='get' action='".$this->getSearchURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-      $values = array('myunpublished' => __('My unpublished articles'),
-                      'allmy'         => __('All my articles'));
+      $values = ['myunpublished' => __('My unpublished articles'),
+                      'allmy'         => __('All my articles')];
       if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          $values['allunpublished'] = __('All unpublished articles');
       }
-      Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
+      Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
       echo "</td><td class='left'>";
       echo "<input type='submit' value=\""._sx('button', 'Post')."\" class='submit'></td>";
       echo "</tr></table>";
@@ -1075,7 +1075,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return String : SQL request
    **/
-   static function getListRequest(array $params, $type='search') {
+   static function getListRequest(array $params, $type = 'search') {
       global $DB;
 
       // Lists kb Items
@@ -1154,11 +1154,11 @@ class KnowbaseItem extends CommonDBVisible {
                $search_wilcard = explode(' ', $search);
                $search_wilcard = implode('* ', $search_wilcard).'*';
 
-               $addscore = array();
+               $addscore = [];
                if (KnowbaseItemTranslation::isKbTranslationActive()
                    && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
-                  $addscore = array('`glpi_knowbaseitemtranslations`.`name`',
-                                    '`glpi_knowbaseitemtranslations`.`answer`');
+                  $addscore = ['`glpi_knowbaseitemtranslations`.`name`',
+                                    '`glpi_knowbaseitemtranslations`.`answer`'];
                }
                $score = " ,(MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
                            AGAINST('$search_wilcard' IN BOOLEAN MODE)";
@@ -1201,7 +1201,7 @@ class KnowbaseItem extends CommonDBVisible {
                $numrows_1 = $DB->result($result_1, 0, 0);
 
                if ($numrows_1 <= 0) {// not result this fulltext try with alternate search
-                  $search1 = array(/* 1 */   '/\\\"/',
+                  $search1 = [/* 1 */   '/\\\"/',
                                    /* 2 */   "/\+/",
                                    /* 3 */   "/\*/",
                                    /* 4 */   "/~/",
@@ -1209,7 +1209,7 @@ class KnowbaseItem extends CommonDBVisible {
                                    /* 6 */   "/>/",
                                    /* 7 */   "/\(/",
                                    /* 8 */   "/\)/",
-                                   /* 9 */   "/\-/");
+                                   /* 9 */   "/\-/"];
                   $contains = preg_replace($search1, "", $params["contains"]);
                   $addwhere = '';
                   if (KnowbaseItemTranslation::isKbTranslationActive()
@@ -1260,7 +1260,7 @@ class KnowbaseItem extends CommonDBVisible {
     * @param $options            $_GET
     * @param $type      string   search type : browse / search (default search)
    **/
-   static function showList($options, $type='search') {
+   static function showList($options, $type = 'search') {
       global $DB, $CFG_GLPI;
 
       // Default values of parameters
@@ -1278,7 +1278,7 @@ class KnowbaseItem extends CommonDBVisible {
       $ki = new self();
       switch ($type) {
          case 'myunpublished' :
-            if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
+            if (!Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ])) {
                return false;
             }
             break;
@@ -1313,7 +1313,7 @@ class KnowbaseItem extends CommonDBVisible {
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];
 
-         $showwriter = in_array($type, array('myunpublished', 'allunpublished', 'allmy'));
+         $showwriter = in_array($type, ['myunpublished', 'allunpublished', 'allmy']);
 
          // Limit the result, if no limit applies, use prior result
          if (($numrows > $list_limit)
@@ -1406,7 +1406,7 @@ class KnowbaseItem extends CommonDBVisible {
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                             $CFG_GLPI["root_doc"].
                                                                "/front/knowbaseitem.form.php?id=".$data["id"],
-                                                            array('display' => false));
+                                                            ['display' => false]);
                   } else {
                      $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
                                     $data["id"]."\" ";
@@ -1721,7 +1721,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'central') {
          $values = parent::getRights();

@@ -41,8 +41,8 @@ if (!defined('GLPI_ROOT')) {
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
-Session::checkRightsOr('search_config', array(DisplayPreference::PERSONAL,
-                                              DisplayPreference::GENERAL));
+Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
+                                              DisplayPreference::GENERAL]);
 
 $setupdisplay = new DisplayPreference();
 
@@ -53,8 +53,8 @@ if (isset($_POST["activate"])) {
 
 } else if (isset($_POST["disable"])) {
    if ($_POST['users_id'] == Session::getLoginUserID()) {
-       $setupdisplay->deleteByCriteria(array('users_id' => $_POST['users_id'],
-                                                       'itemtype' => $_POST['itemtype']));
+       $setupdisplay->deleteByCriteria(['users_id' => $_POST['users_id'],
+                                                       'itemtype' => $_POST['itemtype']]);
    }
 } else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
@@ -71,7 +71,7 @@ if (isset($_POST["activate"])) {
 
 // Datas may come from GET or POST : use REQUEST
 if (isset($_REQUEST["itemtype"])) {
-   $setupdisplay->display(array('displaytype' => $_REQUEST['itemtype']));
+   $setupdisplay->display(['displaytype' => $_REQUEST['itemtype']]);
 }
 
 Html::popFooter();

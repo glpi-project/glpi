@@ -56,7 +56,7 @@ class ProblemCost extends CommonITILCost {
 
 
    static function canView() {
-      return Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
+      return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
    }
 
 

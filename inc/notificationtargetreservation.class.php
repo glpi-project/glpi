@@ -46,19 +46,14 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    function getEvents() {
-
-      return array('new'    => __('New reservation'),
+      return ['new'    => __('New reservation'),
                    'update' => __('Update of a reservation'),
                    'delete' => __('Deletion of a reservation'),
-                   'alert'  => __('Reservation expired'));
+                   'alert'  => __('Reservation expired')];
    }
 
 
-   /**
-    * @see NotificationTarget::getAdditionalTargets()
-   **/
-   function getAdditionalTargets($event='') {
-
+   function addAdditionalTargets($event = '') {
       if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
@@ -73,24 +68,21 @@ class NotificationTargetReservation extends NotificationTarget {
    }
 
 
-   /**
-    * @see NotificationTarget::getDatasForTemplate()
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
       //----------- Reservation infos -------------- //
       $events                                  = $this->getAllEvents();
 
-      $this->datas['##reservation.action##']   = $events[$event];
+      $this->data['##reservation.action##']   = $events[$event];
 
       if ($event != 'alert') {
-         $this->datas['##reservation.user##']   = "";
+         $this->data['##reservation.user##']   = "";
          $user_tmp                              = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
-            $this->datas['##reservation.user##'] = $user_tmp->getName();
+            $this->data['##reservation.user##'] = $user_tmp->getName();
          }
-         $this->datas['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
-         $this->datas['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
-         $this->datas['##reservation.comment##'] = $this->obj->getField('comment');
+         $this->data['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
+         $this->data['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
+         $this->data['##reservation.comment##'] = $this->obj->getField('comment');
 
          $reservationitem = new ReservationItem();
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
@@ -98,35 +90,35 @@ class NotificationTargetReservation extends NotificationTarget {
 
          if ($item = getItemForItemtype($itemtype)) {
             $item->getFromDB($reservationitem->getField('items_id'));
-            $this->datas['##reservation.itemtype##']
+            $this->data['##reservation.itemtype##']
                                  = $item->getTypeName(1);
-            $this->datas['##reservation.item.name##']
+            $this->data['##reservation.item.name##']
                                  = $item->getField('name');
-            $this->datas['##reservation.item.entity##']
+            $this->data['##reservation.item.entity##']
                                  = Dropdown::getDropdownName('glpi_entities',
                                                              $item->getField('entities_id'));
 
             if ($item->isField('users_id_tech')) {
-                $this->datas['##reservation.item.tech##']
+                $this->data['##reservation.item.tech##']
                                  = Dropdown::getDropdownName('glpi_users',
                                                              $item->getField('users_id_tech'));
             }
 
-            $this->datas['##reservation.itemurl##']
+            $this->data['##reservation.itemurl##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
                                                     $itemtype."_".$item->getField('id'));
 
-            $this->datas['##reservation.url##']
+            $this->data['##reservation.url##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
                                                     "Reservation_".$this->obj->getField('id'));
          }
 
       } else {
-         $this->datas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
+         $this->data['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                             $options['entities_id']);
 
          foreach ($options['items'] as $id => $item) {
-            $tmp = array();
+            $tmp = [];
             if ($obj = getItemForItemtype($item['itemtype'])) {
                $tmp['##reservation.itemtype##']
                                     = $obj->getTypeName(1);
@@ -138,14 +130,14 @@ class NotificationTargetReservation extends NotificationTarget {
                                     = $this->formatURL($options['additionnaloption']['usertype'],
                                                        "Reservation_".$id);
             }
-            $this->datas['reservations'][] = $tmp;
+            $this->data['reservations'][] = $tmp;
          }
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -153,47 +145,47 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('reservation.item'     => __('Associated item'),
+      $tags_all = ['reservation.item'     => __('Associated item'),
                         'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => __('URL'),
                         'reservation.itemurl'  => __('URL of item reserved'),
-                        'reservation.action'   => _n('Event', 'Events', 1));
+                        'reservation.action'   => _n('Event', 'Events', 1)];
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $tags_except_alert = array('reservation.user'        => __('Writer'),
+      $tags_except_alert = ['reservation.user'        => __('Writer'),
                                  'reservation.begin'       => __('Start date'),
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => __('Entity'),
                                  'reservation.item.name'   => __('Associated item'),
-                                 'reservation.item.tech'   => __('Technician in charge of the hardware'));
+                                 'reservation.item.tech'   => __('Technician in charge of the hardware')];
 
       foreach ($tags_except_alert as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('new', 'update', 'delete')));
+                                   'events' => ['new', 'update', 'delete']]);
       }
 
-      $this->addTagToList(array('tag'     => 'items',
+      $this->addTagToList(['tag'     => 'items',
                                 'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true,
-                                'events'  => array('alert')));
+                                'events'  => ['alert']]);
 
-      $tag_alert = array('reservation.expirationdate' => __('End date'),
-                         'reservation.entity'         => __('Entity'));
+      $tag_alert = ['reservation.expirationdate' => __('End date'),
+                         'reservation.entity'         => __('Entity')];
 
       foreach ($tag_alert as $tag => $label) {
-         $this->addTagToList(array('tag'    => $tag,
+         $this->addTagToList(['tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('alert')));
+                                   'events' => ['alert']]);
       }
 
       asort($this->tag_descriptions);
@@ -203,11 +195,11 @@ class NotificationTargetReservation extends NotificationTarget {
    /**
     * Get item associated with the object on which the event was raised
     *
-    * @param $event  (default '')
+    * @param string $event (default '')
     *
     * @return the object associated with the itemtype
    **/
-   function getObjectItem($event='') {
+   function getObjectItem($event = '') {
 
       if ($this->obj) {
          $ri = new ReservationItem();

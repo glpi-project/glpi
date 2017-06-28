@@ -88,7 +88,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    $config_object  = new Config();
-   $current_config = array();
+   $current_config = [];
 
    if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
        && (isset($TRY_OLD_CONFIG_FIRST) // index case

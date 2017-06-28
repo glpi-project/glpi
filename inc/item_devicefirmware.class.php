@@ -44,7 +44,7 @@ class Item_DeviceFirmware extends Item_Devices {
 
    static protected $notable = false;
 
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
       return [
          'serial' => parent::getSpecificities('serial'),
          'otherserial' => parent::getSpecificities('otherserial'),

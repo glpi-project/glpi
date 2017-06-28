@@ -64,7 +64,7 @@ class Change_Project extends CommonDBRelation{
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Link Project/Change', 'Links Project/Change', $nb);
    }
 
@@ -96,7 +96,7 @@ class Change_Project extends CommonDBRelation{
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
          $nb = 0;
@@ -120,7 +120,7 @@ class Change_Project extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Change' :
@@ -161,8 +161,8 @@ class Change_Project extends CommonDBRelation{
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
 
-      $changes = array();
-      $used    = array();
+      $changes = [];
+      $used    = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $changes[$data['id']] = $data;
@@ -180,9 +180,9 @@ class Change_Project extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='projects_id' value='$ID'>";
-         Change::dropdown(array('used'        => $used,
+         Change::dropdown(['used'        => $used,
                                 'entity'      => $project->getEntityID(),
-                                'entity_sons' => $project->isRecursive()));
+                                'entity_sons' => $project->isRecursive()]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr></table>";
@@ -193,8 +193,8 @@ class Change_Project extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -211,9 +211,9 @@ class Change_Project extends CommonDBRelation{
          $i = 0;
          foreach ($changes as $data) {
             Session::addToNavigateListItems('Change', $data["id"]);
-            Change::showShort($data['id'], array('row_num'                => $i,
+            Change::showShort($data['id'], ['row_num'                => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']));
+                                                 'id_for_massiveaction'   => $data['linkID']]);
             $i++;
          }
          Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
@@ -256,8 +256,8 @@ class Change_Project extends CommonDBRelation{
                 ORDER BY `glpi_projects`.`name`";
       $result = $DB->query($query);
 
-      $projects = array();
-      $used     = array();
+      $projects = [];
+      $used     = [];
       if ($numrows = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $projects[$data['id']] = $data;
@@ -276,8 +276,8 @@ class Change_Project extends CommonDBRelation{
 
          echo "<tr class='tab_bg_2'><td>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Project::dropdown(array('used'   => $used,
-                                 'entity' => $change->getEntityID()));
+         Project::dropdown(['used'   => $used,
+                                 'entity' => $change->getEntityID()]);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr></table>";
@@ -288,8 +288,8 @@ class Change_Project extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'     => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -306,9 +306,9 @@ class Change_Project extends CommonDBRelation{
          $i = 0;
          foreach ($projects as $data) {
             Session::addToNavigateListItems('Project', $data["id"]);
-            Project::showShort($data['id'], array('row_num'               => $i,
+            Project::showShort($data['id'], ['row_num'               => $i,
                                                  'type_for_massiveaction' => __CLASS__,
-                                                 'id_for_massiveaction'   => $data['linkID']));
+                                                 'id_for_massiveaction'   => $data['linkID']]);
             $i++;
          }
          Project::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);

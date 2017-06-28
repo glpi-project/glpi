@@ -32,15 +32,15 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
-class DbTestCase extends PHPUnit\Framework\TestCase {
+class DbTestCase extends atoum {
    private $int;
    private $str;
 
-   protected function setUp() {
+   public function setUp() {
       global $DB;
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
-      $DB->objcreated = array();
+      $DB->objcreated = [];
 
       // By default, no session, not connected
       $_SESSION = [
@@ -52,12 +52,14 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
    }
 
 
-   protected function tearDown() {
+   public function afterTestMethod($method) {
       global $DB;
 
       // Cleanup log directory
       foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-         unlink($file);
+         if (file_exists($file)) {
+            unlink($file);
+         }
       }
 
       // Need Innodb -- $DB->rollback()  -- workaround:
@@ -105,7 +107,7 @@ class DbTestCase extends PHPUnit\Framework\TestCase {
     * change current entity
     */
    protected function setEntity($entityname, $subtree) {
-
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', $entityname, true), $subtree));
+      $res = Session::changeActiveEntities(getItemByTypeName('Entity', $entityname, true), $subtree);
+      $this->boolean($res)->isTrue();
    }
 }

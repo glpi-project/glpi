@@ -36,7 +36,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRightsOr('problem', array(Problem::READALL, Problem::READMY));
+Session::checkRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
 Html::header(Problem::getTypeName(Session::getPluralNumber()), '', "helpdesk", "problem");
 

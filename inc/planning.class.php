@@ -47,19 +47,19 @@ class Planning extends CommonGLPI {
 
    static $rightname = 'planning';
 
-   static $palette_bg = array('#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
+   static $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
                               '#D6CACA', '#D3D6ED', '#C8E5E3', '#FBD5BF', '#E9EBA2',
-                              '#E8E5E5', '#DBECDF', '#FCE7F2', '#E9D3D3', '#D2DBDC');
+                              '#E8E5E5', '#DBECDF', '#FCE7F2', '#E9D3D3', '#D2DBDC'];
 
-   static $palette_fg = array('#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
+   static $palette_fg = ['#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
                               '#3B2727', '#272D59', '#2E4645', '#6F4831', '#46481B',
-                              '#4E4E4E', '#274C30', '#6A535F', '#473232', '#454545',);
+                              '#4E4E4E', '#274C30', '#6A535F', '#473232', '#454545',];
 
-   static $palette_ev = array('#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
+   static $palette_ev = ['#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
                               '#364959', '#8C5344', '#FF8100', '#F600C4', '#0017FF',
-                              '#000000', '#FFFFFF', '#005800', '#925EFF');
+                              '#000000', '#FFFFFF', '#005800', '#925EFF'];
 
-   static $directgroup_itemtype = array('ProjectTask', 'TicketTask', 'ProblemTask');
+   static $directgroup_itemtype = ['ProjectTask', 'TicketTask', 'ProblemTask'];
 
    const READMY    =    1;
    const READGROUP = 1024;
@@ -74,7 +74,7 @@ class Planning extends CommonGLPI {
     *
     * @param $nb
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Planning');
    }
 
@@ -86,7 +86,7 @@ class Planning extends CommonGLPI {
    static function getMenuContent() {
       global $CFG_GLPI;
 
-      $menu = array();
+      $menu = [];
       if (static::canView()) {
          $menu['title']   = self::getTypeName();
          $menu['page']    = '/front/planning.php';
@@ -113,14 +113,14 @@ class Planning extends CommonGLPI {
    **/
    static function canView() {
 
-      return Session::haveRightsOr(self::$rightname, array(self::READMY, self::READGROUP,
-                                                           self::READALL));
+      return Session::haveRightsOr(self::$rightname, [self::READMY, self::READGROUP,
+                                                           self::READALL]);
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong               = array();
+      $ong               = [];
       $ong['no_all_tab'] = true;
 
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -129,7 +129,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = self::getTypeName();
@@ -140,7 +140,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -180,14 +180,14 @@ class Planning extends CommonGLPI {
     * @param $value  default value (default '')
     * @param $display  display of send string ? (true by default)
    **/
-   static function dropdownState($name, $value='', $display=true) {
+   static function dropdownState($name, $value = '', $display = true) {
 
-      $values = array(static::INFO => _n('Information', 'Information', 1),
+      $values = [static::INFO => _n('Information', 'Information', 1),
                       static::TODO => __('To do'),
-                      static::DONE => __('Done'));
+                      static::DONE => __('Done')];
 
-      return Dropdown::showFromArray($name, $values, array('value'   => $value,
-                                                           'display' => $display));
+      return Dropdown::showFromArray($name, $values, ['value'   => $value,
+                                                           'display' => $display]);
    }
 
 
@@ -200,25 +200,25 @@ class Planning extends CommonGLPI {
     * @param $except    array of items which not be into account array
     *                         ('Reminder'=>array(1,2,id_of_items))
    **/
-   static function checkAlreadyPlanned($users_id, $begin, $end, $except=array()) {
+   static function checkAlreadyPlanned($users_id, $begin, $end, $except = []) {
       global $CFG_GLPI;
 
       $planned = false;
       $message = '';
 
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $data = call_user_func(array($itemtype, 'populatePlanning'),
-                                array('who'           => $users_id,
+         $data = call_user_func([$itemtype, 'populatePlanning'],
+                                ['who'           => $users_id,
                                       'who_group'     => 0,
                                       'whogroup'      => 0,
                                       'begin'         => $begin,
                                       'end'           => $end,
-                                      'check_planned' => true));
+                                      'check_planned' => true]);
          if (isPluginItemType($itemtype)) {
             if (isset($data['items'])) {
                $data = $data['items'];
             } else {
-               $data = array();
+               $data = [];
             }
          }
 
@@ -229,7 +229,7 @@ class Planning extends CommonGLPI {
                    || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))) {
 
                   $planned  = true;
-                  $message .= '- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),
+                  $message .= '- '.call_user_func([$itemtype, 'getAlreadyPlannedInformation'],
                                                   $val).'<br>';
                }
             }
@@ -259,7 +259,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
    **/
-   static function checkAvailability($params=array()) {
+   static function checkAvailability($params = []) {
       global $CFG_GLPI, $DB;
 
       if (!isset($params['itemtype'])) {
@@ -293,7 +293,7 @@ class Planning extends CommonGLPI {
       $realbegin = $begin." ".$CFG_GLPI["planning_begin"];
       $realend   = $end." ".$CFG_GLPI["planning_end"];
 
-      $users = array();
+      $users = [];
 
       switch ($item->getType()) {
          case 'User' :
@@ -344,20 +344,20 @@ class Planning extends CommonGLPI {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start')."</td>\n";
       echo "<td>";
-      Html::showDateField("begin", array('value'      => $begin,
-                                         'maybeempty' => false));
+      Html::showDateField("begin", ['value'      => $begin,
+                                         'maybeempty' => false]);
       echo "</td>\n";
       echo "<td>".__('End')."</td>\n";
       echo "<td>";
-      Html::showDateField("end", array('value'      => $end,
-                                       'maybeempty' => false));
+      Html::showDateField("end", ['value'      => $end,
+                                       'maybeempty' => false]);
       echo "</td>\n";
       if (count($users) > 1) {
          echo "<td width='40%'>";
-         $data = array(0 => __('All'));
+         $data = [0 => __('All')];
          $data += $users;
-         Dropdown::showFromArray('limitto', $data, array('width' => '100%',
-                                                         'value' => $params['limitto']));
+         Dropdown::showFromArray('limitto', $data, ['width' => '100%',
+                                                         'value' => $params['limitto']]);
          echo "</td>";
       }
 
@@ -381,13 +381,13 @@ class Planning extends CommonGLPI {
 
       if (count($displayuser)) {
          foreach ($displayuser as $who => $whoname) {
-            $params = array('who'       => $who,
+            $params = ['who'       => $who,
                             'who_group' => 0,
                             'whogroup'  => 0,
                             'begin'     => $realbegin,
-                            'end'       => $realend);
+                            'end'       => $realend];
 
-            $interv = array();
+            $interv = [];
             foreach ($CFG_GLPI['planning_types'] as $itemtype) {
                $interv = array_merge($interv, $itemtype::populatePlanning($params));
             }
@@ -551,9 +551,9 @@ class Planning extends CommonGLPI {
          }";
       }
 
-      $date_formats = array(0 => 'YYYY MMM DD',
+      $date_formats = [0 => 'YYYY MMM DD',
                             1 => 'DD MMM YYYY',
-                            2 => 'MMM DD YYYY');
+                            2 => 'MMM DD YYYY'];
       $date_format = $date_formats[$_SESSION["glpidate_format"]];
 
       self::initSessionForCurrentUser();
@@ -951,7 +951,7 @@ class Planning extends CommonGLPI {
     * @since  9.1.1
     */
    static function getPalette($palette_name = 'bg') {
-      if (in_array($palette_name, array('bg', 'fg', 'ev'))) {
+      if (in_array($palette_name, ['bg', 'fg', 'ev'])) {
          return self::${"palette_$palette_name"};
       }
 
@@ -996,11 +996,11 @@ class Planning extends CommonGLPI {
 
       // new user in planning, init session
       if (!isset($_SESSION['glpi_plannings']['filters'])) {
-         $_SESSION['glpi_plannings']['filters']   = array();
-         $_SESSION['glpi_plannings']['plannings'] = array('user_'.$_SESSION['glpiID'] => array(
+         $_SESSION['glpi_plannings']['filters']   = [];
+         $_SESSION['glpi_plannings']['plannings'] = ['user_'.$_SESSION['glpiID'] => [
                                                                'color'   => self::getPaletteColor('bg', 0),
                                                                'display' => true,
-                                                               'type'    => 'user'));
+                                                               'type'    => 'user']];
       }
 
       // complete missing filters
@@ -1009,10 +1009,10 @@ class Planning extends CommonGLPI {
       foreach ($CFG_GLPI['planning_types'] as $planning_type) {
          if ($planning_type::canView()) {
             if (!isset($filters[$planning_type])) {
-               $filters[$planning_type] = array('color'   => self::getPaletteColor('ev',
+               $filters[$planning_type] = ['color'   => self::getPaletteColor('ev',
                                                                                    $index_color),
                                                 'display' => true,
-                                                'type'    => 'event_filter');
+                                                'type'    => 'event_filter'];
             }
             $index_color++;
          }
@@ -1041,8 +1041,8 @@ class Planning extends CommonGLPI {
    static function showPlanningFilter() {
       global $CFG_GLPI;
 
-      $headings = array('filters'    => __("Events type"),
-                        'plannings'  => __('Plannings'));
+      $headings = ['filters'    => __("Events type"),
+                        'plannings'  => __('Plannings')];
 
       echo "<div id='planning_filter'>";
 
@@ -1066,7 +1066,7 @@ class Planning extends CommonGLPI {
          foreach ($filters as $filter_key => $filter_data) {
             self::showSingleLinePlanningFilter($filter_key,
                                                $filter_data,
-                                               array('filter_color_index' => 0));
+                                               ['filter_color_index' => 0]);
          }
          echo "</ul>";
          echo "</div>";
@@ -1220,7 +1220,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
     */
-   static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = array()) {
+   static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = []) {
       global $CFG_GLPI;
 
       $params['show_delete']        = true;
@@ -1259,10 +1259,10 @@ class Planning extends CommonGLPI {
       echo "<li event_type='".$filter_data['type']."'
                event_name='$filter_key'
                class='".$filter_data['type']."'>";
-      Html::showCheckbox(array('name'          => 'filters[]',
+      Html::showCheckbox(['name'          => 'filters[]',
                                'value'         => $filter_key,
                                'title'         => $title,
-                               'checked'       => $filter_data['display']));
+                               'checked'       => $filter_data['display']]);
 
       if ($filter_data['type'] != 'event_filter') {
          $icon_type = explode('_', $filter_data['type']);
@@ -1316,7 +1316,7 @@ class Planning extends CommonGLPI {
       if ($filter_data['type'] != 'group_users') {
          echo "<span class='color_input'>";
          Html::showColorField($filter_key."_color",
-                              array('value' => $color));
+                              ['value' => $color]);
          echo "</span>";
       }
       if ($filter_data['type'] == 'group_users') {
@@ -1328,8 +1328,8 @@ class Planning extends CommonGLPI {
          foreach ($filter_data['users'] as $user_key => $userdata) {
             self::showSingleLinePlanningFilter($user_key,
                                                $userdata,
-                                               array('show_delete'        => false,
-                                                     'filter_color_index' => $params['filter_color_index']));
+                                               ['show_delete'        => false,
+                                                     'filter_color_index' => $params['filter_color_index']]);
          }
          echo "</ul>";
       }
@@ -1352,15 +1352,15 @@ class Planning extends CommonGLPI {
 
       $planning_types = ['user' => __("User")];
 
-      if (Session::haveRightsOr('planning', array(self::READGROUP, self::READALL))) {
+      if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
          $planning_types['group_users'] = __('All users of a group');
          $planning_types['group']       = __('Group');
       }
 
       Dropdown::showFromArray('planning_type',
                               $planning_types,
-                              array('display_emptychoice' => true,
-                                    'rand'                =>  $rand));
+                              ['display_emptychoice' => true,
+                                    'rand'                =>  $rand]);
       echo Html::scriptBlock("
       $(function() {
          $('#dropdown_planning_type$rand').on( 'change', function( e ) {
@@ -1385,7 +1385,7 @@ class Planning extends CommonGLPI {
       global $CFG_GLPI;
 
       $rand = mt_rand();
-      $used = array();
+      $used = [];
       foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
          $actor = explode("_", $actor);
          if ($actor[0] == "user") {
@@ -1395,9 +1395,9 @@ class Planning extends CommonGLPI {
       echo __("User")." :<br>";
 
       // show only users with right to add planning events
-      $rights = array('change', 'problem', 'reminder', 'task', 'projecttask');
+      $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
       // Can we see only personnal planning ?
-      if (!Session::haveRightsOr('planning', array(self::READALL, self::READGROUP))) {
+      if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
          $rights = 'id';
       }
       // Can we see user of my groups ?
@@ -1406,12 +1406,12 @@ class Planning extends CommonGLPI {
          $rights = 'groups';
       }
 
-      User::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+      User::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
                            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                            'right'       => $rights,
-                           'used'        => $used));
+                           'used'        => $used]);
       echo "<br /><br />";
-      echo Html::hidden('action', array('value' => 'send_add_user_form'));
+      echo Html::hidden('action', ['value' => 'send_add_user_form']);
       echo Html::submit(_sx('button', 'Add'));
    }
 
@@ -1421,11 +1421,11 @@ class Planning extends CommonGLPI {
     *
     * @param $params (array) : must contais form data (typically $_REQUEST)
     */
-   static function sendAddUserForm($params = array()) {
+   static function sendAddUserForm($params = []) {
       $_SESSION['glpi_plannings']['plannings']["user_".$params['users_id']]
-         = array('color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
+         = ['color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
                  'display' => true,
-                 'type'    => 'user');
+                 'type'    => 'user'];
       self::savePlanningsInDB();
       $_SESSION['glpi_plannings_color_index']++;
    }
@@ -1446,11 +1446,11 @@ class Planning extends CommonGLPI {
          $condition.= " AND id IN(".implode(',', $_SESSION['glpigroups']).")";
       }
 
-      Group::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+      Group::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
                             'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-                            'condition'   => $condition));
+                            'condition'   => $condition]);
       echo "<br /><br />";
-      echo Html::hidden('action', array('value' => 'send_add_group_users_form'));
+      echo Html::hidden('action', ['value' => 'send_add_group_users_form']);
       echo Html::submit(_sx('button', 'Add'));
    }
 
@@ -1462,10 +1462,10 @@ class Planning extends CommonGLPI {
     *
     * @param $params (array) : must contais form data (typically $_REQUEST)
     */
-   static function sendAddGroupUsersForm($params = array()) {
+   static function sendAddGroupUsersForm($params = []) {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
-      $current_group = array('display' => true,
-                             'type'    => 'group_users');
+      $current_group = ['display' => true,
+                             'type'    => 'group_users'];
       $users = Group_User::getGroupUsers($params['groups_id'],
                                          "`glpi_users`.`is_active` = 1
                                           AND NOT `glpi_users`.`is_deleted`
@@ -1479,10 +1479,10 @@ class Planning extends CommonGLPI {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
             $current_group['users']['user_'.$user_data['id']]
-               = array('color'   => self::getPaletteColor('bg',
+               = ['color'   => self::getPaletteColor('bg',
                                                           $_SESSION['glpi_plannings_color_index']),
                        'display' => true,
-                       'type'    => 'user');
+                       'type'    => 'user'];
             $_SESSION['glpi_plannings_color_index']++;
          }
       }
@@ -1490,7 +1490,7 @@ class Planning extends CommonGLPI {
    }
 
 
-   static function editEventForm($params = array()) {
+   static function editEventForm($params = []) {
 
       if (!$params['itemtype'] instanceof CommonDBTM) {
          echo "<div class='center'>";
@@ -1498,10 +1498,10 @@ class Planning extends CommonGLPI {
          echo "</div>";
          echo "<hr>";
          $rand = mt_rand();
-         $options = array(
+         $options = [
             'from_planning_edit_ajax' => true,
             'formoptions'             => "id='edit_event_form$rand'"
-         );
+         ];
          if (isset($params['parentitemtype'])) {
             $options['parent'] = getItemForItemtype($params['parentitemtype']);
             $options['parent']->getFromDB($params['parentid']);
@@ -1524,7 +1524,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
     */
-   static function showAddGroupForm($params = array()) {
+   static function showAddGroupForm($params = []) {
 
       $condition = "is_task = 1";
       // filter groups
@@ -1533,11 +1533,11 @@ class Planning extends CommonGLPI {
       }
 
       echo __("Group")." : <br>";
-      Group::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+      Group::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
                             'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-                            'condition'   => $condition));
+                            'condition'   => $condition]);
       echo "<br /><br />";
-      echo Html::hidden('action', array('value' => 'send_add_group_form'));
+      echo Html::hidden('action', ['value' => 'send_add_group_form']);
       echo Html::submit(_sx('button', 'Add'));
    }
 
@@ -1549,18 +1549,18 @@ class Planning extends CommonGLPI {
     *
     * @param $params (array) : must contais form data (typically $_REQUEST)
     */
-   static function sendAddGroupForm($params = array()) {
+   static function sendAddGroupForm($params = []) {
       $_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']]
-         = array('color'   => self::getPaletteColor('bg',
+         = ['color'   => self::getPaletteColor('bg',
                                                     $_SESSION['glpi_plannings_color_index']),
                  'display' => true,
-                 'type'    => 'group');
+                 'type'    => 'group'];
       self::savePlanningsInDB();
       $_SESSION['glpi_plannings_color_index']++;
    }
 
 
-   static function showAddEventForm($params = array()) {
+   static function showAddEventForm($params = []) {
       global $CFG_GLPI;
 
       if (count ($CFG_GLPI['planning_add_types']) == 1) {
@@ -1568,15 +1568,15 @@ class Planning extends CommonGLPI {
          self::showAddEventSubForm($params);
       } else {
          $rand = mt_rand();
-         $select_options = array();
+         $select_options = [];
          foreach ($CFG_GLPI['planning_add_types'] as $add_types) {
             $select_options[$add_types] = $add_types::getTypeName(1);
          }
          echo __("Event type")." : <br>";
          Dropdown::showFromArray('itemtype',
                                  $select_options,
-                                 array('display_emptychoice' => true,
-                                       'rand'                => $rand));
+                                 ['display_emptychoice' => true,
+                                       'rand'                => $rand]);
 
          echo Html::scriptBlock("
          $(function() {
@@ -1608,16 +1608,16 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
     */
-   static function showAddEventSubForm($params = array()) {
+   static function showAddEventSubForm($params = []) {
 
       $rand            = mt_rand();
       $params['begin'] = date("Y-m-d H:i:s", strtotime($params['begin']));
       $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
       if ($item = getItemForItemtype($params['itemtype'])) {
-         $item->showForm('', array('from_planning_ajax' => true,
+         $item->showForm('', ['from_planning_ajax' => true,
                                    'begin'              => $params['begin'],
                                    'end'                => $params['end'],
-                                   'formoptions'        => "id='ajax_reminder$rand'"));
+                                   'formoptions'        => "id='ajax_reminder$rand'"]);
          $callback = "$('.ui-dialog-content').dialog('close');
                       $('#planning').fullCalendar('refetchEvents');
                       displayAjaxMessageAfterRedirect();";
@@ -1639,7 +1639,7 @@ class Planning extends CommonGLPI {
     *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
     *   - rand_user (integer) : users_id to check planning avaibility
     */
-   static function showAddEventClassicForm($params = array()) {
+   static function showAddEventClassicForm($params = []) {
       global $CFG_GLPI;
 
       if (isset($params["id"]) && ($params["id"] > 0)) {
@@ -1672,14 +1672,14 @@ class Planning extends CommonGLPI {
 
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       $rand_begin = Html::showDateTimeField("plan[begin]",
-                                            array('value'      => $begin,
+                                            ['value'      => $begin,
                                                   'timestep'   => -1,
                                                   'maybeempty' => false,
                                                   'canedit'    => true,
                                                   'mindate'    => '',
                                                   'maxdate'    => '',
                                                   'mintime'    => $mintime,
-                                                  'maxtime'    => $CFG_GLPI["planning_end"]));
+                                                  'maxtime'    => $CFG_GLPI["planning_end"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".__('Period')."&nbsp;";
@@ -1694,17 +1694,17 @@ class Planning extends CommonGLPI {
 
       $default_delay = floor((strtotime($end)-strtotime($begin))/$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
 
-      $rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
+      $rand = Dropdown::showTimeStamp("plan[_duration]", ['min'        => 0,
                                                                'max'        => 50*HOUR_TIMESTAMP,
                                                                'value'      => $default_delay,
-                                                               'emptylabel' => __('Specify an end date')));
+                                                               'emptylabel' => __('Specify an end date')]);
       echo "<br><div id='date_end$rand'></div>";
 
-      $event_options = array('duration'     => '__VALUE__',
+      $event_options = ['duration'     => '__VALUE__',
                              'end'          => $end,
                              'name'         => "plan[end]",
                              'global_begin' => $CFG_GLPI["planning_begin"],
-                             'global_end'   => $CFG_GLPI["planning_end"]);
+                             'global_end'   => $CFG_GLPI["planning_end"]];
 
       Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/planningend.php", $event_options);
@@ -1720,8 +1720,8 @@ class Planning extends CommonGLPI {
           && isset($params['itemtype'])
           && PlanningRecall::isAvailable()) {
          echo "<tr class='tab_bg_2'><td>"._x('Planning', 'Reminder')."</td><td>";
-         PlanningRecall::dropdown(array('itemtype' => $params['itemtype'],
-                                        'items_id' => $params['items_id']));
+         PlanningRecall::dropdown(['itemtype' => $params['itemtype'],
+                                        'items_id' => $params['items_id']]);
          echo "</td></tr>";
       }
       echo "</table>\n";
@@ -1740,10 +1740,10 @@ class Planning extends CommonGLPI {
     *  - display : boolean value to set to his line
     * @return nothing
     */
-   static function toggleFilter($options = array()) {
+   static function toggleFilter($options = []) {
 
       $key = 'filters';
-      if (in_array($options['type'], array('user', 'group'))) {
+      if (in_array($options['type'], ['user', 'group'])) {
          $key = 'plannings';
       }
       if (!isset($options['parent'])
@@ -1771,9 +1771,9 @@ class Planning extends CommonGLPI {
     *  - color : rgb color (preceded by '#'' char)
     * @return nothing
     */
-   static function colorFilter($options = array()) {
+   static function colorFilter($options = []) {
       $key = 'filters';
-      if (in_array($options['type'], array('user', 'group'))) {
+      if (in_array($options['type'], ['user', 'group'])) {
          $key = 'plannings';
       }
       if (!isset($options['parent'])
@@ -1797,10 +1797,10 @@ class Planning extends CommonGLPI {
     *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
     * @return nothing
     */
-   static function deleteFilter($options = array()) {
+   static function deleteFilter($options = []) {
 
       $current = &$_SESSION['glpi_plannings']['plannings'][$options['filter']];
-      if (in_array($options['type'], array('user', 'group'))) {
+      if (in_array($options['type'], ['user', 'group'])) {
          $_SESSION['glpi_plannings_color_index']--;
 
       } else if ($current['type'] = 'group_users') {
@@ -1815,8 +1815,8 @@ class Planning extends CommonGLPI {
    static function savePlanningsInDB() {
 
       $user = new User;
-      $user->update(array('id' => $_SESSION['glpiID'],
-                          'plannings' => exportArrayToDB($_SESSION['glpi_plannings'])));
+      $user->update(['id' => $_SESSION['glpiID'],
+                          'plannings' => exportArrayToDB($_SESSION['glpi_plannings'])]);
    }
 
 
@@ -1834,7 +1834,7 @@ class Planning extends CommonGLPI {
     *  - display_done_events: default true, show also events tagged as done
     * @return array $events : array with events in fullcalendar.io format
     */
-   static function constructEventsArray($options = array()) {
+   static function constructEventsArray($options = []) {
       global $CFG_GLPI;
 
       $param['start']               = '';
@@ -1849,7 +1849,7 @@ class Planning extends CommonGLPI {
       $param['begin'] = date("Y-m-d H:i:s", strtotime($param['start']));
       $param['end']   = date("Y-m-d H:i:s", strtotime($param['end']));
 
-      $raw_events = array();
+      $raw_events = [];
       foreach ($CFG_GLPI['planning_types'] as $planning_type) {
          if (!$planning_type::canView()) {
             continue;
@@ -1867,7 +1867,7 @@ class Planning extends CommonGLPI {
       }
 
       // construct events (in fullcalendar format)
-      $events = array();
+      $events = [];
       foreach ($raw_events as $event) {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
@@ -1886,7 +1886,7 @@ class Planning extends CommonGLPI {
          }
 
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
-         $events[] = array('title'       => $event['name'],
+         $events[] = ['title'       => $event['name'],
                            'content'     => $content,
                            'tooltip'     => $tooltip,
                            'start'       => $begin,
@@ -1909,7 +1909,7 @@ class Planning extends CommonGLPI {
                                                    $event['parentitemtype']:"",
                            'items_id'    => $event['id'],
                            'priority'    => isset($event['priority'])?$event['priority']:"",
-                           'state'       => isset($event['state'])?$event['state']:"");
+                           'state'       => isset($event['state'])?$event['state']:""];
       }
 
       return $events;
@@ -1933,7 +1933,7 @@ class Planning extends CommonGLPI {
     * @param  array  $raw_events: (passed by reference) the events array in construction
     * @return nothing
     */
-   static function constructEventsArraySingleLine($actor, $params = array(), &$raw_events = array()) {
+   static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = []) {
 
       if ($params['display']) {
          $actor_array = explode("_", $actor);
@@ -1983,16 +1983,16 @@ class Planning extends CommonGLPI {
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
     * @return bool
     */
-   static function updateEventTimes($params = array()) {
+   static function updateEventTimes($params = []) {
       if ($item = getItemForItemtype($params['itemtype'])) {
          $params['start'] = date("Y-m-d H:i:s", strtotime($params['start']));
          $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
 
          $item->getFromDB($params['items_id']);
 
-         $update = array('id'   => $params['items_id'],
-                         'plan' => array('begin' => $params['start'],
-                                         'end'   => $params['end']));
+         $update = ['id'   => $params['items_id'],
+                         'plan' => ['begin' => $params['start'],
+                                         'end'   => $params['end']]];
 
          if (isset($item->fields['users_id_tech'])) {
             $update['users_id_tech'] = $item->fields['users_id_tech'];
@@ -2025,7 +2025,7 @@ class Planning extends CommonGLPI {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -2115,7 +2115,7 @@ class Planning extends CommonGLPI {
     *
     * @return icalendar string
    **/
-   static function generateIcal($who, $who_group, $limititemtype='') {
+   static function generateIcal($who, $who_group, $limititemtype = '') {
       global $CFG_GLPI;
 
       if (($who === 0)
@@ -2135,19 +2135,19 @@ class Planning extends CommonGLPI {
       // $xprops = array( "X-LIC-LOCATION" => $tz );
       // iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
 
-      $interv = array();
+      $interv = [];
       $begin  = time()-MONTH_TIMESTAMP*12;
       $end    = time()+MONTH_TIMESTAMP*12;
       $begin  = date("Y-m-d H:i:s", $begin);
       $end    = date("Y-m-d H:i:s", $end);
-      $params = array('genical'   => true,
+      $params = ['genical'   => true,
                       'who'       => $who,
                       'who_group' => $who_group,
                       'whogroup'  => $who_group,
                       'begin'     => $begin,
-                      'end'       => $end);
+                      'end'       => $end];
 
-      $interv = array();
+      $interv = [];
       if (empty($limititemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             $interv = array_merge($interv, $itemtype::populatePlanning($params));
@@ -2213,7 +2213,7 @@ class Planning extends CommonGLPI {
    /**
     * @since version 0.85
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values[self::READMY]    = __('See personnal planning');
       $values[self::READGROUP] = __('See schedule of people in my groups');

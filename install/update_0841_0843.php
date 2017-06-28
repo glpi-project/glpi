@@ -43,14 +43,14 @@ function update0841to0843() {
    global $DB, $migration;
 
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.84.3'));
    $migration->setVersion('0.84.3');
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -68,7 +68,7 @@ function update0841to0843() {
    }
 
    // Upgrade ticket bookmarks and clean _glpi_csrf_token
-   $status = array ('new'           => CommonITILObject::INCOMING,
+   $status =  ['new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
                     'plan'          => CommonITILObject::PLANNED,
                     'waiting'       => CommonITILObject::WAITING,
@@ -79,7 +79,7 @@ function update0841to0843() {
                     'evaluation'    => CommonITILObject::EVALUATION,
                     'approbation'   => CommonITILObject::APPROVAL,
                     'test'          => CommonITILObject::TEST,
-                    'qualification' => CommonITILObject::QUALIFICATION);
+                    'qualification' => CommonITILObject::QUALIFICATION];
 
    $query = "SELECT *
              FROM `glpi_bookmarks`";
@@ -89,7 +89,7 @@ function update0841to0843() {
          while ($data = $DB->fetch_assoc($result)) {
             $num     = 0;
             $num2    = 0;
-            $options = array();
+            $options = [];
             parse_str($data["query"], $options);
 
             // unset _glpi_csrf_token

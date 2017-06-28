@@ -72,13 +72,13 @@ class CronTaskLog extends CommonDBTM{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
             case 'CronTask' :
-               $ong    = array();
+               $ong    = [];
                $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb =  countElementsInTable($this->getTable(),
@@ -93,7 +93,7 @@ class CronTaskLog extends CommonDBTM{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='CronTask') {
          switch ($tabnum) {

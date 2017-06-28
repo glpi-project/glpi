@@ -58,6 +58,6 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(APIClient::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config", "apiclient");
-   $client->display(array('id' => $_GET["id"]));
+   $client->display(['id' => $_GET["id"]]);
    Html::footer();
 }

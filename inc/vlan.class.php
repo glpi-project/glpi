@@ -48,7 +48,7 @@ class Vlan extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       // Acronymous, no plural
       return __('VLAN');
    }
@@ -56,19 +56,19 @@ class Vlan extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'     => 'tag',
+      return [['name'     => 'tag',
                          'label'    => __('ID TAG'),
                          'type'     => '',
-                         'list'     => true));
+                         'list'     => true]];
    }
 
 
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       if ($field['name'] == 'tag') {
-         Dropdown::showNumber('tag', array('value' => $this->fields['tag'],
+         Dropdown::showNumber('tag', ['value' => $this->fields['tag'],
                                            'min'   => 1,
-                                           'max'   => (pow(2, 12) - 2)));
+                                           'max'   => (pow(2, 12) - 2)]);
       }
    }
 
@@ -113,8 +113,8 @@ class Vlan extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column_name = __CLASS__;
 
@@ -136,8 +136,8 @@ class Vlan extends CommonDropdown {
     * @param $father          HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options=array()) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -169,7 +169,7 @@ class Vlan extends CommonDropdown {
                                                   __('ID TAG'), $vlan->fields['tag'])."<br>".
                                           sprintf(__('%1$s: %2$s'),
                                                   __('Comments'), $vlan->fields['comment']),
-                                          array('display' => false));
+                                          ['display' => false]);
 
             $this_cell = $row->addCell($row->getHeaderByName($column_name), $content, $father);
          }

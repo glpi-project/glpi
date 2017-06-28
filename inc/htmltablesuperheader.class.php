@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTableSuperHeader extends HTMLTableHeader {
 
    /// The headers of each column
-   private $headerSets = array();
+   private $headerSets = [];
    /// The table that owns the current super header
    private $table;
 
@@ -57,7 +57,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader {
     * @param $content            see inc/HTMLTableEntity#__construct()
     * @param $father             HTMLTableSuperHeader objet (default NULL)
    **/
-   function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father=NULL) {
+   function __construct(HTMLTableMain $table, $name, $content, HTMLTableSuperHeader $father = null) {
 
       $this->table = $table;
       parent::__construct($name, $content, $father);

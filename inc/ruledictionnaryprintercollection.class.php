@@ -73,7 +73,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
+   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 
       if (isCommandLine()) {
@@ -115,9 +115,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
          }
 
          //Replay printer dictionnary rules
-         $res_rule = $this->processAllRules($input, array(), array());
+         $res_rule = $this->processAllRules($input, [], []);
 
-         foreach (array('manufacturer', 'is_global', 'name') as $attr) {
+         foreach (['manufacturer', 'is_global', 'name'] as $attr) {
             if (isset($res_rule[$attr]) && ($res_rule[$attr] == '')) {
                unset($res_rule[$attr]);
             }
@@ -126,7 +126,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
          //If the software's name or version has changed
          if (self::somethingHasChanged($res_rule, $input)) {
 
-            $IDs = array();
+            $IDs = [];
             //Find all the printers in the database with the same name and manufacturer
             $sql = "SELECT `id`
                     FROM `glpi_printers`
@@ -190,11 +190,11 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnPrintersByID(array $IDs, $res_rule=array()) {
+   function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = []) {
       global $DB;
 
-      $new_printers  = array();
-      $delete_ids    = array();
+      $new_printers  = [];
+      $delete_ids    = [];
 
       foreach ($IDs as $ID) {
          $sql = "SELECT `glpi_printers`.`id`,
@@ -223,11 +223,11 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    /**
     * @param $IDS array
    */
-   function putOldPrintersInTrash($IDS=array()) {
+   function putOldPrintersInTrash($IDS = []) {
 
       $printer = new Printer();
       foreach ($IDS as $id) {
-         $printer->delete(array('id' => $id));
+         $printer->delete(['id' => $id]);
       }
    }
 
@@ -257,7 +257,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
       $input["manufacturer"] = $p['manufacturer'];
 
       if (empty($res_rule)) {
-         $res_rule = $this->processAllRules($input, array(), array());
+         $res_rule = $this->processAllRules($input, [], []);
       }
 
       $printer = new Printer();
@@ -332,8 +332,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                                     'items_id'     => $new_printers_id,
                                     'computers_id' => $connection["computers_id"]])) {
             //Direct connection doesn't exists in the target printer : move it
-            $computeritem->update(array('id'       => $connection['id'],
-                                        'items_id' => $new_printers_id));
+            $computeritem->update(['id'       => $connection['id'],
+                                        'items_id' => $new_printers_id]);
          } else {
             //Direct connection already exists in the target printer : delete it
             $computeritem->delete($connection);
