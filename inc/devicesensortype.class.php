@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceGenericType
 class DeviceSensorType extends CommonDeviceType {
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Sensor type', 'Sensor types', $nb);
    }
 

@@ -41,9 +41,9 @@ if (!defined('GLPI_ROOT')) {
  */
 class DeviceSensor extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceSensor', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceSensor', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Sensors', 'Sensors', $nb);
    }
 
@@ -51,9 +51,9 @@ class DeviceSensor extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'devicesensortypes_id',
+                         [['name'  => 'devicesensortypes_id',
                                      'label' => __('Type'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -73,8 +73,8 @@ class DeviceSensor extends CommonDevice {
 
 
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -92,8 +92,8 @@ class DeviceSensor extends CommonDevice {
    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -104,7 +104,7 @@ class DeviceSensor extends CommonDevice {
       switch ($item->getType()) {
          case 'Computer' :
          case 'Peripheral' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
             break;
       }
    }
@@ -115,11 +115,11 @@ class DeviceSensor extends CommonDevice {
     */
    function getImportCriteria() {
 
-      return array('designation'          => 'equal',
+      return ['designation'          => 'equal',
                    'manufacturers_id'     => 'equal',
                    'devicesensortypes_id' => 'equal',
                    'locations_id'         => 'equal',
-                   );
+                   ];
    }
 
 }

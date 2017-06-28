@@ -162,7 +162,7 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_items_devicefirmwares' => 'devicefirmwares_id'],
 
                         "glpi_devicesensors"
-                        => array('glpi_items_devicesensors' => 'devicesensors_id'),
+                        => ['glpi_items_devicesensors' => 'devicesensors_id'],
 
                         "glpi_devicesimcards"
                         => ['glpi_items_devicesimcards' => 'devicesimcards_id'],
