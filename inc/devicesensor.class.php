@@ -52,21 +52,19 @@ class DeviceSensor extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          [['name'  => 'devicesensortypes_id',
-                                     'label' => __('Type'),
-                                     'type'  => 'dropdownValue']]);
+                           'label' => __('Type'),
+                           'type'  => 'dropdownValue']]);
    }
 
 
    function getSearchOptionsNew() {
       $tab                 = parent::getSearchOptionsNew();
 
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicesensortypes',
-         'field'              => 'name',
-         'name'               => __('Type'),
-         'datatype'           => 'dropdown'
-      ];
+      $tab[] = ['id'           => '12',
+                'table'        => 'glpi_devicesensortypes',
+                'field'        => 'name',
+                'name'         => __('Type'),
+                'datatype'     => 'dropdown'];
 
       return $tab;
    }
@@ -116,10 +114,9 @@ class DeviceSensor extends CommonDevice {
    function getImportCriteria() {
 
       return ['designation'          => 'equal',
-                   'manufacturers_id'     => 'equal',
-                   'devicesensortypes_id' => 'equal',
-                   'locations_id'         => 'equal',
-                   ];
+              'manufacturers_id'     => 'equal',
+              'devicesensortypes_id' => 'equal',
+              'locations_id'         => 'equal'];
    }
 
 }
