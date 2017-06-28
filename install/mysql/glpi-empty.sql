@@ -2109,6 +2109,86 @@ CREATE TABLE `glpi_deviceprocessors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_devicesimcards
+
+DROP TABLE IF EXISTS `glpi_devicesimcards`;
+CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `designation` varchar(255) DEFAULT NULL,
+   `comment` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+   `voltage` int(11) DEFAULT NULL,
+   `devicesimcardtypes_id` int(11) NOT NULL DEFAULT '0',
+   `date_mod` datetime DEFAULT NULL,
+   `date_creation` datetime DEFAULT NULL,
+   `allow_voip` tinyint(1) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `designation` (`designation`),
+   KEY `entities_id` (`entities_id`),
+   KEY `is_recursive` (`is_recursive`),
+   KEY `devicesimcardtypes_id` (`devicesimcardtypes_id`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`),
+   KEY `manufacturers_id` (`manufacturers_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_items_devicesimcards
+
+DROP TABLE IF EXISTS `glpi_items_devicesimcards`;
+CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `devicesimcards_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `serial` varchar(255) NULL DEFAULT NULL,
+  `otherserial` varchar(255) NULL DEFAULT NULL,
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `lines_id` int(11) NOT NULL DEFAULT '0',
+  `pin` varchar(255) NOT NULL DEFAULT '',
+  `pin2` varchar(255) NOT NULL DEFAULT '',
+  `puk` varchar(255) NOT NULL DEFAULT '',
+  `puk2` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `devicesimcards_id` (`devicesimcards_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `entities_id` (`entities_id`),
+  KEY `serial` (`serial`),
+  KEY `otherserial` (`otherserial`),
+  KEY `states_id` (`states_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `lines_id` (`lines_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_devicesimcardtypes
+
+DROP TABLE IF EXISTS `glpi_devicesimcardtypes`;
+CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_devicesimcardtypes` VALUES ('1','Full SIM',NULL,NULL,NULL);
+INSERT INTO `glpi_devicesimcardtypes` VALUES ('2','Mini SIM',NULL,NULL,NULL);
+INSERT INTO `glpi_devicesimcardtypes` VALUES ('3','Micro SIM',NULL,NULL,NULL);
+INSERT INTO `glpi_devicesimcardtypes` VALUES ('4','Nano SIM',NULL,NULL,NULL);
+
 ### Dump table glpi_devicesoundcardmodels
 
 DROP TABLE IF EXISTS `glpi_devicesoundcardmodels`;
@@ -3797,6 +3877,70 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   FULLTEXT KEY `fulltext` (`name`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+### Dump table glpi_lines
+
+DROP TABLE IF EXISTS `glpi_lines`;
+CREATE TABLE `glpi_lines` (
+  `id`                   INT(11) NOT NULL auto_increment,
+  `name`                 VARCHAR(255) NOT NULL DEFAULT '',
+  `entities_id`          INT(11) NOT NULL DEFAULT 0,
+  `is_recursive`         TINYINT(1) NOT NULL DEFAULT 0,
+  `is_deleted`           TINYINT(1) NOT NULL DEFAULT 0,
+  `caller_num`           VARCHAR(255) NOT NULL DEFAULT '',
+  `caller_name`          VARCHAR(255) NOT NULL DEFAULT '',
+  `users_id`             INT(11) NOT NULL DEFAULT 0,
+  `groups_id`            INT(11) NOT NULL DEFAULT 0,
+  `lineoperators_id`     INT(11) NOT NULL DEFAULT 0,
+  `locations_id`         INT(11) NOT NULL DEFAULT '0',
+  `states_id`            INT(11) NOT NULL DEFAULT '0',
+  `linetype_id`          INT(11) NOT NULL DEFAULT '0',
+  `date_creation`        DATETIME DEFAULT NULL,
+  `date_mod`             DATETIME DEFAULT NULL,
+  `comment`              TEXT DEFAULT NULL,
+  PRIMARY KEY            (`id`),
+  KEY `entities_id`      (`entities_id`),
+  KEY `is_recursive`     (`is_recursive`),
+  KEY `users_id`         (`users_id`),
+  KEY `lineoperators_id` (`lineoperators_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_lineoperators
+
+DROP TABLE IF EXISTS `glpi_lineoperators`;
+CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `comment` text COLLATE utf8_unicode_ci,
+  `mcc` int(11) DEFAULT NULL,
+  `mnc` int(11) DEFAULT NULL,
+  `entities_id`      INT(11) NOT NULL DEFAULT 0,
+  `is_recursive`     TINYINT(1) NOT NULL DEFAULT 0,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id`  (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  UNIQUE KEY `unicity` (`mcc`,`mnc`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_linetypes`;
+CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_links
 
@@ -6581,6 +6725,30 @@ INSERT INTO `glpi_profilerights` VALUES ('825','5','license','0');
 INSERT INTO `glpi_profilerights` VALUES ('826','6','license','127');
 INSERT INTO `glpi_profilerights` VALUES ('827','7','license','127');
 INSERT INTO `glpi_profilerights` VALUES ('828','8','license','161');
+INSERT INTO `glpi_profilerights` VALUES ('829','1','line','0');
+INSERT INTO `glpi_profilerights` VALUES ('830','2','line','33');
+INSERT INTO `glpi_profilerights` VALUES ('831','3','line','127');
+INSERT INTO `glpi_profilerights` VALUES ('832','4','line','255');
+INSERT INTO `glpi_profilerights` VALUES ('833','5','line','0');
+INSERT INTO `glpi_profilerights` VALUES ('834','6','line','127');
+INSERT INTO `glpi_profilerights` VALUES ('835','7','line','127');
+INSERT INTO `glpi_profilerights` VALUES ('836','8','line','161');
+INSERT INTO `glpi_profilerights` VALUES ('837','1','lineoperator','0');
+INSERT INTO `glpi_profilerights` VALUES ('838','2','lineoperator','33');
+INSERT INTO `glpi_profilerights` VALUES ('839','3','lineoperator','31');
+INSERT INTO `glpi_profilerights` VALUES ('840','4','lineoperator','31');
+INSERT INTO `glpi_profilerights` VALUES ('841','5','lineoperator','0');
+INSERT INTO `glpi_profilerights` VALUES ('842','6','lineoperator','0');
+INSERT INTO `glpi_profilerights` VALUES ('843','7','lineoperator','31');
+INSERT INTO `glpi_profilerights` VALUES ('844','8','lineoperator','1');
+INSERT INTO `glpi_profilerights` VALUES ('84(','1','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('846','2','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('847','3','devicesimcard_pinpuk','3');
+INSERT INTO `glpi_profilerights` VALUES ('848','4','devicesimcard_pinpuk','3');
+INSERT INTO `glpi_profilerights` VALUES ('849','5','devicesimcard_pinpuk','1');
+INSERT INTO `glpi_profilerights` VALUES ('850','6','devicesimcard_pinpuk','3');
+INSERT INTO `glpi_profilerights` VALUES ('851','7','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('852','8','devicesimcard_pinpuk','0');
 
 ### Dump table glpi_profiles
 
@@ -7603,6 +7771,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_printer` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwarelicense` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_line` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -7616,6 +7785,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_printer` (`is_visible_printer`),
   KEY `is_visible_softwareversion` (`is_visible_softwareversion`),
   KEY `is_visible_softwarelicense` (`is_visible_softwarelicense`),
+  KEY `is_visible_line` (`is_visible_line`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

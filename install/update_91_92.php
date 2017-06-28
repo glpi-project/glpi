@@ -987,6 +987,210 @@ Regards,',
    //add db version
    Config::setConfigurationValues('core', ['dbversion' => GLPI_SCHEMA_VERSION]);
 
+   /************** Simcard component **************/
+   $migration->addField("glpi_states", "is_visible_line", "bool", ["after" => "is_visible_softwarelicense"]);
+
+   if (!TableExists('glpi_lineoperators')) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
+                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                   `name` varchar(255) NOT NULL DEFAULT '',
+                   `comment` text COLLATE utf8_unicode_ci,
+                   `mcc` int(11) DEFAULT NULL,
+                   `mnc` int(11) DEFAULT NULL,
+                   `entities_id`      INT(11) NOT NULL DEFAULT 0,
+                   `is_recursive`     TINYINT(1) NOT NULL DEFAULT 0,
+                   `date_mod` datetime DEFAULT NULL,
+                   `date_creation` datetime DEFAULT NULL,
+                   PRIMARY KEY (`id`),
+                   KEY `name` (`name`),
+                   KEY `entities_id`  (`entities_id`),
+                   KEY `is_recursive` (`is_recursive`),
+                   KEY `date_mod` (`date_mod`),
+                   KEY `date_creation` (`date_creation`),
+                   UNIQUE KEY `unicity` (`mcc`,`mnc`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_lineoperators");
+   }
+
+   if (!TableExists('glpi_linetypes')) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `comment` text COLLATE utf8_unicode_ci,
+         `date_mod` datetime DEFAULT NULL,
+         `date_creation` datetime DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`),
+         KEY `date_mod` (`date_mod`),
+         KEY `date_creation` (`date_creation`)
+         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_linetypes");
+   }
+
+   if (!TableExists('glpi_lines')) {
+      $query = "CREATE TABLE `glpi_lines` (
+            `id`                   INT(11) NOT NULL auto_increment,
+            `name`                 VARCHAR(255) NOT NULL DEFAULT '',
+            `entities_id`          INT(11) NOT NULL DEFAULT 0,
+            `is_recursive`         TINYINT(1) NOT NULL DEFAULT 0,
+            `is_deleted`           TINYINT(1) NOT NULL DEFAULT 0,
+            `caller_num`           VARCHAR(255) NOT NULL DEFAULT '',
+            `caller_name`          VARCHAR(255) NOT NULL DEFAULT '',
+            `users_id`             INT(11) NOT NULL DEFAULT 0,
+            `groups_id`            INT(11) NOT NULL DEFAULT 0,
+            `lineoperators_id`     INT(11) NOT NULL DEFAULT 0,
+            `locations_id`         INT(11) NOT NULL DEFAULT '0',
+            `states_id`            INT(11) NOT NULL DEFAULT '0',
+            `linetypes_id`         INT(11) NOT NULL DEFAULT '0',
+            `date_creation`        DATETIME DEFAULT NULL,
+            `date_mod`             DATETIME DEFAULT NULL,
+            `comment`              TEXT DEFAULT NULL,
+            PRIMARY KEY            (`id`),
+            KEY `entities_id`      (`entities_id`),
+            KEY `is_recursive`     (`is_recursive`),
+            KEY `users_id`         (`users_id`),
+            KEY `lineoperators_id` (`lineoperators_id`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_lines");
+   }
+
+   if (!TableExists('glpi_devicesimcardtypes')) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) NOT NULL DEFAULT '',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_devicesimcardtypes");
+   }
+
+   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Full SIM'")) {
+      $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Full SIM',NULL,NULL,NULL)");
+   }
+   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Mini SIM'")) {
+      $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Mini SIM',NULL,NULL,NULL)");
+   }
+   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Micro SIM'")) {
+      $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Micro SIM',NULL,NULL,NULL)");
+   }
+   if (!countElementsInTable('glpi_devicesimcardtypes', "`name`='Nano SIM'")) {
+      $DB->queryOrDie("INSERT INTO `glpi_devicesimcardtypes` VALUES (NULL,'Nano SIM',NULL,NULL,NULL)");
+   }
+
+   if (!TableExists('glpi_devicesimcards')) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
+               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `designation` varchar(255) DEFAULT NULL,
+               `comment` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
+               `entities_id` int(11) NOT NULL DEFAULT '0',
+               `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+               `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+               `voltage` int(11) DEFAULT NULL,
+               `devicesimcardtypes_id` int(11) NOT NULL DEFAULT '0',
+               `date_mod` datetime DEFAULT NULL,
+               `date_creation` datetime DEFAULT NULL,
+               `allow_voip` tinyint(1) NOT NULL DEFAULT '0',
+               PRIMARY KEY (`id`),
+               KEY `designation` (`designation`),
+               KEY `entities_id` (`entities_id`),
+               KEY `is_recursive` (`is_recursive`),
+               KEY `devicesimcardtypes_id` (`devicesimcardtypes_id`),
+               KEY `date_mod` (`date_mod`),
+               KEY `date_creation` (`date_creation`),
+               KEY `manufacturers_id` (`manufacturers_id`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+        $DB->queryOrDie($query, "9.2 add table glpi_devicesimcards");
+   }
+
+   if (!TableExists('glpi_items_devicesimcards')) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (id)',
+                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                  `devicesimcards_id` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `serial` varchar(255) NULL DEFAULT NULL,
+                  `otherserial` varchar(255) NULL DEFAULT NULL,
+                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `lines_id` int(11) NOT NULL DEFAULT '0',
+                  `pin` varchar(255) NOT NULL DEFAULT '',
+                  `pin2` varchar(255) NOT NULL DEFAULT '',
+                  `puk` varchar(255) NOT NULL DEFAULT '',
+                  `puk2` varchar(255) NOT NULL DEFAULT '',
+                  PRIMARY KEY (`id`),
+                  KEY `item` (`itemtype`,`items_id`),
+                  KEY `devicesimcards_id` (`devicesimcards_id`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `is_dynamic` (`is_dynamic`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `serial` (`serial`),
+                  KEY `otherserial` (`otherserial`),
+                  KEY `states_id` (`states_id`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `lines_id` (`lines_id`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_items_devicesimcards");
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'line'") == 0) {
+      //new right for line
+      //give full rights to profiles having config right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+         if ($profrights['rights'] && (READ + UPDATE)) {
+            $rightValue = CREATE | READ | UPDATE | DELETE | PURGE | READNOTE | UPDATENOTE;
+         } else {
+            $rightValue = 0;
+         }
+         $query = "INSERT INTO `glpi_profilerights`
+                          (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'line',
+                           '".$rightValue."')";
+         $DB->queryOrDie($query, "9.1 add right for line");
+      }
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'lineoperator'") == 0) {
+      //new right for lineoperator
+      //give full rights to profiles having config right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+         if ($profrights['rights'] && (READ + UPDATE)) {
+            $rightValue = CREATE | READ | UPDATE | DELETE | PURGE;
+         } else {
+            $rightValue = 0;
+         }
+         $query = "INSERT INTO `glpi_profilerights`
+                          (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'lineoperator',
+                           '".$rightValue."')";
+         $DB->queryOrDie($query, "9.1 add right for lineoperator");
+      }
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'devicesimcard_pinpuk'") == 0) {
+      //new right for simcard pin and puk
+      //give full rights to profiles having config right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+         if ($profrights['rights'] && (READ + UPDATE)) {
+            $rightValue = READ | UPDATE;
+         } else {
+            $rightValue = 0;
+         }
+         $query = "INSERT INTO `glpi_profilerights`
+                          (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'devicesimcard_pinpuk',
+                           '".$rightValue."')";
+         $DB->queryOrDie($query, "9.1 add right for simcards pin and puk codes");
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

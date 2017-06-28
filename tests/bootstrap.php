@@ -441,6 +441,12 @@ function loadDataset() {
             'softwarelicenses_id' => '_test_softlic_2',
             'computers_id'        => '_test_pc21',
          ]
+      ], 'devicesimcard' => [
+         [
+            'designation'         => '_test_simcard_1',
+            'entities_id'         => '_test_root_entity',
+            'is_recursive'        => 1,
+         ]
       ]
    ];
 

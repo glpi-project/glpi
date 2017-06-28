@@ -67,6 +67,7 @@ class Item_Devices extends CommonDBRelation {
 
    static protected $forward_entity_to  = ['Infocom'];
 
+   static $undisclosedFields      = [];
 
    /**
     * @since version 0.85
@@ -131,6 +132,12 @@ class Item_Devices extends CommonDBRelation {
 
          if (isset($attributs['datatype'])) {
             $newtab['datatype'] = $attributs['datatype'];
+         }
+         if (isset($attributs['nosearch'])) {
+            $newtab['nosearch'] = $attributs['nosearch'];
+         }
+         if (isset($attributs['nodisplay'])) {
+            $newtab['nodisplay'] = $attributs['nodisplay'];
          }
          $tab[] = $newtab;
       }
@@ -685,15 +692,32 @@ class Item_Devices extends CommonDBRelation {
 
          foreach ($this->getSpecificities() as $field => $attributs) {
             if (!empty($link[$field])) {
-               switch ($field) {
-                  case 'states_id':
-                     $content = Dropdown::getDropdownName("glpi_states", $link[$field]);
-                     break;
-                  case 'locations_id':
-                     $content = Dropdown::getDropdownName("glpi_locations", $link[$field]);
-                     break;
-                  default:
-                     $content = $link[$field];
+               // Check the user can view the field
+               if (!isset($attributs['right'])) {
+                  $canRead = true;
+               } else {
+                  $canRead = (Session::haveRightsOr($attributs['right'], [READ, UPDATE]));
+               }
+
+               // Don't show if the field shall not display in the list
+               if (isset($attributs['nodisplay']) && $attributs['nodisplay']) {
+                  $canRead = false;
+               }
+
+               if (!isset($attributs['datatype'])) {
+                  $attributs['datatype'] = 'text';
+               }
+               if ($canRead) {
+                  switch ($attributs['datatype']) {
+                     case 'dropdown':
+                        $dropdownType = getItemtypeForForeignKeyField($field);
+                        $dropdownType::dropdown(['value'  => $this->fields[$field],
+                              'entity' => $this->fields["entities_id"]]);
+                        break;
+
+                     default:
+                        $content = $link[$field];
+                  }
                }
             } else {
                $content = '';
@@ -1031,8 +1055,6 @@ class Item_Devices extends CommonDBRelation {
     * @since version 0.85
    **/
    function showForm($ID, $options = []) {
-      global $CFG_GLPI;
-
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
       } else {
@@ -1058,25 +1080,79 @@ class Item_Devices extends CommonDBRelation {
       echo "</tr>";
       $even = 0;
       $nb = count(static::getSpecificities());
+      echo Html::scriptBlock('function showField(item) {
+            $("#" + item).prop("type", "text");
+         }
+         function hideField(item) {
+            $("#" + item).prop("type", "password");
+         }
+         function copyToClipboard(item) {
+            showField(item);
+            $("#" + item).select();
+            try {
+               document.execCommand("copy");
+            } catch (e) {
+               alert("' . __('Copy to clipboard failed') . '");
+            }
+            hideField(item);
+         }');
       foreach (static::getSpecificities() as $field => $attributs) {
          if (($even % 2) == 0) {
             echo "<tr class='tab_bg_1'>";
          }
          echo "<td>".$attributs['long name']."</td>";
          echo "<td>";
-         switch ($field) {
-            case 'locations_id':
-               Location::dropdown(['value'  => $this->fields["locations_id"],
-                                        'entity' => $this->fields["entities_id"]]);
-               break;
-            case 'states_id':
-               State::dropdown(['value'     => $this->fields["states_id"],
-                                     'entity'    => $this->fields["entities_id"],
-                                     //'condition' => "`is_visible_computer`"
-                                     ]);
-               break;
-            default:
-               Html::autocompletionTextField($this, $field, ['size' => $attributs['size']]);
+
+         // Can the user view the value of the field ?
+         if (!isset($attributs['right'])) {
+            $canRead = true;
+         } else {
+            $canRead = (Session::haveRightsOr($attributs['right'], [READ, UPDATE]));
+         }
+
+         // Do the field needs a user action to display ?
+         if (isset($attributs['protected']) && $attributs['protected']) {
+            $protected = true;
+         } else {
+            $protected = false;
+         }
+
+         if (!isset($attributs['datatype'])) {
+            $attributs['datatype'] = 'text';
+         }
+
+         if ($canRead) {
+            $value = $this->fields[$field];
+            $rand = mt_rand();
+            switch ($attributs['datatype']) {
+               case 'dropdown':
+                  $dropdownType = getItemtypeForForeignKeyField($field);
+                  $out = $dropdownType::dropdown(['value'    => $value,
+                                                  'rand'     => $rand,
+                                                  'entity'   => $this->fields["entities_id"],
+                                                  'display'  => false]);
+                  break;
+               default:
+                  if (!$protected) {
+                     $out = Html::autocompletionTextField($this, $field, ['value'    => $value,
+                                                                          'rand'     => $rand,
+                                                                          'size'     => $attributs['size'],
+                                                                          'display'  => false]);
+                  } else {
+                     $out = '<input class="protected" type="password" autocomplete="off" name="' . $field . '" ';
+                     $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
+                  }
+            }
+            if ($protected) {
+               $out.= '<i class="fa fa-eye pointer disclose" ';
+               $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
+               $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')"></i>';
+               $out.= '<i class="fa fa-clipboard pointer disclose" ';
+               $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
+            }
+            echo $out;
+         } else {
+            echo NOT_AVAILABLE;
          }
          echo "</td>";
          $even ++;
@@ -1132,4 +1208,31 @@ class Item_Devices extends CommonDBRelation {
 
       return parent::prepareInputForAdd($input);
    }
+
+   function prepareInputForUpdate($input) {
+      foreach (static::getSpecificities() as $field => $attributs) {
+         if (!isset($attributs['right'])) {
+            $canUpdate = true;
+         } else {
+            $canUpdate = (Session::haveRightsOr($attributs['right'], [UPDATE]));
+         }
+         if (isset($input[$field]) && !$canUpdate) {
+            unset($input[$field]);
+            Session::addMessageAfterRedirect(__('Update of ' . $attributs['short name'] . ' denied'));
+         }
+      }
+
+      return $input;
+   }
+
+   static public function unsetUndisclosedFields(&$fields) {
+      foreach (static::getSpecificities() as $key => $attributs) {
+         if (isset($attributs['right'])) {
+            if (!Session::haveRightsOr($attributs['right'], [READ])) {
+               unset($fields[$key]);
+            }
+         }
+      }
+   }
+
 }

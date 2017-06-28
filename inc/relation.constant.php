@@ -161,6 +161,9 @@ $RELATION = ["glpi_authldaps"
                         "glpi_devicefirmwares"
                         => ['glpi_items_devicefirmwares' => 'devicefirmwares_id'],
 
+                        "glpi_devicesimcards"
+                        => ['glpi_items_devicesimcards' => 'devicesimcards_id'],
+
                         "glpi_devicemotherboards"
                         => ['glpi_items_devicegenerics' => 'devicegenerics_id'],
 
@@ -342,6 +345,7 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_devicefiremwares'    => 'manufacturers_id',
                                  'glpi_devicebatteries'     => 'manufacturers_id',
                                  'glpi_devicegenerics'      => 'manufacturers_id',
+                                 'glpi_devicesimcards'      => 'manufacturers_id',
                                  'glpi_monitors'            => 'manufacturers_id',
                                  'glpi_networkequipments'   => 'manufacturers_id',
                                  'glpi_peripherals'         => 'manufacturers_id',
@@ -409,6 +413,9 @@ $RELATION = ["glpi_authldaps"
 
                         "glpi_phonemodels"
                         => ['glpi_phones' => 'phonemodels_id'],
+
+                        "glpi_phoneoperators"
+                        => ['glpi_devicesimcards' => 'phoneoperators_id'],
 
                         "glpi_phonepowersupplies"
                         => ['glpi_phones' => 'phonepowersupplies_id'],

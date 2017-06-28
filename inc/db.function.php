@@ -164,6 +164,17 @@ function getItemTypeForTable($table) {
    }
 }
 
+/**
+ * Return ItemType for a foreign key
+ *
+ * @param string $fkname
+ *
+ * @return string ItemType name for the fkname parameter
+ */
+function getItemtypeForForeignKeyField($fkname) {
+   $table = getTableNameForForeignKeyField($fkname);
+   return getItemTypeForTable($table);
+}
 
 /**
  * Return ItemType  for a table

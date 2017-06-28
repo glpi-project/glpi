@@ -813,7 +813,12 @@ class Profile extends CommonDBTM {
                             'field'     => 'peripheral'],
                       ['itemtype'  => 'NetworkName',
                             'label'     => __('Internet'),
-                            'field'     => 'internet']];
+                            'field'     => 'internet'],
+                      ['itemtype'  => 'DeviceSimcard',
+                            'label'     => __('Simcard PIN/PUK'),
+                            'field'     => 'devicesimcard_pinpuk',
+                            'rights'    => [READ    => __('Read'),
+                                            UPDATE  => __('Update')]]];
 
       $this->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
                                                       'default_class' => 'tab_bg_2',
@@ -874,7 +879,10 @@ class Profile extends CommonDBTM {
                             'field'     => 'infocom'],
                       ['itemtype'  => 'Budget',
                             'label'     => __('Budget'),
-                            'field'     => 'budget']];
+                            'field'     => 'budget'],
+                      ['itemtype'  => 'Line',
+                            'label'     => __('Line'),
+                            'field'     => 'line']];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -1450,7 +1458,10 @@ class Profile extends CommonDBTM {
                             'field'     => 'notification'],
                       ['itemtype'  => 'SLA',
                             'label'     => __('SLA'),
-                            'field'     => 'sla']];
+                            'field'     => 'sla'],
+                      ['itemtype'  => 'LineOperator',
+                       'label'     => _n('Line operator', 'Line operators', Session::getPluralNumber()),
+                       'field'     => 'lineoperator']];
 
       $this->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
                                                       'default_class' => 'tab_bg_2',
