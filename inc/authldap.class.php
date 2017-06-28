@@ -275,7 +275,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void (display)
     */
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if (!Config::canUpdate()) {
          return false;
@@ -575,7 +575,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|string
     */
-   static function getGroupSearchTypeName($val=null) {
+   static function getGroupSearchTypeName($val = null) {
 
       $tmp[0] = __('In users');
       $tmp[1] = __('In groups');
@@ -1149,7 +1149,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function displayLdapFilter($target, $users=true) {
+   static function displayLdapFilter($target, $users = true) {
 
       $config_ldap = new self();
 
@@ -1220,7 +1220,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return integer unix timestamp
     */
-   static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset=0) {
+   static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0) {
       global $CFG_GLPI;
 
       $year    = substr($ldapstamp, 0, 4);
@@ -1256,7 +1256,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return boolean connection succeeded?
     */
-   static function testLDAPConnection($auths_id, $replicate_id=-1) {
+   static function testLDAPConnection($auths_id, $replicate_id = -1) {
 
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($auths_id);
@@ -1298,7 +1298,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function displaySizeLimitWarning($limitexceeded=false) {
+   static function displaySizeLimitWarning($limitexceeded = false) {
       global $CFG_GLPI;
 
       if ($limitexceeded) {
@@ -1735,8 +1735,8 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function showLdapGroups($target, $start, $sync=0, $filter='', $filter2='',
-                                  $entity=0, $order='DESC') {
+   static function showLdapGroups($target, $start, $sync = 0, $filter = '', $filter2 = '',
+                                  $entity = 0, $order = 'DESC') {
 
       echo "<br>";
       $limitexceeded = false;
@@ -1861,7 +1861,7 @@ class AuthLDAP extends CommonDBTM {
     * @return array of the groups
     */
    static function getAllGroups($auths_id, $filter, $filter2, $entity, &$limitexceeded,
-                                $order='DESC') {
+                                $order = 'DESC') {
       global $DB;
 
       $config_ldap = new self();
@@ -1919,7 +1919,7 @@ class AuthLDAP extends CommonDBTM {
             }
 
          } else {
-            function local_cmp($a ,$b) {
+            function local_cmp($a, $b) {
                return strcasecmp($a['cn'], $b['cn']);
             }
          }
@@ -1964,8 +1964,8 @@ class AuthLDAP extends CommonDBTM {
     * @return array
     */
    static function getGroupsFromLDAP($ldap_connection, $config_ldap, $filter,
-                                     &$limitexceeded, $search_in_groups=true,
-                                     $groups=[]) {
+                                     &$limitexceeded, $search_in_groups = true,
+                                     $groups = []) {
       global $DB;
 
       //First look for groups in group objects
@@ -2135,7 +2135,7 @@ class AuthLDAP extends CommonDBTM {
     * @return array|boolean  with state, else false
     */
    static function ldapImportUserByServerId(array $params, $action, $ldap_server,
-                                            $display=false) {
+                                            $display = false) {
       static $conn_cache = [];
 
       $params      = Toolbox::stripslashes_deep($params);
@@ -2248,7 +2248,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function ldapImportGroup ($group_dn, $options=[]) {
+   static function ldapImportGroup ($group_dn, $options = []) {
 
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($options['authldaps_id']);
@@ -2306,8 +2306,8 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return resource link to the LDAP server : false if connection failed
     */
-   static function connectToServer($host, $port, $login="", $password="",
-                                   $use_tls=false, $deref_options=0) {
+   static function connectToServer($host, $port, $login = "", $password = "",
+                                   $use_tls = false, $deref_options = 0) {
 
       $ds = @ldap_connect($host, intval($port));
       if ($ds) {
@@ -2421,7 +2421,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|boolean false if fail
     */
-   static function importUserFromServers($options=[]) {
+   static function importUserFromServers($options = []) {
 
       $auth   = new Auth();
       $params = [];
@@ -2511,7 +2511,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return object identification object
     */
-   static function tryLdapAuth($auth, $login, $password, $auths_id=0, $user_dn=false, $break=true) {
+   static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true) {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
@@ -2549,7 +2549,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|boolean dn of the user, else false
     */
-   static function searchUserDn($ds, $options=[]) {
+   static function searchUserDn($ds, $options = []) {
 
       $values['basedn']            = '';
       $values['login_field']       = '';
@@ -2613,7 +2613,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|boolean false if failed
     */
-   static function getObjectByDn($ds, $condition, $dn, $attrs=[], $clean=true) {
+   static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true) {
       if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
          if ($clean) {
             $info = self::get_entries_clean($ds, $result);
@@ -2639,7 +2639,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return array|boolean false if failed
     */
-   static function getUserByDn($ds, $user_dn, $attrs, $clean=true) {
+   static function getUserByDn($ds, $user_dn, $attrs, $clean = true) {
       return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs, $clean);
    }
 
@@ -2664,7 +2664,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function manageValuesInSession($options=[], $delete=false) {
+   static function manageValuesInSession($options = [], $delete = false) {
 
       $fields = ['action', 'authldaps_id', 'basedn', 'begin_date', 'criterias',  'end_date',
                       'entities_id', 'interface', 'ldap_filter', 'mode'];
@@ -3101,7 +3101,7 @@ class AuthLDAP extends CommonDBTM {
       return 0;
    }
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       if (in_array('is_default', $this->updates) && $this->input["is_default"]==1) {
@@ -3145,7 +3145,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return string
     */
-   static function dropdownUserDeletedActions($value=0) {
+   static function dropdownUserDeletedActions($value = 0) {
 
       $options[0] = __('Preserve');
       $options[1] = __('Put in dustbin');
@@ -3189,7 +3189,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return void
     */
-   static function showDateRestrictionForm($options=[]) {
+   static function showDateRestrictionForm($options = []) {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'>";
@@ -3255,7 +3255,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return boolean (TRUE)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($tabnum) {
          case 1 :

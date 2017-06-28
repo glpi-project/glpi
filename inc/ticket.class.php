@@ -108,7 +108,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $nb : number of item in the type (default 0)
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ticket', 'Tickets', $nb);
    }
 
@@ -401,7 +401,7 @@ class Ticket extends CommonITILObject {
     *
     * @return type
    **/
-   function deleteSLT($id, $type, $delete_date=0) {
+   function deleteSLT($id, $type, $delete_date = 0) {
 
       switch ($type) {
          case SLT::TTR :
@@ -567,7 +567,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->isNewItem()) {
          return;
@@ -670,7 +670,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -730,7 +730,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -1306,7 +1306,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $donotif = count($this->updates);
@@ -2067,7 +2067,7 @@ class Ticket extends CommonITILObject {
     *
     * @return followup count
    **/
-   function numberOfFollowups($with_private=1) {
+   function numberOfFollowups($with_private = 1) {
       global $DB;
 
       $RESTRICT = "";
@@ -2093,7 +2093,7 @@ class Ticket extends CommonITILObject {
     *
     * @return followup count
    **/
-   function numberOfTasks($with_private=1) {
+   function numberOfTasks($with_private = 1) {
       global $DB;
 
       $RESTRICT = "";
@@ -2227,7 +2227,7 @@ class Ticket extends CommonITILObject {
     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
    **/
-   function updateDateMod($ID, $no_stat_computation=false, $users_id_lastupdater=0) {
+   function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -2326,7 +2326,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -2884,7 +2884,7 @@ class Ticket extends CommonITILObject {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -2915,7 +2915,7 @@ class Ticket extends CommonITILObject {
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -2945,7 +2945,7 @@ class Ticket extends CommonITILObject {
     *
     * @return string id of the select
    **/
-   static function dropdownType($name, $options=[]) {
+   static function dropdownType($name, $options = []) {
 
       $params['value']       = 0;
       $params['toadd']       = [];
@@ -3011,7 +3011,7 @@ class Ticket extends CommonITILObject {
     *
     * @return an array
    **/
-   static function getAllStatusArray($withmetaforsearch=false) {
+   static function getAllStatusArray($withmetaforsearch = false) {
 
       // To be overridden by class
       $tab = [self::INCOMING => _x('status', 'New'),
@@ -3130,7 +3130,7 @@ class Ticket extends CommonITILObject {
     *
     * @return nothing (print the helpdesk)
    **/
-   function showFormHelpdesk($ID, $ticket_template=false) {
+   function showFormHelpdesk($ID, $ticket_template = false) {
       global $DB, $CFG_GLPI;
 
       if (!self::canCreate()) {
@@ -3646,7 +3646,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $entity  integer  entities_id usefull is function called by cron (default 0)
    **/
-   static function getDefaultValues($entity=0) {
+   static function getDefaultValues($entity = 0) {
       global $CFG_GLPI;
 
       if (is_numeric(Session::getLoginUserID(false))) {
@@ -3730,8 +3730,8 @@ class Ticket extends CommonITILObject {
     *
     * @return ticket template object
    **/
-   function getTicketTemplateToUse($force_template=0, $type=0, $itilcategories_id=0,
-                                   $entities_id=-1) {
+   function getTicketTemplateToUse($force_template = 0, $type = 0, $itilcategories_id = 0,
+                                   $entities_id = -1) {
 
       // Load ticket template if available :
       $tt              = new TicketTemplate();
@@ -3839,7 +3839,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       $default_values = self::getDefaultValues();
@@ -4719,7 +4719,7 @@ class Ticket extends CommonITILObject {
    /**
     * @param $size (default 25)
    **/
-   static function showDocumentAddButton($size=25) {
+   static function showDocumentAddButton($size = 25) {
       global $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
@@ -4741,7 +4741,7 @@ class Ticket extends CommonITILObject {
     * @param $status             (default ''process)
     * @param $showgrouptickets   (true by default)
     */
-   static function showCentralList($start, $status="process", $showgrouptickets=true) {
+   static function showCentralList($start, $status = "process", $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
@@ -5177,7 +5177,7 @@ class Ticket extends CommonITILObject {
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
    **/
-   static function showCentralCount($foruser=false) {
+   static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
@@ -5347,7 +5347,7 @@ class Ticket extends CommonITILObject {
     *
     * @return void (display a table)
    **/
-   static function showListForItem(CommonDBTM $item, $withtemplate=0) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,
@@ -5582,7 +5582,7 @@ class Ticket extends CommonITILObject {
     * @param $ID
     * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
-   static function showVeryShort($ID, $forcetab='') {
+   static function showVeryShort($ID, $forcetab = '') {
       global $CFG_GLPI;
 
       // Prints a job in short form
@@ -5970,7 +5970,7 @@ class Ticket extends CommonITILObject {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[READ]);
@@ -6863,7 +6863,7 @@ class Ticket extends CommonITILObject {
     * @param $tickets_id
     * @param $action         (default 'add')
    **/
-   static function getSplittedSubmitButtonHtml($tickets_id, $action="add") {
+   static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
 
       $locale = _sx('button', 'Add');
       if ($action == 'update') {

@@ -66,7 +66,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $nb
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Dropdown', 'Dropdowns', $nb);
    }
 
@@ -149,7 +149,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -225,7 +225,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
@@ -407,7 +407,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
    }
 
 
@@ -707,8 +707,8 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return integer : dropdown id.
    **/
-   function importExternal($value, $entities_id=-1, $external_params=[], $comment="",
-                           $add=true) {
+   function importExternal($value, $entities_id = -1, $external_params = [], $comment = "",
+                           $add = true) {
 
       $value = trim($value);
       if (strlen($value) == 0) {
@@ -754,7 +754,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -853,7 +853,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $withname  boolean  also display name ? (false by default)
    **/
-   function getLinks($withname=false) {
+   function getLinks($withname = false) {
       global $CFG_GLPI;
 
       $ret = '';

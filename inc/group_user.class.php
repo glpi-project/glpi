@@ -56,7 +56,7 @@ class Group_User extends CommonDBRelation{
     * @param $users_id
     * @param $condition    (default '')
    **/
-   static function getUserGroups($users_id, $condition='') {
+   static function getUserGroups($users_id, $condition = '') {
       global $DB;
 
       $groups = [];
@@ -87,7 +87,7 @@ class Group_User extends CommonDBRelation{
     * @param $groups_id
     * @param $condition    (default '')
    **/
-   static function getGroupUsers($groups_id, $condition='') {
+   static function getGroupUsers($groups_id, $condition = '') {
       global $DB;
 
       $users = [];
@@ -333,7 +333,7 @@ class Group_User extends CommonDBRelation{
     *
     * @return String tab of entity for restriction
    **/
-   static function getDataForGroup(Group $group, &$members, &$ids, $crit='', $tree=0) {
+   static function getDataForGroup(Group $group, &$members, &$ids, $crit = '', $tree = 0) {
       global $DB;
 
       // Entity restriction for this group, according to user allowed entities
@@ -673,7 +673,7 @@ class Group_User extends CommonDBRelation{
     * @param $user_ID
     * @param $only_dynamic (false by default
    **/
-   static function deleteGroups($user_ID, $only_dynamic=false) {
+   static function deleteGroups($user_ID, $only_dynamic = false) {
       global $DB;
 
       $crit['users_id'] = $user_ID;
@@ -685,7 +685,7 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -715,7 +715,7 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'User' :

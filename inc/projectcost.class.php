@@ -48,7 +48,7 @@ class ProjectCost extends CommonDBChild {
    public $dohistory       = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cost', 'Costs', $nb);
    }
 
@@ -88,7 +88,7 @@ class ProjectCost extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'Project') && Project::canView()) {
@@ -107,7 +107,7 @@ class ProjectCost extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForProject($item, $withtemplate);
       return true;
@@ -271,7 +271,7 @@ class ProjectCost extends CommonDBChild {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if ($ID > 0) {
          $this->check($ID, READ);
@@ -330,7 +330,7 @@ class ProjectCost extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForProject(Project $project, $withtemplate='') {
+   static function showForProject(Project $project, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $ID = $project->fields['id'];

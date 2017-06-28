@@ -68,7 +68,7 @@ class NotificationAjax implements NotificationInterface {
    }
 
 
-   function sendNotification($options=[]) {
+   function sendNotification($options = []) {
 
       $data = [];
       $data['itemtype']                             = $options['_itemtype'];

@@ -52,7 +52,7 @@ class NotificationTargetConsumableItem extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                                    = $this->getAllEvents();
 

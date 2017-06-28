@@ -55,7 +55,7 @@ class Config extends CommonDBTM {
    static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Setup');
    }
 
@@ -98,7 +98,7 @@ class Config extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -947,7 +947,7 @@ class Config extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showFormUserPrefs($data=[]) {
+   function showFormUserPrefs($data = []) {
       global $DB, $CFG_GLPI;
 
       $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
@@ -1364,7 +1364,7 @@ class Config extends CommonDBTM {
     *
     * @since version 0.84
    **/
-   static function displayPasswordSecurityChecks($field='password') {
+   static function displayPasswordSecurityChecks($field = 'password') {
       global $CFG_GLPI;
 
       printf(__('%1$s: %2$s'), __('Password minimum length'),
@@ -1445,7 +1445,7 @@ class Config extends CommonDBTM {
     *
     * @return boolean is password valid?
    **/
-   static function validatePassword($password, $display=true) {
+   static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
 
       $ok = true;
@@ -2033,7 +2033,7 @@ class Config extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Preference' :
@@ -2072,7 +2072,7 @@ class Config extends CommonDBTM {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == 'Preference') {
@@ -2135,7 +2135,7 @@ class Config extends CommonDBTM {
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK
    **/
-   static function checkExtensions($fordebug=false) {
+   static function checkExtensions($fordebug = false) {
       global $CFG_GLPI;
 
       $extensions_to_check = [
@@ -2266,7 +2266,7 @@ class Config extends CommonDBTM {
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/
-   static function checkWriteAccessToDirs($fordebug=false) {
+   static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
       $dir_to_check = [GLPI_CONFIG_DIR
                                     => __('Checking write permissions for setting files'),
@@ -2438,7 +2438,7 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function getConfigurationValues($context, array $names=[]) {
+   static function getConfigurationValues($context, array $names = []) {
       global $DB;
 
       if (count($names) == 0) {
@@ -2469,7 +2469,7 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function setConfigurationValues($context, array $values=[]) {
+   static function setConfigurationValues($context, array $values = []) {
 
       $config = new self();
       foreach ($values as $name => $value) {
@@ -2502,7 +2502,7 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function deleteConfigurationValues($context, array $values= []) {
+   static function deleteConfigurationValues($context, array $values = []) {
 
       $config = new self();
       foreach ($values as $value) {
@@ -2519,7 +2519,7 @@ class Config extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[CREATE], $values[DELETE],

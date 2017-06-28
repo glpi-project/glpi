@@ -106,7 +106,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       //TRANS: Always plural
       return __('Financial and administrative information');
    }
@@ -128,7 +128,7 @@ class Infocom extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // Can exists on template
       if (Session::haveRight(self::$rightname, READ)) {
@@ -158,7 +158,7 @@ class Infocom extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Supplier' :
@@ -186,7 +186,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -211,7 +211,7 @@ class Infocom extends CommonDBChild {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -274,7 +274,7 @@ class Infocom extends CommonDBChild {
     *
     * @return nothing
    **/
-   static function manageDateOnStatusChange(CommonDBTM $item, $action_add=true) {
+   static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true) {
       global $CFG_GLPI;
 
       $itemtype = get_class($item);
@@ -323,7 +323,7 @@ class Infocom extends CommonDBChild {
     *
     * @return nothing
    **/
-   static function autofillDates(&$infocoms=[], $field='', $action=0, $params=[]) {
+   static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = []) {
 
       if (isset($infocoms[$field])) {
          switch ($action) {
@@ -453,7 +453,7 @@ class Infocom extends CommonDBChild {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronInfocom($task=null) {
+   static function cronInfocom($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {
@@ -556,7 +556,7 @@ class Infocom extends CommonDBChild {
     *
     * @return array or string
    **/
-   static function getAlertName($val=null) {
+   static function getAlertName($val = null) {
 
       $tmp[0]                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
@@ -612,7 +612,7 @@ class Infocom extends CommonDBChild {
     * @param $value     default value (default 0)
     * @param $display   display or get string (true by default)
    **/
-   static function dropdownAmortType($name, $value=0, $display=true) {
+   static function dropdownAmortType($name, $value = 0, $display = true) {
 
       $values = [2 => __('Linear'),
                       1 => __('Decreasing')];
@@ -653,7 +653,7 @@ class Infocom extends CommonDBChild {
     *
     * @return float
    **/
-   static function showTco($ticket_tco, $value, $date_achat="") {
+   static function showTco($ticket_tco, $value, $date_achat = "") {
       if ($ticket_tco == NOT_AVAILABLE) {
          return '-';
       }
@@ -740,7 +740,7 @@ class Infocom extends CommonDBChild {
     * @return float or array
    **/
    static function Amort($type_amort, $va, $duree, $coef, $date_achat, $date_use, $date_tax,
-                         $view="n") {
+                         $view = "n") {
       // By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
 
       // Attention date mise en service/dateachat ->amort lineaire  et $prorata en jour !!
@@ -921,7 +921,7 @@ class Infocom extends CommonDBChild {
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $CFG_GLPI;
 
       // Show Infocom or blank form
@@ -1804,7 +1804,7 @@ class Infocom extends CommonDBChild {
     * @param $newid        ID of the item cloned
     * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
       $ic = new self();
@@ -1843,7 +1843,7 @@ class Infocom extends CommonDBChild {
     *
     * @return expiration date string
    **/
-   static function getWarrantyExpir($from, $addwarranty, $deletenotice=0, $color=false) {
+   static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false) {
 
       // Life warranty
       if (($addwarranty == -1)
@@ -1868,7 +1868,7 @@ class Infocom extends CommonDBChild {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
                                                 CommonDBTM $checkitem = null) {
 
       $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';

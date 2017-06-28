@@ -71,7 +71,7 @@ class Change extends CommonITILObject {
     *
     * @param $nb : number of item in the type (default 0)
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Change', 'Changes', $nb);
    }
 
@@ -173,7 +173,7 @@ class Change extends CommonITILObject {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $actions = parent::getSpecificMassiveActions($checkitem);
       $isadmin = static::canUpdate();
@@ -191,7 +191,7 @@ class Change extends CommonITILObject {
       return $actions;
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
          switch ($item->getType()) {
@@ -210,7 +210,7 @@ class Change extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -240,7 +240,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
       $ong = [];
       // show related tickets and changes
       $this->addDefaultFormTab($ong);
@@ -303,7 +303,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $donotif =  count($this->updates);
@@ -486,7 +486,7 @@ class Change extends CommonITILObject {
     *
     * @return an array
    **/
-   static function getAllStatusArray($withmetaforsearch=false) {
+   static function getAllStatusArray($withmetaforsearch = false) {
 
       $tab = [self::INCOMING      => _x('status', 'New'),
                    self::EVALUATION    => __('Evaluation'),
@@ -568,7 +568,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
@@ -894,7 +894,7 @@ class Change extends CommonITILObject {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[READ]);

@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class RequestType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Request source', 'Request sources', $nb);
    }
 
@@ -177,7 +177,7 @@ class RequestType extends CommonDropdown {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $DB;
 
       if (in_array('is_helpdesk_default', $this->updates)) {

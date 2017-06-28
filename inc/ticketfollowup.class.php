@@ -65,7 +65,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @param $nb : number of item in the type
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Followup', 'Followups', $nb);
    }
 
@@ -181,7 +181,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == 'Ticket') {
          $nb = 0;
@@ -207,7 +207,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $fup = new self();
       $fup->showSummary($item);
@@ -273,7 +273,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $job      = new Ticket();
@@ -614,7 +614,7 @@ class TicketFollowup  extends CommonDBTM {
     *@param $options array of possible options:
     *     - ticket Object : the ticket
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -757,7 +757,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @see CommonDBTM::showFormButtons()
    **/
-   function showFormButtons($options=[]) {
+   function showFormButtons($options = []) {
       global $CFG_GLPI;
 
       // for single object like config
@@ -1201,7 +1201,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);

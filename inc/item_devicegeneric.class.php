@@ -45,7 +45,7 @@ class Item_DeviceGeneric extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
       return ['serial' => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),

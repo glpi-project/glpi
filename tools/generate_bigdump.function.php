@@ -142,7 +142,7 @@ function getNextMAC() {
  * @param $entities_id     item entity ID
  * @param $locations_id    ID of the location trying to link with network equipment (default 0)
 **/
-function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_id=0) {
+function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_id = 0) {
    global $NET_LOC, $NET_PORT, $MAX, $VLAN_LOC;
 
    // Add networking ports
@@ -328,7 +328,7 @@ function addDocuments($type, $ID) {
  * @param $ID_entity       entity ID
  * @param $is_recursive    (default 0)
 **/
-function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
+function addInfocoms($type, $ID, $ID_entity, $is_recursive = 0) {
    global $DB, $FIRST, $LAST;
 
    $current_year = date('Y');

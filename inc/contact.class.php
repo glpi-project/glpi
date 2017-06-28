@@ -53,7 +53,7 @@ class Contact extends CommonDBTM{
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Contact', 'Contacts', $nb);
    }
 
@@ -78,7 +78,7 @@ class Contact extends CommonDBTM{
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -150,7 +150,7 @@ class Contact extends CommonDBTM{
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -243,7 +243,7 @@ class Contact extends CommonDBTM{
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

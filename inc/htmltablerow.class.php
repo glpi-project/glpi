@@ -94,8 +94,8 @@ class HTMLTableRow extends HTMLTableEntity {
     * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father=null,
-                    CommonDBTM $item=null) {
+   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father = null,
+                    CommonDBTM $item = null) {
 
       if (!$this->group->haveHeader($header)) {
          throw new Exception('Unavailable header !');

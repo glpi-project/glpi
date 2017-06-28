@@ -523,7 +523,7 @@ function loadDataset() {
  * @param boolean $onlyid
  * @return the item, or its id
  */
-function getItemByTypeName($type, $name, $onlyid=false) {
+function getItemByTypeName($type, $name, $onlyid = false) {
 
    $item = getItemForItemtype($type);
    $nameField = $type::getNameField();

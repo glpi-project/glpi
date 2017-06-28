@@ -64,8 +64,8 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function __construct($row, $header, $content, HTMLTableCell $father=null,
-                        CommonDBTM $item=null) {
+   function __construct($row, $header, $content, HTMLTableCell $father = null,
+                        CommonDBTM $item = null) {
 
       parent::__construct($content);
       $this->row        = $row;
@@ -250,7 +250,7 @@ class HTMLTableCell extends HTMLTableEntity {
     * @param $index
     * @param $options   array
    **/
-   function displayCell($index, array $options=[]) {
+   function displayCell($index, array $options = []) {
 
       if (($index >= $this->start)
           && ($index < ($this->start + $this->numberOfLines))) {

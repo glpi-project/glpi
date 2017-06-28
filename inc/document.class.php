@@ -55,7 +55,7 @@ class Document extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Document', 'Documents', $nb);
    }
 
@@ -177,7 +177,7 @@ class Document extends CommonDBTM {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -339,7 +339,7 @@ class Document extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -465,7 +465,7 @@ class Document extends CommonDBTM {
     * @param $len       maximum length of displayed string (default 20)
     *
    **/
-   function getDownloadLink($params='', $len=20) {
+   function getDownloadLink($params = '', $len = 20) {
       global $DB,$CFG_GLPI;
 
       $splitter = explode("/", $this->fields['filename']);
@@ -738,7 +738,7 @@ class Document extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1293,7 +1293,7 @@ class Document extends CommonDBTM {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdown($options=[]) {
+   static function dropdown($options = []) {
       global $DB, $CFG_GLPI;
 
       $p['name']    = 'documents_id';
@@ -1362,8 +1362,8 @@ class Document extends CommonDBTM {
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=null) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
       global $CFG_GLPI;
 
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;

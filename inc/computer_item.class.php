@@ -275,8 +275,8 @@ class Computer_Item extends CommonDBRelation{
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
-   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
-                                                CommonDBTM $checkitem=null) {
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0,
+                                                CommonDBTM $checkitem = null) {
 
       $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
       $specificities = self::getRelationMassiveActionsSpecificities();
@@ -354,7 +354,7 @@ class Computer_Item extends CommonDBRelation{
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $ID      = $comp->fields['id'];
@@ -507,7 +507,7 @@ class Computer_Item extends CommonDBRelation{
     *
     * @return nothing (print out a table)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       // Prints a direct connection to a computer
       global $DB;
 
@@ -692,8 +692,8 @@ class Computer_Item extends CommonDBRelation{
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdownAllConnect($fromtype, $myname, $entity_restrict=-1,
-                                      $onlyglobal=0, $used=[]) {
+   static function dropdownAllConnect($fromtype, $myname, $entity_restrict = -1,
+                                      $onlyglobal = 0, $used = []) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
@@ -737,8 +737,8 @@ class Computer_Item extends CommonDBRelation{
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict=-1,
-                                   $onlyglobal=0, $used=[]) {
+   static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict = -1,
+                                   $onlyglobal = 0, $used = []) {
       global $CFG_GLPI;
 
       $rand     = mt_rand();
@@ -761,7 +761,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for Template
       if ($item->can($item->getField('id'), READ)) {
@@ -803,7 +803,7 @@ class Computer_Item extends CommonDBRelation{
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
     */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Phone' :

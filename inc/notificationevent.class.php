@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationEvent extends CommonDBTM {
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Event', 'Events', $nb);
    }
 
@@ -54,7 +54,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return string
    **/
-   static function dropdownEvents($itemtype, $options=[]) {
+   static function dropdownEvents($itemtype, $options = []) {
 
       $p['name']                = 'event';
       $p['display']             = true;
@@ -110,7 +110,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return boolean
    **/
-   static function raiseEvent($event, $item, $options=[], $label='') {
+   static function raiseEvent($event, $item, $options = [], $label = '') {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
@@ -186,7 +186,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @return void
    **/
-   static function debugEvent($item, $options=[]) {
+   static function debugEvent($item, $options = []) {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";

@@ -99,7 +99,7 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
 
@@ -125,7 +125,7 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if (in_array('pages', $this->updates)) {
          $printer = new Printer();
@@ -228,7 +228,7 @@ class Cartridge extends CommonDBChild {
     *
     * @since version 0.85 (before name was restore)
     */
-   function backToStock(array $input, $history=1) {
+   function backToStock(array $input, $history = 1) {
       global $DB;
 
       $query = "UPDATE `".$this->getTable()."`
@@ -339,7 +339,7 @@ class Cartridge extends CommonDBChild {
     *
     * @return string to display
    **/
-   static function getCount($tID, $alarm_threshold, $nohtml=0) {
+   static function getCount($tID, $alarm_threshold, $nohtml = 0) {
       global $DB;
 
       // Get total
@@ -394,7 +394,7 @@ class Cartridge extends CommonDBChild {
     *
     * @return string to display
    **/
-   static function getCountForPrinter($pID, $nohtml=0) {
+   static function getCountForPrinter($pID, $nohtml = 0) {
       global $DB;
 
       // Get total
@@ -602,7 +602,7 @@ class Cartridge extends CommonDBChild {
     *
     * @return Nothing (displays)
    **/
-   static function showForCartridgeItem(CartridgeItem $cartitem, $show_old=0) {
+   static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
 
       $tID = $cartitem->getField('id');
@@ -850,7 +850,7 @@ class Cartridge extends CommonDBChild {
     *
     * @return nothing (display)
    **/
-   static function showForPrinter(Printer $printer, $old=0) {
+   static function showForPrinter(Printer $printer, $old = 0) {
       global $DB, $CFG_GLPI;
 
       $instID = $printer->getField('id');
@@ -1080,7 +1080,7 @@ class Cartridge extends CommonDBChild {
     * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -1151,7 +1151,7 @@ class Cartridge extends CommonDBChild {
     *
     * @param entity the entity (default 0)
     */
-   static function getNotificationParameters($entity=0) {
+   static function getNotificationParameters($entity = 0) {
       global $DB, $CFG_GLPI;
 
       //Look for parameters for this entity
@@ -1176,7 +1176,7 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && self::canView()) {
          $nb = 0;
@@ -1213,7 +1213,7 @@ class Cartridge extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Printer' :
@@ -1229,7 +1229,7 @@ class Cartridge extends CommonDBChild {
       }
    }
 
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
       $ci = new CartridgeItem();
       return $ci->getRights($interface);
    }

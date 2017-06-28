@@ -52,7 +52,7 @@ class FieldUnicity extends CommonDropdown {
    static $rightname          = 'config';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Fields unicity');
    }
 
@@ -95,7 +95,7 @@ class FieldUnicity extends CommonDropdown {
     *
     * @param $options array
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong          = [];
       $this->addDefaultFormTab($ong);
@@ -106,7 +106,7 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          if ($item->getType() == $this->getType()) {
@@ -117,7 +117,7 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()==__CLASS__) {
          self::showDoubles($item);
@@ -132,7 +132,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $ID
     * @param $field array
    **/
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'unicity_itemtype' :
@@ -154,7 +154,7 @@ class FieldUnicity extends CommonDropdown {
     *
     * @return nothing
    **/
-   function showItemtype($ID, $value=0) {
+   function showItemtype($ID, $value = 0) {
       global $CFG_GLPI;
 
       //Criteria already added : only display the selected itemtype
@@ -195,7 +195,7 @@ class FieldUnicity extends CommonDropdown {
     *
     * @return an array of fields to check, or an empty array if no
    **/
-   public static function getUnicityFieldsConfig($itemtype, $entities_id=0, $check_active=true) {
+   public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true) {
       global $DB;
 
       //Get the first active configuration for this itemtype
@@ -265,7 +265,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $itemtype          itemtype
     * @param $options   array    of options
    **/
-   static function dropdownFields($itemtype, $options=[]) {
+   static function dropdownFields($itemtype, $options = []) {
       global $DB;
 
       $p['name']    = 'fields';
@@ -408,7 +408,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -445,7 +445,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
       if (!is_array($values)) {

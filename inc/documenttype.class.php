@@ -64,7 +64,7 @@ class DocumentType  extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Document type', 'Document types', $nb);
    }
 
@@ -117,7 +117,7 @@ class DocumentType  extends CommonDropdown {
    /**
     * @since version 0.84
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
       global $CFG_GLPI;
 
       if (!is_array($values)) {
@@ -143,7 +143,7 @@ class DocumentType  extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];

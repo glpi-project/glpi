@@ -46,14 +46,14 @@ if (!defined('GLPI_ROOT')) {
 class Knowbase extends CommonGLPI {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       // No plural
       return __('Knowledge base');
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -63,7 +63,7 @@ class Knowbase extends CommonGLPI {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = _x('button', 'Search');
@@ -78,7 +78,7 @@ class Knowbase extends CommonGLPI {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {

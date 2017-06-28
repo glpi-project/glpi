@@ -151,7 +151,7 @@ class RuleTicket extends Rule {
     * @param $output
     * @param $params
    **/
-   function executeActions($output,$params) {
+   function executeActions($output, $params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -623,7 +623,7 @@ class RuleTicket extends Rule {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       //TRANS: short for : Business rules for ticket (entity parent)

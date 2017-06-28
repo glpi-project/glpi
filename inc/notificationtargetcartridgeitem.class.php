@@ -52,7 +52,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
    }
 
 
-   function addtDataForTemplate($event, $options=[]) {
+   function addtDataForTemplate($event, $options = []) {
 
       $events = $this->getAllEvents();
 

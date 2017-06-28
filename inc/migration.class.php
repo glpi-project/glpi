@@ -187,7 +187,7 @@ class Migration {
     *
     * @return void
    **/
-   function displayWarning($msg, $red=false) {
+   function displayWarning($msg, $red = false) {
 
       echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
             Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
@@ -206,7 +206,7 @@ class Migration {
     *
     * @return string
    **/
-   private function fieldFormat($type, $default_value, $nodefault=false) {
+   private function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
       switch ($type) {
@@ -479,7 +479,7 @@ class Migration {
     *
     * @return void
    **/
-   function addKey($table, $fields, $indexname='', $type='INDEX', $len=0) {
+   function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0) {
 
       // si pas de nom d'index, on prend celui du ou des champs
       if (!$indexname) {
@@ -738,7 +738,7 @@ class Migration {
     *
     * @return void
    **/
-   function updateDisplayPrefs($toadd=[], $todel=[]) {
+   function updateDisplayPrefs($toadd = [], $todel = []) {
       global $DB;
 
       //TRANS: %s is the table or item to migrate

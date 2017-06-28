@@ -171,7 +171,7 @@ class APIClient extends CommonDBTM {
     *
     * @return void
     */
-   function showForm ($ID, $options=[]) {
+   function showForm ($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

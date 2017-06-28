@@ -608,7 +608,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return array of entities ID
    **/
-   static function getUserEntities($user_ID, $is_recursive=true, $default_first=false) {
+   static function getUserEntities($user_ID, $is_recursive = true, $default_first = false) {
       global $DB;
 
       $query = "SELECT DISTINCT `entities_id`, `is_recursive`
@@ -657,7 +657,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return array of entities ID
    **/
-   static function getUserEntitiesForRight($user_ID, $right, $is_recursive=true) {
+   static function getUserEntitiesForRight($user_ID, $right, $is_recursive = true) {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`entities_id`,
@@ -699,7 +699,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return array of the IDs of the profiles
    **/
-   static function getUserProfiles($user_ID, $sqlfilter='') {
+   static function getUserProfiles($user_ID, $sqlfilter = '') {
       global $DB;
 
       $query = "SELECT DISTINCT `profiles_id`
@@ -729,7 +729,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return Array of entity ID
    **/
-   static function getEntitiesForProfileByUser($users_id, $profiles_id, $child=false) {
+   static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false) {
       global $DB;
 
       $query = "SELECT `entities_id`, `is_recursive`
@@ -763,7 +763,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return Array of entity ID
    **/
-   static function getEntitiesForUser($users_id, $child=false) {
+   static function getEntitiesForUser($users_id, $child = false) {
       global $DB;
 
       $query = "SELECT `entities_id`, `is_recursive`
@@ -793,7 +793,7 @@ class Profile_User extends CommonDBRelation {
     *
     * @return array of entities ID
    **/
-   static function getForUser($user_ID, $only_dynamic=false) {
+   static function getForUser($user_ID, $only_dynamic = false) {
       global $DB;
 
       $condition = "`users_id` = '$user_ID'";
@@ -827,7 +827,7 @@ class Profile_User extends CommonDBRelation {
     * @param $user_ID
     * @param $only_dynamic    (false by default)
    **/
-   static function deleteRights($user_ID, $only_dynamic=false) {
+   static function deleteRights($user_ID, $only_dynamic = false) {
 
       $crit['users_id'] = $user_ID;
 
@@ -907,7 +907,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Profile', 'Profiles', $nb);
    }
 
@@ -935,7 +935,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       global $DB;
 
       if (!$withtemplate) {
@@ -988,7 +988,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Entity' :

@@ -52,7 +52,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    /**
     * @see RuleCollection::replayRulesOnExistingDB()
    **/
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=[], $params=[]) {
+   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = []) {
       global $DB;
 
       // Model check : need to check using manufacturer extra data so specific function
@@ -132,7 +132,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
     *
     * @return -1 on completion else current offset
    **/
-   function replayRulesOnExistingDBForModel($offset=0, $maxtime=0) {
+   function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0) {
       global $DB;
 
       if (isCommandLine()) {

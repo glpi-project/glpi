@@ -58,7 +58,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @param $object          (default null)
     * @param $options   array
     */
-   function __construct($entity='', $event='', $object=null, $options=[]) {
+   function __construct($entity = '', $event = '', $object = null, $options = []) {
       global $CFG_GLPI;
 
       parent::__construct($entity, $event, $object, $options);
@@ -79,7 +79,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    /**
     * @see NotificationTarget::validateSendTo()
    **/
-   function validateSendTo($event, array $infos, $notify_me=false) {
+   function validateSendTo($event, array $infos, $notify_me = false) {
 
       // Always send notification for satisfaction : if send on ticket closure
       // Always send notification for new ticket
@@ -104,7 +104,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    /**
     * @param $event  (default '')
    **/
-   function getSubjectPrefix($event='') {
+   function getSubjectPrefix($event = '') {
 
       if ($event !='alertnotclosed') {
          $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
@@ -178,7 +178,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     *
     * @return the object associated with the itemtype
    **/
-   function getObjectItem($event='') {
+   function getObjectItem($event = '') {
 
       if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
          $item_ticket = new Item_Ticket();
@@ -286,7 +286,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDataForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       global $CFG_GLPI;
 
       // Common ITIL data

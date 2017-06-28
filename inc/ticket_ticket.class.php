@@ -198,7 +198,7 @@ class Ticket_Ticket extends CommonDBRelation {
     * @param $myname    select name
     * @param $value     default value (default self::LINK_TO)
    **/
-   static function dropdownLinks($myname, $value=self::LINK_TO) {
+   static function dropdownLinks($myname, $value = self::LINK_TO) {
 
       $tmp[self::LINK_TO]        = __('Linked to');
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');

@@ -54,7 +54,7 @@ class Reservation extends CommonDBChild {
    /**
     * @param $nb  integer  for singular or plural
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Reservation', 'Reservations', $nb);
    }
 
@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
           && Session::haveRight("reservation", READ)) {
@@ -77,7 +77,7 @@ class Reservation extends CommonDBChild {
     * @param $tabnum       (default1)
     * @param $withtemplate (default0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'User') {
          self::showForUser($_GET["id"]);
@@ -144,7 +144,7 @@ class Reservation extends CommonDBChild {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       if (count($this->updates)
@@ -274,7 +274,7 @@ class Reservation extends CommonDBChild {
     *
     * @return nothing
    **/
-   function displayError($type,$ID) {
+   function displayError($type, $ID) {
 
       echo "<br><div class='center'>";
       switch ($type) {
@@ -369,7 +369,7 @@ class Reservation extends CommonDBChild {
     *
     * @param $ID   ID of the reservation item (if empty display all) (default '')
    **/
-   static function showCalendar($ID="") {
+   static function showCalendar($ID = "") {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -597,7 +597,7 @@ class Reservation extends CommonDBChild {
     *     - item  reservation items ID for creation process
     *     - date date for creation process
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -791,7 +791,7 @@ class Reservation extends CommonDBChild {
     * @param $end               begin of the initial reservation
     * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
    **/
-   static function computePeriodicities ($begin, $end, $options=[]) {
+   static function computePeriodicities ($begin, $end, $options = []) {
       $toadd = [];
 
       if (isset($options['type']) && isset($options['end'])) {
@@ -1045,7 +1045,7 @@ class Reservation extends CommonDBChild {
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
     * @param $withtemplate    withtemplate param (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $resaID = 0;

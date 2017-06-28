@@ -46,14 +46,14 @@ if (!defined('GLPI_ROOT')) {
 class Central extends CommonGLPI {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       // No plural
       return __('Standard interface');
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -62,7 +62,7 @@ class Central extends CommonGLPI {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = __('Personal View');
@@ -76,7 +76,7 @@ class Central extends CommonGLPI {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {

@@ -117,7 +117,7 @@ abstract class HTMLTableEntity {
    /**
     * @param $options   array
    **/
-   function displayEntityAttributs(array $options=[]) {
+   function displayEntityAttributs(array $options = []) {
 
       $id = $this->html_id;
       if (isset($options['id'])) {

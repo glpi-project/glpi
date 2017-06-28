@@ -51,7 +51,7 @@ class APIRest extends API {
     *
     * @see CommonGLPI::GetTypeName()
     */
-   public static function getTypeName($nb=0) {
+   public static function getTypeName($nb = 0) {
       return __('Rest API');
    }
 
@@ -290,7 +290,7 @@ class APIRest extends API {
     *
     * @return boolean
     */
-   private function getItemtype($index=0, $recursive=true, $all_assets= false) {
+   private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
 
       if (isset($this->url_elements[$index])) {
          if ((class_exists($this->url_elements[$index])
@@ -485,7 +485,7 @@ class APIRest extends API {
     *
     * @return void
     */
-   public function returnResponse($response, $httpcode=200, $additionalheaders=[]) {
+   public function returnResponse($response, $httpcode = 200, $additionalheaders = []) {
 
       if (empty($httpcode)) {
          $httpcode = 200;

@@ -57,7 +57,7 @@ class Reminder extends CommonDBVisible {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
 
       if (Session::haveRight('reminder_public', READ)) {
          return _n('Reminder', 'Reminders', $nb);
@@ -185,7 +185,7 @@ class Reminder extends CommonDBVisible {
     *
     * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall=false) {
+   static function addVisibilityJoins($forceall = false) {
 
       if (!Session::haveRight(self::$rightname, READ)) {
          return '';
@@ -286,7 +286,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
@@ -422,7 +422,7 @@ class Reminder extends CommonDBVisible {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -443,7 +443,7 @@ class Reminder extends CommonDBVisible {
     * @param $values             (default '')
     * @param $options      array
     **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -461,7 +461,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
          $nb = 0;
@@ -483,7 +483,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @see CommonGLPI::defineTabs()
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -500,7 +500,7 @@ class Reminder extends CommonDBVisible {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Reminder' :
@@ -621,7 +621,7 @@ class Reminder extends CommonDBVisible {
     *     - target filename : where to go when done.
     *     - from_planning_ajax : set to disable planning form part
     **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
@@ -807,7 +807,7 @@ class Reminder extends CommonDBVisible {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options=[]) {
+   static function populatePlanning($options = []) {
       global $DB, $CFG_GLPI;
 
       $default_options = [
@@ -973,7 +973,7 @@ class Reminder extends CommonDBVisible {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -1024,7 +1024,7 @@ class Reminder extends CommonDBVisible {
     *
     * @return Nothing (display function)
     **/
-   static function showListForCentral($personal=true) {
+   static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI;
 
       $users_id = Session::getLoginUserID();
@@ -1137,7 +1137,7 @@ class Reminder extends CommonDBVisible {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'helpdesk') {
          $values = [READ => __('Read')];

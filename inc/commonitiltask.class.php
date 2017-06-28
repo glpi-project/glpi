@@ -125,7 +125,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @param $nb : number of item in the type (default 0)
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Task', 'Tasks', $nb);
 
    }
@@ -138,7 +138,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -162,7 +162,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -177,7 +177,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (($item->getType() == $this->getItilObjectItemType())
           && $this->canView()) {
@@ -198,7 +198,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $itemtype = $item->getType().'Task';
       if ($task = getItemForItemtype($itemtype)) {
@@ -300,7 +300,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       if (in_array("begin", $this->updates)) {
@@ -887,7 +887,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @return array of planning item
    **/
-   static function genericPopulatePlanning($itemtype, $options=[]) {
+   static function genericPopulatePlanning($itemtype, $options = []) {
       global $DB, $CFG_GLPI;
 
       $interv = [];
@@ -1103,7 +1103,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @return Nothing (display function)
    **/
-   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type="", $complete=0) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0) {
       global $CFG_GLPI;
 
       $html = "";
@@ -1178,7 +1178,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $rand
     * @param $showprivate  (false by default)
    **/
-   function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
+   function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
       global $DB, $CFG_GLPI;
 
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
@@ -1320,7 +1320,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $options   array
     *     -  parent Object : the object
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       $rand_template = mt_rand();

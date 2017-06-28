@@ -1028,7 +1028,7 @@ function clicurl($chaine) {
  *
  * @return $string
 **/
-function autop($pee, $br=1) {
+function autop($pee, $br = 1) {
 
    // Thanks  to Matthew Mullenweg
 

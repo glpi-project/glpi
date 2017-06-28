@@ -73,7 +73,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDataForObject(CommonDBTM $item, array $options, $simple=false) {
+   function getDataForObject(CommonDBTM $item, array $options, $simple = false) {
       global $CFG_GLPI;
 
       // Common ITIL data

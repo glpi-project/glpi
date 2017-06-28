@@ -60,7 +60,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -78,7 +78,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate
           && ($item->getType() == $this->getType())) {
@@ -93,7 +93,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item instanceof CommonTreeDropdown) {
          $item->showChildren();
@@ -294,7 +294,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $ID           = $this->getID();
       $changeParent = in_array($this->getForeignKeyField(), $this->updates);
@@ -498,7 +498,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

@@ -94,7 +94,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                             = $this->getAllEvents();
       $target_object                      = reset($this->target_object);;
@@ -207,7 +207,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     *
     * @return the object associated with the itemtype
    **/
-   function getObjectItem($event='') {
+   function getObjectItem($event = '') {
 
       if ($this->obj) {
          if (($item = getItemForItemtype($this->obj->getField('itemtype')))

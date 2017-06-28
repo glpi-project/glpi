@@ -78,7 +78,7 @@ class Consumable extends CommonDBChild {
       return 'id';
    }
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Consumable', 'Consumables', $nb);
    }
 
@@ -116,7 +116,7 @@ class Consumable extends CommonDBChild {
    /**
     * send back to stock
    **/
-   function backToStock(array $input, $history=1) {
+   function backToStock(array $input, $history = 1) {
       global $DB;
 
       $query = "UPDATE `".$this->getTable()."`
@@ -156,7 +156,7 @@ class Consumable extends CommonDBChild {
     *
     * @return boolean
    **/
-   function out($ID, $itemtype='', $items_id=0) {
+   function out($ID, $itemtype = '', $items_id = 0) {
       global $DB;
 
       if (!empty($itemtype)
@@ -326,7 +326,7 @@ class Consumable extends CommonDBChild {
     *
     * @return string to display
    **/
-   static function getCount($tID, $alarm_threshold, $nohtml=0) {
+   static function getCount($tID, $alarm_threshold, $nohtml = 0) {
 
       // Get total
       $total = self::getTotalNumber($tID);
@@ -454,7 +454,7 @@ class Consumable extends CommonDBChild {
     *
     * @return Nothing (displays)
    **/
-   static function showForConsumableItem(ConsumableItem $consitem, $show_old=0) {
+   static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0) {
       global $DB, $CFG_GLPI;
 
       $tID = $consitem->getField('id');
@@ -720,7 +720,7 @@ class Consumable extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Consumable::canView()) {
          $nb = 0;
@@ -745,7 +745,7 @@ class Consumable extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'ConsumableItem' :
@@ -756,7 +756,7 @@ class Consumable extends CommonDBChild {
       }
    }
 
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
       $ci = new ConsumableItem();
       return $ci->getRights($interface);
    }

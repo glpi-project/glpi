@@ -55,7 +55,7 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2) {
+   static function clean($value, $striptags = true, $keep_bad = 2) {
       $value = Html::entity_decode_deep($value);
 
       // Clean MS office tags
@@ -133,7 +133,7 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDate($time, $format=null) {
+   static function convDate($time, $format = null) {
 
       if (is_null($time) || $time == 'NULL' || trim($time) == '') {
          return null;
@@ -182,7 +182,7 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDateTime($time, $format=null) {
+   static function convDateTime($time, $format = null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return null;
@@ -240,7 +240,7 @@ class Html {
     *
     * @return cut string
    **/
-   static function resume_text($string, $length=255) {
+   static function resume_text($string, $length = 255) {
 
       if (Toolbox::strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
@@ -258,7 +258,7 @@ class Html {
     *
     * @return cut string
     **/
-   static function resume_name($string, $length=255) {
+   static function resume_name($string, $length = 255) {
 
       if (strlen($string) > $length) {
          $string = Toolbox::substr($string, 0, $length)."...";
@@ -304,7 +304,7 @@ class Html {
     *
     * @return formatted number
    **/
-   static function formatNumber($number, $edit=false, $forcedecimal=-1) {
+   static function formatNumber($number, $edit = false, $forcedecimal = -1) {
       global $CFG_GLPI;
 
       // Php 5.3 : number_format() expects parameter 1 to be double,
@@ -355,7 +355,7 @@ class Html {
     *
     * @return string
    **/
-   static function timestampToString($time, $display_sec=true, $use_days=true) {
+   static function timestampToString($time, $display_sec = true, $use_days = true) {
 
       $sign = '';
       if ($time < 0) {
@@ -488,7 +488,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function redirectToLogin($params='') {
+   static function redirectToLogin($params = '') {
       global $CFG_GLPI;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
@@ -666,7 +666,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
+   static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "") {
 
       $ref_pic_text = htmlentities($ref_pic_text, ENT_QUOTES, 'UTF-8');
 
@@ -719,7 +719,7 @@ class Html {
     *
     * @return void
    **/
-   static function displayDebugInfos($with_session=true, $ajax=false) {
+   static function displayDebugInfos($with_session = true, $ajax = false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
       // Only for debug mode so not need to be translated
@@ -843,7 +843,7 @@ class Html {
     *
     * @return nothing as function kill script
    **/
-   static function displayErrorAndDie ($message, $minimal=false) {
+   static function displayErrorAndDie ($message, $minimal = false) {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
@@ -874,7 +874,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function addConfirmationOnAction($string, $additionalactions='') {
+   static function addConfirmationOnAction($string, $additionalactions = '') {
 
       return "onclick=\"".Html::getConfirmationOnActionScript($string, $additionalactions)."\"";
    }
@@ -891,7 +891,7 @@ class Html {
     *
     * @return confirmation script
    **/
-   static function getConfirmationOnActionScript($string, $additionalactions='') {
+   static function getConfirmationOnActionScript($string, $additionalactions = '') {
 
       if (!is_array($string)) {
          $string = [$string];
@@ -937,7 +937,7 @@ class Html {
     *
     * @return nothing (display)
     **/
-   static function progressBar($id, array $options=[]) {
+   static function progressBar($id, array $options = []) {
 
       $params            = [];
       $params['create']  = false;
@@ -983,7 +983,7 @@ class Html {
     *
     * @return nothing
     **/
-   static function createProgressBar($msg="&nbsp;") {
+   static function createProgressBar($msg = "&nbsp;") {
 
       $options = ['create' => true];
       if ($msg != "&nbsp;") {
@@ -1000,7 +1000,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function changeProgressBarMessage($msg="&nbsp;") {
+   static function changeProgressBarMessage($msg = "&nbsp;") {
 
       self::progressBar('doaction_progress', ['message' => $msg]);
       self::glpi_flush();
@@ -1016,7 +1016,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function changeProgressBarPosition($crt, $tot, $msg="") {
+   static function changeProgressBarPosition($crt, $tot, $msg = "") {
 
       $options = [];
 
@@ -1049,7 +1049,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function displayProgressBar($width, $percent, $options=[]) {
+   static function displayProgressBar($width, $percent, $options = []) {
       global $CFG_GLPI;
 
       $param['title']        = __('Progress');
@@ -1102,7 +1102,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function includeHeader($title='', $sector = 'none', $item = 'none', $option = '') {
+   static function includeHeader($title = '', $sector = 'none', $item = 'none', $option = '') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // complete title with id if exist
@@ -1412,7 +1412,7 @@ class Html {
     * @param $item      item corresponding to the page displayed (default 'none')
     * @param $option    option corresponding to the page displayed (default '')
    **/
-   static function header($title, $url='', $sector="none", $item="none", $option="") {
+   static function header($title, $url = '', $sector = "none", $item = "none", $option = "") {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
 
       // If in modal : display popHeader
@@ -1785,7 +1785,7 @@ class Html {
     *
     * @param $keepDB booleen, closeDBConnections if false (false by default)
    **/
-   static function footer($keepDB=false) {
+   static function footer($keepDB = false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
       // If in modal : display popHeader
@@ -1873,7 +1873,7 @@ class Html {
     * @param $title        title of the page
     * @param $links array  of links to display
    **/
-   static function simpleHeader($title, $links=[]) {
+   static function simpleHeader($title, $links = []) {
       global $CFG_GLPI, $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
@@ -1937,7 +1937,7 @@ class Html {
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
    **/
-   static function helpHeader($title, $url='') {
+   static function helpHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
 
       // Print a nice HTML-head for help page
@@ -2230,7 +2230,7 @@ class Html {
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
    **/
-   static function nullHeader($title, $url='') {
+   static function nullHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if ($HEADER_LOADED) {
@@ -2293,7 +2293,7 @@ class Html {
     * @param $url     not used anymore (default '')
     * @param $iframed indicate if page loaded in iframe - css target (default false)
    **/
-   static function popHeader($title, $url='', $iframed = false) {
+   static function popHeader($title, $url = '', $iframed = false) {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
@@ -2443,7 +2443,7 @@ class Html {
     * @param $onright            display on right of the list (false by default)
     * \deprecated since 0.84
    **/
-   static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
+   static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false) {
       global $CFG_GLPI;
 
       if ($fixed) {
@@ -2484,7 +2484,7 @@ class Html {
     * @param $confirm array of confirmation string (optional)
     * \deprecated since 0.84
    **/
-   static function closeArrowMassives($actions, $confirm=[]) {
+   static function closeArrowMassives($actions, $confirm = []) {
 
       if (count($actions)) {
          foreach ($actions as $name => $label) {
@@ -2513,7 +2513,7 @@ class Html {
     *
     * @return nothing / display item
    **/
-   static function checkAllAsCheckbox($container_id, $rand='') {
+   static function checkAllAsCheckbox($container_id, $rand = '') {
       echo Html::getCheckAllAsCheckbox($container_id, $rand);
    }
 
@@ -2528,7 +2528,7 @@ class Html {
     *
     * @return Get checkbox string
    **/
-   static function getCheckAllAsCheckbox($container_id, $rand='') {
+   static function getCheckAllAsCheckbox($container_id, $rand = '') {
 
       if (empty($rand)) {
          $rand = mt_rand();
@@ -2712,7 +2712,7 @@ class Html {
     *
     * @return nothing (display only)
    **/
-   static function showCheckbox(array $options=[]) {
+   static function showCheckbox(array $options = []) {
       echo self::getCheckbox($options);
    }
 
@@ -2728,7 +2728,7 @@ class Html {
     *
     * @return get checkbox
    **/
-   static function getMassiveActionCheckBox($itemtype, $id, array $options=[]) {
+   static function getMassiveActionCheckBox($itemtype, $id, array $options = []) {
 
       $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
       if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
@@ -2752,7 +2752,7 @@ class Html {
     *
     * @return show checkbox
    **/
-   static function showMassiveActionCheckBox($itemtype, $id, array $options=[]) {
+   static function showMassiveActionCheckBox($itemtype, $id, array $options = []) {
       echo Html::getMassiveActionCheckBox($itemtype, $id, $options);
    }
 
@@ -2766,7 +2766,7 @@ class Html {
     *
     * @return nothing / display item
    **/
-   static function openMassiveActionsForm($name='') {
+   static function openMassiveActionsForm($name = '') {
       echo Html::getOpenMassiveActionsForm($name);
    }
 
@@ -2780,7 +2780,7 @@ class Html {
     *
     * @return open form string
    **/
-   static function getOpenMassiveActionsForm($name='') {
+   static function getOpenMassiveActionsForm($name = '') {
       global $CFG_GLPI;
 
       if (empty($name)) {
@@ -2826,7 +2826,7 @@ class Html {
     *
     * @return bool|string     the html if display parameter is false, or true
    **/
-   static function showMassiveActions($options=[]) {
+   static function showMassiveActions($options = []) {
       global $CFG_GLPI;
 
       /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
@@ -2989,8 +2989,8 @@ class Html {
     * @return rand value used
     * \deprecated since 0.84 used Html::showDateField instead
    **/
-   static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
-                                    $minDate='', $maxDate='', $displayYear=true) {
+   static function showDateFormItem($element, $value = '', $maybeempty = true, $can_edit = true,
+                                    $minDate = '', $maxDate = '', $displayYear = true) {
       return self::showDateField($element, ['value'       => $value,
                                                  'maybeempty'  => $maybeempty,
                                                  'canedit'     => $can_edit,
@@ -3019,7 +3019,7 @@ class Html {
     *
     * @return rand value used if displayes else string
    **/
-   static function showDateField($name, $options=[]) {
+   static function showDateField($name, $options = []) {
       global $CFG_GLPI;
 
       $p['value']      = '';
@@ -3121,7 +3121,7 @@ class Html {
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
    **/
-   static function showColorField($name, $options=[]) {
+   static function showColorField($name, $options = []) {
       $p['value']      = '';
       $p['rand']       = mt_rand();
       $p['display']    = true;
@@ -3164,9 +3164,9 @@ class Html {
     * @return rand value used
     * \deprecated since 0.84 used Html::showDateTimeField instead
    **/
-   static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
-                                        $can_edit=true, $minDate='', $maxDate='', $minTime='',
-                                        $maxTime='') {
+   static function showDateTimeFormItem($element, $value = '', $time_step = -1, $maybeempty = true,
+                                        $can_edit = true, $minDate = '', $maxDate = '', $minTime = '',
+                                        $maxTime = '') {
 
       return self::showDateTimeField($element, ['value'      => $value,
                                                      'timestep'   => $time_step,
@@ -3357,7 +3357,7 @@ class Html {
     *
     * @return rand value of dropdown
    **/
-   static function showGenericDateTimeSearch($element, $value='', $options=[]) {
+   static function showGenericDateTimeSearch($element, $value = '', $options = []) {
       global $CFG_GLPI;
 
       $p['with_time']          = false;
@@ -3550,7 +3550,7 @@ class Html {
     * @return computed date / datetime value
     * @see showGenericDateTimeSearch
    **/
-   static function computeGenericDateTimeSearch($val, $force_day=false, $specifictime='') {
+   static function computeGenericDateTimeSearch($val, $force_day = false, $specifictime = '') {
 
       if (empty($specifictime)) {
          $specifictime = strtotime($_SESSION["glpi_currenttime"]);
@@ -3707,7 +3707,7 @@ class Html {
     *
     * @return nothing (print out an HTML div)
    **/
-   static function showToolTip($content, $options=[]) {
+   static function showToolTip($content, $options = []) {
       global $CFG_GLPI;
 
       $param['applyto']    = '';
@@ -3825,7 +3825,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function autocompletionTextField(CommonDBTM $item, $field, $options=[]) {
+   static function autocompletionTextField(CommonDBTM $item, $field, $options = []) {
       global $CFG_GLPI;
 
       $params['name']   = $field;
@@ -3911,7 +3911,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true, $readonly=false) {
+   static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
@@ -4035,7 +4035,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function printAjaxPager($title, $start, $numrows, $additional_info='', $display=true) {
+   static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true) {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4128,7 +4128,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function printCleanArray($tab, $pad=0,$jsexpand=false) {
+   static function printCleanArray($tab, $pad = 0, $jsexpand = false) {
 
       if (count($tab)) {
          echo "<table class='tab_cadre'>";
@@ -4193,8 +4193,8 @@ class Html {
     * @return nothing (print a pager)
     *
    **/
-   static function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
-                              $item_type_output_param=0, $additional_info='') {
+   static function printPager($start, $numrows, $target, $parameters, $item_type_output = 0,
+                              $item_type_output_param = 0, $additional_info = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -4326,7 +4326,7 @@ class Html {
     *
     * @return void|string
    **/
-   static function printPagerForm($action="", $display=true) {
+   static function printPagerForm($action = "", $display = true) {
 
       $out = '';
       if ($action) {
@@ -4390,8 +4390,8 @@ class Html {
     *
     * @since version 0.84
    **/
-   static function getSimpleForm($action, $btname, $btlabel, Array $fields=[], $btimage='',
-                                 $btoption='', $confirm='') {
+   static function getSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
+                                 $btoption = '', $confirm = '') {
 
       if (GLPI_USE_CSRF_CHECK) {
          $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
@@ -4464,8 +4464,8 @@ class Html {
     *
     * @since version 0.83.3
    **/
-   static function showSimpleForm($action, $btname, $btlabel, Array $fields=[], $btimage='',
-                                  $btoption='', $confirm='') {
+   static function showSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
+                                  $btoption = '', $confirm = '') {
 
       echo self::getSimpleForm($action, $btname, $btlabel, $fields, $btimage, $btoption, $confirm);
    }
@@ -4480,7 +4480,7 @@ class Html {
     *
     * @return String
    **/
-   static function closeForm ($display=true) {
+   static function closeForm ($display = true) {
       global $CFG_GLPI;
 
       $out = "\n";
@@ -4636,7 +4636,7 @@ class Html {
     *
     * @return String
    **/
-   static function jsAdaptDropdown($id, $params=[]) {
+   static function jsAdaptDropdown($id, $params = []) {
       global $CFG_GLPI;
 
       $width = '';
@@ -4683,7 +4683,7 @@ class Html {
     *
     * @return String
    **/
-   static function jsAjaxDropdown($name, $field_id, $url, $params=[]) {
+   static function jsAjaxDropdown($name, $field_id, $url, $params = []) {
       global $CFG_GLPI;
 
       if (!isset($params['value'])) {
@@ -4823,7 +4823,7 @@ class Html {
     *               `$options['url']`.
     * @return string completed img tag
    **/
-   static function image($path, $options=[]) {
+   static function image($path, $options = []) {
 
       if (!isset($options['title'])) {
          $options['title'] = '';
@@ -4869,7 +4869,7 @@ class Html {
     *     - `confirmaction` optional action to do on confirmation
     * @return string an `a` element.
    **/
-   static function link($text, $url, $options=[]) {
+   static function link($text, $url, $options = []) {
 
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
@@ -4909,7 +4909,7 @@ class Html {
     *
     * @return string A generated hidden input
    **/
-   static function hidden($fieldName, $options=[]) {
+   static function hidden($fieldName, $options = []) {
 
       if ((isset($options['value'])) && (is_array($options['value']))) {
          $result = '';
@@ -4935,7 +4935,7 @@ class Html {
     *
     * @return string A generated hidden input
    **/
-   static function input($fieldName, $options=[]) {
+   static function input($fieldName, $options = []) {
 
       return sprintf('<input type="text" name="%1$s" %2$s />',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
@@ -4956,7 +4956,7 @@ class Html {
     *
     * @return string A HTML submit button
    **/
-   static function submit($caption, $options=[]) {
+   static function submit($caption, $options = []) {
 
       $image = false;
       if (isset($options['image'])) {
@@ -5006,7 +5006,7 @@ class Html {
     *
     * @return string Composed attributes.
    **/
-   static function parseAttributes($options=[]) {
+   static function parseAttributes($options = []) {
 
       if (!is_string($options)) {
          $attributes = [];
@@ -5100,7 +5100,7 @@ class Html {
     *
     * @return String of script tags
    **/
-   static function script($url, $options=[], $minify = true) {
+   static function script($url, $options = [], $minify = true) {
       $version = GLPI_VERSION;
       if (isset($options['version'])) {
          $version = $options['version'];
@@ -5133,7 +5133,7 @@ class Html {
     *
     * @return string CSS link tag
    **/
-   static function css($url, $options=[], $minify = true) {
+   static function css($url, $options = [], $minify = true) {
 
       if (!isset($options['media']) || $options['media'] == '') {
          $options['media'] = 'screen';
@@ -5168,7 +5168,7 @@ class Html {
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
     */
-   static function fileForRichText($options=[]) {
+   static function fileForRichText($options = []) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_rich_text"]) {
@@ -5240,7 +5240,7 @@ class Html {
     *
     * @return void|string   the html if display parameter is false
    **/
-   static function file($options=[]) {
+   static function file($options = []) {
       global $CFG_GLPI;
 
       $randupload             = mt_rand();
@@ -5384,7 +5384,7 @@ class Html {
     *
     * @return mixed          the html if display paremeter is false or true
     */
-   static function textarea($options=[]) {
+   static function textarea($options = []) {
       //default options
       $p['name']              = 'text';
       $p['filecontainer']     = 'fileupload_info';
@@ -5460,7 +5460,7 @@ class Html {
     *
     * @return random value used to generate the ids
    **/
-   static function showCheckboxMatrix(array $columns, array $rows, array $options=[]) {
+   static function showCheckboxMatrix(array $columns, array $rows, array $options = []) {
 
       $param['title']                = '';
       $param['first_cell']           = '&nbsp;';
@@ -5752,7 +5752,7 @@ class Html {
     * @param $noCallback     string      function that will be called when 'No' is pressed
     *                                    (default null)
    **/
-   static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
+   static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null) {
 
       return "
          // the Dialog and its properties.
@@ -5865,7 +5865,7 @@ class Html {
     * @param $okCallback   string   function that will be called when 'Ok' is pressed
     *                               (default null)
    **/
-   static function jsAlertCallback( $msg, $title, $okCallback=null) {
+   static function jsAlertCallback($msg, $title, $okCallback = null) {
       return "
          // Dialog and its properties.
          $('<div/>').dialog({

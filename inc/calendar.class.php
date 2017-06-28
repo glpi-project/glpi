@@ -63,12 +63,12 @@ class Calendar extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Calendar', 'Calendars', $nb);
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('CalendarSegment', $ong, $options);
@@ -81,7 +81,7 @@ class Calendar extends CommonDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -205,7 +205,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $options array of new values to set
    **/
-   function duplicate($options=[]) {
+   function duplicate($options = []) {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -284,7 +284,7 @@ class Calendar extends CommonDropdown {
     *
     * @return timestamp of delay
    **/
-   function getActiveTimeBetween($start, $end, $work_in_days=false) {
+   function getActiveTimeBetween($start, $end, $work_in_days = false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -398,7 +398,7 @@ class Calendar extends CommonDropdown {
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false, $end_of_working_day=false) {
+   function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false) {
 
       if (!isset($this->fields['id'])) {
          return false;

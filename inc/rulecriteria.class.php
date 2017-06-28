@@ -61,7 +61,7 @@ class RuleCriteria extends CommonDBChild {
    /**
     * @param $rule_type (default 'Rule)
    **/
-   function __construct($rule_type='Rule') {
+   function __construct($rule_type = 'Rule') {
       static::$itemtype = $rule_type;
    }
 
@@ -90,7 +90,7 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return Title of the rule
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Criterion', 'Criteria', $nb);
    }
 
@@ -195,7 +195,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -251,7 +251,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
       if (!is_array($values)) {
@@ -493,7 +493,7 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID, $itemtype, $criterion='') {
+   static function getConditionByID($ID, $itemtype, $criterion = '') {
 
       $conditions = self::getConditions($itemtype, $criterion);
       if (isset($conditions[$ID])) {
@@ -509,7 +509,7 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return array of criteria
    **/
-   static function getConditions($itemtype, $criterion='') {
+   static function getConditions($itemtype, $criterion = '') {
 
       $criteria =  [Rule::PATTERN_IS              => __('is'),
                          Rule::PATTERN_IS_NOT          => __('is not'),
@@ -553,7 +553,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $itemtype
     * @param $params    array
    **/
-   static function dropdownConditions($itemtype, $params=[]) {
+   static function dropdownConditions($itemtype, $params = []) {
 
       $p['name']             = 'condition';
       $p['criterion']        = '';
@@ -583,7 +583,7 @@ class RuleCriteria extends CommonDBChild {
     * @param $options array    of possible options:
     *     - rule Object : the rule
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Yllen: you always have parent for criteria

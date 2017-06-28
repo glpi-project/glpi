@@ -44,7 +44,7 @@ class PhonePowerSupply extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Phone power supply type', 'Phone power supply types', $nb);
    }
 

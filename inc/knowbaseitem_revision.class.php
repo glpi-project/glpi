@@ -42,11 +42,11 @@ if (!defined('GLPI_ROOT')) {
 /// since version 9.2
 class KnowbaseItem_Revision extends CommonDBTM {
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Revision', 'Revisions', $nb);
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $nb = 0;
       if ($_SESSION['glpishow_count_on_tabs']) {
          $where = [];
@@ -70,7 +70,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
       return self::createTabEntry(self::getTypeName($nb), $nb);
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForItem($item, $withtemplate);
       return true;
    }
@@ -81,7 +81,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
     * @param $item                     CommonDBTM object
     * @param $withtemplate    integer  withtemplate param (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       $item_id = $item->getID();

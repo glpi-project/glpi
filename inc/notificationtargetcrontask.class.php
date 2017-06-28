@@ -50,7 +50,7 @@ class NotificationTargetCrontask extends NotificationTarget {
    }
 
 
-   function addDataForTemplate($event, $options=[]) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                             = $this->getAllEvents();
       $this->data['##crontask.action##'] = $events[$event];

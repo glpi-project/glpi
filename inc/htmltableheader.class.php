@@ -84,7 +84,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param $father             HTMLTableHeader object:
     *                            the father of the current column (default NULL)
    **/
-   function __construct($name, $content, HTMLTableHeader $father=null) {
+   function __construct($name, $content, HTMLTableHeader $father = null) {
 
       parent::__construct($content);
 
@@ -97,7 +97,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param $itemtype
     * @param $title         (default '')
    **/
-   function setItemType($itemtype, $title='') {
+   function setItemType($itemtype, $title = '') {
       $this->itemtypes[$itemtype] = $title;
    }
 
@@ -105,7 +105,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
    /**
     * @param $item      CommonDBTM object (default NULL)
    **/
-   function checkItemType(CommonDBTM $item=null) {
+   function checkItemType(CommonDBTM $item = null) {
 
       if (($item === null) && (count($this->itemtypes) > 0)) {
          throw new Exception('Implementation error: header requires an item');
@@ -151,7 +151,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
     * @param $with_content do we displaye the content ?
     * @param $main_header  main header (from table) or secondary (from group) ? (true by default)
    **/
-   function displayTableHeader($with_content, $main_header=true) {
+   function displayTableHeader($with_content, $main_header = true) {
 
       if ($main_header) {
          echo "<th";

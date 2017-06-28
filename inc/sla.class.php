@@ -50,7 +50,7 @@ class SLA extends CommonDBTM {
 
    static $rightname                   = 'sla';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       // Acronymous, no plural
       return __('SLA');
    }
@@ -67,7 +67,7 @@ class SLA extends CommonDBTM {
       }
    }
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -93,7 +93,7 @@ class SLA extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $rowspan = 2;
 

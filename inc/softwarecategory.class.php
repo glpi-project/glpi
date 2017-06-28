@@ -44,7 +44,7 @@ class SoftwareCategory extends CommonTreeDropdown {
    public $can_be_translated = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Software category', 'Software categories', $nb);
    }
 

@@ -55,7 +55,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('IP network', 'IP networks', $nb);
    }
 
@@ -397,7 +397,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * @see CommonImplicitTreeDropdown::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if ($this->networkUpdate) {
          IPAddress_IPNetwork::linkIPAddressFromIPNetwork($this);
@@ -453,8 +453,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *
     * @return list of networks (see searchNetworks())
    **/
-   static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true,
-                                              $fields="", $where="") {
+   static function searchNetworksContainingIP($IP, $entityID = -1, $recursive = true,
+                                              $fields = "", $where = "") {
 
       return self::searchNetworks('contains', ['address'  => $IP,
                                                     'netmask'  => [0xffffffff, 0xffffffff,
@@ -492,8 +492,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *          further. (ie. 0.0.0.0 is the further of whatever network if you lool for ones that
     *          contains the current network.
    **/
-   static function searchNetworks($relation, $condition, $entityID=-1, $recursive=true,
-                                  $version=0) {
+   static function searchNetworks($relation, $condition, $entityID = -1, $recursive = true,
+                                  $version = 0) {
       global $DB;
 
       if (empty($relation)) {
@@ -650,7 +650,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -703,7 +703,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *
     * @return true if the network owns the IP address
    **/
-   static function checkIPFromNetwork($address, $networkAddress, $networkNetmask, $version=0) {
+   static function checkIPFromNetwork($address, $networkAddress, $networkNetmask, $version = 0) {
 
       $IPNetmask  = [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff];
       $relativity = self::checkNetworkRelativity($address, $IPNetmask, $networkAddress,
@@ -731,7 +731,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *           - "first contains second" "second contains first" : one include the other
     */
    static function checkNetworkRelativity($firstAddress, $firstNetmask, $secondAddress,
-                                          $secondNetmask, $version=0) {
+                                          $secondNetmask, $version = 0) {
 
       if ($firstAddress instanceof IPAddress) {
          if ($version == 0) {
@@ -809,7 +809,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                                     ($this->fields['addressable'] by default)
     *                                     (default '')
    **/
-   function computeNetworkRange(&$start, &$end=null, $excludeBroadcastAndNetwork='') {
+   function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '') {
 
       if (!is_bool($excludeBroadcastAndNetwork)) {
          if (isset($this->fields['addressable'])) {
@@ -840,8 +840,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                                              result (false by default)
    **/
    static function computeNetworkRangeFromAdressAndNetmask($address, $netmask, &$firstAddress,
-                                                           &$lastAddress=null,
-                                                           $excludeBroadcastAndNetwork=false) {
+                                                           &$lastAddress = null,
+                                                           $excludeBroadcastAndNetwork = false) {
       if ($address instanceof IPAddress) {
          $address = $address->getBinary();
       }
@@ -921,8 +921,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $options      array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=null,
-                                      HTMLTableHeader $father=null, array $options=[]) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       if ($itemtype != 'IPAddress') {
          return;
@@ -947,8 +947,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   static function getHTMLTableCellsForItem(HTMLTableRow $row=null, CommonDBTM $item=null,
-                                            HTMLTableCell $father=null, array $options=[]) {
+   static function getHTMLTableCellsForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                            HTMLTableCell $father = null, array $options = []) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -1001,7 +1001,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $entities_id  entity of the IPNetworks (-1 for all entities)
     *                      (default -1)
    **/
-   static function showIPNetworkProperties($entities_id=-1) {
+   static function showIPNetworkProperties($entities_id = -1) {
       global $CFG_GLPI;
 
       $rand = mt_rand();

@@ -49,7 +49,7 @@ class WifiNetwork extends CommonDropdown {
    public $can_be_translated  = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Wifi network', 'Wifi networks', $nb);
    }
 
@@ -85,7 +85,7 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong  = [];
       $this->addDefaultFormTab($ong);
@@ -108,7 +108,7 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field=[]) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       if ($field['type'] == 'wifi_mode') {
          Dropdown::showFromArray($field['name'], self::getWifiNetworkModes(),

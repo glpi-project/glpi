@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class ContactType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Contact type', 'Contact types', $nb);
    }
 }

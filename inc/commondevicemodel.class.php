@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown {
 
-   static function getFormURL($full=true) {
+   static function getFormURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -47,7 +47,7 @@ abstract class CommonDeviceModel extends CommonDropdown {
       return $link;
    }
 
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');

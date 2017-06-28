@@ -151,9 +151,9 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father group for the Internet Informations ...
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=null,
-                                             HTMLTableHeader $father=null,
-                                             array $options=[]) {
+                                             HTMLTableSuperHeader $internet_super = null,
+                                             HTMLTableHeader $father = null,
+                                             array $options = []) {
 
       $display_options = &$options['display_options'];
 
@@ -192,8 +192,8 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    protected function getPeerInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                                    HTMLTableCell $father=null,
-                                                    array $options=[]) {
+                                                    HTMLTableCell $father = null,
+                                                    array $options = []) {
 
       self::getInstantiationHTMLTable($netport, $row, $father, $options);
       return null;
@@ -217,7 +217,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTableWithPeer(NetworkPort $netport, HTMLTableRow $row,
-                                              HTMLTableCell $father=null, array $options=[]) {
+                                              HTMLTableCell $father = null, array $options = []) {
 
       $connect_cell_value = [['function'   => [__CLASS__, 'showConnection'],
                                         'parameters' => [clone $netport]]];
@@ -272,7 +272,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=[]) {
+                                      HTMLTableCell $father = null, array $options = []) {
       global $DB;
 
       $display_options = $options['display_options'];
@@ -350,7 +350,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
    **/
-   static function getItemsByMac($mac, $wildcard_search=false) {
+   static function getItemsByMac($mac, $wildcard_search = false) {
       global $DB;
 
       $mac = strtolower($mac);
@@ -452,7 +452,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options         array of options given to NetworkPort::showForm
     * @param $recursiveItems        list of the items on which this port is attached
    **/
-   function showNetworkCardField(NetworkPort $netport, $options=[], $recursiveItems=[]) {
+   function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = []) {
       global $DB;
 
       echo "<td>" . __('Network card') . "</td>\n";
@@ -544,7 +544,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *                         (usefull, for instance to get network port attributs
     * @param $options   array of options given to NetworkPort::showForm
    **/
-   function showMacField(NetworkPort $netport, $options=[]) {
+   function showMacField(NetworkPort $netport, $options = []) {
 
       // Show device MAC adresses
       echo "<td>" . __('MAC') ."</td>\n<td>";
@@ -561,7 +561,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options         array of options given to NetworkPort::showForm
     * @param $recursiveItems        list of the items on which this port is attached
    **/
-   function showNetpointField(NetworkPort $netport, $options=[], $recursiveItems=[]) {
+   function showNetpointField(NetworkPort $netport, $options = [], $recursiveItems = []) {
 
       echo "<td>" . __('Network outlet') . "</td>\n";
       echo "<td>";
@@ -711,7 +711,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == "NetworkPort") {
          $instantiation = $item->getInstantiation();
@@ -726,7 +726,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == "NetworkPort") {
          $instantiation = $item->getInstantiation();
@@ -751,7 +751,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $netport      to be displayed
     * @param $edit         boolean permit to edit ? (false by default)
    **/
-   static function showConnection($netport, $edit=false) {
+   static function showConnection($netport, $edit = false) {
 
       $ID = $netport->fields["id"];
       if (empty($ID)) {
@@ -838,7 +838,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownConnect($ID, $options=[]) {
+   static function dropdownConnect($ID, $options = []) {
       global $CFG_GLPI;
 
       $p['name']        = 'networkports_id';

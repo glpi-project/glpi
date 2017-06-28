@@ -41,7 +41,7 @@ class DeviceGraphicCardModel extends CommonDeviceModel {
    var $additional_fields_for_dictionnary = ['manufacturer'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Device harddrive model', 'Device harddrive models', $nb);
    }
 }

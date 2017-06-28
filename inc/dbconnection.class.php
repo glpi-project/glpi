@@ -47,7 +47,7 @@ class DBConnection extends CommonDBTM {
    static protected $notable = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('SQL replica', 'SQL replicas', $nb);
    }
 
@@ -134,7 +134,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return DBmysql object
    **/
-   static function getDBSlaveConf($choice=null) {
+   static function getDBSlaveConf($choice = null) {
 
       if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -265,7 +265,7 @@ class DBConnection extends CommonDBTM {
     *                      (if connection failed, do not try to connect to the other server)
     * @param $display      display error message (true by default)
    **/
-   static function establishDBConnection($use_slave, $required, $display=true) {
+   static function establishDBConnection($use_slave, $required, $display = true) {
       global $DB;
 
       $DB  = null;
@@ -323,7 +323,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return integer
    **/
-   static function getReplicateDelay($choice=null) {
+   static function getReplicateDelay($choice = null) {
 
       include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
       return (int) (self::getHistoryMaxDate(new DB())
@@ -484,7 +484,7 @@ class DBConnection extends CommonDBTM {
     *
     * @param enable of disable cron task (true by default)
    **/
-   static function changeCronTaskStatus($enable=true) {
+   static function changeCronTaskStatus($enable = true) {
 
       $cron           = new CronTask();
       $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');

@@ -42,13 +42,13 @@ if (!defined('GLPI_ROOT')) {
 class Preference extends CommonGLPI {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       // Always plural
       return __('Settings');
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab('User', $ong, $options);

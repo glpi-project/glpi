@@ -32,8 +32,8 @@ abstract class APIBaseClass extends atoum {
    protected $base_uri = "";
    protected $last_error;
 
-   abstract protected function query($resource      = "",
-                                     $params        = [],
+   abstract protected function query($resource = "",
+                                     $params = [],
                                      $expected_code = 200);
 
    public function beforeTestMethod($method) {

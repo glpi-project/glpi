@@ -60,7 +60,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Hidden field', 'Hidden fields', $nb);
    }
 
@@ -82,7 +82,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
@@ -98,7 +98,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
@@ -140,7 +140,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
     *
     * @return an array of hidden fields
    **/
-   function getHiddenFields($ID, $withtypeandcategory=false) {
+   function getHiddenFields($ID, $withtypeandcategory = false) {
       global $DB;
 
       $sql = "SELECT *
@@ -186,7 +186,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
       global $DB;
 
       $ID = $tt->fields['id'];

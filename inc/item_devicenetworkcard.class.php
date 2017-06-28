@@ -53,7 +53,7 @@ class Item_DeviceNetworkCard extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
 
       return ['mac'    => ['long name'  => __('MAC address'),
                                      'short name' => __('MAC address'),

@@ -178,7 +178,7 @@ class CliMigration extends Migration {
    function addNewMessageArea($id) {
    }
 
-   function displayWarning($msg, $red=false) {
+   function displayWarning($msg, $red = false) {
 
       if ($red) {
          $msg = "** $msg";

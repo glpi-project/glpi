@@ -78,7 +78,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return true if succeed else false
    **/
-   function getFromDBWithDatas($ID, $withtypeandcategory=true) {
+   function getFromDBWithDatas($ID, $withtypeandcategory = true) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -125,7 +125,7 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Ticket template', 'Ticket templates', $nb);
    }
 
@@ -134,7 +134,7 @@ class TicketTemplate extends CommonDropdown {
     * @param $withtypeandcategory   (default 0)
     * @param $withitemtype         (default 0)
    **/
-   static function getAllowedFields($withtypeandcategory=0, $withitemtype=0) {
+   static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
       static $allowed_fields = [];
 
@@ -240,7 +240,7 @@ class TicketTemplate extends CommonDropdown {
     * @param $withtypeandcategory   (default 0)
     * @param $with_items_id         (default 0)
    **/
-   function getAllowedFieldsNames($withtypeandcategory=0, $with_items_id=0) {
+   function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0) {
 
       $searchOption = Search::getOptions('Ticket');
       $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
@@ -286,7 +286,7 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong          = [];
       $this->addDefaultFormTab($ong);
@@ -301,7 +301,7 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'TicketTemplate' :
@@ -321,7 +321,7 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
@@ -345,7 +345,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return string to display
    **/
-   function getMandatoryMark($field, $force=false) {
+   function getMandatoryMark($field, $force = false) {
 
       if ($force || $this->isMandatoryField($field)) {
          return "<span class='required'>*</span>";
@@ -418,7 +418,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return string to display
    **/
-   function getEndHiddenFieldValue($field, &$ticket=null) {
+   function getEndHiddenFieldValue($field, &$ticket = null) {
 
       $output = '';
       if ($this->isHiddenField($field)) {
@@ -549,7 +549,7 @@ class TicketTemplate extends CommonDropdown {
     *
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

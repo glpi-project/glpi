@@ -51,7 +51,7 @@ class Link extends CommonDBTM {
                              '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('External link', 'External links', $nb);
    }
 
@@ -69,7 +69,7 @@ class Link extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (self::canView()) {
          $nb = 0;
@@ -85,14 +85,14 @@ class Link extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForItem($item);
       return true;
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -134,7 +134,7 @@ class Link extends CommonDBTM {
    *
    * @return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -182,7 +182,7 @@ class Link extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -447,7 +447,7 @@ class Link extends CommonDBTM {
     * @param $item                     CommonDBTM object
     * @param $withtemplate    integer  withtemplate param (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB, $CFG_GLPI;
 
       if (!self::canView()) {
@@ -508,7 +508,7 @@ class Link extends CommonDBTM {
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data
    **/
-   static function getAllLinksFor($item, $params=[]) {
+   static function getAllLinksFor($item, $params = []) {
       global $CFG_GLPI;
 
       $computedlinks = [];

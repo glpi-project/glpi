@@ -52,12 +52,12 @@ class Budget extends CommonDropdown{
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Budget', 'Budgets', $nb);
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -72,7 +72,7 @@ class Budget extends CommonDropdown{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -85,7 +85,7 @@ class Budget extends CommonDropdown{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -112,7 +112,7 @@ class Budget extends CommonDropdown{
     *
     * @return Nothing (display)
     **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       $rowspan = 3;
       if ($ID > 0) {

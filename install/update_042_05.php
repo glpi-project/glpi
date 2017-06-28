@@ -1385,7 +1385,7 @@ function dropMaintenanceField() {
  *
  * @return nothing if everything is good, else display mysql query and error.
  */
-function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif='') {
+function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif = '') {
    global $DB;
 
    $query = "SELECT *

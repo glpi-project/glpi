@@ -89,12 +89,12 @@ class CronTask extends CommonDBTM{
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Automatic action', 'Automatic actions', $nb);
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -351,7 +351,7 @@ class CronTask extends CommonDBTM{
     *
     * @return false if no task to run
    **/
-   function getNeedToRun($mode=0, $name='') {
+   function getNeedToRun($mode = 0, $name = '') {
       global $DB;
 
       $hour = date('H');
@@ -434,7 +434,7 @@ class CronTask extends CommonDBTM{
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if (!Config::canView() || !$this->getFromDB($ID)) {
@@ -711,7 +711,7 @@ class CronTask extends CommonDBTM{
     *
     * @return nothing (display)
    **/
-   static function dropdownState($name, $value=0, $display=true) {
+   static function dropdownState($name, $value = 0, $display = true) {
 
       return Dropdown::showFromArray($name,
                                      [self::STATE_DISABLE => __('Disabled'),
@@ -784,7 +784,7 @@ class CronTask extends CommonDBTM{
     *
     * @return the name of last task launched
    **/
-   static public function launch($mode, $max=1, $name='') {
+   static public function launch($mode, $max = 1, $name = '') {
       global $CFG_GLPI;
 
       // No cron in maintenance mode
@@ -883,7 +883,7 @@ class CronTask extends CommonDBTM{
     *
     * @return bool for success
    **/
-   static public function register($itemtype, $name, $frequency, $options=[]) {
+   static public function register($itemtype, $name, $frequency, $options = []) {
 
       // Check that hook exists
       if (!isPluginItemType($itemtype)) {
@@ -1218,7 +1218,7 @@ class CronTask extends CommonDBTM{
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1239,7 +1239,7 @@ class CronTask extends CommonDBTM{
    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -1258,7 +1258,7 @@ class CronTask extends CommonDBTM{
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1755,7 +1755,7 @@ class CronTask extends CommonDBTM{
     * @param $name   select name
     * @param $value  default value (default 0)
    **/
-   function dropdownFrequency($name, $value=0) {
+   function dropdownFrequency($name, $value = 0) {
 
       $tab = [];
 

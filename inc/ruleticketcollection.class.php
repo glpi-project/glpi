@@ -48,7 +48,7 @@ class RuleTicketCollection extends RuleCollection {
    /**
     * @param $entity (default 0)
    **/
-   function __construct($entity=0) {
+   function __construct($entity = 0) {
       $this->entity = $entity;
    }
 

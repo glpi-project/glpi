@@ -248,7 +248,7 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       $nbdoc = $nbitem = 0;
       switch ($item->getType()) {
@@ -282,7 +282,7 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Document' :
@@ -313,7 +313,7 @@ class Document_Item extends CommonDBRelation{
     * @param $newid        ID of the item cloned
     * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
-   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
       if (empty($newitemtype)) {
@@ -568,7 +568,7 @@ class Document_Item extends CommonDBRelation{
     * @param $item            CommonDBTM object for which associated documents must be displayed
     * @param $withtemplate    (default '')
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)) {
@@ -597,7 +597,7 @@ class Document_Item extends CommonDBRelation{
     * @param $withtemplate   (default '')
     * @param $colspan
    */
-   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate='', $colspan=1) {
+   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = '', $colspan = 1) {
 
       $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
@@ -632,7 +632,7 @@ class Document_Item extends CommonDBRelation{
     *
     * @return boolean
    **/
-   static function showAddFormForItem(CommonDBTM $item, $withtemplate='', $options=[]) {
+   static function showAddFormForItem(CommonDBTM $item, $withtemplate = '', $options = []) {
       global $DB, $CFG_GLPI;
 
       //default options
@@ -759,7 +759,7 @@ class Document_Item extends CommonDBRelation{
     * @param $withtemplate   (default '')
     * @param $options        array
     */
-   static function showListForItem(CommonDBTM $item, $withtemplate='', $options=[]) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = '', $options = []) {
       global $DB, $CFG_GLPI;
 
       //default options

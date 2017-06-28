@@ -51,7 +51,7 @@ class Item_DeviceHardDrive extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
 
       return ['capacity' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'),
                                                                __('Mio')),

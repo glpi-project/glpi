@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortWifi extends NetworkPortInstantiation {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Wifi port');
    }
 
@@ -94,9 +94,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=null,
-                                             HTMLTableHeader $father=null,
-                                             array $options=[]) {
+                                             HTMLTableSuperHeader $internet_super = null,
+                                             HTMLTableHeader $father = null,
+                                             array $options = []) {
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortWifi', $group, $super, null, $options);
 
@@ -113,7 +113,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=[]) {
+                                      HTMLTableCell $father = null, array $options = []) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, null, $options);
 
@@ -182,7 +182,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -212,7 +212,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $values           (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];

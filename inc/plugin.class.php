@@ -59,7 +59,7 @@ class Plugin extends CommonDBTM {
     *
     * @param $nb
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
    }
 
@@ -133,7 +133,7 @@ class Plugin extends CommonDBTM {
     *
     * @return nothing
    **/
-   static function load($name, $withhook=false) {
+   static function load($name, $withhook = false) {
       global $LOADED_PLUGINS;
 
       if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
@@ -163,7 +163,7 @@ class Plugin extends CommonDBTM {
     *
     * @return nothing
    **/
-   static function loadLang($name, $forcelang='', $coretrytoload='') {
+   static function loadLang($name, $forcelang = '', $coretrytoload = '') {
       // $LANG needed : used when include lang file
       global $CFG_GLPI, $LANG, $TRANSLATE;
 
@@ -931,7 +931,7 @@ class Plugin extends CommonDBTM {
     *
     * @return nothing
    **/
-   static function migrateItemType($types=[], $glpitables=[], $plugtables=[]) {
+   static function migrateItemType($types = [], $glpitables = [], $plugtables = []) {
       global $DB;
 
       $typetoname = [0  => "",// For tickets
@@ -1116,7 +1116,7 @@ class Plugin extends CommonDBTM {
     *
     * @return bool
    **/
-   static function registerClass($itemtype, $attrib=[]) {
+   static function registerClass($itemtype, $attrib = []) {
       global $CFG_GLPI;
 
       $plug = isPluginItemType($itemtype);
@@ -1193,7 +1193,7 @@ class Plugin extends CommonDBTM {
     *
     * @return mixed $data
    **/
-   static function doHook ($name, $param=null) {
+   static function doHook ($name, $param = null) {
       global $PLUGIN_HOOKS;
 
       if ($param == null) {
@@ -1244,7 +1244,7 @@ class Plugin extends CommonDBTM {
     *
     * @return mixed $data
    **/
-   static function doHookFunction($name, $parm=null) {
+   static function doHookFunction($name, $parm = null) {
       global $PLUGIN_HOOKS;
 
       $ret = $parm;
@@ -1273,7 +1273,7 @@ class Plugin extends CommonDBTM {
     *
     * @return mixed $data
    **/
-   static function doOneHook($plugname, $hook, $options=[]) {
+   static function doOneHook($plugname, $hook, $options = []) {
 
       $plugname=strtolower($plugname);
       if (!is_array($hook)) {
@@ -1318,7 +1318,7 @@ class Plugin extends CommonDBTM {
     *
     * @return String or Array (when $info is NULL)
    **/
-   static function getInfo($plugin, $info=null) {
+   static function getInfo($plugin, $info = null) {
 
       $fct = 'plugin_version_'.strtolower($plugin);
       if (function_exists($fct)) {

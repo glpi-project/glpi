@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortDialup extends NetworkPortInstantiation {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Connection by dial line - Dialup Port');
    }
 
@@ -53,9 +53,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTableHeaders
    **/
    function getInstantiationHTMLTableHeaders(HTMLTableGroup $group, HTMLTableSuperHeader $super,
-                                             HTMLTableSuperHeader $internet_super=null,
-                                             HTMLTableHeader $father=null,
-                                             array $options=[]) {
+                                             HTMLTableSuperHeader $internet_super = null,
+                                             HTMLTableHeader $father = null,
+                                             array $options = []) {
 
       $header = $group->addHeader('Connected', __('Connected to'), $super);
 
@@ -68,7 +68,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
-                                      HTMLTableCell $father=null, array $options=[]) {
+                                      HTMLTableCell $father = null, array $options = []) {
 
       return parent::getInstantiationHTMLTableWithPeer($netport, $row, $father, $options);
    }

@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class NotificationAjaxSetting extends NotificationSetting {
 
-   static public function getTypeName($nb=0) {
+   static public function getTypeName($nb = 0) {
       return __('Ajax followups configuration');
    }
 

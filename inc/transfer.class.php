@@ -67,7 +67,7 @@ class Transfer extends CommonDBTM {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -1168,7 +1168,7 @@ class Transfer extends CommonDBTM {
     * @param $ID        item original ID
     * @param $newID     item new ID
    **/
-   function addToAlreadyTransfer($itemtype,$ID,$newID) {
+   function addToAlreadyTransfer($itemtype, $ID, $newID) {
 
       if (!isset($this->already_transfer[$itemtype])) {
          $this->already_transfer[$itemtype] = [];
@@ -2064,7 +2064,7 @@ class Transfer extends CommonDBTM {
     * @param $ID              ID of the item
     * @param $link_type       type of the linked items to transfer
    **/
-   function transferDirectConnection($itemtype ,$ID, $link_type) {
+   function transferDirectConnection($itemtype, $ID, $link_type) {
       global $DB;
 
       // Only same Item case : no duplication of computers
@@ -2262,7 +2262,7 @@ class Transfer extends CommonDBTM {
     *
     * @since version 0.84.4
     **/
-   function manageConnectionComputer($itemtype ,$ID) {
+   function manageConnectionComputer($itemtype, $ID) {
       global $DB;
 
       // Get connections
@@ -3245,7 +3245,7 @@ class Transfer extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $edit_form = true;

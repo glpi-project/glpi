@@ -54,8 +54,8 @@ class HTMLTableSubHeader extends HTMLTableHeader {
     * @param $content   see HTMLTableEntity#__construct()
     * @param $father    HTMLTableHeader object (default NULL)
    **/
-   function __construct(HTMLTableSuperHeader $header, $name,  $content,
-                        HTMLTableHeader $father=null) {
+   function __construct(HTMLTableSuperHeader $header, $name, $content,
+                        HTMLTableHeader $father = null) {
 
       $this->header = $header;
       parent::__construct($name, $content, $father);

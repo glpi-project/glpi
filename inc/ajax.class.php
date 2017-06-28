@@ -61,7 +61,7 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createModalWindow($name, $url, $options=[] ) {
+   static function createModalWindow($name, $url, $options = []) {
 
       $param = ['width'           => 800,
                      'height'          => 400,
@@ -232,7 +232,7 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createFixedModalWindow($name, $options=[] ) {
+   static function createFixedModalWindow($name, $options = []) {
 
       $param = ['width'     => 800,
                      'height'    => 400,
@@ -293,7 +293,7 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createIframeModalWindow($domid, $url, $options=[] ) {
+   static function createIframeModalWindow($domid, $url, $options = []) {
 
       $param = ['width'         => 1050,
                      'height'        => 500,
@@ -358,12 +358,12 @@ class Ajax {
     * @return void
     */
    static function createTabs(
-      $tabdiv_id='tabspanel',
-      $tabdivcontent_id='tabcontent',
-      $tabs=[],
-      $type='',
-      $ID=0,
-      $orientation='vertical',
+      $tabdiv_id = 'tabspanel',
+      $tabdivcontent_id = 'tabcontent',
+      $tabs = [],
+      $type = '',
+      $ID = 0,
+      $orientation = 'vertical',
       $options = []
    ) {
       global $CFG_GLPI;
@@ -481,9 +481,9 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=[],
-                                     $events=["change"], $minsize=-1, $buffertime=-1,
-                                     $forceloadfor=[], $display=true) {
+   static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters = [],
+                                     $events = ["change"], $minsize = -1, $buffertime = -1,
+                                     $forceloadfor = [], $display = true) {
 
       $output  = "<script type='text/javascript'>";
       $output .= "$(function() {";
@@ -509,8 +509,8 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=[],
-                                           $display=true) {
+   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters = [],
+                                           $display = true) {
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, ["change"],
                                      -1, -1, [], $display);
@@ -531,9 +531,9 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=[],
-                                              $minsize=-1, $buffertime=-1, $forceloadfor=[],
-                                              $display=true) {
+   static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters = [],
+                                              $minsize = -1, $buffertime = -1, $forceloadfor = [],
+                                              $display = true) {
 
       if (count($forceloadfor) == 0) {
          $forceloadfor = ['*'];
@@ -566,9 +566,9 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=[],
-                                           $events=["change"], $minsize = -1, $buffertime=-1,
-                                           $forceloadfor=[], $display=true) {
+   static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters = [],
+                                           $events = ["change"], $minsize = -1, $buffertime = -1,
+                                           $forceloadfor = [], $display = true) {
 
       if (is_array($toobserve)) {
          $zones = $toobserve;
@@ -636,7 +636,7 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function commonDropdownUpdateItem($options, $display=true) {
+   static function commonDropdownUpdateItem($options, $display = true) {
 
       $field     = '';
       $fieldname = '';
@@ -704,8 +704,8 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemJsCode($toupdate, $url, $parameters=[], $toobserve="",
-                                    $display=true) {
+   static function updateItemJsCode($toupdate, $url, $parameters = [], $toobserve = "",
+                                    $display = true) {
 
       $out = Html::jsGetElementbyID($toupdate).".load('$url'\n";
       if (count($parameters)) {
@@ -752,7 +752,7 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItem($toupdate, $url, $parameters=[], $toobserve="", $display=true) {
+   static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true) {
 
       $output  = "<script type='text/javascript'>";
       $output .= "$(function() {";

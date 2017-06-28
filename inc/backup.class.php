@@ -61,7 +61,7 @@ class Backup extends CommonGLPI {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Maintenance');
    }
 
@@ -71,7 +71,7 @@ class Backup extends CommonGLPI {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = [READ                => __('Read'),
                       CREATE              => __('Create'),

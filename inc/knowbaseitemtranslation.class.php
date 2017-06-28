@@ -60,7 +60,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    }
 
 
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -82,7 +82,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -113,7 +113,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -142,7 +142,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($options=[]) {
+   function showFull($options = []) {
       global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
@@ -270,7 +270,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param $ID              field (default -1)
     * @param $options   array
     */
-   function showForm($ID=-1, $options=[]) {
+   function showForm($ID = -1, $options = []) {
       global $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -328,7 +328,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @return the field translated if a translation is available, or the original field if not
    **/
-   static function getTranslatedValue(KnowbaseItem $item, $field="name") {
+   static function getTranslatedValue(KnowbaseItem $item, $field = "name") {
       global $DB;
 
       $obj   = new self;

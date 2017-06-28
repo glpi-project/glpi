@@ -38,7 +38,7 @@ class OperatingSystemKernel extends CommonDropdown {
 
    public $can_be_translated = false;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Kernel', 'Kernels', $nb);
    }
 }

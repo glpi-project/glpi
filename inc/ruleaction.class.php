@@ -58,7 +58,7 @@ class RuleAction extends CommonDBChild {
    /**
     * @param $rule_type
    **/
-   function __construct($rule_type='Rule') {
+   function __construct($rule_type = 'Rule') {
       static::$itemtype = $rule_type;
    }
 
@@ -87,7 +87,7 @@ class RuleAction extends CommonDBChild {
     *
     * @return Title of the rule
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Action', 'Actions', $nb);
    }
 
@@ -192,7 +192,7 @@ class RuleAction extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -239,7 +239,7 @@ class RuleAction extends CommonDBChild {
     * @param $values             (default '')
     * @param $options      array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
       if (!is_array($values)) {
@@ -347,7 +347,7 @@ class RuleAction extends CommonDBChild {
     *    - alreadyused
     *    - display
    **/
-   static function dropdownActions($options=[]) {
+   static function dropdownActions($options = []) {
 
       $p['subtype']     = '';
       $p['name']        = '';
@@ -472,7 +472,7 @@ class RuleAction extends CommonDBChild {
    /**
     * @param $options   array
    **/
-   function displayActionSelectPattern($options=[]) {
+   function displayActionSelectPattern($options = []) {
 
       $display = false;
 
@@ -645,7 +645,7 @@ class RuleAction extends CommonDBChild {
     * @param $options array of possible options:
     *     - rule Object : the rule
    **/
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       // Yllen: you always have parent for action

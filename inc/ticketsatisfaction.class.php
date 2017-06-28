@@ -44,7 +44,7 @@ class TicketSatisfaction extends CommonDBTM {
    public $history_blacklist = ['date_answered'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Satisfaction');
    }
 
@@ -189,7 +189,7 @@ class TicketSatisfaction extends CommonDBTM {
    /**
     * @since version 0.85
    **/
-   function post_UpdateItem($history=1) {
+   function post_UpdateItem($history = 1) {
       global $CFG_GLPI;
 
       if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -250,7 +250,7 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=[]) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];
@@ -271,7 +271,7 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $values                (default '')
     * @param $options   array
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=[]) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
          $values = [$field => $values];

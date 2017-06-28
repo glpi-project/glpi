@@ -198,7 +198,7 @@ class RuleImportComputer extends Rule {
    /**
     * @see Rule::displayAdditionalRuleCondition()
    **/
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
 
       if ($test) {
          return false;

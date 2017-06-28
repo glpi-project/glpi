@@ -67,7 +67,7 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Reservable item', 'Reservable items', $nb);
    }
 
@@ -335,7 +335,7 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   function showForm($ID, $options=[]) {
+   function showForm($ID, $options = []) {
 
       if (!self::canView()) {
          return false;
@@ -608,7 +608,7 @@ class ReservationItem extends CommonDBChild {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronReservation($task=null) {
+   static function cronReservation($task = null) {
       global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_notifications"]) {
@@ -723,7 +723,7 @@ class ReservationItem extends CommonDBChild {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'central') {
          $values = parent::getRights();
@@ -739,7 +739,7 @@ class ReservationItem extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function defineTabs($options=[]) {
+   function defineTabs($options = []) {
 
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -753,7 +753,7 @@ class ReservationItem extends CommonDBChild {
     *
     * @since version 0.85
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -773,7 +773,7 @@ class ReservationItem extends CommonDBChild {
     * @param $tabnum       (default1)
     * @param $withtemplate (default0)
     **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {

@@ -49,7 +49,7 @@ class IPNetmask extends IPAddress {
     * @param $ipnetmask (default '')
     * @param $version   (default 0)
    **/
-   function __construct($ipnetmask='', $version=0) {
+   function __construct($ipnetmask = '', $version = 0) {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
@@ -74,7 +74,7 @@ class IPNetmask extends IPAddress {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Subnet mask', 'Subnet masks', $nb);
    }
 

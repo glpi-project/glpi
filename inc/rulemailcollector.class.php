@@ -212,7 +212,7 @@ class RuleMailCollector extends Rule {
    /**
     * @see Rule::executeActions()
    **/
-   function executeActions($output,$params) {
+   function executeActions($output, $params) {
 
       if (count($this->actions)) {
 
