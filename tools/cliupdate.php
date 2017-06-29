@@ -234,7 +234,7 @@ ini_set("max_execution_time", "0");
 
 if (defined('GLPI_PREVER')) {
    if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($args['dev'])) {
-      die(GLPI_SCHEMA_VERSION . " is not a stable release. Please upgrade manually - or add --dev.");
+      die(GLPI_SCHEMA_VERSION . " is not a stable release. Please upgrade manually - or add --dev.\n");
    }
 }
 
