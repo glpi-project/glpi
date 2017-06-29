@@ -367,9 +367,6 @@ $RELATION = ["glpi_authldaps"
                         "glpi_netpoints"
                         => ['glpi_networkportethernets'   => 'netpoints_id'],
 
-                        "glpi_networkequipmentfirmwares"
-                        => ['glpi_networkequipments' =>'networkequipmentfirmwares_id'],
-
                         "glpi_networkequipmentmodels"
                         => ['glpi_networkequipments' =>'networkequipmentmodels_id'],
 
