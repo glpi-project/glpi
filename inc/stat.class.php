@@ -1251,12 +1251,12 @@ class Stat extends CommonGLPI {
       $selected = -1;
       $count    = count($stat_list);
       foreach ($opt_list as $opt => $group) {
-         while ($data = each($stat_list[$opt])) {
-            $name    = $data[1]["name"];
-            $file    = $data[1]["file"];
+         foreach ($stat_list[$opt] as $data) {
+            $name    = $data['name'];
+            $file    = $data['file'];
             $comment ="";
-            if (isset($data[1]["comment"])) {
-               $comment = $data[1]["comment"];
+            if (isset($data['comment'])) {
+               $comment = $data['comment'];
             }
             $key                  = $CFG_GLPI["root_doc"]."/front/".$file;
             $values[$group][$key] = $name;

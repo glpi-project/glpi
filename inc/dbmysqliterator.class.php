@@ -317,9 +317,11 @@ class DBmysqlIterator implements Iterator {
          } else if ($name === "FKEY") {
             // Foreign Key condition
             if (is_array($value) && (count($value) == 2)) {
-               reset($value);
-               list($t1,$f1) = each($value);
-               list($t2,$f2) = each($value);
+               $keys = array_keys($value);
+               $t1 = $keys[0];
+               $f1 = $value[$t1];
+               $t2 = $keys[1];
+               $f2 = $value[$t2];
                $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
                        (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
             } else {
