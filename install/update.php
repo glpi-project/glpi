@@ -570,8 +570,9 @@ function updateDbUpTo031() {
                 FROM `glpi_config`";
       $result = $DB->queryOrDie($query, "get current version");
 
-      $current_version = trim($DB->result($result, 0, 0));
-      $glpilanguage    = trim($DB->result($result, 0, 1));
+      $current_version     = trim($DB->result($result, 0, 0));
+      $current_db_version  = $current_version;
+      $glpilanguage        = trim($DB->result($result, 0, 1));
    } else if (FieldExists('glpi_configs', 'version')) {
       // < 0.85
       // Get current version and language
@@ -579,19 +580,27 @@ function updateDbUpTo031() {
                 FROM `glpi_configs`";
       $result = $DB->queryOrDie($query, "get current version");
 
-      $current_version = trim($DB->result($result, 0, 0));
-      $glpilanguage    = trim($DB->result($result, 0, 1));
+      $current_version     = trim($DB->result($result, 0, 0));
+      $current_db_version  = $current_version;
+      $glpilanguage        = trim($DB->result($result, 0, 1));
    } else {
       $configurationValues = Config::getConfigurationValues('core', ['version', 'language']);
 
-      $current_version = $configurationValues['version'];
-      $glpilanguage    = $configurationValues['language'];
+      $current_version     = $configurationValues['version'];
+      $current_db_version  = isset($configurationValues['dbversion']) ? $configurationValues['dbversion'] : $current_version;
+      $glpilanguage        = $configurationValues['language'];
    }
 
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
 
-   $migration = new Migration(GLPI_VERSION);
+   $migration = new Migration(GLPI_SCHEMA_VERSION);
+
+   if (defined('GLPI_PREVER')) {
+      if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($_POST['agree_dev'])) {
+         return $ret;
+      }
+   }
 
    switch ($current_version) {
       case "0.31" :
@@ -806,11 +815,13 @@ function updateDbUpTo031() {
 
       case "9.1.3":
       case "9.1.4":
+      case GLPI_PREVER:
          include_once("update_91_92.php");
          update91to92();
          break;
 
       case GLPI_VERSION:
+      case GLPI_SCHEMA_VERSION:
          break;
 
       default :
@@ -842,8 +853,9 @@ function updateDbUpTo031() {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
-                                                'language'            => $glpilanguage,
-                                                'founded_new_version' => '']);
+                                           'dbversion'           => GLPI_SCHEMA_VERSION,
+                                           'language'            => $glpilanguage,
+                                           'founded_new_version' => '']);
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
@@ -947,7 +959,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    if (test_connect()) {
       echo "<h3>".__('Database connection successful')."</h3>";
       if (!isset($_POST["update_location"])) {
-         $current_verison = "0.31";
+         $current_version = "0.31";
          $config_table    = "glpi_config";
 
          if (TableExists("glpi_configs")) {

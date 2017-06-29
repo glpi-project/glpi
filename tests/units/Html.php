@@ -340,7 +340,8 @@ class Html extends atoum {
          'Supplier',
          'Contact',
          'Contract',
-         'Document'
+         'Document',
+         'Line'
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);

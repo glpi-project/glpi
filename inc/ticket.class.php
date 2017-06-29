@@ -2823,6 +2823,84 @@ class Ticket extends CommonITILObject {
             ]
          ];
 
+         $tab[] = [
+            'id'                 => '50',
+            'table'              => 'glpi_tickets',
+            'field'              => 'id',
+            'linkfield'          => 'tickets_id_2',
+            'name'               => __('Parent tickets'),
+            'massiveaction'      => false,
+            'searchtype'         => 'equals',
+            'datatype'           => 'itemlink',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'beforejoin'         => [
+                  'table'              => 'glpi_tickets_tickets',
+                  'joinparams'         => [
+                     'jointype'           => 'child',
+                     'linkfield'          => 'tickets_id_1',
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                  ]
+               ]
+            ],
+            'forcegroupby'       => true
+         ];
+
+         $tab[] = [
+            'id'                 => '67',
+            'table'              => 'glpi_tickets',
+            'field'              => 'id',
+            'linkfield'          => 'tickets_id_1',
+            'name'               => __('Child tickets'),
+            'massiveaction'      => false,
+            'searchtype'         => 'equals',
+            'datatype'           => 'itemlink',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'beforejoin'         => [
+                  'table'              => 'glpi_tickets_tickets',
+                  'joinparams'         => [
+                     'jointype'           => 'child',
+                     'linkfield'          => 'tickets_id_2',
+                     'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF,
+                  ]
+               ]
+            ],
+            'forcegroupby'       => true
+         ];
+
+         $tab[] = [
+            'id'                 => '68',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'id',
+            'name'               => __('Number of sons tickets'),
+            'massiveaction'      => false,
+            'datatype'           => 'count',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'linkfield'          => 'tickets_id_2',
+               'jointype'           => 'child',
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+            ],
+            'forcegroupby'       => true
+         ];
+
+         $tab[] = [
+            'id'                 => '69',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'id',
+            'name'               => __('Number of parent tickets'),
+            'massiveaction'      => false,
+            'datatype'           => 'count',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'linkfield'          => 'tickets_id_1',
+               'jointype'           => 'child',
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::SON_OF
+            ],
+            'additionalfields'   => ['tickets_id_2']
+         ];
+
          $tab = array_merge($tab, TicketTask::getSearchOptionsToAddNew());
 
          $tab = array_merge($tab, $this->getSearchOptionsSolution());
@@ -4588,7 +4666,8 @@ class Ticket extends CommonITILObject {
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "</td><td width='70%'>";
             $linkparam = ['name'        => '_link[tickets_id_2]',
-                               'displaywith' => ['id']];
+                          'used'        => [$this->getID()],
+                          'displaywith' => ['id']];
 
             if (isset($values["_link"])) {
                $linkparam['value'] = $values["_link"]['tickets_id_2'];

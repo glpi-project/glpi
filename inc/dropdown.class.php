@@ -854,7 +854,11 @@ class Dropdown {
                  'Filesystem'           => _n('File system', 'File systems',
                                               Session::getPluralNumber()),
                  'BudgetType'           => _n('Budget type', 'Budget types',
-                                              Session::getPluralNumber())
+                                              Session::getPluralNumber()),
+                 'DeviceSimcardType'    => _n('Simcard type', 'Simcard types',
+                                              Session::getPluralNumber()),
+                 'LineType'             => _n('Line type', 'Line types',
+                                             Session::getPluralNumber()),
              ],
 
              __('Model') => [
@@ -984,7 +988,9 @@ class Dropdown {
                                                   Session::getPluralNumber()),
                  'Network'                  => _n('Network', 'Networks',
                                                   Session::getPluralNumber()),
-                 'Vlan'                     => __('VLAN')
+                 'Vlan'                     => __('VLAN'),
+                 'LineOperator'             => _n('Line operator', 'Line operators',
+                                                  Session::getPluralNumber())
              ],
 
              __('Internet') => [

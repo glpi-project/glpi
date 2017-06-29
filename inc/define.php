@@ -39,8 +39,18 @@ if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
 }
 
 // Current version of GLPI
-define("GLPI_VERSION", "9.2");
-define("GLPI_SCHEMA_VERSION", "9.2");
+define('GLPI_VERSION', '9.2-dev');
+if (substr(GLPI_VERSION, -4) === '-dev') {
+   //for dev version
+   define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
+   define(
+      'GLPI_SCHEMA_VERSION',
+      GLPI_PREVER . '@' . sha1_file(GLPI_ROOT . '/install/mysql/glpi-empty.sql')
+   );
+} else {
+   //for stable version
+   define("GLPI_SCHEMA_VERSION", '9.2');
+}
 define('GLPI_MIN_PHP', '5.6.0');
 define('GLPI_YEAR', '2017');
 if (!defined('GLPI_DEMO_MODE')) {
@@ -201,7 +211,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Problem', 'Project', 'ProjectTask',
-                                                  'Reminder', 'Software',
+                                                  'Reminder', 'Software', 'Line',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User'];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
@@ -212,10 +222,10 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
                                                   'Item_DeviceSoundCard', 'Item_DeviceControl',
                                                   'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
                                                   'Item_DeviceProcessor', 'Item_DeviceGeneric',
-                                                  'Item_DeviceBattery', 'Item_DeviceFirmware'];
+                                                  'Item_DeviceBattery', 'Item_DeviceFirmware', 'Item_DeviceSimcard'];
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Project',
+                                                  'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
                                                   'Software', 'SoftwareLicense'], $CFG_GLPI['itemdevices']);
 
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
@@ -223,7 +233,8 @@ $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', '
 $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Computer',
                                                   'Consumable', 'ConsumableItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'SoftwareLicense'];
+                                                  'Printer', 'Software', 'SoftwareLicense',
+                                                  'Line'];
 
 $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software'];
@@ -252,7 +263,7 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense'];
+                                                  'SoftwareLicense', 'Line'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -285,7 +296,8 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
                                                   'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
                                                   'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
                                                   'DeviceSoundCard', 'DeviceControl', 'DevicePci',
-                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric'];
+                                                  'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
+                                                  'DeviceSimcard'];
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer'];
@@ -303,6 +315,8 @@ $CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral'];
 $CFG_GLPI['itemdevicebattery_types']      = ['Computer', 'Peripheral', 'Phone', 'Printer'];
 
 $CFG_GLPI['itemdevicefirmware_types']     = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+
+$CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
