@@ -335,7 +335,7 @@ class Dropdown {
                if ($translate && !empty($data['transname'])) {
                   $name = $data['transname'];
                } else {
-                  $name = $data["name"];
+                  $name = $data[$item->getNameField()];
                }
                if (isset($data["comment"])) {
                   if ($translate && !empty($data['transcomment'])) {
