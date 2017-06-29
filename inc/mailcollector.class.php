@@ -1317,9 +1317,8 @@ class MailCollector  extends CommonDBTM {
 
          if ($structure->type == 1) { /* multipart */
             $prefix = "";
-            reset($structure->parts);
 
-            while (list($index, $sub_structure) = each($structure->parts)) {
+            foreach ($structure->parts as $index => $sub_structure) {
                if ($part_number) {
                   $prefix = $part_number . '.';
                }
@@ -1399,9 +1398,8 @@ class MailCollector  extends CommonDBTM {
    function getRecursiveAttached($mid, $path, $maxsize, $structure, $part = "") {
 
       if ($structure->type == 1) { // multipart
-         reset($structure->parts);
-         while (list($index, $sub) = each($structure->parts)) {
-            $this->getRecursiveAttached($mid, $path, $maxsize, $sub,
+         foreach ($structure->parts as $index => $sub_structure) {
+            $this->getRecursiveAttached($mid, $path, $maxsize, $sub_structure,
                                         ($part ? $part.".".($index+1) : ($index+1)));
          }
 

@@ -123,10 +123,9 @@ class Report extends CommonGLPI{
       $selected = -1;
       $values   = [$CFG_GLPI["root_doc"].'/front/report.php' => Dropdown::EMPTY_VALUE];
 
-      while ($data = each($report_list)) {
-         $val           = $data[0];
-         $name          = $report_list["$val"]["name"];
-         $file          = $report_list["$val"]["file"];
+      foreach ($report_list as $val => $data) {
+         $name          = $data['name'];
+         $file          = $data['file'];
          $key           = $CFG_GLPI["root_doc"]."/front/".$file;
          $values[$key]  = $name;
          if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
