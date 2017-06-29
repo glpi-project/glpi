@@ -4287,22 +4287,6 @@ CREATE TABLE `glpi_networkaliases` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_networkequipmentfirmwares
-
-DROP TABLE IF EXISTS `glpi_networkequipmentfirmwares`;
-CREATE TABLE `glpi_networkequipmentfirmwares` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  `date_mod` datetime DEFAULT NULL,
-  `date_creation` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_networkequipmentmodels
 
 DROP TABLE IF EXISTS `glpi_networkequipmentmodels`;
@@ -4343,7 +4327,6 @@ CREATE TABLE `glpi_networkequipments` (
   `networks_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmenttypes_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmentmodels_id` int(11) NOT NULL DEFAULT '0',
-  `networkequipmentfirmwares_id` int(11) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
@@ -4358,7 +4341,6 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
   KEY `domains_id` (`domains_id`),
-  KEY `networkequipmentfirmwares_id` (`networkequipmentfirmwares_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),

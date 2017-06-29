@@ -1261,6 +1261,39 @@ Regards,',
       $migration->dropField('glpi_phones', 'firmware');
    }
 
+   //Firmware for network equipements
+   if (tableExists('glpi_networkequipmentfirmwares')) {
+      $mapping = [];
+      $iterator = $DB->request('glpi_networkequipmentfirmwares');
+      while ($row = $iterator->next()) {
+         $fw = new DeviceFirmware();
+         $id = $fw->add([
+            'designation'              => $row['name'],
+            'comment'                  => $row['comment'],
+            'devicefirmwaretypes_id'   => 3, //type "Firmware"
+            'date_creation'            => $row['date_creation'],
+            'date_mod'                 => $row['date_mod']
+         ]);
+         $mapping[$row['id']] = $id;
+      }
+
+      $iterator = $DB->request('glpi_networkequipments');
+      while ($row = $iterator->next()) {
+         if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
+            $itemdevice = new Item_DeviceFirmware();
+            $itemdevice->add([
+               'itemtype'           => 'NetworkEquipment',
+               'items_id'           => $row['id'],
+               'devicefirmwares_id' => $mapping[$row['networkequipmentfirmwares_id']]
+            ]);
+         }
+      }
+
+      $migration->dropKey('glpi_networkequipments', 'networkequipmentfirmwares_id');
+      $migration->dropField('glpi_networkequipments', 'networkequipmentfirmwares_id');
+      $migration->dropTable('glpi_networkequipmentfirmwares');
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
