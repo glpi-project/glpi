@@ -50,54 +50,54 @@ class ProjectTaskTemplate extends CommonDropdown {
 
    static $rightname          = 'project';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Project task template', 'Project task templates', $nb);
    }
 
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'projectstates_id',
-                         'label' => _x('item', 'State'),
-                         'type'  => 'dropdownValue',
-                         'list'  => true),
-                   array('name'  => 'projecttasktypes_id',
-                         'label' => __('Type'),
-                         'type'  => 'dropdownValue'),
-                   array('name'  => 'projects_id',
-                         'label' => __('As child of'),
-                         'type'  => 'dropdownValue'),
-                   array('name'  => 'percent_done',
-                         'label' => __('Percent done'),
-                         'type'  => 'percent_done'),
-                   array('name'  => 'is_milestone',
-                         'label' => __('Milestone'),
-                         'type'  => 'bool'),
-                   array('name'  => 'plan_start_date',
-                         'label' => __('Planned start date'),
-                         'type'  => 'datetime'),
-                   array('name'  => 'real_start_date',
-                         'label' => __('Real start date'),
-                         'type'  => 'datetime'),
-                   array('name'  => 'plan_end_date',
-                         'label' => __('Planned end date'),
-                         'type'  => 'datetime'),
-                   array('name'  => 'real_end_date',
-                         'label' => __('Real end date'),
-                         'type'  => 'datetime'),
-                   array('name'  => 'planned_duration',
-                         'label' => __('Planned duration'),
-                         'type'  => 'actiontime'),
-                   array('name'  => 'effective_duration',
-                         'label' => __('Effective duration'),
-                         'type'  => 'actiontime'),
-                   array('name'  => 'description',
-                         'label' => __('Description'),
-                         'type'  => 'textarea'),
-                   array('name'  => 'comments',
-                         'label' => __('Comments'),
-                         'type'  => 'textarea'),
-                  );
+      return [['name'  => 'projectstates_id',
+               'label' => _x('item', 'State'),
+               'type'  => 'dropdownValue',
+               'list'  => true],
+              ['name'  => 'projecttasktypes_id',
+               'label' => __('Type'),
+               'type'  => 'dropdownValue'],
+              ['name'  => 'projects_id',
+               'label' => __('As child of'),
+               'type'  => 'dropdownValue'],
+              ['name'  => 'percent_done',
+               'label' => __('Percent done'),
+               'type'  => 'percent_done'],
+              ['name'  => 'is_milestone',
+               'label' => __('Milestone'),
+               'type'  => 'bool'],
+              ['name'  => 'plan_start_date',
+               'label' => __('Planned start date'),
+               'type'  => 'datetime'],
+              ['name'  => 'real_start_date',
+               'label' => __('Real start date'),
+               'type'  => 'datetime'],
+              ['name'  => 'plan_end_date',
+               'label' => __('Planned end date'),
+               'type'  => 'datetime'],
+              ['name'  => 'real_end_date',
+               'label' => __('Real end date'),
+               'type'  => 'datetime'],
+              ['name'  => 'planned_duration',
+               'label' => __('Planned duration'),
+               'type'  => 'actiontime'],
+              ['name'  => 'effective_duration',
+               'label' => __('Effective duration'),
+               'type'  => 'actiontime'],
+              array('name'  => 'description',
+                    'label' => __('Description'),
+                    'type'  => 'textarea'),
+              ['name'  => 'comments',
+               'label' => __('Comments'),
+               'type'  => 'textarea'],
+      ];
    }
 
 
@@ -207,24 +207,24 @@ class ProjectTaskTemplate extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'percent_done' :
-            Dropdown::showNumber("percent_done", array('value' => $this->fields['percent_done'],
-                                                       'min'   => 0,
-                                                       'max'   => 100,
-                                                       'step'  => 5,
-                                                       'unit'  => '%'));
+            Dropdown::showNumber("percent_done", ['value' => $this->fields['percent_done'],
+                                                  'min'   => 0,
+                                                  'max'   => 100,
+                                                  'step'  => 5,
+                                                  'unit'  => '%']);
             break;
          case 'actiontime' :
             Dropdown::showTimeStamp($field["name"],
-                                    array('min'             => 0,
-                                          'max'             => 100*HOUR_TIMESTAMP,
-                                          'step'            => HOUR_TIMESTAMP,
-                                          'value'           => $this->fields[$field["name"]],
-                                          'addfirstminutes' => true,
-                                          'inhours'         => true));
+                                    ['min'             => 0,
+                                     'max'             => 100 * HOUR_TIMESTAMP,
+                                     'step'            => HOUR_TIMESTAMP,
+                                     'value'           => $this->fields[$field["name"]],
+                                     'addfirstminutes' => true,
+                                     'inhours'         => true]);
             break;
       }
    }
@@ -235,10 +235,10 @@ class ProjectTaskTemplate extends CommonDropdown {
     * @param $values
     * @param $options   array
     */
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'type' :
@@ -249,7 +249,7 @@ class ProjectTaskTemplate extends CommonDropdown {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Document_Item', $ong, $options);

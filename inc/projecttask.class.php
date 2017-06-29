@@ -419,10 +419,10 @@ class ProjectTask extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td style='width:100px'>"._n('Project task template', 'Project task templates', 1)."</td><td>";
-      ProjectTaskTemplate::dropdown(array('value'     => $this->fields['projecttasktemplates_id'],
+      ProjectTaskTemplate::dropdown(['value'     => $this->fields['projecttasktemplates_id'],
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
-                                   'on_change' => 'projecttasktemplate_update(this.value)'));
+                                   'on_change' => 'projecttasktemplate_update(this.value)']);
       echo "</td>";
       echo "</tr>";
       echo Html::scriptBlock('

@@ -698,10 +698,10 @@ class Dropdown {
          $output = Html::getCheckbox($options);
          if (!isset($options['display']) || $options['display'] == 'true') {
             echo $output;
-         return $rand;
+            return $rand;
          } else {
             return $output;
-      }
+         }
       }
 
       if ($restrict_to != 0) {

@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_GET['_in_modal'])) {
    Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
-   $project->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
    Html::popFooter();
 
 } else {
@@ -110,8 +110,8 @@ if (isset($_POST["add"])) {
    if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
       $project->showGantt(-1);
    } else {
-      $project->display(array('id'           => $_GET["id"],
-                              'withtemplate' => $_GET["withtemplate"]));
+      $project->display(['id'           => $_GET["id"],
+                              'withtemplate' => $_GET["withtemplate"]]);
    }
    Html::footer();
 }
