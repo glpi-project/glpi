@@ -517,14 +517,14 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    if (empty($from_install) && !isset($_POST["from_update"])) {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".__('Impossible to accomplish an update by this way!')."</span>";
+      echo "<h3><span class='migred'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p>";
       echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
       echo "</div>";
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
+      echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";

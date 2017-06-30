@@ -189,7 +189,7 @@ class Migration {
    **/
    function displayWarning($msg, $red = false) {
 
-      echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
+      echo ($red ? "<div class='migred'><p>" : "<p><span class='b'>") .
             Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
 
       $this->log($msg, true);
