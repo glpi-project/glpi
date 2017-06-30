@@ -50,46 +50,9 @@ function update91to92() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2'));
    $migration->setVersion('9.2');
 
-   $backup_tables = false;
-   // table already exist but deleted during the migration or table created
-   $newtables     = ['glpi_businesscriticities',
-                     'glpi_knowbaseitems_items',
-                     'glpi_knowbaseitems_revisions',
-                     'glpi_knowbaseitems_comments',
-                     'glpi_devicecasemodels',
-                     'glpi_devicecontrolmodels',
-                     'glpi_devicedrivemodels',
-                     'glpi_devicegraphiccardmodels',
-                     'glpi_deviceharddrivemodels',
-                     'glpi_devicememorymodels',
-                     'glpi_devicemotherboardmodels',
-                     'glpi_devicenetworkcardmodels',
-                     'glpi_devicepcimodels',
-                     'glpi_devicepowersupplymodels',
-                     'glpi_deviceprocessormodels',
-                     'glpi_devicesoundcardmodels',
-                     'glpi_devicegenericmodels',
-                     'glpi_devicegenerics',
-                     'glpi_items_devicegenerics',
-                     'glpi_devicegenerictypes',
-                     'glpi_devicebatteries',
-                     'glpi_items_devicebatteries',
-                     'glpi_devicebatterytypes',
-                     'glpi_devicefirmwares',
-                     'glpi_items_devicefirmwares',
-                     'glpi_devicefirmwaretypes',
-                     'glpi_savedsearches_alerts',
-                     'glpi_items_operatingsystems',
-                     'glpi_operatingsystemkernels',
-                     'glpi_operatingsystemkernelversions',
-                     'glpi_operatingsystemeditions'];
-
-   $migration->backupTables($newtables);
-
-   //put you migration script here
-
    // add business criticity
    $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
+   $migration->migrationOneTable('glpi_infocoms');
    $migration->addKey("glpi_infocoms", "businesscriticities_id");
 
    if (!TableExists("glpi_businesscriticities")) {
