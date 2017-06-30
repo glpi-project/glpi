@@ -1,0 +1,101 @@
+<?php
+/**
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2017 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units;
+
+use \DbTestCase;
+
+/* Test for inc/plugin.class.php */
+
+class Plugin extends DbTestCase {
+   public function testGetGlpiVersion() {
+      $plugin = new \Plugin();
+      $this->string($plugin->getGlpiVersion())->isIdenticalTo(GLPI_VERSION);
+   }
+
+   public function testGetGlpiPrever() {
+      $plugin = new \Plugin();
+      if (defined('GLPI_PREVER')) {
+         $this->string($plugin->getGlpiPrever())->isIdenticalTo(GLPI_PREVER);
+      } else {
+         $this->when(
+            function () use ($plugin) {
+               $plugin->getGlpiPrever();
+            }
+         )->error
+            ->exists();
+      }
+   }
+
+
+   public function testcheckGlpiVersion() {
+      //$this->constant->GLPI_VERSION = '9.1';
+      $plugin = new \mock\Plugin();
+
+      $infos = ['min' => '0.90'];
+      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
+
+      $this->calling($plugin)->getGlpiVersion = '0.89';
+      $this->output(
+         function () use ($plugin, $infos) {
+            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI > 0.90.');
+
+      $this->calling($plugin)->getGlpiVersion = '9.2';
+      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
+
+      $this->output(
+         function () use ($plugin) {
+            $infos = ['min' => '0.90', 'max' => '9.1'];
+            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI > 0.90 and < 9.1');
+
+      $infos = ['min' => '9.2', 'max' => '9.3'];
+      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
+
+      $this->calling($plugin)->getGlpiVersion = '9.2-dev';
+      if (!defined('GLPI_PREVER')) {
+         $this->mock->constant->GLPI_PREVER = '9.2';
+      }
+      $this->calling($plugin)->getGlpiPrever = '9.2';
+      $this->output(
+         function () use ($plugin, $infos) {
+            $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI > 9.2 and < 9.3');
+
+      $infos['dev'] = true;
+      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
+   }
+}
