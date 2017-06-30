@@ -4253,7 +4253,7 @@ class User extends CommonDBTM {
    /**
    * Get personal token checking that it is unique
    *
-   * @deprecated since version 9.2; @see User::getUniqueToken()
+   * @deprecated 9.2 @see User::getUniqueToken()
    *
    * @return string personal token
    **/
@@ -4295,7 +4295,7 @@ class User extends CommonDBTM {
     *
     * @param $ID user ID
    *
-   * @deprecated since version 9.2; @see User::getToken()
+   * @deprecated 9.2 @see User::getToken()
     *
     * @return string personal token
    **/

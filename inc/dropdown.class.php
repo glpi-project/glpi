@@ -1334,7 +1334,7 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @deprecated since version 0.85, replaced by self::showSelectItemFromItemtypes()
+    * @deprecated 0.85 replaced by self::showSelectItemFromItemtypes()
     *
     * @param $myname          select name
     * @param $value_type      default value for the device type (default 0)
@@ -1591,7 +1591,7 @@ class Dropdown {
     * @param $options   array of additionnal options :
     *                            - unit : string unit to used
     *                            - display : boolean if false get string
-    * @deprecated since 0.84 use Dropdown::showNumber instead
+    * @deprecated 0.84 use Dropdown::showNumber instead
    **/
    static function showInteger($myname, $value, $min = 0, $max = 100, $step = 1, $toadd = [],
                                $options = []) {
