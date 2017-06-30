@@ -134,6 +134,10 @@ th {
 .red {
    color:red;
 }
+.migred {
+   color: white;
+   background-color: red;
+}
 .green {
    color:green;
 }
