@@ -1536,6 +1536,21 @@ class NotificationTarget extends CommonDBChild {
    }
 
    /**
+    * Add new recipient with lang to current recipients array
+    *
+    * @param array $data Data (users_id, lang[, field used for notification])
+    *
+    * @deprecated Use NotificationTarget::addToRecipientsList()
+    *
+    * @return void|false
+   **/
+   function addToAddressesList(array $data) {
+      Toolbox::logDebug('addToAddressesList() method is deprecated');
+      $this->addToRecipientsList($data);
+   }
+
+
+   /**
     * Add addresses according to type of notification
     *
     * @param array $data    Data
