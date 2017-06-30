@@ -169,6 +169,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $canupdate = Session::haveRight('ticket', UPDATE);
 
       $ticket    = new Ticket();
+      $tick      = new Ticket();
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
@@ -176,11 +177,14 @@ class Ticket_Ticket extends CommonDBRelation {
                              "' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
-                                                         _x('button', 'Delete permanently'),
-                                                         array('id'         => $linkID,
-                                                               'tickets_id' => $ID),
-                                                         $CFG_GLPI["root_doc"]."/pics/delete.png");
+                  if ($tick->getFromDB($ID)
+                      && ($tick->fields['status'] != CommonITILObject::CLOSED)) {
+                     $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
+                                                            _x('button', 'Delete permanently'),
+                                                            array('id'         => $linkID,
+                                                                  'tickets_id' => $ID),
+                                                            $CFG_GLPI["root_doc"]."/pics/delete.png");
+                  }
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
                                $ticket->getLink(array('forceid' => true)));
