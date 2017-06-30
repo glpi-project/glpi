@@ -286,7 +286,8 @@ class Plugin extends CommonDBTM {
          // Check install is ok for activated plugins
          if ($install_ok
              && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
-            $usage_ok = true;
+            $usage_ok = $this->checkVersions($plug);
+
             $function = "plugin_".$plug."_check_prerequisites";
             if (function_exists($function)) {
                if (!$function()) {
@@ -504,7 +505,8 @@ class Plugin extends CommonDBTM {
                       && function_exists("plugin_".$plug['directory']."_check_config")) {
 
                      $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                     $do_install = true;
+                     $do_install = $this->checkVersions($plug['directory']);
+
                      if (function_exists($function)) {
                         ob_start();
                         $do_install = $function();
@@ -579,11 +581,12 @@ class Plugin extends CommonDBTM {
 
                case self::NOTACTIVATED :
                   echo "<td>";
+                  $process = $this->checkVersions($plug['directory']);
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                       || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                      echo __('Not CSRF compliant');
-                  } else if (function_exists($function) && $function()) {
+                  } else if (function_exists($function) && $function() && $process) {
                      Html::showSimpleForm(static::getFormURL(), ['action' => 'activate'],
                                           _x('button', 'Enable'), ['id' => $ID]);
                   }
@@ -1323,7 +1326,11 @@ class Plugin extends CommonDBTM {
       $fct = 'plugin_version_'.strtolower($plugin);
       if (function_exists($fct)) {
          $res = $fct();
+         if (!isset($res['requirements']) && isset($res['minGlpiVersion'])) {
+            $res['requirements'] = ['glpi' => ['min' => $res['minGlpiVersion']]];
+         }
       } else {
+         Toolbox::logDebug("$fct method must be defined!");
          $res = [];
       }
       if (isset($info)) {
@@ -1477,5 +1484,83 @@ class Plugin extends CommonDBTM {
          default:
             throw new \RuntimeException("messageMissing type $type is unknwown!");
       }
+   }
+
+   /**
+    * Check declared versions (GLPI, PHP, ...)
+    *
+    * @param integer $plugid Plugin id
+    *
+    * @return boolean
+    */
+   public function checkVersions($name) {
+      $infos = self::getInfo($name);
+      $ret = true;
+      if (isset($infos['requirements'])) {
+         if (isset($infos['requirements']['glpi'])) {
+            $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+         }
+      }
+      return $ret;
+   }
+
+   /**
+    * Check for GLPI version
+    *
+    * @param array $infos Requirements infos:
+    *                     - min: minimal supported version,
+    *                     - max: maximal supported version,
+    *                     - dev: support GLPI development version
+    *                     One of min or max is required.
+    *
+    * @return boolean
+    */
+   public function checkGlpiVersion($infos) {
+      $compat = true;
+      $prever = true;
+
+      if (defined('GLPI_PREVER') && isset($infos['min']) && isset($infos['dev']) && $infos['dev'] == true) {
+         $prever = version_compare($this->getGlpiPrever(), $infos['min'], 'lt');
+      }
+
+      if (isset($infos['min']) && isset($infos['max'])) {
+         $compat = !($prever && (version_compare($this->getGlpiVersion(), $infos['min'], 'lt') || version_compare($this->getGlpiVersion(), $infos['max'], 'ge')));
+      } else if (isset($infos['min'])) {
+         $compat = !($prever && version_compare($this->getGlpiVersion(), $infos['min'], 'lt'));
+      } else if (isset($infos['max'])) {
+         $compat = !(version_compare($this->getGlpiVersion(), $infos['max'], 'ge'));
+      } else {
+         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+      }
+
+      if (!$compat) {
+         echo Plugin::messageIncompatible(
+            'core',
+            (isset($infos['min']) ? $infos['min'] : null),
+            (isset($infos['max']) ? $infos['max'] : null)
+         );
+      }
+
+      return $compat;
+   }
+
+   /**
+    * Get GLPI version
+    * Used from unit tests to mock.
+    *
+    * @return string
+    */
+   public function getGlpiVersion() {
+      return GLPI_VERSION;
+   }
+
+   /**
+    * Get GLPI pre version
+    * Used from unit tests to mock.
+    *
+    * @return string
+    */
+   public function getGlpiPrever() {
+      return GLPI_PREVER;
    }
 }
