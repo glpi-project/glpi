@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceGenericType
+/**
+ * @since 9.2
+ */
 class DeviceSensorType extends CommonDeviceType {
 
    static function getTypeName($nb = 0) {

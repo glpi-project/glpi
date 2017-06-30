@@ -34,6 +34,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * @since 9.2
+ */
 class Item_DeviceSensor extends Item_Devices {
 
    static public $itemtype_2 = 'DeviceSensor';
