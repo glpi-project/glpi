@@ -119,8 +119,8 @@ class User extends CommonDBTM {
 
       if (($_SESSION['glpiactive_entity'] > 0)
           && (Profile::getDefault() == 0)) {
-         echo "<font class='red b'>".__('You must define a default profile to create a new user').
-              "</font>";
+         echo "<div class='tab_cadre_fixe warning'>".
+                __('You must define a default profile to create a new user')."</div>";
       }
 
       return false;
