@@ -59,7 +59,7 @@ class NotificationTarget extends CommonDBChild {
    // Tags which have data in HTML : do not try to clean them
    public $html_tags                   = [];
 
-   /** Deprecated since 9.2 */
+   /** @deprecated 9.2 */
    private $datas                      = [];
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
@@ -1388,7 +1388,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get item's author
     *
-    * @deprecated Use NotificationTarget::addItemAuthor()
+    * @deprecated 9.2 Use NotificationTarget::addItemAuthor()
     *
     * @return void
     */
@@ -1404,7 +1404,7 @@ class NotificationTarget extends CommonDBChild {
     * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
     * @param integer $group_id id of the group
     *
-    * @deprecated Use NotificationTarget::addForGroup()
+    * @deprecated 9.2 Use NotificationTarget::addForGroup()
     *
     * @return void
    **/
@@ -1416,7 +1416,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get GLPI's global administrator email
     *
-    * @deprecated Use NotificationTarget::addAdmin()
+    * @deprecated 9.2 Use NotificationTarget::addAdmin()
     *
     * @return void
     */
@@ -1430,7 +1430,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @deprecated Use NotificationTarget::addItemGroup()
+    * @deprecated 9.2 Use NotificationTarget::addItemGroup()
     *
     * @return void
    **/
@@ -1444,7 +1444,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @deprecated Use NotificationTarget::addItemGroupSupervisor()
+    * @deprecated 9.2 Use NotificationTarget::addItemGroupSupervisor()
     *
     * @return void
    **/
@@ -1459,7 +1459,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @since version 0.85
     *
-    * @deprecated Use NotificationTarget::addItemGroupWithoutSupervisor()
+    * @deprecated 9.2 Use NotificationTarget::addItemGroupWithoutSupervisor()
     *
     * @return void
    **/
@@ -1471,7 +1471,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get Group of technicians in charge of the item
     *
-    * @deprecated Use NotificationTarget addItemTechnicianInCharge()
+    * @deprecated 9.2 Use NotificationTarget addItemTechnicianInCharge()
     *
     * @return void
    **/
@@ -1483,7 +1483,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get technician in charge of the item
     *
-    * @deprecated Use NotificationTarget::addItemTechnicianInCharge()
+    * @deprecated 9.2 Use NotificationTarget::addItemTechnicianInCharge()
     *
     * @return void
    **/
@@ -1495,7 +1495,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get user owner of the material
     *
-    * @deprecated use NotificationTarget::addItemowner()
+    * @deprecated 9.2 use NotificationTarget::addItemowner()
     *
     * @return void
    **/
@@ -1509,7 +1509,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param integer $profiles_id the profile ID to get users emails
     *
-    * @deprecated Use NotificationTarget::addForProfile()
+    * @deprecated 9.2 Use NotificationTarget::addForProfile()
     *
     * @return nothing
    **/
@@ -1526,7 +1526,7 @@ class NotificationTarget extends CommonDBChild {
     * @param boolean $search_in_object search is done in the object ? if not  in target object
     *                                  (false by default)
     *
-    * @deprecated Use NotificationTarget::addUserByField()
+    * @deprecated 9.2 Use NotificationTarget::addUserByField()
     *
     * @return void
    **/
@@ -1540,7 +1540,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param array $data Data (users_id, lang[, field used for notification])
     *
-    * @deprecated Use NotificationTarget::addToRecipientsList()
+    * @deprecated 9.2 Use NotificationTarget::addToRecipientsList()
     *
     * @return void|false
    **/
@@ -1556,7 +1556,7 @@ class NotificationTarget extends CommonDBChild {
     * @param array $data    Data
     * @param array $options Option
     *
-    * @deprecated Use NotificationTarget::addForTarget
+    * @deprecated 9.2 Use NotificationTarget::addForTarget
     *
     * @return void
    **/
@@ -1568,7 +1568,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Add entity admin
     *
-    * @deprecated Use NotificationTarget::addEntityAdmin()
+    * @deprecated 9.2 Use NotificationTarget::addEntityAdmin()
     *
     * @return void
     */
@@ -1595,7 +1595,7 @@ class NotificationTarget extends CommonDBChild {
          *
          * @param integer $entity the entity on which the event is raised
          *
-         * @deprecated Use NotificationTarget::addNotificationTargets()
+         * @deprecated 9.2 Use NotificationTarget::addNotificationTargets()
          *
          * @return void
          */
@@ -1609,7 +1609,7 @@ class NotificationTarget extends CommonDBChild {
          * @param array $data    Data
          * @param array $options Options
          *
-         * @deprecated Use NotificationTarget::addSpecificTargets()
+         * @deprecated 9.2 Use NotificationTarget::addSpecificTargets()
          *
          * @return void
          **/
