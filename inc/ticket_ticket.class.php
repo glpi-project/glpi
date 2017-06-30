@@ -171,6 +171,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $canupdate = Session::haveRight('ticket', UPDATE);
 
       $ticket    = new Ticket();
+      $tick      = new Ticket();
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
@@ -178,11 +179,14 @@ class Ticket_Ticket extends CommonDBRelation {
                              "' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
-                                                         _x('button', 'Delete permanently'),
+                  if ($tick->getFromDB($ID)
+                      && ($tick->fields['status'] != CommonITILObject::CLOSED)) {
+                     $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
+                                                            _x('button', 'Delete permanently'),
                                                          ['id'         => $linkID,
-                                                               'tickets_id' => $ID],
+                                                          'tickets_id' => $ID],
                                                          'fa-times-circle');
+                  }
                }
                $inverted = (isset($data['tickets_id_1']));
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link'], $inverted),
