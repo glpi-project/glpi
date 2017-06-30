@@ -2807,3 +2807,4 @@ function update084to085() {
    return $updateresult;
 }
 
+class Bookmark extends SavedSearch {}
