@@ -206,7 +206,7 @@ class Migration {
     *
     * @return string
    **/
-   private function fieldFormat($type, $default_value, $nodefault = false) {
+   private static function fieldFormat($type, $default_value, $nodefault = false) {
 
       $format = '';
       switch ($type) {
@@ -870,5 +870,41 @@ class Migration {
          $this->displayWarning("You can delete backup tables if you have no need of them.", true);
       }
       return $backup_tables;
+   }
+
+
+   /**
+    * Get the SQL command to create table for a persistent object
+    *
+    * @param string $type persistent object class name
+    *
+    * @return string
+    */
+   public static function getCreateTable($type) {
+      global $DB;
+
+      $schema = $type::getSchema();
+
+      $sql = '';
+      foreach ($schema['fields'] as $name => $f) {
+         $sql .= ($sql ? ", \n  " : "  ") .$DB->quoteName($name) . " ";
+         $sql .= self::fieldFormat($f['type'], $f['value']);
+      }
+      foreach ($schema['indexes'] as $name => $ind) {
+         if ($ind['primary']) {
+            $key .= "PRIMARY KEY";
+         } else {
+            $key = ($ind['unique'] ? 'UNIQUE KEY ' : 'KEY ') . $DB->quoteName($name);
+         }
+         $sql .= ",\n{$key} (";
+         foreach($ind['fields'] as $f) {
+            $sql .= $DB->quoteName(trim($f));
+         }
+         $sql .= ')';
+      }
+      $sql = "CREATE TABLE " . $DB->quoteName($schema['table']) . " (\n$sql\n";
+      $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci\n";
+
+      return $sql;
    }
 }

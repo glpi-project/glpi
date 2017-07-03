@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -31,22 +30,36 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+chdir(__DIR__);
+include ('../inc/includes.php');
+
+$args = [ 'sql' => false ];
+if ($_SERVER['argc']>1) {
+   for ($i=1; $i<count($_SERVER['argv']); $i++) {
+      $it           = explode("=", $argv[$i], 2);
+      $it[0]        = preg_replace('/^--/', '', $it[0]);
+      $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
+   }
 }
 
-/// Class DeviceGenericType
-/**
- * @glpidb field id autoincrement
- * @glpidb field name string
- * @glpidb field comment text
- * @glpidb index primary id
- * @glpidb index name
- */
-class DeviceGenericType extends CommonDeviceType {
+if (isset($args['item'])) {
+   $type = $args['item'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Generic type', 'Generic types', $nb); //TODO : add this to locales (if don't exist)
+   class_exists($type) or die("** class $type is not found\n");
+   is_subclass_of($type, 'CommonDBTM') or die("** $type not a persistent object\n");
+
+   if ($args['sql']) {
+      echo PHP_EOL . Migration::getCreateTable($type) . PHP_EOL;
+   } else {
+      var_dump($type::getSchema());
    }
+} else {
+   echo <<< EOT
 
+usage    {$_SERVER['argv'][0]}  [ options ... ]
+
+     --item=name         display schema for table used for 'name' class
+
+
+EOT;
 }

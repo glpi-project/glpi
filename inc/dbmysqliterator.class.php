@@ -137,7 +137,7 @@ class DBmysqlIterator implements Iterator {
                      if (is_array($val)) {
                         $jointype = ($key == 'INNER JOIN' ? 'INNER' : 'LEFT');
                         foreach ($val as $jointable => $joincrit) {
-                           $join .= " $jointype JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                           $join .= " $jointype JOIN " .  $this->quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
                         }
                      } else {
                         trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
@@ -155,21 +155,21 @@ class DBmysqlIterator implements Iterator {
             $this->sql = "";
             foreach ($field as $t => $f) {
                if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . self::quoteName($f);
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . $this->quoteName($f);
                } else if (is_array($f)) {
-                  $t = self::quoteName($t);
+                  $t = $this->quoteName($t);
                   $f = array_map([__CLASS__, 'quoteName'], $f);
                   $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.", $f);
                } else {
-                  $t = self::quoteName($t);
-                  $f = ($f == '*' ? $f : self::quoteName($f));
+                  $t = $this->quoteName($t);
+                  $f = ($f == '*' ? $f : $this->quoteName($f));
                   $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
          } else if (empty($field)) {
             $this->sql = "SELECT *";
          } else {
-            $this->sql = "SELECT $distinct " . self::quoteName($field);
+            $this->sql = "SELECT $distinct " . $this->quoteName($field);
          }
 
          // FROM table list
@@ -181,7 +181,7 @@ class DBmysqlIterator implements Iterator {
                trigger_error("Missing table name", E_USER_ERROR);
             }
          } else if ($table) {
-            $table = self::quoteName($table);
+            $table = $this->quoteName($table);
             $this->sql .= " FROM $table";
          } else {
             /*
@@ -207,7 +207,7 @@ class DBmysqlIterator implements Iterator {
             foreach ($orderby as $o) {
                $new = '';
                $tmp = explode(' ', $o);
-               $new .= self::quoteName($tmp[0]);
+               $new .= $this->quoteName($tmp[0]);
                // ASC OR DESC added
                if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                   $new .= ' '.$tmp[1];
@@ -219,7 +219,7 @@ class DBmysqlIterator implements Iterator {
          } else if (!empty($orderby)) {
             $this->sql .= " ORDER BY ";
             $tmp = explode(' ', $orderby);
-            $this->sql .= self::quoteName($tmp[0]);
+            $this->sql .= $this->quoteName($tmp[0]);
             // ASC OR DESC added
             if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                $this->sql .= ' '.$tmp[1];
@@ -249,12 +249,13 @@ class DBmysqlIterator implements Iterator {
     *
     * @return string
     */
-   private static function quoteName($name) {
-      if (strpos($name, '.')) {
-         $n = explode('.', $name, 2);
-         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
+   private function quoteName($name) {
+      if ($this->conn) {
+         // DB specific method
+         return $this->conn->quoteName($name);
       }
-      return ($name[0]=='`' ? $name : "`$name`");
+      // Fallback for tests
+      return DBmysql::quoteName($name);
    }
 
 
@@ -322,8 +323,8 @@ class DBmysqlIterator implements Iterator {
                $f1 = $value[$t1];
                $t2 = $keys[1];
                $f2 = $value[$t2];
-               $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
-                       (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
+               $ret .= (is_numeric($t1) ? $this->quoteName($f1) : $this->quoteName($t1) . '.' . $this->quoteName($f1)) . ' = ' .
+                     (is_numeric($t2) ? $this->quoteName($f2) : $this->quoteName($t2) . '.' . $this->quoteName($f2));
             } else {
                trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
             }
@@ -331,9 +332,9 @@ class DBmysqlIterator implements Iterator {
          } else if (is_array($value)) {
             if (count($value) == 2 && in_array($value[0], $operators)) {
                if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
-                  $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
+                  $ret .= $this->quoteName($name) . " {$value[0]} {$value[1]}";
                } else {
-                  $ret .= self::quoteName($name) . " {$value[0]} '{$value[1]}'";
+                  $ret .= $this->quoteName($name) . " {$value[0]} '{$value[1]}'";
                }
             } else {
                // Array of Values
@@ -342,19 +343,19 @@ class DBmysqlIterator implements Iterator {
                      $value[$k] = "'$v'";
                   }
                }
-               $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
+               $ret .= $this->quoteName($name) . ' IN (' . implode(', ', $value) . ')';
             }
          } else if (is_null($value)) {
             // NULL condition
-            $ret .= self::quoteName($name) . " IS NULL";
+            $ret .= $this->quoteName($name) . " IS NULL";
 
          } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
             // Integer or field name
-            $ret .= self::quoteName($name) . " = $value";
+            $ret .= $this->quoteName($name) . " = $value";
 
          } else {
             // String
-            $ret .= self::quoteName($name) . " = '$value'";
+            $ret .= $this->quoteName($name) . " = '$value'";
          }
       }
       return $ret;

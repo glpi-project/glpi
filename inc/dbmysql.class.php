@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -713,5 +714,23 @@ class DBmysql {
          }
       }
       return $crashed_tables;
+   }
+
+
+   /**
+    * Quote the name of a table or colum
+    *
+    * @since 9.x
+    *
+    * @param string $name of the table/column to quote
+    *
+    * @return string
+    */
+   public static function quoteName($name) {
+      if (strpos($name, '.')) {
+         $n = explode('.', $name, 2);
+         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
+      }
+      return ($name[0]=='`' ? $name : "`$name`");
    }
 }

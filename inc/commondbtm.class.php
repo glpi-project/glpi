@@ -4894,4 +4894,49 @@ class CommonDBTM extends CommonGLPI {
       }
       return $mark;
    }
+
+
+   /**
+    * Get the table schema from the classe docblock
+    *
+    * @since 9.x
+    *
+    * @return array
+    */
+   public static function getSchema() {
+      static $schema = NULL;
+
+      if (is_null($schema)) {
+         $schema = [
+            'table' => static::getTable(),
+            'fields' => [],
+            'indexes' => [],
+         ];
+
+         $ref = new ReflectionClass(get_called_class());
+         $doc = explode(PHP_EOL, $ref->getDocComment());
+         $pri = 0;
+         foreach($doc as $line) {
+            if (preg_match('/@glpidb( *)field( *)(?P<name>\w*)( *)(?P<type>\w*)( *)("?(?P<value>[^"]*)"?)$/', $line, $reg)) {
+               $schema['fields'][$reg['name']] = [
+                  'type'  => $reg['type'],
+                  'value' => (isset($reg['value'])&& $reg['value'] ? $reg['value'] : NULL),
+               ];
+            } else if (preg_match('/@glpidb( *)index( *)(?P<unique>unique)?( *)(?P<primary>primary)?( *)(?P<name>\w*)( *)(\((?P<fields>.*)\))?/', $line, $reg)) {
+               $schema['indexes'][$reg['name']] = [
+                  'fields'  => (isset($reg['fields']) && $reg['fields'] ?  explode(',',  $reg['fields']) : [$reg['name']]),
+                  'unique'  => ($reg['unique'] ? 1 : 0),
+                  'primary' => ($reg['primary'] ? ++$pri : 0),
+               ];
+            }
+         }
+         if (!count($schema['fields'])) {
+            throw new \Exception(get_called_class() . ': columns required!');
+         }
+         if ($pri !== 1) {
+            throw new \Exception(get_called_class() . ': single primary index required!');
+         }
+      }
+      return $schema;
+   }
 }

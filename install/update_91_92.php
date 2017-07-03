@@ -352,13 +352,7 @@ function update91to92() {
    }
 
    if (!TableExists('glpi_devicegenerictypes')) {
-      $query = "CREATE TABLE `glpi_devicegenerictypes` (
-                  `id` INT(11) NOT NULL AUTO_INCREMENT,
-                  `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                  `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
-                  PRIMARY KEY (`id`),
-                  INDEX `name` (`name`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $query = $migration->getCreateTable('DeviceGenericType');
       $DB->queryOrDie($query, "9.2 add table glpi_devicegenerictypes");
    }
 
