@@ -836,6 +836,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'DeviceGenericType'    => _n('Generic device type', 'Generic device types',
                                               Session::getPluralNumber()),
+                 'DeviceSensorType'     => _n('Sensor type', 'Sensors types',
+                                              Session::getPluralNumber()),
                  'DeviceMemoryType'     => _n('Memory type', 'Memory types',
                                               Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
@@ -905,7 +907,9 @@ class Dropdown {
                                                    'Device processor models', Session::getPluralNumber()),
                   'DeviceSoundCardModel'     => _n('Device sound card model',
                                                    'Device sound card models', Session::getPluralNumber()),
-               ],
+                  'DeviceSensorModel'        => _n('Device sensor model',
+                                                   'Device sensor models', Session::getPluralNumber()),
+             ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                  'VirtualMachineType'   => _n('Virtualization system',
