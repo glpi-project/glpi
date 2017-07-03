@@ -4904,7 +4904,7 @@ class CommonDBTM extends CommonGLPI {
     * @return array
     */
    public static function getSchema() {
-      static $schema = NULL;
+      static $schema = null;
 
       if (is_null($schema)) {
          $schema = [
@@ -4920,7 +4920,7 @@ class CommonDBTM extends CommonGLPI {
             if (preg_match('/@glpidb( *)field( *)(?P<name>\w*)( *)(?P<type>\w*)( *)("?(?P<value>[^"]*)"?)$/', $line, $reg)) {
                $schema['fields'][$reg['name']] = [
                   'type'  => $reg['type'],
-                  'value' => (isset($reg['value'])&& $reg['value'] ? $reg['value'] : NULL),
+                  'value' => (isset($reg['value'])&& $reg['value'] ? $reg['value'] : null),
                ];
             } else if (preg_match('/@glpidb( *)index( *)(?P<unique>unique)?( *)(?P<primary>primary)?( *)(?P<name>\w*)( *)(\((?P<fields>.*)\))?/', $line, $reg)) {
                $schema['indexes'][$reg['name']] = [
