@@ -335,7 +335,7 @@ class Dropdown {
                if ($translate && !empty($data['transname'])) {
                   $name = $data['transname'];
                } else {
-                  $name = $data["name"];
+                  $name = $data[$item->getNameField()];
                }
                if (isset($data["comment"])) {
                   if ($translate && !empty($data['transcomment'])) {
@@ -838,6 +838,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'DeviceGenericType'    => _n('Generic device type', 'Generic device types',
                                               Session::getPluralNumber()),
+                 'DeviceSensorType'     => _n('Sensor type', 'Sensors types',
+                                              Session::getPluralNumber()),
                  'DeviceMemoryType'     => _n('Memory type', 'Memory types',
                                               Session::getPluralNumber()),
                  'SupplierType'         => _n('Third party type',
@@ -907,7 +909,9 @@ class Dropdown {
                                                    'Device processor models', Session::getPluralNumber()),
                   'DeviceSoundCardModel'     => _n('Device sound card model',
                                                    'Device sound card models', Session::getPluralNumber()),
-               ],
+                  'DeviceSensorModel'        => _n('Device sensor model',
+                                                   'Device sensor models', Session::getPluralNumber()),
+             ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                  'VirtualMachineType'   => _n('Virtualization system',
@@ -979,8 +983,6 @@ class Dropdown {
              __('Networking') => [
                  'NetworkInterface'         => _n('Network interface',
                                                   'Network interfaces',
-                                                  Session::getPluralNumber()),
-                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmware',
                                                   Session::getPluralNumber()),
                  'Netpoint'                 => _n('Network outlet', 'Network outlets',
                                                   Session::getPluralNumber()),
@@ -1336,7 +1338,7 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @deprecated since version 0.85, replaced by self::showSelectItemFromItemtypes()
+    * @deprecated 0.85 use Dropdown::showSelectItemFromItemtypes()
     *
     * @param $myname          select name
     * @param $value_type      default value for the device type (default 0)
@@ -1351,6 +1353,8 @@ class Dropdown {
    **/
    static function showAllItems($myname, $value_type = 0, $value = 0, $entity_restrict = -1, $types = '',
                                 $onlyglobal = false, $checkright = false, $itemtypename = 'itemtype') {
+
+      Toolbox::logDebug('showAllItems() method is deprecated');
       $options = [];
       $options['itemtype_name']   = $itemtypename;
       $options['items_id_name']   = $myname;
@@ -1593,11 +1597,12 @@ class Dropdown {
     * @param $options   array of additionnal options :
     *                            - unit : string unit to used
     *                            - display : boolean if false get string
-    * @deprecated since 0.84 use Dropdown::showNumber instead
+    * @deprecated 0.84 use Dropdown::showNumber instead
    **/
    static function showInteger($myname, $value, $min = 0, $max = 100, $step = 1, $toadd = [],
                                $options = []) {
 
+      Toolbox::logDebug('showInteger() method is deprecated');
       $opt = ['value' => $value,
                    'min'   => $min,
                    'max'   => $max,

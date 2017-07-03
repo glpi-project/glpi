@@ -2507,8 +2507,34 @@ function update084to085() {
    // Device update
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
 
-   foreach (array_merge(CommonDevice::getDeviceTypes(),
-                        Item_Devices::getDeviceTypes()) as $itemtype) {
+   $devices = [
+      'DeviceMotherboard',
+      'DeviceProcessor',
+      'DeviceMemory',
+      'DeviceHardDrive',
+      'DeviceNetworkCard',
+      'DeviceDrive',
+      'DeviceControl',
+      'DeviceGraphicCard',
+      'DeviceSoundCard',
+      'DevicePci',
+      'DeviceCase',
+      'DevicePowerSupply',
+      'Item_DeviceMotherboard',
+      'Item_DeviceProcessor',
+      'Item_DeviceMemory',
+      'Item_DeviceHardDrive',
+      'Item_DeviceNetworkCard',
+      'Item_DeviceDrive',
+      'Item_DeviceControl',
+      'Item_DeviceGraphicCard',
+      'Item_DeviceSoundCard',
+      'Item_DevicePci',
+      'Item_DeviceCase',
+      'Item_DevicePowerSupply'
+   ];
+
+   foreach ($devices as $itemtype) {
       $table = $itemtype::getTable();
       if (!FieldExists($table, 'entities_id')) {
          $migration->addField($table, 'entities_id', 'integer');
@@ -2807,3 +2833,4 @@ function update084to085() {
    return $updateresult;
 }
 
+class Bookmark extends SavedSearch {}

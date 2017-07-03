@@ -50,46 +50,9 @@ function update91to92() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2'));
    $migration->setVersion('9.2');
 
-   $backup_tables = false;
-   // table already exist but deleted during the migration or table created
-   $newtables = ['glpi_businesscriticities',
-                 'glpi_knowbaseitems_items',
-                 'glpi_knowbaseitems_revisions',
-                 'glpi_knowbaseitems_comments',
-                 'glpi_devicecasemodels',
-                 'glpi_devicecontrolmodels',
-                 'glpi_devicedrivemodels',
-                 'glpi_devicegraphiccardmodels',
-                 'glpi_deviceharddrivemodels',
-                 'glpi_devicememorymodels',
-                 'glpi_devicemotherboardmodels',
-                 'glpi_devicenetworkcardmodels',
-                 'glpi_devicepcimodels',
-                 'glpi_devicepowersupplymodels',
-                 'glpi_deviceprocessormodels',
-                 'glpi_devicesoundcardmodels',
-                 'glpi_devicegenericmodels',
-                 'glpi_devicegenerics',
-                 'glpi_items_devicegenerics',
-                 'glpi_devicegenerictypes',
-                 'glpi_devicebatteries',
-                 'glpi_items_devicebatteries',
-                 'glpi_devicebatterytypes',
-                 'glpi_devicefirmwares',
-                 'glpi_items_devicefirmwares',
-                 'glpi_devicefirmwaretypes',
-                 'glpi_savedsearches_alerts',
-                 'glpi_items_operatingsystems',
-                 'glpi_operatingsystemkernels',
-                 'glpi_operatingsystemkernelversions',
-                 'glpi_operatingsystemeditions'];
-
-   $migration->backupTables($newtables);
-
-   //put you migration script here
-
    // add business criticity
    $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
+   $migration->migrationOneTable('glpi_infocoms');
    $migration->addKey("glpi_infocoms", "businesscriticities_id");
 
    if (!TableExists("glpi_businesscriticities")) {
@@ -294,7 +257,8 @@ function update91to92() {
               'glpi_devicesoundcardmodels',
               'glpi_devicegenericmodels',
               'glpi_devicebatterymodels',
-              'glpi_devicefirmwaremodels'];
+              'glpi_devicefirmwaremodels',
+              'glpi_devicesensormodels'];
 
    foreach ($tables as $table) {
       if (!TableExists($table)) {
@@ -540,6 +504,77 @@ function update91to92() {
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('1','BIOS',NULL,NULL,NULL);");
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('2','UEFI',NULL,NULL,NULL);");
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('3','Firmware',NULL,NULL,NULL);");
+   }
+
+   //Device sensors
+   if (!TableExists('glpi_devicesensors')) {
+      $query = "CREATE TABLE `glpi_devicesensors` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `devicesensortypes_id` int(11) NOT NULL DEFAULT '0',
+                  `devicesensormodels_id` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `designation` (`designation`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `devicesensortypes_id` (`devicesensortypes_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `states_id` (`states_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->queryOrDie($query, "9.2 add table glpi_devicesensors");
+   }
+
+   if (!TableExists('glpi_items_devicesensors')) {
+      $query = "CREATE TABLE `glpi_items_devicesensors` (
+                   `id` INT(11) NOT NULL AUTO_INCREMENT,
+                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `devicesensors_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
+                   `entities_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `locations_id` INT(11) NOT NULL DEFAULT '0',
+                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   PRIMARY KEY (`id`),
+                   INDEX `computers_id` (`items_id`),
+                   INDEX `devicesensors_id` (`devicesensors_id`),
+                   INDEX `is_deleted` (`is_deleted`),
+                   INDEX `is_dynamic` (`is_dynamic`),
+                   INDEX `entities_id` (`entities_id`),
+                   INDEX `is_recursive` (`is_recursive`),
+                   INDEX `serial` (`serial`),
+                   INDEX `item` (`itemtype`, `items_id`),
+                   INDEX `otherserial` (`otherserial`)
+                )
+                COLLATE='utf8_unicode_ci'
+                ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_items_devicesensors");
+   }
+
+   if (!TableExists('glpi_devicesensortypes')) {
+      $query = "CREATE TABLE `glpi_devicesensortypes` (
+                  `id` INT(11) NOT NULL AUTO_INCREMENT,
+                  `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                  `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+                   PRIMARY KEY (`id`),
+                   INDEX `name` (`name`)
+                )
+                COLLATE='utf8_unicode_ci' ENGINE=MyISAM;";
+      $DB->queryOrDie($query, "9.2 add table glpi_devicesensortypes");
    }
 
    //Father/son for Software licenses
@@ -1189,6 +1224,74 @@ Regards,',
                            '".$rightValue."')";
          $DB->queryOrDie($query, "9.1 add right for simcards pin and puk codes");
       }
+   }
+
+   //Firmware for phones
+   if (fieldExists('glpi_phones', 'firmware')) {
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'firmware'],
+         'FROM'   => 'glpi_phones',
+         'NOT'    => ['firmware' => null]
+      ]);
+
+      $firmwares = [];
+      while ($row = $iterator->next()) {
+         if (!isset($firmwares[$row['firmware']])) {
+            $fw = new DeviceFirmware();
+            if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
+               $firmwares[$row['firmware']] = $fw->getID();
+            } else {
+               $id = $fw->add([
+                  'designation'              => $row['firmware'],
+                  'devicefirmwaretypes_id'   => '3' //type "firmware"
+               ]);
+               $firmwares[$row['firmware']] = $id;
+            }
+         }
+
+         //add link
+         $item_fw = new Item_DeviceFirmware();
+         $item_fw->add([
+            'itemtype'           => 'Phone',
+            'items_id'           => $row['id'],
+            'devicefirmwares_id' => $firmwares[$row['firmware']]
+         ]);
+      }
+
+      $migration->dropField('glpi_phones', 'firmware');
+   }
+
+   //Firmware for network equipements
+   if (tableExists('glpi_networkequipmentfirmwares')) {
+      $mapping = [];
+      $iterator = $DB->request('glpi_networkequipmentfirmwares');
+      while ($row = $iterator->next()) {
+         $fw = new DeviceFirmware();
+         $id = $fw->add([
+            'designation'              => $row['name'],
+            'comment'                  => $row['comment'],
+            'devicefirmwaretypes_id'   => 3, //type "Firmware"
+            'date_creation'            => $row['date_creation'],
+            'date_mod'                 => $row['date_mod']
+         ]);
+         $mapping[$row['id']] = $id;
+      }
+
+      $iterator = $DB->request('glpi_networkequipments');
+      while ($row = $iterator->next()) {
+         if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
+            $itemdevice = new Item_DeviceFirmware();
+            $itemdevice->add([
+               'itemtype'           => 'NetworkEquipment',
+               'items_id'           => $row['id'],
+               'devicefirmwares_id' => $mapping[$row['networkequipmentfirmwares_id']]
+            ]);
+         }
+      }
+
+      $migration->dropKey('glpi_networkequipments', 'networkequipmentfirmwares_id');
+      $migration->dropField('glpi_networkequipments', 'networkequipmentfirmwares_id');
+      $migration->dropTable('glpi_networkequipmentfirmwares');
    }
 
    // add projecttemplate

@@ -2109,6 +2109,61 @@ CREATE TABLE `glpi_deviceprocessors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_devicesensors
+
+DROP TABLE IF EXISTS `glpi_devicesensors`;
+CREATE TABLE `glpi_devicesensors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `designation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicesensortypes_id` int(11) NOT NULL DEFAULT '0',
+  `devicesensormodels_id` int(11) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `designation` (`designation`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `devicesensortypes_id` (`devicesensortypes_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `locations_id` (`locations_id`),
+  KEY `states_id` (`states_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_devicesensormodels
+
+DROP TABLE IF EXISTS `glpi_devicesensormodels`;
+CREATE TABLE `glpi_devicesensormodels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `product_number` (`product_number`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_devicesensortypes
+
+DROP TABLE IF EXISTS `glpi_devicesensortypes`;
+CREATE TABLE `glpi_devicesensortypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_devicesimcards
 
 DROP TABLE IF EXISTS `glpi_devicesimcards`;
@@ -3658,6 +3713,35 @@ CREATE TABLE `glpi_items_deviceprocessors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_items_devicesensors
+
+DROP TABLE IF EXISTS `glpi_items_devicesensors`;
+CREATE TABLE `glpi_items_devicesensors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `devicesensors_id` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`items_id`),
+  KEY `devicesensors_id` (`devicesensors_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `serial` (`serial`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `otherserial` (`otherserial`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_items_devicesoundcards
 
 DROP TABLE IF EXISTS `glpi_items_devicesoundcards`;
@@ -4203,22 +4287,6 @@ CREATE TABLE `glpi_networkaliases` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_networkequipmentfirmwares
-
-DROP TABLE IF EXISTS `glpi_networkequipmentfirmwares`;
-CREATE TABLE `glpi_networkequipmentfirmwares` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  `date_mod` datetime DEFAULT NULL,
-  `date_creation` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_networkequipmentmodels
 
 DROP TABLE IF EXISTS `glpi_networkequipmentmodels`;
@@ -4259,7 +4327,6 @@ CREATE TABLE `glpi_networkequipments` (
   `networks_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmenttypes_id` int(11) NOT NULL DEFAULT '0',
   `networkequipmentmodels_id` int(11) NOT NULL DEFAULT '0',
-  `networkequipmentfirmwares_id` int(11) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
@@ -4274,7 +4341,6 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
   KEY `domains_id` (`domains_id`),
-  KEY `networkequipmentfirmwares_id` (`networkequipmentfirmwares_id`),
   KEY `entities_id` (`entities_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `groups_id` (`groups_id`),
@@ -5787,7 +5853,6 @@ CREATE TABLE `glpi_phones` (
   `comment` text COLLATE utf8_unicode_ci,
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `firmware` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `phonetypes_id` int(11) NOT NULL DEFAULT '0',
   `phonemodels_id` int(11) NOT NULL DEFAULT '0',

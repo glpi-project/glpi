@@ -383,10 +383,15 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td colspan=2>".__('The MAC address and the IP of the equipment are included in an aggregated network port')."</td>";
       echo "</tr>\n";
 
+      $firmware = new Item_DeviceFirmware();
+      $firmware->getFromDBByCrit([
+         'itemtype'  => $this->getType(),
+         'items_id'  => $this->getID()
+      ]);
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Firmware', 'Firmware', 1)."</td>";
       echo "<td>";
-      NetworkEquipmentFirmware::dropdown(['value' => $this->fields["networkequipmentfirmwares_id"]]);
+      DeviceFirmware::dropdown(['value' => $firmware->fields["devicefirmwares_id"]]);
       echo "</td>";
       echo "</tr>";
 
@@ -563,10 +568,22 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '11',
-         'table'              => 'glpi_networkequipmentfirmwares',
-         'field'              => 'name',
+         'table'              => 'glpi_devicefirmwares',
+         'field'              => 'id',
          'name'               => _n('Firmware', 'Firmware', 1),
-         'datatype'           => 'dropdown'
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicefirmwares',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item',
+                  'specific_itemtype'  => 'NetworkEquipment'
+               ]
+            ]
+         ]
       ];
 
       $tab[] = [

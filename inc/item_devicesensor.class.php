@@ -28,13 +28,29 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
+**/
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+/**
+ * @since 9.2
  */
+class Item_DeviceSensor extends Item_Devices {
 
-/** @file
-* @brief
-*/
+   static public $itemtype_2 = 'DeviceSensor';
+   static public $items_id_2 = 'devicesensors_id';
 
-include ('../inc/includes.php');
+   static protected $notable = false;
 
-$dropdown = new NetworkEquipmentFirmware();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+
+   static function getSpecificities($specif = '') {
+      return ['serial'       => parent::getSpecificities('serial'),
+              'otherserial'  => parent::getSpecificities('otherserial'),
+              'locations_id' => parent::getSpecificities('locations_id'),
+              'states_id'    => parent::getSpecificities('states_id'),
+             ];
+   }
+
+}
