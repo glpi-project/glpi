@@ -897,7 +897,7 @@ class Migration {
             $key = ($ind['unique'] ? 'UNIQUE KEY ' : 'KEY ') . $DB->quoteName($name);
          }
          $sql .= ",\n{$key} (";
-         foreach($ind['fields'] as $f) {
+         foreach ($ind['fields'] as $f) {
             $sql .= $DB->quoteName(trim($f));
          }
          $sql .= ')';

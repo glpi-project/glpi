@@ -4916,7 +4916,7 @@ class CommonDBTM extends CommonGLPI {
          $ref = new ReflectionClass(get_called_class());
          $doc = explode(PHP_EOL, $ref->getDocComment());
          $pri = 0;
-         foreach($doc as $line) {
+         foreach ($doc as $line) {
             if (preg_match('/@glpidb( *)field( *)(?P<name>\w*)( *)(?P<type>\w*)( *)("?(?P<value>[^"]*)"?)$/', $line, $reg)) {
                $schema['fields'][$reg['name']] = [
                   'type'  => $reg['type'],
@@ -4924,7 +4924,7 @@ class CommonDBTM extends CommonGLPI {
                ];
             } else if (preg_match('/@glpidb( *)index( *)(?P<unique>unique)?( *)(?P<primary>primary)?( *)(?P<name>\w*)( *)(\((?P<fields>.*)\))?/', $line, $reg)) {
                $schema['indexes'][$reg['name']] = [
-                  'fields'  => (isset($reg['fields']) && $reg['fields'] ?  explode(',',  $reg['fields']) : [$reg['name']]),
+                  'fields'  => (isset($reg['fields']) && $reg['fields'] ?  explode(',', $reg['fields']) : [$reg['name']]),
                   'unique'  => ($reg['unique'] ? 1 : 0),
                   'primary' => ($reg['primary'] ? ++$pri : 0),
                ];
