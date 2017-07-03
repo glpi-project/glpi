@@ -2441,10 +2441,13 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
-    * \deprecated since 0.84
+    *
+    * @deprecated 0.84
    **/
    static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false) {
       global $CFG_GLPI;
+
+      Toolbox::logDebug('openArrowMassives() method is deprecated');
 
       if ($fixed) {
          echo "<table class='tab_glpi' width='950px'>";
@@ -2482,9 +2485,12 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
-    * \deprecated since 0.84
+    *
+    * @deprecated 0.84
    **/
    static function closeArrowMassives($actions, $confirm = []) {
+
+      Toolbox::logDebug('closeArrowMassives() method is deprecated');
 
       if (count($actions)) {
          foreach ($actions as $name => $label) {
@@ -2987,10 +2993,12 @@ class Html {
     * @param $displayYear  should we set/diplay the year? (true by default)
     *
     * @return rand value used
-    * \deprecated since 0.84 used Html::showDateField instead
+    *
+    * @deprecated 0.84 use Html::showDateField instead
    **/
    static function showDateFormItem($element, $value = '', $maybeempty = true, $can_edit = true,
                                     $minDate = '', $maxDate = '', $displayYear = true) {
+      Toolbox::logDebug('showDateFormItem() method is deprecated');
       return self::showDateField($element, ['value'       => $value,
                                                  'maybeempty'  => $maybeempty,
                                                  'canedit'     => $can_edit,
@@ -3162,12 +3170,14 @@ class Html {
     * @param $maxTime      maximum allowed time (default '')
     *
     * @return rand value used
-    * \deprecated since 0.84 used Html::showDateTimeField instead
+    *
+    * @deprecated 0.84 use Html::showDateTimeField instead
    **/
    static function showDateTimeFormItem($element, $value = '', $time_step = -1, $maybeempty = true,
                                         $can_edit = true, $minDate = '', $maxDate = '', $minTime = '',
                                         $maxTime = '') {
 
+      Toolbox::logDebug('showDateTimeFormItem() method is deprecated');
       return self::showDateTimeField($element, ['value'      => $value,
                                                      'timestep'   => $time_step,
                                                      'maybeempty' => $maybeempty,
