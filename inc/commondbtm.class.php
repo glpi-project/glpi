@@ -4908,7 +4908,7 @@ class CommonDBTM extends CommonGLPI {
       $ref = new ReflectionClass(get_called_class());
       $docblock= explode(PHP_EOL, $ref->getDocComment());
       return array_filter($docblock, function($val) {
-         return (strpos($val, 'glpidb')!==false);
+         return (strpos($val, '@glpidb')!==false);
       });
    }
 
