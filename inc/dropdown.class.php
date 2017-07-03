@@ -1334,7 +1334,7 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @deprecated 0.85 replaced by self::showSelectItemFromItemtypes()
+    * @deprecated 0.85 use Dropdown::showSelectItemFromItemtypes()
     *
     * @param $myname          select name
     * @param $value_type      default value for the device type (default 0)
@@ -1349,6 +1349,8 @@ class Dropdown {
    **/
    static function showAllItems($myname, $value_type = 0, $value = 0, $entity_restrict = -1, $types = '',
                                 $onlyglobal = false, $checkright = false, $itemtypename = 'itemtype') {
+
+      Toolbox::logDebug('showAllItems() method is deprecated');
       $options = [];
       $options['itemtype_name']   = $itemtypename;
       $options['items_id_name']   = $myname;
@@ -1596,6 +1598,7 @@ class Dropdown {
    static function showInteger($myname, $value, $min = 0, $max = 100, $step = 1, $toadd = [],
                                $options = []) {
 
+      Toolbox::logDebug('showInteger() method is deprecated');
       $opt = ['value' => $value,
                    'min'   => $min,
                    'max'   => $max,

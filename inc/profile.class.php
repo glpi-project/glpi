@@ -2461,10 +2461,12 @@ class Profile extends CommonDBTM {
     * @param $write     display write choice ? (default 1)
     *
     * @return nothing (print out an HTML select box)
-    * \deprecated since version 0.84 use dropdownRight instead
+    *
+    * @deprecated 0.84 use dropdownRight instead
    **/
    static function dropdownNoneReadWrite($name, $value, $none = 1, $read = 1, $write = 1) {
 
+      Toolbox::logDebug('dropdownNoneReadWrite() method is deprecated');
       return self::dropdownRight($name, ['value'     => $value,
                                               'nonone'  => !$none,
                                               'noread'  => !$read,
