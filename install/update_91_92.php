@@ -352,7 +352,7 @@ function update91to92() {
    }
 
    if (!TableExists('glpi_devicegenerictypes')) {
-      // Use static schema, as dynamic one may break future upgrade
+      // Use static schema, for exact result, as dynamic one may break future upgrade
       $schema = [
             ' * @glpidb field id autoincrement',
             ' * @glpidb field name string',
