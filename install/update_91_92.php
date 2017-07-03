@@ -52,37 +52,37 @@ function update91to92() {
 
    $backup_tables = false;
    // table already exist but deleted during the migration or table created
-   $newtables     = ['glpi_businesscriticities',
-      'glpi_knowbaseitems_items',
-      'glpi_knowbaseitems_revisions',
-      'glpi_knowbaseitems_comments',
-      'glpi_devicecasemodels',
-      'glpi_devicecontrolmodels',
-      'glpi_devicedrivemodels',
-      'glpi_devicegraphiccardmodels',
-      'glpi_deviceharddrivemodels',
-      'glpi_devicememorymodels',
-      'glpi_devicemotherboardmodels',
-      'glpi_devicenetworkcardmodels',
-      'glpi_devicepcimodels',
-      'glpi_devicepowersupplymodels',
-      'glpi_deviceprocessormodels',
-      'glpi_devicesoundcardmodels',
-      'glpi_devicegenericmodels',
-      'glpi_devicegenerics',
-      'glpi_items_devicegenerics',
-      'glpi_devicegenerictypes',
-      'glpi_devicebatteries',
-      'glpi_items_devicebatteries',
-      'glpi_devicebatterytypes',
-      'glpi_devicefirmwares',
-      'glpi_items_devicefirmwares',
-      'glpi_devicefirmwaretypes',
-                     'glpi_savedsearches_alerts',
-                     'glpi_items_operatingsystems',
-                     'glpi_operatingsystemkernels',
-                     'glpi_operatingsystemkernelversions',
-                     'glpi_operatingsystemeditions'];
+   $newtables = ['glpi_businesscriticities',
+                 'glpi_knowbaseitems_items',
+                 'glpi_knowbaseitems_revisions',
+                 'glpi_knowbaseitems_comments',
+                 'glpi_devicecasemodels',
+                 'glpi_devicecontrolmodels',
+                 'glpi_devicedrivemodels',
+                 'glpi_devicegraphiccardmodels',
+                 'glpi_deviceharddrivemodels',
+                 'glpi_devicememorymodels',
+                 'glpi_devicemotherboardmodels',
+                 'glpi_devicenetworkcardmodels',
+                 'glpi_devicepcimodels',
+                 'glpi_devicepowersupplymodels',
+                 'glpi_deviceprocessormodels',
+                 'glpi_devicesoundcardmodels',
+                 'glpi_devicegenericmodels',
+                 'glpi_devicegenerics',
+                 'glpi_items_devicegenerics',
+                 'glpi_devicegenerictypes',
+                 'glpi_devicebatteries',
+                 'glpi_items_devicebatteries',
+                 'glpi_devicebatterytypes',
+                 'glpi_devicefirmwares',
+                 'glpi_items_devicefirmwares',
+                 'glpi_devicefirmwaretypes',
+                 'glpi_savedsearches_alerts',
+                 'glpi_items_operatingsystems',
+                 'glpi_operatingsystemkernels',
+                 'glpi_operatingsystemkernelversions',
+                 'glpi_operatingsystemeditions'];
 
    $migration->backupTables($newtables);
 
@@ -186,17 +186,17 @@ function update91to92() {
 
    //set kb translations users...
    foreach ($DB->request(['SELECT'     => ['glpi_knowbaseitems.id', 'glpi_knowbaseitems.users_id'],
-                         'FROM'       => 'glpi_knowbaseitems',
-                         'INNER JOIN' => ["glpi_knowbaseitemtranslations"
-                                      => ['FKEY' => ['glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
-                                                     'glpi_knowbaseitems'            => 'id']]]])
-           as $knowitems) {
+                          'FROM'       => 'glpi_knowbaseitems',
+                          'INNER JOIN' => ["glpi_knowbaseitemtranslations"
+                                           => ['FKEY' => ['glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
+                                                          'glpi_knowbaseitems'            => 'id']]]])
+            as $knowitems) {
 
-            $query = "UPDATE `glpi_knowbaseitemtranslations`
+      $query = "UPDATE `glpi_knowbaseitemtranslations`
                 SET `users_id` = '{$knowitems['users_id']}'
                 WHERE `knowbaseitems_id` = '{$knowitems['id']}'";
-            $DB->queryOrDie($query, 'Set knowledge base translations users');
-         }
+      $DB->queryOrDie($query, 'Set knowledge base translations users');
+   }
 
    $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATETIME");
    $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATETIME");
@@ -239,15 +239,15 @@ function update91to92() {
 
    //add product number
    $product_types = ['Computer',
-      'Printer',
-      'NetworkEquipment',
-      'Phone',
-      'Peripheral',
+                     'Printer',
+                     'NetworkEquipment',
+                     'Phone',
+                     'Peripheral',
                      'Monitor'];
 
    foreach ($product_types as $type) {
-      if (class_exists($type.'Model')) {
-         $table = getTableForItemType($type.'Model');
+      if (class_exists($type . 'Model')) {
+         $table = getTableForItemType($type . 'Model');
          $migration->addField($table, 'product_number', 'string');
          $migration->migrationOneTable($table);
          $migration->addKey($table, 'product_number');
@@ -256,16 +256,16 @@ function update91to92() {
 
    // add fields on every item_device tables
    $tables = ['glpi_items_devicecases',
-      'glpi_items_devicecontrols',
-      'glpi_items_devicedrives',
-      'glpi_items_devicegraphiccards',
-      'glpi_items_deviceharddrives',
-      'glpi_items_devicememories',
-      'glpi_items_devicemotherboards',
-      'glpi_items_devicenetworkcards',
-      'glpi_items_devicepcis',
-      'glpi_items_devicepowersupplies',
-      'glpi_items_deviceprocessors',
+              'glpi_items_devicecontrols',
+              'glpi_items_devicedrives',
+              'glpi_items_devicegraphiccards',
+              'glpi_items_deviceharddrives',
+              'glpi_items_devicememories',
+              'glpi_items_devicemotherboards',
+              'glpi_items_devicenetworkcards',
+              'glpi_items_devicepcis',
+              'glpi_items_devicepowersupplies',
+              'glpi_items_deviceprocessors',
               'glpi_items_devicesoundcards'];
 
    //add serial, location and state on each devices items
@@ -281,19 +281,19 @@ function update91to92() {
 
    // Create tables :
    $tables = ['glpi_devicecasemodels',
-      'glpi_devicecontrolmodels',
-      'glpi_devicedrivemodels',
-      'glpi_devicegraphiccardmodels',
-      'glpi_deviceharddrivemodels',
-      'glpi_devicememorymodels',
-      'glpi_devicemotherboardmodels',
-      'glpi_devicenetworkcardmodels',
-      'glpi_devicepcimodels',
-      'glpi_devicepowersupplymodels',
-      'glpi_deviceprocessormodels',
-      'glpi_devicesoundcardmodels',
-      'glpi_devicegenericmodels',
-      'glpi_devicebatterymodels',
+              'glpi_devicecontrolmodels',
+              'glpi_devicedrivemodels',
+              'glpi_devicegraphiccardmodels',
+              'glpi_deviceharddrivemodels',
+              'glpi_devicememorymodels',
+              'glpi_devicemotherboardmodels',
+              'glpi_devicenetworkcardmodels',
+              'glpi_devicepcimodels',
+              'glpi_devicepowersupplymodels',
+              'glpi_deviceprocessormodels',
+              'glpi_devicesoundcardmodels',
+              'glpi_devicegenericmodels',
+              'glpi_devicebatterymodels',
               'glpi_devicefirmwaremodels'];
 
    foreach ($tables as $table) {
@@ -313,16 +313,16 @@ function update91to92() {
 
    // Add a field in glpi_device* tables :
    $tables = ['glpi_devicecases'         => 'devicecasemodels_id',
-      'glpi_devicecontrols'      => 'devicecontrolmodels_id',
-      'glpi_devicedrives'        => 'devicedrivemodels_id',
-      'glpi_devicegraphiccards'  => 'devicegraphiccardmodels_id',
-      'glpi_deviceharddrives'    => 'deviceharddrivemodels_id',
-      'glpi_devicememories'      => 'devicememorymodels_id',
-      'glpi_devicemotherboards'  => 'devicemotherboardmodels_id',
-      'glpi_devicenetworkcards'  => 'devicenetworkcardmodels_id',
-      'glpi_devicepcis'          => 'devicepcimodels_id',
-      'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
-      'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
+              'glpi_devicecontrols'      => 'devicecontrolmodels_id',
+              'glpi_devicedrives'        => 'devicedrivemodels_id',
+              'glpi_devicegraphiccards'  => 'devicegraphiccardmodels_id',
+              'glpi_deviceharddrives'    => 'deviceharddrivemodels_id',
+              'glpi_devicememories'      => 'devicememorymodels_id',
+              'glpi_devicemotherboards'  => 'devicemotherboardmodels_id',
+              'glpi_devicenetworkcards'  => 'devicenetworkcardmodels_id',
+              'glpi_devicepcis'          => 'devicepcimodels_id',
+              'glpi_devicepowersupplies' => 'devicepowersupplymodels_id',
+              'glpi_deviceprocessors'    => 'deviceprocessormodels_id',
               'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'];
 
    foreach ($tables as $table => $field) {
@@ -597,25 +597,25 @@ function update91to92() {
    ];
 
    if (FieldExists("glpi_notifications", "mode", false)) {
-   foreach ($new_notifications as $event => $notif_options) {
-      $notifications_id = $notification->add([
-         'name'                     => $notif_options['label'],
-         'itemtype'                 => 'Ticket',
-         'event'                    => $event,
-                        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-         'notificationtemplates_id' => 0,
-         'is_recursive'             => 1,
-                        'is_active'                => 0]);
+      foreach ($new_notifications as $event => $notif_options) {
+         $notifications_id = $notification->add([
+                                                   'name'                     => $notif_options['label'],
+                                                   'itemtype'                 => 'Ticket',
+                                                   'event'                    => $event,
+                                                   'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                                                   'notificationtemplates_id' => 0,
+                                                   'is_recursive'             => 1,
+                                                   'is_active'                => 0]);
 
          $notificationtarget->add(['items_id'         => $notif_options['targets_id'],
-         'type'             => 1,
+                                   'type'             => 1,
                                    'notifications_id' => $notifications_id]);
-   }
+      }
    }
 
    /************** Auto login **************/
    Config::setConfigurationValues('core', ['login_remember_time'    => 604800,
-                                                'login_remember_default' => 1]);
+                                           'login_remember_default' => 1]);
 
    if (TableExists('glpi_bookmarks')) {
       $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
@@ -1192,15 +1192,19 @@ Regards,',
    }
 
    // add projecttemplate
-   $migration->addField("glpi_projects", "projecttemplates_id", "integer");
-   $migration->addField("glpi_projects", "is_template", "bool");
-   $migration->addField("glpi_projects", "template_name", "string");
-   $migration->addKey("glpi_projects", "projecttemplates_id");
+   if (!FieldExists('glpi_projects', 'projecttemplates_id')) {
+      $migration->addField("glpi_projects", "projecttemplates_id", "integer");
+      $migration->addField("glpi_projects", "is_template", "bool");
+      $migration->addField("glpi_projects", "template_name", "string");
+      $migration->addKey("glpi_projects", "projecttemplates_id");
+   }
 
-   $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
-   $migration->addField("glpi_projecttasks", "is_template", "bool");
-   $migration->addField("glpi_projecttasks", "template_name", "string");
-   $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
+   if (!FieldExists('glpi_projecttasks', 'projecttasktemplates_id')) {
+      $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
+      $migration->addField("glpi_projecttasks", "is_template", "bool");
+      $migration->addField("glpi_projecttasks", "template_name", "string");
+      $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
+   }
 
    if (!TableExists('glpi_projecttasktemplates')) {
       $query = "CREATE TABLE `glpi_projecttasktemplates` (

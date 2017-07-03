@@ -150,18 +150,16 @@ class ProjectTask extends CommonDBChild {
    /**
     * Duplicate all tasks from a project template to his clone
     *
-    * @since version 0.84
+    * @since version 9.2
     *
-    * @param $oldid
-    * @param $newid
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
     **/
    static function cloneProjectTask ($oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_projecttasks`
-                 WHERE `projects_id` = '$oldid'";
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request('glpi_projecttasks',
+                            ['WHERE'  => "`projects_id` = '$oldid'"]) as $data) {
          $cd                   = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;

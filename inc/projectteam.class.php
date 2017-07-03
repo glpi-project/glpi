@@ -126,10 +126,10 @@ class ProjectTeam extends CommonDBRelation {
    /**
     * Duplicate all teams from a project template to his clone
     *
-    * @since version 0.84
+    * @since version 9.2
     *
-    * @param $oldid
-    * @param $newid
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
     **/
    static function cloneProjectTeam ($oldid, $newid) {
       global $DB;

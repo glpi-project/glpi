@@ -102,19 +102,18 @@ class Notepad extends CommonDBChild {
    /**
     * Duplicate all notepads from a item template to his clone
     *
-    * @since version 0.84
+    * @since version 9.2
     *
-    * @param $oldid
-    * @param $newid
+    * @param $itemtype     itemtype of the item
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
     **/
-   static function cloneItem ($type, $oldid, $newid) {
+   static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_notepads`
-                 WHERE `items_id` = '$oldid' 
-                 AND `itemtype` = '$type'";
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request('glpi_notepads',
+                            ['WHERE'  => "`items_id` = '$oldid'
+                                                AND `itemtype` = '$itemtype'"]) as $data) {
          $cd                   = new self();
          unset($data['id']);
          $data['items_id'] = $newid;

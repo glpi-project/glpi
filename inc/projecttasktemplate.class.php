@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Template for task
- * @since version 9.1
+ * @since version 9.2
 **/
 class ProjectTaskTemplate extends CommonDropdown {
 
@@ -204,9 +204,6 @@ class ProjectTaskTemplate extends CommonDropdown {
    }
 
 
-   /**
-    * @see CommonDropdown::displaySpecificTypeField()
-   **/
    function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
@@ -230,11 +227,6 @@ class ProjectTaskTemplate extends CommonDropdown {
    }
 
 
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {

@@ -6937,7 +6937,8 @@ CREATE TABLE `glpi_projects` (
   KEY `percent_done` (`percent_done`),
   KEY `show_on_global_gantt` (`show_on_global_gantt`),
   KEY `date_creation` (`date_creation`),
-  KEY `projecttemplates_id` (`projecttemplates_id`)
+  KEY `projecttemplates_id` (`projecttemplates_id`),
+  KEY `is_template` (`is_template`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7008,6 +7009,7 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `projectstates_id` (`projectstates_id`),
   KEY `projecttasktypes_id` (`projecttasktypes_id`),
   KEY `projecttasktemplates_id` (`projecttasktemplates_id`),
+  KEY `is_template` (`is_template`),
   KEY `is_milestone` (`is_milestone`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -7614,6 +7616,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
