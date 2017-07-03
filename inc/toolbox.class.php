@@ -1477,20 +1477,15 @@ class Toolbox {
     * Get a random string
     *
     * @param integer $length of the random string
-    * @param boolean $high strength of the random source (since 9.2)
     *
     * @return random string
    **/
-   static function getRandomString($length, $high = false) {
+   static function getRandomString($length) {
 
       $factory = new RandomLib\Factory();
-      if ($high) {
-         /* Notice "High" imply mcrypt extension, unwanted for now
-            See https://github.com/ircmaxell/RandomLib/issues/57 */
-         $generator = $factory->getMediumStrengthGenerator();
-      } else {
-         $generator = $factory->getLowStrengthGenerator();
-      }
+      /* "High" (and apparently "Medium") imply mcrypt extension, unwanted for now:
+         https://github.com/ircmaxell/RandomLib/issues/57 */
+      $generator = $factory->getLowStrengthGenerator();
 
       return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
    }
