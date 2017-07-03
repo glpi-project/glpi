@@ -880,10 +880,10 @@ class Migration {
     *
     * @return string
     */
-   public static function getCreateTable($type) {
+   public static function getCreateTable($type, Array $docblock) {
       global $DB;
 
-      $schema = $type::getSchema();
+      $schema = $type::getSchema($docblock);
 
       $sql = '';
       foreach ($schema['fields'] as $name => $f) {

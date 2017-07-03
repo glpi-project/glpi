@@ -4897,13 +4897,32 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Get the table schema from the classe docblock
+    * Get the class docblock schema entries
     *
     * @since 9.x
     *
     * @return array
     */
-   public static function getSchema() {
+   public static function getSchemaDocBlock() {
+
+      $ref = new ReflectionClass(get_called_class());
+      $docblock= explode(PHP_EOL, $ref->getDocComment());
+      return array_filter($docblock, function($val) {
+         return (strpos($val, 'glpidb')!==false);
+      });
+   }
+
+
+   /**
+    * Get the table schema from the classe docblock
+    *
+    * @since 9.x
+    *
+    * @param array $docblock optional (for migration), use class reflection by default
+    *
+    * @return array
+    */
+   public static function getSchema(Array $docblock = []) {
       static $schema = null;
 
       if (is_null($schema)) {
@@ -4913,10 +4932,11 @@ class CommonDBTM extends CommonGLPI {
             'indexes' => [],
          ];
 
-         $ref = new ReflectionClass(get_called_class());
-         $doc = explode(PHP_EOL, $ref->getDocComment());
+         if (!count($docblock)) {
+            $docblock= static::getSchemaDocBlock();
+         }
          $pri = 0;
-         foreach ($doc as $line) {
+         foreach ($docblock as $line) {
             if (preg_match('/@glpidb( *)field( *)(?P<name>\w*)( *)(?P<type>\w*)( *)("?(?P<value>[^"]*)"?)$/', $line, $reg)) {
                $schema['fields'][$reg['name']] = [
                   'type'  => $reg['type'],

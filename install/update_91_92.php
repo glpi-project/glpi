@@ -352,7 +352,15 @@ function update91to92() {
    }
 
    if (!TableExists('glpi_devicegenerictypes')) {
-      $query = $migration->getCreateTable('DeviceGenericType');
+      // Use static schema, as dynamic one may break future upgrade
+      $schema = [
+            ' * @glpidb field id autoincrement',
+            ' * @glpidb field name string',
+            ' * @glpidb field comment text',
+            ' * @glpidb index primary id',
+            ' * @glpidb index name',
+      ];
+      $query = $migration->getCreateTable('DeviceGenericType', $schema);
       $DB->queryOrDie($query, "9.2 add table glpi_devicegenerictypes");
    }
 

@@ -48,9 +48,22 @@ if (isset($args['item'])) {
    class_exists($type) or die("** class $type is not found\n");
    is_subclass_of($type, 'CommonDBTM') or die("** $type not a persistent object\n");
 
+   $lines = $type::getSchemaDocBlock();
+   if ($args['php']) {
+      if (count($lines)) {
+         echo PHP_EOL . '$schema = [' . PHP_EOL;
+         foreach ($lines as $line) {
+            echo "   '$line'," . PHP_EOL;
+         }
+         echo '];' . PHP_EOL . PHP_EOL;
+      } else {
+         die("Nothing found for this class\n");
+      }
+   }
    if ($args['sql']) {
-      echo PHP_EOL . Migration::getCreateTable($type) . PHP_EOL;
-   } else {
+      echo PHP_EOL . Migration::getCreateTable($type, $lines) . PHP_EOL;
+   }
+   if (!$args['php'] && !$args['sql']) {
       var_dump($type::getSchema());
    }
 } else {
