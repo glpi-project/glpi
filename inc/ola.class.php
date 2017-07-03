@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * OLA Class
- * @since version 9.1
+ * @since version 9.2
 **/
 class OLA extends CommonDBChild {
 

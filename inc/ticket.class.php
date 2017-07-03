@@ -377,7 +377,7 @@ class Ticket extends CommonITILObject {
     * @param $date         begin date of the ticket
     * @param $type         type of OLA
     *
-    * @since version 9.1 (before getDatasToAddOla without type parameter)
+    * @since version 9.2 (before getDatasToAddOla without type parameter)
     *
     * @return array of datas to add in ticket
     **/

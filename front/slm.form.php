@@ -32,6 +32,7 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 use Glpi\Event;
