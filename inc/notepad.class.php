@@ -104,9 +104,9 @@ class Notepad extends CommonDBChild {
     *
     * @since version 9.2
     *
-    * @param $itemtype     itemtype of the item
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param string $itemtype      itemtype of the item
+    * @param integer $oldid        ID of the item to clone
+    * @param integer $newid        ID of the item cloned
     **/
    static function cloneItem ($itemtype, $oldid, $newid) {
       global $DB;

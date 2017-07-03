@@ -152,8 +152,8 @@ class ProjectTask extends CommonDBChild {
     *
     * @since version 9.2
     *
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param integer $oldid        ID of the item to clone
+    * @param integer $newid        ID of the item cloned
     **/
    static function cloneProjectTask ($oldid, $newid) {
       global $DB;

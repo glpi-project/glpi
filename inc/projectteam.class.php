@@ -128,8 +128,8 @@ class ProjectTeam extends CommonDBRelation {
     *
     * @since version 9.2
     *
-    * @param $oldid        ID of the item to clone
-    * @param $newid        ID of the item cloned
+    * @param integer $oldid        ID of the item to clone
+    * @param integer $newid        ID of the item cloned
     **/
    static function cloneProjectTeam ($oldid, $newid) {
       global $DB;
