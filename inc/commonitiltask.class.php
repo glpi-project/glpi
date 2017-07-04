@@ -733,7 +733,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          'table'              => 'glpi_users',
          'field'              => 'name',
          'linkfield'          => 'users_id_tech',
-         'name'               => __('Technician'),
+         'name'               => __('Technician in charge of the task'),
          'datatype'           => 'itemlink',
          'right'              => 'own_ticket',
          'forcegroupby'       => true,
@@ -751,7 +751,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[] = [
          'id'                 => '112',
          'table'              => 'glpi_groups',
-         'field'              => 'name',
+         'field'              => 'completename',
          'linkfield'          => 'groups_id_tech',
          'name'               => __('Group in charge of the task'),
          'datatype'           => 'itemlink',
@@ -1747,5 +1747,175 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
    }
 
+
+
+   /**
+    * @param $start
+    * @param $status             (default ''process)
+    * @param $showgrouptickets   (true by default)
+    */
+   static function showCentralList($start, $status='todo', $showgrouptickets=true) {
+      global $DB, $CFG_GLPI;
+
+      $query = "SELECT `".self::getTable()."`.`id` "
+              . " FROM `".self::getTable()."`";
+
+      switch ($status) {
+         case "todo" : // we display the task with the status `todo`
+            $query .= "WHERE `".self::getTable()."`.`state`='".Planning::TODO."'";
+            break;
+
+      }
+      if ($showgrouptickets) {
+         $search_group   = " 0 = 1 ";
+
+         if (count($_SESSION['glpigroups'])) {
+            $groups        = implode("','", $_SESSION['glpigroups']);
+            $search_group = " `".self::getTable()."`.`groups_id_tech` IN ('".$groups."')";
+         }
+         $query .= " AND ".$search_group;
+      } else {
+         $query .= " AND `".self::getTable()."`.`users_id_tech`='".$_SESSION['glpiID']."'";
+      }
+
+      $query  .= " ORDER BY `".self::getTable()."`.`date_mod` DESC";
+      $result  = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
+         $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
+         $result  = $DB->query($query);
+         $number  = $DB->numrows($result);
+      } else {
+         $number = 0;
+      }
+
+      if ($numrows > 0) {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr class='noHover'><th colspan='4'>";
+
+         $options['reset'] = 'reset';
+         $forcetab         = '';
+         $num              = 0;
+         $itemtype = get_called_class();
+         $item = new $itemtype;
+         switch ($status) {
+            case "todo" :
+               $options['criteria'][0]['field']      = 12; // status
+               $options['criteria'][0]['searchtype'] = 'equals';
+               $options['criteria'][0]['value']      = "notold";
+               $options['criteria'][0]['link']       = 'AND';
+               if ($showgrouptickets) {
+                  $options['criteria'][1]['field']      = 112; // tech in charge of task
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = 'mygroups';
+                  $options['criteria'][1]['link']       = 'AND';
+               } else {
+                  $options['criteria'][1]['field']      = 95; // tech in charge of task
+                  $options['criteria'][1]['searchtype'] = 'equals';
+                  $options['criteria'][1]['value']      = $_SESSION['glpiID'];
+                  $options['criteria'][1]['link']       = 'AND';
+               }
+               $options['criteria'][2]['field']      = 33; // task status
+               $options['criteria'][2]['searchtype'] = 'equals';
+               $options['criteria'][2]['value']      = Planning::TODO;
+               $options['criteria'][2]['link']       = 'AND';
+
+               if ($itemtype == "TicketTask") {
+                  $forcetab                 = 'Ticket$1';
+                  $title = __("Ticket tasks to do");
+               } else if ($itemtype == "ProblemTask") {
+                  $forcetab                 = 'ProblemTask$1';
+                  $title = __("Problem tasks to do");
+               }
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                      Toolbox::append_params($options, '&amp;')."\">".
+                      Html::makeTitle($title, $number, $numrows)."</a>";
+               break;
+         }
+
+         echo "</th></tr>";
+         if ($number) {
+            echo "<tr>";
+            echo "<th>".__('ID')." </th>";
+            $type = "";
+            if ($itemtype == "TicketTask") {
+               $type = Ticket::getTypeName();
+            } else if ($itemtype == "ProblemTask") {
+               $type = Problem::getTypeName();
+            }
+            echo "<th>".__('Title')." (".strtolower($type).")</th>";
+            echo "<th>".__('Description')."</th>";
+            echo "</tr>";
+            for ($i = 0; $i < $number; $i++) {
+               $ID = $DB->result($result, $i, "id");
+               self::showVeryShort($ID, $itemtype);
+
+
+/**
+               echo "<tr>";
+               $ID = $DB->result($result, $i, "id");
+               $itemtype = get_called_class();
+               $item = new $itemtype;
+               $item->getFromDB($ID);
+               echo "<td>".$ID."</td>";
+               echo "<td></td>";
+               echo "<td></td>";
+               echo "</tr>";
+ */
+            }
+         }
+         echo "</table>";
+      }
+   }
+
+
+
+   static function showVeryShort($ID, $itemtype, $forcetab='') {
+      global $CFG_GLPI;
+
+      $job  = new $itemtype();
+      $rand = mt_rand();
+      if ($job->getFromDB($ID)) {
+         if (FieldExists($job->getTable(), 'tickets_id')) {
+            $item_link = new Ticket();
+            $item_link->getFromDB($job->fields['tickets_id']);
+            $tab_name = "Ticket";
+         } else if (FieldExists($job->getTable(), 'problems_id')) {
+            $item_link = new Problem();
+            $item_link->getFromDB($job->fields['problems_id']);
+            $tab_name = "ProblemTask";
+         }
+
+         $bgcolor = $_SESSION["glpipriority_".$item_link->fields["priority"]];
+         // $rand    = mt_rand();
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
+                                                               $job->fields["id"])."</td>";
+         echo "<td class='center'>";
+         echo $item_link->fields['name'];
+         echo "</td>";
+
+         echo "<td>";
+         $link = "<a id='".strtolower($item_link->getType())."ticket".$item_link->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
+                   "/front/".strtolower($item_link->getType()).".form.php?id=".$item_link->fields["id"];
+         $link .= "&amp;forcetab=".$tab_name."$1";
+         $link   .= "'>";
+         $link    = sprintf(__('%1$s'), $link);
+         $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
+                                                                                  ENT_QUOTES,
+                                                                                  "UTF-8"));
+         printf(__('%1$s %2$s'), $link, Html::resume_text(Html::Clean($content), 50));
+
+         echo "</a>";
+         echo "</td>";
+
+         // Finish Line
+         echo "</tr>";
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No tasks do to.')."</i></td></tr>";
+      }
+   }
 
 }

@@ -230,9 +230,13 @@ class Central extends CommonGLPI {
 
          Ticket::showCentralList(0, "process", false);
          Ticket::showCentralList(0, "waiting", false);
+
+         TicketTask::showCentralList(0, "todo", false);
+
       }
       if ($showproblem) {
          Problem::showCentralList(0, "process", false);
+         ProblemTask::showCentralList(0, "todo", false);
       }
       echo "</td></tr>";
       echo "</table></td>";
@@ -284,12 +288,14 @@ class Central extends CommonGLPI {
       echo "<tr class='noHover'><td>";
       if ($showticket) {
          Ticket::showCentralList(0, "process", true);
+         TicketTask::showCentralList(0, "todo", True);
       }
       if (Session::haveRight('ticket', Ticket::READGROUP)) {
          Ticket::showCentralList(0, "waiting", true);
       }
       if ($showproblem) {
          Problem::showCentralList(0, "process", true);
+         ProblemTask::showCentralList(0, "todo", True);
       }
 
       echo "</td></tr>";
