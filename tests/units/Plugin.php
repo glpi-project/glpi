@@ -98,4 +98,32 @@ class Plugin extends DbTestCase {
       $infos['dev'] = true;
       $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
    }
+
+   public function testcheckPhpVersion() {
+      //$this->constant->PHP_VERSION = '7.1';
+      $plugin = new \mock\Plugin();
+
+      $infos = ['min' => '5.6'];
+      $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
+
+      $this->calling($plugin)->getPhpVersion = '5.4';
+      $this->output(
+         function () use ($plugin, $infos) {
+            $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires PHP > 5.6.');
+
+      $this->calling($plugin)->getPhpVersion = '7.1';
+      $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
+
+      $this->output(
+         function () use ($plugin) {
+            $infos = ['min' => '5.6', 'max' => '7.0'];
+            $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires PHP > 5.6 and < 7.0');
+
+      $infos = ['min' => '5.6', 'max' => '7.2'];
+      $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
+   }
 }
