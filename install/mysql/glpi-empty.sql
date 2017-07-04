@@ -1246,6 +1246,10 @@ INSERT INTO `glpi_configs` VALUES ('175','core','notifications_ajax_check_interv
 INSERT INTO `glpi_configs` VALUES ('176','core','notifications_ajax_sound', NULL);
 INSERT INTO `glpi_configs` VALUES ('177','core','notifications_ajax_icon_url', '/pics/glpi.png');
 INSERT INTO `glpi_configs` VALUES ('178','core','dbversion','9.2-dev');
+INSERT INTO `glpi_configs` VALUES ('179','core','smtp_max_retries','5');
+INSERT INTO `glpi_configs` VALUES ('180','core','smtp_sender', NULL);
+INSERT INTO `glpi_configs` VALUES ('181','core','from_email', NULL);
+INSERT INTO `glpi_configs` VALUES ('182','core','from_email_name', NULL);
 
 
 ### Dump table glpi_consumableitems
