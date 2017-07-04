@@ -1317,6 +1317,13 @@ Regards,',
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }
 
+   $migration->addConfig([
+      'smtp_max_retries'   => 5,
+      'smtp_sender'        => 'NULL',
+      'from_email'         => 'NULL',
+      'from_email_name'    => 'NULL'
+   ]);
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -163,10 +163,6 @@ define("MAIL_SMTP", 1);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
 
-if (!isset($CFG_GLPI['smtp_max_retries'])) {
-   $CFG_GLPI['smtp_max_retries'] = 5;
-}
-
 // MESSAGE TYPE
 define("INFO", 0);
 define("ERROR", 1);
