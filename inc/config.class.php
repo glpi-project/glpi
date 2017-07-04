@@ -91,7 +91,9 @@ class Config extends CommonDBTM {
 
 
    function canViewItem() {
-      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+      if (isset($this->fields['context']) &&
+         ($this->fields['context'] == 'core' ||
+         in_array($this->fields['context'], $_SESSION['glpi_plugins']))) {
          return true;
       }
       return false;
