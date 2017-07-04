@@ -1500,6 +1500,12 @@ class Plugin extends CommonDBTM {
          if (isset($infos['requirements']['glpi'])) {
             $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
          }
+         if (isset($infos['requirements']['php'])) {
+            $php = $infos['requirements']['php'];
+            if (isset($php['min']) || isset($php['max'])) {
+               $ret = $ret && $this->checkPhpVersion($php);
+            }
+         }
       }
       return $ret;
    }
@@ -1545,6 +1551,41 @@ class Plugin extends CommonDBTM {
    }
 
    /**
+    * Check for PHP version
+    *
+    * @param array $infos Requirements infos:
+    *                     - min: minimal supported version,
+    *                     - max: maximal supported version.
+    *                     One of min or max is required.
+    *
+    * @return boolean
+    */
+   public function checkPhpVersion($infos) {
+      $compat = true;
+
+      if (isset($infos['min']) && isset($infos['max'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['min'], 'lt') || version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
+      } else if (isset($infos['min'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['min'], 'lt'));
+      } else if (isset($infos['max'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
+      } else {
+         throw new LogicException('Either "min" or "max" is required for PHP requirements!');
+      }
+
+      if (!$compat) {
+         echo Plugin::messageIncompatible(
+            'php',
+            (isset($infos['min']) ? $infos['min'] : null),
+            (isset($infos['max']) ? $infos['max'] : null)
+         );
+      }
+
+      return $compat;
+   }
+
+
+   /**
     * Get GLPI version
     * Used from unit tests to mock.
     *
@@ -1562,5 +1603,15 @@ class Plugin extends CommonDBTM {
     */
    public function getGlpiPrever() {
       return GLPI_PREVER;
+   }
+
+   /**
+    * Get PHP version
+    * Used from unit tests to mock.
+    *
+    * @return string
+    */
+   public function getPhpVersion() {
+      return PHP_VERSION;
    }
 }
