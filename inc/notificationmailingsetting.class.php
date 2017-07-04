@@ -75,39 +75,42 @@ class NotificationMailingSetting extends NotificationSetting {
 
       if ($CFG_GLPI['notifications_mailing']) {
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td>" . __('Administrator email') . "</td>";
-         $out .= "<td><input type='text' name='admin_email' size='40' value='".
+         $out .= "<td><label for='admin_email'>" . __('Administrator email') . "</label></td>";
+         $out .= "<td><input type='text' name='admin_email' id='admin_email' size='40' value='".
                     $CFG_GLPI["admin_email"]."'>";
          if (!NotificationMailing::isUserAddressValid($CFG_GLPI["admin_email"])) {
              $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          $out .= "</td>";
-         $out .= "<td >" . __('Administrator name') . "</td>";
-         $out .= "<td><input type='text' name='admin_email_name' size='40' value='" .
+         $out .= "<td><label for='admin_email_name'>" . __('Administrator name') . "</label></td>";
+         $out .= "<td><input type='text' name='admin_email_name' id='admin_email_name' size='40' value='" .
                     $CFG_GLPI["admin_email_name"] . "'>";
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td >" . __('Administrator reply-to email (if needed)') . "</td>";
-         $out .= "<td><input type='text' name='admin_reply' size='40' value='" .
+         $out .= "<td><label for='admin_reply'>" . __('Reply-to address') . " <i class='pointer fa fa-info' title='" .
+            __('Optionnal reply to address.') . "\n" . __('If not set, main administrator email will be used.') . "'></i></label></td>";
+         $out .= "<td><input type='text' name='admin_reply' id='admin_reply' size='40' value='" .
                     $CFG_GLPI["admin_reply"] . "'>";
          if (!empty($CFG_GLPI['admin_reply'])
              && !NotificationMailing::isUserAddressValid($CFG_GLPI["admin_reply"])) {
             $out .= "<br/><span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          $out .= " </td>";
-         $out .= "<td >" . __('Response name (if needed)') . "</td>";
-         $out .= "<td><input type='text' name='admin_reply_name' size='40' value='" .
+         $out .= "<td><label for='admin_reply_name'>" . __('Reply-to name') . " <i class='pointer fa fa-info' title='" .
+            _('Optionnal reply to name.') . "\n" . __('If not set, main administrator name will be used.'). "'></i></label></td>";
+         $out .= "<td><input type='text' name='admin_reply_name' id='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          $out .= " </td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td>" . __('Add documents into ticket notifications') . "</td><td>";
+         $attachrand = mt_rand();
+         $out .= "<td><label for='dropdown_attach_ticket_documents_to_mail$attachrand'>" . __('Add documents into ticket notifications') . "</label></td><td>";
          $out .= Dropdown::showYesNo(
             "attach_ticket_documents_to_mail",
             $CFG_GLPI["attach_ticket_documents_to_mail"],
             -1,
-            ['display' => false]
+            ['display' => false, 'rand' => $attachrand]
          );
          $out .= "</td>";
          $out .= "<td colspan='2'></td></tr>";
@@ -120,12 +123,13 @@ class NotificationMailingSetting extends NotificationSetting {
          }
 
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td>" . __('Email signature') . "</td>";
-         $out .= "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature'>".
+         $out .= "<td><label for='mailing_signature'>" . __('Email signature') . "</label></td>";
+         $out .= "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature' id='mailing_signature'>".
                                 $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 
          $out .= "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
-         $out .= "<tr class='tab_bg_2'><td>" . __('Way of sending emails') . "</td><td>";
+         $methodrand = mt_rand();
+         $out .= "<tr class='tab_bg_2'><td><label for='dropdown_smtp_mode$methodrand'>" . __('Way of sending emails') . "<label></td><td>";
          $mail_methods = [MAIL_MAIL    => __('PHP'),
                                MAIL_SMTP    => __('SMTP'),
                                MAIL_SMTPSSL => __('SMTP+SSL'),
@@ -135,44 +139,46 @@ class NotificationMailingSetting extends NotificationSetting {
             $mail_methods,
             [
                'value'     => $CFG_GLPI["smtp_mode"],
-               'display'   => false
+               'display'   => false,
+               'rand'      => $methodrand
             ]
          );
          $out .= "</td>";
-         $out .= "<td >" . __("Check certificate") . "</td>";
+         $certrand = mt_rand();
+         $out .= "<td><label for='dropdown_smtp_check_certificate$certrand'>" . __("Check certificate") . "</label></td>";
          $out .= "<td>";
          $out .= Dropdown::showYesNo(
             'smtp_check_certificate',
             $CFG_GLPI["smtp_check_certificate"],
             -1,
-            ['display' => false]
+            ['display' => false, 'rand' => $certrand]
          );
          $out .= "</td>";
          $out .= "</tr>";
 
-         $out .= "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
-         $out .= "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
+         $out .= "<tr class='tab_bg_2'><td><label for='smtp_host'>" . __('SMTP host') . "</label></td>";
+         $out .= "<td><input type='text' name='smtp_host' id='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
          $out.= "</td>";
          //TRANS: SMTP port
-         $out .= "<td >" . __('Port') . "</td>";
-         $out .= "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
+         $out .= "<td><label for='smtp_port'>" . __('Port') . "</label></td>";
+         $out .= "<td><input type='text' name='smtp_port' id='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          $out .= "</td>";
          $out .= "</tr>";
 
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td >" . __('SMTP login (optional)') . "</td>";
-         $out .= "<td><input type='text' name='smtp_username' size='40' value='" .
+         $out .= "<td><label for='smtp_username'>" . __('SMTP login (optional)') . "</label></td>";
+         $out .= "<td><input type='text' name='smtp_username' id='smtp_username' size='40' value='" .
                     $CFG_GLPI["smtp_username"] . "'></td>";
 
-         $out .= "<td >" . __('SMTP password (optional)') . "</td>";
-         $out .= "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
-         $out .= "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".__('Clear');
+         $out .= "<td><label for='smtp_passwd'>" . __('SMTP password (optional)') . "</label></td>";
+         $out .= "<td><input type='password' name='smtp_passwd' id='smtp_passwd' size='40' value='' autocomplete='off'>";
+         $out .= "<br><input type='checkbox' name='_blank_smtp_passwd'i id='_blank_smtp_passwd'>&nbsp;<label for='_blank_smtp_passwd'>".__('Clear') . "</label>";
 
          $out .= "</td></tr>";
 
          $out .= "<tr class='tab_bg_2'>";
-         $out .= "<td >" . __('SMTP max. delivery retries') . "</td>";
-         $out .= "<td><input type='text' name='smtp_max_retries' size='5' value='" .
+         $out .= "<td><label for='smtp_max_retries'>" . __('SMTP max. delivery retries') . "</label></td>";
+         $out .= "<td><input type='text' name='smtp_max_retries' id='smtp_max_retries' size='5' value='" .
                        $CFG_GLPI["smtp_max_retries"] . "'></td>";
 
          $out .= "</tr>";
