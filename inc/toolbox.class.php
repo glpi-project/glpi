@@ -931,7 +931,7 @@ class Toolbox {
       }
       echo "</tr>";
 
-      $suberr = Config::checkExtensions();
+      $suberr = Config::displayCheckExtensions();
       if ($suberr > $error) {
          $error = $suberr;
       }
