@@ -1504,12 +1504,27 @@ class Plugin extends CommonDBTM {
       $ret = true;
       if (isset($infos['requirements'])) {
          if (isset($infos['requirements']['glpi'])) {
-            $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+            $glpi = $infos['requirements']['glpi'];
+            if (isset($glpi['min']) || isset($glpi['max'])) {
+               $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+            }
+            if (isset($glpi['params'])) {
+               $ret = $ret && $this->checkGlpiParameters($glpi['params']);
+            }
+            if (isset($glpi['plugins'])) {
+               $ret = $ret && $this->checkGlpiPlugins($glpi['plugins']);
+            }
          }
          if (isset($infos['requirements']['php'])) {
             $php = $infos['requirements']['php'];
             if (isset($php['min']) || isset($php['max'])) {
                $ret = $ret && $this->checkPhpVersion($php);
+            }
+            if (isset($php['exts'])) {
+               $ret = $ret && $this->checkPhpExtensions($php['exts']);
+            }
+            if (isset($php['params'])) {
+               $ret = $ret && $this->checkPhpParameters($php['params']);
             }
          }
       }
@@ -1585,6 +1600,87 @@ class Plugin extends CommonDBTM {
             (isset($infos['min']) ? $infos['min'] : null),
             (isset($infos['max']) ? $infos['max'] : null)
          );
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check fo required PHP extensions
+    *
+    * @param array $exts Extensions lists/config @see Config::checkExtensions()
+    *
+    * @return boolean
+    */
+   public function checkPhpExtensions($exts) {
+      $report = Config::checkExtensions($exts);
+      if (count($report['missing'])) {
+         foreach (array_keys($report['missing']) as $ext) {
+            echo self::messageMissingRequirement('ext', $ext);
+         }
+         return false;
+      }
+      return true;
+   }
+
+
+   /**
+    * Check expected GLPI parameters
+    *
+    * @param array $params Expected parameters to be setup
+    *
+    * @return boolean
+    */
+   public function checkGlpiParameters($params) {
+      global $CFG_GLPI;
+
+      $compat = true;
+      foreach ($params as $param) {
+         if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
+            echo self::messageMissingRequirement('glpiparam', $param);
+            $compat = false;
+         }
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check expected PHP parameters
+    *
+    * @param array $params Expected parameters to be setup
+    *
+    * @return boolean
+    */
+   public function checkPhpParameters($params) {
+      $compat = true;
+      foreach ($params as $param) {
+         if (!ini_get($param) || trim(ini_get($param)) == '') {
+            echo self::messageMissingRequirement('param', $param);
+            $compat = false;
+         }
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check expected GLPI plugins
+    *
+    * @param array $plugins Expected plugins
+    *
+    * @return boolean
+    */
+   public function checkGlpiPlugins($plugins) {
+      $compat = true;
+      foreach ($plugins as $plugin) {
+         if (!$this->isInstalled($plugin) || !$this->isActivated($plugin)) {
+            echo self::messageMissingRequirement('plugin', $plugin);
+            $compat = false;
+         }
       }
 
       return $compat;

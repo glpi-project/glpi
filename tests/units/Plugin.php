@@ -126,4 +126,88 @@ class Plugin extends DbTestCase {
       $infos = ['min' => '5.6', 'max' => '7.2'];
       $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
    }
+
+   public function testCheckPhpExtensions() {
+      $plugin = new \Plugin();
+
+      $this->output(
+         function () use ($plugin) {
+            $exts = ['gd' => ['required' => true]];
+            $this->boolean($plugin->checkPhpExtensions($exts))->isTrue();
+         }
+      )->isEmpty();
+
+      $this->output(
+         function () use ($plugin) {
+            $exts = ['myext' => ['required' => true]];
+            $this->boolean($plugin->checkPhpExtensions($exts))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires PHP extension myext');
+   }
+
+   public function testCheckGlpiParameters() {
+      global $CFG_GLPI;
+
+      $params = ['my_param'];
+
+      $plugin = new \Plugin();
+
+      $this->output(
+         function () use ($plugin, $params) {
+            $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+
+      $CFG_GLPI['my_param'] = '';
+      $this->output(
+         function () use ($plugin, $params) {
+            $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+
+      $CFG_GLPI['my_param'] = '0';
+      $this->output(
+         function () use ($plugin, $params) {
+            $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+
+      $CFG_GLPI['my_param'] = 'abc';
+      $this->output(
+         function () use ($plugin, $params) {
+            $this->boolean($plugin->checkGlpiParameters($params))->isTrue();
+         }
+      )->isEmpty();
+   }
+
+   public function testCheckGlpiPlugins() {
+      $plugin = new \mock\Plugin();
+
+      $this->calling($plugin)->isInstalled = false;
+      $this->calling($plugin)->isActivated = false;
+
+      $this->output(
+         function () use ($plugin) {
+            $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires myplugin plugin');
+
+      $this->calling($plugin)->isInstalled = true;
+
+      $this->output(
+         function () use ($plugin) {
+            $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
+         }
+      )->isIdenticalTo('This plugin requires myplugin plugin');
+
+      $this->calling($plugin)->isInstalled = true;
+      $this->calling($plugin)->isActivated = true;
+
+      $this->output(
+         function () use ($plugin) {
+            $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isTrue();
+         }
+      )->isEmpty();
+
+   }
 }
