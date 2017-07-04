@@ -1481,6 +1481,12 @@ class Plugin extends CommonDBTM {
                $name
             );
             break;
+         case 'glpiparam':
+            return sprintf(
+               __('This plugin requires GLPI parameter %1$s'),
+               $name
+            );
+            break;
          default:
             throw new \RuntimeException("messageMissing type $type is unknwown!");
       }
