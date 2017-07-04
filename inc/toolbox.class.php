@@ -993,7 +993,7 @@ class Toolbox {
             if (!function_exists($params['function'])) {
                 $success = false;
             }
-         } else if (isset($param['class'])) {
+         } else if (isset($params['class'])) {
             if (!class_exists($params['class'])) {
                $success = false;
             }
