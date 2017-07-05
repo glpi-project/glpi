@@ -245,11 +245,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          PlanningRecall::manageDatas($input['_planningrecall']);
       }
 
-      // do not update writer if content change. Following code can be used for #2187
-      /*if (isset($input['update'])
+      // update last editor if content change
+      if (isset($input['update'])
           && ($uid = Session::getLoginUserID())) { // Change from task form
-         $input["users_id"] = $uid;
-      }*/
+         $input["users_id_editor"] = $uid;
+      }
 
       $itemtype      = $this->getItilObjectItemType();
       $input["_job"] = new $itemtype();

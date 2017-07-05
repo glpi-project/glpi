@@ -257,17 +257,19 @@ class TicketFollowup  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       $input["_job"] = new Ticket();
-      if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
+      $job_field = $input["_job"]->getForeignKeyField();
+      $job_id = (isset($input[$job_field]) ? $input[$job_field] : $this->fields[$job_field]);
+      if (!$input["_job"]->getFromDB($job_id)) {
          return false;
       }
 
       $input = $this->addFiles($input);
 
-      // do not update writer if content change. Following code can be used for #2187
-      /*if (($uid = Session::getLoginUserID())
+      // update last editor if content change
+      if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
-         $input["users_id"] = $uid;
-      }*/
+         $input["users_id_editor"] = $uid;
+      }
 
       return $input;
    }

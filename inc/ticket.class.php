@@ -6569,6 +6569,17 @@ class Ticket extends CommonITILObject {
                                    ['link' => $group->getLinkURL()]);
             echo "</div>";
          }
+         if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
+            echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
+            $user->getFromDB($item_i['users_id_editor']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            echo sprintf(
+               __('Last edited on %1$s by %2$s'),
+               Html::convDateTime($item_i['date_mod']),
+               $user->getLink()
+            );
+            echo "</div>";
+         }
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
