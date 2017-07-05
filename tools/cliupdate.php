@@ -142,7 +142,7 @@ if (defined('GLPI_PREVER')) {
 
 $update->doUpdates($current_version);
 
-if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
+if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne') && !isset($args['dev'])) {
    $migration->displayWarning("\nMigration Done.");
 } else if (isset($args['force']) || $current_db_version != GLPI_SCHEMA_VERSION && isset($args['dev'])) {
 
