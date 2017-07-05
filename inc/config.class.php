@@ -2290,7 +2290,7 @@ class Config extends CommonDBTM {
                $report['missing'][$ext] = $msg;
             } else {
                if ($report['error'] < 1) {
-                  $eport['error'] = 1;
+                  $report['error'] = 1;
                }
                $msg = sprintf(__('%s extension is not present'), $ext);
                $report['may'][$ext] = $msg;
