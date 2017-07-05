@@ -2506,7 +2506,7 @@ class Config extends CommonDBTM {
     * @param $context  string context to get values (default for glpi is core)
     * @param $values   array  of config names to set
     *
-    * @return array of config values
+    * @return void
    **/
    static function setConfigurationValues($context, array $values = []) {
 
@@ -2539,7 +2539,7 @@ class Config extends CommonDBTM {
     * @param $context string  context to get values (default for glpi is core)
     * @param $values  array   of config names to delete
     *
-    * @return array of config values
+    * @return void
    **/
    static function deleteConfigurationValues($context, array $values = []) {
 
