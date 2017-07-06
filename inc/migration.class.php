@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Migration Class
  *
- * @since version 0.80
+ * @since 0.80
 **/
 class Migration {
 
@@ -51,6 +51,18 @@ class Migration {
       'pre'    => [],
       'post'   => []
    ];
+
+   /**
+    * List (name => value) of configuration options to add, if they're missing
+    * @var array
+    */
+   private $configs = [];
+
+   /**
+    * Configuration context
+    * @var string
+    */
+   private $context = 'core';
 
    const PRE_QUERY = 'pre';
    const POST_QUERY = 'post';
@@ -67,7 +79,7 @@ class Migration {
    /**
     * Set version
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param integer $ver Version number
     *
@@ -84,7 +96,7 @@ class Migration {
    /**
     * Add new message
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $id Area ID
     *
@@ -103,7 +115,7 @@ class Migration {
    /**
     * Flush previous displayed message in log file
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return void
    **/
@@ -144,7 +156,7 @@ class Migration {
    /**
     * Log message for this migration
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string  $message Message to display
     * @param boolean $warning Is a warning
@@ -545,7 +557,7 @@ class Migration {
    /**
     * Copy table for migration
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $oldtable The name of the table already inside the database
     * @param string $newtable The copy of the old table
@@ -576,7 +588,7 @@ class Migration {
    /**
     * Insert an entry inside a table
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $table The table to alter
     * @param array  $input The elements to add inside the table
@@ -639,13 +651,15 @@ class Migration {
          $DB->queryOrDie($query['query'], $query['message']);
       }
 
-      foreach ($this->change as $table => $tab) {
+      foreach (array_keys($this->change) as $table) {
          $this->migrationOneTable($table);
       }
 
       foreach ($this->queries[self::POST_QUERY] as $query) {
          $DB->queryOrDie($query['query'], $query['message']);
       }
+
+      $this->storeConfig();
 
       // end of global message
       $this->displayMessage(__('Task completed.'));
@@ -655,11 +669,11 @@ class Migration {
    /**
     * Register a new rule
     *
+    * @since 0.84
+    *
     * @param array $rule     Array of fields of glpi_rules
     * @param array $criteria Array of Array of fields of glpi_rulecriterias
     * @param array $actions  Array of Array of fields of glpi_ruleactions
-    *
-    * @since version 0.84
     *
     * @return integer new rule id
    **/
@@ -731,7 +745,7 @@ class Migration {
    /**
     * Update display preferences
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array $toadd items to add : itemtype => array of values
     * @param array $todel items to del : itemtype => array of values
@@ -870,5 +884,60 @@ class Migration {
          $this->displayWarning("You can delete backup tables if you have no need of them.", true);
       }
       return $backup_tables;
+   }
+
+   /**
+    * Add configuration value(s) to current context; @see Migration::setContext()
+    *
+    * @since 9.2
+    *
+    * @param string|array $values Value(s) to add
+    *
+    * @return Migration
+    */
+   public function addConfig($values) {
+      $this->configs += (array)$values;
+      return $this;
+   }
+
+   /**
+    * Store configuration values that does not exists
+    *
+    * @since 9.2
+    *
+    * @return boolean
+    */
+   private function storeConfig() {
+      global $DB;
+
+      $existing = $DB->request(
+         "glpi_configs",
+         "`context`='" . $this->context . "' AND `name` IN ('".
+         implode("', '", array_keys($this->configs))."')"
+      );
+      foreach ($existing as $conf) {
+         unset($this->configs[$conf['name']]);
+      }
+      if (count($this->configs)) {
+         Config::setConfigurationValues($this->context, $this->configs);
+         $this->displayMessage(sprintf(
+            __('Configuration values added for %1$s.'),
+            implode(', ', $this->configs)
+         ));
+      }
+   }
+
+   /**
+    * Set configuration context
+    *
+    * @since 9.2
+    *
+    * @param string $context Configuration context
+    *
+    * @return Migration
+    */
+   public function setContext($context) {
+      $this->context = $context;
+      return $this;
    }
 }
