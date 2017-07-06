@@ -70,7 +70,8 @@ class NotificationAjaxSetting extends DbTestCase {
    }
 
    public function testGetEnableLabel() {
-      $this->string(\NotificationAjaxSetting::getEnableLabel())->isIdenticalTo('Enable followups via ajax calls');
+      $settings = new \NotificationAjaxSetting();
+      $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups via ajax calls');
    }
 
    public function testGetMode() {
