@@ -54,16 +54,20 @@ The following methods have been deprecated:
 
 The following methods have been dropped:
 
+- `Ajax::displaySearchTextForDropdown()`
+- `Ajax::getSearchTextForDropdown()`
+- `Bookmark::changeBookmarkOrder()`
+- `Bookmark::moveBookmark()`
 - `CommonGLPI::addDivForTabs()`
 - `CommonGLPI::showTabs()`
 - `CommonGLPI::showNavigationHeaderOld()`
 - `CommonGLPI::show()`
-- `Ajax::displaySearchTextForDropdown()`
-- `Ajax::getSearchTextForDropdown()`
 - `DBMysql::field_flags()`
+- `Html::showDateFormItem()`
+- `Html::showDateTimeFormItem()`
+- `Profile::dropdownNoneReadWrite()`
 - `Toolbox::get_magic_quotes_runtime`
 - `Toolbox::get_magic_quotes_gpc`
-- `Bookmark::changeBookmarkOrder()`
-- `Bookmark::moveBookmark()`
+
 
 For older entries, please check [GLPI website](http://glpi-project.org).
