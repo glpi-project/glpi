@@ -367,9 +367,11 @@ abstract class CommonDevice extends CommonDropdown {
          $content .= __('Add')."&nbsp;";
 
          $content  = [$content,
-                           ['function'   => 'Dropdown::showInteger',
-                                 'parameters' => [$field_name, 0, 0, 10]],
-                           "</span>"];
+                     ['function'   => 'Dropdown::Number',
+                      'parameters' => [$field_name, ['value' => 0,
+                                                     'min'   => 0,
+                                                     'max'   => 10]]],
+                     "</span>"];
       }
 
       $linktype = static::getItem_DeviceType();

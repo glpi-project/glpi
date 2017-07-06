@@ -1586,39 +1586,6 @@ class Dropdown {
    /**
     * Dropdown integers
     *
-    * @param $myname          select name
-    * @param $value           default value
-    * @param $min             min value (default 0)
-    * @param $max             max value (default 100)
-    * @param $step            step used (default 1)
-    * @param $toadd     array of values to add at the beginning
-    * @param $options   array of additionnal options :
-    *                            - unit : string unit to used
-    *                            - display : boolean if false get string
-    * @deprecated 0.84 use Dropdown::showNumber instead
-   **/
-   static function showInteger($myname, $value, $min = 0, $max = 100, $step = 1, $toadd = [],
-                               $options = []) {
-
-      Toolbox::logDebug('showInteger() method is deprecated');
-      $opt = ['value' => $value,
-                   'min'   => $min,
-                   'max'   => $max,
-                   'step'  => $step,
-                   'toadd' => $toadd];
-      if (count($options)) {
-         foreach ($options as $key => $val) {
-            $opt[$key] = $val;
-         }
-      }
-      return self::showNumber($myname, $opt);
-
-   }
-
-
-   /**
-    * Dropdown integers
-    *
     * @since version 0.83
     *
     * @param $myname        select name
