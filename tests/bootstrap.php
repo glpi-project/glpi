@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+error_reporting(E_ALL);
 
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
