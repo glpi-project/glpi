@@ -71,7 +71,8 @@ class NotificationMailingSetting extends DbTestCase {
    }
 
    public function testGetEnableLabel() {
-      $this->string(\NotificationMailingSetting::getEnableLabel())->isIdenticalTo('Enable followups via email');
+      $settings = new \NotificationMailingSetting();
+      $this->string($settings->getEnableLabel())->isIdenticalTo('Enable followups via email');
    }
 
    public function testGetMode() {
