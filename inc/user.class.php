@@ -3623,7 +3623,7 @@ class User extends CommonDBTM {
             if (!($item = getItemForItemtype($itemtype))) {
                continue;
             }
-            if ($item->canView()) {
+            if ($item->canView() && $item->isField($field_group)) {
                $itemtable = getTableForItemType($itemtype);
                $query = "SELECT *
                          FROM `$itemtable`
