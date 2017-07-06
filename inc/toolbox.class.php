@@ -624,8 +624,16 @@ class Toolbox {
       } else {
          // Recommended production settings
          ini_set('display_errors', 'Off');
-         error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+         if (defined('TU_USER')) {
+            //do not set error_reporting to a low level for unit tests
+            error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+         }
          set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
+      }
+
+      if (defined('TU_USER')) {
+         //user default error handler from tests
+         set_error_handler(null);
       }
    }
 
