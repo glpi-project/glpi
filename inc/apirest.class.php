@@ -189,6 +189,13 @@ class APIRest extends API {
 
          return $this->returnResponse($response, $code, $additionalheaders);
 
+      } else if ($resource === "lostPassword") {
+         if ($this->verb != 'PUT') {
+            // forbid password reset when HTTP verb is not PUT
+            return $this->returnError(__("Only HTTP verb PUT is allowed"));
+         }
+         return $this->returnResponse($this->lostPassword($this->parameters));
+
       } else {
          // commonDBTM manipulation
          $itemtype          = $this->getItemtype(0);
