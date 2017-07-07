@@ -147,7 +147,7 @@ class Migration {
 
       $this->flushLogDisplayMessage();
       $this->lastMessage = ['time' => time(),
-                                 'msg'  => $msg];
+                            'msg'  => $msg];
 
       Html::glpi_flush();
    }
@@ -910,20 +910,23 @@ class Migration {
    private function storeConfig() {
       global $DB;
 
-      $existing = $DB->request(
-         "glpi_configs",
-         "`context`='" . $this->context . "' AND `name` IN ('".
-         implode("', '", array_keys($this->configs))."')"
-      );
-      foreach ($existing as $conf) {
-         unset($this->configs[$conf['name']]);
-      }
       if (count($this->configs)) {
-         Config::setConfigurationValues($this->context, $this->configs);
-         $this->displayMessage(sprintf(
-            __('Configuration values added for %1$s.'),
-            implode(', ', $this->configs)
-         ));
+         $existing = $DB->request(
+            "glpi_configs", [
+               'context'   => $this->context,
+               'name'      => array_keys($this->configs)
+            ]
+         );
+         foreach ($existing as $conf) {
+            unset($this->configs[$conf['name']]);
+         }
+         if (count($this->configs)) {
+            Config::setConfigurationValues($this->context, $this->configs);
+            $this->displayMessage(sprintf(
+               __('Configuration values added for %1$s.'),
+               implode(', ', array_keys($this->configs))
+            ));
+         }
       }
    }
 
