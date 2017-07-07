@@ -1280,6 +1280,97 @@ abstract class APIBaseClass extends atoum {
    }
 
    /**
+    * @tags api
+    */
+   public function testLostPasswordRequest() {
+
+      $user = getItemByTypeName('User', TU_USER);
+      $email = $user->getDefaultEmail();
+
+      // Test the verb POST is not alloxed
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'POST',
+                          ],
+                          400,
+                          'ERROR');
+
+      // Test the verb GET is not alloxed
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'GET',
+                          ],
+                          400,
+                          'ERROR');
+
+      // Test the verb DELETE is not allowed
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'DELETE',
+                          ],
+                          400,
+                          'ERROR');
+
+      // Test an unknown email is rejected
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'PUT',
+                           'json'    => [
+                            'email'  => 'nonexistent@localhost.local'
+                           ]
+                          ],
+                          400,
+                          'ERROR');
+
+      // Test a valid email is accepted
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'PUT',
+                           'json'    => [
+                            'email'  => $email
+                           ]
+                          ],
+                          200);
+
+      // get the password recovery token
+      $user = getItemByTypeName('User', TU_USER);
+      $token = $user->getField('password_forget_token');
+
+      // Test reset password with a bad token
+      $res = $this->query('lostPassword',
+                          ['verb'    => 'PUT',
+                           'json'    => [
+                            'email'                 => $email,
+                            'password_forget_token' => $token . 'bad',
+                            'password'              => 'NewPassword',
+                           ]
+                          ],
+                          400,
+                          'ERROR');
+
+      // Test reset password with the good token
+      $res = $this->query('lostPassword',
+                        ['verb'    => 'PUT',
+                         'json'    => [
+                          'email'                 => $email,
+                          'password_forget_token' => $token,
+                          'password'              => 'NewPassword',
+                         ]
+                        ],
+                        200);
+
+      // Refresh the in-memory instance of user and get the password
+      $user->getFromDB($user->getID());
+      $newHash = $user->getField('password');
+
+      // Restore the initial password in the DB
+      $updateSuccess = $user->update([
+            'id'        => $user->getID(),
+            'password'  => TU_PASS,
+            'password2' => TU_PASS
+      ]);
+      $this->variable($updateSuccess)->isNotFalse('password update failed');
+
+      // Test the new password was saved
+      $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+   }
+
+   /**
     * Check consistency of Content-Range header
     *
     * @param array $data    Data

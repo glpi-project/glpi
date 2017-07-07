@@ -6,6 +6,7 @@
 * [Important](#important)
 * [Init session](#init-session)
 * [Kill session](#kill-session)
+* [Lost password](#lost-password)
 * [Get my profiles](#get-my-profiles)
 * [Get active profile](#get-active-profile)
 * [Change active profile](#change-active-profile)
@@ -20,9 +21,9 @@
 * [Get multiple items](#get-multiple-items)
 * [List searchOptions](#list-searchoptions)
 * [Search items](#search-items)
-* [Add item(s)](#add-items)
-* [Update item(s)](#update-items)
-* [Delete item(s)](#delete-items)
+* [Add item(s)](#add-item-s)
+* [Update item(s)](#update-item-s)
+* [Delete item(s)](#delete-item-s)
 * [Special cases](#special-cases)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
@@ -71,7 +72,7 @@ App(lication) token
 * you should always precise a Content-Type header in your HTTP calls.
    Currently, the api supports:
   * application/json
-  * multipart/form-data (for files upload, see [Add item(s)](#add-items) endpoint.
+  * multipart/form-data (for files upload, see [Add item(s)](#add-item-s) endpoint.
 
 * GET requests must have an empty body. You must pass all parameters in URL.
   Failing to do so will trigger an HTTP 400 response.
@@ -81,7 +82,7 @@ App(lication) token
   * [initSession](#init-session)
   * [killSession](#kill-session)
   * [changeActiveEntities](#change-active-entities)
-  * [changeActiveProfile](#change-active-profiles)
+  * [changeActiveProfile](#change-active-profile)
 
   You could pass an additional parameter "session_write=true" to bypass this default.
   This read-only mode allow to use this API with parallel calls.
@@ -165,6 +166,58 @@ $ curl -X GET \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/apirest.php/killSession'
+
+< 200 OK
+```
+
+## Lost password
+
+This endpoint allows to request password recovery and password reset. This endpoint works under the following 
+conditions:
+* GLPI has notifications enabled
+* the email address of the user belongs to a user account.
+
+Reset password request:
+
+* **URL**: apirest.php/lostPassword/
+* **Description**: Sends a notification to the user to reset his password
+* **Method**: PUT
+* **Parameters**: (JSON Payload)
+  * *email*: email address of the user to recover. Mandatory.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+
+```bash
+$ curl -X PUT \
+-H 'Content-Type: application/json' \
+-d '{"email": "user@domain.com"}' \
+'http://path/to/glpi/apirest.php/lostPassword'
+
+< 200 OK
+```
+
+Password reset :
+
+* **URL**: apirest.php/lostPassword/
+* **Description**: Sends a notification to the user to reset his password
+* **Method**: PUT
+* **Parameters**: (JSON Payload)
+  * *email*: email address of the user to recover. Mandatory.
+  * *password_forget_token*: reset token
+  * *password*: the new password for the user
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+
+```bash
+$ curl -X PUT \
+-H 'Content-Type: application/json' \
+-d '{"email": "user@domain.com", \
+     "password_forget_token": "b0a4cfe81448299ebed57442f4f21929c80ebee5" \
+     "password": "NewPassword" \
+    }' \
+'http://path/to/glpi/apirest.php/lostPassword'
 
 < 200 OK
 ```

@@ -30,40 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
+namespace Glpi\Exception;
 
-include ('../inc/includes.php');
+use Exception;
 
-if (!$CFG_GLPI['notifications_mailing']
-    || !countElementsInTable('glpi_notifications',
-                             "`itemtype`='User' AND `event`='passwordforget' AND `is_active`=1")) {
-   exit();
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
-$user = new User();
-
-// Manage lost password
-Html::simpleHeader(__('Forgotten password?'));
-
-// REQUEST needed : GET on first access / POST on submit form
-if (isset($_REQUEST['password_forget_token'])) {
-
-   if (isset($_POST['email'])) {
-      $user->showUpdateForgottenPassword($_REQUEST);
-   } else {
-      User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
-   }
-
-} else {
-
-   if (isset($_POST['email'])) {
-      $user->showForgetPassword($_POST['email']);
-   } else {
-      User::showPasswordForgetRequestForm();
-   }
-}
-
-Html::nullFooter();
-exit();
+class ForgetPasswordException extends Exception {};

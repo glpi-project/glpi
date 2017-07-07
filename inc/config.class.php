@@ -34,9 +34,12 @@
 * @brief
 */
 
+use Glpi\Exception\PasswordTooWeakException;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
 
 /**
  *  Config class
@@ -1445,17 +1448,22 @@ class Config extends CommonDBTM {
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
     *
+    * @throws PasswordTooWeak when $display is false and the password does not matches the requirements
+    *
     * @return boolean is password valid?
    **/
    static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
 
       $ok = true;
+      $exception = new PasswordTooWeakException();
       if ($CFG_GLPI["use_password_security"]) {
          if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
             $ok = false;
             if ($display) {
                Session::addMessageAfterRedirect(__('Password too short!'), false, ERROR);
+            } else {
+               $exception->addMessage(__('Password too short!'));
             }
          }
          if ($CFG_GLPI["password_need_number"]
@@ -1464,6 +1472,8 @@ class Config extends CommonDBTM {
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a digit!'),
                                                 false, ERROR);
+            } else {
+               $exception->addMessage(__('Password must include at least a digit!'));
             }
          }
          if ($CFG_GLPI["password_need_letter"]
@@ -1472,6 +1482,8 @@ class Config extends CommonDBTM {
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a lowercase letter!'),
                                                 false, ERROR);
+            } else {
+               $exception->addMessage(__('Password must include at least a lowercase letter!'));
             }
          }
          if ($CFG_GLPI["password_need_caps"]
@@ -1480,6 +1492,8 @@ class Config extends CommonDBTM {
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a uppercase letter!'),
                                                 false, ERROR);
+            } else {
+               $exception->addMessage(__('Password must include at least a uppercase letter!'));
             }
          }
          if ($CFG_GLPI["password_need_symbol"]
@@ -1488,9 +1502,14 @@ class Config extends CommonDBTM {
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a symbol!'),
                                                 false, ERROR);
+            } else {
+               $exception->addMessage(__('Password must include at least a symbol!'));
             }
          }
 
+      }
+      if (!$ok && !$display) {
+         throw $exception;
       }
       return $ok;
    }
