@@ -678,7 +678,7 @@ function getAncestorsOf($table, $items_id) {
    // IDs to be present in the final array
    $id_found      = [];
    $parentIDfield = getForeignKeyFieldForTable($table);
-   $use_cache     = FieldExists($table, "ancestors_cache");
+   $use_cache     = $DB->fieldExists($table, "ancestors_cache");
 
    if ($use_cache
        && ($items_id > 0)) {
@@ -758,7 +758,7 @@ function getSonsOf($table, $IDf) {
    global $DB;
 
    $parentIDfield = getForeignKeyFieldForTable($table);
-   $use_cache     = FieldExists($table, "sons_cache");
+   $use_cache     = $DB->fieldExists($table, "sons_cache");
 
    if ($use_cache
        && ($IDf > 0)) {
@@ -1368,26 +1368,17 @@ function getUserName($ID, $link = 0) {
 /**
  * Verify if a DB table exists
  *
- *@param $tablename string : Name of the table we want to verify.
+ * @param $tablename string : Name of the table we want to verify.
  *
- *@return bool : true if exists, false elseway.
+ * @return bool : true if exists, false elseway.
+ *
+ * @deprecated 9.2 Use DB::tableExists()
 **/
 function TableExists($tablename) {
    global $DB;
 
-   // Get a list of tables contained within the database.
-   $result = $DB->list_tables("%".$tablename."%");
-
-   if ($rcount = $DB->numrows($result)) {
-      while ($data = $DB->fetch_row($result)) {
-         if ($data[0] === $tablename) {
-            return true;
-         }
-      }
-   }
-
-   $DB->free_result($result);
-   return false;
+   Toolbox::logDebug('TableExists() function is deprecated');
+   return $DB->tableExists($tablename);
 }
 
 
@@ -1403,18 +1394,8 @@ function TableExists($tablename) {
 function FieldExists($table, $field, $usecache = true) {
    global $DB;
 
-   if (!TableExists($table)) {
-      trigger_error("Table $table does not exists", E_USER_WARNING);
-      return false;
-   }
-
-   if ($fields = $DB->list_fields($table, $usecache)) {
-      if (isset($fields[$field])) {
-         return true;
-      }
-      return false;
-   }
-   return false;
+   Toolbox::logDebug('FieldExists() function is deprecated');
+   return $DB->fieldExists($table, $field, $usecache);
 }
 
 
@@ -1429,7 +1410,7 @@ function FieldExists($table, $field, $usecache = true) {
 function isIndex($table, $field) {
    global $DB;
 
-   if (!TableExists($table)) {
+   if (!$DB->tableExists($table)) {
       trigger_error("Table $table does not exists", E_USER_WARNING);
       return false;
    }

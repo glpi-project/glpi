@@ -307,9 +307,9 @@ function location_create_new($split_char, $add_first) {
 function showLocationUpdateForm() {
    global $DB, $CFG_GLPI;
 
-   if ((TableExists ("glpi_dropdown_locations")
-        && FieldExists("glpi_dropdown_locations", "parentID", false))
-       || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id", false))) {
+   if (($DB->tableExists ("glpi_dropdown_locations")
+        && $DB->fieldExists("glpi_dropdown_locations", "parentID", false))
+       || ($DB->tableExists ("glpi_locations") && $DB->fieldExists("glpi_locations", "locations_id", false))) {
       updateTreeDropdown();
       return true;
    }
@@ -322,7 +322,7 @@ function showLocationUpdateForm() {
       $_POST['car_sep'] = '';
    }
 
-   if (!TableExists("glpi_dropdown_locations_new")) {
+   if (!$DB->tableExists("glpi_dropdown_locations_new")) {
       $query = " CREATE TABLE `glpi_dropdown_locations_new` (
                   `ID` INT NOT NULL auto_increment,
                   `name` VARCHAR(255) NOT NULL ,
@@ -394,7 +394,7 @@ function test_connect() {
 function changeVarcharToID($table1, $table2, $chps) {
    global $DB;
 
-   if (!FieldExists($table2, "ID", false)) {
+   if (!$DB->fieldExists($table2, "ID", false)) {
       $query = " ALTER TABLE `$table2`
                  ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
       $DB->queryOrDie($query);
@@ -455,28 +455,28 @@ function updateTreeDropdown() {
    global $DB;
 
    // Update Tree dropdown
-   if (TableExists("glpi_dropdown_locations")
-       && !FieldExists("glpi_dropdown_locations", "completename", false)) {
+   if ($DB->tableExists("glpi_dropdown_locations")
+       && !$DB->fieldExists("glpi_dropdown_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in dropdown_locations");
    }
 
-   if (TableExists("glpi_dropdown_kbcategories")
-       && !FieldExists("glpi_dropdown_kbcategories", "completename", false)) {
+   if ($DB->tableExists("glpi_dropdown_kbcategories")
+       && !$DB->fieldExists("glpi_dropdown_kbcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_kbcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in dropdown_kbcategories");
    }
 
-   if (TableExists("glpi_locations") && !FieldExists("glpi_locations", "completename", false)) {
+   if ($DB->tableExists("glpi_locations") && !$DB->fieldExists("glpi_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in glpi_locations");
    }
 
-   if (TableExists("glpi_knowbaseitemcategories")
-       && !FieldExists("glpi_knowbaseitemcategories", "completename", false)) {
+   if ($DB->tableExists("glpi_knowbaseitemcategories")
+       && !$DB->fieldExists("glpi_knowbaseitemcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in glpi_knowbaseitemcategories");
@@ -540,11 +540,11 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          $current_version = "0.31";
          $config_table    = "glpi_config";
 
-         if (TableExists("glpi_configs")) {
+         if ($DB->tableExists("glpi_configs")) {
             $config_table = "glpi_configs";
          }
 
-         if (TableExists($config_table)) {
+         if ($DB->tableExists($config_table)) {
             $current_version = Config::getCurrentDBVersion();
          }
          echo "<div class='center'>";

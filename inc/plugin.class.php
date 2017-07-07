@@ -1002,12 +1002,12 @@ class Plugin extends CommonDBTM {
 
          foreach ($types as $num => $name) {
             $itemtable = getTableForItemType($name);
-            if (!TableExists($itemtable)) {
+            if (!$DB->tableExists($itemtable)) {
                // Just for security, shouldn't append
                continue;
             }
             $do_recursive = false;
-            if (FieldExists($itemtable, 'is_recursive')) {
+            if ($DB->fieldExists($itemtable, 'is_recursive')) {
                $do_recursive = true;
             }
             foreach ($entities as $entID => $val) {

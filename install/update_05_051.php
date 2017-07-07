@@ -42,25 +42,25 @@ function update05to051() {
 
    /*******************************GLPI 0.51***********************************************/
 
-   if (!FieldExists("glpi_infocoms", "facture", false)) {
+   if (!$DB->fieldExists("glpi_infocoms", "facture", false)) {
       $query = "ALTER TABLE `glpi_infocoms`
                 ADD `facture` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field facture");
    }
 
-   if (!FieldExists("glpi_enterprises", "fax", false)) {
+   if (!$DB->fieldExists("glpi_enterprises", "fax", false)) {
       $query = "ALTER TABLE `glpi_enterprises`
                 ADD `fax` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
    }
 
-   if (!FieldExists("glpi_docs", "link", false)) {
+   if (!$DB->fieldExists("glpi_docs", "link", false)) {
       $query = "ALTER TABLE `glpi_docs`
                 ADD `link` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
    }
 
-   if (!TableExists("glpi_dropdown_contact_type")) {
+   if (!$DB->tableExists("glpi_dropdown_contact_type")) {
       $query = "CREATE TABLE `glpi_dropdown_contact_type` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) NOT NULL default '',
@@ -79,13 +79,13 @@ function update05to051() {
       $DB->queryOrDie($query, "0.51 add entries to dropdown_contact_type");
    }
 
-   if (!FieldExists("glpi_config", "cartridges_alarm", false)) {
+   if (!$DB->fieldExists("glpi_config", "cartridges_alarm", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `cartridges_alarm` int(11) NOT NULL default '10'";
       $DB->queryOrDie($query, "0.51 add field cartridges_alarm");
    }
 
-   if (!TableExists("glpi_state_item")) {
+   if (!$DB->tableExists("glpi_state_item")) {
       $query = "ALTER TABLE `glpi_repair_item`
                 RENAME `glpi_state_item`";
       $DB->queryOrDie($query, "0.51 alter glpi_state_item table name");
@@ -95,7 +95,7 @@ function update05to051() {
       $DB->queryOrDie($query, "0.51 add state field");
    }
 
-   if (!TableExists("glpi_dropdown_state")) {
+   if (!$DB->tableExists("glpi_dropdown_state")) {
       $query = "CREATE TABLE `glpi_dropdown_state` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) default NULL,

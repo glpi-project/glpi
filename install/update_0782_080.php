@@ -75,8 +75,8 @@ function update0782to080() {
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
-      if (TableExists($new_table)) {
-         if (TableExists("backup_$new_table")) {
+      if ($DB->tableExists($new_table)) {
+         if ($DB->tableExists("backup_$new_table")) {
             $query = "DROP TABLE `backup_".$new_table."`";
             $DB->queryOrDie($query, "0.80 drop backup table backup_$new_table");
          }
@@ -93,7 +93,7 @@ function update0782to080() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Calendar')); // Updating schema
 
    $default_calendar_id = 0;
-   if (!TableExists('glpi_calendars')) {
+   if (!$DB->tableExists('glpi_calendars')) {
       $query = "CREATE TABLE `glpi_calendars` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
@@ -119,7 +119,7 @@ function update0782to080() {
       $default_calendar_id = $DB->insert_id();
    }
 
-   if (!TableExists('glpi_calendarsegments')) {
+   if (!$DB->tableExists('glpi_calendarsegments')) {
       $query = "CREATE TABLE `glpi_calendarsegments` (
                   `id` int(11) NOT NULL auto_increment,
                   `calendars_id` int(11) NOT NULL default '0',
@@ -167,7 +167,7 @@ function update0782to080() {
    }
 
    // Holidays : wrong management : may be a group of several days : will be easy to managed holidays
-   if (!TableExists('glpi_holidays')) {
+   if (!$DB->tableExists('glpi_holidays')) {
       $query = "CREATE TABLE `glpi_holidays` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
@@ -189,7 +189,7 @@ function update0782to080() {
 
    }
 
-   if (!TableExists('glpi_calendars_holidays')) {
+   if (!$DB->tableExists('glpi_calendars_holidays')) {
       $query = "CREATE TABLE `glpi_calendars_holidays` (
                   `id` int(11) NOT NULL auto_increment,
                   `calendars_id` int(11) NOT NULL default '0',
@@ -203,7 +203,7 @@ function update0782to080() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'SLA')); // Updating schema
 
-   if (!TableExists('glpi_slas')) {
+   if (!$DB->tableExists('glpi_slas')) {
       $query = "CREATE TABLE `glpi_slas` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
@@ -245,7 +245,7 @@ function update0782to080() {
       }
 
    }
-   if (!TableExists('glpi_slalevels')) {
+   if (!$DB->tableExists('glpi_slalevels')) {
       $query = "CREATE TABLE `glpi_slalevels` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -260,7 +260,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 create glpi_slalevels");
    }
 
-   if (!TableExists('glpi_slalevelactions')) {
+   if (!$DB->tableExists('glpi_slalevelactions')) {
       $query = "CREATE TABLE `glpi_slalevelactions` (
                   `id` int(11) NOT NULL auto_increment,
                   `slalevels_id` int(11) NOT NULL default '0',
@@ -291,7 +291,7 @@ function update0782to080() {
    $migration->addField("glpi_tickets", "begin_waiting_date", "datetime default NULL");
    $migration->addField("glpi_tickets", "sla_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
-   if (!TableExists('glpi_slalevels_tickets')) {
+   if (!$DB->tableExists('glpi_slalevels_tickets')) {
       $query = "CREATE TABLE `glpi_slalevels_tickets` (
                   `id` int(11) NOT NULL auto_increment,
                   `tickets_id` int(11) NOT NULL default '0',
@@ -545,7 +545,7 @@ function update0782to080() {
       }
    }
 
-   if (!TableExists("glpi_computers_softwarelicenses")) {
+   if (!$DB->tableExists("glpi_computers_softwarelicenses")) {
       $query = "CREATE TABLE `glpi_computers_softwarelicenses` (
                   `id` int(11) NOT NULL auto_increment,
                   `computers_id` int(11) NOT NULL default '0',
@@ -558,7 +558,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 create glpi_computers_softwarelicenses");
    }
 
-   if (FieldExists("glpi_softwarelicenses", "computers_id", false)) {
+   if ($DB->fieldExists("glpi_softwarelicenses", "computers_id", false)) {
       $query = "SELECT *
                 FROM `glpi_softwarelicenses`
                 WHERE `computers_id` > 0
@@ -637,7 +637,7 @@ function update0782to080() {
    $migration->addField("glpi_entitydatas", "tickettype", "INT( 11 ) NOT NULL DEFAULT 0");
 
    // Link between tickets
-   if (!TableExists('glpi_tickets_tickets')) {
+   if (!$DB->tableExists('glpi_tickets_tickets')) {
       $query = "CREATE TABLE `glpi_tickets_tickets` (
                   `id` int(11) NOT NULL auto_increment,
                   `tickets_id_1` int(11) NOT NULL default '0',
@@ -650,7 +650,7 @@ function update0782to080() {
    }
 
    //inquest
-   if (!TableExists('glpi_ticketsatisfactions')) {
+   if (!$DB->tableExists('glpi_ticketsatisfactions')) {
       $query = "CREATE TABLE `glpi_ticketsatisfactions` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -738,7 +738,7 @@ function update0782to080() {
    $migration->addField("glpi_infocoms", "warranty_date", "DATE NULL",
                         ['update' => "`buy_date`"]);
 
-   if (!TableExists('glpi_rulecacheprinters')) {
+   if (!$DB->tableExists('glpi_rulecacheprinters')) {
       $query = "CREATE TABLE `glpi_rulecacheprinters` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `old_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -773,7 +773,7 @@ function update0782to080() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Multi user group for tickets'));
 
-   if (!TableExists('glpi_groups_tickets')) {
+   if (!$DB->tableExists('glpi_groups_tickets')) {
       $query = "CREATE TABLE `glpi_groups_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -843,7 +843,7 @@ function update0782to080() {
 
    }
 
-   if (!TableExists('glpi_tickets_users')) {
+   if (!$DB->tableExists('glpi_tickets_users')) {
       $query = "CREATE TABLE `glpi_tickets_users` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -1023,7 +1023,7 @@ function update0782to080() {
                         ['update'    => "'0'",
                               'condition' => " WHERE `entities_id` = '0'"]);
 
-   if (!TableExists('glpi_fieldunicities')) {
+   if (!$DB->tableExists('glpi_fieldunicities')) {
       $query = "CREATE TABLE `glpi_fieldunicities` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
                   `name` VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -1087,7 +1087,7 @@ function update0782to080() {
       }
    }
 
-   if (!TableExists("glpi_fieldblacklists")) {
+   if (!$DB->tableExists("glpi_fieldblacklists")) {
       $query = "CREATE TABLE `glpi_fieldblacklists` (
                   `id` INT (11) NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -1243,7 +1243,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 default set of reminder view for helpdesk users");
    }
 
-   if (!TableExists('glpi_ticketsolutiontemplates')) {
+   if (!$DB->tableExists('glpi_ticketsolutiontemplates')) {
       $query = "CREATE TABLE `glpi_ticketsolutiontemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1315,7 +1315,7 @@ function update0782to080() {
                               'condition' => " WHERE `auths_id` > 0"]);
 
    //Migrate OCS computers link from static config to rules engine
-   if (FieldExists('glpi_ocsservers', 'is_glpi_link_enabled', false)) {
+   if ($DB->fieldExists('glpi_ocsservers', 'is_glpi_link_enabled', false)) {
       $ocs_servers = getAllDatasFromTable('glpi_ocsservers');
       $ranking     = 1;
       foreach ($ocs_servers as $ocs_server) {
@@ -1410,7 +1410,7 @@ function update0782to080() {
    $migration->addField('glpi_ocslinks', 'import_vm',
                         'LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL');
 
-   if (!TableExists('glpi_virtualmachinetypes')) {
+   if (!$DB->tableExists('glpi_virtualmachinetypes')) {
       $query = "CREATE TABLE `glpi_virtualmachinetypes` (
                   `id` INT(11) NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NOT NULL DEFAULT '',
@@ -1421,7 +1421,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 add new table glpi_virtualmachinetypes");
    }
 
-   if (!TableExists('glpi_virtualmachinesystems')) {
+   if (!$DB->tableExists('glpi_virtualmachinesystems')) {
       $query = "CREATE TABLE `glpi_virtualmachinesystems` (
                   `id` INT(11) NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NOT NULL DEFAULT '',
@@ -1432,7 +1432,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 add new table glpi_virtualmachinesystems");
    }
 
-   if (!TableExists('glpi_virtualmachinestates')) {
+   if (!$DB->tableExists('glpi_virtualmachinestates')) {
       $query = "CREATE TABLE `glpi_virtualmachinestates` (
                   `id` INT(11) NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NOT NULL DEFAULT '',
@@ -1443,7 +1443,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 add new table glpi_virtualmachinestates");
    }
 
-   if (!TableExists('glpi_computervirtualmachines')) {
+   if (!$DB->tableExists('glpi_computervirtualmachines')) {
       $query = "CREATE TABLE `glpi_computervirtualmachines` (
                   `id` INT NOT NULL AUTO_INCREMENT,
                   `entities_id` INT(11) NOT NULL DEFAULT '0',

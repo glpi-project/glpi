@@ -3089,7 +3089,7 @@ class Transfer extends CommonDBTM {
                               $device->getFromDB($item_ID);
                               // No : search device
                               $field = "name";
-                              if (!FieldExists($devicetable, "name")) {
+                              if (!$DB->fieldExists($devicetable, "name")) {
                                  $field = "designation";
                               }
 

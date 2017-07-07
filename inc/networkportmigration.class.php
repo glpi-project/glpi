@@ -297,7 +297,7 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<$gateway_cell>" . $this->fields['gateway'] . "</$gateway_cell></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>". __('Network interface') ."</td><$interface_cell>\n";
-      if (TableExists('glpi_networkinterfaces')) {
+      if ($DB->tableExists('glpi_networkinterfaces')) {
          $query = "SELECT `name`
                    FROM `glpi_networkinterfaces`
                    WHERE `id`='".$this->fields['networkinterfaces_id']."'";
@@ -405,6 +405,7 @@ class NetworkPortMigration extends CommonDBChild {
 
 
    function getSearchOptionsNew() {
+      global $DB;
       $tab = parent::getSearchOptionsNew();
 
       $optionIndex = 10;
@@ -453,7 +454,7 @@ class NetworkPortMigration extends CommonDBChild {
          'name'               => IPAddress::getTypeName(1)
       ];
 
-      if (TableExists('glpi_networkinterfaces')) {
+      if ($DB->tableExists('glpi_networkinterfaces')) {
          $tab[] = [
             'id'                 => '24',
             'table'              => 'glpi_networkinterfaces',

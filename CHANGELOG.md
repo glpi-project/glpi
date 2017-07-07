@@ -35,6 +35,8 @@ new whole window
 - `NotificationTemplate::getDataToSend()` signature has changed
 - `QueuedMail` has been renamed to `QueuedNotification`
 - `CommonDBTM::mailqueueonaction` has been renamed to `CommonDBTM::notificationqueueonaction`
+- `TableExists` has been moved to `DBMysql::tableExists`
+- `FieldExists` has been moved to `DBMysql::fieldExists`
 
 #### Deprecated
 
