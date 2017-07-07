@@ -1495,6 +1495,8 @@ class Plugin extends CommonDBTM {
    /**
     * Check declared versions (GLPI, PHP, ...)
     *
+    * @since 9.2
+    *
     * @param integer $plugid Plugin id
     *
     * @return boolean
@@ -1533,6 +1535,8 @@ class Plugin extends CommonDBTM {
 
    /**
     * Check for GLPI version
+    *
+    * @since 9.2
     *
     * @param array $infos Requirements infos:
     *                     - min: minimal supported version,
@@ -1574,6 +1578,8 @@ class Plugin extends CommonDBTM {
    /**
     * Check for PHP version
     *
+    * @since 9.2
+    *
     * @param array $infos Requirements infos:
     *                     - min: minimal supported version,
     *                     - max: maximal supported version.
@@ -1609,6 +1615,8 @@ class Plugin extends CommonDBTM {
    /**
     * Check fo required PHP extensions
     *
+    * @since 9.2
+    *
     * @param array $exts Extensions lists/config @see Config::checkExtensions()
     *
     * @return boolean
@@ -1627,6 +1635,8 @@ class Plugin extends CommonDBTM {
 
    /**
     * Check expected GLPI parameters
+    *
+    * @since 9.2
     *
     * @param array $params Expected parameters to be setup
     *
@@ -1650,6 +1660,8 @@ class Plugin extends CommonDBTM {
    /**
     * Check expected PHP parameters
     *
+    * @since 9.2
+    *
     * @param array $params Expected parameters to be setup
     *
     * @return boolean
@@ -1669,6 +1681,8 @@ class Plugin extends CommonDBTM {
 
    /**
     * Check expected GLPI plugins
+    *
+    * @since 9.2
     *
     * @param array $plugins Expected plugins
     *
@@ -1691,6 +1705,8 @@ class Plugin extends CommonDBTM {
     * Get GLPI version
     * Used from unit tests to mock.
     *
+    * @since 9.2
+    *
     * @return string
     */
    public function getGlpiVersion() {
@@ -1701,6 +1717,8 @@ class Plugin extends CommonDBTM {
     * Get GLPI pre version
     * Used from unit tests to mock.
     *
+    * @since 9.2
+    *
     * @return string
     */
    public function getGlpiPrever() {
@@ -1710,6 +1728,8 @@ class Plugin extends CommonDBTM {
    /**
     * Get PHP version
     * Used from unit tests to mock.
+    *
+    * @since 9.2
     *
     * @return string
     */

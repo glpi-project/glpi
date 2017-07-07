@@ -2127,6 +2127,8 @@ class Config extends CommonDBTM {
    /**
     * Display extensions checks report
     *
+    * @since 9.2
+    *
     * @param boolean    $fordebug display for debug (no html required) (false by default)
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
@@ -2176,6 +2178,8 @@ class Config extends CommonDBTM {
 
    /**
     * Check for needed extensions
+    *
+    * @since 9.2 Method signature and return has changed
     *
     * @param null|array $list     Extensions list (from plugins)
     *
