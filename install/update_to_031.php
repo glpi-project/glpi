@@ -56,7 +56,7 @@ function updateDbTo031() {
 
    //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
-   if (!FieldExists("printers", "ramSize", false)) {
+   if (!$DB->fieldExists("printers", "ramSize", false)) {
       $query = "ALTER TABLE `printers`
                 ADD `ramSize` varchar(6) NOT NULL default ''";
       $DB->queryOrDie($query);
@@ -100,7 +100,7 @@ function updateDbTo031() {
    echo "<p class='center'>Version 0.3  </p>";
 
    // Before 0.31
-   if (!TableExists("glpi_config") && !TableExists("glpi_configs")) {
+   if (!$DB->tableExists("glpi_config") && !$DB->tableExists("glpi_configs")) {
       $query = "CREATE TABLE `glpi_config` (
                   `ID` int(11) NOT NULL auto_increment,
                   `num_of_events` varchar(200) NOT NULL default '',

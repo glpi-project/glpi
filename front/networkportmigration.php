@@ -38,7 +38,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("networking", UPDATE);
 
-if (!TableExists('glpi_networkportmigrations')) {
+if (!$DB->tableExists('glpi_networkportmigrations')) {
    Html::displayNotFoundError();
 }
 

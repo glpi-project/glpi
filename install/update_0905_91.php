@@ -57,7 +57,7 @@ function update0905to91() {
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
-      if (TableExists($new_table)) {
+      if ($DB->tableExists($new_table)) {
          $migration->dropTable("backup_$new_table");
          $migration->displayWarning("$new_table table already exists. ".
                                     "A backup have been done to backup_$new_table.");
@@ -73,7 +73,7 @@ function update0905to91() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
    /************** Lock Objects *************/
-   if (!TableExists('glpi_objectlocks')) {
+   if (!$DB->tableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
                  `itemtype` VARCHAR(100) NOT NULL COMMENT 'Type of locked object',
@@ -273,7 +273,7 @@ function update0905to91() {
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
    // ************ Networkport ethernets **************
-   if (!TableExists("glpi_networkportfiberchannels")) {
+   if (!$DB->tableExists("glpi_networkportfiberchannels")) {
       $query = "CREATE TABLE `glpi_networkportfiberchannels` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -298,7 +298,7 @@ function update0905to91() {
    $migration->addField("glpi_computers", "operatingsystemarchitectures_id", "integer");
    $migration->addKey("glpi_computers", "operatingsystemarchitectures_id");
 
-   if (!TableExists('glpi_operatingsystemarchitectures')) {
+   if (!$DB->tableExists('glpi_operatingsystemarchitectures')) {
       $query = "CREATE TABLE `glpi_operatingsystemarchitectures` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -314,7 +314,7 @@ function update0905to91() {
    }
 
    /************** Task's templates *************/
-   if (!TableExists('glpi_tasktemplates')) {
+   if (!$DB->tableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -341,7 +341,7 @@ function update0905to91() {
    $migration->addField("glpi_budgets", "locations_id", "integer");
    $migration->addKey("glpi_budgets", "locations_id");
 
-   if (!TableExists('glpi_budgettypes')) {
+   if (!$DB->tableExists('glpi_budgettypes')) {
       $query = "CREATE TABLE `glpi_budgettypes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -373,7 +373,7 @@ function update0905to91() {
    Config::setConfigurationValues('core', ['enable_api_login_credentials'    => 0]);
    Config::setConfigurationValues('core', ['enable_api_login_external_token' => 1]);
    Config::setConfigurationValues('core', ['url_base_api' => trim($current_config['url_base'], "/")."/apirest.php/"]);
-   if (!TableExists('glpi_apiclients')) {
+   if (!$DB->tableExists('glpi_apiclients')) {
       $query = "CREATE TABLE `glpi_apiclients` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` INT NOT NULL DEFAULT '0',
@@ -427,8 +427,8 @@ function update0905to91() {
    foreach ($types as $type) {
       $table = getTableForItemType($type);
 
-      if (TableExists($table)
-          && !FieldExists($table, 'date_mod')) {
+      if ($DB->tableExists($table)
+          && !$DB->fieldExists($table, 'date_mod')) {
          $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
 
          //Add date_mod field if it doesn't exists
@@ -437,8 +437,8 @@ function update0905to91() {
          $migration->migrationOneTable($table);
       }
 
-      if (TableExists($table)
-          && !FieldExists($table, 'date_creation')) {
+      if ($DB->tableExists($table)
+          && !$DB->fieldExists($table, 'date_creation')) {
          $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
 
          //Add date_creation field
@@ -580,7 +580,7 @@ function update0905to91() {
    }
 
    /************* Add antivirus table */
-   if (!TableExists('glpi_computerantiviruses')) {
+   if (!$DB->tableExists('glpi_computerantiviruses')) {
       $query = "CREATE TABLE `glpi_computerantiviruses` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `computers_id` int(11) NOT NULL DEFAULT '0',
@@ -686,7 +686,7 @@ function update0905to91() {
    }
 
    /** ************ New SLA structure ************ */
-   if (!TableExists('glpi_slts')) {
+   if (!$DB->tableExists('glpi_slts')) {
       $query = "CREATE TABLE `glpi_slts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -780,12 +780,12 @@ function update0905to91() {
    }
 
    // to delete in next version - fix change in update
-   if (!FieldExists('glpi_slas', 'calendars_id')) {
+   if (!$DB->fieldExists('glpi_slas', 'calendars_id')) {
       $migration->addField("glpi_slas", "calendars_id", "integer", ['after' => 'is_recursive']);
       $migration->addKey('glpi_slas', 'calendars_id');
    }
-   if (FieldExists('glpi_slts', 'resolution_time')
-       && !FieldExists('glpi_slts', 'number_time')) {
+   if ($DB->fieldExists('glpi_slts', 'resolution_time')
+       && !$DB->fieldExists('glpi_slts', 'number_time')) {
       $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
    }
 

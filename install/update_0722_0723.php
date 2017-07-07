@@ -120,7 +120,7 @@ function update0722to0723() {
       }
    }
 
-   if (FieldExists("glpi_auth_ldap", "ldap_group_condition", false)) {
+   if ($DB->fieldExists("glpi_auth_ldap", "ldap_group_condition", false)) {
       $query = "ALTER TABLE `glpi_auth_ldap`
                 CHANGE `ldap_group_condition` `ldap_group_condition` TEXT NULL DEFAULT NULL";
       $DB->queryOrDie($query, "0.72.3 alter ldap_group_condition in glpi_auth_ldap");

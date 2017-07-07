@@ -714,4 +714,56 @@ class DBmysql {
       }
       return $crashed_tables;
    }
+
+   /**
+    * Check if a table exists
+    *
+    * @since 9.2
+    *
+    * @param string $tablename Table name
+    *
+    * @return boolean
+    **/
+   public function tableExists($tablename) {
+      // Get a list of tables contained within the database.
+      $result = $this->list_tables("%".$tablename."%");
+
+      if ($this->numrows($result)) {
+         while ($data = $this->fetch_row($result)) {
+            if ($data[0] === $tablename) {
+               return true;
+            }
+         }
+      }
+
+      $this->free_result($result);
+      return false;
+   }
+
+   /**
+    * Check if a field exists
+    *
+    * @since 9.2
+    *
+    * @param string  $table    Table name for the field we're looking for
+    * @param string  $field    Field name
+    * @param Boolean $usecache Use cache; @see DBmysql::list_fields(), defaults to true
+    *
+    * @return boolean
+    **/
+   public function fieldExists($table, $field, $usecache = true) {
+      if (!$this->tableExists($table)) {
+         trigger_error("Table $table does not exists", E_USER_WARNING);
+         return false;
+      }
+
+      if ($fields = $this->list_fields($table, $usecache)) {
+         if (isset($fields[$field])) {
+            return true;
+         }
+         return false;
+      }
+      return false;
+   }
+
 }

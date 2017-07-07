@@ -40,14 +40,14 @@
 function update0712to0713() {
    global $DB, $CFG_GLPI;
 
-   if (!FieldExists("glpi_rule_cache_software", "ignore_ocs_import", false)) {
+   if (!$DB->fieldExists("glpi_rule_cache_software", "ignore_ocs_import", false)) {
       $query = "ALTER TABLE `glpi_rule_cache_software`
                 ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ";
       $DB->queryOrDie($query, "0.71.3 add ignore_ocs_import field in dictionary cache");
    }
 
    // Update to longtext for fields which may be very long
-   if (FieldExists("glpi_kbitems", "answer", false)) {
+   if ($DB->fieldExists("glpi_kbitems", "answer", false)) {
 
       if (isIndex("glpi_kbitems", "fulltext")) { // to avoid pb in altering column answer
          $query = "ALTER TABLE `glpi_kbitems`
@@ -67,7 +67,7 @@ function update0712to0713() {
       $DB->queryOrDie($query, "0.71.3 alter kbitem re-add index Fulltext");
    }
 
-   if (FieldExists("glpi_tracking", "contents", false)) {
+   if ($DB->fieldExists("glpi_tracking", "contents", false)) {
       $query = "ALTER TABLE `glpi_tracking`
                 CHANGE `contents` `contents` LONGTEXT NULL DEFAULT NULL ";
       $DB->queryOrDie($query, "0.71.3 alter tracking contents field to longtext");
