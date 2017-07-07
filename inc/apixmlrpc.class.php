@@ -130,6 +130,9 @@ class APIXmlrpc extends API {
 
          return $this->returnResponse($response, $code, $additionalheaders);
 
+      } else if ($resource === "lostPassword") {
+         return $this->returnResponse($this->lostPassword($this->parameters));
+
       } else if (in_array($resource,
                           ["getItem", "getItems", "createItems", "updateItems", "deleteItems"])) {
          // commonDBTM manipulation

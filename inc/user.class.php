@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Sabre\VObject;
+use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
 
 class User extends CommonDBTM {
 
@@ -4055,12 +4057,13 @@ class User extends CommonDBTM {
 
 
    /**
-    * @param $input
+    * @param array $input
+    *
+    * @throws ForgetPasswordException when requirements are not met
+    *
+    * @return boolean true if success
    **/
-   function updateForgottenPassword($input) {
-      global $CFG_GLPI;
-
-      echo "<div class='center'>";
+   public function updateForgottenPassword($input) {
       if ($this->getFromDBbyEmail($input['email'],
                                   "`glpi_users`.`is_active`
                                    AND NOT `glpi_users`.`is_deleted`
@@ -4076,27 +4079,53 @@ class User extends CommonDBTM {
                         -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)) {
 
                $input['id'] = $this->fields['id'];
-               if (Config::validatePassword($input["password"]) && $this->update($input)) {
-                  echo __('Reset password successful.');
-                  $input2['password_forget_token']      = '';
-                  $input2['password_forget_token_date'] = null;
-                  $input2['id']                         = $this->fields['id'];
-                  $this->update($input2);
-               } else {
-                  // Force display on error
-                  Html::displayMessageAfterRedirect();
+               Config::validatePassword($input["password"], false); // Throws exception if password is invalid
+               if (!$this->update($input)) {
+                  return false;
                }
+               $input2 = [
+                  'password_forget_token'      => '',
+                  'password_forget_token_date' => null,
+                  'id'                         => $this->fields['id']
+               ];
+               $this->update($input2);
+               return true;
 
             } else {
-               echo __('Your password reset request has expired or is invalid. Please renew it.');
+               throw new ForgetPasswordException(__('Your password reset request has expired or is invalid. Please renew it.'));
             }
 
          } else {
-            echo __("The authentication method configuration doesn't allow you to change your password.");
+            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
          }
 
       } else {
-         echo __('Email address not found.');
+         throw new ForgetPasswordException(__('Email address not found.'));
+      }
+   }
+
+
+   /**
+    * @param array $input
+    **/
+   public function showUpdateForgottenPassword($input) {
+      global $CFG_GLPI;
+
+      echo "<div class='center'>";
+      try {
+         if (!$this->updateForgottenPassword($input)) {
+            Html::displayMessageAfterRedirect();
+         } else {
+            echo __('Reset password successful.');
+         }
+      } catch (ForgetPasswordException $e) {
+         echo $e->getMessage();
+      } catch (PasswordTooWeakException $e) {
+         // Force display on error
+         foreach ($e->getMessages() as $message) {
+            Session::addMessageAfterRedirect($message);
+         }
+         Html::displayMessageAfterRedirect();
       }
 
       echo "<br>";
@@ -4112,10 +4141,29 @@ class User extends CommonDBTM {
     *
     * @return nothing : send email or display error message
    **/
-   function forgetPassword($email) {
+   public function showForgetPassword($email) {
       global $CFG_GLPI;
 
       echo "<div class='center'>";
+      try {
+         $this->forgetPassword($email);
+      } catch (ForgetPasswordException $e) {
+         echo $e->getMessage();
+         return;
+      }
+      echo __('An email has been sent to your email address. The email contains information for reset your password.');
+   }
+
+   /**
+    * Forget user's password
+    *
+    * @param string $email
+    *
+    * @throws ForgetPasswordException when requirements are not met
+    *
+    * @return boolean true if success
+    */
+   public function forgetPassword($email) {
       if ($this->getFromDBbyEmail($email,
                                   "`glpi_users`.`is_active`
                                    AND NOT `glpi_users`.`is_deleted`
@@ -4136,21 +4184,20 @@ class User extends CommonDBTM {
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
                QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
-               echo __('An email has been sent to your email address. The email contains information for reset your password.');
+               return true;
             } else {
-               echo __('Invalid email address');
+               throw new ForgetPasswordException(__('Invalid email address'));
             }
 
          } else {
-            echo __("The authentication method configuration doesn't allow you to change your password.");
+            throw new ForgetPasswordException(__("The authentication method configuration doesn't allow you to change your password."));
          }
 
       } else {
-         echo __('Email address not found.');
+         throw new ForgetPasswordException(__('Email address not found.'));
       }
-      echo "<br>";
-      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
-      echo "</div>";
+
+      return false;
    }
 
 

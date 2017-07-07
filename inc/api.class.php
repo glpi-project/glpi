@@ -34,6 +34,9 @@
  * @since version 9.1
  */
 
+use Glpi\Exception\ForgetPasswordException;
+use Glpi\Exception\PasswordTooWeakException;
+
 abstract class API extends CommonGLPI {
 
    // permit writing to $_SESSION
@@ -1818,6 +1821,51 @@ abstract class API extends CommonGLPI {
 
       } else {
          $this->messageBadArrayError();
+      }
+   }
+
+
+   protected function lostPassword($params = []) {
+      if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
+         return $this->returnError(__("Email notifications are disabled"));
+      }
+
+      if (!isset($params['email'])) {
+         return $this->returnError(__("email parameter missing"));
+      }
+
+      if (isset($_SESSION['glpiID'])) {
+         return $this->returnError(__("A session is active"));
+      }
+
+      $user = new User();
+      if (!isset($params['password_forget_token'])) {
+         $email = Toolbox::addslashes_deep($params['email']);
+         try {
+            $user->forgetPassword($email);
+         } catch (ForgetPasswordException $e) {
+            return $this->returnError($e->getMessage());
+         }
+         return $this->returnResponse([
+            __("An email has been sent to your email address. The email contains information for reset your password.")
+         ]);
+      } else {
+         $password = isset($params['password']) ? $params['password'] : '';
+         $input = [
+            'email'                    => Toolbox::addslashes_deep($params['email']),
+            'password_forget_token'    => Toolbox::addslashes_deep($params['password_forget_token']),
+            'password'                 => Toolbox::addslashes_deep($password),
+            'password2'                => Toolbox::addslashes_deep($password),
+         ];
+         try {
+            $user->updateForgottenPassword($input);
+            return $this->returnResponse([__("Reset password successful.")]);
+         } catch (ForgetPasswordException $e) {
+            return $this->returnError($e->getMessage());
+         } catch (PasswordTooWeakException $e) {
+            implode('\n', $e->getMessages());
+            return $this->returnError(implode('\n', $e->getMessages()));
+         }
       }
    }
 
