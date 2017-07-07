@@ -140,9 +140,12 @@ if (defined('GLPI_PREVER')) {
    }
 }
 
+if (substr($current_version, -4) === '-dev') {
+   $current_version = str_replace('-dev', '', $current_version);
+}
 $update->doUpdates($current_version);
 
-if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne') && !isset($args['dev'])) {
+if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
    $migration->displayWarning("\nMigration Done.");
 } else if (isset($args['force']) || $current_db_version != GLPI_SCHEMA_VERSION && isset($args['dev'])) {
 
