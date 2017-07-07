@@ -4202,8 +4202,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
-      if ($canupdate && $canpriority) {
-         // Only change during creation OR when allowed to change priority OR when user is the creator
+      if ($canupdate) {
          echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
          echo $tt->getEndHiddenFieldValue('urgency', $this);
