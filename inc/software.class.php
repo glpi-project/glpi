@@ -1008,19 +1008,22 @@ class Software extends CommonDBTM {
     * Merge softwares with current
     *
     * @param $item array of software ID to be merged
+    * @param boolean display html progress bar
     *
     * @return boolean about success
    **/
-   function merge($item) {
+   function merge($item, $html = true) {
       global $DB;
 
       $ID = $this->getField('id');
 
-      echo "<div class='center'>";
-      echo "<table class='tab_cadrehov'><tr><th>".__('Merging')."</th></tr>";
-      echo "<tr class='tab_bg_2'><td>";
-      Html::createProgressBar(__('Work in progress...'));
-      echo "</td></tr></table></div>\n";
+      if ($html) {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadrehov'><tr><th>".__('Merging')."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>";
+         Html::createProgressBar(__('Work in progress...'));
+         echo "</td></tr></table></div>\n";
+      }
 
       $item = array_keys($item);
 
@@ -1070,7 +1073,9 @@ class Software extends CommonDBTM {
             if ($DB->query($sql)) {
                $i++;
             }
-            Html::changeProgressBarPosition($i, $nb+1);
+            if ($html) {
+               Html::changeProgressBarPosition($i, $nb+1);
+            }
          }
       }
 
@@ -1090,7 +1095,9 @@ class Software extends CommonDBTM {
             $soft->putInTrash($old, __('Software deleted after merging'));
          }
       }
-      Html::changeProgressBarPosition($i, $nb+1, __('Task completed.'));
+      if ($html) {
+         Html::changeProgressBarPosition($i, $nb+1, __('Task completed.'));         
+      }
       return $i == ($nb+1);
    }
 
