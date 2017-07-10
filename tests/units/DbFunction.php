@@ -308,16 +308,39 @@ class DbFunction extends DbTestCase {
    }
 
    public function testTableExist() {
-      $this->boolean(tableExists('glpi_configs'))->isTrue();
-      $this->boolean(tableExists('fakeTable'))->isFalse();
+      $this->output(
+         function() {
+            $this->boolean(TableExists('glpi_configs'))->isTrue();
+         }
+      )->contains('is deprecated');
+
+      $this->output(
+         function() {
+            $this->boolean(tableExists('fakeTable'))->isFalse();
+         }
+      )->contains('is deprecated');
    }
 
    public function testFieldExist() {
-      $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
-      $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
+      $this->output(
+         function() {
+            $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
+         }
+      )->contains('is deprecated');
+
+      $this->output(
+         function() {
+            $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
+         }
+      )->contains('is deprecated');
+
       $this->when(
          function () {
-            $this->boolean(fieldExists('fakeTable', 'id'))->isFalse();
+            $this->output(
+               function () {
+                  $this->boolean(fieldExists('fakeTable', 'id'))->isFalse();
+               }
+            )->contains('is deprecated');
          }
       )->error
          ->withType(E_USER_WARNING)
@@ -325,7 +348,11 @@ class DbFunction extends DbTestCase {
 
       $this->when(
          function () {
-            $this->boolean(fieldExists('fakeTable', 'fakeField'))->isFalse();
+            $this->output(
+               function () {
+                  $this->boolean(fieldExists('fakeTable', 'fakeField'))->isFalse();
+               }
+            )->contains('is deprecated');
          }
       )->error
          ->withType(E_USER_WARNING)
