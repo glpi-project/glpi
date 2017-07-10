@@ -37,10 +37,10 @@
 // since version 0.83.3
 define('GLPI_ROOT', realpath('..'));
 
-$dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
+$dirs = [GLPI_ROOT,GLPI_ROOT.'/inc/',
               GLPI_ROOT.'/ajax/',
               GLPI_ROOT.'/front/',
-              GLPI_ROOT.'/install/');
+              GLPI_ROOT.'/install/'];
 
 foreach ($dirs as $dir) {
    if ($handle = opendir($dir)) {
@@ -67,17 +67,17 @@ function checkFormsInFile($file) {
       $line = fgets($handle);
       $i++;
       //       echo $i.$line;
-      if ((stripos($line, '<form ') !== FALSE)
-          || (stripos($line, 'Html::openMassiveActionsForm(') !== FALSE)
-          || (stripos($line, 'showFormHeader(') !== FALSE)) {
+      if ((stripos($line, '<form ') !== false)
+          || (stripos($line, 'Html::openMassiveActionsForm(') !== false)
+          || (stripos($line, 'showFormHeader(') !== false)) {
          $lastopen = $i;
          if ($inform) {
             echo "$file line $i : open form in form\n";
          }
          $inform = true;
       }
-      if ((stripos($line, 'Html::closeForm(') !== FALSE)
-          || (stripos($line, 'showFormButtons(') !== FALSE)) {
+      if ((stripos($line, 'Html::closeForm(') !== false)
+          || (stripos($line, 'showFormButtons(') !== false)) {
          if (!$inform) {
             echo "$file line $i : close not opened form\n";
          }

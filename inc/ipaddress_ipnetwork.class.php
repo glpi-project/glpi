@@ -70,7 +70,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
                 FROM `$linkTable`
                 WHERE `ipnetworks_id` = '$ipnetworks_id'";
       foreach ($DB->request($query) as $link) {
-         $linkObject->delete(array('id' => $link['id']));
+         $linkObject->delete(['id' => $link['id']]);
       }
 
       // Then, look each IP address contained inside current Network
@@ -92,7 +92,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
    static function addIPAddress(IPAddress $ipaddress) {
 
       $linkObject = new self();
-      $input      = array('ipaddresses_id' => $ipaddress->getID());
+      $input      = ['ipaddresses_id' => $ipaddress->getID()];
 
       $entity         = $ipaddress->getEntityID();
       $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($ipaddress, $entity);

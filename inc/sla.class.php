@@ -53,9 +53,10 @@ class SLA extends CommonDBChild {
 
    static $rightname                   = 'slm';
 
-   static protected $forward_entity_to = array('SLALevel');
+   static protected $forward_entity_to = ['SLALevel'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
+      // Acronymous, no plural
       return __('SLA');
    }
 
@@ -72,10 +73,9 @@ class SLA extends CommonDBChild {
       }
    }
 
+   function defineTabs($options = []) {
 
-   function defineTabs($options=array()) {
-
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('SlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
@@ -158,7 +158,7 @@ class SLA extends CommonDBChild {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
 
       $rowspan = 4;
       if ($ID > 0) {
@@ -186,7 +186,7 @@ class SLA extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
+      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";

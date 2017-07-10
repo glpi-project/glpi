@@ -610,7 +610,7 @@ function update042to05() {
                 ORDER BY `glpi_computers`.`os`, `glpi_computers`.`osver`";
       $result = $DB->queryOrDie($query, "0.5 select for update OS");
 
-      $valeur   = array();
+      $valeur   = [];
       $curros   = -1;
       $currvers = "-------------------------";
       while ($data=$DB->fetch_array($result)) {
@@ -1210,7 +1210,7 @@ function update042to05() {
       $result2 = $DB->query($query2);
 
       if ($DB->numrows($result) != $DB->numrows($result2)) {
-         $users = array();
+         $users = [];
          $i     = 0;
          while ($line = $DB->fetch_array($result2)) {
             $prefs[$i] = $line["username"];
@@ -1267,7 +1267,7 @@ function date_diff050($from, $to) {
 function updateMaintenanceInfos($table, $type, $ID) {
    global $DB;
 
-   $elements = array();
+   $elements = [];
    $query    = "SELECT `ID`
                 FROM `$table`
                 WHERE `maintenance` = '1'";
@@ -1294,7 +1294,7 @@ function updateMaintenanceInfos($table, $type, $ID) {
 function updateWarrantyInfos($table, $type) {
    global $DB;
 
-   $elements = array();
+   $elements = [];
    $query    = "SELECT `ID`, `achat_date`, `date_fin_garantie`
                 FROM `$table`
                 ORDER BY `achat_date`, `date_fin_garantie`";
@@ -1339,8 +1339,8 @@ function updateWarrantyInfos($table, $type) {
 function isMaintenanceUsed() {
    global $DB;
 
-   $tables = array("glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
-                   "glpi_printers");
+   $tables = ["glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
+                   "glpi_printers"];
 
    foreach ($tables as $key => $table) {
       $query  = "SELECT `ID`
@@ -1360,8 +1360,8 @@ function isMaintenanceUsed() {
 function dropMaintenanceField() {
    global $DB;
 
-   $tables = array("glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
-                   "glpi_printers");
+   $tables = ["glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
+                   "glpi_printers"];
 
    foreach ($tables as $key => $table) {
       $query  = "ALTER TABLE `$table`
@@ -1385,7 +1385,7 @@ function dropMaintenanceField() {
  *
  * @return nothing if everything is good, else display mysql query and error.
  */
-function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif='') {
+function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif = '') {
    global $DB;
 
    $query = "SELECT *

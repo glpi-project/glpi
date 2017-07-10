@@ -61,16 +61,16 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createModalWindow($name, $url, $options=array() ) {
+   static function createModalWindow($name, $url, $options = []) {
 
-      $param = array('width'           => 800,
+      $param = ['width'           => 800,
                      'height'          => 400,
                      'modal'           => true,
                      'container'       => '',
                      'title'           => '',
-                     'extraparams'     => array(),
+                     'extraparams'     => [],
                      'display'         => true,
-                     'js_modal_fields' => '');
+                     'js_modal_fields' => ''];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -232,14 +232,14 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createFixedModalWindow($name, $options=array() ) {
+   static function createFixedModalWindow($name, $options = []) {
 
-      $param = array('width'     => 800,
+      $param = ['width'     => 800,
                      'height'    => 400,
                      'modal'     => true,
                      'container' => '',
                      'title'     => '',
-                     'display'   => true);
+                     'display'   => true];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -293,14 +293,14 @@ class Ajax {
     *
     * @return void|string (see $options['display'])
     */
-   static function createIframeModalWindow($domid, $url, $options=array() ) {
+   static function createIframeModalWindow($domid, $url, $options = []) {
 
-      $param = array('width'         => 1050,
+      $param = ['width'         => 1050,
                      'height'        => 500,
                      'modal'         => true,
                      'title'         => '',
                      'display'       => true,
-                     'reloadonclose' => false);
+                     'reloadonclose' => false];
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -358,12 +358,12 @@ class Ajax {
     * @return void
     */
    static function createTabs(
-      $tabdiv_id='tabspanel',
-      $tabdivcontent_id='tabcontent',
-      $tabs=array(),
-      $type='',
-      $ID=0,
-      $orientation='vertical',
+      $tabdiv_id = 'tabspanel',
+      $tabdivcontent_id = 'tabcontent',
+      $tabs = [],
+      $type = '',
+      $ID = 0,
+      $orientation = 'vertical',
       $options = []
    ) {
       global $CFG_GLPI;
@@ -391,7 +391,7 @@ class Ajax {
                $selected_tab = $current;
             }
             echo "<li><a title=\"".
-                 str_replace(array("<sup class='tab_nb'>", '</sup>'), '', $val['title'])."\" ";
+                 str_replace(["<sup class='tab_nb'>", '</sup>'], '', $val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             // $title = '';
@@ -481,9 +481,9 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                     $events=array("change"), $minsize=-1, $buffertime=-1,
-                                     $forceloadfor=array(), $display=true) {
+   static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters = [],
+                                     $events = ["change"], $minsize = -1, $buffertime = -1,
+                                     $forceloadfor = [], $display = true) {
 
       $output  = "<script type='text/javascript'>";
       $output .= "$(function() {";
@@ -509,11 +509,11 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                           $display=true) {
+   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters = [],
+                                           $display = true) {
 
-      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"),
-                                     -1, -1, array(), $display);
+      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, ["change"],
+                                     -1, -1, [], $display);
    }
 
 
@@ -531,12 +531,12 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                              $minsize=-1, $buffertime=-1, $forceloadfor=array(),
-                                              $display=true) {
+   static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters = [],
+                                              $minsize = -1, $buffertime = -1, $forceloadfor = [],
+                                              $display = true) {
 
       if (count($forceloadfor) == 0) {
-         $forceloadfor = array('*');
+         $forceloadfor = ['*'];
       }
       // Need to define min size for text search
       if ($minsize < 0) {
@@ -546,7 +546,7 @@ class Ajax {
          $buffertime = 0;
       }
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     array("dblclick", "keyup"), $minsize, $buffertime,
+                                     ["dblclick", "keyup"], $minsize, $buffertime,
                                      $forceloadfor, $display);
    }
 
@@ -566,14 +566,14 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
-                                           $events=array("change"), $minsize = -1, $buffertime=-1,
-                                           $forceloadfor=array(), $display=true) {
+   static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters = [],
+                                           $events = ["change"], $minsize = -1, $buffertime = -1,
+                                           $forceloadfor = [], $display = true) {
 
       if (is_array($toobserve)) {
          $zones = $toobserve;
       } else {
-         $zones = array($toobserve);
+         $zones = [$toobserve];
       }
       $output = '';
       foreach ($zones as $zone) {
@@ -636,7 +636,7 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function commonDropdownUpdateItem($options, $display=true) {
+   static function commonDropdownUpdateItem($options, $display = true) {
 
       $field     = '';
       $fieldname = '';
@@ -660,12 +660,12 @@ class Ajax {
          if (is_array($datas) && count($datas)) {
             // Put it in array
             if (isset($datas['to_update'])) {
-               $datas = array($datas);
+               $datas = [$datas];
             }
             foreach ($datas as $data) {
-               $paramsupdate = array();
+               $paramsupdate = [];
                if (isset($data['value_fieldname'])) {
-                  $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
+                  $paramsupdate = [$data['value_fieldname'] => '__VALUE__'];
                }
 
                if (isset($data["moreparams"])
@@ -704,8 +704,8 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="",
-                                    $display=true) {
+   static function updateItemJsCode($toupdate, $url, $parameters = [], $toobserve = "",
+                                    $display = true) {
 
       $out = Html::jsGetElementbyID($toupdate).".load('$url'\n";
       if (count($parameters)) {
@@ -752,7 +752,7 @@ class Ajax {
     *
     * @return void|string (see $display)
     */
-   static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
+   static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true) {
 
       $output  = "<script type='text/javascript'>";
       $output .= "$(function() {";

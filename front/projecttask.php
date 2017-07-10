@@ -37,7 +37,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRightsOr('project', array(Project::READALL, Project::READMY, ProjectTask::READMY));
+Session::checkRightsOr('project', [Project::READALL, Project::READMY, ProjectTask::READMY]);
 
 Html::header(ProjectTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project", 'task');
 

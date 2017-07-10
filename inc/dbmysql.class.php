@@ -65,6 +65,9 @@ class DBmysql {
    //to calculate execution time
    public $execution_time          = false;
 
+   //to simulate transactions (for tests)
+   public $objcreated = [];
+
    /**
     * Constructor / Connect to the MySQL Database
     *
@@ -72,7 +75,7 @@ class DBmysql {
     *
     * @return void
     */
-   function __construct($choice=NULL) {
+   function __construct($choice = null) {
       $this->connect($choice);
    }
 
@@ -84,7 +87,7 @@ class DBmysql {
     *
     * @return void
     */
-   function connect($choice=NULL) {
+   function connect($choice = null) {
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -171,7 +174,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -205,7 +208,7 @@ class DBmysql {
     *
     * @return mysqli_result Query result handler
     */
-   function queryOrDie($query, $message='') {
+   function queryOrDie($query, $message = '') {
       //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $res = $this->query($query)
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
@@ -228,7 +231,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL prepare error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -258,7 +261,7 @@ class DBmysql {
           && isset($data[$field])) {
          return $data[$field];
       }
-      return NULL;
+      return null;
    }
 
    /**
@@ -370,7 +373,7 @@ class DBmysql {
     *
     * @return mysqli_result list of tables
     */
-   function list_tables($table="glpi_%") {
+   function list_tables($table = "glpi_%") {
       return $this->query(
          "SELECT TABLE_NAME FROM information_schema.`TABLES`
              WHERE TABLE_SCHEMA = '{$this->dbdefault}'
@@ -387,8 +390,8 @@ class DBmysql {
     *
     * @return mixed list of fields
     */
-   function list_fields($table, $usecache=true) {
-      static $cache = array();
+   function list_fields($table, $usecache = true) {
+      static $cache = [];
 
       if ($usecache && isset($cache[$table])) {
          return $cache[$table];
@@ -396,13 +399,13 @@ class DBmysql {
       $result = $this->query("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
-            $cache[$table] = array();
+            $cache[$table] = [];
             while ($data = $result->fetch_assoc()) {
                $cache[$table][$data["Field"]] = $data;
             }
             return $cache[$table];
          }
-         return array();
+         return [];
       }
       return false;
    }
@@ -533,7 +536,7 @@ class DBmysql {
     *
     * @return DBmysqlIterator
     */
-   public function request ($tableorsql, $crit="", $debug=false) {
+   public function request ($tableorsql, $crit = "", $debug = false) {
       return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
    }
 
@@ -547,7 +550,7 @@ class DBmysql {
      *
      * @return int number of tables
      */
-   static function optimize_tables($migration=NULL, $cron=false) {
+   static function optimize_tables($migration = null, $cron = false) {
       global $DB;
 
       $crashed_tables = self::checkForCrashedTables();
@@ -599,7 +602,7 @@ class DBmysql {
     */
    public function getInfo() {
       // No translation, used in sysinfo
-      $ret = array();
+      $ret = [];
       $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
       if (($data = $req->next())) {
@@ -693,7 +696,7 @@ class DBmysql {
    */
    static public function checkForCrashedTables() {
       global $DB;
-      $crashed_tables = array();
+      $crashed_tables = [];
 
       $result_tables = $DB->list_tables();
 
@@ -703,393 +706,12 @@ class DBmysql {
          if ($DB->numrows($result) > 0) {
             $row = $DB->fetch_array($result);
             if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
-               $crashed_tables[] = array('table'    => $row[0],
+               $crashed_tables[] = ['table'    => $row[0],
                                          'Msg_type' => $row['Msg_type'],
-                                         'Msg_text' => $row['Msg_text']);
+                                         'Msg_text' => $row['Msg_text']];
             }
          }
       }
       return $crashed_tables;
-   }
-}
-
-
-/**
- * Helper for simple query
- * @todo Create a separate file for this class
- */
-class DBmysqlIterator implements Iterator {
-   /**
-    * DBmysql object
-    * @var DBmysql
-    */
-   private $conn;
-   // Current SQL query
-   private $sql;
-   // Current result
-   private $res = false;
-   // Current row
-   private $row;
-
-   /**
-    * Constructor
-    *
-    * @param DBmysql      $dbconnexion Database Connnexion (must be a CommonDBTM object)
-    * @param string|array $table       Table name (optional when $crit have FROM entry)
-    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-    * @param boolean      $debug       To log the request (default false)
-    *
-    * @return void
-    */
-   function __construct ($dbconnexion, $table, $crit="", $debug=false) {
-      $this->conn = $dbconnexion;
-      if (is_string($table) && strpos($table, " ")) {
-         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
-         //}
-         $this->sql = $table;
-      } else {
-         // Modern way
-         if (is_array($table) && isset($table['FROM'])) {
-            // Shift the args
-            $debug = $crit;
-            $crit  = $table;
-            $table = $crit['FROM'];
-            unset($crit['FROM']);
-         }
-
-         // Check field, orderby, limit, start in criterias
-         $field    = "";
-         $orderby  = "";
-         $limit    = 0;
-         $start    = 0;
-         $distinct = '';
-         $where    = '';
-         $count    = '';
-         $join     = '';
-         if (is_array($crit) && count($crit)) {
-            foreach ($crit as $key => $val) {
-               switch ((string)$key) {
-                  case 'SELECT' :
-                  case 'FIELDS' :
-                     $field = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'SELECT DISTINCT' :
-                  case 'DISTINCT FIELDS' :
-                     $field = $val;
-                     $distinct = "DISTINCT";
-                     unset($crit[$key]);
-                     break;
-
-                  case 'COUNT' :
-                     $count = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'ORDER' :
-                     $orderby = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'LIMIT' :
-                     $limit = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'START' :
-                     $start = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'WHERE' :
-                     $where = $val;
-                     unset($crit[$key]);
-                     break;
-
-                  case 'JOIN' :
-                     if (is_array($val)) {
-                        foreach ($val as $jointable => $joincrit) {
-                           $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
-                        }
-                     } else {
-                        trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
-                     }
-                     unset($crit[$key]);
-                     break;
-               }
-            }
-         }
-
-         // SELECT field list
-         if ($count) {
-            $this->sql = "SELECT COUNT(*) AS $count";
-         } else if (is_array($field)) {
-            $this->sql = "";
-            foreach ($field as $t => $f) {
-               if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . self::quoteName($f);
-               } else if (is_array($f)) {
-                  $t = self::quoteName($t);
-                  $f = array_map([__CLASS__, 'quoteName'], $f);
-                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.", $f);
-               } else {
-                  $t = self::quoteName($t);
-                  $f = ($f == '*' ? $f : self::quoteName($f));
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
-               }
-            }
-         } else if (empty($field)) {
-            $this->sql = "SELECT *";
-         } else {
-            $this->sql = "SELECT $distinct " . self::quoteName($field);
-         }
-
-         // FROM table list
-         if (is_array($table)) {
-            if (count($table)) {
-               $table = array_map([__CLASS__, 'quoteName'], $table);
-               $this->sql .= ' FROM '.implode(", ", $table);
-            } else {
-               trigger_error("Missing table name", E_USER_ERROR);
-            }
-         } else if ($table) {
-            $table = self::quoteName($table);
-            $this->sql .= " FROM $table";
-         } else {
-            /*
-             * TODO filter with if ($where || !empty($crit)) {
-             * but not usefull for now, as we CANNOT write somthing like "SELECT NOW()"
-             */
-            trigger_error("Missing table name", E_USER_ERROR);
-         }
-
-         // JOIN
-         $this->sql .= $join;
-
-         // WHERE criteria list
-         if (!empty($crit)) {
-            $this->sql .= " WHERE ".$this->analyseCrit($crit);
-         } else if ($where) {
-            $this->sql .= " WHERE ".$this->analyseCrit($where);
-         }
-
-         // ORDER BY
-         if (is_array($orderby)) {
-            $cleanorderby = array();
-            foreach ($orderby as $o) {
-               $new = '';
-               $tmp = explode(' ', $o);
-               $new .= self::quoteName($tmp[0]);
-               // ASC OR DESC added
-               if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
-                  $new .= ' '.$tmp[1];
-               }
-               $cleanorderby[] = $new;
-            }
-
-            $this->sql .= " ORDER BY ".implode(", ", $cleanorderby);
-         } else if (!empty($orderby)) {
-            $this->sql .= " ORDER BY ";
-            $tmp = explode(' ', $orderby);
-            $this->sql .= self::quoteName($tmp[0]);
-            // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], array('ASC', 'DESC'))) {
-               $this->sql .= ' '.$tmp[1];
-            }
-         }
-
-         if (is_numeric($limit) && ($limit > 0)) {
-            $this->sql .= " LIMIT $limit";
-            if (is_numeric($start) && ($start > 0)) {
-               $this->sql .= " OFFSET $start";
-            }
-         }
-      }
-      if ($debug) {
-         Toolbox::logDebug("Generated query:", $this->getSql());
-      }
-      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
-   }
-
-
-   /**
-    * Quote field name
-    *
-    * @since 9.1
-    *
-    * @param string $name of field to quote (or table.field)
-    *
-    * @return string
-    */
-   private static function quoteName($name) {
-      if (strpos($name, '.')) {
-         $n = explode('.', $name, 2);
-         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
-      }
-      return ($name[0]=='`' ? $name : "`$name`");
-   }
-
-
-   /**
-    * Retrieve the SQL statement
-    *
-    * @since 9.1
-    *
-    * @return string
-    */
-   public function getSql() {
-      return preg_replace('/ +/', ' ', $this->sql);
-   }
-
-   /**
-    * Destructor
-    *
-    * @return void
-    */
-   function __destruct () {
-      if ($this->res) {
-         $this->conn->free_result($this->res);
-      }
-   }
-
-   /**
-    * Generate the SQL statement for a array of criteria
-    *
-    * @param string[] $crit Criteria
-    * @param string   $bool Boolean operator (default AND)
-    *
-    * @return string
-    */
-   private function analyseCrit ($crit, $bool="AND") {
-      static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
-
-      if (!is_array($crit)) {
-         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-         //}
-         return $crit;
-      }
-      $ret = "";
-      foreach ($crit as $name => $value) {
-         if (!empty($ret)) {
-            $ret .= " $bool ";
-         }
-         if (is_numeric($name)) {
-            // No Key case => recurse.
-            $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
-
-         } else if (($name === "OR") || ($name === "AND")) {
-            // Binary logical operator
-            $ret .= "(" . $this->analyseCrit($value, $name) . ")";
-
-         } else if ($name === "NOT") {
-            // Uninary logicial operator
-            $ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
-
-         } else if ($name === "FKEY") {
-            // Foreign Key condition
-            if (is_array($value) && (count($value) == 2)) {
-               reset($value);
-               list($t1,$f1) = each($value);
-               list($t2,$f2) = each($value);
-               $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
-                       (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
-            } else {
-               trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
-            }
-
-         } else if (is_array($value)) {
-            if (count($value) == 2 && in_array($value[0], $operators)) {
-               if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
-                  $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
-               } else {
-                  $ret .= self::quoteName($name) . " {$value[0]} '{$value[1]}'";
-               }
-            } else {
-               // Array of Values
-               foreach ($value as $k => $v) {
-                  if (!is_numeric($v)) {
-                     $value[$k] = "'$v'";
-                  }
-               }
-               $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
-            }
-         } else if (is_null($value)) {
-            // NULL condition
-            $ret .= self::quoteName($name) . " IS NULL";
-
-         } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
-            // Integer or field name
-            $ret .= self::quoteName($name) . " = $value";
-
-         } else {
-            // String
-            $ret .= self::quoteName($name) . " = '$value'";
-         }
-      }
-      return $ret;
-   }
-
-   /**
-    * Reset rows parsing (go to first offset) & provide first row
-    *
-    * @return string[]|null fetch_assoc() of first results row
-    */
-   public function rewind() {
-      if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res, 0);
-      }
-      return $this->next();
-   }
-
-   /**
-    * Provide actual row
-    *
-    * @return mixed
-    */
-   public function current() {
-      return $this->row;
-   }
-
-   /**
-    * Get current key value
-    *
-    * @return mixed
-    */
-   public function key() {
-      return (isset($this->row["id"]) ? $this->row["id"] : 0);
-   }
-
-   /**
-    * Return next row of query results
-    *
-    * @return string[]|null fetch_assoc() of first results row
-    */
-   public function next() {
-      if (!$this->res) {
-         return false;
-      }
-      $this->row = $this->conn->fetch_assoc($this->res);
-      return $this->row;
-   }
-
-   /**
-    * @todo phpdoc...
-    *
-    * @return boolean
-    */
-   public function valid() {
-      return $this->res && $this->row;
-   }
-
-   /**
-    * Number of rows on a result
-    *
-    * @return int
-    */
-   public function numrows() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
 }

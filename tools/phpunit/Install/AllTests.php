@@ -41,7 +41,7 @@ include("../../install/update_0831_0833.php");
 include("../../install/update_0831_084.php");
 include("../../install/update_084_085.php");
 
-function displayMigrationMessage ($id, $msg="") {
+function displayMigrationMessage ($id, $msg = "") {
    // display nothing
 }
 
@@ -72,7 +72,7 @@ class CliMigration extends Migration {
    }
 
 
-   function displayWarning($msg, $red=false) {
+   function displayWarning($msg, $red = false) {
 
       if ($red) {
          $msg = "** $msg";

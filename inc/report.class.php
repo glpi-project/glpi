@@ -58,7 +58,7 @@ class Report extends CommonGLPI{
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Report', 'Reports', $nb);
    }
 
@@ -121,12 +121,11 @@ class Report extends CommonGLPI{
 
       $count    = count($report_list);
       $selected = -1;
-      $values   = array($CFG_GLPI["root_doc"].'/front/report.php' => Dropdown::EMPTY_VALUE);
+      $values   = [$CFG_GLPI["root_doc"].'/front/report.php' => Dropdown::EMPTY_VALUE];
 
-      while ($data = each($report_list)) {
-         $val           = $data[0];
-         $name          = $report_list["$val"]["name"];
-         $file          = $report_list["$val"]["file"];
+      foreach ($report_list as $val => $data) {
+         $name          = $data['name'];
+         $file          = $data['file'];
          $key           = $CFG_GLPI["root_doc"]."/front/".$file;
          $values[$key]  = $name;
          if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
@@ -134,14 +133,14 @@ class Report extends CommonGLPI{
          }
       }
 
-      $names    = array();
-      $optgroup = array();
+      $names    = [];
+      $optgroup = [];
       if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
          foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages) {
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
-                  $names[$plug.'/'.$page] = array("name" => $name,
-                                                  "plug" => $plug);
+                  $names[$plug.'/'.$page] = ["name" => $name,
+                                                  "plug" => $plug];
                   $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                }
             }
@@ -163,8 +162,8 @@ class Report extends CommonGLPI{
       }
 
       Dropdown::showFromArray('statmenu', $values,
-                              array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                    'value'     => $selected));
+                              ['on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                    'value'     => $selected]);
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -183,10 +182,10 @@ class Report extends CommonGLPI{
       echo "<span class='big b'>GLPI ".Report::getTypeName(Session::getPluralNumber())."</span><br><br>";
 
       // 1. Get counts of itemtype
-      $items     = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                         'Printer', 'Software');
+      $items     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
+                         'Printer', 'Software'];
 
-      $linkitems = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+      $linkitems = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
       echo "<table class='tab_cadrehov'>";
 
@@ -222,11 +221,10 @@ class Report extends CommonGLPI{
                       AND `is_template` = '0' ";
 
       $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
-                FROM `glpi_computers`
+                FROM `glpi_items_operatingsystems`
                 LEFT JOIN `glpi_operatingsystems`
-                   ON (`glpi_computers`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
-                $where ".
-                        getEntitiesRestrictRequest("AND", "glpi_computers")."
+                   ON (`glpi_items_operatingsystems`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
+                $where
                 GROUP BY `glpi_operatingsystems`.`name`";
       $result = $DB->query($query);
 
@@ -296,7 +294,7 @@ class Report extends CommonGLPI{
     * @param $extra                 (default '')
    **/
    static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
-                                                $where_crit, $order='', $field='', $extra='') {
+                                                $where_crit, $order = '', $field = '', $extra = '') {
       global $DB;
 
       // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
@@ -447,9 +445,9 @@ class Report extends CommonGLPI{
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
-      $values = array( READ => __('Read'));
+      $values = [ READ => __('Read')];
       return $values;
    }
 

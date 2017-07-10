@@ -45,13 +45,13 @@ switch ($_POST['action']) {
       }
       $task = new TicketTask;
       $task->getFromDB(intval($_POST['tasks_id']));
-      if (!in_array($task->fields['state'], array(0, Planning::INFO))) {
+      if (!in_array($task->fields['state'], [0, Planning::INFO])) {
          echo $new_state = ($task->fields['state'] == Planning::DONE)
                               ? Planning::TODO
                               : Planning::DONE;
-         $task->update(array('id'         => intval($_POST['tasks_id']),
+         $task->update(['id'         => intval($_POST['tasks_id']),
                              'tickets_id' => intval($_POST['tickets_id']),
-                             'state'      => $new_state));
+                             'state'      => $new_state]);
       }
       break;
    case "viewsubitem":
@@ -74,8 +74,8 @@ switch ($_POST['action']) {
                ObjectLock::setReadOnlyProfile( );
             }
 
-            Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent,
-                                                                        'tickets_id' => $_POST["tickets_id"]));
+            Ticket::showSubForm($item, $_POST["id"], ['parent' => $parent,
+                                                                        'tickets_id' => $_POST["tickets_id"]]);
          } else {
             echo __('Access denied');
          }

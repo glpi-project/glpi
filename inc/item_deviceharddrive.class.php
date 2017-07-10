@@ -51,18 +51,18 @@ class Item_DeviceHardDrive extends Item_Devices {
    /**
     * @since version 0.85
    **/
-   static function getSpecificities($specif='') {
+   static function getSpecificities($specif = '') {
 
-      return array('capacity' => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'),
+      return ['capacity' => ['long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'),
                                                                __('Mio')),
                                        'short name' => __('Capacity'),
                                        'size'       => 10,
-                                       'id'         => 20),
+                                       'id'         => 20],
                    'serial'   => parent::getSpecificities('serial'),
                    'otherserial' => parent::getSpecificities('otherserial'),
                    'locations_id' => parent::getSpecificities('locations_id'),
                    'states_id' => parent::getSpecificities('states_id'),
-                   'busID'    => parent::getSpecificities('busID'));
+                   'busID'    => parent::getSpecificities('busID')];
    }
 
 }

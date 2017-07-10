@@ -53,7 +53,7 @@ if (isset($_GET['unlock']) && isset($_GET["id"])) {
    if ($ol->getFromDB($_GET["id"])
        && $ol->deleteFromDB(1)) {
       if (isset($_GET['force'])) {
-         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0,
+         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], [0, '', ''], 0,
                       Log::HISTORY_UNLOCK_ITEM);
       }
       $ret = 1;

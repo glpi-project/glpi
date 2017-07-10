@@ -51,7 +51,7 @@ class SoftwareVersion extends CommonDBChild {
    static public $items_id  = 'softwares_id';
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Version', 'Versions', $nb);
    }
 
@@ -64,9 +64,9 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -101,7 +101,7 @@ class SoftwareVersion extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
     *
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -133,13 +133,13 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
-      OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
+      OperatingSystem::dropdown(['value' => $this->fields["operatingsystems_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
+      State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwareversion`"));
+                            'condition' => "`is_visible_softwareversion`"]);
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
@@ -219,14 +219,14 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownForOneSoftware($options=array()) {
+   static function dropdownForOneSoftware($options = []) {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
       $p['softwares_id']          = 0;
       $p['value']                 = 0;
       $p['name']                  = 'softwareversions_id';
-      $p['used']                  = array();
+      $p['used']                  = [];
       $p['display_emptychoice']   = true;
 
       if (is_array($options) && count($options)) {
@@ -249,7 +249,7 @@ class SoftwareVersion extends CommonDBChild {
                 ORDER BY `name`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $values = array();
+      $values = [];
 
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
@@ -348,7 +348,7 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -364,7 +364,7 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'Software') {
          self::showForSoftware($item);

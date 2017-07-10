@@ -49,9 +49,9 @@ class OLA extends CommonDBChild {
 
    static $rightname                   = 'slm';
 
-   static protected $forward_entity_to = array('OLALevel');
+   static protected $forward_entity_to = ['OLALevel'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('OLA', 'OLAs', $nb);
    }
 
@@ -69,9 +69,9 @@ class OLA extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('OlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
@@ -154,7 +154,7 @@ class OLA extends CommonDBChild {
     *
     *@return boolean item found
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $rowspan = 3;
@@ -186,7 +186,7 @@ class OLA extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
+      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -209,20 +209,20 @@ class OLA extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
       echo "<td>";
-      self::getOlaTypeDropdown(array('value' => $this->fields["type"]));
+      self::getOlaTypeDropdown(['value' => $this->fields["type"]]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time')."</td>";
       echo "<td>";
-      Dropdown::showNumber("number_time", array('value' => $this->fields["number_time"],
-                                                    'min'   => 0));
-      $possible_values = array('minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
+      Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
+                                                    'min'   => 0]);
+      $possible_values = ['minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
                                'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
-                               'day'      => _n('Day', 'Days', Session::getPluralNumber()));
+                               'day'      => _n('Day', 'Days', Session::getPluralNumber())];
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
-                                      array('value'     => $this->fields["definition_time"],
-                                            'on_change' => 'appearhideendofworking()'));
+                                      ['value'     => $this->fields["definition_time"],
+                                            'on_change' => 'appearhideendofworking()']);
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
       echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
@@ -283,10 +283,10 @@ class OLA extends CommonDBChild {
 
          echo "<script type='text/javascript' >";
          echo "function viewAddOla$instID$rand() {";
-         $params = array('type'                     => $ola->getType(),
-                         'parenttype'               => $slm->getType(),
-                         $slm->getForeignKeyField() => $instID,
-                         'id'                       => -1);
+         $params = ['type'                     => $ola->getType(),
+                    'parenttype'               => $slm->getType(),
+                    $slm->getForeignKeyField() => $instID,
+                    'id'                       => -1];
          Ajax::updateItemJsCode("viewola$instID$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "}";
@@ -306,7 +306,7 @@ class OLA extends CommonDBChild {
       if (count($olaList)) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -333,10 +333,10 @@ class OLA extends CommonDBChild {
                         : '');
             echo "\n<script type='text/javascript' >\n";
             echo "function viewEditOla". $instID.$val["id"]."$rand() {\n";
-            $params = array('type'                     => $ola->getType(),
-                            'parenttype'               => $slm->getType(),
-                            $slm->getForeignKeyField() => $instID,
-                            'id'                       => $val["id"]);
+            $params = ['type'                     => $ola->getType(),
+                       'parenttype'               => $slm->getType(),
+                       $slm->getForeignKeyField() => $instID,
+                       'id'                       => $val["id"]];
             Ajax::updateItemJsCode("viewola$instID$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
@@ -353,8 +353,8 @@ class OLA extends CommonDBChild {
             echo "<td $edit>".$ola->getSpecificValueToDisplay('type', $ola->fields['type'])."</td>";
             echo "<td $edit>";
             echo $ola->getSpecificValueToDisplay('number_time',
-                  array('number_time'     => $ola->fields['number_time'],
-                        'definition_time' => $ola->fields['definition_time']));
+                  ['number_time'     => $ola->fields['number_time'],
+                   'definition_time' => $ola->fields['definition_time']]);
             echo "</td>";
             if (!$slm->fields['calendars_id']) {
                $link =  __('24/7');
@@ -408,7 +408,7 @@ class OLA extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'SLM' :
@@ -473,7 +473,7 @@ class OLA extends CommonDBChild {
             $olaField  = 'olas_ttr_id';
             break;
       }
-      return array($dateField, $olaField);
+      return [$dateField, $olaField];
    }
 
 
@@ -520,27 +520,27 @@ class OLA extends CommonDBChild {
                }
             }
 
-            $olaoptions = array();
+            $olaoptions = [];
             if (Session::haveRight('slm', READ)) {
                $olaoptions['link'] = Toolbox::getItemTypeFormURL('OLA').
                                           "?id=".$this->fields["id"];
             }
             Html::showToolTip($commentola, $olaoptions);
             if ($canupdate) {
-               $fields = array('ola_delete'        => 'ola_delete',
-                               'id'                => $ticket->getID(),
-                               'type'              => $type,
-                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
-                               '_glpi_simple_form' => 1);
+               $fields = ['ola_delete'        => 'ola_delete',
+                          'id'                => $ticket->getID(),
+                          'type'              => $type,
+                          '_glpi_csrf_token'  => Session::getNewCSRFToken(),
+                          '_glpi_simple_form' => 1];
                $JS = "  function delete_internal_date$type(){
                            if (nativeConfirm('".addslashes(__('Also delete date ?'))."')) {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
-                                                                      array('delete_date' => 1))).");
+                                                                      ['delete_date' => 1])).");
                            } else {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
-                                                                      array('delete_date' => 0))).");
+                                                                      ['delete_date' => 0])).");
                            }
                         }";
                echo Html::scriptBlock($JS);
@@ -555,9 +555,9 @@ class OLA extends CommonDBChild {
             echo "<td width='200px'>";
             echo $tt->getBeginHiddenFieldValue($dateField);
             if ($canupdate) {
-               Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
+               Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
                                                          'timestep'   => 1,
-                                                         'maybeempty' => true));
+                                                         'maybeempty' => true]);
             } else {
                echo Html::convDateTime($ticket->fields[$dateField]);
             }
@@ -570,16 +570,16 @@ class OLA extends CommonDBChild {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText($olaField);
                echo "<span id='ola_action$type'>";
-               echo "<a ".Html::addConfirmationOnAction(array(__('The assignment of a OLA to a ticket causes the recalculation of the date.'),
-                       __("Escalations defined in the OLA will be triggered under this new date.")),
+               echo "<a ".Html::addConfirmationOnAction([__('The assignment of a OLA to a ticket causes the recalculation of the date.'),
+                       __("Escalations defined in the OLA will be triggered under this new date.")],
                                                     "cleanhide('ola_action$type');cleandisplay('ola_choice$type');").
                      " class='pointer' title='".__('OLA')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('OLA')."</span></a>";
                echo "</span>";
                echo "<div id='ola_choice$type' style='display:none'>";
                echo "<span  class='b'>".__('OLA')."</span>&nbsp;";
-               Ola::dropdown(array('name'      => $olaField,
-                                   'entity'    => $ticket->fields["entities_id"],
-                                   'condition' => "`type` = '".$type."'"));
+               Ola::dropdown(['name'      => $olaField,
+                              'entity'    => $ticket->fields["entities_id"],
+                              'condition' => "`type` = '".$type."'"]);
                echo "</div>";
                echo $tt->getEndHiddenFieldText($olaField);
                echo "</td>";
@@ -589,11 +589,11 @@ class OLA extends CommonDBChild {
       } else { // New Ticket
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue($dateField);
-         Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
+         Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
                                                    'timestep'   => 1,
                                                    'maybeempty' => false,
                                                    'canedit'    => $canupdate,
-                                                   'required'   => ($tt->isMandatoryField($dateField) && !$ticket->getID())));
+                                                   'required'   => ($tt->isMandatoryField($dateField) && !$ticket->getID())]);
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
          $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
@@ -606,11 +606,11 @@ class OLA extends CommonDBChild {
             }
             echo $tt->getEndHiddenFieldText($olaField);
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($olaField);
-            Ola::dropdown(array('name'      => $olaField,
-                                'entity'    => $ticket->fields["entities_id"],
-                                'value'     => isset($ticket->fields[$olaField])
-                                                  ? $ticket->fields[$olaField] : 0,
-                                'condition' => "`type` = '".$type."'"));
+            Ola::dropdown(['name'      => $olaField,
+                           'entity'    => $ticket->fields["entities_id"],
+                           'value'     => isset($ticket->fields[$olaField])
+                                             ? $ticket->fields[$olaField] : 0,
+                           'condition' => "`type` = '".$type."'"]);
             echo $tt->getEndHiddenFieldValue($olaField, $ticket);
             echo "</td>";
          }
@@ -619,7 +619,6 @@ class OLA extends CommonDBChild {
       echo "</tr>";
       echo "</table>";
    }
-
 
    function getSearchOptionsNew() {
       $tab = [];
@@ -700,10 +699,10 @@ class OLA extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'number_time' :
@@ -734,10 +733,10 @@ class OLA extends CommonDBChild {
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -758,7 +757,7 @@ class OLA extends CommonDBChild {
     *
     * @return due date time (NULL if ola not exists)
    **/
-   function computeDate($start_date, $additional_delay=0) {
+   function computeDate($start_date, $additional_delay = 0) {
 
       $start_date = date('Y-m-d H:i:s');
 
@@ -784,7 +783,7 @@ class OLA extends CommonDBChild {
          }
       }
 
-      return NULL;
+      return null;
    }
 
 
@@ -820,7 +819,7 @@ class OLA extends CommonDBChild {
     *
     * @return execution date time (NULL if ola not exists)
    **/
-   function computeExecutionDate($start_date, $olalevels_id, $additional_delay=0) {
+   function computeExecutionDate($start_date, $olalevels_id, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
          $olalevel = new OlaLevel();
@@ -847,7 +846,7 @@ class OLA extends CommonDBChild {
             }
          }
       }
-      return NULL;
+      return null;
    }
 
 
@@ -898,7 +897,7 @@ class OLA extends CommonDBChild {
       $olalevels_id = ($olalevels_id ? $olalevels_id
                                      : $ticket->fields["ttr_olalevels_id"]);
       if ($olalevels_id > 0) {
-         $toadd = array();
+         $toadd = [];
          $date = $this->computeExecutionDate($ticket->fields['date'], $olalevels_id,
                                              $ticket->fields['ola_waiting_duration']);
          if ($date != null) {
@@ -929,7 +928,7 @@ class OLA extends CommonDBChild {
 
          $olalevelticket = new OlaLevel_Ticket();
          foreach ($DB->request($query) as $data) {
-            $olalevelticket->delete(array('id' => $data['id']));
+            $olalevelticket->delete(['id' => $data['id']]);
          }
       }
    }

@@ -161,10 +161,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_observer'])) {
    $ticket_user = new Ticket_User();
    $track->check($_POST['tickets_id'], READ);
-   $input = array('tickets_id'       => $_POST['tickets_id'],
+   $input = ['tickets_id'       => $_POST['tickets_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
-                  'type'             => CommonITILActor::OBSERVER);
+                  'type'             => CommonITILActor::OBSERVER];
    $ticket_user->add($input);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
@@ -176,10 +176,10 @@ if (isset($_POST["add"])) {
    $ticket_user = new Ticket_User();
 
    $track->check($_POST['tickets_id'], READ);
-   $input = array('tickets_id'       => $_POST['tickets_id'],
+   $input = ['tickets_id'       => $_POST['tickets_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
-                  'type'             => CommonITILActor::ASSIGN);
+                  'type'             => CommonITILActor::ASSIGN];
    $ticket_user->add($input);
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login
@@ -207,8 +207,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
       Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
    }
 
-   $available_options = array('load_kb_sol', '_openfollowup');
-   $options           = array();
+   $available_options = ['load_kb_sol', '_openfollowup'];
+   $options           = [];
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
          $options[$key] = $_GET[$key];
@@ -224,8 +224,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
                                     $CFG_GLPI["root_doc"].
                                      "/front/knowbaseitem.form.php?_in_modal=1&item_itemtype=Ticket&item_items_id=".
                                      $_GET["id"],
-                                    array('title'         => __('Save solution to the knowledge base'),
-                                          'reloadonclose' => false));
+                                    ['title'         => __('Save solution to the knowledge base'),
+                                          'reloadonclose' => false]);
       echo Html::scriptBlock(Html::jsGetElementbyID('savetokb').".dialog('open');");
    }
 
@@ -241,7 +241,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    if (isset($_REQUEST['_add_fromitem'])
        && isset($_REQUEST['itemtype'])
        && isset($_REQUEST['items_id'])) {
-      $_REQUEST['items_id'] = array($_REQUEST['itemtype'] => array($_REQUEST['items_id']));
+      $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
    }
    $track->display($_REQUEST);
 }

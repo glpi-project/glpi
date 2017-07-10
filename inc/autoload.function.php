@@ -79,14 +79,14 @@ function isAPI() {
 function isPluginItemType($classname) {
 
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/", $classname, $matches)) {
-      $plug           = array();
+      $plug           = [];
       $plug['plugin'] = $matches[1];
       $plug['class']  = $matches[2];
       return $plug;
 
    } else if (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
       $tab = explode('\\', $classname, 3);
-      $plug           = array();
+      $plug           = [];
       $plug['plugin'] = $tab[1];
       $plug['class']  = $tab[2];
       return $plug;
@@ -106,7 +106,7 @@ function isPluginItemType($classname) {
  *
  * @return string translated string
  */
-function __($str, $domain='glpi') {
+function __($str, $domain = 'glpi') {
    global $TRANSLATE;
 
    if (is_null($TRANSLATE)) { // before login
@@ -131,7 +131,7 @@ function __($str, $domain='glpi') {
  *
  * @return protected string (with htmlentities)
  */
-function __s($str, $domain='glpi') {
+function __s($str, $domain = 'glpi') {
    return htmlentities(__($str, $domain), ENT_QUOTES, 'UTF-8');
 }
 
@@ -147,7 +147,7 @@ function __s($str, $domain='glpi') {
  *
  * @return string protected string (with htmlentities)
  */
-function _sx($ctx, $str, $domain='glpi') {
+function _sx($ctx, $str, $domain = 'glpi') {
    return htmlentities(_x($ctx, $str, $domain), ENT_QUOTES, 'UTF-8');
 }
 
@@ -164,7 +164,7 @@ function _sx($ctx, $str, $domain='glpi') {
  *
  * @return void
  */
-function _e($str, $domain='glpi') {
+function _e($str, $domain = 'glpi') {
    Toolbox::logDebug('_e() method is deprecated');
    Toolbox::backtrace();
    echo __($str, $domain);
@@ -183,7 +183,7 @@ function _e($str, $domain='glpi') {
  *
  * @return string translated string
  */
-function _n($sing, $plural, $nb, $domain='glpi') {
+function _n($sing, $plural, $nb, $domain = 'glpi') {
    global $TRANSLATE;
 
    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
@@ -202,7 +202,7 @@ function _n($sing, $plural, $nb, $domain='glpi') {
  *
  * @return string protected string (with htmlentities)
  */
-function _sn($sing, $plural, $nb, $domain='glpi') {
+function _sn($sing, $plural, $nb, $domain = 'glpi') {
    return htmlentities(_n($sing, $plural, $nb, $domain), ENT_QUOTES, 'UTF-8');
 }
 
@@ -218,7 +218,7 @@ function _sn($sing, $plural, $nb, $domain='glpi') {
  *
  * @return string
  */
-function _x($ctx, $str, $domain='glpi') {
+function _x($ctx, $str, $domain = 'glpi') {
 
    // simulate pgettext
    $msg   = $ctx."\004".$str;
@@ -245,7 +245,7 @@ function _x($ctx, $str, $domain='glpi') {
  *
  * @return string
  */
-function _ex($ctx, $str, $domain='glpi') {
+function _ex($ctx, $str, $domain = 'glpi') {
    Toolbox::logDebug('_ex() method is deprecated');
    Toolbox::backtrace();
    // simulate pgettext
@@ -273,7 +273,7 @@ function _ex($ctx, $str, $domain='glpi') {
  *
  * @return string
  */
-function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
+function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi') {
 
    // simulate pgettext
    $singmsg    = $ctx."\004".$sing;
@@ -301,8 +301,8 @@ function _nx($ctx, $sing, $plural, $nb, $domain='glpi') {
  */
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD;
-   static $notfound = array('xStates'    => true,
-                            'xAllAssets' => true, );
+   static $notfound = ['xStates'    => true,
+                            'xAllAssets' => true, ];
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {

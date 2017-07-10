@@ -30,60 +30,28 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('notification' => READ,
-                                    'config'       => UPDATE));
+Session::checkSeveralRightsOr(['notification' => READ,
+                                    'config'       => UPDATE]);
 
 Html::header(_n('Notification', 'Notifications', 2), $_SERVER['PHP_SELF'], "config", "notification");
 
-if (isset($_POST['activate'])) {
-   $config             = new Config();
-   $tmp['id']          = 1;
-   $tmp['use_mailing'] = 1;
-   $config->update($tmp);
+if (!Session::haveRight("config", READ)
+   && Session::haveRight("notification", READ)) {
+   Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
+}
+
+$settingconfig = new NotificationSettingConfig();
+
+$modes = Notification_NotificationTemplate::getModes();
+$classes = [];
+
+if (count($_POST)) {
+   $settingconfig->update($_POST);
    Html::back();
 }
 
-if (!$CFG_GLPI['use_mailing']) {
-   if (Session::haveRight("config", UPDATE)) {
-      echo "<div class='center'>";
-      Html::showSimpleForm($_SERVER['PHP_SELF'], 'activate', __('Enable followup via email'));
-      echo "</div>";
-   }
-} else {
-   if (!Session::haveRight("config", READ)
-       && Session::haveRight("notification", READ)
-       && $CFG_GLPI['use_mailing']) {
-      Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
-
-   } else {
-      echo "<table class='tab_cadre'>";
-      echo "<tr><th>" . _n('Notification', 'Notifications', 2)."</th></tr>";
-      if (Session::haveRight("config", UPDATE)) {
-         echo "<tr class='tab_bg_1'><td class='center'>".
-              "<a href='notificationmailsetting.form.php'>". __('Email followups configuration') .
-              "</a></td></tr>";
-      }
-      if (Session::haveRight("config", READ)) {
-         echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
-               _n('Notification template', 'Notification templates', 2) ."</a></td> </tr>";
-      }
-
-      if (Session::haveRight("notification", READ) && $CFG_GLPI['use_mailing']) {
-         echo "<tr class='tab_bg_1'><td class='center'>".
-              "<a href='notification.php'>". _n('Notification', 'Notifications', 2)."</a></td></tr>";
-      } else {
-            echo "<tr class='tab_bg_1'><td class='center'>" .
-            __('Unable to configure notifications: please configure your email followup using the above configuration.') .
-                 "</td></tr>";
-      }
-      echo "</table>";
-   }
-}
+$settingconfig->showForm();
 
 Html::footer();

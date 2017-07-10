@@ -63,7 +63,7 @@ if (isset($_POST["purge"])) {
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
          if ($np->can($port_id, PURGE)) {
-            $np->delete(array("id" => $port_id));
+            $np->delete(["id" => $port_id]);
          }
       }
    }
@@ -101,6 +101,6 @@ if (isset($_POST["purge"])) {
    Html::header(NetworkPort::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools",
                 "migration", "networkportmigration");
 
-   $np->display(array('id' => $_GET["id"]));
+   $np->display(['id' => $_GET["id"]]);
    Html::footer();
 }

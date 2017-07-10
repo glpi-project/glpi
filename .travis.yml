@@ -1,9 +1,4 @@
 language: php
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - nightly
 
 env:
   - DB=mysql
@@ -13,40 +8,33 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
+    #upstream patch, bt not yet part of the last release :( TODO: remove when upstream will include it.
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
   - php -S localhost:8088 tests/router.php &>/dev/null &
+  - phpenv config-add tests/enable-ldap.ini
 
 script:
   - mysql -u root -e 'select version();'
-  - vendor/bin/phpunit --verbose
-  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
+  - vendor/bin/atoum --debug -bf tests/bootstrap.php -d tests/units --no-cc -mcn 1
+  - vendor/bin/atoum --debug -bf tests/bootstrap.php -d tests/api --no-cc -mcn 1
+  - if [[ "$CS" == "true" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
     - php: 5.6
-      addons:
-        mariadb: 10.0
-    - php: 5.6
-      addons:
-        mariadb: 10.1
     - php: 7.0
-      addons:
-        mariadb: 10.0
-    - php: 7.0
-      addons:
-        mariadb: 10.1
     - php: 7.1
       addons:
         mariadb: 10.0
     - php: 7.1
       addons:
         mariadb: 10.1
+    - php: 7.1
+      env: CS=true
     - php: nightly
-      addons:
-        mariadb: 10.1
   allow_failures:
     - php: nightly
 
@@ -57,7 +45,7 @@ cache:
 notifications:
   irc:
     channels:
-      - "irc.freenode.org#glpi"
+      - "chat.freenode.org#glpi"
     on_success: change
     on_failure: always
     use_notice: true

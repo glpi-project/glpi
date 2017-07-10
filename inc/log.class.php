@@ -77,12 +77,12 @@ class Log extends CommonDBTM {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Historical');
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -97,7 +97,7 @@ class Log extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForItem($item);
       return true;
@@ -126,10 +126,10 @@ class Log extends CommonDBTM {
       }
       $result = 0;
       // type for which getValueToDisplay() could be used (fully tested)
-      $oktype = array('Entity');
+      $oktype = ['Entity'];
 
       foreach ($oldvalues as $key => $oldval) {
-         $changes = array();
+         $changes = [];
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
@@ -144,7 +144,7 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  $changes          =  array($id_search_option, addslashes($oldval), $values[$key]);
+                  $changes          =  [$id_search_option, addslashes($oldval), $values[$key]];
                }
 
             } else if (($val2['linkfield'] == $key)
@@ -154,11 +154,11 @@ class Log extends CommonDBTM {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
-                  $changes = array($id_search_option, addslashes($oldval), $values[$key]);
+                  $changes = [$id_search_option, addslashes($oldval), $values[$key]];
                } else {
                   // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
-                     $changes = array($id_search_option,
+                     $changes = [$id_search_option,
                                       addslashes(sprintf(__('%1$s (%2$s)'),
                                                          Dropdown::getDropdownName($val2["table"],
                                                                                    $oldval),
@@ -166,7 +166,7 @@ class Log extends CommonDBTM {
                                       addslashes(sprintf(__('%1$s (%2$s)'),
                                                          Dropdown::getDropdownName($val2["table"],
                                                                                    $values[$key]),
-                                                         $values[$key])));
+                                                         $values[$key]))];
                   }
                }
                break;
@@ -193,7 +193,7 @@ class Log extends CommonDBTM {
     *
     * @return boolean success
    **/
-   static function history ($items_id, $itemtype, $changes, $itemtype_link='', $linked_action='0') {
+   static function history ($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0') {
       global $DB;
 
       $date_mod = $_SESSION["glpi_currenttime"];
@@ -250,7 +250,7 @@ class Log extends CommonDBTM {
     * @param $withtemplate    integer  withtemplate param (default '')
 
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB;
 
       $itemtype = $item->getType();
@@ -318,7 +318,7 @@ class Log extends CommonDBTM {
     *
     * @return array of localized log entry (TEXT only, no HTML)
    **/
-   static function getHistoryData(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
+   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, $sqlfilter = '') {
       global $DB;
 
       $itemtype  = $item->getType();
@@ -340,9 +340,9 @@ class Log extends CommonDBTM {
          $query .= " LIMIT ".intval($start)."," . intval($limit);
       }
 
-      $changes = array();
+      $changes = [];
       foreach ($DB->request($query) as $data) {
-         $tmp = array();
+         $tmp = [];
          $tmp['display_history'] = true;
          $tmp['id']              = $data["id"];
          $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
@@ -481,6 +481,48 @@ class Log extends CommonDBTM {
                   }
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
                                            $data["new_value"]);
+
+                  if ($data['itemtype'] == 'Ticket') {
+                     switch ($data['itemtype_link']) {
+                        case 'Group':
+                           $itemtick = new Group_Ticket();
+                           break;
+
+                        case 'User':
+                           $itemtick = new Ticket_User();
+                           break;
+
+                        case 'Supplier':
+                           $itemtick = new Supplier_Ticket();
+                           break;
+
+                        default:
+                           $itemtick = false;
+                           break;
+                     }
+
+                     if ($itemtick !== false) {
+                        $table   = $itemtick->getTable();
+                        $key     = getForeignKeyFieldForItemType($data['itemtype']);
+                        $itemkey = getForeignKeyFieldForItemType($data['itemtype_link']);
+                        $iditem  = trim(substr($data['new_value'], strrpos($data['new_value'], '(')+1,
+                                       strrpos($data['new_value'], ')')), ')');
+
+                        foreach ($DB->request($table, [$key => $data['items_id'],
+                                                         $itemkey => $iditem]) as $datalink) {
+                           if ($datalink['type'] == CommonITILActor::REQUESTER) {
+                              $as = __('Requester');
+                           } else if ($datalink['type'] == CommonITILActor::ASSIGN) {
+                              $as = __('Assigned to');
+                           } else if ($datalink['type'] == CommonITILActor::OBSERVER) {
+                              $as = __('Watcher');
+                           }
+                           $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
+                                                   sprintf(__('%1$s (%2$s)'), $data["new_value"],
+                                                            $as));
+                        }
+                     }
+                  }
                   break;
 
                case self::HISTORY_UPDATE_RELATION :
@@ -573,7 +615,7 @@ class Log extends CommonDBTM {
                   break;
 
                default :
-                  $fct = array($data['itemtype_link'], 'getHistoryEntry');
+                  $fct = [$data['itemtype_link'], 'getHistoryEntry'];
                   if (($data['linked_action'] >= self::HISTORY_PLUGIN)
                       && $data['itemtype_link']
                       && is_callable($fct)) {
@@ -585,7 +627,7 @@ class Log extends CommonDBTM {
 
          } else {
             $fieldname = "";
-            $searchopt = array();
+            $searchopt = [];
             $tablename = '';
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
@@ -671,10 +713,11 @@ class Log extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
-      $values = array( READ => __('Read'));
+      $values = [ READ => __('Read')];
       return $values;
    }
 
 }
+

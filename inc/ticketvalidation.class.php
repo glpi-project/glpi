@@ -57,12 +57,12 @@ class TicketValidation  extends CommonITILValidation {
 
 
    static function getCreateRights() {
-      return array(static::CREATEREQUEST, static::CREATEINCIDENT);
+      return [static::CREATEREQUEST, static::CREATEINCIDENT];
    }
 
 
    static function getValidateRights() {
-      return array(static::VALIDATEREQUEST, static::VALIDATEINCIDENT);
+      return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
    }
 
 
@@ -94,17 +94,17 @@ class TicketValidation  extends CommonITILValidation {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
 
       $values[self::CREATEREQUEST]
-                              = array('short' => __('Create for request'),
-                                      'long'  => __('Create a validation request for a request'));
+                              = ['short' => __('Create for request'),
+                                      'long'  => __('Create a validation request for a request')];
       $values[self::CREATEINCIDENT]
-                              = array('short' => __('Create for incident'),
-                                      'long'  => __('Create a validation request for an incident'));
+                              = ['short' => __('Create for incident'),
+                                      'long'  => __('Create a validation request for an incident')];
       $values[self::VALIDATEREQUEST]
                               = __('Validate a request');
       $values[self::VALIDATEINCIDENT]

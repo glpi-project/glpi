@@ -43,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceSoundCard extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceSoundCard', 'Infocom');
+   static protected $forward_entity_to = ['Item_DeviceSoundCard', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Soundcard', 'Soundcards', $nb);
    }
 
@@ -53,18 +53,18 @@ class DeviceSoundCard extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'type',
+                         [['name'  => 'type',
                                      'label' => __('Type'),
-                                     'type'  => 'text'),
-                               array('name'  => 'none',
+                                     'type'  => 'text'],
+                               ['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
-                                                                                    NULL, false),
-                                     'type'  => 'registeredIDChooser'),
-                               array('name'  => 'devicesoundcardmodels_id',
+                                                                                    null, false),
+                                     'type'  => 'registeredIDChooser'],
+                               ['name'  => 'devicesoundcardmodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
 
@@ -97,8 +97,8 @@ class DeviceSoundCard extends CommonDevice {
     * @see CommonDevice::getHTMLTableHeader()
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -121,8 +121,8 @@ class DeviceSoundCard extends CommonDevice {
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -132,7 +132,7 @@ class DeviceSoundCard extends CommonDevice {
 
       switch ($item->getType()) {
          case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
             if ($this->fields["type"]) {
                $row->addCell($row->getHeaderByName('devicesoundcard_type'), $this->fields["type"],
                              $father);

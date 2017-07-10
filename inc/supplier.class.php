@@ -56,7 +56,7 @@ class Supplier extends CommonDBTM {
     *
     * @param $nb : number of item in the type
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Supplier', 'Suppliers', $nb);
    }
 
@@ -96,9 +96,9 @@ class Supplier extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Contact_Supplier', $ong, $options);
       $this->addStandardTab('Contract_Supplier', $ong, $options);
@@ -126,7 +126,7 @@ class Supplier extends CommonDBTM {
     *
     *@return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -138,7 +138,7 @@ class Supplier extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Third party type')."</td>";
       echo "<td>";
-      SupplierType::dropdown(array('value' => $this->fields["suppliertypes_id"]));
+      SupplierType::dropdown(['value' => $this->fields["suppliertypes_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -178,9 +178,9 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1' style='white-space: nowrap'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "postcode", array('size' => 10));
+      Html::autocompletionTextField($this, "postcode", ['size' => 10]);
       echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($this, "town", array('size' => 23));
+      Html::autocompletionTextField($this, "town", ['size' => 23]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -205,7 +205,7 @@ class Supplier extends CommonDBTM {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -427,7 +427,7 @@ class Supplier extends CommonDBTM {
     *
     * @param $withname boolean : also display name ? (false by default)
    **/
-   function getLinks($withname=false) {
+   function getLinks($withname = false) {
       global $CFG_GLPI;
 
       $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -554,14 +554,14 @@ class Supplier extends CommonDBTM {
                }
                echo "<td class='center'>".$title."</td>";
                echo "<td class='center' colspan='2'>";
-               $opt = array('order'      => 'ASC',
+               $opt = ['order'      => 'ASC',
                             'is_deleted' => 0,
                             'reset'      => 'reset',
                             'start'      => 0,
                             'sort'       => 80,
-                            'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
+                            'criteria'   => [0 => ['value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
-                                                             'field'      => 53)));
+                                                             'field'      => 53]]];
                $link = $linktype::getSearchURL();
                $link.= (strpos($link, '?') ? '&amp;':'?');
 

@@ -80,6 +80,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(OLA::getTypeName(1), $_SERVER['PHP_SELF'], "config", "slm", "ola");
 
-   $ola->display(array('id' => $_GET["id"]));
+   $ola->display(['id' => $_GET["id"]]);
    Html::footer();
 }

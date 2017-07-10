@@ -74,6 +74,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification",
                 "notification");
-   $notification->display(array('id' => $_GET["id"]));
+   $notification->display(['id' => $_GET["id"]]);
    Html::footer();
 }

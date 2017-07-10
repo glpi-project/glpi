@@ -59,7 +59,7 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 update value of rule_dictionnary_dropdown");
    }
 
-   $cache_tables = array("glpi_rule_cache_manufacturer",
+   $cache_tables = ["glpi_rule_cache_manufacturer",
                          "glpi_rule_cache_model_computer",
                          "glpi_rule_cache_model_monitor",
                          "glpi_rule_cache_model_printer",
@@ -75,7 +75,7 @@ function update07to071() {
                          "glpi_rule_cache_software",
                          "glpi_rule_cache_os",
                          "glpi_rule_cache_os_sp",
-                         "glpi_rule_cache_os_version");
+                         "glpi_rule_cache_os_version"];
 
    foreach ($cache_tables as $cache_table) {
       if (!TableExists($cache_table)) {
@@ -111,12 +111,12 @@ function update07to071() {
       $DB->queryOrDie($query, "0.71 add new_manufacturer in glpi_rule_cache_software if not present");
    }
 
-   $model_cache_tables = array("glpi_rule_cache_model_computer",
+   $model_cache_tables = ["glpi_rule_cache_model_computer",
                                "glpi_rule_cache_model_monitor",
                                "glpi_rule_cache_model_printer",
                                "glpi_rule_cache_model_peripheral",
                                "glpi_rule_cache_model_phone",
-                               "glpi_rule_cache_model_networking");
+                               "glpi_rule_cache_model_networking"];
 
    foreach ($model_cache_tables as $model_cache_table) {
       if (!FieldExists($model_cache_table, "manufacturer", false)) {

@@ -39,8 +39,8 @@ include ('../inc/includes.php');
 
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();
-foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
-               'USB' => 'http://www.linux-usb.org/usb.ids') as $type => $URL) {
+foreach (['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
+               'USB' => 'http://www.linux-usb.org/usb.ids'] as $type => $URL) {
    echo "Processing : $type\n";
    foreach (file($URL) as $line) {
       if ($line[0] == '#') {
@@ -59,13 +59,13 @@ foreach (array('PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
             $manufacturer->getFromDB($registeredid->fields['items_id']);
          } else {
             if (!$manufacturer->getFromDBByQuery("WHERE `name` = '$name'")) {
-               $input = array('name' => $name);
+               $input = ['name' => $name];
                $manufacturer->add($input);
             }
-            $input = array('itemtype'    => $manufacturer->getType(),
+            $input = ['itemtype'    => $manufacturer->getType(),
                            'items_id'    => $manufacturer->getID(),
                            'device_type' => $type,
-                           'name'        => $id);
+                           'name'        => $id];
             $registeredid->add($input);
          }
          continue;

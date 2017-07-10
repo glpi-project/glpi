@@ -568,7 +568,7 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
       }
 
    } else {
-      DBmysql::optimize_tables(NULL, true);
+      DBmysql::optimize_tables(null, true);
       // Compatiblity for old version for utf8 complete conversion
       $cnf                = new Config();
       $input['id']        = 1;
@@ -623,7 +623,7 @@ echo "<br><table class='tab_cadre' cellpadding='5'>".
      "</tr>";
 
 $dir   = opendir($path);
-$files = array();
+$files = [];
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
        && (preg_match("/\.sql.gz$/i", $file)
@@ -646,16 +646,16 @@ if (count($files)) {
               $string = sprintf(__('Delete the file %s?'), $file);
               Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile',
                                    _x('button', 'Delete permanently'),
-                                   array('file' => $file), '', '', $string);
+                                   ['file' => $file], '', '', $string);
 
          echo "</td>";
          echo "<td>&nbsp;";
          // Multiple confirmation
-         $string   = array();
+         $string   = [];
          //TRANS: %s is the filename
-         $string[] = array(sprintf(__('Replace the current database with the backup file %s?'),
-                                   $file));
-         $string[] = array(__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!'));
+         $string[] = [sprintf(__('Replace the current database with the backup file %s?'),
+                                   $file)];
+         $string[] = [__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!')];
 
          echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
                                         "window.location='".$CFG_GLPI["root_doc"].
@@ -674,7 +674,7 @@ closedir($dir);
 
 $dir   = opendir($path);
 unset($files);
-$files = array();
+$files = [];
 
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
@@ -697,7 +697,7 @@ if (count($files)) {
          //TRANS: %s is the filename
          $string = sprintf(__('Delete the file %s?'), $file);
          Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
-                              array('file' => $file), '', '', $string);
+                              ['file' => $file], '', '', $string);
          echo "</td>";
       }
       if (Session::haveRight('backup', CREATE)) {

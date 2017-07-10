@@ -51,35 +51,35 @@ class Location extends CommonTreeDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => $this->getForeignKeyField(),
+      return [['name'  => $this->getForeignKeyField(),
                          'label' => __('As child of'),
                          'type'  => 'parent',
-                         'list'  => false),
-                   array('name'  => 'building',
+                         'list'  => false],
+                   ['name'  => 'building',
                          'label' => __('Building number'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'room',
+                         'list'  => true],
+                   ['name'  => 'room',
                          'label' => __('Room number'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'longitude',
+                         'list'  => true],
+                   ['name'  => 'longitude',
                          'label' => __('Longitude'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'latitude',
+                         'list'  => true],
+                   ['name'  => 'latitude',
                          'label' => __('Latitude'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'altitude',
+                         'list'  => true],
+                   ['name'  => 'altitude',
                          'label' => __('Altitude'),
                          'type'  => 'text',
-                         'list'  => true),
-                         );
+                         'list'  => true],
+                         ];
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Location', 'Locations', $nb);
    }
 
@@ -182,7 +182,7 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
@@ -205,12 +205,12 @@ class Location extends CommonTreeDropdown {
     *
     * @see CommonTreeDropdown::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong    = array();
+               $ong    = [];
                $ong[1] = $this->getTypeName(Session::getPluralNumber());
                $ong[2] = _n('Item', 'Items', Session::getPluralNumber());
                return $ong;
@@ -223,7 +223,7 @@ class Location extends CommonTreeDropdown {
    /**
     * @since version 0.85
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -288,8 +288,8 @@ class Location extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Type')."&nbsp;";
       Dropdown::showItemType($CFG_GLPI['location_types'],
-                             array('value'      => $crit,
-                                   'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+                             ['value'      => $crit,
+                                   'on_change'  => 'reloadTab("start=0&criterion="+this.value)']);
       echo "</td></tr></table>";
 
       if ($number) {

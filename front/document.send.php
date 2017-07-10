@@ -74,7 +74,7 @@ if (isset($_GET['docid'])) { // docid for document
       if ($splitter[0] == "_pictures") {
          $filename = explode(".", $splitter[1]);
          //check extension
-         if (in_array($filename[1], array('jpg', 'jpeg', 'png', 'bmp', 'gif'))) {
+         if (in_array($filename[1], ['jpg', 'jpeg', 'png', 'bmp', 'gif'])) {
             $send = true;
          }
       }

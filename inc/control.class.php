@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class Control extends CommonGLPI {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Check', 'Checks', $nb);
    }
 

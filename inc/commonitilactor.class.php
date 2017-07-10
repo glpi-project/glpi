@@ -92,7 +92,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    function getActors($items_id) {
       global $DB;
 
-      $users = array();
+      $users = [];
       $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
                 WHERE `".static::getItilObjectForeignKey()."` = '$items_id'";
@@ -149,7 +149,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @return Nothing (display)
    **/
-   function showUserNotificationForm($ID, $options=array()) {
+   function showUserNotificationForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
@@ -171,7 +171,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       $user          = new User();
       $default_email = "";
-      $emails = array();
+      $emails = [];
       if ($user->getFromDB($this->fields["users_id"])) {
          $default_email = $user->getDefaultEmail();
          $emails        = $user->getAllEmails();
@@ -189,12 +189,12 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<td>";
       if ((count($emails) ==  1)
           && !empty($default_email)
-          && NotificationMail::isUserAddressValid($default_email)) {
+          && NotificationMailing::isUserAddressValid($default_email)) {
          echo $default_email;
 
       } else if (count($emails) > 1) {
          // Several emails : select in the list
-         $emailtab = array();
+         $emailtab = [];
          foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
                $emailtab[$new_email] = $new_email;
@@ -203,7 +203,7 @@ abstract class CommonITILActor extends CommonDBRelation {
             }
          }
          Dropdown::showFromArray("alternative_email", $emailtab,
-                                 array('value'   => $this->fields['alternative_email']));
+                                 ['value'   => $this->fields['alternative_email']]);
       } else {
          echo "<input type='text' size='40' name='alternative_email' value='".
                 $this->fields['alternative_email']."'>";
@@ -231,7 +231,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @return Nothing (display)
    **/
-   function showSupplierNotificationForm($ID, $options=array()) {
+   function showSupplierNotificationForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $this->check($ID, UPDATE);
@@ -288,7 +288,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
-      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
       $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
@@ -303,15 +303,15 @@ abstract class CommonITILActor extends CommonDBRelation {
             if (in_array($item->fields['status'], Change::getNewStatusArray())) {
                $status = $item->fields['status'];
             }
-            $item->update(array('id'     => $this->fields[static::getItilObjectForeignKey()],
-                                'status' => $status));
+            $item->update(['id'     => $this->fields[static::getItilObjectForeignKey()],
+                                'status' => $status]);
          } else {
             $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
             if ($donotif) {
-               $options = array();
+               $options = [];
                if (isset($this->fields['users_id'])) {
-                  $options = array('_old_user' => $this->fields);
+                  $options = ['_old_user' => $this->fields];
                }
                NotificationEvent::raiseEvent("update", $item, $options);
             }
@@ -331,7 +331,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
          $input['alternative_email'] = '';
-      } else if ($input['alternative_email'] != '' && !NotificationMail::isUserAddressValid($input['alternative_email'])) {
+      } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
          Session::addMessageAfterRedirect(
             __('Invalid email address'),
             false,
@@ -358,8 +358,8 @@ abstract class CommonITILActor extends CommonDBRelation {
          if (!isset($this->input['_from_object'])
              && in_array($item->fields["status"], $item->getNewStatusArray())
              && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))) {
-            $item->update(array('id'     => $item->getID(),
-                                'status' => CommonITILObject::ASSIGNED));
+            $item->update(['id'     => $item->getID(),
+                                'status' => CommonITILObject::ASSIGNED]);
          }
 
          // raise notification for this actor addition

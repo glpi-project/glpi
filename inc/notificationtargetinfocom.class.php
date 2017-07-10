@@ -46,26 +46,20 @@ class NotificationTargetInfocom extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Alarms on financial and administrative information'));
+      return ['alert' => __('Alarms on financial and administrative information')];
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                                 = $this->getAllEvents();
 
-      $this->datas['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
-      $this->datas['##infocom.action##']      = $events[$event];
+      $this->data['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
-         $tmp = array();
+         $tmp = [];
 
          if ($obj = getItemForItemtype($item['itemtype'])) {
             $tmp['##infocom.itemtype##']
@@ -77,13 +71,13 @@ class NotificationTargetInfocom extends NotificationTarget {
                                                         $item['itemtype']."_".
                                                           $item['items_id']."_Infocom");
          }
-         $this->datas['infocoms'][] = $tmp;
+         $this->data['infocoms'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -91,22 +85,22 @@ class NotificationTargetInfocom extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('infocom.action'         => _n('Event', 'Events', 1),
+      $tags = ['infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => __('Associated item'),
                     'infocom.expirationdate' => __('Expiration date'),
-                    'infocom.entity'         => __('Entity'));
+                    'infocom.entity'         => __('Entity')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'items',
+      $this->addTagToList(['tag'     => 'items',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

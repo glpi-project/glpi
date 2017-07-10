@@ -64,40 +64,40 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
       echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after')."</td>";
       echo "<td>";
       Dropdown::showNumber('inquest_delay',
-                           array('value' => $inquest_delay,
+                           ['value' => $inquest_delay,
                                  'min'   => 1,
                                  'max'   => 90,
                                  'step'  => 1,
-                                 'toadd' => array('0' => __('As soon as possible')),
-                                 'unit'  => 'day'));
+                                 'toadd' => ['0' => __('As soon as possible')],
+                                 'unit'  => 'day']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('Rate to trigger survey')."</td>";
       echo "<td>";
-      Dropdown::showNumber('inquest_rate', array('value'   => $inquest_rate,
+      Dropdown::showNumber('inquest_rate', ['value'   => $inquest_rate,
                                                  'min'     => 10,
                                                  'max'     => 100,
                                                  'step'    => 10,
-                                                 'toadd'   => array(0 => __('Disabled')),
-                                                 'unit'    => '%'));
+                                                 'toadd'   => [0 => __('Disabled')],
+                                                 'unit'    => '%']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td width='50%'>".__('Duration of survey')."</td>";
       echo "<td>";
       Dropdown::showNumber('inquest_duration',
-                           array('value' => $inquest_duration,
+                           ['value' => $inquest_duration,
                                  'min'   => 1,
                                  'max'   => 180,
                                  'step'  => 1,
-                                 'toadd' => array('0' => __('Unspecified')),
-                                 'unit'  => 'day'));
+                                 'toadd' => ['0' => __('Unspecified')],
+                                 'unit'  => 'day']);
       echo "</td></tr>";
 
       if ($max_closedate != '') {
          echo "<tr class='tab_bg_1'><td>". __('For tickets closed after')."</td><td>";
-         Html::showDateTimeField("max_closedate", array('value'      => $max_closedate,
-                                                        'timestep'   => 1));
+         Html::showDateTimeField("max_closedate", ['value'      => $max_closedate,
+                                                        'timestep'   => 1]);
          echo "</td></tr>";
       }
 

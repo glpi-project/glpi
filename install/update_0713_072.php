@@ -69,7 +69,7 @@ function update0713to072() {
    }
 
    // Clean datetime fields
-   $date_fields = array('glpi_docs.date_mod',
+   $date_fields = ['glpi_docs.date_mod',
                         'glpi_event_log.date',
                         'glpi_monitors.date_mod',
                         'glpi_networking.date_mod',
@@ -83,7 +83,7 @@ function update0713to072() {
                         'glpi_tracking_planning.begin',
                         'glpi_tracking_planning.end',
                         'glpi_users.last_login',
-                        'glpi_users.date_mod');
+                        'glpi_users.date_mod'];
 
    foreach ($date_fields as $tablefield) {
       displayMigrationMessage("072", "Date format (1) ($tablefield)");
@@ -125,8 +125,8 @@ function update0713to072() {
    }
 
    // Clean date fields
-   $date_fields = array('glpi_infocoms.buy_date',
-                        'glpi_infocoms.use_date');
+   $date_fields = ['glpi_infocoms.buy_date',
+                        'glpi_infocoms.use_date'];
 
    foreach ($date_fields as $tablefield) {
       list($table,$field) = explode('.', $tablefield);
@@ -351,7 +351,7 @@ function update0713to072() {
                      // 2 - Create glpi_licenses
                      if ($vers['buy'] // Buy license
                          || (!empty($vers['serial'])
-                             && !in_array($vers['serial'], array('free','global'))) // Non global / free serial
+                             && !in_array($vers['serial'], ['free','global'])) // Non global / free serial
                          || !empty($vers['comments'])  // With comments
                          || !empty($vers['expire'])  // with an expire date
                          || $vers['oem_computer'] > 0 // oem license
@@ -655,8 +655,8 @@ function update0713to072() {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.72 create glpi_dropdown_filesystems table");
 
-      $fstype = array('ext', 'ext2', 'ext3', 'ext4', 'FAT', 'FAT32', 'VFAT', 'HFS', 'HPFS', 'HTFS',
-                      'JFS', 'JFS2', 'NFS', 'NTFS', 'ReiserFS', 'SMBFS', 'UDF', 'UFS', 'XFS', 'ZFS');
+      $fstype = ['ext', 'ext2', 'ext3', 'ext4', 'FAT', 'FAT32', 'VFAT', 'HFS', 'HPFS', 'HTFS',
+                      'JFS', 'JFS2', 'NFS', 'NTFS', 'ReiserFS', 'SMBFS', 'UDF', 'UFS', 'XFS', 'ZFS'];
       foreach ($fstype as $fs) {
          $query = "INSERT INTO `glpi_dropdown_filesystems`
                          (`name`)

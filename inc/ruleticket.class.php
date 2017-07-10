@@ -80,10 +80,10 @@ class RuleTicket extends Rule {
    **/
    static function getConditionsArray() {
 
-      return array(static::ONADD                   => __('Add'),
+      return [static::ONADD                   => __('Add'),
                    static::ONUPDATE                => __('Update'),
                    static::ONADD|static::ONUPDATE  => sprintf(__('%1$s / %2$s'), __('Add'),
-                                                              __('Update')));
+                                                              __('Update'))];
    }
 
 
@@ -99,7 +99,7 @@ class RuleTicket extends Rule {
       if (isset($this->actions)) {
          foreach ($this->actions as $key => $val) {
             if (isset($val->fields['field'])) {
-               if (in_array($val->fields['field'], array('impact', 'urgency'))) {
+               if (in_array($val->fields['field'], ['impact', 'urgency'])) {
                   $showwarning = true;
                }
             }
@@ -151,7 +151,7 @@ class RuleTicket extends Rule {
     * @param $output
     * @param $params
    **/
-   function executeActions($output,$params) {
+   function executeActions($output, $params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -166,7 +166,7 @@ class RuleTicket extends Rule {
 
                case "add_validation" :
                   if (isset($output['_add_validation']) && !is_array($output['_add_validation'])) {
-                     $output['_add_validation'] = array($output['_add_validation']);
+                     $output['_add_validation'] = [$output['_add_validation']];
                   }
                   switch ($action->fields['field']) {
                      case 'users_id_validate_requester_supervisor' :
@@ -202,7 +202,7 @@ class RuleTicket extends Rule {
                   if ($action->fields["field"] === '_users_id_requester') {
                      // Add groups of requester
                      if (!isset($output['_groups_id_of_requester'])) {
-                        $output['_groups_id_of_requester'] = array();
+                        $output['_groups_id_of_requester'] = [];
                      }
                      foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
                         $output['_groups_id_of_requester'][$g['id']] = $g['id'];
@@ -234,7 +234,7 @@ class RuleTicket extends Rule {
                   if ($action->fields["field"] === '_users_id_requester') {
                      // Add groups of requester
                      if (!isset($output['_groups_id_of_requester'])) {
-                        $output['_groups_id_of_requester'] = array();
+                        $output['_groups_id_of_requester'] = [];
                      }
                      foreach (Group_User::getUserGroups($action->fields["value"]) as $g) {
                         $output['_groups_id_of_requester'][$g['id']] = $g['id'];
@@ -298,10 +298,10 @@ class RuleTicket extends Rule {
                         break;
 
                      default:
-                        $result = array();
+                        $result = [];
                   }
                   if (!empty($result)) {
-                     $output["items_id"] = array();
+                     $output["items_id"] = [];
                      $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
@@ -324,7 +324,7 @@ class RuleTicket extends Rule {
 
    function getCriterias() {
 
-      static $criterias = array();
+      static $criterias = [];
 
       if (count($criterias)) {
          return $criterias;
@@ -501,7 +501,7 @@ class RuleTicket extends Rule {
 
    function getActions() {
 
-      $actions                                              = array();
+      $actions                                              = [];
 
       $actions['itilcategories_id']['name']                 = __('Category');
       $actions['itilcategories_id']['type']                 = 'dropdown';
@@ -513,57 +513,57 @@ class RuleTicket extends Rule {
 
       $actions['_users_id_requester']['name']               = __('Requester');
       $actions['_users_id_requester']['type']               = 'dropdown_users';
-      $actions['_users_id_requester']['force_actions']      = array('assign', 'append');
-      $actions['_users_id_requester']['permitseveral']      = array('append');
+      $actions['_users_id_requester']['force_actions']      = ['assign', 'append'];
+      $actions['_users_id_requester']['permitseveral']      = ['append'];
       $actions['_users_id_requester']['appendto']           = '_additional_requesters';
-      $actions['_users_id_requester']['appendtoarray']      = array('use_notification' => 1);
+      $actions['_users_id_requester']['appendtoarray']      = ['use_notification' => 1];
       $actions['_users_id_requester']['appendtoarrayfield'] = 'users_id';
 
       $actions['_groups_id_requester']['name']              = __('Requester group');
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = '`is_requester`';
-      $actions['_groups_id_requester']['force_actions']     = array('assign', 'append', 'fromitem');
-      $actions['_groups_id_requester']['permitseveral']     = array('append');
+      $actions['_groups_id_requester']['force_actions']     = ['assign', 'append', 'fromitem'];
+      $actions['_groups_id_requester']['permitseveral']     = ['append'];
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 
       $actions['_users_id_assign']['name']                  = __('Technician');
       $actions['_users_id_assign']['type']                  = 'dropdown_assign';
-      $actions['_users_id_assign']['force_actions']         = array('assign', 'append');
-      $actions['_users_id_assign']['permitseveral']         = array('append');
+      $actions['_users_id_assign']['force_actions']         = ['assign', 'append'];
+      $actions['_users_id_assign']['permitseveral']         = ['append'];
       $actions['_users_id_assign']['appendto']              = '_additional_assigns';
-      $actions['_users_id_assign']['appendtoarray']         = array('use_notification' => 1);
+      $actions['_users_id_assign']['appendtoarray']         = ['use_notification' => 1];
       $actions['_users_id_assign']['appendtoarrayfield']    = 'users_id';
 
       $actions['_groups_id_assign']['table']                = 'glpi_groups';
       $actions['_groups_id_assign']['name']                 = __('Technician group');
       $actions['_groups_id_assign']['type']                 = 'dropdown';
       $actions['_groups_id_assign']['condition']            = '`is_assign`';
-      $actions['_groups_id_assign']['force_actions']        = array('assign', 'append');
-      $actions['_groups_id_assign']['permitseveral']        = array('append');
+      $actions['_groups_id_assign']['force_actions']        = ['assign', 'append'];
+      $actions['_groups_id_assign']['permitseveral']        = ['append'];
       $actions['_groups_id_assign']['appendto']             = '_additional_groups_assigns';
 
       $actions['_suppliers_id_assign']['table']             = 'glpi_suppliers';
       $actions['_suppliers_id_assign']['name']              = __('Assigned to a supplier');
       $actions['_suppliers_id_assign']['type']              = 'dropdown';
-      $actions['_suppliers_id_assign']['force_actions']     = array('assign', 'append');
-      $actions['_suppliers_id_assign']['permitseveral']     = array('append');
+      $actions['_suppliers_id_assign']['force_actions']     = ['assign', 'append'];
+      $actions['_suppliers_id_assign']['permitseveral']     = ['append'];
       $actions['_suppliers_id_assign']['appendto']          = '_additional_suppliers_assigns';
 
       $actions['_users_id_observer']['name']                = __('Watcher');
       $actions['_users_id_observer']['type']                = 'dropdown_users';
-      $actions['_users_id_observer']['force_actions']       = array('assign', 'append');
-      $actions['_users_id_observer']['permitseveral']       = array('append');
+      $actions['_users_id_observer']['force_actions']       = ['assign', 'append'];
+      $actions['_users_id_observer']['permitseveral']       = ['append'];
       $actions['_users_id_observer']['appendto']            = '_additional_observers';
-      $actions['_users_id_observer']['appendtoarray']       = array('use_notification' => 1);
+      $actions['_users_id_observer']['appendtoarray']       = ['use_notification' => 1];
       $actions['_users_id_observer']['appendtoarrayfield']  = 'users_id';
 
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
       $actions['_groups_id_observer']['name']               = __('Watcher group');
       $actions['_groups_id_observer']['type']               = 'dropdown';
       $actions['_groups_id_observer']['condition']          = '`is_requester`';
-      $actions['_groups_id_observer']['force_actions']      = array('assign', 'append');
-      $actions['_groups_id_observer']['permitseveral']      = array('append');
+      $actions['_groups_id_observer']['force_actions']      = ['assign', 'append'];
+      $actions['_groups_id_observer']['permitseveral']      = ['append'];
       $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
 
       $actions['urgency']['name']                           = __('Urgency');
@@ -574,15 +574,15 @@ class RuleTicket extends Rule {
 
       $actions['priority']['name']                          = __('Priority');
       $actions['priority']['type']                          = 'dropdown_priority';
-      $actions['priority']['force_actions']                 = array('assign', 'compute');
+      $actions['priority']['force_actions']                 = ['assign', 'compute'];
 
       $actions['status']['name']                            = __('Status');
       $actions['status']['type']                            = 'dropdown_status';
 
       $actions['affectobject']['name']                      = _n('Associated element', 'Associated elements', Session::getPluralNumber());
       $actions['affectobject']['type']                      = 'text';
-      $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
-                                                                    'affectbymac');
+      $actions['affectobject']['force_actions']             = ['affectbyip', 'affectbyfqdn',
+                                                                    'affectbymac'];
 
       $actions['slas_ttr_id']['table']                      = 'glpi_slas';
       $actions['slas_ttr_id']['field']                      = 'name';
@@ -620,13 +620,13 @@ class RuleTicket extends Rule {
                                                                       __('Send an approval request'),
                                                                       __('User'));
       $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
-      $actions['users_id_validate']['force_actions']        = array('add_validation');
+      $actions['users_id_validate']['force_actions']        = ['add_validation'];
 
       $actions['groups_id_validate']['name']                = sprintf(__('%1$s - %2$s'),
                                                                          __('Send an approval request'),
                                                                          __('Group'));
       $actions['groups_id_validate']['type']                = 'dropdown_groups_validate';
-      $actions['groups_id_validate']['force_actions']       = array('add_validation');
+      $actions['groups_id_validate']['force_actions']       = ['add_validation'];
 
       $actions['validation_percent']['name']                = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),
@@ -638,19 +638,19 @@ class RuleTicket extends Rule {
       $actions['users_id_validate_requester_supervisor']['type']
                                              = 'yesno';
       $actions['users_id_validate_requester_supervisor']['force_actions']
-                                             = array('add_validation');
+                                             = ['add_validation'];
 
       $actions['users_id_validate_assign_supervisor']['name']
                                              = __('Approval request to technician group manager');
       $actions['users_id_validate_assign_supervisor']['type']
                                              = 'yesno';
       $actions['users_id_validate_assign_supervisor']['force_actions']
-                                             = array('add_validation');
+                                             = ['add_validation'];
 
       $actions['locations_id']['name']                      = __('Location');
       $actions['locations_id']['type']                      = 'dropdown';
       $actions['locations_id']['table']                     = 'glpi_locations';
-      $actions['locations_id']['force_actions']             = array('assign', 'fromuser', 'fromitem');
+      $actions['locations_id']['force_actions']             = ['assign', 'fromuser', 'fromitem'];
 
       $actions['requesttypes_id']['name']                   = __('Request source');
       $actions['requesttypes_id']['type']                   = 'dropdown';
@@ -665,12 +665,12 @@ class RuleTicket extends Rule {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       //TRANS: short for : Business rules for ticket (entity parent)
-      $values[self::PARENT] = array('short' => __('Parent business'),
-                                    'long'  => __('Business rules for ticket (entity parent)'));
+      $values[self::PARENT] = ['short' => __('Parent business'),
+                                    'long'  => __('Business rules for ticket (entity parent)')];
 
       return $values;
    }

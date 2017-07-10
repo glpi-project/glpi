@@ -1,7 +1,7 @@
 <?php
 
 /*
-htmLawed 1.2, 11 February 2017
+htmLawed 1.2.2, 25 May 2017
 Copyright Santosh Patnaik
 Dual licensed with LGPL 3 and GPL 2+
 A PHP Labware internal utility - www.bioinformatics.org/phplabware/internal_utilities/htmLawed
@@ -387,7 +387,7 @@ for($i = count(($t = explode(';', $t))); --$i>=0;){
  if(empty($w) or ($e = strpos($w, '=')) === false or !strlen(($a =  substr($w, $e+1)))){continue;}
  $y = $n = array();
  foreach(explode(',', $a) as $v){
-  if(!preg_match('`^([a-z][^=/()]+)(?:\((.*?)\))?`i', $v, $m)){continue;}
+  if(!preg_match('`^([a-z:\-\*]+)(?:\((.*?)\))?`i', $v, $m)){continue;}
   if(($x = strtolower($m[1])) == '-*'){$n['*'] = 1; continue;}
   if($x[0] == '-'){$n[substr($x, 1)] = 1; continue;}
   if(!isset($m[2])){$y[$x] = 1; continue;}
@@ -401,8 +401,8 @@ for($i = count(($t = explode(';', $t))); --$i>=0;){
  if(!count($y) && !count($n)){continue;}
  foreach(explode(',', substr($w, 0, $e)) as $v){
   if(!strlen(($v = strtolower($v)))){continue;}
-  if(count($y)){$s[$v] = $y;}
-  if(count($n)){$s[$v]['n'] = $n;}
+  if(count($y)){if(!isset($s[$v])){$s[$v] = $y;} else{$s[$v] = array_merge($s[$v], $y);}}
+  if(count($n)){if(!isset($s[$v]['n'])){$s[$v]['n'] = $n;} else{$s[$v]['n'] = array_merge($s[$v]['n'], $n);}}
  }
 }
 return $s;
@@ -562,6 +562,7 @@ if($depTr){
  $c = array();
  foreach($a as $k=>$v){
   if($k == 'style' or !isset($aND[$k][$e])){continue;}
+  $v = str_replace(array('\\', ':', ';', '&#'), '', $v);
   if($k == 'align'){
    unset($a['align']);
    if($e == 'img' && ($v == 'left' or $v == 'right')){$c[] = 'float: '. $v;}
@@ -712,5 +713,5 @@ return str_replace(array("\x01", "\x02", "\x03", "\x04", "\x05", "\x07"), array(
 
 function hl_version(){
 // version
-return '1.2';
+return '1.2.2';
 }

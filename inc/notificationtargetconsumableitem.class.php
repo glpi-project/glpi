@@ -48,39 +48,33 @@ class NotificationTargetConsumableItem extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Consumables alarm'));
+      return ['alert' => __('Consumables alarm')];
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                                    = $this->getAllEvents();
 
-      $this->datas['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                              $options['entities_id']);
-      $this->datas['##lang.consumable.entity##'] = __('Entity');
-      $this->datas['##consumable.action##']      = $events[$event];
+      $this->data['##lang.consumable.entity##'] = __('Entity');
+      $this->data['##consumable.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $consumable) {
-         $tmp                             = array();
+         $tmp                             = [];
          $tmp['##consumable.item##']      = $consumable['name'];
          $tmp['##consumable.reference##'] = $consumable['ref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
          $tmp['##consumable.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
                                                              "ConsumableItem_".$id);
-         $this->datas['consumables'][] = $tmp;
+         $this->data['consumables'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -88,22 +82,22 @@ class NotificationTargetConsumableItem extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('consumable.action'    => _n('Event', 'Events', 1),
+      $tags = ['consumable.action'    => _n('Event', 'Events', 1),
                     'consumable.reference' => __('Reference'),
                     'consumable.item'      => __('Consumable model'),
                     'consumable.remaining' => __('Remaining'),
-                    'consumable.entity'    => __('Entity'));
+                    'consumable.entity'    => __('Entity')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'consumables',
+      $this->addTagToList(['tag'     => 'consumables',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

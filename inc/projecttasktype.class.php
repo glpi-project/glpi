@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class ProjectTaskType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Project tasks type', 'Project tasks types', $nb);
    }
 

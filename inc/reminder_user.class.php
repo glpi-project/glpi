@@ -62,7 +62,7 @@ class Reminder_User extends CommonDBRelation {
    static function getUsers($reminders_id) {
       global $DB;
 
-      $users = array();
+      $users = [];
       $query = "SELECT `glpi_reminders_users`.*
                 FROM `glpi_reminders_users`
                 WHERE `reminders_id` = '$reminders_id'";

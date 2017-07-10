@@ -46,9 +46,9 @@ class HTMLTableRow extends HTMLTableEntity {
 
    private $group;
    private $empty              = true;
-   private $cells              = array();
+   private $cells              = [];
    private $numberOfSubRows    = 1;
-   private $linesWithAttributs = array();
+   private $linesWithAttributs = [];
 
 
    /**
@@ -94,8 +94,8 @@ class HTMLTableRow extends HTMLTableEntity {
     * @param $father    HTMLTableCell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
-   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father=NULL,
-                    CommonDBTM $item=NULL) {
+   function addCell(HTMLTableHeader $header, $content, HTMLTableCell $father = null,
+                    CommonDBTM $item = null) {
 
       if (!$this->group->haveHeader($header)) {
          throw new Exception('Unavailable header !');
@@ -103,7 +103,7 @@ class HTMLTableRow extends HTMLTableEntity {
 
       $header_name = $header->getCompositeName();
       if (!isset($this->cells[$header_name])) {
-         $this->cells[$header_name] = array();
+         $this->cells[$header_name] = [];
       }
 
       $cell = new HTMLTableCell($this, $header, $content, $father, $item);
@@ -174,7 +174,7 @@ class HTMLTableRow extends HTMLTableEntity {
          if (isset($this->linesWithAttributs[$i])) {
             $options = $this->linesWithAttributs[$i];
          } else {
-            $options = array();
+            $options = [];
          }
          echo "\t\t<tr class='tab_bg_1'>\n";
          foreach ($headers as $header) {
@@ -205,7 +205,7 @@ class HTMLTableRow extends HTMLTableEntity {
     * @param $name
     * @param $sub_name  (default NULL)
    */
-   function getHeaderByName($name, $sub_name = NULL) {
+   function getHeaderByName($name, $sub_name = null) {
       return $this->group->getHeaderByName($name, $sub_name);
    }
 }

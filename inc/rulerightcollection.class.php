@@ -49,11 +49,11 @@ class RuleRightCollection extends RuleCollection {
 
    // Specific ones
    /// Array containing results : entity + right
-   public $rules_entity_rights = array();
+   public $rules_entity_rights = [];
    /// Array containing results : only entity
-   public $rules_entity        = array();
+   public $rules_entity        = [];
    /// Array containing results : only right
-   public $rules_rights        = array();
+   public $rules_rights        = [];
 
 
    function getTitle() {
@@ -182,7 +182,7 @@ class RuleRightCollection extends RuleCollection {
    function getFieldsToLookFor() {
       global $DB;
 
-      $params = array();
+      $params = [];
       $sql = "SELECT DISTINCT `value`
               FROM `glpi_rules`,
                    `glpi_rulecriterias`,
@@ -214,7 +214,7 @@ class RuleRightCollection extends RuleCollection {
    **/
    function prepareInputDataForProcess($input, $params) {
 
-      $rule_parameters = array();
+      $rule_parameters = [];
       //LDAP type method
       if ($params["type"] == "LDAP") {
          //Get all the field to retrieve to be able to process rule matching
@@ -229,7 +229,7 @@ class RuleRightCollection extends RuleCollection {
             if (isset($input)) {
                $groups = $input;
             } else {
-               $groups = array();
+               $groups = [];
             }
             $rule_input = $rule_input[0];
             //Get all the ldap fields
@@ -294,7 +294,7 @@ class RuleRightCollection extends RuleCollection {
       $rule      = new RuleRight();
       $criterias = $rule->getCriterias();
 
-      $fields = array();
+      $fields = [];
       foreach ($criterias as $criteria) {
          if (!is_array($criteria)) {
             continue;

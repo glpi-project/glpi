@@ -47,7 +47,7 @@ class Calendar extends CommonDropdown {
    public $dohistory                   = true;
    public $can_be_translated           = false;
 
-   static protected $forward_entity_to = array('CalendarSegment');
+   static protected $forward_entity_to = ['CalendarSegment'];
 
    static $rightname = 'calendar';
 
@@ -63,12 +63,12 @@ class Calendar extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Calendar', 'Calendars', $nb);
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('CalendarSegment', $ong, $options);
@@ -81,7 +81,7 @@ class Calendar extends CommonDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -105,13 +105,13 @@ class Calendar extends CommonDropdown {
          case 'duplicate' :
             Entity::dropdown();
             echo "<br><br>";
-            echo Html::submit(_x('button', 'Duplicate'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button', 'Duplicate'), ['name' => 'massiveaction'])."</span>";
             return true;
 
          case 'addholiday' :
             Holiday::dropdown();
             echo "<br><br>";
-            echo Html::submit(_x('button', 'Add'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction'])."</span>";
             return true;
       }
 
@@ -131,9 +131,9 @@ class Calendar extends CommonDropdown {
          case 'duplicate' : // For calendar duplicate in another entity
             if (method_exists($item, 'duplicate')) {
                $input = $ma->getInput();
-               $options = array();
+               $options = [];
                if ($item->isEntityAssign()) {
-                  $options = array('entities_id' => $input['entities_id']);
+                  $options = ['entities_id' => $input['entities_id']];
                }
                foreach ($ids as $id) {
                   if ($item->getFromDB($id)) {
@@ -171,7 +171,7 @@ class Calendar extends CommonDropdown {
                $calendar_holiday = new Calendar_Holiday();
 
                $holiday->getFromDB($input['holidays_id']);
-               $entities = array($holiday->getEntityID() => $holiday->getEntityID());
+               $entities = [$holiday->getEntityID() => $holiday->getEntityID()];
                if ($holiday->isRecursive()) {
                   $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
                }
@@ -179,8 +179,8 @@ class Calendar extends CommonDropdown {
                foreach ($ids as $id) {
                   $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
                   if (isset($entities[$entities_id])) {
-                     $input = array('calendars_id' => $id,
-                                    'holidays_id'  => $input['holidays_id']);
+                     $input = ['calendars_id' => $id,
+                                    'holidays_id'  => $input['holidays_id']];
                      if ($calendar_holiday->add($input)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
@@ -205,7 +205,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $options array of new values to set
    **/
-   function duplicate($options=array()) {
+   function duplicate($options = []) {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -284,7 +284,7 @@ class Calendar extends CommonDropdown {
     *
     * @return timestamp of delay
    **/
-   function getActiveTimeBetween($start, $end, $work_in_days=false) {
+   function getActiveTimeBetween($start, $end, $work_in_days = false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -398,7 +398,7 @@ class Calendar extends CommonDropdown {
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false, $end_of_working_day=false) {
+   function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -590,7 +590,7 @@ class Calendar extends CommonDropdown {
          return false;
       }
 
-      $results = array();
+      $results = [];
       for ($i=0; $i<7; $i++) {
          /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
          $results[$i] = CalendarSegment::getActiveTimeBetween($this->fields['id'], $i, '00:00:00',

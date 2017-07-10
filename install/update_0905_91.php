@@ -44,7 +44,7 @@ function update0905to91() {
 
    $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
+   $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '9.1'));
@@ -53,7 +53,7 @@ function update0905to91() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
-   $newtables     = array();
+   $newtables     = [];
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -184,11 +184,11 @@ function update0905to91() {
                       AND `name` IN (".implode( ",", $rightnames ).")";
       $DB->queryOrDie($query, "update super-admin profile with UNLOCK right");
 
-      Config::setConfigurationValues('core', array('lock_use_lock_item'             => 0,
+      Config::setConfigurationValues('core', ['lock_use_lock_item'             => 0,
                                                    'lock_autolock_mode'             => 1,
                                                    'lock_directunlock_notification' => 0,
                                                    'lock_item_list'                 => '[]',
-                                                   'lock_lockprofile_id'            => $ro_p_id));
+                                                   'lock_lockprofile_id'            => $ro_p_id]);
    }
 
    // cron task
@@ -269,7 +269,7 @@ function update0905to91() {
    $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
    /************** Default Requester *************/
-   Config::setConfigurationValues('core', array('set_default_requester' => 1));
+   Config::setConfigurationValues('core', ['set_default_requester' => 1]);
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
    // ************ Networkport ethernets **************
@@ -369,10 +369,10 @@ function update0905to91() {
    $migration->addField("glpi_users", "plannings", "text");
 
    /************** API Rest *************/
-   Config::setConfigurationValues('core', array('enable_api'                      => 0));
-   Config::setConfigurationValues('core', array('enable_api_login_credentials'    => 0));
-   Config::setConfigurationValues('core', array('enable_api_login_external_token' => 1));
-   Config::setConfigurationValues('core', array('url_base_api' => trim($current_config['url_base'], "/")."/apirest.php/"));
+   Config::setConfigurationValues('core', ['enable_api'                      => 0]);
+   Config::setConfigurationValues('core', ['enable_api_login_credentials'    => 0]);
+   Config::setConfigurationValues('core', ['enable_api_login_external_token' => 1]);
+   Config::setConfigurationValues('core', ['url_base_api' => trim($current_config['url_base'], "/")."/apirest.php/"]);
    if (!TableExists('glpi_apiclients')) {
       $query = "CREATE TABLE `glpi_apiclients` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -402,7 +402,7 @@ function update0905to91() {
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
-   $types = array('AuthLDAP', 'Blacklist', 'BlacklistedMailContent', 'Budget',  'Calendar',
+   $types = ['AuthLDAP', 'Blacklist', 'BlacklistedMailContent', 'Budget',  'Calendar',
                   'CartridgeItemType', 'Change', 'ChangeTask', 'ComputerDisk',
                   'ComputerVirtualMachine', 'ConsumableItemType', 'Contact', 'ContactType',
                   'Contract', 'ContractType', 'Crontask', 'DeviceCaseType', 'DeviceMemoryType',
@@ -418,7 +418,7 @@ function update0905to91() {
                   'SsoVariable', 'State', 'Supplier', 'SupplierType',
                   'TaskCategory', 'TaskTemplate',  'Ticket', 'TicketFollowup', 'TicketTask',
                   'User', 'UserCategory', 'UserTitle', 'VirtualMachineState', 'VirtualMachineSystem',
-                  'VirtualMachineType', 'Vlan', 'WifiNetwork');
+                  'VirtualMachineType', 'Vlan', 'WifiNetwork'];
    $types = array_merge($types, $CFG_GLPI["infocom_types"]);
    $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
    $types = array_merge($types, $CFG_GLPI["device_types"]);
@@ -470,16 +470,16 @@ function update0905to91() {
       }
    }
 
-   foreach (array('glpi_tickettemplatepredefinedfields', 'glpi_tickettemplatehiddenfields',
-                  'glpi_tickettemplatemandatoryfields') as $table) {
-      $columns = array();
+   foreach (['glpi_tickettemplatepredefinedfields', 'glpi_tickettemplatehiddenfields',
+                  'glpi_tickettemplatemandatoryfields'] as $table) {
+      $columns = [];
       switch ($table) {
          case 'glpi_tickettemplatepredefinedfields' :
-            $columns = array('num', 'value', 'tickettemplates_id');
+            $columns = ['num', 'value', 'tickettemplates_id'];
             break;
 
          default :
-            $columns = array('num', 'tickettemplates_id');
+            $columns = ['num', 'tickettemplates_id'];
             break;
       }
       $query = "SELECT `".implode('`,`', $columns)."`
@@ -487,7 +487,7 @@ function update0905to91() {
                 WHERE `num` = '$item_num'
                       OR `num` = '$itemtype_num';";
 
-      $items_to_update = array();
+      $items_to_update = [];
       if ($result          = $DB->query($query)) {
          if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetch_assoc($result)) {
@@ -568,13 +568,13 @@ function update0905to91() {
 
    $migration->addField("glpi_infocoms", "decommission_date", "datetime");
    $migration->addField("glpi_entities", "autofill_decommission_date",
-                        "string", array('value' => '-2'));
+                        "string", ['value' => '-2']);
 
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
    $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
    /************* Add is_recursive on assets ***/
-   foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
+   foreach (['glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals'] as $table) {
       $migration->addField($table, "is_recursive", "bool");
       $migration->addKey($table, "is_recursive");
    }
@@ -638,7 +638,7 @@ function update0905to91() {
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   $ADDTODISPLAYPREF['SoftwareLicense'] = array(3, 10, 162, 5);
+   $ADDTODISPLAYPREF['SoftwareLicense'] = [3, 10, 162, 5];
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
@@ -736,8 +736,8 @@ function update0905to91() {
       // save table before delete fields
       $migration->copyTable('glpi_slas', 'backup_glpi_slas');
 
-      foreach (array('number_time', 'definition_time',
-                     'end_of_working_day') as $field) {
+      foreach (['number_time', 'definition_time',
+                     'end_of_working_day'] as $field) {
          $migration->dropField('glpi_slas', $field);
       }
 
@@ -753,8 +753,8 @@ function update0905to91() {
       $migration->dropKey('glpi_tickets', 'slas_id');
       $migration->addKey('glpi_tickets', 'slts_ttr_id');
 
-      $migration->addField("glpi_tickets", "slts_tto_id", "integer", array('after' => 'slts_ttr_id'));
-      $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
+      $migration->addField("glpi_tickets", "slts_tto_id", "integer", ['after' => 'slts_ttr_id']);
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => 'due_date']);
       $migration->addKey('glpi_tickets', 'slts_tto_id');
       $migration->addKey('glpi_tickets', 'time_to_own');
       $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
@@ -763,7 +763,7 @@ function update0905to91() {
       $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
 
       // Unique key for slalevel_ticket
-      $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'),
+      $migration->addKey('glpi_slalevels_tickets', ['tickets_id', 'slalevels_id'],
                          'unicity', 'UNIQUE');
 
       // Sla rules criterias migration
@@ -781,7 +781,7 @@ function update0905to91() {
 
    // to delete in next version - fix change in update
    if (!FieldExists('glpi_slas', 'calendars_id')) {
-      $migration->addField("glpi_slas", "calendars_id", "integer", array('after' => 'is_recursive'));
+      $migration->addField("glpi_slas", "calendars_id", "integer", ['after' => 'is_recursive']);
       $migration->addKey('glpi_slas', 'calendars_id');
    }
    if (FieldExists('glpi_slts', 'resolution_time')
@@ -790,11 +790,11 @@ function update0905to91() {
    }
 
    /************** High contrast CSS **************/
-   Config::setConfigurationValues('core', array('highcontrast_css' => 0));
+   Config::setConfigurationValues('core', ['highcontrast_css' => 0]);
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
    /************** SMTP option for self-signed certificates **************/
-   Config::setConfigurationValues('core', array('smtp_check_certificate' => 1));
+   Config::setConfigurationValues('core', ['smtp_check_certificate' => 1]);
 
    // for group task
    $migration->addField("glpi_tickettasks", "groups_id_tech", "integer");
@@ -803,8 +803,8 @@ function update0905to91() {
    $migration->addKey("glpi_changetasks", "groups_id_tech");
    $migration->addField("glpi_problemtasks", "groups_id_tech", "integer");
    $migration->addKey("glpi_problemtasks", "groups_id_tech");
-   $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
-                                                                'after' => 'is_assign'));
+   $migration->addField("glpi_groups", "is_task", "bool", ['value' => 1,
+                                                                'after' => 'is_assign']);
 
    // for date_mod adding to tasks and to followups
    $migration->addField("glpi_tickettasks", "date_mod", "datetime");
@@ -817,19 +817,19 @@ function update0905to91() {
    $migration->addKey("glpi_ticketfollowups", "date_mod");
 
    // for is_active adding to glpi_taskcategories
-   $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
+   $migration->addField("glpi_taskcategories", "is_active", "bool", ['value' => 1]);
    $migration->addKey("glpi_taskcategories", "is_active");
 
    // for is_active, is_followup_default, is_ticketheader and is_ticketfollowup in glpi_requesttypes
-   $migration->addField("glpi_requesttypes", "is_active", "bool", array('value' => 1));
+   $migration->addField("glpi_requesttypes", "is_active", "bool", ['value' => 1]);
    $migration->addKey("glpi_requesttypes", "is_active");
-   $migration->addField("glpi_requesttypes", "is_ticketheader", "bool", array('value' => 1));
+   $migration->addField("glpi_requesttypes", "is_ticketheader", "bool", ['value' => 1]);
    $migration->addKey("glpi_requesttypes", "is_ticketheader");
-   $migration->addField("glpi_requesttypes", "is_ticketfollowup", "bool", array('value' => 1));
+   $migration->addField("glpi_requesttypes", "is_ticketfollowup", "bool", ['value' => 1]);
    $migration->addKey("glpi_requesttypes", "is_ticketfollowup");
-   $migration->addField("glpi_requesttypes", "is_followup_default", "bool", array('value' => 0));
+   $migration->addField("glpi_requesttypes", "is_followup_default", "bool", ['value' => 0]);
    $migration->addKey("glpi_requesttypes", "is_followup_default");
-   $migration->addField("glpi_requesttypes", "is_mailfollowup_default", "bool", array('value' => 0));
+   $migration->addField("glpi_requesttypes", "is_mailfollowup_default", "bool", ['value' => 0]);
    $migration->addKey("glpi_requesttypes", "is_mailfollowup_default");
 
    /************** Fix autoclose_delay for root_entity in glpi_entities (from -1 to 0) **************/

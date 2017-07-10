@@ -51,7 +51,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    }
 
    $default_email = "";
-   $emails        = array();
+   $emails        = [];
    if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
       $supplier = new Supplier();
       if ($supplier->getFromDB($_POST["value"])) {
@@ -81,7 +81,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
        && !empty($_POST['alternative_email'][$user_index])
        && empty($default_email)) {
 
-      if (NotificationMail::isUserAddressValid($_POST['alternative_email'][$user_index])) {
+      if (NotificationMailing::isUserAddressValid($_POST['alternative_email'][$user_index])) {
          $default_email = $_POST['alternative_email'][$user_index];
       } else {
          throw new \RuntimeException('Invalid email provided!');
@@ -94,7 +94,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    // Only one email
    if ((count($emails) == 1)
        && !empty($default_email)
-       && NotificationMail::isUserAddressValid($default_email[$user_index])) {
+       && NotificationMailing::isUserAddressValid($default_email[$user_index])) {
       $email_string =  $default_email[$user_index];
       // Clean alternative email
       echo "<input type='hidden' size='25' name='".$_POST['field']."[alternative_email][]'
@@ -102,7 +102,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
-      $emailtab = array();
+      $emailtab = [];
       foreach ($emails as $new_email) {
          if ($new_email != $default_email) {
             $emailtab[$new_email] = $new_email;
@@ -111,8 +111,8 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
          }
       }
       $email_string = Dropdown::showFromArray($_POST['field']."[alternative_email][]", $emailtab,
-                                              array('value'   => '',
-                                                    'display' => false));
+                                              ['value'   => '',
+                                                    'display' => false]);
    } else {
       $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email][]'
                         value='".$default_email."'>";

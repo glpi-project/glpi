@@ -47,7 +47,7 @@ class DBConnection extends CommonDBTM {
    static protected $notable = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('SQL replica', 'SQL replicas', $nb);
    }
 
@@ -134,7 +134,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return DBmysql object
    **/
-   static function getDBSlaveConf($choice=NULL) {
+   static function getDBSlaveConf($choice = null) {
 
       if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -265,7 +265,7 @@ class DBConnection extends CommonDBTM {
     *                      (if connection failed, do not try to connect to the other server)
     * @param $display      display error message (true by default)
    **/
-   static function establishDBConnection($use_slave, $required, $display=true) {
+   static function establishDBConnection($use_slave, $required, $display = true) {
       global $DB;
 
       $DB  = null;
@@ -323,7 +323,7 @@ class DBConnection extends CommonDBTM {
     *
     * @return integer
    **/
-   static function getReplicateDelay($choice=NULL) {
+   static function getReplicateDelay($choice = null) {
 
       include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
       return (int) (self::getHistoryMaxDate(new DB())
@@ -376,8 +376,8 @@ class DBConnection extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      return array('description' => __('Check the SQL replica'),
-                   'parameter'   => __('Max delay between master and slave (minutes)'));
+      return ['description' => __('Check the SQL replica'),
+                   'parameter'   => __('Max delay between master and slave (minutes)')];
    }
 
 
@@ -398,7 +398,7 @@ class DBConnection extends CommonDBTM {
          if (is_array($DBslave->dbhost)) {
             $hosts = $DBslave->dbhost;
          } else {
-            $hosts = array($DBslave->dbhost);
+            $hosts = [$DBslave->dbhost];
          }
 
          foreach ($hosts as $num => $name) {
@@ -416,9 +416,9 @@ class DBConnection extends CommonDBTM {
 
             if ($diff > ($task->fields['param']*60)) {
                //Raise event if replicate is not synchronized
-               $options = array('diff'        => $diff,
+               $options = ['diff'        => $diff,
                                 'name'        => $name,
-                                'entities_id' => 0); // entity to avoid warning in getReplyTo
+                                'entities_id' => 0]; // entity to avoid warning in getReplyTo
                NotificationEvent::raiseEvent('desynchronization', new self(), $options);
             }
          }
@@ -439,7 +439,7 @@ class DBConnection extends CommonDBTM {
       if (is_array($DBslave->dbhost)) {
          $hosts = $DBslave->dbhost;
       } else {
-         $hosts = array($DBslave->dbhost);
+         $hosts = [$DBslave->dbhost];
       }
 
       foreach ($hosts as $num => $name) {
@@ -484,7 +484,7 @@ class DBConnection extends CommonDBTM {
     *
     * @param enable of disable cron task (true by default)
    **/
-   static function changeCronTaskStatus($enable=true) {
+   static function changeCronTaskStatus($enable = true) {
 
       $cron           = new CronTask();
       $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');

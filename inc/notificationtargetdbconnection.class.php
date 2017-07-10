@@ -45,9 +45,9 @@ class NotificationTargetDBConnection extends NotificationTarget {
    /**
     * Overwrite the function in NotificationTarget because there's only one target to be notified
     *
-    * @see NotificationTarget::getNotificationTargets()
+    * @see NotificationTarget::addNotificationTargets()
    **/
-   function getNotificationTargets($entity) {
+   function addNotificationTargets($entity) {
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
@@ -56,27 +56,23 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getEvents() {
-      return array('desynchronization' => __('Desynchronization SQL replica'));
+      return ['desynchronization' => __('Desynchronization SQL replica')];
    }
 
 
-   /**
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       if ($options['diff'] > 1000000000) {
          $tmp = __("Can't connect to the database.");
       } else {
          $tmp = Html::timestampToString($options['diff'], true);
       }
-      $this->datas['##dbconnection.delay##'] = $tmp." (".$options['name'].")";
+      $this->data['##dbconnection.delay##'] = $tmp." (".$options['name'].")";
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
 
@@ -85,26 +81,26 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('dbconnection.delay' => __('Difference between master and slave'));
+      $tags = ['dbconnection.delay' => __('Difference between master and slave')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => true,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       //Tags with just lang
-      $tags = array('dbconnection.title'
+      $tags = ['dbconnection.title'
                                  => __('Slave database out of sync!'),
                     'dbconnection.delay'
-                                 => __('The slave database is desynchronized. The difference is of:'));
+                                 => __('The slave database is desynchronized. The difference is of:')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
                                    'value' => false,
-                                   'lang'  => true));
+                                   'lang'  => true]);
       }
 
       asort($this->tag_descriptions);

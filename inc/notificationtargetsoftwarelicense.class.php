@@ -46,27 +46,21 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Alarms on expired licenses'));
+      return ['alert' => __('Alarms on expired licenses')];
    }
 
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+   function addDataForTemplate($event, $options = []) {
 
       $events                            = $this->getAllEvents();
 
-      $this->datas['##license.action##'] = $events[$event];
+      $this->data['##license.action##'] = $events[$event];
 
-      $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                      $options['entities_id']);
 
       foreach ($options['licenses'] as $id => $license) {
-         $tmp                       = array();
+         $tmp                       = [];
          $tmp['##license.item##']   = $license['softname'];
          $tmp['##license.name##']   = $license['name'];
          $tmp['##license.serial##'] = $license['serial'];
@@ -74,13 +68,13 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                                     = Html::convDate($license["expire"]);
          $tmp['##license.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
                                                        "SoftwareLicense_".$id);
-         $this->datas['licenses'][] = $tmp;
+         $this->data['licenses'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -88,24 +82,24 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('license.expirationdate' => __('Expiration date'),
+      $tags = ['license.expirationdate' => __('Expiration date'),
                     'license.item'           => _n('Software', 'Software', 1),
                     'license.name'           => __('Name'),
                     'license.serial'         => __('Serial number'),
                     'license.entity'         => __('Entity'),
                     'license.url'            => __('URL'),
-                    'license.action'         => _n('Event', 'Events', 1));
+                    'license.action'         => _n('Event', 'Events', 1)];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'licenses',
+      $this->addTagToList(['tag'     => 'licenses',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

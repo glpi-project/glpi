@@ -56,7 +56,7 @@ try {
 
 echo "<div width='90%' class='center'><br>";
 Html::openMassiveActionsForm();
-$params = array('action' => '__VALUE__');
+$params = ['action' => '__VALUE__'];
 $input  = $ma->getInput();
 foreach ($input as $key => $val) {
    $params[$key] = $val;
@@ -67,13 +67,13 @@ $actions = $params['actions'];
 if (count($actions)) {
    if (isset($params['hidden']) && is_array($params['hidden'])) {
       foreach ($params['hidden'] as $key => $val) {
-         echo Html::hidden($key, array('value' => $val));
+         echo Html::hidden($key, ['value' => $val]);
       }
    }
    echo __('Action');
    echo "&nbsp;";
 
-   $actions = array('-1' => Dropdown::EMPTY_VALUE) + $actions;
+   $actions = ['-1' => Dropdown::EMPTY_VALUE] + $actions;
    $rand    = Dropdown::showFromArray('massiveaction', $actions);
 
    echo "<br><br>";

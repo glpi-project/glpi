@@ -62,7 +62,7 @@ class Entity_Reminder extends CommonDBRelation {
    static function getEntities($reminders_id) {
       global $DB;
 
-      $ent   = array();
+      $ent   = [];
       $query = "SELECT `glpi_entities_reminders`.*
                 FROM `glpi_entities_reminders`
                 WHERE `reminders_id` = '$reminders_id'";

@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class PrinterType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Printer type', 'Printer types', $nb);
    }
 

@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["rssfeeds_id"]) && $_POST["rssfeeds_id"]) {
-      $item = NULL;
+      $item = null;
       switch ($_POST["_type"]) {
          case 'User' :
             if (isset($_POST['users_id']) && $_POST['users_id']) {
@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
       Html::header(RSSFeed::getTypeName(Session::getPluralNumber()), '', "tools", "rssfeed");
    }
 
-   $rssfeed->display(array('id' => $_GET["id"]));
+   $rssfeed->display(['id' => $_GET["id"]]);
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpFooter();

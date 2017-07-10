@@ -51,7 +51,7 @@ class APIRest extends API {
     *
     * @see CommonGLPI::GetTypeName()
     */
-   public static function getTypeName($nb=0) {
+   public static function getTypeName($nb = 0) {
       return __('Rest API');
    }
 
@@ -174,7 +174,7 @@ class APIRest extends API {
          $response =  $this->searchItems($itemtype, $params);
 
          //add pagination headers
-         $additionalheaders                  = array();
+         $additionalheaders                  = [];
          $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
          if ($response['totalcount'] > 0) {
             $additionalheaders["Content-Range"] = $response['content-range'];
@@ -193,7 +193,7 @@ class APIRest extends API {
          // commonDBTM manipulation
          $itemtype          = $this->getItemtype(0);
          $id                = $this->getId();
-         $additionalheaders = array();
+         $additionalheaders = [];
          $code              = 200;
          switch ($this->verb) {
             default:
@@ -234,14 +234,14 @@ class APIRest extends API {
                $code     = 201;
                if (isset($response['id'])) {
                   // add a location targetting created element
-                  $additionalheaders['location'] = self::$api_url.$itemtype."/".$response['id'];
+                  $additionalheaders['location'] = self::$api_url."/$itemtype/".$response['id'];
                } else {
                   // add a link header targetting created elements
                   $additionalheaders['link'] = "";
                   foreach ($response as $created_item) {
                      if ($created_item['id']) {
-                        $additionalheaders['link'] .= self::$api_url.$itemtype.
-                                                     "/".$created_item['id'].",";
+                        $additionalheaders['link'] .= self::$api_url."/$itemtype/".
+                                                     $created_item['id'].",";
                      }
                   }
                   // remove last comma
@@ -290,7 +290,7 @@ class APIRest extends API {
     *
     * @return boolean
     */
-   private function getItemtype($index=0, $recursive=true, $all_assets= false) {
+   private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
 
       if (isset($this->url_elements[$index])) {
          if ((class_exists($this->url_elements[$index])
@@ -353,7 +353,7 @@ class APIRest extends API {
     */
    public function parseIncomingParams($is_inline_doc = false) {
 
-      $parameters = array();
+      $parameters = [];
 
       // first of all, pull the GET vars
       if (isset($_SERVER['QUERY_STRING'])) {
@@ -428,7 +428,7 @@ class APIRest extends API {
       }
 
       // retrieve HTTP headers
-      $headers = array();
+      $headers = [];
       if (function_exists('getallheaders')) {
          //apache specific
          $headers = getallheaders();
@@ -485,7 +485,7 @@ class APIRest extends API {
     *
     * @return void
     */
-   public function returnResponse($response, $httpcode=200, $additionalheaders=array()) {
+   public function returnResponse($response, $httpcode = 200, $additionalheaders = []) {
 
       if (empty($httpcode)) {
          $httpcode = 200;

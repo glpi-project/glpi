@@ -115,7 +115,7 @@ class Toolbox {
     *
     * @return substring
    **/
-   static function strpos($str, $tofound, $offset=0) {
+   static function strpos($str, $tofound, $offset = 0) {
       return mb_strpos($str, $tofound, $offset, "UTF-8");
    }
 
@@ -132,7 +132,7 @@ class Toolbox {
     *
     * @return string
    **/
-   static function str_pad($input, $pad_length, $pad_string=" ", $pad_type=STR_PAD_RIGHT) {
+   static function str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
 
        $diff = (strlen($input) - self::strlen($input));
        return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
@@ -160,7 +160,7 @@ class Toolbox {
     *
     * @return substring
    **/
-   static function substr($str, $start, $length=-1) {
+   static function substr($str, $start, $length = -1) {
 
       if ($length == -1) {
          $length = self::strlen($str)-$start;
@@ -214,7 +214,7 @@ class Toolbox {
     *
     * @return utf8 string
    **/
-   static function encodeInUtf8($string, $from_charset="ISO-8859-1") {
+   static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
 
       if (strcmp($from_charset, "auto") == 0) {
          $from_charset = mb_detect_encoding($string);
@@ -231,7 +231,7 @@ class Toolbox {
     *
     * @return converted string
    **/
-   static function decodeFromUtf8($string, $to_charset="ISO-8859-1") {
+   static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
 
@@ -293,13 +293,13 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = ['<', '>'];
+      $out = ['&lt;', '&gt;'];
 
       $value = ((array) $value === $value)
-                  ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
+                  ? array_map([__CLASS__, 'clean_cross_side_scripting_deep'], $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                      ? $value : str_replace($in, $out, $value)));
 
       return $value;
@@ -317,13 +317,13 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = ['<', '>'];
+      $out = ['&lt;', '&gt;'];
 
       $value = ((array) $value === $value)
-                  ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
+                  ? array_map([__CLASS__, 'unclean_cross_side_scripting_deep'], $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                      ? $value : str_replace($out, $in, $value)));
 
       return $value;
@@ -344,13 +344,13 @@ class Toolbox {
    static function unclean_html_cross_side_scripting_deep($value) {
       include_once(GLPI_HTMLAWED);
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = ['<', '>'];
+      $out = ['&lt;', '&gt;'];
 
       $value = ((array) $value === $value)
-                  ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'), $value)
+                  ? array_map([__CLASS__, 'unclean_html_cross_side_scripting_deep'], $value)
                   : (is_null($value)
-                      ? NULL : (is_resource($value)
+                      ? null : (is_resource($value)
                                   ? $value : str_replace($out, $in, $value)));
 
       // revert unclean inside <pre>
@@ -362,7 +362,7 @@ class Toolbox {
          $value          = str_replace($complete, $cleancomplete, $value);
       }
 
-      $config                      = array('safe'=>1);
+      $config                      = ['safe'=>1];
       $config["elements"]          = "*+iframe";
       $config["direct_list_nest"]  = 1;
 
@@ -426,7 +426,7 @@ class Toolbox {
     *
     * @return string if $log is false
    **/
-   static function backtrace($log='php-errors', $hide='', Array $skip=array()) {
+   static function backtrace($log = 'php-errors', $hide = '', Array $skip = []) {
 
       if (function_exists("debug_backtrace")) {
          $message = "  Backtrace :\n";
@@ -472,7 +472,7 @@ class Toolbox {
     * @param $text   string   text to log
     * @param $force  boolean  force log in file not seeing use_log_in_files config (false by default)
    **/
-   static function logInFile($name, $text, $force=false) {
+   static function logInFile($name, $text, $force = false) {
       global $CFG_GLPI;
 
       $user = '';
@@ -507,7 +507,7 @@ class Toolbox {
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
       // Date et heure de l'erreur
-      $errortype = array(E_ERROR             => 'Error',
+      $errortype = [E_ERROR             => 'Error',
                          E_WARNING           => 'Warning',
                          E_PARSE             => 'Parsing Error',
                          E_NOTICE            => 'Notice',
@@ -521,16 +521,16 @@ class Toolbox {
                          E_STRICT            => 'Runtime Notice',
                          E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
                          E_DEPRECATED        => 'Deprecated function',
-                         E_USER_DEPRECATED   => 'User deprecated function');
+                         E_USER_DEPRECATED   => 'User deprecated function'];
       // Les niveaux qui seront enregistr??s
-      $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+      $user_errors = [E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING];
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
       if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
-      $skip = array('Toolbox::backtrace()');
+      $skip = ['Toolbox::backtrace()'];
       if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          $hide   = "Toolbox::userErrorHandlerDebug()";
          $skip[] = "Toolbox::userErrorHandlerNormal()";
@@ -597,7 +597,7 @@ class Toolbox {
     *
     * @since version 0.84
    **/
-   static function setDebugMode($mode=NULL, $debug_sql=NULL, $debug_vars=NULL, $log_in_files=NULL) {
+   static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null) {
       global $CFG_GLPI;
 
       if (isset($mode)) {
@@ -619,13 +619,13 @@ class Toolbox {
          // Recommended development settings
          ini_set('display_errors', 'On');
          error_reporting(E_ALL | E_STRICT);
-         set_error_handler(array('Toolbox','userErrorHandlerDebug'));
+         set_error_handler(['Toolbox','userErrorHandlerDebug']);
 
       } else {
          // Recommended production settings
          ini_set('display_errors', 'Off');
          error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-         set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
+         set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
       }
    }
 
@@ -723,9 +723,9 @@ class Toolbox {
       global $DB;
 
       $value = ((array) $value === $value)
-                  ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
+                  ? array_map([__CLASS__, 'addslashes_deep'], $value)
                   : (is_null($value)
-                       ? NULL : (is_resource($value)
+                       ? null : (is_resource($value)
                                   ? $value : $DB->escape($value)));
 
       return $value;
@@ -742,9 +742,9 @@ class Toolbox {
    static function stripslashes_deep($value) {
 
       $value = ((array) $value === $value)
-                  ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
+                  ? array_map([__CLASS__, 'stripslashes_deep'], $value)
                   : (is_null($value)
-                        ? NULL : (is_resource($value)
+                        ? null : (is_resource($value)
                                     ? $value :stripslashes($value)));
 
       return $value;
@@ -761,9 +761,9 @@ class Toolbox {
     *
     * @return string  : Query string to append to a URL.
    **/
-   static function append_params($array, $separator='&', $parent='') {
+   static function append_params($array, $separator = '&', $parent = '') {
 
-      $params = array();
+      $params = [];
       foreach ($array as $k => $v) {
 
          if (is_array($v)) {
@@ -785,7 +785,7 @@ class Toolbox {
     *
     * @return memory limit
    **/
-   static function getMemoryLimit($ininame='memory_limit') {
+   static function getMemoryLimit($ininame = 'memory_limit') {
 
       $mem = ini_get($ininame);
       preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
@@ -969,7 +969,9 @@ class Toolbox {
       }
       echo "</tr>";
 
-      $suberr = Config::checkWriteAccessToDirs();
+      if (!isset($_REQUEST['skipCheckWriteAccessToDirs'])) {
+         $suberr = Config::checkWriteAccessToDirs();
+      }
       if ($suberr > $error) {
          $error = $suberr;
       }
@@ -991,7 +993,7 @@ class Toolbox {
     *
     *  @return integer 0: OK, 1:Warning, 2:Error
    **/
-   static function checkSELinux($fordebug=false) {
+   static function checkSELinux($fordebug = false) {
       global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
@@ -1028,8 +1030,8 @@ class Toolbox {
          // should always be there
          return 0;
       }
-      $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db',
-                     'httpd_can_sendmail');
+      $bools = ['httpd_can_network_connect', 'httpd_can_network_connect_db',
+                     'httpd_can_sendmail'];
       $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
          $state = exec('/usr/sbin/getsebool '.$bool);
@@ -1103,7 +1105,7 @@ class Toolbox {
    static function getSize($size) {
 
       //TRANS: list of unit (o for octet)
-      $bytes = array(__('o'), __('Kio'), __('Mio'), __('Gio'), __('Tio'));
+      $bytes = [__('o'), __('Kio'), __('Mio'), __('Gio'), __('Tio')];
       foreach ($bytes as $val) {
          if ($size > 1024) {
             $size = $size / 1024;
@@ -1166,8 +1168,8 @@ class Toolbox {
     *
     * @return bool : true or false
    **/
-   static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71,
-                                 $img_y=0, $img_x=0, $img_width=0, $img_height=0, $max_size=500) {
+   static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71,
+                                 $img_y = 0, $img_x = 0, $img_width = 0, $img_height = 0, $max_size = 500) {
 
       //get img informations (dimensions and extension)
       $img_infos  = getimagesize($source_path);
@@ -1244,7 +1246,7 @@ class Toolbox {
     *
     * @return string explaining the result
    **/
-   static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
+   static function checkNewVersionAvailable($auto = true, $messageafterredirect = false) {
       global $CFG_GLPI;
 
       if (!$auto
@@ -1260,7 +1262,7 @@ class Toolbox {
       $error = "";
       $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
       $all_gh_releases = json_decode($json_gh_releases, true);
-      $released_tags = array();
+      $released_tags = [];
       foreach ($all_gh_releases as $release) {
          if ($release['prerelease'] == false) {
             $released_tags[] =  $release['tag_name'];
@@ -1399,7 +1401,7 @@ class Toolbox {
     *
     * return string itemtype Form URL
    **/
-   static function getItemTypeFormURL($itemtype, $full=true) {
+   static function getItemTypeFormURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1428,7 +1430,7 @@ class Toolbox {
     *
     * return string itemtype search URL
    **/
-   static function getItemTypeSearchURL($itemtype, $full=true) {
+   static function getItemTypeSearchURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1462,7 +1464,7 @@ class Toolbox {
     *
     * return string itemtype tabs URL
    **/
-   static function getItemTypeTabsURL($itemtype, $full=true) {
+   static function getItemTypeTabsURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
       $filename = "/ajax/common.tabs.php";
@@ -1479,7 +1481,7 @@ class Toolbox {
     *
     * @return random string
    **/
-   static function getRandomString($length, $high=false) {
+   static function getRandomString($length, $high = false) {
 
       $factory = new RandomLib\Factory();
       if ($high) {
@@ -1538,7 +1540,7 @@ class Toolbox {
     *
     * @return content of the page (or empty)
    **/
-   static function getURLContent ($url, &$msgerr=NULL, $rec=0) {
+   static function getURLContent ($url, &$msgerr = null, $rec = 0) {
       global $CFG_GLPI;
 
       $content = "";
@@ -1845,9 +1847,9 @@ class Toolbox {
     *         norsh, secure and debug) : options are empty if not set
     *                                    and options have boolean values if set
    **/
-   static function parseMailServerConnectString($value, $forceport=false) {
+   static function parseMailServerConnectString($value, $forceport = false) {
 
-      $tab = array();
+      $tab = [];
       if (strstr($value, ":")) {
          $tab['address'] = str_replace("{", "", preg_replace("/:.*/", "", $value));
          $tab['port']    = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
@@ -1941,29 +1943,29 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/imap' => __('IMAP'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/pop' => __('POP'),);
+                     '/pop' => __('POP'),];
 
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
 
       Dropdown::showFromArray('server_type', $values,
-                              array('value'               => $svalue,
-                                    'display_emptychoice' => true));
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/ssl' => __('SSL'));
+                              ['value'               => $svalue,
+                                    'display_emptychoice' => true]);
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/ssl' => __('SSL')];
 
       $svalue = ($tab['ssl']?'/ssl':'');
 
       Dropdown::showFromArray('server_ssl', $values,
-                              array('value'               => $svalue,
-                                    'display_emptychoice' => true));
+                              ['value'               => $svalue,
+                                    'display_emptychoice' => true]);
 
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/notls' => __('NO-TLS'),);
+                     '/notls' => __('NO-TLS'),];
 
       $svalue = '';
       if (($tab['tls'] === true)) {
@@ -1974,14 +1976,14 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_tls', $values,
-                              array('value'               => $svalue,
+                              ['value'               => $svalue,
                                     'width'               => '14%',
-                                    'display_emptychoice' => true));
+                                    'display_emptychoice' => true]);
 
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/validate-cert' => __('VALIDATE-CERT'),);
+                     '/validate-cert' => __('VALIDATE-CERT'),];
 
       $svalue = '';
       if (($tab['validate-cert'] === false)) {
@@ -1992,36 +1994,36 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_cert', $values,
-                              array('value'               => $svalue,
-                                    'display_emptychoice' => true));
+                              ['value'               => $svalue,
+                                    'display_emptychoice' => true]);
 
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/norsh' => __('NORSH'));
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/norsh' => __('NORSH')];
 
       $svalue = ($tab['norsh'] === true?'/norsh':'');
 
       Dropdown::showFromArray('server_rsh', $values,
-                              array('value'               => $svalue,
-                                    'display_emptychoice' => true));
+                              ['value'               => $svalue,
+                                    'display_emptychoice' => true]);
 
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/secure' => __('SECURE'));
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/secure' => __('SECURE')];
 
       $svalue = ($tab['secure'] === true?'/secure':'');
 
       Dropdown::showFromArray('server_secure', $values,
-                              array('value'               => $svalue,
-                                    'display_emptychoice' => true));
+                              ['value'               => $svalue,
+                                    'display_emptychoice' => true]);
 
-      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-                     '/debug' => __('DEBUG'));
+      $values = [//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/debug' => __('DEBUG')];
 
       $svalue = ($tab['debug'] === true?'/debug':'');
 
       Dropdown::showFromArray('server_debug', $values,
-                              array('value'               => $svalue,
+                              ['value'               => $svalue,
                                     'width'               => '12%',
-                                    'display_emptychoice' => true));
+                                    'display_emptychoice' => true]);
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
@@ -2133,7 +2135,7 @@ class Toolbox {
     *
     * @return boolean : string founded ?
    **/
-   static function inArrayCaseCompare($string, $datas=array()) {
+   static function inArrayCaseCompare($string, $datas = []) {
 
       if (count($datas)) {
          foreach ($datas as $tocheck) {
@@ -2197,26 +2199,27 @@ class Toolbox {
     *
     * @since 9.1
     *
-    * @param $lang
+    * @param string $lang Language to install
     *
-    * @return nothing
+    * @return void
    **/
-   static function createSchema($lang='en_GB') {
+   static function createSchema($lang = 'en_GB') {
       global $CFG_GLPI, $DB;
 
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-empty.sql")) {
          echo "Errors occurred inserting default database";
       } else {
          // update default language
          Config::setConfigurationValues(
             'core',
-            array(
-               'language' => $lang,
-               'version'  => GLPI_VERSION
-            )
+            [
+               'language'  => $lang,
+               'version'   => GLPI_VERSION,
+               'dbversion' => GLPI_SCHEMA_VERSION
+            ]
          );
          $query = "UPDATE `glpi_users`
                    SET `language` = NULL";
@@ -2288,7 +2291,7 @@ class Toolbox {
             return $ret;
          }
       }
-      return array();
+      return [];
    }
 
 
@@ -2386,9 +2389,9 @@ class Toolbox {
     * @return string (if $type not given) else boolean
     *
    **/
-   static function getMime($file, $type=false) {
+   static function getMime($file, $type = false) {
 
-      static $finfo = NULL;
+      static $finfo = null;
 
       if (is_null($finfo)) {
          $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -2488,17 +2491,17 @@ class Toolbox {
     *
     * @return string                the $content_text param after parsing
    **/
-   static function convertTagToImage($content_text, CommonDBTM $item, $doc_data=array()) {
+   static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = []) {
       global $CFG_GLPI;
 
       $document = new Document();
-      $matches  = array();
+      $matches  = [];
       // If no doc data available we match all tags in content
       if (!count($doc_data)) {
          preg_match_all('/'.Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)').'/', $content_text,
                         $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
-            $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
+            $doc_data = $document->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
          }
       }
 
@@ -2544,7 +2547,7 @@ class Toolbox {
                   }
 
                   // Replace <br> TinyMce bug
-                  $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
+                  $content_text = str_replace(['&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'],
                                               '&gt;&lt;', $content_text);
 
                   // If the tag is from another ticket : link document to ticket
@@ -2553,11 +2556,11 @@ class Toolbox {
                      && isset($image['tickets_id'])
                      && $image['tickets_id'] != $item->getID()) {
                      $docitem = new Document_Item();
-                     $docitem->add(array('documents_id'  => $image['id'],
+                     $docitem->add(['documents_id'  => $image['id'],
                                          '_do_notif'     => false,
                                          '_disablenotif' => true,
                                          'itemtype'      => $item->getType(),
-                                         'items_id'      => $item->fields['id']));
+                                         'items_id'      => $item->fields['id']]);
                   }
                } else {
                   // Remove tag
@@ -2581,7 +2584,7 @@ class Toolbox {
     *
     * @return html content
    **/
-   static function convertImageToTag($content_html, $force_update=false) {
+   static function convertImageToTag($content_html, $force_update = false) {
 
       if (!empty($content_html)) {
          preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
@@ -2589,7 +2592,7 @@ class Toolbox {
             // Get all image src
             foreach ($matches[1] as $src) {
                // Set tag if image matches
-               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html);
+               $content_html = preg_replace(["/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"], Document::getImageTag($src), $content_html);
             }
          }
 

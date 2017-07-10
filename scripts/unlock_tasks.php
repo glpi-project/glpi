@@ -54,7 +54,7 @@ if (isset($_GET['cycle'])) {
 if (isset($_GET['only_tasks'])) {
    $only_tasks = explode(',', $_GET['only_tasks']);
 } else {
-   $only_tasks = array();
+   $only_tasks = [];
 }
 
 $crontask = new Crontask();

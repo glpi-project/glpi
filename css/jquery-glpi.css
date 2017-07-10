@@ -210,3 +210,12 @@ input.submit {
 .fn-gantt .ganttMilestone {
     background-color: #000000;
 }
+
+/** select2 disabled **/
+.select2-container.select2-container-disabled .select2-choice,
+.select2-container.select2-container-disabled .select2-choice .select2-arrow {
+   background-color: #f4f4f4 !important;
+}
+.select2-container.select2-container-disabled .select2-choice {
+   border: 1px solid #ddd !important;
+}

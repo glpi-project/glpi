@@ -43,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DevicePci extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DevicePci', 'Infocom');
+   static protected $forward_entity_to = ['Item_DevicePci', 'Infocom'];
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Other component', 'Other components', $nb);
    }
 
@@ -57,15 +57,15 @@ class DevicePci extends CommonDevice {
    function getAdditionalFields() {
 
       return array_merge(parent::getAdditionalFields(),
-                         array(array('name'  => 'none',
+                         [['name'  => 'none',
                                      'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
-                                                                                    NULL, false),
-                                     'type'  => 'registeredIDChooser'),
-                         array('name'  => 'devicenetworkcardmodels_id',
+                                                                                    null, false),
+                                     'type'  => 'registeredIDChooser'],
+                         ['name'  => 'devicenetworkcardmodels_id',
                                      'label' => __('Model'),
-                                     'type'  => 'dropdownValue')));
+                                     'type'  => 'dropdownValue']]);
    }
 
    function getSearchOptionsNew() {

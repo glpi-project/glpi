@@ -49,8 +49,8 @@ if (!defined('GLPI_ROOT')) {
 abstract class HTMLTableEntity {
 
    private $html_id    = '';
-   private $html_style = array();
-   private $html_class = array();
+   private $html_style = [];
+   private $html_class = [];
 
    private $content;
 
@@ -117,7 +117,7 @@ abstract class HTMLTableEntity {
    /**
     * @param $options   array
    **/
-   function displayEntityAttributs(array $options=array()) {
+   function displayEntityAttributs(array $options = []) {
 
       $id = $this->html_id;
       if (isset($options['id'])) {
@@ -178,7 +178,7 @@ abstract class HTMLTableEntity {
                if (isset($content['parameters'])) {
                   $parameters = $content['parameters'];
                } else {
-                  $parameters = array();
+                  $parameters = [];
                }
                call_user_func_array ($content['function'], $parameters);
             }

@@ -69,7 +69,7 @@ class SlaLevel extends RuleTicket {
    **/
    static function getConditionsArray() {
       // Override ruleticket one
-      return array();
+      return [];
    }
 
 
@@ -84,7 +84,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Escalation level', 'Escalation levels', $nb);
    }
 
@@ -136,10 +136,8 @@ class SlaLevel extends RuleTicket {
 
          $delay = $sla->getSLATime();
          self::dropdownExecutionTime('execution_time',
-                                     array('max_time'
-                                             => $delay,
-                                           'used'
-                                             => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
+                                     ['max_time' => $delay,
+                                      'used'     => self::getAlreadyUsedExecutionTime($sla->fields['id'])]);
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
@@ -162,8 +160,8 @@ class SlaLevel extends RuleTicket {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
+                                      'container'      => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -209,9 +207,9 @@ class SlaLevel extends RuleTicket {
 
          echo "<tr class='tab_bg_1'><td colspan='2'>";
          $this->getRuleWithCriteriasAndActions($data['id'], 1, 1);
-         $this->showCriteriasList($data["id"], array('readonly' => true));
+         $this->showCriteriasList($data["id"], ['readonly' => true]);
          echo "</td><td colspan='2'>";
-         $this->showActionsList($data["id"], array('readonly' => true));
+         $this->showActionsList($data["id"], ['readonly' => true]);
          echo "</td></tr>";
       }
 
@@ -232,16 +230,16 @@ class SlaLevel extends RuleTicket {
       unset($actions['slas_id']);
       $actions['recall']['name']          = __('Automatic reminders of SLA');
       $actions['recall']['type']          = 'yesonly';
-      $actions['recall']['force_actions'] = array('send');
+      $actions['recall']['force_actions'] = ['send'];
 
       // Only append actors
-      $actions['_users_id_requester']['force_actions']  = array('append');
-      $actions['_groups_id_requester']['force_actions'] = array('append');
-      $actions['_users_id_assign']['force_actions']     = array('append');
-      $actions['_groups_id_assign']['force_actions']    = array('append');
-      $actions['_suppliers_id_assign']['force_actions'] = array('append');
-      $actions['_users_id_observer']['force_actions']   = array('append');
-      $actions['_groups_id_observer']['force_actions']  = array('append');
+      $actions['_users_id_requester']['force_actions']  = ['append'];
+      $actions['_groups_id_requester']['force_actions'] = ['append'];
+      $actions['_users_id_assign']['force_actions']     = ['append'];
+      $actions['_groups_id_assign']['force_actions']    = ['append'];
+      $actions['_suppliers_id_assign']['force_actions'] = ['append'];
+      $actions['_users_id_observer']['force_actions']   = ['append'];
+      $actions['_groups_id_observer']['force_actions']  = ['append'];
 
       return $actions;
    }
@@ -278,7 +276,7 @@ class SlaLevel extends RuleTicket {
     *
     * @return nothing
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
 
       $canedit = $this->can('sla', UPDATE);
 
@@ -307,18 +305,20 @@ class SlaLevel extends RuleTicket {
       $delay = $sla->getSLATime();
 
       self::dropdownExecutionTime('execution_time',
-                                  array('max_time'
+                                  ['max_time'
                                              => $delay,
                                         'used'
                                              => self::getAlreadyUsedExecutionTime($sla->fields['id']),
                                         'value'
-                                             => $this->fields['execution_time']));
+                                             => $this->fields['execution_time'],
+                                        'type'
+                                             => $slt->fields['type']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logical operator')."</td>";
       echo "<td>";
-      $this->dropdownRulesMatch(array('value' => $this->fields["match"]));
+      $this->dropdownRulesMatch(['value' => $this->fields["match"]]);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td></tr>";
 
@@ -337,11 +337,11 @@ class SlaLevel extends RuleTicket {
     *
     * @return nothing
    **/
-   static function dropdownExecutionTime($name, $options=array()) {
+   static function dropdownExecutionTime($name, $options = []) {
 
       $p['value']    = '';
       $p['max_time'] = 4*DAY_TIMESTAMP;
-      $p['used']     = array();
+      $p['used']     = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -353,7 +353,7 @@ class SlaLevel extends RuleTicket {
          unset($p['used'][$key]);
       }
 
-      $possible_values = array();
+      $possible_values = [];
       for ($i=10; $i<60; $i+=10) {
          if (!in_array($i*MINUTE_TIMESTAMP, $p['used'])) {
             $possible_values[$i*MINUTE_TIMESTAMP] = sprintf(_n('+ %d minute', '+ %d minutes', $i), $i);
@@ -388,11 +388,15 @@ class SlaLevel extends RuleTicket {
          }
       }
       if (!in_array(0, $p['used'])) {
-         $possible_values[0] = __('Time to resolve');
+         if ($p['type'] == 1) {
+             $possible_values[0] = __('Time to own');
+         } else {
+            $possible_values[0] = __('Time to resolve');
+         }
       }
       ksort($possible_values);
 
-      Dropdown::showFromArray($name, $possible_values, array('value' => $p['value']));
+      Dropdown::showFromArray($name, $possible_values, ['value' => $p['value']]);
    }
 
 
@@ -406,7 +410,7 @@ class SlaLevel extends RuleTicket {
    static function getAlreadyUsedExecutionTime($slas_id) {
       global $DB;
 
-      $result = array();
+      $result = [];
       $query  = "SELECT DISTINCT `execution_time`
                  FROM `glpi_slalevels`
                  WHERE `slas_id` = '$slas_id';";
@@ -483,7 +487,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -499,7 +503,7 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'SLA') {
          $slalevel = new self();

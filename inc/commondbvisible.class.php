@@ -154,7 +154,7 @@ abstract class CommonDBVisible extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
          echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
-         $types   = array('Entity', 'Group', 'Profile', 'User');
+         $types   = ['Entity', 'Group', 'Profile', 'User'];
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params = $this->getShowVisibilityDropdownParams();
@@ -172,12 +172,12 @@ abstract class CommonDBVisible extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'
+         $massiveactionparams = ['num_displayed'
                               => min($_SESSION['glpilist_limit'], $nb),
                            'container'
                               => 'mass'.__CLASS__.$rand,
                            'specific_actions'
-                              => array('delete' => _x('button', 'Delete permanently')));
+                              => ['delete' => _x('button', 'Delete permanently')]];
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $massiveactionparams['confirm']
@@ -232,7 +232,7 @@ abstract class CommonDBVisible extends CommonDBTM {
 
                $names   = Dropdown::getDropdownName('glpi_groups', $data['groups_id'], 1);
                $entname = sprintf(__('%1$s %2$s'), $names["name"],
-                                  Html::showToolTip($names["comment"], array('display' => false)));
+                                  Html::showToolTip($names["comment"], ['display' => false]));
                if ($data['entities_id'] >= 0) {
                   $entname .= sprintf(__('%1$s / %2$s'), $entname,
                                       Dropdown::getDropdownName('glpi_entities',
@@ -261,7 +261,7 @@ abstract class CommonDBVisible extends CommonDBTM {
                }
                echo "<td>".__('Entity')."</td>";
                $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'], 1);
-               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+               $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['is_recursive']) {
                   $entname .= sprintf(__('%1$s %2$s'), $entname,
@@ -286,7 +286,7 @@ abstract class CommonDBVisible extends CommonDBTM {
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
 
                $names   = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
-               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+               $tooltip = Html::showToolTip($names["comment"], ['display' => false]);
                $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['entities_id'] >= 0) {
                   $entname .= sprintf(__('%1$s / %2$s'), $entname,

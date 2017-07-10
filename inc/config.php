@@ -88,7 +88,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    $config_object  = new Config();
-   $current_config = array();
+   $current_config = [];
 
    if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
        && (isset($TRY_OLD_CONFIG_FIRST) // index case
@@ -214,7 +214,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
    // Check version
-   if ((!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) != GLPI_VERSION))
+   if ((!isset($CFG_GLPI['dbversion']) || (trim($CFG_GLPI["dbversion"]) != GLPI_SCHEMA_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 
       Session::loadLanguage();
@@ -236,19 +236,59 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             Html::closeForm();
          }
          if ($error < 2) {
-            if (!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) < GLPI_VERSION)) {
+            $older = false;
+            $newer = false;
+            $dev   = false;
+
+            if (!isset($CFG_GLPI["version"])) {
+               $older = true;
+            } else {
+               if (strlen(GLPI_SCHEMA_VERSION) > 40) {
+                  $dev   = true;
+                  //got a sha1sum on both sides... cannot know if version is older or newer
+                  if (!isset($CFG_GLPI['dbversion']) || strlen(trim($CFG_GLPI['dbversion'])) < 40) {
+                     //not sure this is older... User will be warned.
+                     if (trim($CFG_GLPI["version"]) < GLPI_PREVER) {
+                        $older = true;
+                     } else if (trim($CFG_GLPI['version']) >= GLPI_PREVER) {
+                        $newer = true;
+                     }
+                  }
+               } else if (trim($CFG_GLPI["dbversion"]) < GLPI_SCHEMA_VERSION) {
+                  $older = true;
+               } else if (trim($CFG_GLPI["dbversion"]) > GLPI_SCHEMA_VERSION) {
+                  $newer = true;
+               }
+            }
+
+            if ($older === true) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-               echo "<p class='red'>".
-                     __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
+               if ($dev === true) {
+                  echo '<p class="red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
+                  echo "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
+                  echo "<script type=text/javascript>
+                        $(function() {
+                           $('[name=from_update]').on('click', function(event){
+                              if(!$('#agree_dev').is(':checked')) {
+                                 event.preventDefault();
+                                 alert('" . __('Please check the unstable version checkbox.') . "');
+                              }
+                           });
+                        });
+                        </script>";
+               }
+               echo "<p class='red'>";
+               echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
                echo "<input type='submit' name='from_update' value=\""._sx('button', 'Upgrade')."\"
                       class='submit'>";
                Html::closeForm();
-
-            } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
+            } else if ($newer === true) {
                echo "<p class='red'>".
                      __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.')."</p>";
+            } else if ($dev === true) {
+               echo "<p class='red'><strong>".
+                     __('You are trying to update to a development version from a development version. This is not suppoorted.')."</strong></p>";
             }
-
          }
 
          echo "</div>";

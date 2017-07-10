@@ -52,10 +52,10 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
-   static $undisclosedFields      = array('proxy_passwd', 'smtp_passwd');
+   static $undisclosedFields      = ['proxy_passwd', 'smtp_passwd'];
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Setup');
    }
 
@@ -68,7 +68,7 @@ class Config extends CommonDBTM {
    static function getMenuContent() {
       global $CFG_GLPI;
 
-      $menu = array();
+      $menu = [];
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
          $menu['page']    = '/front/config.form.php';
@@ -98,9 +98,9 @@ class Config extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
@@ -198,7 +198,7 @@ class Config extends CommonDBTM {
 
       // Matrix for Impact / Urgence / Priority
       if (isset($input['_matrix'])) {
-         $tab = array();
+         $tab = [];
 
          for ($urgency=1; $urgency<=5; $urgency++) {
             for ($impact=1; $impact<=5; $impact++) {
@@ -225,7 +225,7 @@ class Config extends CommonDBTM {
       // lock mechanism update
       if (isset( $input['lock_use_lock_item'])) {
           $input['lock_item_list'] = exportArrayToDB((isset($input['lock_item_list'])
-                                                      ? $input['lock_item_list'] : array()));
+                                                      ? $input['lock_item_list'] : []));
       }
 
       // Beware : with new management system, we must update each value
@@ -298,10 +298,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default search results limit (page)')."</td><td>";
-      Dropdown::showNumber("list_limit_max", array('value' => $CFG_GLPI["list_limit_max"],
+      Dropdown::showNumber("list_limit_max", ['value' => $CFG_GLPI["list_limit_max"],
                                                    'min'   => 5,
                                                    'max'   => 200,
-                                                   'step'  => 5));
+                                                   'step'  => 5]);
       echo "</td><td>" . __('Standard interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='central_doc_url' value='" .
                  $CFG_GLPI["central_doc_url"] . "'></td>";
@@ -309,26 +309,26 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default characters limit (summary text boxes)') . "</td><td>";
-      Dropdown::showNumber('cut', array('value' => $CFG_GLPI["cut"],
+      Dropdown::showNumber('cut', ['value' => $CFG_GLPI["cut"],
                                         'min'   => 50,
                                         'max'   => 500,
-                                        'step'  => 50));
+                                        'step'  => 50]);
       echo "</td><td>" . __('Default url length limit') . "</td><td>";
-      Dropdown::showNumber('url_maxlength', array('value' => $CFG_GLPI["url_maxlength"],
+      Dropdown::showNumber('url_maxlength', ['value' => $CFG_GLPI["url_maxlength"],
                                                   'min'   => 20,
                                                   'max'   => 80,
-                                                  'step'  => 5));
+                                                  'step'  => 5]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td>" .__('Default decimals limit') . "</td><td>";
-      Dropdown::showNumber("decimal_number", array('value' => $CFG_GLPI["decimal_number"],
+      Dropdown::showNumber("decimal_number", ['value' => $CFG_GLPI["decimal_number"],
                                                    'min'   => 1,
-                                                   'max'   => 4));
+                                                   'max'   => 4]);
       echo "</td><td>" . __('Default chart format')."</td><td>";
-      Dropdown::showFromArray("default_graphtype", array('png' => 'PNG',
-                                                         'svg' => 'SVG'),
-                              array('value' => $CFG_GLPI["default_graphtype"]));
+      Dropdown::showFromArray("default_graphtype", ['png' => 'PNG',
+                                                         'svg' => 'SVG'],
+                              ['value' => $CFG_GLPI["default_graphtype"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -346,9 +346,9 @@ class Config extends CommonDBTM {
       echo "<td>".
             __('Page size for dropdown (paging using scroll)').
             "</td><td>";
-      Dropdown::showNumber('dropdown_max', array('value' => $CFG_GLPI["dropdown_max"],
+      Dropdown::showNumber('dropdown_max', ['value' => $CFG_GLPI["dropdown_max"],
                                                  'min'   => 1,
-                                                 'max'   => 200));
+                                                 'max'   => 200]);
       echo "</td>";
       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
@@ -358,22 +358,22 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>". __("Don't show search engine in dropdowns if the number of items is less than").
            "</td><td>";
-      Dropdown::showNumber('ajax_limit_count', array('value' => $CFG_GLPI["ajax_limit_count"],
+      Dropdown::showNumber('ajax_limit_count', ['value' => $CFG_GLPI["ajax_limit_count"],
                                                      'min'   => 1,
                                                      'max'   => 200,
                                                      'step'  => 1,
-                                                     'toadd' => array(0 => __('Never'))));
+                                                     'toadd' => [0 => __('Never')]]);
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Items seen') . "</td><td>";
-      $values = array(0 => __('No'),
+      $values = [0 => __('No'),
                       1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
-                      2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion')));
+                      2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion'))];
       Dropdown::showFromArray('allow_search_view', $values,
-                              array('value' => $CFG_GLPI['allow_search_view']));
+                              ['value' => $CFG_GLPI['allow_search_view']]);
       echo "</td><td>". __('Global search')."</td><td>";
       if ($CFG_GLPI['allow_search_view']) {
          Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
@@ -384,10 +384,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('All') . "</td><td>";
-      $values = array(0 => __('No'),
-                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')));
+      $values = [0 => __('No'),
+                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion'))];
       Dropdown::showFromArray('allow_search_all', $values,
-                              array('value' => $CFG_GLPI['allow_search_all']));
+                              ['value' => $CFG_GLPI['allow_search_all']]);
       echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
@@ -397,9 +397,9 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"]);
       echo "</td><td>". __('Profile to be used when locking items')."</td><td>";
       if ($CFG_GLPI["lock_use_lock_item"]) {
-         Profile::dropdown(array('name'                  => 'lock_lockprofile_id',
+         Profile::dropdown(['name'                  => 'lock_lockprofile_id',
                                  'display_emptychoice'   => true,
-                                 'value'                 => $CFG_GLPI['lock_lockprofile_id']));
+                                 'value'                 => $CFG_GLPI['lock_lockprofile_id']]);
       } else {
          echo dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
       }
@@ -409,10 +409,10 @@ class Config extends CommonDBTM {
       echo "<td>" . __('List of items to lock') . "</td>";
       echo "<td  colspan=3>";
       Dropdown::showFromArray('lock_item_list', ObjectLock::getLockableObjects(),
-                              array('values'   => $CFG_GLPI['lock_item_list'],
+                              ['values'   => $CFG_GLPI['lock_item_list'],
                                     'width'    => '100%',
                                     'multiple' => true,
-                                    'readonly' => !$CFG_GLPI["lock_use_lock_item"]));
+                                    'readonly' => !$CFG_GLPI["lock_use_lock_item"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Auto Login').
@@ -420,12 +420,12 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>". __('Time to allow "Remember Me"').
            "</td><td>";
-      Dropdown::showTimeStamp('login_remember_time', array('value' => $CFG_GLPI["login_remember_time"],
+      Dropdown::showTimeStamp('login_remember_time', ['value' => $CFG_GLPI["login_remember_time"],
                                                      'emptylabel'   => __('Disabled'),
                                                      'min'   => 0,
                                                      'max'   => MONTH_TIMESTAMP * 2,
                                                      'step'  => DAY_TIMESTAMP,
-                                                     'toadd' => array(HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12)));
+                                                     'toadd' => [HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12]]);
       echo "<td>" . __("Default state of checkbox") . "</td><td>";
       Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"]);
       echo "</td>";
@@ -476,8 +476,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
            "</td><td>";
-      SoftwareCategory::dropdown(array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
-                                       'name'  => "softwarecategories_id_ondelete"));
+      SoftwareCategory::dropdown(['value' => $CFG_GLPI["softwarecategories_id_ondelete"],
+                                       'name'  => "softwarecategories_id_ondelete"]);
       echo "</td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
@@ -485,12 +485,12 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" .__('Beginning of fiscal year') . "</td><td>";
-      Html::showDateField("date_tax", array('value'      => $CFG_GLPI["date_tax"],
+      Html::showDateField("date_tax", ['value'      => $CFG_GLPI["date_tax"],
                                             'maybeempty' => false,
                                             'canedit'    => true,
                                             'min'        => '',
                                             'max'        => '',
-                                            'showyear'   => false));
+                                            'showyear'   => false]);
       echo "</td><td> " . __('Restrict phone management') . "</td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
                                        $CFG_GLPI["phones_management_restrict"]);
@@ -498,10 +498,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Automatic fields (marked by *)') . "</td><td>";
-      $tab = array(0 => __('Global'),
-                   1 => __('By entity'));
+      $tab = [0 => __('Global'),
+                   1 => __('By entity')];
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
-                              array('value' => $CFG_GLPI["use_autoname_by_entity"]));
+                              ['value' => $CFG_GLPI["use_autoname_by_entity"]]);
       echo "</td><td> " . __('Restrict printer management') . "</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
                                       $CFG_GLPI["printers_management_restrict"]);
@@ -509,16 +509,16 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (Session::haveRightsOr("transfer", array(CREATE, UPDATE))
+      if (Session::haveRightsOr("transfer", [CREATE, UPDATE])
           && Session::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Template for the automatic transfer of computers in another entity') .
               "</td><td>";
-         Transfer::dropdown(array('value'      => $CFG_GLPI["transfers_id_auto"],
+         Transfer::dropdown(['value'      => $CFG_GLPI["transfers_id_auto"],
                                   'name'       => "transfers_id_auto",
-                                  'emptylabel' => __('No automatic transfer')));
+                                  'emptylabel' => __('No automatic transfer')]);
          echo "</td></tr>";
          echo "</table>";
       }
@@ -536,7 +536,7 @@ class Config extends CommonDBTM {
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
-      $fields = array("contact", "user", "group", "location");
+      $fields = ["contact", "user", "group", "location"];
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When connecting or updating') . "</td>";
       $values[0] = __('Do not copy');
@@ -545,7 +545,7 @@ class Config extends CommonDBTM {
       foreach ($fields as $field) {
          echo "<td>";
          $fieldname = "is_".$field."_autoupdate";
-         Dropdown::showFromArray($fieldname, $values, array('value' => $CFG_GLPI[$fieldname]));
+         Dropdown::showFromArray($fieldname, $values, ['value' => $CFG_GLPI[$fieldname]]);
          echo "</td>";
       }
 
@@ -562,7 +562,7 @@ class Config extends CommonDBTM {
       foreach ($fields as $field) {
          echo "<td>";
          $fieldname = "is_".$field."_autoclean";
-         Dropdown::showFromArray($fieldname, $values, array('value' => $CFG_GLPI[$fieldname]));
+         Dropdown::showFromArray($fieldname, $values, ['value' => $CFG_GLPI[$fieldname]]);
          echo "</td>";
       }
 
@@ -671,13 +671,13 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use the slave for the search engine') . "</td><td>";
-      $values = array(0 => __('Never'),
+      $values = [0 => __('Never'),
                       1 => __('If synced (all changes)'),
                       2 => __('If synced (current user changes)'),
                       3 => __('If synced or read-only account'),
-                      4 => __('Always'));
+                      4 => __('Always')];
       Dropdown::showFromArray('use_slave_for_search', $values,
-                              array('value' => $CFG_GLPI["use_slave_for_search"]));
+                              ['value' => $CFG_GLPI["use_slave_for_search"]]);
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
@@ -802,21 +802,21 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='30%'>" . __('Step for the hours (minutes)') . "</td>";
       echo "<td width='20%'>";
-      Dropdown::showNumber('time_step', array('value' => $CFG_GLPI["time_step"],
+      Dropdown::showNumber('time_step', ['value' => $CFG_GLPI["time_step"],
                                               'min'   => 30,
                                               'max'   => 60,
                                               'step'  => 30,
-                                              'toadd' => array(1  => 1,
+                                              'toadd' => [1  => 1,
                                                                5  => 5,
                                                                10 => 10,
                                                                15 => 15,
-                                                               20 => 20)));
+                                                               20 => 20]]);
       echo "</td>";
       echo "<td width='30%'>" .__('Limit of the schedules for planning') . "</td>";
       echo "<td width='20%'>";
-      Dropdown::showHours('planning_begin', array('value' => $CFG_GLPI["planning_begin"]));
+      Dropdown::showHours('planning_begin', ['value' => $CFG_GLPI["planning_begin"]]);
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', array('value' => $CFG_GLPI["planning_end"]));
+      Dropdown::showHours('planning_end', ['value' => $CFG_GLPI["planning_end"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -837,8 +837,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
-      DocumentCategory::dropdown(array('value' => $CFG_GLPI["documentcategories_id_forticket"],
-                                       'name'  => "documentcategories_id_forticket"));
+      DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
+                                       'name'  => "documentcategories_id_forticket"]);
       echo "</td>";
       echo "<td>" . __('By default, a software may be linked to a ticket') . "</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
@@ -917,8 +917,8 @@ class Config extends CommonDBTM {
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
                echo "<td class='center' bgcolor='$bgcolor'>";
-               Ticket::dropdownPriority(array('value' => $pri,
-                                              'name'  => "_matrix_${urgency}_${impact}"));
+               Ticket::dropdownPriority(['value' => $pri,
+                                              'name'  => "_matrix_${urgency}_${impact}"]);
                echo "</td>";
             } else {
                echo "<td><input type='hidden' name='_matrix_${urgency}_${impact}' value='$pri'>
@@ -947,7 +947,7 @@ class Config extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showFormUserPrefs($data=array()) {
+   function showFormUserPrefs($data = []) {
       global $DB, $CFG_GLPI;
 
       $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
@@ -982,33 +982,33 @@ class Config extends CommonDBTM {
       echo "<td width='20%'>";
       if (Config::canUpdate()
           || !GLPI_DEMO_MODE) {
-         Dropdown::showLanguages("language", array('value' => $data["language"]));
+         Dropdown::showLanguages("language", ['value' => $data["language"]]);
       } else {
          echo "&nbsp;";
       }
 
       echo "<td width='30%'>" . __('Date format') ."</td>";
       echo "<td width='20%'>";
-      $date_formats = array(0 => __('YYYY-MM-DD'),
+      $date_formats = [0 => __('YYYY-MM-DD'),
                             1 => __('DD-MM-YYYY'),
-                            2 => __('MM-DD-YYYY'));
-      Dropdown::showFromArray('date_format', $date_formats, array('value' => $data["date_format"]));
+                            2 => __('MM-DD-YYYY')];
+      Dropdown::showFromArray('date_format', $date_formats, ['value' => $data["date_format"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Display order of surnames firstnames')."</td><td>";
-      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
-                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
-      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
+      $values = [User::REALNAME_BEFORE  => __('Surname, First name'),
+                      User::FIRSTNAME_BEFORE => __('First name, Surname')];
+      Dropdown::showFromArray('names_format', $values, ['value' => $data["names_format"]]);
       echo "</td>";
       echo "<td>" .__('Number format') . "</td>";
-      $values = array(0 => '1 234.56',
+      $values = [0 => '1 234.56',
                       1 => '1,234.56',
                       2 => '1 234,56',
                       3 => '1234.56',
-                      4 => '1234,56');
+                      4 => '1234,56'];
       echo "<td>";
-      Dropdown::showFromArray('number_format', $values, array('value' => $data["number_format"]));
+      Dropdown::showFromArray('number_format', $values, ['value' => $data["number_format"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1016,10 +1016,10 @@ class Config extends CommonDBTM {
       // Limit using global config
       $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
                 ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
-      Dropdown::showNumber('list_limit', array('value' => $value,
+      Dropdown::showNumber('list_limit', ['value' => $value,
                                                'min'   => 5,
                                                'max'   => $CFG_GLPI['list_limit_max'],
-                                               'step'  => 5));
+                                               'step'  => 5]);
       echo "</td>";
       echo "<td>".__('Go to created item after creation')."</td>";
       echo "<td>";
@@ -1041,14 +1041,14 @@ class Config extends CommonDBTM {
           || ($CFG_GLPI['show_count_on_tabs'] != -1)) {
          echo "<td>".__('Display counters')."</td><td>";
 
-         $values = array(0 => __('No'),
-                         1 => __('Yes'));
+         $values = [0 => __('No'),
+                         1 => __('Yes')];
 
          if (!$userpref) {
             $values[-1] = __('Never');
          }
          Dropdown::showFromArray('show_count_on_tabs', $values,
-                                 array('value' => $data["show_count_on_tabs"]));
+                                 ['value' => $data["show_count_on_tabs"]]);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1077,9 +1077,9 @@ class Config extends CommonDBTM {
       if ($oncentral) {
          echo "<td>".__('Results to display on home page')."</td><td>";
          Dropdown::showNumber('display_count_on_home',
-                              array('value' => $data['display_count_on_home'],
+                              ['value' => $data['display_count_on_home'],
                                     'min'   => 0,
-                                    'max'   => 30));
+                                    'max'   => 30]);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1089,14 +1089,14 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('PDF export font') . "</td><td>";
       Dropdown::showFromArray("pdffont", GLPIPDF::getFontList(),
-                              array('value' => $data["pdffont"],
-                                    'width' => 200));
+                              ['value' => $data["pdffont"],
+                                    'width' => 200]);
       echo "</td>";
 
       echo "<td>".__('CSV delimiter')."</td><td>";
-      $values = array(';' => ';',
-                      ',' => ',');
-      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
+      $values = [';' => ';',
+                      ',' => ','];
+      Dropdown::showFromArray('csv_delimiter', $values, ['value' => $data["csv_delimiter"]]);
 
       echo "</td>";
       echo "</tr>";
@@ -1130,9 +1130,9 @@ class Config extends CommonDBTM {
       echo "</select>";
       echo "</td>";
       echo "<td>" . __('Layout')."</td><td>";
-      $layout_options = array('lefttab' => __("Tabs on left"),
+      $layout_options = ['lefttab' => __("Tabs on left"),
                               'classic' => __("Classic view"),
-                              'vsplit'  => __("Vertical split"));
+                              'vsplit'  => __("Vertical split")];
 
       echo "<select name='layout' id='layout-selector'>";
       foreach ($layout_options as $key => $name) {
@@ -1173,7 +1173,7 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
          echo "</td><td>". __('Show new tickets on the home page') . "</td><td>";
          if (Session::haveRightsOr("ticket",
-                                    array(Ticket::READMY, Ticket::READALL, Ticket::READASSIGN))) {
+                                    [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN])) {
             Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
          } else {
             echo Dropdown::getYesNo(0);
@@ -1183,19 +1183,19 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td><td> " . __('Request sources by default') . "</td><td>";
-         RequestType::dropdown(array('value' => $data["default_requesttypes_id"],
+         RequestType::dropdown(['value' => $data["default_requesttypes_id"],
                                      'name'  => "default_requesttypes_id",
-                                     'condition' => 'is_active = 1 AND is_ticketheader = 1'));
+                                     'condition' => 'is_active = 1 AND is_ticketheader = 1']);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";
          Planning::dropdownState("task_state", $data["task_state"]);
          echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
-         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
+         Dropdown::showNumber('refresh_ticket_list', ['value' => $data["refresh_ticket_list"],
                                                            'min'   => 1,
                                                            'max'   => 30,
                                                            'step'  => 1,
-                                                           'toadd' => array(0 => __('Never'))));
+                                                           'toadd' => [0 => __('Never')]]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
@@ -1219,22 +1219,22 @@ class Config extends CommonDBTM {
 
          echo "<table><tr>";
          echo "<td>1&nbsp;";
-         Html::showColorField('priority_1', array('value' => $data["priority_1"]));
+         Html::showColorField('priority_1', ['value' => $data["priority_1"]]);
          echo "</td>";
          echo "<td>2&nbsp;";
-         Html::showColorField('priority_2', array('value' => $data["priority_2"]));
+         Html::showColorField('priority_2', ['value' => $data["priority_2"]]);
          echo "</td>";
          echo "<td>3&nbsp;";
-         Html::showColorField('priority_3', array('value' => $data["priority_3"]));
+         Html::showColorField('priority_3', ['value' => $data["priority_3"]]);
          echo "</td>";
          echo "<td>4&nbsp;";
-         Html::showColorField('priority_4', array('value' => $data["priority_4"]));
+         Html::showColorField('priority_4', ['value' => $data["priority_4"]]);
          echo "</td>";
          echo "<td>5&nbsp;";
-         Html::showColorField('priority_5', array('value' => $data["priority_5"]));
+         Html::showColorField('priority_5', ['value' => $data["priority_5"]]);
          echo "</td>";
          echo "<td>6&nbsp;";
-         Html::showColorField('priority_6', array('value' => $data["priority_6"]));
+         Html::showColorField('priority_6', ['value' => $data["priority_6"]]);
          echo "</td>";
          echo "</tr></table>";
 
@@ -1252,19 +1252,44 @@ class Config extends CommonDBTM {
 
       // Only for user
       if (array_key_exists('personal_token', $data)) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access key') ."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access keys') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='2'>";
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("Personal token");
+         echo "</td><td colspan='2'>";
          if (!empty($data["personal_token"])) {
-            //TRANS: %s is the generation date
-            echo "<br>".sprintf(__('generated on %s'),
-                                Html::convDateTime($data["personal_token_date"]));
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_personal_token', [
+                                 'value'    => $data["personal_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($data["personal_token_date"])).")";
          }
+         echo "</td><td>";
+         Html::showCheckbox(['name'  => '_reset_personal_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
+         echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td>";
+         echo __("API token");
+         echo "</td><td colspan='2'>";
+         if (!empty($data["api_token"])) {
+            echo "<div class='copy_to_clipboard_wrapper'>";
+            echo Html::input('_api_token', [
+                                 'value'    => $data["api_token"],
+                                 'style'    => 'width:90%'
+                             ]);
+            echo "</div>";
+            echo "(".sprintf(__('generated on %s'),
+                                Html::convDateTime($data["api_token_date"])).")";
+         }
          echo "</td><td>";
-         echo $data["personal_token"];
-         echo "</td><td>";
-         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".__('Regenerate');
+         Html::showCheckbox(['name'  => '_reset_api_token',
+                             'title' => __('Regenerate')]);
+         echo "&nbsp;&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
 
@@ -1273,39 +1298,39 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>".
            "<td>".__('OK state color')."</td>";
       echo "<td>";
-      Html::showColorField('duedateok_color', array('value' => $data["duedateok_color"]));
+      Html::showColorField('duedateok_color', ['value' => $data["duedateok_color"]]);
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Warning state color')."</td>";
       echo "<td>";
-      Html::showColorField('duedatewarning_color', array('value' => $data["duedatewarning_color"]));
+      Html::showColorField('duedatewarning_color', ['value' => $data["duedatewarning_color"]]);
       echo "</td>";
       echo "<td>".__('Warning state threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber("duedatewarning_less", array('value' => $data['duedatewarning_less']));
-      $elements = array('%'     => '%',
+      Dropdown::showNumber("duedatewarning_less", ['value' => $data['duedatewarning_less']]);
+      $elements = ['%'     => '%',
                         'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
-                        'days'  => _n('Day', 'Days', Session::getPluralNumber()));
+                        'days'  => _n('Day', 'Days', Session::getPluralNumber())];
       echo "&nbsp;";
       Dropdown::showFromArray("duedatewarning_unit", $elements,
-                              array('value' => $data['duedatewarning_unit']));
+                              ['value' => $data['duedatewarning_unit']]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('Critical state color')."</td>";
       echo "<td>";
-      Html::showColorField('duedatecritical_color', array('value' => $data["duedatecritical_color"]));
+      Html::showColorField('duedatecritical_color', ['value' => $data["duedatecritical_color"]]);
       echo "</td>";
       echo "<td>".__('Critical state threshold')."</td>";
       echo "<td>";
-      Dropdown::showNumber("duedatecritical_less", array('value' => $data['duedatecritical_less']));
+      Dropdown::showNumber("duedatecritical_less", ['value' => $data['duedatecritical_less']]);
       echo "&nbsp;";
-      $elements = array('%'    => '%',
+      $elements = ['%'    => '%',
                        'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
-                       'days'  => _n('Day', 'Days', Session::getPluralNumber()));
+                       'days'  => _n('Day', 'Days', Session::getPluralNumber())];
       Dropdown::showFromArray("duedatecritical_unit", $elements,
-                              array('value' => $data['duedatecritical_unit']));
+                              ['value' => $data['duedatecritical_unit']]);
       echo "</td></tr>";
 
       if ($oncentral && $CFG_GLPI["lock_use_lock_item"]) {
@@ -1339,7 +1364,7 @@ class Config extends CommonDBTM {
     *
     * @since version 0.84
    **/
-   static function displayPasswordSecurityChecks($field='password') {
+   static function displayPasswordSecurityChecks($field = 'password') {
       global $CFG_GLPI;
 
       printf(__('%1$s: %2$s'), __('Password minimum length'),
@@ -1356,7 +1381,7 @@ class Config extends CommonDBTM {
             ".Html::jsGetElementByID('password_min_length').".addClass('green');
             ".Html::jsGetElementByID('password_min_length').".removeClass('red');
       }";
-      $needs = array();
+      $needs = [];
       if ($CFG_GLPI["password_need_number"]) {
          $needs[] = "<span id='password_need_number' class='red'>".__('Digit')."</span>";
          echo "var numberRegex = new RegExp('[0-9]', 'g');
@@ -1420,7 +1445,7 @@ class Config extends CommonDBTM {
     *
     * @return boolean is password valid?
    **/
-   static function validatePassword($password, $display=true) {
+   static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
 
       $ok = true;
@@ -1504,8 +1529,8 @@ class Config extends CommonDBTM {
          $used = Toolbox::getSize($used);
          echo "<tr><td>" . __('Memory') . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                      'forcepadding' => false));
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                      'forcepadding' => false]);
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 5 && $rate < 75 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
@@ -1516,8 +1541,8 @@ class Config extends CommonDBTM {
          $rate = round($info['opcache_statistics']['opcache_hit_rate']);
          echo "<tr><td>" . __('Hits rate') . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                      'forcepadding' => false));
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                      'forcepadding' => false]);
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
@@ -1560,8 +1585,8 @@ class Config extends CommonDBTM {
          $used = Toolbox::getSize($used);
          echo "<tr><td>" . __('Memory') . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                      'forcepadding' => false));
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                      'forcepadding' => false]);
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
@@ -1572,8 +1597,8 @@ class Config extends CommonDBTM {
          $rate = round(100 * $hits / ($hits + $miss));
          echo "<tr><td>" . __('Hits rate') . "</td>
                <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, array('simple'       => true,
-                                                      'forcepadding' => false));
+         Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                      'forcepadding' => false]);
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
@@ -1615,11 +1640,11 @@ class Config extends CommonDBTM {
       $values[5] = __('5- Complete (all)');
 
       Dropdown::showFromArray('event_loglevel', $values,
-                              array('value' => $CFG_GLPI["event_loglevel"]));
+                              ['value' => $CFG_GLPI["event_loglevel"]]);
       echo "</td><td>".__('Maximal number of automatic actions (run by CLI)')."</td><td>";
-      Dropdown::showNumber('cron_limit', array('value' => $CFG_GLPI["cron_limit"],
+      Dropdown::showNumber('cron_limit', ['value' => $CFG_GLPI["cron_limit"],
                                                'min'   => 1,
-                                               'max'   => 30));
+                                               'max'   => 30]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1641,9 +1666,9 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td>" . __('Password minimum length') . "</td>";
       echo "<td>";
-      Dropdown::showNumber('password_min_length', array('value' => $CFG_GLPI["password_min_length"],
+      Dropdown::showNumber('password_min_length', ['value' => $CFG_GLPI["password_min_length"],
                                                         'min'   => 4,
-                                                        'max'   => 30));
+                                                        'max'   => 30]);
       echo "</td>";
       echo "</tr>";
 
@@ -1748,8 +1773,8 @@ class Config extends CommonDBTM {
                     $width, "\n\t");
       $msg = "Setup: ";
 
-      foreach (array('max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                     'session.save_handler', 'upload_max_filesize') as $key) {
+      foreach (['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
+                     'session.save_handler', 'upload_max_filesize'] as $key) {
          $msg .= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
@@ -1910,7 +1935,7 @@ class Config extends CommonDBTM {
       $choices[0] = __('Yes - Restrict to unit management for manual add');
       $choices[1] = __('Yes - Restrict to global management for manual add');
       $choices[2] = __('No');
-      Dropdown::showFromArray($name, $choices, array('value'=>$value));
+      Dropdown::showFromArray($name, $choices, ['value'=>$value]);
    }
 
 
@@ -2008,7 +2033,7 @@ class Config extends CommonDBTM {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Preference' :
@@ -2047,7 +2072,7 @@ class Config extends CommonDBTM {
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
       if ($item->getType() == 'Preference') {
@@ -2110,7 +2135,7 @@ class Config extends CommonDBTM {
     *
     * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK
    **/
-   static function checkExtensions($fordebug=false) {
+   static function checkExtensions($fordebug = false) {
       global $CFG_GLPI;
 
       $extensions_to_check = [
@@ -2241,9 +2266,9 @@ class Config extends CommonDBTM {
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/
-   static function checkWriteAccessToDirs($fordebug=false) {
+   static function checkWriteAccessToDirs($fordebug = false) {
       global $CFG_GLPI;
-      $dir_to_check = array(GLPI_CONFIG_DIR
+      $dir_to_check = [GLPI_CONFIG_DIR
                                     => __('Checking write permissions for setting files'),
                             GLPI_DOC_DIR
                                     => __('Checking write permissions for document files'),
@@ -2266,7 +2291,7 @@ class Config extends CommonDBTM {
                             GLPI_UPLOAD_DIR
                                     => __('Checking write permissions for upload files'),
                             GLPI_PICTURE_DIR
-                                    => __('Checking write permissions for pictures files'));
+                                    => __('Checking write permissions for pictures files')];
       $error = 0;
       foreach ($dir_to_check as $dir => $message) {
          if (!$fordebug) {
@@ -2274,10 +2299,10 @@ class Config extends CommonDBTM {
          }
          $tmperror = Toolbox::testWriteAccessToDirectory($dir);
 
-         $errors = array(4 => __('The directory could not be created.'),
+         $errors = [4 => __('The directory could not be created.'),
                          3 => __('The directory was created but could not be removed.'),
                          2 => __('The file could not be created.'),
-                         1 => __("The file was created but can't be deleted."));
+                         1 => __("The file was created but can't be deleted.")];
 
          if ($tmperror > 0) {
             if ($fordebug) {
@@ -2336,7 +2361,7 @@ class Config extends CommonDBTM {
       $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
       /* TODO: could be improved, only default vhost checked */
-      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r')) {
          fclose($fic);
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='b left'>".
@@ -2413,7 +2438,7 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function getConfigurationValues($context, array $names=array()) {
+   static function getConfigurationValues($context, array $names = []) {
       global $DB;
 
       if (count($names) == 0) {
@@ -2426,7 +2451,7 @@ class Config extends CommonDBTM {
                    WHERE `context` = '$context'
                      AND `name` IN ('".implode("', '", $names)."')";
       }
-      $result = array();
+      $result = [];
       foreach ($DB->request($query) as $line) {
          $result[$line['name']] = $line['value'];
       }
@@ -2444,23 +2469,23 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function setConfigurationValues($context, array $values=array()) {
+   static function setConfigurationValues($context, array $values = []) {
 
       $config = new self();
       foreach ($values as $name => $value) {
          if ($config->getFromDBByQuery("WHERE `context` = '$context'
                                               AND `name` = '$name'")) {
 
-            $input = array('id'      => $config->getID(),
+            $input = ['id'      => $config->getID(),
                            'context' => $context,
-                           'value'   => $value);
+                           'value'   => $value];
 
             $config->update($input);
 
          } else {
-            $input = array('context' => $context,
+            $input = ['context' => $context,
                            'name'    => $name,
-                           'value'   => $value);
+                           'value'   => $value];
 
             $config->add($input);
          }
@@ -2477,13 +2502,13 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function deleteConfigurationValues($context, array $values= array()) {
+   static function deleteConfigurationValues($context, array $values = []) {
 
       $config = new self();
       foreach ($values as $value) {
          if ($config->getFromDBByQuery("WHERE `context` = '$context'
                                               AND `name` = '$value'")) {
-            $config->delete(array('id' => $config->getID()));
+            $config->delete(['id' => $config->getID()]);
          }
       }
    }
@@ -2494,7 +2519,7 @@ class Config extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[CREATE], $values[DELETE],

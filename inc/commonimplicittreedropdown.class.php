@@ -73,7 +73,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * @return array of IDs of the potential sons
    **/
    function getPotentialSons() {
-      return array(); // By default, we don't have any son
+      return []; // By default, we don't have any son
    }
 
 
@@ -126,7 +126,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     *
     * @return nothing
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $this->alterElementInsideTree("update");
       parent::post_updateItem($history);
@@ -172,7 +172,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
          case 'delete' :
             $oldParent     = $this->fields[$this->getForeignKeyField()];
-            $potentialSons = array(); // Because there is no future sons !
+            $potentialSons = []; // Because there is no future sons !
             break;
       }
 
@@ -190,7 +190,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
                    FROM `".$this->getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '".$this->getID()."'
                          AND `id` NOT IN ('".implode("', '", $potentialSons)."')";
-         $oldSons = array();
+         $oldSons = [];
          foreach ($DB->request($query) as $oldSon) {
             $oldSons[] = $oldSon["id"];
          }
@@ -212,7 +212,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
                    FROM `".$this->getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '$newParent'
                          AND `id` IN ('".implode("', '", $potentialSons)."')";
-         $newSons = array();
+         $newSons = [];
          foreach ($DB->request($query) as $newSon) {
             $newSons[] = $newSon["id"];
          }

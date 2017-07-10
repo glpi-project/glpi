@@ -55,12 +55,12 @@ class RegisteredID  extends CommonDBChild {
 
    static function getRegisteredIDTypes() {
 
-      return array('PCI' => __('PCI'),
-                   'USB' => __('USB'));
+      return ['PCI' => __('PCI'),
+                   'USB' => __('USB')];
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs (issued by PCI-SIG)', $nb);
    }
 

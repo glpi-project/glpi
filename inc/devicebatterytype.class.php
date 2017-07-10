@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceBatteryType extends CommonDeviceType {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Battery type', 'Battery types', $nb);
    }
 

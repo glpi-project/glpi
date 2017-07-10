@@ -51,20 +51,20 @@ class SolutionTemplate extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Solution template', 'Solution templates', $nb);
    }
 
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'solutiontypes_id',
+      return [['name'  => 'solutiontypes_id',
                          'label' => __('Solution type'),
                          'type'  => 'dropdownValue',
-                         'list'  => true),
-                   array('name'  => 'content',
+                         'list'  => true],
+                   ['name'  => 'content',
                          'label' => __('Content'),
-                         'type'  => 'tinymce'));
+                         'type'  => 'tinymce']];
    }
 
 
@@ -95,7 +95,7 @@ class SolutionTemplate extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'tinymce' :

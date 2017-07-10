@@ -57,7 +57,7 @@ if (isset($_POST['searchtype'])) {
    $inputname         = $fieldname.'['.$_POST['num'].'][value]';
    $display           = false;
    $item              = getItemForItemtype($_POST['itemtype']);
-   $options2          = array();
+   $options2          = [];
    $options2['value'] = $_POST['value'];
    $options2['width'] = '100%';
    // For tree dropdpowns
@@ -75,7 +75,7 @@ if (isset($_POST['searchtype'])) {
             switch ($searchopt['table'].".".$searchopt['field']) {
                // Add mygroups choice to searchopt
                case "glpi_groups.completename" :
-                  $searchopt['toadd'] = array('mygroups' => __('My groups'));
+                  $searchopt['toadd'] = ['mygroups' => __('My groups')];
                   break;
 
                case "glpi_changes.status" :
@@ -136,10 +136,10 @@ if (isset($_POST['searchtype'])) {
                 && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
                $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
                if (function_exists($function)) {
-                  $params = array('name'           => $inputname,
+                  $params = ['name'           => $inputname,
                                   'searchtype'     => $_POST['searchtype'],
                                   'searchoption'   => $searchopt,
-                                  'value'          => $_POST['value']);
+                                  'value'          => $_POST['value']];
                   $display = $function($params);
                }
             }

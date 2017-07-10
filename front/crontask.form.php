@@ -79,6 +79,6 @@ if (isset($_POST['execute'])) {
       exit();
    }
    Html::header(Crontask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'crontask');
-   $crontask->display(array('id' =>$_GET["id"]));
+   $crontask->display(['id' =>$_GET["id"]]);
    Html::footer();
 }

@@ -60,7 +60,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'CartridgeItem' :
@@ -72,7 +72,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate && Printer::canView()) {
          $nb = 0;
@@ -93,7 +93,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    **/
    static function countForCartridgeItem(CartridgeItem $item) {
 
-      return countElementsInTable(array('glpi_printermodels', static::getTable()),
+      return countElementsInTable(['glpi_printermodels', static::getTable()],
                                         [static::getTable().'cartridgeitems_id' => $item->getField('id'),
                                          'FKEY' => [static::getTable() => 'printermodels_id', 'glpi_printermodels' => 'id']]);
    }
@@ -128,8 +128,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       $result = $DB->query($query);
       $i      = 0;
 
-      $used  = array();
-      $datas = array();
+      $used  = [];
+      $datas = [];
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $used[$data["pmid"]] = $data["pmid"];
@@ -148,7 +148,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
-         PrinterModel::dropdown(array('used' => $used));
+         PrinterModel::dropdown(['used' => $used]);
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -162,8 +162,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          if ($canedit) {
             $rand     = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                              'container'     => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
+                              'container'     => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 

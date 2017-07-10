@@ -59,7 +59,7 @@ if (isset($_GET["dictionnary"])) {
    $rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);
    if ($rulecollection) {
       if ($_GET["dictionnary"]=='RuleDictionnarySoftware' && isset($_GET["manufacturer"])) {
-         $rulecollection->replayRulesOnExistingDB(0, 0, array(), $_GET["manufacturer"]);
+         $rulecollection->replayRulesOnExistingDB(0, 0, [], $_GET["manufacturer"]);
       } else {
          $rulecollection->replayRulesOnExistingDB();
       }

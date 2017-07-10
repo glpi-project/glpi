@@ -90,7 +90,7 @@ function choose_language() {
    // fix missing param for js drodpown
    $CFG_GLPI['ajax_limit_count'] = 15;
 
-   Dropdown::showLanguages("language", array('value' => "en_GB"));
+   Dropdown::showLanguages("language", ['value' => "en_GB"]);
    echo "</p>";
    echo "";
    echo "<p class='submit'><input type='hidden' name='install' value='lang_select'>";
@@ -259,9 +259,9 @@ function step3($host, $user, $password, $update) {
       Html::closeForm();
 
    } else {
-      $_SESSION['db_access'] = array('host'     => $host,
+      $_SESSION['db_access'] = ['host'     => $host,
                                      'user'     => $user,
-                                     'password' => $password);
+                                     'password' => $password];
       echo  "<h3>".__('Database connection successful')."</h3>";
 
       if ($update == "no") {
@@ -270,9 +270,9 @@ function step3($host, $user, $password, $update) {
 
          if ($DB_list = $link->query("SHOW DATABASES")) {
             while ($row = $DB_list->fetch_array()) {
-               if (!in_array($row['Database'], array("information_schema",
+               if (!in_array($row['Database'], ["information_schema",
                                                      "mysql",
-                                                     "performance_schema") )) {
+                                                     "performance_schema"] )) {
                   echo "<p>";
                   echo "<label class='radio'>";
                   echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
@@ -526,7 +526,7 @@ function checkConfigFile() {
 }
 
 if (!isset($_POST["install"])) {
-   $_SESSION = array();
+   $_SESSION = [];
 
    checkConfigFile();
    header_html("Select your language");

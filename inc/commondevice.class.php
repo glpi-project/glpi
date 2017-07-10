@@ -53,7 +53,7 @@ abstract class CommonDevice extends CommonDropdown {
    public $dohistory           = true;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Component', 'Components', $nb);
    }
 
@@ -98,7 +98,7 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    static function getMenuContent() {
 
-      $menu = array();
+      $menu = [];
       if (self::canView()) {
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['page']  = '/front/devices.php';
@@ -129,7 +129,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'registeredIDChooser' :
@@ -141,9 +141,9 @@ abstract class CommonDevice extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'manufacturers_id',
+      return [['name'  => 'manufacturers_id',
                          'label' => __('Manufacturer'),
-                         'type'  => 'dropdownValue'));
+                         'type'  => 'dropdownValue']];
    }
 
    /**
@@ -302,8 +302,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @return nothing (elements added to $base)
    **/
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super=NULL,
-                                      HTMLTableHeader $father=NULL, array $options=array()) {
+                                      HTMLTableSuperHeader $super = null,
+                                      HTMLTableHeader $father = null, array $options = []) {
 
       $this_type = get_called_class();
 
@@ -341,8 +341,8 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $father             HTMLTableCell object (default NULL)
     * @param $options   array
    **/
-   function getHTMLTableCellForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                    HTMLTableCell $father=NULL, array $options=array()) {
+   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
+                                    HTMLTableCell $father = null, array $options = []) {
 
       global $CFG_GLPI;
 
@@ -366,10 +366,10 @@ abstract class CommonDevice extends CommonDropdown {
          $content .= "<span id='$field_name' style='display:none'><br>";
          $content .= __('Add')."&nbsp;";
 
-         $content  = array($content,
-                           array('function'   => 'Dropdown::showInteger',
-                                 'parameters' => array($field_name, 0, 0, 10)),
-                           "</span>");
+         $content  = [$content,
+                           ['function'   => 'Dropdown::showInteger',
+                                 'parameters' => [$field_name, 0, 0, 10]],
+                           "</span>"];
       }
 
       $linktype = static::getItem_DeviceType();
@@ -398,7 +398,7 @@ abstract class CommonDevice extends CommonDropdown {
       if (!isset($input['designation']) || empty($input['designation'])) {
          return 0;
       }
-      $where      = array();
+      $where      = [];
       $a_criteria = $this->getImportCriteria();
       foreach ($a_criteria as $field => $compare) {
          if (isset($input[$field])) {
@@ -436,8 +436,8 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    function getImportCriteria() {
 
-      return array('designation'      => 'equal',
-                   'manufacturers_id' => 'equal');
+      return ['designation'      => 'equal',
+                   'manufacturers_id' => 'equal'];
    }
 
 
@@ -446,9 +446,9 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @since version 0.85
     */
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -466,8 +466,8 @@ abstract class CommonDevice extends CommonDropdown {
       if ((isset($this->input['_registeredID']))
           && (is_array($this->input['_registeredID']))) {
 
-         $input = array('itemtype' => $this->getType(),
-                        'items_id' => $this->getID());
+         $input = ['itemtype' => $this->getType(),
+                        'items_id' => $this->getID()];
 
          foreach ($this->input['_registeredID'] as $id => $registered_id) {
             $id_object     = new RegisteredID();
@@ -489,7 +489,7 @@ abstract class CommonDevice extends CommonDropdown {
                   $id_object->update($input);
                   unset($input['id']);
                } else {
-                  $id_object->delete(array('id' => $id));
+                  $id_object->delete(['id' => $id]);
                }
             }
          }
@@ -513,13 +513,13 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       $this->post_workOnItem();
       parent::post_updateItem($history);
    }
 
-   static function getFormURL($full=true) {
+   static function getFormURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -529,7 +529,7 @@ abstract class CommonDevice extends CommonDropdown {
       return $link;
    }
 
-   static function getSearchURL($full=true) {
+   static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');

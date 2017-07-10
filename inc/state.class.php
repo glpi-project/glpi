@@ -43,21 +43,22 @@ if (!defined('GLPI_ROOT')) {
 **/
 class State extends CommonTreeDropdown {
 
-   protected $visibility_fields    = array('Computer'         => 'is_visible_computer',
+   protected $visibility_fields    = ['Computer'         => 'is_visible_computer',
                                            'SoftwareVersion'  => 'is_visible_softwareversion',
                                            'Monitor'          => 'is_visible_monitor',
                                            'Printer'          => 'is_visible_printer',
                                            'Peripheral'       => 'is_visible_peripheral',
                                            'Phone'            => 'is_visible_phone',
                                            'NetworkEquipment' => 'is_visible_networkequipment',
-                                           'SoftwareLicense'  => 'is_visible_softwarelicense');
+                                           'SoftwareLicense'  => 'is_visible_softwarelicense',
+                                           'Line'             => 'is_visible_line'];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Status of items', 'Statuses of items', $nb);
    }
 
@@ -70,15 +71,15 @@ class State extends CommonTreeDropdown {
    function getAdditionalFields() {
 
       $fields   = parent::getAdditionalFields();
-      $fields[] = array('label' => __('Visibility'),
+      $fields[] = ['label' => __('Visibility'),
                         'name'  => 'header',
-                        'list'  => false);
+                        'list'  => false];
 
       foreach ($this->visibility_fields as $type => $field) {
-         $fields[] = array('name'  => $field,
+         $fields[] = ['name'  => $field,
                            'label' => $type::getTypeName(Session::getPluralNumber()),
                            'type'  => 'bool',
-                           'list'  => true);
+                           'list'  => true];
       }
       return $fields;
    }
@@ -91,10 +92,10 @@ class State extends CommonTreeDropdown {
     * @param $lib    string   to add for -1 value (default '')
     * @param $value           default value (default 0)
    **/
-   static function dropdownBehaviour($name, $lib="", $value=0) {
+   static function dropdownBehaviour($name, $lib = "", $value = 0) {
       global $DB;
 
-      $elements = array("0" => __('Keep status'));
+      $elements = ["0" => __('Keep status')];
 
       if ($lib) {
          $elements["-1"] = $lib;
@@ -110,7 +111,7 @@ class State extends CommonTreeDropdown {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
          }
       }
-      Dropdown::showFromArray($name, $elements, array('value' => $value));
+      Dropdown::showFromArray($name, $elements, ['value' => $value]);
    }
 
 
@@ -118,7 +119,7 @@ class State extends CommonTreeDropdown {
       global $DB, $CFG_GLPI;
 
       $state_type = $CFG_GLPI["state_types"];
-      $states     = array();
+      $states     = [];
 
       foreach ($state_type as $key=>$itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
@@ -191,12 +192,12 @@ class State extends CommonTreeDropdown {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
 
-            $opt = array('reset'    => 'reset',
+            $opt = ['reset'    => 'reset',
                         'sort'     => 1,
                         'start'    => 0,
-                        'criteria' => array('0' => array('value' => '$$$$'.$data['id'],
+                        'criteria' => ['0' => ['value' => '$$$$'.$data['id'],
                                                          'searchtype' => 'contains',
-                                                         'field' => 31)));
+                                                         'field' => 31]]];
             echo "<a href='".$CFG_GLPI['root_doc']."/front/allassets.php?".Toolbox::append_params($opt, '&amp;')."'>".$data["completename"]."</a></td>";
 
             foreach ($state_type as $itemtype) {

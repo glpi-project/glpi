@@ -58,38 +58,38 @@ if (isset($_POST["type"])
                }
             }
 
-            $options = array('name'        => '_itil_'.$_POST["actortype"].'[users_id]',
+            $options = ['name'        => '_itil_'.$_POST["actortype"].'[users_id]',
                              'entity'      => $_POST['entity_restrict'],
                              'right'       => $right,
                              'rand'        => $rand,
-                             'ldap_import' => true);
+                             'ldap_import' => true];
 
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
-               $paramscomment = array('value'       => '__VALUE__',
+               $paramscomment = ['value'       => '__VALUE__',
                                       'allow_email' => $withemail,
                                       'field'       => "_itil_".$_POST["actortype"],
-                                      'use_notification' => $_POST["use_notif"]);
+                                      'use_notification' => $_POST["use_notif"]];
                // Fix rand value
                $options['rand']     = $rand;
-               $options['toupdate'] = array('value_fieldname' => 'value',
+               $options['toupdate'] = ['value_fieldname' => 'value',
                                             'to_update'       => "notif_user_$rand",
                                             'url'             => $CFG_GLPI["root_doc"].
                                                                      "/ajax/uemailUpdate.php",
-                                            'moreparams'      => $paramscomment);
+                                            'moreparams'      => $paramscomment];
             }
 
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
-               $toupdate = array();
+               $toupdate = [];
                if (isset($options['toupdate']) && is_array($options['toupdate'])) {
                   $toupdate[] = $options['toupdate'];
                }
-               $toupdate[] = array('value_fieldname' => 'value',
+               $toupdate[] = ['value_fieldname' => 'value',
                                    'to_update'       => "countassign_$rand",
                                    'url'             => $CFG_GLPI["root_doc"].
                                                             "/ajax/ticketassigninformation.php",
-                                   'moreparams'      => array('users_id_assign' => '__VALUE__'));
+                                   'moreparams'      => ['users_id_assign' => '__VALUE__']];
                $options['toupdate'] = $toupdate;
             }
 
@@ -104,7 +104,7 @@ if (isset($_POST["type"])
                echo "</span>";
             }
 
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                echo "<br><span id='notif_user_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
@@ -124,18 +124,18 @@ if (isset($_POST["type"])
                $cond = '`is_assign`';
             }
 
-            $param = array('name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
+            $param = ['name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
                            'entity'    => $_POST['entity_restrict'],
                            'condition' => $cond,
-                           'rand'      => $rand);
+                           'rand'      => $rand];
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
-               $param['toupdate'] = array('value_fieldname' => 'value',
+               $param['toupdate'] = ['value_fieldname' => 'value',
                                           'to_update'       => "countgroupassign_$rand",
                                           'url'             => $CFG_GLPI["root_doc"].
                                                                   "/ajax/ticketassigninformation.php",
-                                          'moreparams'      => array('groups_id_assign'
-                                                                        => '__VALUE__'));
+                                          'moreparams'      => ['groups_id_assign'
+                                                                        => '__VALUE__']];
             }
 
             $rand = Group::dropdown($param);
@@ -149,34 +149,34 @@ if (isset($_POST["type"])
             break;
 
          case "supplier" :
-            $options = array('name'      => '_itil_'.$_POST["actortype"].'[suppliers_id]',
+            $options = ['name'      => '_itil_'.$_POST["actortype"].'[suppliers_id]',
                              'entity'    => $_POST['entity_restrict'],
-                             'rand'      => $rand);
-            if ($CFG_GLPI["use_mailing"]) {
+                             'rand'      => $rand];
+            if ($CFG_GLPI["notifications_mailing"]) {
                $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
-               $paramscomment = array('value'       => '__VALUE__',
+               $paramscomment = ['value'       => '__VALUE__',
                                       'allow_email' => $withemail,
                                       'field'       => '_itil_'.$_POST["actortype"],
                                       'typefield'   => "supplier",
-                                      'use_notification' => $_POST["use_notif"]);
+                                      'use_notification' => $_POST["use_notif"]];
                // Fix rand value
                $options['rand']     = $rand;
-               $options['toupdate'] = array('value_fieldname' => 'value',
+               $options['toupdate'] = ['value_fieldname' => 'value',
                                             'to_update'       => "notif_supplier_$rand",
                                             'url'             => $CFG_GLPI["root_doc"].
                                                                      "/ajax/uemailUpdate.php",
-                                            'moreparams'      => $paramscomment);
+                                            'moreparams'      => $paramscomment];
             }
             if ($_POST["itemtype"] == 'Ticket') {
-               $toupdate = array();
+               $toupdate = [];
                if (isset($options['toupdate']) && is_array($options['toupdate'])) {
                   $toupdate[] = $options['toupdate'];
                }
-               $toupdate[] = array('value_fieldname' => 'value',
+               $toupdate[] = ['value_fieldname' => 'value',
                                    'to_update'       => "countassign_$rand",
                                    'url'             => $CFG_GLPI["root_doc"].
                                                             "/ajax/ticketassigninformation.php",
-                                   'moreparams'      => array('suppliers_id_assign' => '__VALUE__'));
+                                   'moreparams'      => ['suppliers_id_assign' => '__VALUE__']];
                $options['toupdate'] = $toupdate;
             }
 
@@ -187,15 +187,15 @@ if (isset($_POST["type"])
                echo "<span id='countassign_$rand'>";
                echo "</span>";
             }
-            if ($CFG_GLPI["use_mailing"]) {
+            if ($CFG_GLPI["notifications_mailing"]) {
                echo "<br><span id='notif_supplier_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
                   $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST['use_notif']);
                   echo '<br>';
-                   printf(__('%1$s: %2$s'), __('Email'),
-                          "<input type='text' size='25' name='_itil_".$_POST["actortype"].
-                              "[alternative_email]'>");
+                  printf(__('%1$s: %2$s'), __('Email'),
+                         "<input type='text' size='25' name='_itil_".$_POST["actortype"].
+                           "[alternative_email]'>");
                }
                echo "</span>";
             }

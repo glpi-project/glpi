@@ -92,7 +92,7 @@ if (isset($_POST["itemtype"])
       }
 
       // Instanciate an object to access method
-      $item = NULL;
+      $item = null;
       if ($_POST["itemtype"] != 'AllAssets') {
          $item = getItemForItemtype($_POST["itemtype"]);
       }
@@ -105,7 +105,7 @@ if (isset($_POST["itemtype"])
              Html::jsGetElementbyID($rowid).".remove();\">&nbsp;&nbsp;";
    }
 
-   $criteria = array();
+   $criteria = [];
 
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])
        && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])) {
@@ -127,11 +127,11 @@ if (isset($_POST["itemtype"])
       }
       Dropdown::showFromArray("criteria[".$_POST["num"]."][link]",
                               Search::getLogicalOperators(),
-                              array('value' => $value));
+                              ['value' => $value]);
    }
 
    $selected = $first = '';
-   $values   = array();
+   $values   = [];
    // display select box to define search item
    if ($CFG_GLPI['allow_search_view'] == 2) {
       $values['view'] = __('Items seen');
@@ -165,7 +165,7 @@ if (isset($_POST["itemtype"])
    }
 
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
-                                       array('value' => $value));
+                                       ['value' => $value]);
    $field_id = Html::cleanId("dropdown_criteria[".$_POST["num"]."][field]$rand");
    echo "</td><td class='left'>";
    $spanid= 'SearchSpan'.$_POST["itemtype"].$_POST["num"];
@@ -185,11 +185,11 @@ if (isset($_POST["itemtype"])
    include (GLPI_ROOT."/ajax/searchoption.php");
    echo "</div>\n";
 
-   $params = array('field'      => '__VALUE__',
+   $params = ['field'      => '__VALUE__',
                    'itemtype'   => $used_itemtype,
                    'num'        => $_POST["num"],
                    'value'      => $_POST["value"],
-                   'searchtype' => $_POST["searchtype"]);
+                   'searchtype' => $_POST["searchtype"]];
 
    Ajax::updateItemOnSelectEvent($field_id, $spanid,
                                  $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);

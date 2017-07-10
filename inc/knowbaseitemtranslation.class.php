@@ -60,9 +60,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
@@ -82,7 +82,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -113,7 +113,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -142,7 +142,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($options=array()) {
+   function showFull($options = []) {
       global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'], READ)) {
@@ -191,10 +191,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
          echo "<script type='text/javascript' >\n";
          echo "function addTranslation" . $item->getID() . "$rand() {\n";
-         $params = array('type'             => __CLASS__,
+         $params = ['type'             => __CLASS__,
                          'parenttype'       => get_class($item),
                          'knowbaseitems_id' => $item->fields['id'],
-                         'id'               => -1);
+                         'id'               => -1];
          Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
                                 $params);
@@ -212,7 +212,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       if (count($found) > 0) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -270,7 +270,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     * @param $ID              field (default -1)
     * @param $options   array
     */
-   function showForm($ID=-1, $options=array()) {
+   function showForm($ID = -1, $options = []) {
       global $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -296,9 +296,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo Dropdown::getLanguageName($this->fields['language']);
       } else {
          Dropdown::showLanguages("language",
-                                 array('display_none' => false,
+                                 ['display_none' => false,
                                        'value'        => $_SESSION['glpilanguage'],
-                                       'used'         => self::getAlreadyTranslatedForItem($item)));
+                                       'used'         => self::getAlreadyTranslatedForItem($item)]);
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
@@ -328,7 +328,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @return the field translated if a translation is available, or the original field if not
    **/
-   static function getTranslatedValue(KnowbaseItem $item, $field="name") {
+   static function getTranslatedValue(KnowbaseItem $item, $field = "name") {
       global $DB;
 
       $obj   = new self;
@@ -336,7 +336,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
                           "' AND `language` = '".$_SESSION['glpilanguage']."'");
 
       if ((count($found) > 0)
-          && in_array($field, array('name', 'answer'))) {
+          && in_array($field, ['name', 'answer'])) {
          $first = array_shift($found);
          return $first[$field];
       }
@@ -396,7 +396,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static function getAlreadyTranslatedForItem($item) {
       global $DB;
 
-      $tab = array();
+      $tab = [];
       foreach ($DB->request(getTableForItemType(__CLASS__),
                            "`knowbaseitems_id`='".$item->getID()."'") as $data) {
          $tab[$data['language']] = $data['language'];

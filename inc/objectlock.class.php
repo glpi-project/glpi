@@ -60,7 +60,7 @@ class ObjectLock extends CommonDBTM {
    /**
     * @see CommonGLPI::getTypeName()
     */
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Object Lock', 'Object Locks', $nb);
    }
 
@@ -71,7 +71,7 @@ class ObjectLock extends CommonDBTM {
     * @param $locitemtype       (default ObjectLoc
     * @param $locitemid         (default 0)
    **/
-   function __construct( $locitemtype='ObjectLock', $locitemid=0 ) {
+   function __construct($locitemtype = 'ObjectLock', $locitemid = 0) {
 
       $this->itemtype     = $locitemtype;
       $this->itemid       = $locitemid;
@@ -96,7 +96,7 @@ class ObjectLock extends CommonDBTM {
    static function getLockableObjects() {
       global $CFG_GLPI;
 
-      $ret = array();
+      $ret = [];
       foreach ($CFG_GLPI['lock_lockable_objects'] as $lo) {
          $ret[$lo] = $lo::getTypeName(Session::getPluralNumber());
       }
@@ -195,7 +195,7 @@ class ObjectLock extends CommonDBTM {
       $useremail     = new UserEmail();
       $showAskUnlock = $useremail->getFromDBByQuery(" WHERE users_id = ".$this->fields['users_id']."
                                                             AND is_default = 1 ")
-                       && ($CFG_GLPI['use_mailing'] == 1);
+                       && ($CFG_GLPI['notifications_mailing'] == 1);
 
       $completeUserName = formatUserName(0, $user->fields['name'], $user->fields['realname'],
                                          $user->fields['firstname']);
@@ -260,7 +260,7 @@ class ObjectLock extends CommonDBTM {
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= "</td><td>&nbsp;&nbsp;</td><td>".__('Alert me when unlocked')."</td><td>&nbsp;".Html::getCheckbox(array('id' => 'alertMe'))."</td></tr></table>";
+      $msg .= "</td><td>&nbsp;&nbsp;</td><td>".__('Alert me when unlocked')."</td><td>&nbsp;".Html::getCheckbox(['id' => 'alertMe'])."</td></tr></table>";
 
       $this->displayLockMessage($msg);
    }
@@ -271,7 +271,7 @@ class ObjectLock extends CommonDBTM {
     * Shows 'Read-only!' message and propose to request a lock on the item
     * This function is used by autoLockMode function
    **/
-   private function setReadOnlyMessage( ) {
+   private function setReadOnlyMessage() {
 
       echo Html::scriptBlock("
          function requestLock() {
@@ -305,9 +305,9 @@ class ObjectLock extends CommonDBTM {
       //    in_array($this->itemtype, $CFG_GLPI['lock_item_list']) ) {
       if (!($gotIt = $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'"
               . " AND items_id = ".$this->itemid." " ))
-               && $id = $this->add(array('itemtype' => $this->itemtype,
+               && $id = $this->add(['itemtype' => $this->itemtype,
                                           'items_id' => $this->itemid,
-                                          'users_id' => Session::getLoginUserID()))) {
+                                          'users_id' => Session::getLoginUserID()])) {
          // add a script to unlock the Object
          echo Html::scriptBlock( "$(function() {
                   $(window).on('beforeunload', function() {
@@ -391,7 +391,7 @@ class ObjectLock extends CommonDBTM {
          if (isset($CFG_GLPI['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
                // this is a security in case of a die that can prevent correct revert of profile
-               register_shutdown_function(array(__CLASS__,  'revertProfile'));
+               register_shutdown_function([__CLASS__,  'revertProfile']);
                self::$shutdownregistered = true;
             }
             $_SESSION['glpilocksavedprofile'] = $_SESSION['glpiactiveprofile'];
@@ -419,7 +419,7 @@ class ObjectLock extends CommonDBTM {
     * Summary of revertProfile
     * Will revert normal user profile
    **/
-   static function revertProfile( ) {
+   static function revertProfile() {
       global $_SESSION;
 
       if (isset($_SESSION['glpilocksavedprofile'])) {
@@ -446,7 +446,7 @@ class ObjectLock extends CommonDBTM {
              && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
              && ($CFG_GLPI["lock_lockprofile_id"] > 0)
              && in_array($itemtype, $CFG_GLPI['lock_item_list'])
-             && Session::haveRightsOr($itemtype::$rightname, array(UPDATE, DELETE, PURGE, UPDATENOTE))
+             && Session::haveRightsOr($itemtype::$rightname, [UPDATE, DELETE, PURGE, UPDATENOTE])
              && !$template) {
 
             if (!$ol->autoLockMode()
@@ -466,7 +466,7 @@ class ObjectLock extends CommonDBTM {
     * @param  $msg      : message to be shown
     * @param  $title    : if $title is '' then title bar it is not shown (default '')
    **/
-   private function displayLockMessage($msg, $title='') {
+   private function displayLockMessage($msg, $title = '') {
 
       $hideTitle = '';
       if ($title == '') {
@@ -517,7 +517,7 @@ class ObjectLock extends CommonDBTM {
          $lo       = new self($itemtype, $items_id);
          if ($lo->getLockedObjectInfo()) {
             $lo->deleteFromDB();
-            Log::history($items_id, $itemtype, array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM);
+            Log::history($items_id, $itemtype, [0, '', ''], 0, Log::HISTORY_UNLOCK_ITEM);
             $ma->itemDone($itemtype, $items_id, MassiveAction::ACTION_OK);
          }
       }
@@ -584,15 +584,15 @@ class ObjectLock extends CommonDBTM {
     *
     * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
    **/
-   static function getRightsToAdd($itemtype, $interface='central') {
+   static function getRightsToAdd($itemtype, $interface = 'central') {
       global $CFG_GLPI;
 
-      $ret = array();
+      $ret = [];
       if (($interface == "central")
           && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
           && in_array($itemtype, $CFG_GLPI['lock_lockable_objects'])) {
-         $ret = array(UNLOCK  => __('Unlock'));
+         $ret = [UNLOCK  => __('Unlock')];
       }
       return $ret;
    }
@@ -609,10 +609,10 @@ class ObjectLock extends CommonDBTM {
 
       switch ($name) {
          case 'unlockobject' :
-            return array('description' => __('Unlock forgotten locked objects'),
-                         'parameter'   => __('Timeout to force unlock (hours)'));
+            return ['description' => __('Unlock forgotten locked objects'),
+                         'parameter'   => __('Timeout to force unlock (hours)')];
       }
-      return array();
+      return [];
    }
 
 
@@ -645,7 +645,7 @@ class ObjectLock extends CommonDBTM {
             $item->getFromDB($row['items_id']);
             $task->log($row['itemtype']." #".$row['items_id'].": ".$item->getLink());
             $task->addVolume(1);
-            Log::history($row['items_id'], $row['itemtype'], array(0, '', ''), 0,
+            Log::history($row['items_id'], $row['itemtype'], [0, '', ''], 0,
                          Log::HISTORY_UNLOCK_ITEM);
          } else {
             return -1; // error can't delete record, then exit with error

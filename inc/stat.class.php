@@ -51,7 +51,7 @@ class Stat extends CommonGLPI {
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Statistics');
    }
 
@@ -73,13 +73,13 @@ class Stat extends CommonGLPI {
     * @param $type
     * @param $parent    (default 0)
    **/
-   static function getItems($itemtype, $date1, $date2, $type, $parent=0) {
+   static function getItems($itemtype, $date1, $date2, $type, $parent = 0) {
       global $CFG_GLPI, $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
          return;
       }
-      $val  = array();
+      $val  = [];
       $cond = '';
 
       switch ($type) {
@@ -114,7 +114,7 @@ class Stat extends CommonGLPI {
                       ORDER BY `completename`";
 
             $result = $DB->query($query);
-            $val    = array();
+            $val    = [];
             if ($DB->numrows($result) >= 1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line["id"];
@@ -139,7 +139,7 @@ class Stat extends CommonGLPI {
                       ORDER BY `completename`";
 
             $result = $DB->query($query);
-            $val    = array();
+            $val    = [];
             if ($DB->numrows($result) >= 1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line["id"];
@@ -164,7 +164,7 @@ class Stat extends CommonGLPI {
                       ORDER BY `completename`";
 
             $result = $DB->query($query);
-            $val    = array();
+            $val    = [];
             if ($DB->numrows($result) >= 1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line['id'];
@@ -176,7 +176,7 @@ class Stat extends CommonGLPI {
 
          case "type" :
             $types = $item->getTypes();
-            $val   = array();
+            $val   = [];
             foreach ($types as $id => $v) {
                $tmp['id']   = $id;
                $tmp['link'] = $v;
@@ -261,7 +261,7 @@ class Stat extends CommonGLPI {
                          $where
                          $order";
 
-               $val    = array();
+               $val    = [];
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {
                   while ($line = $DB->fetch_assoc($result)) {
@@ -285,9 +285,9 @@ class Stat extends CommonGLPI {
     * @param $value     array
     * @param $value2             (default '')
    **/
-   static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
 
-      $export_data = array();
+      $export_data = [];
 
       if (is_array($value)) {
          $end_display = $start+$_SESSION['glpilist_limit'];
@@ -344,7 +344,7 @@ class Stat extends CommonGLPI {
     *
     * @since version 0.85 (before show with same parameters)
    **/
-   static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
       global $CFG_GLPI;
 
       // Set display type for export if define
@@ -691,8 +691,8 @@ class Stat extends CommonGLPI {
     * @param $value              (default '')
     * @param $value2             (default '')
     */
-   static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
-                                        $value2="") {
+   static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
+                                        $value2 = "") {
       global $DB;
 
       if (!$item = getItemForItemtype($itemtype)) {
@@ -768,7 +768,7 @@ class Stat extends CommonGLPI {
 
          case "itilcategories_tree" :
             if ($value == $value2) {
-               $categories = array($value);
+               $categories = [$value];
             } else {
                $categories = getSonsOf("glpi_itilcategories", $value);
             }
@@ -778,7 +778,7 @@ class Stat extends CommonGLPI {
 
          case 'locations_tree' :
             if ($value == $value2) {
-               $categories = array($value);
+               $categories = [$value];
             } else {
                $categories = getSonsOf('glpi_locations', $value);
             }
@@ -791,7 +791,7 @@ class Stat extends CommonGLPI {
             $grptype = (($param == 'group_tree') ? CommonITILActor::REQUESTER
                                                  : CommonITILActor::ASSIGN);
             if ($value == $value2) {
-               $groups = array($value);
+               $groups = [$value];
             } else {
                $groups = getSonsOf("glpi_groups", $value);
             }
@@ -865,8 +865,16 @@ class Stat extends CommonGLPI {
             $LEFTJOIN .= " INNER JOIN `glpi_computers`
                               ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
                                   AND `$linkedtable`.`itemtype` = 'Computer')";
-            $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
-                          AND `glpi_computers`.`is_template` <> '1'";
+            if (substr($champ, 0, strlen('operatingsystem')) === 'operatingsystem') {
+               $LEFTJOIN .= " INNER JOIN `glpi_items_operatingsystems`
+                              ON (`glpi_computers`.`id` = `glpi_items_operatingsystems`.`items_id`
+                                  AND `glpi_items_operatingsystems`.`itemtype` = 'Computer')";
+               $WHERE   .= " AND `glpi_items_operatingsystems`.`$champ` = '$value'
+                             AND `glpi_computers`.`is_template` <> '1'";
+            } else {
+               $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
+                             AND `glpi_computers`.`is_template` <> '1'";
+            }
             break;
       }
 
@@ -1050,10 +1058,10 @@ class Stat extends CommonGLPI {
             break;
       }
 
-      $entrees = array();
-      $count   = array();
+      $entrees = [];
+      $count   = [];
       if (empty($query)) {
-         return array();
+         return [];
       }
 
       $result = $DB->query($query);
@@ -1237,18 +1245,18 @@ class Stat extends CommonGLPI {
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
 
-      $values   = array($CFG_GLPI["root_doc"].'/front/stat.php' => Dropdown::EMPTY_VALUE);
+      $values   = [$CFG_GLPI["root_doc"].'/front/stat.php' => Dropdown::EMPTY_VALUE];
 
       $i        = 0;
       $selected = -1;
       $count    = count($stat_list);
       foreach ($opt_list as $opt => $group) {
-         while ($data = each($stat_list[$opt])) {
-            $name    = $data[1]["name"];
-            $file    = $data[1]["file"];
+         foreach ($stat_list[$opt] as $data) {
+            $name    = $data['name'];
+            $file    = $data['file'];
             $comment ="";
-            if (isset($data[1]["comment"])) {
-               $comment = $data[1]["comment"];
+            if (isset($data['comment'])) {
+               $comment = $data['comment'];
             }
             $key                  = $CFG_GLPI["root_doc"]."/front/".$file;
             $values[$group][$key] = $name;
@@ -1259,14 +1267,14 @@ class Stat extends CommonGLPI {
       }
 
       // Manage plugins
-      $names    = array();
-      $optgroup = array();
+      $names    = [];
+      $optgroup = [];
       if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
          foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
-                  $names[$plug.'/'.$page] = array("name" => $name,
-                                                  "plug" => $plug);
+                  $names[$plug.'/'.$page] = ["name" => $name,
+                                                  "plug" => $plug];
                   $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                }
             }
@@ -1288,8 +1296,8 @@ class Stat extends CommonGLPI {
       }
 
       Dropdown::showFromArray('statmenu', $values,
-                              array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                    'value'     => $selected));
+                              ['on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                    'value'     => $selected]);
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -1299,7 +1307,7 @@ class Stat extends CommonGLPI {
    /**
     * @since version 0.85
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values[READ] = __('Read');
       return $values;
@@ -1533,10 +1541,10 @@ class Stat extends CommonGLPI {
       $out .= "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
       $out .= Html::showDateField(
          'date1',
-         array(
+         [
             'value'   => $date1,
             'display' => false
-         )
+         ]
       );
       $out .= "</td><td rowspan='2' class='center'>";
       $out .= "<input type='submit' class='submit' value='".__s('Display report')."'></td></tr>";
@@ -1544,10 +1552,10 @@ class Stat extends CommonGLPI {
       $out .= "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
       $out .= Html::showDateField(
          'date2',
-         array(
+         [
             'value'   => $date2,
             'display' => false
-         )
+         ]
       );
       $out .= "</td></tr>";
       $out .= "</table></div>";

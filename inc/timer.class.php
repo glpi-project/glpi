@@ -64,7 +64,7 @@ class Timer {
     *
     * @return time past from start
    **/
-   function getTime ($decimals=3, $raw = false) {
+   function getTime ($decimals = 3, $raw = false) {
       $elapsed = microtime(true) - $this->timer;
       if ($raw === true) {
          return $elapsed * 1000;

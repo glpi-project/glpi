@@ -40,7 +40,7 @@ if (isset($_SERVER['argv'][1])) {
    die("Missing option (directory to analyse)\n");
 }
 
-$obsoleted = array(
+$obsoleted = [
    // Functions
    'addConfirmationOnAction'           =>  'Html::addConfirmationOnAction',
    'addMessageAfterRedirect'           =>  'Session::addMessageAfterRedirect',
@@ -200,7 +200,7 @@ $obsoleted = array(
    'TRANSLATION_MODE'                  =>  'Session::TRANSLATION_MODE',
    'HISTORY_'                          =>  'Log::HISTORY_',
    'BOOKMARK_SEARCH'                   =>  'Bookmark::SEARCH'
-);
+];
 
 $res = 0;
 foreach ($obsoleted as $old => $new) {

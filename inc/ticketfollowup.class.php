@@ -65,7 +65,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @param $nb : number of item in the type
    **/
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Followup', 'Followups', $nb);
    }
 
@@ -73,15 +73,15 @@ class TicketFollowup  extends CommonDBTM {
    static function canCreate() {
 
       return (Session::haveRightsOr(self::$rightname,
-                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
-                                          self::ADDGROUPTICKET))
+                                    [self::ADDALLTICKET, self::ADDMYTICKET,
+                                          self::ADDGROUPTICKET])
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canView() {
 
-      return (Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
+      return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -181,7 +181,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == 'Ticket') {
          $nb = 0;
@@ -207,7 +207,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $fup = new self();
       $fup->showSummary($item);
@@ -230,7 +230,7 @@ class TicketFollowup  extends CommonDBTM {
    function post_deleteFromDB() {
       global $CFG_GLPI;
 
-      $donotif = $CFG_GLPI["use_mailing"];
+      $donotif = $CFG_GLPI["use_notifications"];
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
@@ -247,9 +247,9 @@ class TicketFollowup  extends CommonDBTM {
                    Log::HISTORY_DELETE_SUBITEM);
 
       if ($donotif) {
-         $options = array('followup_id' => $this->fields["id"],
+         $options = ['followup_id' => $this->fields["id"],
                            // Force is_private with data / not available
-                          'is_private'  => $this->fields['is_private']);
+                          'is_private'  => $this->fields['is_private']];
          NotificationEvent::raiseEvent('delete_followup', $job, $options);
       }
    }
@@ -263,17 +263,17 @@ class TicketFollowup  extends CommonDBTM {
 
       $input = $this->addFiles($input);
 
-      // update writer if content change
-      if (($uid = Session::getLoginUserID())
+      // do not update writer if content change. Following code can be used for #2187
+      /*if (($uid = Session::getLoginUserID())
           && isset($input['content']) && ($input['content'] != $this->fields['content'])) {
          $input["users_id"] = $uid;
-      }
+      }*/
 
       return $input;
    }
 
 
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
       global $CFG_GLPI;
 
       $job      = new Ticket();
@@ -284,12 +284,13 @@ class TicketFollowup  extends CommonDBTM {
 
          if (count($this->updates)) {
             if (!isset($this->input['_disablenotif'])
-                && $CFG_GLPI["use_mailing"]
+                && $CFG_GLPI["use_notifications"]
                 && (in_array("content", $this->updates)
                     || isset($this->input['_need_send_mail']))) {
+               //FIXME: _need_send_mail does not seems to be used
 
-               $options = array('followup_id' => $this->fields["id"],
-                                'is_private'  => $this->fields['is_private']);
+               $options = ['followup_id' => $this->fields["id"],
+                                'is_private'  => $this->fields['is_private']];
 
                NotificationEvent::raiseEvent("update_followup", $job, $options);
             }
@@ -392,7 +393,7 @@ class TicketFollowup  extends CommonDBTM {
       // Add document if needed, without notification
       $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_mailing"];
+      $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"], false,
                                           $this->input["users_id"]);
@@ -455,8 +456,8 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if ($donotif) {
-         $options = array('followup_id' => $this->fields["id"],
-                          'is_private'  => $this->fields['is_private']);
+         $options = ['followup_id' => $this->fields["id"],
+                          'is_private'  => $this->fields['is_private']];
          NotificationEvent::raiseEvent("add_followup", $this->input["_job"], $options);
       }
 
@@ -515,10 +516,10 @@ class TicketFollowup  extends CommonDBTM {
       if ($canedit) {
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup". $ticket->fields['id'].$this->fields["id"]."$rand() {\n";
-         $params = array('type'       => __CLASS__,
+         $params = ['type'       => __CLASS__,
                          'parenttype' => 'Ticket',
                          'tickets_id' => $this->fields["tickets_id"],
-                         'id'         => $this->fields["id"]);
+                         'id'         => $this->fields["id"]];
          Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
@@ -541,7 +542,7 @@ class TicketFollowup  extends CommonDBTM {
    static function showFormMassiveAction() {
 
       echo "&nbsp;".__('Source of followup')."&nbsp;";
-      RequestType::dropdown(array('value' => RequestType::getDefault('followup'), 'condition' => 'is_active = 1 AND is_ticketfollowup = 1'));
+      RequestType::dropdown(['value' => RequestType::getDefault('followup'), 'condition' => 'is_active = 1 AND is_ticketfollowup = 1']);
 
       echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
@@ -582,10 +583,10 @@ class TicketFollowup  extends CommonDBTM {
             $fup   = new self();
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
-                  $input2 = array('tickets_id'      => $id,
+                  $input2 = ['tickets_id'      => $id,
                                   'is_private'      => $input['is_private'],
                                   'requesttypes_id' => $input['requesttypes_id'],
-                                  'content'         => $input['content']);
+                                  'content'         => $input['content']];
                   if ($fup->can(-1, CREATE, $input2)) {
                      if ($fup->add($input2)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -613,7 +614,7 @@ class TicketFollowup  extends CommonDBTM {
     *@param $options array of possible options:
     *     - ticket Object : the ticket
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -700,7 +701,7 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Source of followup')."</td><td>";
-         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"], 'condition' => 'is_active =1 AND is_ticketfollowup = 1'));
+         RequestType::dropdown(['value' => $this->fields["requesttypes_id"], 'condition' => 'is_active =1 AND is_ticketfollowup = 1']);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
@@ -756,7 +757,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @see CommonDBTM::showFormButtons()
    **/
-   function showFormButtons($options=array()) {
+   function showFormButtons($options = []) {
       global $CFG_GLPI;
 
       // for single object like config
@@ -802,8 +803,8 @@ class TicketFollowup  extends CommonDBTM {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
                echo Html::submit(_x('button', 'Delete permanently'),
-                                 array('name'    => 'purge',
-                                       'confirm' => __('Confirm the final deletion?')));
+                                 ['name'    => 'purge',
+                                       'confirm' => __('Confirm the final deletion?')]);
             }
          }
 
@@ -826,7 +827,7 @@ class TicketFollowup  extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname,
-                                 array(self::SEEPUBLIC, self::SEEPRIVATE, self::ADDMYTICKET))) {
+                                 [self::SEEPUBLIC, self::SEEPRIVATE, self::ADDMYTICKET])) {
          return false;
       }
 
@@ -835,7 +836,7 @@ class TicketFollowup  extends CommonDBTM {
       // Display existing Followups
       $showprivate   = Session::haveRight(self::$rightname, self::SEEPRIVATE);
       $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
-      $tmp           = array('tickets_id' => $tID);
+      $tmp           = ['tickets_id' => $tID];
       $canadd        = $this->can(-1, CREATE, $tmp);
       $showuserlink = 0;
       if (User::canView()) {
@@ -877,10 +878,10 @@ class TicketFollowup  extends CommonDBTM {
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand() {\n";
-         $params = array('type'       => __CLASS__,
+         $params = ['type'       => __CLASS__,
                          'parenttype' => 'Ticket',
                          'tickets_id' => $ticket->fields['id'],
-                         'id'         => -1);
+                         'id'         => -1];
          Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo Html::jsHide('addbutton'.$ticket->fields['id'] . "$rand");
@@ -921,27 +922,27 @@ class TicketFollowup  extends CommonDBTM {
             $lastmonday = $today;
          }
 
-         $steps = array(0 => array('end'   => $today,
-                                   'name'  => __('Today')),
-                        1 => array('end'   => $lastmonday,
-                                   'name'  => __('This week')),
-                        2 => array('end'   => $lastlastmonday,
-                                   'name'  => __('Last week')),
-                        3 => array('end'   => strtotime('midnight first day of'),
-                                   'name'  => __('This month')),
-                        4 => array('end'   => strtotime('midnight first day of last month'),
-                                   'name'  => __('Last month')),
-                        5 => array('end'   => 0,
-                                   'name'  => __('Before the last month')),
-                       );
+         $steps = [0 => ['end'   => $today,
+                                   'name'  => __('Today')],
+                        1 => ['end'   => $lastmonday,
+                                   'name'  => __('This week')],
+                        2 => ['end'   => $lastlastmonday,
+                                   'name'  => __('Last week')],
+                        3 => ['end'   => strtotime('midnight first day of'),
+                                   'name'  => __('This month')],
+                        4 => ['end'   => strtotime('midnight first day of last month'),
+                                   'name'  => __('Last month')],
+                        5 => ['end'   => 0,
+                                   'name'  => __('Before the last month')],
+                       ];
          $currentpos = -1;
 
          while ($data = $DB->fetch_assoc($result)) {
             $this->getFromDB($data['id']);
-            $options = array( 'parent' => $ticket,
+            $options = [ 'parent' => $ticket,
                               'rand'   => $rand
-                           );
-            Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
+                           ];
+            Plugin::doHook('pre_show_item', ['item' => $this, 'options' => &$options]);
             $data = array_merge( $data, $this->fields );
 
             $candelete = $this->canPurge() && $this->canPurgeItem();
@@ -1024,9 +1025,9 @@ class TicketFollowup  extends CommonDBTM {
             echo "<div class='boxnoteright'>";
             if ($candelete) {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
-                                    array('purge' => 'purge'),
+                                    ['purge' => 'purge'],
                                     _x('button', 'Delete permanently'),
-                                    array('id' => $data['id']),
+                                    ['id' => $data['id']],
                                     'fa-times-circle',
                                     '',
                                      __('Confirm the final deletion?'));
@@ -1038,16 +1039,16 @@ class TicketFollowup  extends CommonDBTM {
 
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditFollowup". $ticket->fields['id'].$data["id"]."$rand() {\n";
-               $params = array('type'       => __CLASS__,
+               $params = ['type'       => __CLASS__,
                               'parenttype' => 'Ticket',
                               'tickets_id' => $data["tickets_id"],
-                              'id'         => $data["id"]);
+                              'id'         => $data["id"]];
                Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                echo "};";
                echo "</script>\n";
             }
-            Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
+            Plugin::doHook('post_show_item', ['item' => $this, 'options' => $options]);
          }
       }
    }
@@ -1107,7 +1108,7 @@ class TicketFollowup  extends CommonDBTM {
    function showApprobationForm($ticket) {
       global $DB, $CFG_GLPI;
 
-      $input = array('tickets_id' => $ticket->getField('id'));
+      $input = ['tickets_id' => $ticket->getField('id')];
 
       if (($ticket->fields["status"] == CommonITILObject::SOLVED)
           && $ticket->canApprove()
@@ -1200,7 +1201,7 @@ class TicketFollowup  extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
     **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
@@ -1212,11 +1213,11 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       $values[self::ADDGROUPTICKET]
-                                 = array('short' => __('Add followup (associated groups)'),
-                                         'long'  => __('Add a followup to tickets of associated groups'));
+                                 = ['short' => __('Add followup (associated groups)'),
+                                         'long'  => __('Add a followup to tickets of associated groups')];
       $values[self::UPDATEMY]    = __('Update followups (author)');
-      $values[self::ADDMYTICKET] = array('short' => __('Add followup (requester)'),
-                                         'long'  => __('Add a followup to tickets (requester)'));
+      $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
+                                         'long'  => __('Add a followup to tickets (requester)')];
       $values[self::SEEPUBLIC]   = __('See public ones');
 
       if ($interface == 'helpdesk') {

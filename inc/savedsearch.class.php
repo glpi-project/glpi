@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Saved searches class
+ *
+ * @since version 9.2
 **/
 class SavedSearch extends CommonDBTM {
 
@@ -49,47 +51,53 @@ class SavedSearch extends CommonDBTM {
    const COUNT_YES = 1;
    const COUNT_AUTO = 2;
 
+
    static function getForbiddenActionsForMenu() {
-      return array('add');
+      return ['add'];
    }
+
 
    public static function getTypeName($nb = 0) {
       return _n('Saved search', 'Saved searches', $nb);
    }
 
+
    function getForbiddenStandardMassiveAction() {
+
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
 
 
-   function getSpecificMassiveActions($checkitem=NULL) {
-      $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'unset_default'] = __('Unset as default');
-      $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_count_method'] = __('Change count method');
+   function getSpecificMassiveActions($checkitem = null) {
+
+      $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'unset_default']
+                     = __('Unset as default');
+      $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_count_method']
+                     = __('Change count method');
       if (Session::haveRight('transfer', READ)) {
-         $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_entity'] = __('Change visibility');
+         $actions[get_called_class().MassiveAction::CLASS_ACTION_SEPARATOR.'change_entity']
+                     = __('Change visibility');
       }
       return $actions;
    }
 
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
+
       switch ($ma->getAction()) {
          case 'change_count_method':
-            $values = [
-               self::COUNT_AUTO  => _('Auto'),
-               self::COUNT_YES   => __('Yes'),
-               self::COUNT_NO    => __('No')
-            ];
-            Dropdown::showFromArray('do_count', $values, array('width' => '20%'));
+            $values = [self::COUNT_AUTO  => __('Auto'),
+                       self::COUNT_YES   => __('Yes'),
+                       self::COUNT_NO    => __('No')];
+            Dropdown::showFromArray('do_count', $values, ['width' => '20%']);
             break;
+
          case 'change_entity':
-            Entity::dropdown([
-               'entity' => $_SESSION['glpiactiveentities'],
-               'value'  => $_SESSION['glpiactive_entity'],
-               'name'   => 'entities_id'
-            ]);
+            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
+                              'value'  => $_SESSION['glpiactive_entity'],
+                              'name'   => 'entities_id']);
             echo '<br/>';
             echo __('Child entities');
             Dropdown::showYesNo('is_recursive');
@@ -114,6 +122,7 @@ class SavedSearch extends CommonDBTM {
             }
             return;
             break;
+
          case 'change_count_method':
             if ($item->setDoCount($ids, $input['do_count'])) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
@@ -121,6 +130,7 @@ class SavedSearch extends CommonDBTM {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
             break;
+
          case 'change_entity':
             if ($item->setEntityRecur($ids, $input['entities_id'], $input['is_recursive'])) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
@@ -134,18 +144,20 @@ class SavedSearch extends CommonDBTM {
 
 
    function canCreateItem() {
+
       if ($this->fields['is_private'] == 1) {
          return (Session::haveRight('config', CREATE)
-           || $this->fields['users_id'] == Session::getLoginUserID());
+                 || $this->fields['users_id'] == Session::getLoginUserID());
       }
       return parent::canCreateItem();
    }
 
 
    function canViewItem() {
+
       if ($this->fields['is_private'] == 1) {
          return (Session::haveRight('config', READ)
-            || $this->fields['users_id'] == Session::getLoginUserID());
+                 || $this->fields['users_id'] == Session::getLoginUserID());
       }
       return parent::canViewItem();
    }
@@ -157,10 +169,11 @@ class SavedSearch extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
+
       $ong = [];
       $this->addDefaultFormTab($ong)
-         ->addStandardTab('SavedSearch_Alert', $ong, $options);
+           ->addStandardTab('SavedSearch_Alert', $ong, $options);
       return $ong;
    }
 
@@ -170,102 +183,89 @@ class SavedSearch extends CommonDBTM {
 
       $tab = [];
 
-      $tab[] = [
-         'id'                 => 'common',
-         'name'               => __('Characteristics')
-      ];
+      $tab[] = ['id'                 => 'common',
+                'name'               => __('Characteristics')
+               ];
 
-      $tab[] = [
-         'id'                 => '1',
-         'table'              => $this->getTable(),
-         'field'              => 'name',
-         'name'               => __('Name'),
-         'datatype'           => 'itemlink',
-         'massiveaction'      => false // implicit key==1
-      ];
+      $tab[] = ['id'                 => '1',
+                'table'              => $this->getTable(),
+                'field'              => 'name',
+                'name'               => __('Name'),
+                'datatype'           => 'itemlink',
+                'massiveaction'      => false // implicit key==1
+               ];
 
-      $tab[] = [
-         'id'                 => '2',
-         'table'              => $this->getTable(),
-         'field'              => 'id',
-         'name'               => __('ID'),
-         'massiveaction'      => false, // implicit field is id
-         'datatype'           => 'number'
-      ];
+      $tab[] = ['id'                 => '2',
+                'table'              => $this->getTable(),
+                'field'              => 'id',
+                'name'               => __('ID'),
+                'massiveaction'      => false, // implicit field is id
+                'datatype'           => 'number'
+               ];
 
-      $tab[] = [
-         'id'                 => 3,
-         'table'              => User::getTable(),
-         'field'              => 'name',
-         'name'               => __('User'),
-         'datatype'           => 'dropdown'
-      ];
+      $tab[] = ['id'                 => 3,
+                'table'              => User::getTable(),
+                'field'              => 'name',
+                'name'               => __('User'),
+                'datatype'           => 'dropdown'
+               ];
 
-      $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'itemtype',
-         'name'               => __('Item type'),
-         'massiveaction'      => false,
-         'datatype'           => 'itemtypename',
-         'types'              => self::getUsedItemtypes()
-      ];
+      $tab[] = ['id'                 => '8',
+                'table'              => $this->getTable(),
+                'field'              => 'itemtype',
+                'name'               => __('Item type'),
+                'massiveaction'      => false,
+                'datatype'           => 'itemtypename',
+                'types'              => self::getUsedItemtypes()
+               ];
 
-      $tab[] = [
-         'id'                 => 9,
-         'table'              => $this->getTable(),
-         'field'              => 'last_execution_time',
-         'name'               => _('Last duration (ms)'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
-      ];
+      $tab[] = ['id'                 => 9,
+                'table'              => $this->getTable(),
+                'field'              => 'last_execution_time',
+                'name'               => __('Last duration (ms)'),
+                'massiveaction'      => false,
+                'datatype'           => 'number'
+               ];
 
-      $tab[] = [
-         'id'                 => 10,
-         'table'              => $this->getTable(),
-         'field'              => 'do_count',
-         'name'               => _('Count'),
-         'massiveaction'      => true,
-         'datatype'           => 'specific',
-         'searchtype'         => 'equals'
-      ];
+      $tab[] = ['id'                 => 10,
+                'table'              => $this->getTable(),
+                'field'              => 'do_count',
+                'name'               => __('Count'),
+                'massiveaction'      => true,
+                'datatype'           => 'specific',
+                'searchtype'         => 'equals'
+               ];
 
-      $tab[] = [
-         'id'                 => 11,
-         'table'              => SavedSearch_User::getTable(),
-         'field'              => 'users_id',
-         'name'               => __('Default'),
-         'massiveaction'      => false,
-         'joinparams'         => [
-            'jointype'           => 'child'
-         ],
-         'datatype'           => 'specific',
-         'searchtype'         => [
-            0 => 'equals',
-            1 => 'notequals'
-         ]
-      ];
+      $tab[] = ['id'                 => 11,
+                'table'              => SavedSearch_User::getTable(),
+                'field'              => 'users_id',
+                'name'               => __('Default'),
+                'massiveaction'      => false,
+                'joinparams'         => ['jointype' => 'child'],
+                'datatype'           => 'specific',
+                'searchtype'         => [0 => 'equals',
+                                         1 => 'notequals']
+               ];
 
-      $tab[] = [
-         'id'                 => 12,
-         'table'              => $this->getTable(),
-         'field'              => 'counter',
-         'name'               => _('Counter'),
-         'massiveaction'      => false,
-         'datatype'           => 'number'
-      ];
+      $tab[] = ['id'                 => 12,
+                'table'              => $this->getTable(),
+                'field'              => 'counter',
+                'name'               => __('Counter'),
+                'massiveaction'      => false,
+                'datatype'           => 'number'
+               ];
 
-      $tab[] = [
-         'id'                 => 13,
-         'table'              => $this->getTable(),
-         'field'              => 'last_execution_date',
-         'name'               => _('Last execution date'),
-         'massiveaction'      => false,
-         'datatype'           => 'datetime'
-      ];
+      $tab[] = ['id'                 => 13,
+                'table'              => $this->getTable(),
+                'field'              => 'last_execution_date',
+                'name'               => __('Last execution date'),
+                'massiveaction'      => false,
+                'datatype'           => 'datetime'
+               ];
 
       return $tab;
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -279,13 +279,11 @@ class SavedSearch extends CommonDBTM {
       if (!$index) {
          $index = strpos($taburl["path"], "front");
       }
-      $input['path'] = Toolbox::substr(
-         $taburl["path"],
-         $index,
-         Toolbox::strlen($taburl["path"]) - $index
-      );
+      $input['path'] = Toolbox::substr($taburl["path"],
+                                       $index,
+                                       Toolbox::strlen($taburl["path"]) - $index);
 
-      $query_tab = array();
+      $query_tab = [];
 
       if (isset($taburl["query"])) {
          parse_str($taburl["query"], $query_tab);
@@ -304,7 +302,7 @@ class SavedSearch extends CommonDBTM {
 
       // Set new user if initial user have been deleted
       if (($this->fields['users_id'] == 0)
-          && $uid=Session::getLoginUserID()) {
+          && ($uid = Session::getLoginUserID())) {
          $this->input['users_id']  = $uid;
          $this->fields['users_id'] = $uid;
          $this->updates[]          = "users_id";
@@ -335,15 +333,16 @@ class SavedSearch extends CommonDBTM {
     * Print the saved search form
     *
     * @param integer $ID      ID of the item
-    * @param array   $options Options:
-    *     - target for the Form
-    *     - type when adding
-    *     - url when adding
-    *     - itemtype when adding
+    * @param array   $options possible options:
+    *                         - target for the Form
+    *                         - type when adding
+    *                         - url when adding
+    *                         - itemtype when adding
     *
     * @return void
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
+
       $ID = $this->getID();
 
       // Only an edit form : always check w right
@@ -360,7 +359,7 @@ class SavedSearch extends CommonDBTM {
       }
 
       if (isset($options['type']) && ($options['type'] != 0)) {
-         echo "<input type='hidden' name='type' value='".$options['type']."'>";
+         echo "<input type='hidden' name='type' value='".$options['type']."'/>";
       }
 
       if (isset($options['url'])) {
@@ -379,16 +378,15 @@ class SavedSearch extends CommonDBTM {
 
       echo "<tr><td class='tab_bg_1'>".__('Name')."</td>";
       echo "<td class='tab_bg_1'>";
-      Html::autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
+      Html::autocompletionTextField($this, "name", ['user' => $this->fields["users_id"]]);
       echo "</td>";
       if (Session::haveRight("config", UPDATE)) {
-         echo "<td class='tab_bg_1'>".__('Do count')."</td><td class='tab_bg_1'>";
-         $values = [
-            self::COUNT_AUTO  => _('Auto'),
-            self::COUNT_YES   => __('Yes'),
-            self::COUNT_NO    => __('No')
-         ];
-         Dropdown::showFromArray('do_count', $values, array('value' => $this->getField('do_count')));
+         echo "<td class='tab_bg_1'>".__('Do count')."</td>".
+              "<td class='tab_bg_1'>";
+         $values = [self::COUNT_AUTO  => __('Auto'),
+                    self::COUNT_YES   => __('Yes'),
+                    self::COUNT_NO    => __('No')];
+         Dropdown::showFromArray('do_count', $values, ['value' => $this->getField('do_count')]);
       } else {
          echo "<td colspan='2'>";
       }
@@ -396,7 +394,6 @@ class SavedSearch extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Visibility')."</td>";
       echo "<td colspan='3'>";
-
       if ($this->canCreate()) {
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
                                            $this->fields["entities_id"],
@@ -410,24 +407,22 @@ class SavedSearch extends CommonDBTM {
       }
       echo "</td></tr>";
 
+      echo "<tr>";
+      echo "<td class='tab_bg_2 top' colspan='2'>";
       if ($ID <= 0) { // add
-         echo "<tr>";
-         echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
          echo "<div class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</div></td></tr>";
-
+         echo "</div>";
       } else {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
          echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
                 class='submit'>";
-         echo "</td></tr>";
       }
+      echo "</td></tr>";
+
       echo "</table>";
 
       if (isset($options['ajax'])) {
@@ -468,20 +463,18 @@ class SavedSearch extends CommonDBTM {
       switch ($type) {
          case self::SEARCH:
          case self::ALERT:
-            $fields_toclean = [
-               'add_search_count',
-               'add_search_count2',
-               'delete_search_count',
-               'delete_search_count2',
-               'start',
-               '_glpi_csrf_token'
-            ];
+            $fields_toclean = ['add_search_count',
+                               'add_search_count2',
+                               'delete_search_count',
+                               'delete_search_count2',
+                               'start',
+                               '_glpi_csrf_token'
+                              ];
             foreach ($fields_toclean as $field) {
                if (isset($query_tab[$field])) {
                   unset($query_tab[$field]);
                }
             }
-
             break;
       }
       return $query_tab;
@@ -502,8 +495,7 @@ class SavedSearch extends CommonDBTM {
          case self::SEARCH:
          case self::ALERT:
             // Check if all datas are valid
-            $opt = Search::getCleanedOptions($this->fields['itemtype']);
-
+            $opt            = Search::getCleanedOptions($this->fields['itemtype']);
             $query_tab_save = $query_tab;
             $partial_load   = false;
             // Standard search
@@ -522,13 +514,10 @@ class SavedSearch extends CommonDBTM {
                   }
                }
             }
-
             // Meta search
             if (isset($query_tab_save['metacriteria']) && count($query_tab_save['metacriteria'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
-
                unset($query_tab['metacriteria']);
-
                $new_key = 0;
                foreach ($query_tab_save['metacriteria'] as $key => $val) {
                   if (isset($val['itemtype'])) {
@@ -544,7 +533,6 @@ class SavedSearch extends CommonDBTM {
                   }
                }
             }
-
             // Display message
             if ($partial_load) {
                Session::addMessageAfterRedirect(__('Partial load of the saved search.'), false, ERROR);
@@ -584,8 +572,9 @@ class SavedSearch extends CommonDBTM {
     * @return array|false
    **/
    function getParameters($ID) {
+
       if ($this->getFromDB($ID)) {
-         $query_tab = array();
+         $query_tab = [];
          parse_str($this->fields["query"], $query_tab);
          $query_tab['savedsearches_id'] = $ID;
          if (class_exists($this->fields['itemtype']) || $this->fields['itemtype'] == 'AllAssets') {
@@ -595,20 +584,6 @@ class SavedSearch extends CommonDBTM {
       return false;
    }
 
-   /**
-    * Mark saved search as default view for the current user
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @deprecated since version 9.2; @see SavedSearch::markDefault()
-    *
-    * @return void
-   **/
-   function mark_default($ID) {
-      Toolbox::logDebug('mark_default() method is deprecated');
-      Toolbox::backtrace();
-      return $this->markDefault($ID);
-   }
 
    /**
     * Mark saved search as default view for the currect user
@@ -621,7 +596,7 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if ($this->getFromDB($ID)
-         && ($this->fields['type'] != self::URI)) {
+          && ($this->fields['type'] != self::URI)) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
@@ -633,35 +608,15 @@ class SavedSearch extends CommonDBTM {
             if ($DB->numrows($result) > 0) {
                // already exists update it
                $updateID = $DB->result($result, 0, 0);
-               $dd->update([
-                  'id'                 => $updateID,
-                  'savedsearches_id'   => $ID
-               ]);
+               $dd->update(['id'                 => $updateID,
+                            'savedsearches_id'   => $ID]);
             } else {
-               $dd->add([
-                  'savedsearches_id'   => $ID,
-                  'users_id'           => Session::getLoginUserID(),
-                  'itemtype'           => $this->fields['itemtype']
-               ]);
+               $dd->add(['savedsearches_id'   => $ID,
+                         'users_id'           => Session::getLoginUserID(),
+                         'itemtype'           => $this->fields['itemtype']]);
             }
          }
       }
-   }
-
-
-   /**
-    * Mark savedsearch as default view for the current user
-    *
-    * @param integer $ID ID of the saved search
-    *
-    * @deprecated since version 9.2; @see SavedSearch::unmarkDefault()
-    *
-    * @return void
-   **/
-   function unmark_default($ID) {
-      Toolbox::logDebug('unmark_default() method is deprecated');
-      Toolbox::backtrace();
-      return $this->unmarkDefault($ID);
    }
 
 
@@ -676,7 +631,7 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if ($this->getFromDB($ID)
-         && ($this->fields['type'] != self::URI)) {
+          && ($this->fields['type'] != self::URI)) {
          $dd = new SavedSearch_User();
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
@@ -707,11 +662,13 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if (Session::haveRight('config', UPDATE)) {
-         $query = "DELETE FROM `glpi_savedsearches_users`
-                     WHERE `savedsearches_id` IN('" . implode("', '", $ids)  . "')";
+         $query = "DELETE
+                   FROM `glpi_savedsearches_users`
+                   WHERE `savedsearches_id` IN('" . implode("', '", $ids)  . "')";
          return $DB->query($query);
       }
    }
+
 
    /**
     * Show user searches list
@@ -731,7 +688,8 @@ class SavedSearch extends CommonDBTM {
                 WHERE ";
 
       $privatequery = $query . "(`".$this->getTable()."`.`is_private`='1'
-                     AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."') ";
+                            AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."')
+                      ORDER BY `itemtype`, `name`";
 
       if ($this->canView()) {
          $publicquery = $query . "(`".$this->getTable()."`.`is_private`='0' ".
@@ -739,13 +697,9 @@ class SavedSearch extends CommonDBTM {
          $publicquery .= " ORDER BY `itemtype`, `name`";
       }
 
-      $privatequery .= " ORDER BY `itemtype`, `name`";
-
       // get saved searches
-      $searches = [
-         'private'   => [],
-         'public'    => []
-      ];
+      $searches = ['private'   => [],
+                   'public'    => []];
       if ($result = $DB->query($privatequery)) {
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
@@ -764,10 +718,10 @@ class SavedSearch extends CommonDBTM {
          }
       }
 
-      $ordered = array();
+      $ordered = [];
 
       // get personal order
-      $user = new User();
+      $user               = new User();
       $personalorderfield = $this->getPersonalOrderField();
 
       $personalorder = [];
@@ -775,7 +729,7 @@ class SavedSearch extends CommonDBTM {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
       if (!is_array($personalorder)) {
-         $personalorder = array();
+         $personalorder = [];
       }
 
       // Add on personal order
@@ -797,8 +751,8 @@ class SavedSearch extends CommonDBTM {
 
       // New: save order
       $store = array_keys($ordered);
-      $user->update(array('id'                => Session::getLoginUserID(),
-                           $personalorderfield => exportArrayToDB($store)));
+      $user->update(['id'                => Session::getLoginUserID(),
+                     $personalorderfield => exportArrayToDB($store)]);
       $searches['private'] = $ordered;
 
       $rand    = mt_rand();
@@ -808,10 +762,14 @@ class SavedSearch extends CommonDBTM {
 
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$colspan' class='private_header'>" . sprintf(__('Private %1$s'), $this->getTypeName(count($searches['private']))) . "</th></tr>";
+      echo "<tr><th colspan='$colspan' class='private_header'>" .
+                  sprintf(__('Private %1$s'), $this->getTypeName(count($searches['private']))) .
+           "</th></tr>";
       echo $this->displaySavedSearchType($searches['private']);
       if ($this->canView()) {
-         echo "<tr><th colspan='$colspan'>" . sprintf(__('Public %1$s'), $this->getTypeName(count($searches['public']))) . "</th></tr>";
+         echo "<tr><th colspan='$colspan'>" .
+                     sprintf(__('Public %1$s'), $this->getTypeName(count($searches['public']))) .
+              "</th></tr>";
          echo $this->displaySavedSearchType($searches['public']);
       }
       echo "</table></div>";
@@ -869,6 +827,13 @@ class SavedSearch extends CommonDBTM {
    }
 
 
+   /**
+    * Display saved searches from a type
+    *
+    * @param string $searches Search type
+    *
+    * @return void
+   **/
    private function displaySavedSearchType($searches) {
       global $CFG_GLPI;
 
@@ -876,8 +841,8 @@ class SavedSearch extends CommonDBTM {
          $current_type      = -1;
          $number            = 0;
          $current_type_name = NOT_AVAILABLE;
-         $search = new Search();
-         $is_private = null;
+         $search            = new Search();
+         $is_private        = null;
 
          foreach ($searches as $key => $this->fields) {
             $number ++;
@@ -894,12 +859,18 @@ class SavedSearch extends CommonDBTM {
 
             if ($_SESSION['glpishow_count_on_tabs']) {
                $count = null;
-               if ($data = $this->execute()) {
+               try {
+                  $data = $this->execute();
+               } catch (\RuntimeException $e) {
+                  Toolbox::logDebug($e);
+                  $data = false;
+               }
+               if ($data) {
                   $count = $data['data']['totalcount'];
                } else {
-                  $info_message = ($this->fields['do_count'] == self::COUNT_NO) ?
-                     __('Count for this saved search has been disabled.') :
-                     __('Counting this saved search would take too long, it has been skipped.');
+                  $info_message = ($this->fields['do_count'] == self::COUNT_NO)
+                                   ? __('Count for this saved search has been disabled.')
+                                   : __('Counting this saved search would take too long, it has been skipped.');
                   if ($count === null) {
                      //no count, just inform the user
                      $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
@@ -918,25 +889,23 @@ class SavedSearch extends CommonDBTM {
             echo "'>";
             echo "<td class='small no-wrap'>";
             if (is_null($this->fields['IS_DEFAULT'])) {
-               echo "<a class='default fa fa-star bookmark_record' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                        "mark_default=1&amp;id=".$this->fields["id"]."\" title=\"".__s('Not default search')."\">".
-                        "<span class='sr-only'>" . __('Not default search')  . "</span></a>";
+               echo "<a class='default fa fa-star bookmark_record' href=\"" .
+                       $this->getSearchURL() . "?action=edit&amp; mark_default=1&amp;id=".
+                       $this->fields["id"]."\" title=\"".__s('Not default search')."\">".
+                       "<span class='sr-only'>" . __('Not default search')  . "</span></a>";
             } else {
-               echo "<a class='default fa fa-star bookmark_default' href=\"" . $this->getSearchURL() . "?action=edit&amp;".
-                        "mark_default=0&amp;id=".$this->fields["id"]."\" title=\"".__s('Default search')."\">".
-                        "<span class='sr-only'>" . __('Default search') . "</span></a>";
+               echo "<a class='default fa fa-star bookmark_default' href=\"".
+                       $this->getSearchURL() . "?action=edit&amp;mark_default=0&amp;id=".
+                       $this->fields["id"]."\" title=\"".__s('Default search')."\">".
+                       "<span class='sr-only'>" . __('Default search') . "</span></a>";
             }
-
             echo "</td>";
             echo "<td>";
-            $text = sprintf(
-               __('%1$s on %2$s'),
-               $this->fields['name'],
-               $current_type_name
-            );
+            $text = sprintf(__('%1$s on %2$s'), $this->fields['name'], $current_type_name);
 
-            $title = ($is_private ? __('Click to load or drag and drop to reorder') : __('Click to load'));
-            echo "<a class='savedsearchlink' href=\"" . $this->getSearchURL() . "?action=load&amp;id=".
+            $title = ($is_private ? __('Click to load or drag and drop to reorder')
+                                  : __('Click to load'));
+            echo "<a class='savedsearchlink' href=\"".$this->getSearchURL()."?action=load&amp;id=".
                      $this->fields["id"]."\" title='".$title."'>".
                      $text;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -986,10 +955,7 @@ class SavedSearch extends CommonDBTM {
          }
       } else {
          echo "<tr class='tab_bg_1'><td colspan='3'>";
-         echo sprintf(
-            __('You have not recorded any %1$s yet'),
-            mb_strtolower($this->getTypeName(1))
-         );
+         echo sprintf(__('You have not recorded any %1$s yet'), mb_strtolower($this->getTypeName(1)));
          echo "</td></tr>";
       }
    }
@@ -997,8 +963,6 @@ class SavedSearch extends CommonDBTM {
 
    /**
     * Save order
-    *
-    * @since version 9.2
     *
     * @param array $items Ordered ids
     *
@@ -1011,10 +975,8 @@ class SavedSearch extends CommonDBTM {
          $user               = new User();
          $personalorderfield = $this->getPersonalOrderField();
 
-         $user->update([
-            'id'                 => Session::getLoginUserID(),
-            $personalorderfield  => exportArrayToDB($items)
-         ]);
+         $user->update(['id'                 => Session::getLoginUserID(),
+                        $personalorderfield  => exportArrayToDB($items)]);
          return true;
       }
       return false;
@@ -1029,31 +991,31 @@ class SavedSearch extends CommonDBTM {
     *
     * @return void
    **/
-   static function showSaveButton($type, $itemtype=0) {
+   static function showSaveButton($type, $itemtype = 0) {
       global $CFG_GLPI;
 
-      echo " <a href='#' onClick=\"savesearch.dialog('open'); return false;\" class='fa fa-star bookmark_record save' title='".__s('Save current search')."'>";
+      echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
+             class='fa fa-star bookmark_record save' title='".__s('Save current search')."'>";
       echo "<span class='sr-only'>".__s('Save current search')."</span>";
       echo "</a>";
 
-      Ajax::createModalWindow(
-         'savesearch',
-         $CFG_GLPI['root_doc'] . "/ajax/savedsearch.php?action=create&itemtype=$itemtype&type=$type&url=".
-            rawurlencode($_SERVER["REQUEST_URI"]),
-         [
-            'title'       => __('Save current search')
-         ]
-      );
+      Ajax::createModalWindow('savesearch',
+                              $CFG_GLPI['root_doc'] .
+                                 "/ajax/savedsearch.php?action=create&itemtype=$itemtype&type=$type&url=".
+                                 rawurlencode($_SERVER["REQUEST_URI"]),
+                              ['title'       => __('Save current search')]);
    }
+
 
    /**
     * Get personal order field name
     *
     * @return string
-    */
+   **/
    protected function getPersonalOrderField() {
       return 'privatebookmarkorder';
    }
+
 
    /**
     * Get all itemtypes used
@@ -1063,13 +1025,14 @@ class SavedSearch extends CommonDBTM {
    static function getUsedItemtypes() {
       global $DB;
 
-      $types= array();
+      $types= [];
       foreach ($DB->request("SELECT DISTINCT(`itemtype`)
-                            FROM `" . static::getTable() . "`") as $data) {
+                             FROM `" . static::getTable() . "`") as $data) {
          $types[] = $data['itemtype'];
       }
       return $types;
    }
+
 
    /**
     * Update bookmark execution time after it has been loaded
@@ -1078,45 +1041,48 @@ class SavedSearch extends CommonDBTM {
     * @param integer $time Execution time, in milliseconds
     *
     * @return void
-    */
+   **/
    static public function updateExecutionTime($id, $time) {
       global $DB;
 
       if ($_SESSION['glpishow_count_on_tabs']) {
          $query = "UPDATE `". static::getTable() . "`
-                  SET `last_execution_time` = '$time',
-                     `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
-                     `counter` = `counter` + 1
-                  WHERE `id` = '$id'";
+                   SET `last_execution_time` = '$time',
+                       `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
+                       `counter` = `counter` + 1
+                   WHERE `id` = '$id'";
          $DB->query($query);
       }
    }
 
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'do_count':
             switch ($values[$field]) {
                case SavedSearch::COUNT_NO:
                   return __('No');
-                  break;
+
                case SavedSearch::COUNT_YES:
                   return __('Yes');
-                  break;
+
                case SavedSearch::COUNT_AUTO:
                   return ('Auto');
-                  break;
             }
             break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
 
@@ -1129,17 +1095,18 @@ class SavedSearch extends CommonDBTM {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
+
    /**
     * Dropdown of do_count possible values
     *
-    * @param array $options array of options
-    *  - name     : select name (default is do_count)
-    *  - value    : default value (default self::COUNT_AUTO)
-    *  - display  : boolean if false get string
+    * @param array $options array of options:
+    *                       - name     : select name (default is do_count)
+    *                       - value    : default value (default self::COUNT_AUTO)
+    *                       - display  : boolean if false get string
     *
     * @return void|string
    **/
-   static function dropdownDoCount(array $options=array()) {
+   static function dropdownDoCount(array $options = []) {
 
       $p['name']      = 'do_count';
       $p['value']     = self::COUNT_AUTO;
@@ -1151,14 +1118,13 @@ class SavedSearch extends CommonDBTM {
          }
       }
 
-      $tab = [
-         self::COUNT_AUTO  => _('Auto'),
-         self::COUNT_YES   => __('Yes'),
-         self::COUNT_NO    => __('No')
-      ];
+      $tab = [self::COUNT_AUTO  => __('Auto'),
+              self::COUNT_YES   => __('Yes'),
+              self::COUNT_NO    => __('No')];
 
       return Dropdown::showFromArray($p['name'], $tab, $p);
    }
+
 
    /**
     * Set do_count from massive actions
@@ -1171,8 +1137,9 @@ class SavedSearch extends CommonDBTM {
    public function setDoCount(array $ids, $do_count) {
       global $DB;
 
-      $query = "UPDATE " . $this->getTable() . " SET do_count=$do_count" .
-         " WHERE id IN ('" . implode("', '", $ids) . "')";
+      $query = "UPDATE `".$this->getTable()."`
+                SET `do_count` = $do_count
+                WHERE `id` IN ('" . implode("', '", $ids) . "')";
       return $DB->query($query);
    }
 
@@ -1189,8 +1156,11 @@ class SavedSearch extends CommonDBTM {
    public function setEntityRecur(array $ids, $eid, $recur) {
       global $DB;
 
-      $query = "UPDATE " . $this->getTable() . " SET entities_id=$eid, is_recursive=$recur" .
-         " WHERE id IN ('" . implode("', '", $ids) . "') AND is_private = 0";
+      $query = "UPDATE `".$this->getTable()."`
+                SET `entities_id`= ".$eid.",
+                    `is_recursive` = ".$recur."
+                WHERE `id` IN ('" . implode("', '", $ids) . "')
+                      AND `is_private` = 0";
       return $DB->query($query);
    }
 
@@ -1210,22 +1180,25 @@ class SavedSearch extends CommonDBTM {
     * @return string where clause
     */
    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
+
       if ($ID == 11) { //search for defaults/not defaults
          if ($val == 0) {
             return 'glpi_savedsearches_users.users_id IS NULL';
-         } else {
-            return 'glpi_savedsearches_users.users_id IS NOT NULL';
          }
+         return 'glpi_savedsearches_users.users_id IS NOT NULL';
       }
    }
 
+
    static function cronInfo($name) {
+
       switch ($name) {
          case 'countAll' :
             return ['description' => __('Update all bookmarks execution time')];
       }
-      return array();
+      return [];
    }
+
 
    /**
     * Update all bookmarks execution time
@@ -1233,7 +1206,7 @@ class SavedSearch extends CommonDBTM {
     * @param Crontask $task Crontask instance
     *
     * @return void
-    */
+   **/
    static public function croncountAll($task) {
       global $DB, $CFG_GLPI;
 
@@ -1241,21 +1214,19 @@ class SavedSearch extends CommonDBTM {
          $lastdate = new \Datetime($task->getField('lastrun'));
          $lastdate->sub(new \DateInterval('P7D'));
 
-         $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'FIELDS' => ['id', 'query', 'itemtype', 'type'],
-            'WHERE'  => ['last_execution_date' => ['<' , $lastdate->format('Y-m-d H:i:s')]]
-         ]);
+         $iterator = $DB->request(['FROM'   => self::getTable(),
+                                   'FIELDS' => ['id', 'query', 'itemtype', 'type'],
+                                   'WHERE'  => ['last_execution_date'
+                                                => ['<' , $lastdate->format('Y-m-d H:i:s')]]]);
 
          if ($iterator->numrows()) {
             //prepare variables we'll use
             $self = new self();
             $now = date('Y-m-d H:i:s');
-            $stmt = $DB->prepare(
-               "UPDATE " . self::getTable() . " SET " .
-               "last_execution_time = ?, last_execution_date = ? WHERE " .
-               "id = ?"
-            );
+            $stmt = $DB->prepare("UPDATE `".self::getTable()."`
+                                  SET `last_execution_time` = '?',
+                                      `last_execution_date` = '?'
+                                  WHERE `id` = '?'");
 
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {
@@ -1280,39 +1251,42 @@ class SavedSearch extends CommonDBTM {
       }
    }
 
+
    /**
     * Execute current saved search and return results
     *
     * @param boolean $force Force query execution even if it should not be executed
+    *                       (default false)
     *
     * @throws RuntimeException
     *
     * @return array
-    */
+   **/
    public function execute($force = false) {
       global $CFG_GLPI;
 
-      if ($force === true || ($this->fields['do_count'] == self::COUNT_YES
-         || $this->fields['do_count'] == self::COUNT_AUTO
-         && $this->getField('last_execution_time') != null
-         && $this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count'])) {
+      if (($force === true)
+          || (($this->fields['do_count'] == self::COUNT_YES)
+              || ($this->fields['do_count'] == self::COUNT_AUTO)
+              && ($this->getField('last_execution_time') != null)
+              && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))) {
 
          $search = new Search();
          //Do the same as self::getParameters() but getFromDB is useless
-         $query_tab = array();
+         $query_tab = [];
          parse_str($this->getField('query'), $query_tab);
 
          $params = null;
-         if (class_exists($this->getField('itemtype')) || $this->getField('itemtype') == 'AllAssets') {
+         if (class_exists($this->getField('itemtype'))
+             || ($this->getField('itemtype') == 'AllAssets')) {
             $params = $this->prepareQueryToUse($this->getField('type'), $query_tab);
          }
 
          if (!$params) {
-            throw new \RuntimeException(
-               'Saved search #' . $this->getID() . ' seems to be broken!'
-            );
+            throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
          } else {
-            $data = $search->prepareDatasForSearch($this->getField('itemtype'), $params);
+            $data                   = $search->prepareDatasForSearch($this->getField('itemtype'),
+                                                                     $params);
             $data['search']['sort'] = null;
             $search->constructSQL($data);
             $search->constructDatas($data, true);
@@ -1321,30 +1295,28 @@ class SavedSearch extends CommonDBTM {
       }
    }
 
+
    /**
     * Create specific notification for a public saved search
     *
     * @return void
     */
    public function createNotif() {
+
       $notif = new Notification();
       $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
 
       if ($notif->isNewItem()) {
          $notif->check(-1, CREATE);
-         $notif->add([
-            'name'            => __('Saved search') . ' ' . $this->getName(),
-            'entities_id'     => $_SESSION["glpidefault_entity"],
-            'itemtype'        => SavedSearch_Alert::getType(),
-            'event'           => 'alert_' . $this->getID(),
-            'is_active'       => 0,
-            'datate_creation' => date('Y-m-d H:i:s')
-         ]);
+         $notif->add(['name'            => __('Saved search') . ' ' . $this->getName(),
+                      'entities_id'     => $_SESSION["glpidefault_entity"],
+                      'itemtype'        => SavedSearch_Alert::getType(),
+                      'event'           => 'alert_' . $this->getID(),
+                      'is_active'       => 0,
+                      'datate_creation' => date('Y-m-d H:i:s')
+                     ]);
 
-         Session::addMessageAfterRedirect(
-            __('Notification has been created!'),
-            INFO
-         );
+         Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
       }
    }
 }

@@ -66,20 +66,20 @@ Report::title();
 echo "\n<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateField("date1", array('value' => $_POST["date1"]));
+Html::showDateField("date1", ['value' => $_POST["date1"]]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>\n";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateField("date2", array('value' => $_POST["date2"]));
+Html::showDateField("date2", ['value' => $_POST["date2"]]);
 echo "</td></tr>";
 echo "</table>\n";
 Html::closeForm();
 
 $valeurtot           = 0;
 $valeurnettetot      = 0;
-$valeurnettegraphtot = array();
-$valeurgraphtot      = array();
+$valeurnettegraphtot = [];
+$valeurgraphtot      = [];
 
 
 /** Display an infocom report for items like consumables
@@ -136,8 +136,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
          $valeursoustot      = 0;
          $valeurnettesoustot = 0;
-         $valeurnettegraph   = array();
-         $valeurgraph        = array();
+         $valeurnettegraph   = [];
+         $valeurgraph        = [];
 
          while ($line=$DB->fetch_assoc($result)) {
             if ($itemtype == 'SoftwareLicense') {
@@ -255,7 +255,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 }
 
 
-$types = array('Cartridge', 'Consumable', 'SoftwareLicense');
+$types = ['Cartridge', 'Consumable', 'SoftwareLicense'];
 
 $i = 0;
 echo "<table width='90%'><tr><td class='center top'>";

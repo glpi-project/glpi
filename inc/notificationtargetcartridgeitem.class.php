@@ -48,37 +48,32 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
 
 
    function getEvents() {
-      return array('alert' => __('Cartridges alarm'));
+      return ['alert' => __('Cartridges alarm')];
    }
 
-   /**
-    * Get all data needed for template processing
-    *
-    * @param $event
-    * @param $options   array
-   **/
-   function getDatasForTemplate($event, $options=array()) {
+
+   function addtDataForTemplate($event, $options = []) {
 
       $events = $this->getAllEvents();
 
-      $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
+      $this->data['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                        $options['entities_id']);
-      $this->datas['##cartridge.action##'] = $events[$event];
+      $this->data['##cartridge.action##'] = $events[$event];
 
       foreach ($options['items'] as $id => $cartridge) {
-         $tmp                            = array();
+         $tmp                            = [];
          $tmp['##cartridge.item##']      = $cartridge['name'];
          $tmp['##cartridge.reference##'] = $cartridge['ref'];
          $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
          $tmp['##cartridge.url##']       = $this->formatURL($options['additionnaloption']['usertype'],
                                                             "CartridgeItem_".$id);
-         $this->datas['cartridges'][] = $tmp;
+         $this->data['cartridges'][] = $tmp;
       }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
@@ -86,23 +81,23 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('cartridge.action'    => _n('Event', 'Events', 1),
+      $tags = ['cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => __('Reference'),
                     'cartridge.item'      => __('Cartridge model'),
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
-                    'cartridge.entity'    => __('Entity'));
+                    'cartridge.entity'    => __('Entity')];
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
+         $this->addTagToList(['tag'   => $tag,
                                    'label' => $label,
-                                   'value' => true));
+                                   'value' => true]);
       }
 
-      $this->addTagToList(array('tag'     => 'cartridges',
+      $this->addTagToList(['tag'     => 'cartridges',
                                 'label'   => __('Device list'),
                                 'value'   => false,
-                                'foreach' => true));
+                                'foreach' => true]);
 
       asort($this->tag_descriptions);
    }

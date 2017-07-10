@@ -47,14 +47,14 @@ class SoftwareLicense extends CommonTreeDropdown {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = array('Infocom');
+   static protected $forward_entity_to = ['Infocom'];
 
    static $rightname                   = 'license';
    protected $usenotepad               = true;
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('License', 'Licenses', $nb);
    }
 
@@ -125,7 +125,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return validity indicator
    **/
-   static function computeValidityIndicator($ID, $number=-1) {
+   static function computeValidityIndicator($ID, $number = -1) {
 
       if (($number >= 0)
           && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
@@ -150,8 +150,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       if ($lic->getFromDB($ID)) {
          $valid = self::computeValidityIndicator($ID, $lic->fields['number']);
          if ($valid != $lic->fields['is_valid']) {
-            $lic->update(array('id'       => $ID,
-                               'is_valid' => $valid));
+            $lic->update(['id'       => $ID,
+                               'is_valid' => $valid]);
          }
       }
    }
@@ -189,7 +189,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @since version 0.85
     * @see CommonDBTM::post_updateItem()
    **/
-   function post_updateItem($history=1) {
+   function post_updateItem($history = 1) {
 
       if (in_array("is_valid", $this->updates)) {
          Software::updateValidityIndicator($this->fields["softwares_id"]);
@@ -220,9 +220,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       return '';
    }
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('SoftwareLicense', $ong, $options);
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
@@ -249,7 +249,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return true if displayed  false if item not found or not right to display
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       $softwares_id = -1;
@@ -296,11 +296,11 @@ class SoftwareLicense extends CommonTreeDropdown {
                 Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
          Dropdown::show('Software',
-                        array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
+                        ['condition'   => "`is_template`='0' AND `is_deleted`='0'",
                               'entity'      => $_SESSION['glpiactive_entity'],
                               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                               'on_change'   => 'this.form.submit()',
-                              'value'       => $softwares_id));
+                              'value'       => $softwares_id]);
       }
 
       echo "</td>";
@@ -315,54 +315,54 @@ class SoftwareLicense extends CommonTreeDropdown {
       $objectName = autoName($this->fields["name"], "name",
                              (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
+      State::dropdown(['value'     => $this->fields["states_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwarelicense`='1'"));
+                            'condition' => "`is_visible_softwarelicense`='1'"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('As child of')."</td><td>";
-      self::dropdown(array('value'  => $this->fields['softwarelicenses_id'],
+      self::dropdown(['value'  => $this->fields['softwarelicenses_id'],
                            'name'   => 'softwarelicenses_id',
                            'entity' => $this->fields['entities_id'],
-                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : array()),
-                           'condition' => "`softwares_id`='".$this->fields['softwares_id']."'"));
+                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : []),
+                           'condition' => "`softwares_id`='".$this->fields['softwares_id']."'"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Location') . "</td><td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      SoftwareLicenseType::dropdown(array('value' => $this->fields["softwarelicensetypes_id"]));
+      SoftwareLicenseType::dropdown(['value' => $this->fields["softwarelicensetypes_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Technician in charge of the license')."</td>";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
+      User::dropdown(['name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+                           'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td>".__('Publisher')."</td>";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the license')."</td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
+      Group::dropdown(['name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+                            'condition' => '`is_assign`']);
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td>";
@@ -372,9 +372,9 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td >" . __('User') . "</td>";
       echo "<td >";
-      User::dropdown(array('value'  => $this->fields["users_id"],
+      User::dropdown(['value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+                           'right'  => 'all']);
       echo "</td>";
 
       $tplmark = $this->getAutofillMark('otherserial', $options);
@@ -384,14 +384,14 @@ class SoftwareLicense extends CommonTreeDropdown {
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Group') . "</td><td>";
-      Group::dropdown(array('value'     => $this->fields["groups_id"],
+      Group::dropdown(['value'     => $this->fields["groups_id"],
                             'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`'));
+                            'condition' => '`is_itemgroup`']);
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -401,27 +401,27 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version in use')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_use",
+      SoftwareVersion::dropdownForOneSoftware(['name'         => "softwareversions_id_use",
                                                     'softwares_id' => $this->fields["softwares_id"],
-                                                    'value'        => $this->fields["softwareversions_id_use"]));
+                                                    'value'        => $this->fields["softwareversions_id_use"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
+      SoftwareVersion::dropdownForOneSoftware(['name'         => "softwareversions_id_buy",
                                                     'softwares_id' => $this->fields["softwares_id"],
-                                                    'value'        => $this->fields["softwareversions_id_buy"]));
+                                                    'value'        => $this->fields["softwareversions_id_buy"]]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('quantity', 'Number')."</td>";
       echo "<td>";
-      Dropdown::showNumber("number", array('value' => $this->fields["number"],
+      Dropdown::showNumber("number", ['value' => $this->fields["number"],
                                            'min'   => 1,
                                            'max'   => 10000,
                                            'step'  => 1,
-                                           'toadd' => array(-1 => __('Unlimited'))));
+                                           'toadd' => [-1 => __('Unlimited')]]);
       if ($ID > 0) {
          echo "&nbsp;";
          if ($this->fields['is_valid']) {
@@ -435,7 +435,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Expiration')."</td>";
       echo "<td>";
-      Html::showDateField('expire', array('value' => $this->fields["expire"]));
+      Html::showDateField('expire', ['value' => $this->fields["expire"]]);
       if ($ID
           && is_null($this->fields["expire"])) {
          echo "<br>".__('Never expire')."&nbsp;";
@@ -468,7 +468,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -698,11 +698,11 @@ class SoftwareLicense extends CommonTreeDropdown {
          return $tab;
       }
 
-      $licjoinexpire = array('jointype'  => 'child',
+      $licjoinexpire = ['jointype'  => 'child',
                               'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                         '', '', true).
                                              " AND (NEWTABLE.`expire` IS NULL
-                                                   OR NEWTABLE.`expire` > NOW())");
+                                                   OR NEWTABLE.`expire` > NOW())"];
 
       $tab[] = [
          'id'                 => 'license',
@@ -816,7 +816,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @return arrray of information
    **/
    static function cronInfo($name) {
-      return array('description' => __('Send alarms on expired licenses'));
+      return ['description' => __('Send alarms on expired licenses')];
    }
 
 
@@ -827,18 +827,18 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return 0 : nothing to do 1 : done with success
    **/
-   static function cronSoftware($task=NULL) {
+   static function cronSoftware($task = null) {
       global $DB, $CFG_GLPI;
 
       $cron_status = 1;
 
-      if (!$CFG_GLPI['use_mailing']) {
+      if (!$CFG_GLPI['use_notifications']) {
          return 0;
       }
 
-      $message      = array();
-      $items_notice = array();
-      $items_end    = array();
+      $message      = [];
+      $items_notice = [];
+      $items_end    = [];
 
       foreach (Entity::getEntitiesToNotify('use_licenses_alert') as $entity => $value) {
          $before = Entity::getUsedConfig('send_licenses_alert_before_delay', $entity);
@@ -861,7 +861,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                          AND `glpi_softwares`.`entities_id` = '".$entity."'";
 
          $message = "";
-         $items   = array();
+         $items   = [];
 
          foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
@@ -922,7 +922,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     *
     * @return number of installations
    */
-   static function countForVersion($softwareversions_id, $entity='') {
+   static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
       $query = "SELECT COUNT(*)
@@ -991,7 +991,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          return false;
       }
 
-      $columns = array('name'      => __('Name'),
+      $columns = ['name'      => __('Name'),
                        'entity'    => __('Entity'),
                        'serial'    => __('Serial number'),
                        'number'    => _x('quantity', 'Number'),
@@ -999,7 +999,7 @@ class SoftwareLicense extends CommonTreeDropdown {
                        'typename'  => __('Type'),
                        'buyname'   => __('Purchase version'),
                        'usename'   => __('Version in use'),
-                       'expire'    => __('Expiration'));
+                       'expire'    => __('Expiration')];
       if (!$software->isRecursive()) {
          unset($columns['entity']);
       }
@@ -1073,18 +1073,18 @@ class SoftwareLicense extends CommonTreeDropdown {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
-                  = array('num_displayed'
+                  = ['num_displayed'
                            => min($_SESSION['glpilist_limit'], $num_displayed),
                           'container'
                            => 'mass'.__CLASS__.$rand,
                           'extraparams'
-                           => array('options'
-                                     => array('glpi_softwareversions.name'
-                                               => array('condition'
+                           => ['options'
+                                     => ['glpi_softwareversions.name'
+                                               => ['condition'
                                                          => "`glpi_softwareversions`.`softwares_id`
-                                                                  = $softwares_id"),
-                                              'glpi_softwarelicenses.name'
-                                               => array('itemlink_as_string' => true))));
+                                                                  = $softwares_id"],
+                                               'glpi_softwarelicenses.name'
+                                               => ['itemlink_as_string' => true]]]];
 
                Html::showMassiveActions($massiveactionparams);
             }
@@ -1191,13 +1191,13 @@ class SoftwareLicense extends CommonTreeDropdown {
    **/
    function showDebug() {
 
-      $license = array('softname' => '',
+      $license = ['softname' => '',
                        'name'     => '',
                        'serial'   => '',
-                       'expire'   => '');
+                       'expire'   => ''];
 
       $options['entities_id'] = $this->getEntityID();
-      $options['licenses']    = array($license);
+      $options['licenses']    = [$license];
       NotificationEvent::debugEvent($this, $options);
    }
 
@@ -1209,14 +1209,14 @@ class SoftwareLicense extends CommonTreeDropdown {
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
 
-      return array('id'           => __('ID'),
+      return ['id'           => __('ID'),
                    'serial'       => __('Serial number'),
                    'entities_id'  => __('Entity'),
-                   'softwares_id' => _n('Software', 'Software', 1));
+                   'softwares_id' => _n('Software', 'Software', 1)];
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          $nb = 0;
@@ -1248,7 +1248,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType()=='Software' && self::canView()) {
          self::showForSoftware($item);
@@ -1284,8 +1284,8 @@ class SoftwareLicense extends CommonTreeDropdown {
       echo $header;
 
       $fk   = $item->getForeignKeyField();
-      $crit = array($fk     => $ID,
-                    'ORDER' => 'name');
+      $crit = [$fk     => $ID,
+                    'ORDER' => 'name'];
 
       if ($entity_assign) {
          if ($fk == 'entities_id') {

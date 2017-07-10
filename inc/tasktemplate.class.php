@@ -52,36 +52,36 @@ class TaskTemplate extends CommonDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Task template', 'Task templates', $nb);
    }
 
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'content',
+      return [['name'  => 'content',
                          'label' => __('Content'),
-                         'type'  => 'textarea'),
-                   array('name'  => 'taskcategories_id',
+                         'type'  => 'textarea'],
+                   ['name'  => 'taskcategories_id',
                          'label' => __('Task category'),
                          'type'  => 'dropdownValue',
-                         'list'  => true),
-                   array('name'  => 'state',
+                         'list'  => true],
+                   ['name'  => 'state',
                          'label' => __('Status'),
-                         'type'  => 'state'),
-                   array('name'  => 'is_private',
+                         'type'  => 'state'],
+                   ['name'  => 'is_private',
                          'label' => __('Private'),
-                         'type'  => 'bool'),
-                   array('name'  => 'actiontime',
+                         'type'  => 'bool'],
+                   ['name'  => 'actiontime',
                          'label' => __('Duration'),
-                         'type'  => 'actiontime'),
-                   array('name'  => 'users_id_tech',
+                         'type'  => 'actiontime'],
+                   ['name'  => 'users_id_tech',
                          'label' => __('By'),
-                         'type'  => 'users_id_tech'),
-                   array('name'  => 'groups_id_tech',
+                         'type'  => 'users_id_tech'],
+                   ['name'  => 'groups_id_tech',
                          'label' => __('Group'),
-                         'type'  => 'groups_id_tech'),
-                  );
+                         'type'  => 'groups_id_tech'],
+                  ];
    }
 
 
@@ -112,7 +112,7 @@ class TaskTemplate extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       switch ($field['type']) {
          case 'state' :
@@ -133,17 +133,17 @@ class TaskTemplate extends CommonDropdown {
             ]);
             break;
          case 'actiontime' :
-            $toadd = array();
+            $toadd = [];
             for ($i=9; $i<=100; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
             Dropdown::showTimeStamp("actiontime",
-                                    array('min'             => 0,
+                                    ['min'             => 0,
                                           'max'             => 8*HOUR_TIMESTAMP,
                                           'value'           => $this->fields["actiontime"],
                                           'addfirstminutes' => true,
                                           'inhours'         => true,
-                                          'toadd'           => $toadd));
+                                          'toadd'           => $toadd]);
             break;
       }
    }

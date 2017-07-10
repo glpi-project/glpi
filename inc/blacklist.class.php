@@ -74,18 +74,18 @@ class Blacklist extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'value',
+      return [['name'  => 'value',
                          'label' => __('Value'),
                          'type'  => 'text',
-                         'list'  => true),
-                   array('name'  => 'type',
+                         'list'  => true],
+                   ['name'  => 'type',
                          'label' => _n('Type', 'Types', 1),
                          'type'  => '',
-                         'list'  => true));
+                         'list'  => true]];
    }
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Blacklist', 'Blacklists', $nb);
    }
 
@@ -135,10 +135,10 @@ class Blacklist extends CommonDropdown {
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field = []) {
 
       if ($field['name'] == 'type') {
-         self::dropdownType($field['name'], array('value' => $this->fields['type']));
+         self::dropdownType($field['name'], ['value' => $this->fields['type']]);
       }
    }
 
@@ -148,10 +148,10 @@ class Blacklist extends CommonDropdown {
     * @param $values
     * @param $options   array
     */
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'type' :
@@ -170,10 +170,10 @@ class Blacklist extends CommonDropdown {
     * @param $values             (default '')
     * @param $options      array
     **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -197,10 +197,10 @@ class Blacklist extends CommonDropdown {
     *
     * @return string id of the select
    **/
-   static function dropdownType($name, $options=array()) {
+   static function dropdownType($name, $options = []) {
 
       $params['value']       = 0;
-      $params['toadd']       = array();
+      $params['toadd']       = [];
       $params['on_change']   = '';
       $params['display']     = true;
 
@@ -210,7 +210,7 @@ class Blacklist extends CommonDropdown {
          }
       }
 
-      $items = array();
+      $items = [];
       if (count($params['toadd'])>0) {
          $items = $params['toadd'];
       }
@@ -248,7 +248,7 @@ class Blacklist extends CommonDropdown {
    static function getBlacklistedItems($type) {
 
       $datas = getAllDatasFromTable('glpi_blacklists', "type = '$type'");
-      $items = array();
+      $items = [];
       if (count($datas)) {
          foreach ($datas as $val) {
             $items[] = $val['value'];

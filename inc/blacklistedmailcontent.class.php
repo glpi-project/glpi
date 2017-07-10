@@ -53,7 +53,7 @@ class BlacklistedMailContent extends CommonDropdown {
    public $can_be_translated = false;
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return __('Blacklisted mail content');
    }
 
@@ -70,11 +70,11 @@ class BlacklistedMailContent extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'content',
+      return [['name'  => 'content',
                          'label' => __('Content'),
                          'type'  => 'textarea',
                          'rows'  => 20,
-                         'list'  => true));
+                         'list'  => true]];
    }
 
 

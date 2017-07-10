@@ -49,7 +49,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Knowledge base category', 'Knowledge base categories', $nb);
    }
 
@@ -107,7 +107,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          if (!isset($_SESSION['glpi_faqcategories'])) {
 
             $_SESSION['glpi_faqcategories'] = '(0)';
-            $tmp   = array();
+            $tmp   = [];
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
                       FROM `glpi_knowbaseitems`
                       ".KnowbaseItem::addVisibilityJoins()."
@@ -161,7 +161,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_central'>";
          echo "<tr><td colspan='3'><a href='".$params['target']."?knowbaseitemcategories_id=0$parameters'>";
-         echo "<i class='fa fa-folder-open-o'></i> " . _('Root category')  . "</a>";
+         echo "<i class='fa fa-folder-open-o'></i> " . __('Root category')  . "</a>";
 
          // Display Category
          if ($params["knowbaseitemcategories_id"]!=0) {

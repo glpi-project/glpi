@@ -37,7 +37,7 @@
 
 $cmd = $_SERVER["argv"][0];
 
-function checkOne ($name, $tab="") {
+function checkOne ($name, $tab = "") {
    global $cmd;
 
    if (empty($tab)) {
@@ -86,11 +86,11 @@ function diffTab ($from, $dest, $name) {
 if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all") {
 
    // For 0.71 plugin only
-   $exception = array("data_injection"  => "DATAINJECTIONLANG",
+   $exception = ["data_injection"  => "DATAINJECTIONLANG",
                       "hole"            => "LANG_HOLE",
                       "backups"         => "LANGBACKUP",
                       "reports"         => "GEDIFFREPORTLANG",
-                      "mass_ocs_import" => "OCSMASSIMPORTLANG");
+                      "mass_ocs_import" => "OCSMASSIMPORTLANG"];
 
    $dir = opendir(".");
    while (($file = readdir($dir)) !== false) {

@@ -197,7 +197,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
       current_time();
       if ($duree>0 && $TPSCOUR>=$duree) {//on atteint la fin du temps imparti
-         return TRUE;
+         return true;
       }
 
       $fin = 0;
@@ -219,7 +219,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
             current_time();
 
             if ($duree>0 && $TPSCOUR>=$duree) {//on atteint la fin du temps imparti
-               return TRUE;
+               return true;
             }
 
          } else {
@@ -235,7 +235,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
       current_time();
 
       if ($duree>0 && $TPSCOUR>=$duree) {//on atteint la fin du temps imparti
-         return TRUE;
+         return true;
       }
 
    }
@@ -247,7 +247,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
    }
 
    $offsettable = -1;
-   return TRUE;
+   return true;
 }
 
 //########################### Script start ################################

@@ -53,7 +53,7 @@ class Contact extends CommonDBTM{
 
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Contact', 'Contacts', $nb);
    }
 
@@ -78,9 +78,9 @@ class Contact extends CommonDBTM{
    }
 
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Contact_Supplier', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -150,7 +150,7 @@ class Contact extends CommonDBTM{
     *
     * @return Nothing (display)
    **/
-   function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -200,9 +200,9 @@ class Contact extends CommonDBTM{
       echo "</td>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "postcode", array('size' => 10));
+      Html::autocompletionTextField($this, "postcode", ['size' => 10]);
       echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
-      Html::autocompletionTextField($this, "town", array('size' => 23));
+      Html::autocompletionTextField($this, "town", ['size' => 23]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -218,7 +218,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      ContactType::dropdown(array('value' => $this->fields["contacttypes_id"]));
+      ContactType::dropdown(['value' => $this->fields["contacttypes_id"]]);
       echo "</td>";
       echo "<td>".__('Country')."</td>";
       echo "<td>";
@@ -226,7 +226,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . _x('person', 'Title') . "</td><td>";
-      UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
+      UserTitle::dropdown(['value' => $this->fields["usertitles_id"]]);
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID > 0) {
          echo "<a target=''_blank' href='".$this->getFormURL().
@@ -243,7 +243,7 @@ class Contact extends CommonDBTM{
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
     **/
-   function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

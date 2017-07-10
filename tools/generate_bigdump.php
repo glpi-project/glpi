@@ -40,16 +40,21 @@
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
-include ('../inc/includes.php');
-include ("generate_bigdump.function.php");
+include (__DIR__ . '/../inc/includes.php');
+include (__DIR__ . '/generate_bigdump.function.php');
 
-if (!Session::getLoginUserID()) {
-   echo "Must be logged in GLPI to run this script";
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
    exit();
 }
 
-// Force mailing to false
-$CFG_GLPI["use_mailing"] = 0;
+$auth = new Auth();
+if (!$auth->Login('glpi', 'glpi', true)) {
+    exit('Authentication failed!');
+}
+
+// unset notifications
+NotificationSetting::disableAll();
 
 $entity_number = 10;
 
@@ -169,7 +174,7 @@ $CONTRACT_PER_ITEM = 1;
 $MAX_DISK = 5;
 
 //Doc cache
-$DOCUMENTS = array();
+$DOCUMENTS = [];
 
 
 foreach ($MAX as $key => $val) {
@@ -177,12 +182,12 @@ foreach ($MAX as $key => $val) {
    $LAST[$key] = 0;
 }
 
-$net_port = array();
-$vlan_loc = array();
+$net_port = [];
+$vlan_loc = [];
 
 generateGlobalDropdowns();
 
-DBmysql::optimize_tables ();
+DBmysql::optimize_tables();
 
 // Force entity right
 $_SESSION['glpiactive_profile']['entity'] = 127;
@@ -195,22 +200,22 @@ $added = 0;
 $entity = new Entity ();
 for ($i=0; $i<max(1, pow($entity_number, 1/2))&&$added<$entity_number; $i++) {
    $added++;
-   $newID = $entity->add(array('name'      => "entity $i",
-                               'comment'   => "comment entity $i"));
+   $newID = $entity->add(['name'      => "entity $i",
+                               'comment'   => "comment entity $i"]);
    generate_entity($newID);
 
    for ($j=0; $j<mt_rand(0, pow($entity_number, 1/2))&&$added<$entity_number; $j++) {
       $added++;
-      $newID2 = $entity->add(array('name'         => "s-entity $j",
+      $newID2 = $entity->add(['name'         => "s-entity $j",
                                    'comment'      => "comment s-entity $j",
-                                   'entities_id'  => $newID));
+                                   'entities_id'  => $newID]);
       generate_entity($newID2);
 
       for ($k=0; $k<mt_rand(0, pow($entity_number, 1/2))&&$added<$entity_number; $k++) {
          $added++;
-         $newID3 = $entity->add(array('name'         => "ss-entity $k",
+         $newID3 = $entity->add(['name'         => "ss-entity $k",
                                       'comment'      => "comment ss-entity $k",
-                                      'entities_id'  => $newID2));
+                                      'entities_id'  => $newID2]);
          generate_entity($newID3);
       }
    }

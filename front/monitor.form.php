@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Monitor::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "monitor");
-   $monitor->display(array('id'           => $_GET["id"],
-                           'withtemplate' => $_GET["withtemplate"]));
+   $monitor->display(['id'           => $_GET["id"],
+                           'withtemplate' => $_GET["withtemplate"]]);
    Html::footer();
 }

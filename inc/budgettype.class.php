@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class BudgetType extends CommonDropdown {
 
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Budget type', 'Budget types', $nb);
    }
 
