@@ -886,7 +886,7 @@ class CronTask extends CommonDBTM{
    static public function register($itemtype, $name, $frequency, $options = []) {
 
       // Check that hook exists
-      if (!isPluginItemType($itemtype)) {
+      if (!isPluginItemType($itemtype) && !class_exists($itemtype)) {
          return false;
       }
       $temp = new self();
