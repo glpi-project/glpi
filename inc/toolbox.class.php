@@ -410,7 +410,11 @@ class Toolbox {
       }
 
       $tps = microtime(true);
-      self::logInFile('php-errors', $msg."\n", true);
+      if (defined('TU_USER')) {
+         echo $msg."\n";
+      } else {
+         self::logInFile('php-errors', $msg."\n", true);
+      }
    }
 
 
@@ -540,9 +544,6 @@ class Toolbox {
 
       $err .= self::backtrace(false, $hide, $skip);
 
-      // Save error
-      static::logInFile("php-errors", $err);
-
       // For unit test
       if (class_exists('GlpitestPHPerror')) {
          if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
@@ -557,6 +558,9 @@ class Toolbox {
          }
          */
       }
+
+      // Save error
+      static::logInFile("php-errors", $err);
 
       return $errortype[$errno];
    }
