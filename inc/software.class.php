@@ -1096,7 +1096,7 @@ class Software extends CommonDBTM {
          }
       }
       if ($html) {
-         Html::changeProgressBarPosition($i, $nb+1, __('Task completed.'));         
+         Html::changeProgressBarPosition($i, $nb+1, __('Task completed.'));
       }
       return $i == ($nb+1);
    }
