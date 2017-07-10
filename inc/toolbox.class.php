@@ -411,7 +411,7 @@ class Toolbox {
 
       $tps = microtime(true);
       if (defined('TU_USER')) {
-         echo $msg."\n";
+         throw new \RuntimeException($msg);
       } else {
          self::logInFile('php-errors', $msg."\n", true);
       }
@@ -1506,7 +1506,7 @@ class Toolbox {
    **/
    static function getRandomString($length, $high = false) {
 
-      if (extension_loaded('mcrypt')) {
+      if (extension_loaded('mcrypt') && !defined('TU_USER')) {
          Toolbox::logDebug('Please disable deprecated mcrypt extension!');
       }
       $factory = new RandomLib\Factory();
