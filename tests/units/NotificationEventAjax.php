@@ -65,7 +65,11 @@ class NotificationEventAjax extends DbTestCase {
    }
 
    public function testSend() {
-      $this->boolean(\NotificationEventAjax::send([]))->isFalse();
+      $this->exception(
+         function () {
+            $this->boolean(\NotificationEventAjax::send([]))->isFalse();
+         }
+      )->message->contains('NotificationEventAjax::send should not be called!');
    }
 
    public function testRaise() {
