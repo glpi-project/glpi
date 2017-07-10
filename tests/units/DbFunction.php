@@ -308,55 +308,39 @@ class DbFunction extends DbTestCase {
    }
 
    public function testTableExist() {
-      $this->output(
+      $this->exception(
          function() {
             $this->boolean(TableExists('glpi_configs'))->isTrue();
          }
-      )->contains('is deprecated');
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('TableExists() function is deprecated');
 
-      $this->output(
+      $this->exception(
          function() {
             $this->boolean(tableExists('fakeTable'))->isFalse();
          }
-      )->contains('is deprecated');
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('TableExists() function is deprecated');
    }
 
    public function testFieldExist() {
-      $this->output(
+      $this->exception(
          function() {
             $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
          }
-      )->contains('is deprecated');
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('FieldExists() function is deprecated');
 
-      $this->output(
+      $this->exception(
          function() {
             $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
          }
-      )->contains('is deprecated');
-
-      $this->when(
-         function () {
-            $this->output(
-               function () {
-                  $this->boolean(fieldExists('fakeTable', 'id'))->isFalse();
-               }
-            )->contains('is deprecated');
-         }
-      )->error
-         ->withType(E_USER_WARNING)
-         ->exists();
-
-      $this->when(
-         function () {
-            $this->output(
-               function () {
-                  $this->boolean(fieldExists('fakeTable', 'fakeField'))->isFalse();
-               }
-            )->contains('is deprecated');
-         }
-      )->error
-         ->withType(E_USER_WARNING)
-         ->exists();
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('FieldExists() function is deprecated');
    }
 
 
