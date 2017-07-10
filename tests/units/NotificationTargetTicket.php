@@ -103,7 +103,7 @@ class NotificationTargetTicket extends DbTestCase {
             'usertype' => ''
          ]
       ];
-      $ret = $notiftargetticket->getDatasForObject($tkt, $basic_options);
+      $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
       $this->array($ret['tasks'])->isIdenticalTo($expected);
 
@@ -112,7 +112,7 @@ class NotificationTargetTicket extends DbTestCase {
       $_SESSION["glpilanguage"] = \Session::loadLanguage( 'fr_FR' );
       $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
-      $ret = $notiftargetticket->getDatasForObject($tkt, $basic_options);
+      $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
       $expected = [
                      [
