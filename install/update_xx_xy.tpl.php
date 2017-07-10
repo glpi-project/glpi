@@ -51,26 +51,6 @@ function updateXXtoXY() {
    $migration->displayTitle(sprintf(__('Update to %s'), 'XY'));
    $migration->setVersion('XY');
 
-   $backup_tables = false;
-   // table already exist but deleted during the migration
-   // not table created during the migration
-   $newtables     = [];
-
-   foreach ($newtables as $new_table) {
-      // rename new tables if exists ?
-      if (TableExists($new_table)) {
-         $migration->dropTable("backup_$new_table");
-         $migration->displayWarning("$new_table table already exists. ".
-                                    "A backup have been done to backup_$new_table.");
-         $backup_tables = true;
-         $query         = $migration->renameTable("$new_table", "backup_$new_table");
-      }
-   }
-   if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.",
-                                 true);
-   }
-
    //put you migration script here
 
    // ************ Keep it at the end **************
