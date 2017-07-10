@@ -415,7 +415,7 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Number of rows on a result
     *
-    * @return int
+    * @return integer
     */
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
@@ -426,7 +426,7 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @since 9.2
     *
-    * @return int
+    * @return integer
     */
    public function count() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
