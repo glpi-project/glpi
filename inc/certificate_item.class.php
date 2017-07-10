@@ -376,6 +376,7 @@ class Certificate_Item extends CommonDBRelation {
    static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB;
 
+
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)
@@ -384,6 +385,8 @@ class Certificate_Item extends CommonDBRelation {
          return false;
       }
 
+      $certificate  = new Certificate();
+
       if (empty($withtemplate)) {
          $withtemplate = 0;
       }
@@ -391,29 +394,7 @@ class Certificate_Item extends CommonDBRelation {
       $canedit      = $item->canAddItem('Certificate');
       $rand         = mt_rand();
       $is_recursive = $item->isRecursive();
-/*
-      $crit = ['FIELDS' => ['glpi_certificates_items' => ['id'],
-                            'glpi_entities' => ['id'],
-                            'glpi_certificates' => [*]
-                           ],
-               'FROM'   => ['glpi_certificates_items'],
-               'JOIN'   => ['glpi_certificates'
-                              => ['FKEY'
-                                    => 'glpi_certificates_items' => 'certificates_id',
-                                       'glpi_certificates'       => 'id',
-                                 ],
-                            'glpi_entities'
-                              => ['FKEY'
-                                    => 'glpi_certificates' => 'entities_id',
-                                       'glpi_entities'     => 'id',
-                                 ]
-                           ],
-               'WHERE'   => [ ['glpi_certificates_items.items_id' => $ID,
-                               'glpi_certificates_items'          => $item->getType()
-                              ]
-                            ],
-               'ORDER'   => 'glpi_certificates.name'
-            ];*/
+
       $query = "SELECT `glpi_certificates_items`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity,
                        `glpi_certificates`.`name` AS assocName,
@@ -433,7 +414,6 @@ class Certificate_Item extends CommonDBRelation {
 
       $certificates = [];
       $used         = [];
-      $certificate  = new Certificate();
 
       foreach ($iterator as $data) {
          $certificates[$data['assocID']] = $data;
@@ -480,11 +460,10 @@ class Certificate_Item extends CommonDBRelation {
             if ($item->getType() == 'Ticket') {
                echo Html::hidden('tickets_id', ['value' => $ID]);
             }
-
-            Certificate::show(['entity'       => $item->fields['entities_id'],
-                               'is_recursive' => $is_recursive,
-                               'used'         => $used
-                              ]);
+            Dropdown::show('Certificate', ['entity' => $item->fields['entities_id'],
+                               'is_recursive'       => $is_recursive,
+                               'used'               => $used
+                            ]);
 
             echo "</td><td class='center' width='20%'>";
             echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
