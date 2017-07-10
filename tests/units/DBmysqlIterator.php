@@ -336,12 +336,19 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = new \DBmysqlIterator(null, 'foo');
       $this->integer($it->numrows())->isIdenticalTo(0);
+      $this->integer(count($it))->isIdenticalTo(0);
       $this->boolean($it->next())->isFalse();
 
       $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
       $this->integer($it->numrows())->isIdenticalTo(1);
+      $this->integer(count($it))->isIdenticalTo(1);
       $row = $it->next();
       $key = $it->key();
       $this->string($row['id'])->isIdenticalTo($key);
+
+      $it = $DB->request('glpi_configs', ['context' => 'core']);
+      $this->integer($it->numrows())->isGreaterThan(100);
+      $this->integer(count($it))->isGreaterThan(100);
+      $this->boolean($it->numrows() == count($it))->isTrue();
    }
 }
