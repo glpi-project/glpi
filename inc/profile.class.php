@@ -2452,29 +2452,6 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Make a select box for a None Read Write choice
-    *
-    * @param $name      select name
-    * @param $value     preselected value.
-    * @param $none      display none choice ? (default 1)
-    * @param $read      display read choice ? (default 1)
-    * @param $write     display write choice ? (default 1)
-    *
-    * @return nothing (print out an HTML select box)
-    *
-    * @deprecated 0.84 use dropdownRight instead
-   **/
-   static function dropdownNoneReadWrite($name, $value, $none = 1, $read = 1, $write = 1) {
-
-      Toolbox::logDebug('dropdownNoneReadWrite() method is deprecated');
-      return self::dropdownRight($name, ['value'     => $value,
-                                              'nonone'  => !$none,
-                                              'noread'  => !$read,
-                                              'nowrite' => !$write]);
-   }
-
-
-   /**
     * Make a select box for rights
     *
     * @since version 0.85

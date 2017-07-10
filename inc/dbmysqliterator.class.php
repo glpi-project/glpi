@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Database iterator class for Mysql
 **/
-class DBmysqlIterator implements Iterator {
+class DBmysqlIterator implements Iterator, Countable {
    /**
     * DBmysql object
     * @var DBmysql
@@ -415,9 +415,20 @@ class DBmysqlIterator implements Iterator {
    /**
     * Number of rows on a result
     *
-    * @return int
+    * @return integer
     */
    public function numrows() {
+      return ($this->res ? $this->conn->numrows($this->res) : 0);
+   }
+
+   /**
+    * Number of rows on a result
+    *
+    * @since 9.2
+    *
+    * @return integer
+    */
+   public function count() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
 }

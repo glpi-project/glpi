@@ -8,7 +8,8 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
-    #upstream patch, bt not yet part of the last release :( TODO: remove when upstream will include it.
+  # cannot disable mcrypt on travis...
+  - sed -e "s/return extension_loaded('mcrypt');/return false;/" -i vendor/ircmaxell/random-lib/lib/RandomLib/AbstractMcryptMixer.php
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
@@ -17,8 +18,8 @@ before_script:
 
 script:
   - mysql -u root -e 'select version();'
-  - vendor/bin/atoum --debug -bf tests/bootstrap.php -d tests/units --no-cc -mcn 1
-  - vendor/bin/atoum --debug -bf tests/bootstrap.php -d tests/api --no-cc -mcn 1
+  - vendor/bin/atoum --debug -bf tests/bootstrap.php --no-cc -mcn 1 -d tests/units
+  - vendor/bin/atoum --debug -bf tests/bootstrap.php --no-cc -mcn 1 -d tests/api
   - if [[ "$CS" == "true" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly

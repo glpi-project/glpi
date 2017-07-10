@@ -624,8 +624,16 @@ class Toolbox {
       } else {
          // Recommended production settings
          ini_set('display_errors', 'Off');
-         error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+         if (defined('TU_USER')) {
+            //do not set error_reporting to a low level for unit tests
+            error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
+         }
          set_error_handler(['Toolbox', 'userErrorHandlerNormal']);
+      }
+
+      if (defined('TU_USER')) {
+         //user default error handler from tests
+         set_error_handler(null);
       }
    }
 
@@ -931,9 +939,20 @@ class Toolbox {
       }
       echo "</tr>";
 
-      $suberr = Config::checkExtensions();
+      $suberr = Config::displayCheckExtensions();
       if ($suberr > $error) {
          $error = $suberr;
+      }
+
+      //check fo mcrypt deprecated ext
+      if (extension_loaded('mcrypt')) {
+         if ($error < 1) {
+            $error = 1;
+         }
+         $msg = _('The mcrypt extension is deprecated and should not be used. Please disable it.');
+         echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), 'mcrypt') . "</td>";
+         echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $msg . "</td>";
+         echo "</tr>";
       }
 
       // memory test
@@ -1483,6 +1502,9 @@ class Toolbox {
    **/
    static function getRandomString($length, $high = false) {
 
+      if (extension_loaded('mcrypt')) {
+         Toolbox::logDebug('Please disable deprecated mcrypt extension!');
+      }
       $factory = new RandomLib\Factory();
       if ($high) {
          /* Notice "High" imply mcrypt extension, unwanted for now

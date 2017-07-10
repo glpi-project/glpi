@@ -87,8 +87,11 @@ class NotificationAjaxSetting extends NotificationSetting {
          echo "<tr class='tab_bg_2'><td>" . __('Time to check for new notifications (in seconds)') .
               "</td>";
          echo "<td>";
-         Dropdown::showInteger('notifications_ajax_check_interval',
-                               $CFG_GLPI["notifications_ajax_check_interval"], 5, 120, 5);
+         Dropdown::showNumber('notifications_ajax_check_interval',
+                              ['value' => $CFG_GLPI["notifications_ajax_check_interval"],
+                               'min'   => 5,
+                               'max'   => 120,
+                               'step'  => 5]);
          echo "</td>";
          echo "<td>" . __('URL of the icon') . "</td>";
          echo "<td><input type='text' name='notifications_ajax_icon_url' value='".

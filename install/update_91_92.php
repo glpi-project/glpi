@@ -649,8 +649,10 @@ function update91to92() {
    }
 
    /************** Auto login **************/
-   Config::setConfigurationValues('core', ['login_remember_time'    => 604800,
-                                           'login_remember_default' => 1]);
+   $migration->addConfig([
+      'login_remember_time'      => 604800,
+      'login_remember_default'   => 1
+   ]);
 
    if (TableExists('glpi_bookmarks')) {
       $migration->renameTable("glpi_bookmarks", "glpi_savedsearches");
@@ -838,13 +840,14 @@ Regards,',
 
    if (isset($current_config['use_mailing']) && !isset($current_config['use_notifications'])) {
       /** Notifications modes */
-      Config::setConfigurationValues('core',
-                                     ['use_notifications'        => $current_config['use_mailing'],
+      $migration->addConfig([
+         'use_notifications'                 => $current_config['use_mailing'],
                                       'notifications_mailing'    => $current_config['use_mailing'],
                                       'notifications_ajax'       => 0,
                                       'notifications_ajax_check_interval' => '5',
                                       'notifications_ajax_sound' => null,
-                                      'notifications_ajax_icon_url' => '/pics/glpi.png']);
+         'notifications_ajax_icon_url'       => '/pics/glpi.png'
+      ]);
    }
 
    if (!TableExists('glpi_notifications_notificationtemplates')) {
@@ -1020,7 +1023,7 @@ Regards,',
    }
 
    //add db version
-   Config::setConfigurationValues('core', ['dbversion' => GLPI_SCHEMA_VERSION]);
+   $migration->addConfig(['dbversion' => GLPI_SCHEMA_VERSION]);
 
    /************** Simcard component **************/
    $migration->addField("glpi_states", "is_visible_line", "bool", ["after" => "is_visible_softwarelicense"]);
