@@ -667,8 +667,8 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
 /**
  * Get the ancestors of an item in a tree dropdown
  *
- * @param $table     string   table name
- * @param $items_id  mixed (array or string) The IDs of the items
+ * @param string       $table    Table name
+ * @param array|string $items_id The IDs of the items
  *
  * @return array of IDs of the ancestors
 **/
@@ -680,26 +680,27 @@ function getAncestorsOf($table, $items_id) {
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = $DB->fieldExists($table, "ancestors_cache");
 
-   if(!is_array($items_id)){
-      $items_id = array($items_id);
+   if (!is_array($items_id)) {
+      $items_id = (array)$items_id;
    }
 
    if ($use_cache) {
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'ancestors_cache', $parentIDfield],
+         'FROM'   => $table,
+         'WHERE'  => ['id' => $items_id]
+      ]);
 
-      $query = "SELECT `id`, `ancestors_cache`, `$parentIDfield`
-                FROM `$table`
-                WHERE `id` IN ('".implode("','", $items_id)."')";
-
-      foreach( $DB->request( $query ) as $row ) {
-         if( $row['id'] > 0 ) {
+      while ($row = $iterator->next()) {
+         if ($row['id'] > 0) {
             $ancestors = $row['ancestors_cache'];
             $parent    = $row[$parentIDfield];
 
             // Return datas from cache in DB
             if (!empty($ancestors)) {
-               $id_found = array_replace( $id_found, importArrayFromDB($ancestors, true));
+               $id_found = array_replace($id_found, importArrayFromDB($ancestors, true));
             } else {
-               $loc_id_found = array();
+               $loc_id_found = [];
                // Recursive solution for table with-cache
                if ($parent > 0) {
                   $loc_id_found = getAncestorsOf($table, $parent);
@@ -727,17 +728,19 @@ function getAncestorsOf($table, $items_id) {
 
    // Get the ancestors
    // iterative solution for table without cache
-   foreach( $items_id as $id ) {
+   foreach ($items_id as $id) {
       $IDf = $id;
       while ($IDf > 0) {
          // Get next elements
-         $query = "SELECT `$parentIDfield`
-               FROM `$table`
-               WHERE `id` = '$IDf'";
+         $iterator = $DB->request([
+            'SELECT' => [$parentIDfield],
+            'FROM'   => $table,
+            'WHERE'  => ['id' => $IDf]
+         ]);
 
-         $result = $DB->query($query);
-         if ($DB->numrows($result)>0) {
-            $IDf = $DB->result($result, 0, 0);
+         if (count($iterator) > 0) {
+            $result = $iterator->current();
+            $IDf = $result[$parentIDfield];
          } else {
             $IDf = 0;
          }
