@@ -209,20 +209,20 @@ class SLA extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
       echo "<td>";
-      self::getSlaTypeDropdown(array('value' => $this->fields["type"]));
+      self::getSlaTypeDropdown(['value' => $this->fields["type"]]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time')."</td>";
       echo "<td>";
-      Dropdown::showNumber("number_time", array('value' => $this->fields["number_time"],
-                                                    'min'   => 0));
-      $possible_values = array('minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
-                               'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
-                               'day'      => _n('Day', 'Days', Session::getPluralNumber()));
+      Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
+                                           'min'   => 0]);
+      $possible_values = ['minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
+                          'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
+                          'day'      => _n('Day', 'Days', Session::getPluralNumber())];
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
-                                      array('value'     => $this->fields["definition_time"],
-                                            'on_change' => 'appearhideendofworking()'));
+                                      ['value'     => $this->fields["definition_time"],
+                                       'on_change' => 'appearhideendofworking()']);
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
       echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
@@ -278,10 +278,10 @@ class SLA extends CommonDBChild {
 
          echo "<script type='text/javascript' >";
          echo "function viewAddSla$instID$rand() {";
-         $params = array('type'                     => $sla->getType(),
-                         'parenttype'               => $slm->getType(),
-                         $slm->getForeignKeyField() => $instID,
-                         'id'                       => -1);
+         $params = ['type'                     => $sla->getType(),
+                    'parenttype'               => $slm->getType(),
+                    $slm->getForeignKeyField() => $instID,
+                    'id'                       => -1];
          Ajax::updateItemJsCode("viewsla$instID$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "}";
@@ -301,7 +301,7 @@ class SLA extends CommonDBChild {
       if (count($slaList)) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
+            $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -328,10 +328,10 @@ class SLA extends CommonDBChild {
                         : '');
             echo "\n<script type='text/javascript' >\n";
             echo "function viewEditSla". $instID.$val["id"]."$rand() {\n";
-            $params = array('type'                     => $sla->getType(),
-                            'parenttype'               => $slm->getType(),
-                            $slm->getForeignKeyField() => $instID,
-                            'id'                       => $val["id"]);
+            $params = ['type'                     => $sla->getType(),
+                       'parenttype'               => $slm->getType(),
+                       $slm->getForeignKeyField() => $instID,
+                       'id'                       => $val["id"]];
             Ajax::updateItemJsCode("viewsla$instID$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
@@ -348,8 +348,8 @@ class SLA extends CommonDBChild {
             echo "<td $edit>".$sla->getSpecificValueToDisplay('type', $sla->fields['type'])."</td>";
             echo "<td $edit>";
             echo $sla->getSpecificValueToDisplay('number_time',
-                  array('number_time'     => $sla->fields['number_time'],
-                        'definition_time' => $sla->fields['definition_time']));
+                  ['number_time'     => $sla->fields['number_time'],
+                   'definition_time' => $sla->fields['definition_time']]);
             echo "</td>";
             if (!$slm->fields['calendars_id']) {
                $link =  __('24/7');
@@ -403,7 +403,7 @@ class SLA extends CommonDBChild {
     *
     * @return boolean
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'SLM' :
@@ -468,7 +468,7 @@ class SLA extends CommonDBChild {
             $slaField  = 'slas_ttr_id';
             break;
       }
-      return array($dateField, $slaField);
+      return [$dateField, $slaField];
    }
 
 
@@ -515,27 +515,27 @@ class SLA extends CommonDBChild {
                }
             }
 
-            $slaoptions = array();
+            $slaoptions = [];
             if (Session::haveRight('slm', READ)) {
                $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA').
                                           "?id=".$this->fields["id"];
             }
             Html::showToolTip($commentsla, $slaoptions);
             if ($canupdate) {
-               $fields = array('sla_delete'        => 'sla_delete',
-                               'id'                => $ticket->getID(),
-                               'type'              => $type,
-                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
-                               '_glpi_simple_form' => 1);
+               $fields = ['sla_delete'        => 'sla_delete',
+                          'id'                => $ticket->getID(),
+                          'type'              => $type,
+                          '_glpi_csrf_token'  => Session::getNewCSRFToken(),
+                          '_glpi_simple_form' => 1];
                $JS = "  function delete_date$type(){
                            if (nativeConfirm('".addslashes(__('Also delete date ?'))."')) {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
-                                                                      array('delete_date' => 1))).");
+                                                                      ['delete_date' => 1])).");
                            } else {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
-                                                                      array('delete_date' => 0))).");
+                                                                      ['delete_date' => 0])).");
                            }
                         }";
                echo Html::scriptBlock($JS);
@@ -551,9 +551,9 @@ class SLA extends CommonDBChild {
             echo "<td width='200px'>";
             echo $tt->getBeginHiddenFieldValue($dateField);
             if ($canupdate) {
-               Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
-                                                         'timestep'   => 1,
-                                                         'maybeempty' => true));
+               Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => true]);
             } else {
                echo Html::convDateTime($ticket->fields[$dateField]);
             }
@@ -566,16 +566,16 @@ class SLA extends CommonDBChild {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText($slaField);
                echo "<span id='sla_action$type'>";
-               echo "<a ".Html::addConfirmationOnAction(array(__('The assignment of a SLA to a ticket causes the recalculation of the date.'),
-                       __("Escalations defined in the SLA will be triggered under this new date.")),
+               echo "<a ".Html::addConfirmationOnAction([__('The assignment of a SLA to a ticket causes the recalculation of the date.'),
+                       __("Escalations defined in the SLA will be triggered under this new date.")],
                                                     "cleanhide('sla_action$type');cleandisplay('sla_choice$type');").
                     " class='pointer' title='".__('SLA')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('SLA')."</span></a>";
                echo "</span>";
                echo "<div id='sla_choice$type' style='display:none'>";
                echo "<span  class='b'>".__('SLA')."</span>&nbsp;";
-               Sla::dropdown(array('name'      => $slaField,
-                                   'entity'    => $ticket->fields["entities_id"],
-                                   'condition' => "`type` = '".$type."'"));
+               Sla::dropdown(['name'      => $slaField,
+                              'entity'    => $ticket->fields["entities_id"],
+                              'condition' => "`type` = '".$type."'"]);
                echo "</div>";
                echo $tt->getEndHiddenFieldText($slaField);
                echo "</td>";
@@ -585,10 +585,10 @@ class SLA extends CommonDBChild {
       } else { // New Ticket
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue($dateField);
-         Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
-                                                   'timestep'   => 1,
-                                                   'maybeempty' => false,
-                                                   'canedit'    => $canupdate));
+         Html::showDateTimeField($dateField, ['value'      => $ticket->fields[$dateField],
+                                              'timestep'   => 1,
+                                              'maybeempty' => false,
+                                              'canedit'    => $canupdate]);
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
          $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
@@ -601,11 +601,11 @@ class SLA extends CommonDBChild {
             }
             echo $tt->getEndHiddenFieldText($slaField);
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($slaField);
-            Sla::dropdown(array('name'      => $slaField,
-                                'entity'    => $ticket->fields["entities_id"],
-                                'value'     => isset($ticket->fields[$slaField])
-                                                  ? $ticket->fields[$slaField] : 0,
-                                'condition' => "`type` = '".$type."'"));
+            Sla::dropdown(['name'      => $slaField,
+                           'entity'    => $ticket->fields["entities_id"],
+                           'value'     => isset($ticket->fields[$slaField])
+                                             ? $ticket->fields[$slaField] : 0,
+                           'condition' => "`type` = '".$type."'"]);
             echo $tt->getEndHiddenFieldValue($slaField, $ticket);
             echo "</td>";
          }
@@ -695,10 +695,10 @@ class SLA extends CommonDBChild {
     * @param $values
     * @param $options   array
    **/
-   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'number_time' :
@@ -729,10 +729,10 @@ class SLA extends CommonDBChild {
     *
     * @return string
    **/
-   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       $options['display'] = false;
       switch ($field) {
@@ -751,9 +751,9 @@ class SLA extends CommonDBChild {
     * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
     *                                     (default 0)
     *
-    * @return due date time (NULL if slm not exists)
+    * @return due date time (null if slm not exists)
    **/
-   function computeDate($start_date, $additional_delay=0) {
+   function computeDate($start_date, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
          $delay = $this->getSLATime();
@@ -777,7 +777,7 @@ class SLA extends CommonDBChild {
          }
       }
 
-      return NULL;
+      return null;
    }
 
 
@@ -811,9 +811,9 @@ class SLA extends CommonDBChild {
     * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
     *                                        (default 0)
     *
-    * @return execution date time (NULL if sla not exists)
+    * @return execution date time (null if sla not exists)
    **/
-   function computeExecutionDate($start_date, $slalevels_id, $additional_delay=0) {
+   function computeExecutionDate($start_date, $slalevels_id, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
          $slalevel = new SlaLevel();
@@ -840,7 +840,7 @@ class SLA extends CommonDBChild {
             }
          }
       }
-      return NULL;
+      return null;
    }
 
 
@@ -891,7 +891,7 @@ class SLA extends CommonDBChild {
       $slalevels_id = ($slalevels_id ? $slalevels_id
                                      : $ticket->fields["ttr_slalevels_id"]);
       if ($ticket->fields["ttr_slalevels_id"] > 0) {
-         $toadd = array();
+         $toadd = [];
          $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
                                              $ticket->fields['sla_waiting_duration']);
          if ($date != null) {
@@ -922,7 +922,7 @@ class SLA extends CommonDBChild {
 
          $slalevelticket = new SlaLevel_Ticket();
          foreach ($DB->request($query) as $data) {
-            $slalevelticket->delete(array('id' => $data['id']));
+            $slalevelticket->delete(['id' => $data['id']]);
          }
       }
    }
@@ -958,8 +958,8 @@ class SLA extends CommonDBChild {
     **/
    static function getSlaTypes() {
 
-      return array(SLM::TTO => __('Time to own'),
-                   SLM::TTR => __('Time to resolve'));
+      return [SLM::TTO => __('Time to own'),
+              SLM::TTR => __('Time to resolve')];
    }
 
 
@@ -987,7 +987,7 @@ class SLA extends CommonDBChild {
     **/
    static function getSlaTypeDropdown($options) {
 
-      $params = array('name'  => 'type');
+      $params = ['name'  => 'type'];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;

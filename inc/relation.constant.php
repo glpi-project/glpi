@@ -507,180 +507,180 @@ $RELATION = ["glpi_authldaps"
                             'glpi_olalevels_tickets' => 'olalevels_id'],
 
                         "glpi_olas"
-                         => ['glpi_slalevels' => 'slas_id',
-                             'glpi_tickets'   => ['olas_ttr_id', 'olas_tto_id']],
+                        => ['glpi_slalevels' => 'slas_id',
+                            'glpi_tickets'   => ['olas_ttr_id', 'olas_tto_id']],
 
                         "glpi_softwarecategories"
-                         => ['glpi_softwares' => 'softwarecategories_id',
-                             'glpi_configs'   => 'softwarecategories_id_ondelete'],
+                        => ['glpi_softwares' => 'softwarecategories_id',
+                            'glpi_configs'   => 'softwarecategories_id_ondelete'],
 
                         "glpi_softwarelicensetypes"
-                         => ['glpi_softwarelicenses' =>'softwarelicensetypes_id'],
+                        => ['glpi_softwarelicenses' =>'softwarelicensetypes_id'],
 
                         "glpi_softwareversions"
-                         => ['glpi_computers_softwareversions' => 'softwareversions_id',
-                              'glpi_softwarelicenses'          => ['softwareversions_id_buy',
-                                                                   'softwareversions_id_use']],
+                        => ['glpi_computers_softwareversions' => 'softwareversions_id',
+                            'glpi_softwarelicenses'           => ['softwareversions_id_buy',
+                                                                  'softwareversions_id_use']],
 
                         "glpi_softwarelicenses"
-                         => ['glpi_computers_softwarelicenses' =>'softwarelicenses_id'],
+                        => ['glpi_computers_softwarelicenses' =>'softwarelicenses_id'],
 
                         "glpi_softwares"
-                         => ['glpi_softwarelicenses' => 'softwares_id',
-                             'glpi_softwareversions' => 'softwares_id',
-                             'glpi_softwares'        => 'softwares_id'],
+                        => ['glpi_softwarelicenses' => 'softwares_id',
+                            'glpi_softwareversions' => 'softwares_id',
+                            'glpi_softwares'        => 'softwares_id'],
 
                         "glpi_solutiontypes"
-                         => ['glpi_changes'           => 'solutiontypes_id',
-                             'glpi_problems'          => 'solutiontypes_id',
-                             'glpi_tickets'           => 'solutiontypes_id',
-                             'glpi_solutiontemplates' => 'solutiontypes_id'],
+                        => ['glpi_changes'           => 'solutiontypes_id',
+                            'glpi_problems'          => 'solutiontypes_id',
+                            'glpi_tickets'           => 'solutiontypes_id',
+                            'glpi_solutiontemplates' => 'solutiontypes_id'],
 
                         "glpi_states"
-                         => ['glpi_computers'         => 'states_id',
-                             'glpi_monitors'          => 'states_id',
-                             'glpi_networkequipments' => 'states_id',
-                             'glpi_peripherals'       => 'states_id',
-                             'glpi_phones'            => 'states_id',
-                             'glpi_printers'          => 'states_id',
-                             'glpi_softwarelicenses'  => 'states_id',
-                             'glpi_softwareversions'  => 'states_id',
-                             'glpi_states'            => 'states_id'],
+                        => ['glpi_computers'         => 'states_id',
+                            'glpi_monitors'          => 'states_id',
+                            'glpi_networkequipments' => 'states_id',
+                            'glpi_peripherals'       => 'states_id',
+                            'glpi_phones'            => 'states_id',
+                            'glpi_printers'          => 'states_id',
+                            'glpi_softwarelicenses'  => 'states_id',
+                            'glpi_softwareversions'  => 'states_id',
+                            'glpi_states'            => 'states_id'],
 
                         "glpi_suppliers"
-                         => ['glpi_changes_suppliers'   => 'suppliers_id',
-                             'glpi_contacts_suppliers'  => 'suppliers_id',
-                             'glpi_contracts_suppliers' => 'suppliers_id',
-                             'glpi_infocoms'            => 'suppliers_id',
-                             'glpi_problems_suppliers'  => 'suppliers_id',
-                             'glpi_suppliers_tickets'   => 'suppliers_id',],
+                        => ['glpi_changes_suppliers'   => 'suppliers_id',
+                            'glpi_contacts_suppliers'  => 'suppliers_id',
+                            'glpi_contracts_suppliers' => 'suppliers_id',
+                            'glpi_infocoms'            => 'suppliers_id',
+                            'glpi_problems_suppliers'  => 'suppliers_id',
+                            'glpi_suppliers_tickets'   => 'suppliers_id',],
 
                         "glpi_suppliertypes"
-                         => ['glpi_suppliers' => 'suppliertypes_id'],
+                        => ['glpi_suppliers' => 'suppliertypes_id'],
 
                         "glpi_taskcategories"
-                         => ['glpi_changetasks'    => 'taskcategories_id',
-                             'glpi_problemtasks'   => 'taskcategories_id',
-                             'glpi_taskcategories' => 'taskcategories_id',
-                             'glpi_tickettasks'    => 'taskcategories_id',
-                             'glpi_tasktemplates'  => 'taskcategories_id'],
+                        => ['glpi_changetasks'    => 'taskcategories_id',
+                            'glpi_problemtasks'   => 'taskcategories_id',
+                            'glpi_taskcategories' => 'taskcategories_id',
+                            'glpi_tickettasks'    => 'taskcategories_id',
+                            'glpi_tasktemplates'  => 'taskcategories_id'],
 
                         "glpi_itilcategories"
-                         => ['glpi_changes'         => 'itilcategories_id',
-                             'glpi_itilcategories'  => 'itilcategories_id',
-                             'glpi_tickets'         => 'itilcategories_id',
-                             'glpi_problems'        => 'itilcategories_id'],
+                        => ['glpi_changes'         => 'itilcategories_id',
+                            'glpi_itilcategories'  => 'itilcategories_id',
+                            'glpi_tickets'         => 'itilcategories_id',
+                            'glpi_problems'        => 'itilcategories_id'],
 
                         "glpi_tickettemplates"
-                         => ['glpi_entities'            => 'tickettemplates_id',
-                             'glpi_itilcategories'      => ['tickettemplates_id_incident',
-                                                            'tickettemplates_id_demand'],
-                             'glpi_ticketrecurrents'    => 'tickettemplates_id',
-                             '_glpi_tickettemplatehiddenfields'
-                                                        => 'tickettemplates_id',
-                             '_glpi_tickettemplatepredefinedfields'
-                                                        => 'tickettemplates_id',
-                             '_glpi_tickettemplatemandatoryfields'
-                                                        => 'tickettemplates_id'],
+                        => ['glpi_entities'            => 'tickettemplates_id',
+                            'glpi_itilcategories'      => ['tickettemplates_id_incident',
+                                                           'tickettemplates_id_demand'],
+                            'glpi_ticketrecurrents'    => 'tickettemplates_id',
+                            '_glpi_tickettemplatehiddenfields'
+                                                       => 'tickettemplates_id',
+                            '_glpi_tickettemplatepredefinedfields'
+                                                       => 'tickettemplates_id',
+                            '_glpi_tickettemplatemandatoryfields'
+                                                       => 'tickettemplates_id'],
 
                         "glpi_tickets"
-                         => ['_glpi_documents'          => 'tickets_id',
-                             'glpi_changes_tickets'     => 'tickets_id',
-                             'glpi_groups_tickets'      => 'tickets_id',
-                             'glpi_problems_tickets'    => 'tickets_id',
-                             'glpi_projecttasks_tickets'=> 'tickets_id',
-                             'glpi_slalevels_tickets'   => 'tickets_id',
-                             'glpi_suppliers_tickets'   => 'tickets_id',
-                             'glpi_ticketfollowups'     => 'tickets_id',
-                             'glpi_ticketsatisfactions' => 'tickets_id',
-                             'glpi_tickettasks'         => 'tickets_id',
-                             'glpi_ticketvalidations'   => 'tickets_id',
-                             'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
-                             'glpi_tickets_users'       => 'tickets_id'],
+                        => ['_glpi_documents'          => 'tickets_id',
+                            'glpi_changes_tickets'     => 'tickets_id',
+                            'glpi_groups_tickets'      => 'tickets_id',
+                            'glpi_problems_tickets'    => 'tickets_id',
+                            'glpi_projecttasks_tickets'=> 'tickets_id',
+                            'glpi_slalevels_tickets'   => 'tickets_id',
+                            'glpi_suppliers_tickets'   => 'tickets_id',
+                            'glpi_ticketfollowups'     => 'tickets_id',
+                            'glpi_ticketsatisfactions' => 'tickets_id',
+                            'glpi_tickettasks'         => 'tickets_id',
+                            'glpi_ticketvalidations'   => 'tickets_id',
+                            'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
+                            'glpi_tickets_users'       => 'tickets_id'],
 
                         "glpi_solutiontypes"
-                         => ['glpi_changes'             => 'solutiontypes_id',
-                             'glpi_tickets'             => 'solutiontypes_id',
-                             'glpi_solutiontemplates'   => 'solutiontypes_id',
-                             'glpi_problems'            => 'solutiontypes_id'],
+                        => ['glpi_changes'             => 'solutiontypes_id',
+                            'glpi_tickets'             => 'solutiontypes_id',
+                            'glpi_solutiontemplates'   => 'solutiontypes_id',
+                            'glpi_problems'            => 'solutiontypes_id'],
 
                         "glpi_ssovariables"
-                         => ['glpi_configs' => 'ssovariables_id'],
+                        => ['glpi_configs' => 'ssovariables_id'],
 
                         "glpi_transfers"
-                         => ['glpi_configs' => 'transfers_id_auto'],
+                        => ['glpi_configs' => 'transfers_id_auto'],
 
                         "glpi_usercategories"
-                         => ['glpi_users' => 'usercategories_id'],
+                        => ['glpi_users' => 'usercategories_id'],
 
                         "glpi_users"
-                         => ['glpi_savedsearches'             => 'users_id',
-                             'glpi_savedsearches_users'       => 'users_id',
-                             'glpi_cartridgeitems'            => 'users_id_tech',
-                             'glpi_changes'                   => ['users_id_recipient',
-                                                                  'users_id_lastupdater'],
-                             'glpi_changes_users'             => 'users_id',
-                             'glpi_changetasks'               => ['users_id', 'users_id_tech'],
-                             'glpi_computers'                 => ['users_id_tech', 'users_id'],
-                             'glpi_consumableitems'           => 'users_id_tech',
-                             'glpi_displaypreferences'        => 'users_id',
-                             'glpi_documents'                 => 'users_id',
-                             'glpi_groups_users'              => 'users_id',
-                             'glpi_itilcategories'            => 'users_id',
-                             'glpi_knowbaseitems'             => 'users_id',
-                             'glpi_knowbaseitems_users'       => 'users_id',
-                             'glpi_monitors'                  => ['users_id_tech', 'users_id'],
-                             'glpi_networkequipments'         => ['users_id_tech', 'users_id'],
-                             'glpi_notimportedemails'         => 'users_id',
-                             'glpi_peripherals'               => ['users_id_tech', 'users_id'],
-                             'glpi_phones'                    => ['users_id_tech', 'users_id'],
-                             'glpi_printers'                  => ['users_id_tech', 'users_id'],
-                             'glpi_problems'                  => ['users_id_recipient',
-                                                                  'users_id_lastupdater'],
-                             'glpi_problems_users'            => 'users_id',
-                             'glpi_problemtasks'              => ['users_id', 'users_id_tech'],
-                             'glpi_profiles_users'            => 'users_id',
-                             'glpi_projects'                  => 'users_id',
-                             'glpi_projecttasks'              => 'users_id',
-                             'glpi_reminders'                 => 'users_id',
-                             'glpi_reminders_users'           => 'users_id',
-                             'glpi_reservations'              => 'users_id',
-                             'glpi_softwarelicenses'          => ['users_id_tech', 'users_id'],
-                             'glpi_softwares'                 => ['users_id_tech', 'users_id'],
-                             'glpi_ticketfollowups'           => 'users_id',
-                             'glpi_tickets'                   => ['users_id_recipient',
-                                                                  'users_id_lastupdater'],
-                             'glpi_tickets_users'             => 'users_id',
-                             'glpi_tickettasks'               => ['users_id', 'users_id_tech'],
-                             'glpi_ticketvalidations'         => 'users_id',
-                             'glpi_ticketvalidations'         => 'users_id_validate',
-                             'glpi_useremails'                => 'users_id'],
+                        => ['glpi_savedsearches'             => 'users_id',
+                            'glpi_savedsearches_users'       => 'users_id',
+                            'glpi_cartridgeitems'            => 'users_id_tech',
+                            'glpi_changes'                   => ['users_id_recipient',
+                                                                 'users_id_lastupdater'],
+                            'glpi_changes_users'             => 'users_id',
+                            'glpi_changetasks'               => ['users_id', 'users_id_tech'],
+                            'glpi_computers'                 => ['users_id_tech', 'users_id'],
+                            'glpi_consumableitems'           => 'users_id_tech',
+                            'glpi_displaypreferences'        => 'users_id',
+                            'glpi_documents'                 => 'users_id',
+                            'glpi_groups_users'              => 'users_id',
+                            'glpi_itilcategories'            => 'users_id',
+                            'glpi_knowbaseitems'             => 'users_id',
+                            'glpi_knowbaseitems_users'       => 'users_id',
+                            'glpi_monitors'                  => ['users_id_tech', 'users_id'],
+                            'glpi_networkequipments'         => ['users_id_tech', 'users_id'],
+                            'glpi_notimportedemails'         => 'users_id',
+                            'glpi_peripherals'               => ['users_id_tech', 'users_id'],
+                            'glpi_phones'                    => ['users_id_tech', 'users_id'],
+                            'glpi_printers'                  => ['users_id_tech', 'users_id'],
+                            'glpi_problems'                  => ['users_id_recipient',
+                                                                 'users_id_lastupdater'],
+                            'glpi_problems_users'            => 'users_id',
+                            'glpi_problemtasks'              => ['users_id', 'users_id_tech'],
+                            'glpi_profiles_users'            => 'users_id',
+                            'glpi_projects'                  => 'users_id',
+                            'glpi_projecttasks'              => 'users_id',
+                            'glpi_reminders'                 => 'users_id',
+                            'glpi_reminders_users'           => 'users_id',
+                            'glpi_reservations'              => 'users_id',
+                            'glpi_softwarelicenses'          => ['users_id_tech', 'users_id'],
+                            'glpi_softwares'                 => ['users_id_tech', 'users_id'],
+                            'glpi_ticketfollowups'           => 'users_id',
+                            'glpi_tickets'                   => ['users_id_recipient',
+                                                                 'users_id_lastupdater'],
+                            'glpi_tickets_users'             => 'users_id',
+                            'glpi_tickettasks'               => ['users_id', 'users_id_tech'],
+                            'glpi_ticketvalidations'         => 'users_id',
+                            'glpi_ticketvalidations'         => 'users_id_validate',
+                            'glpi_useremails'                => 'users_id'],
 
                         "glpi_usertitles"
-                         => ['glpi_contacts'   => 'usertitles_id',
-                             'glpi_users'      => 'usertitles_id'],
+                        => ['glpi_contacts'   => 'usertitles_id',
+                            'glpi_users'      => 'usertitles_id'],
 
                         "glpi_vlans"
-                         => ['glpi_networkports_vlans' => 'vlans_id'],
+                        => ['glpi_networkports_vlans' => 'vlans_id'],
 
                         "glpi_virtualmachinestates"
-                         => ['glpi_computervirtualmachines' => 'virtualmachinestates_id'],
+                        => ['glpi_computervirtualmachines' => 'virtualmachinestates_id'],
 
                         "glpi_virtualmachinesystems"
-                         => ['glpi_computervirtualmachines' => 'virtualmachinesystems_id'],
+                        => ['glpi_computervirtualmachines' => 'virtualmachinesystems_id'],
 
                         "glpi_virtualmachinetypes"
-                         => ['glpi_computervirtualmachines' => 'virtualmachinetypes_id'],
+                        => ['glpi_computervirtualmachines' => 'virtualmachinetypes_id'],
 
                         "glpi_wifinetworks"
-                         => ['glpi_networkportwifis' => 'wifinetworks_id'],
+                        => ['glpi_networkportwifis' => 'wifinetworks_id'],
 
                         // link from devices tables (computers, software, ...) : only used for unrecurs check
                         "_virtual_device"
-                         => ['glpi_contracts_items' => ['items_id', 'itemtype'],
-                             'glpi_documents_items' => ['items_id', 'itemtype'],
-                             'glpi_infocoms'        => ['items_id', 'itemtype'],
-                        //   'glpi_ipaddresses'     => ['items_id', 'itemtype'],
-                        //   'glpi_networknames'    => ['items_id', 'itemtype'],
-                            ],
+                        => ['glpi_contracts_items' => ['items_id', 'itemtype'],
+                            'glpi_documents_items' => ['items_id', 'itemtype'],
+                            'glpi_infocoms'        => ['items_id', 'itemtype'],
+                        //  'glpi_ipaddresses'     => ['items_id', 'itemtype'],
+                        //  'glpi_networknames'    => ['items_id', 'itemtype'],
+                           ],
                 ];
