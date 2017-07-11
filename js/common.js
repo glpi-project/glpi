@@ -584,9 +584,10 @@ function showHideDiv(id, img_name, img_src_close, img_src_open) {
 
    if (img_name != '') {
       var _awesome = img_src_close.match(/^fa-/);
-      var _deco;
+      var _deco,
+          _img;
       if (!_awesome) {
-         _deco = $('img[name=' + img_name + ']');
+         _img = $('img[name=' + img_name + ']');
          if (_elt.is(':visible')) {
             _img.attr('src', img_src_close);
          } else {
