@@ -34,10 +34,11 @@ new whole window
 - `RuleDictionnarySoftwareCollection::versionExists()` signature has changed
 - `NotificationTemplate::getDataToSend()` signature has changed
 - `QueuedMail` has been renamed to `QueuedNotification`
-- `CommonDBTM::mailqueueonaction` has been renamed to `CommonDBTM::notificationqueueonaction`
+- `CommonDBTM::mailqueueonaction()` has been renamed to `CommonDBTM::notificationqueueonaction()`
 - `NotificationTarget::getSender()` no longer takes any parameters (was not used)
-- `TableExists` has been moved to `DBMysql::tableExists`
-- `FieldExists` has been moved to `DBMysql::fieldExists`
+- `TableExists()` has been moved to `DBMysql::tableExists()`
+- `FieldExists()` has been moved to `DBMysql::fieldExists()`
+- `Profile_User::getUserEntitiesForRight()` signature has changed
 
 #### Deprecated
 
@@ -65,12 +66,12 @@ The following methods have been dropped:
 - `CommonGLPI::showTabs()`
 - `CommonGLPI::showNavigationHeaderOld()`
 - `CommonGLPI::show()`
-- `Dropdown::showInteger`
+- `Dropdown::showInteger()`
 - `DBMysql::field_flags()`
 - `Html::showDateFormItem()`
 - `Html::showDateTimeFormItem()`
 - `Profile::dropdownNoneReadWrite()`
-- `Toolbox::get_magic_quotes_runtime`
-- `Toolbox::get_magic_quotes_gpc`
+- `Toolbox::get_magic_quotes_runtime()`
+- `Toolbox::get_magic_quotes_gpc()`
 
 For older entries, please check [GLPI website](http://glpi-project.org).
