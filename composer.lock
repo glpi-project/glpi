@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ad20c655b7ce18edd83fcd2092e5ddc",
+    "content-hash": "13d40a027d803f8fc6211a95055b3f64",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -1141,16 +1141,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "3.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "decb381ef771ada37f8850774a9e9770a3da506f"
+                "reference": "ec911e03170739f75962ff56664e7ea6af5c3974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/decb381ef771ada37f8850774a9e9770a3da506f",
-                "reference": "decb381ef771ada37f8850774a9e9770a3da506f",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/ec911e03170739f75962ff56664e7ea6af5c3974",
+                "reference": "ec911e03170739f75962ff56664e7ea6af5c3974",
                 "shasum": ""
             },
             "require": {
@@ -1221,7 +1221,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2017-02-22T13:05:37+00:00"
+            "time": "2017-07-10T22:11:47+00:00"
         },
         {
             "name": "consolidation/annotated-command",
@@ -2690,7 +2690,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "atoum/atoum": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
