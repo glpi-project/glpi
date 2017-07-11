@@ -82,10 +82,10 @@ class Change_Project extends CommonDBRelation{
 
       foreach ($DB->request('glpi_changes_projects',
                             ['WHERE'  => "`projects_id` = '$oldid'"]) as $data) {
-         $cd                   = new Change_Project();
+         $cd                  = new Change_Project();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
+         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }

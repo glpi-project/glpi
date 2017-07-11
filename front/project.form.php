@@ -111,7 +111,7 @@ if (isset($_POST["add"])) {
       $project->showGantt(-1);
    } else {
       $project->display(['id'           => $_GET["id"],
-                              'withtemplate' => $_GET["withtemplate"]]);
+                         'withtemplate' => $_GET["withtemplate"]]);
    }
    Html::footer();
 }

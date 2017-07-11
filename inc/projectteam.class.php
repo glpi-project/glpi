@@ -138,10 +138,10 @@ class ProjectTeam extends CommonDBRelation {
                  FROM `glpi_projectteams`
                  WHERE `projects_id` = '$oldid'";
       foreach ($DB->request($query) as $data) {
-         $cd                   = new self();
+         $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
+         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }

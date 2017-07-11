@@ -112,7 +112,7 @@ class Contract extends CommonDBTM {
 
       foreach ($DB->request('glpi_contracts_items',
                             ['WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
+                                          AND `itemtype` = '$itemtype'"]) as $data) {
          $cd = new Contract_Item();
          unset($data['id']);
          $data['items_id'] = $newid;

@@ -113,8 +113,8 @@ class Notepad extends CommonDBChild {
 
       foreach ($DB->request('glpi_notepads',
                             ['WHERE'  => "`items_id` = '$oldid'
-                                                AND `itemtype` = '$itemtype'"]) as $data) {
-         $cd                   = new self();
+                                          AND `itemtype` = '$itemtype'"]) as $data) {
+         $cd               = new self();
          unset($data['id']);
          $data['items_id'] = $newid;
          $data             = Toolbox::addslashes_deep($data);

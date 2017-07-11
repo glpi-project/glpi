@@ -159,11 +159,11 @@ class ProjectTask extends CommonDBChild {
       global $DB;
 
       foreach ($DB->request('glpi_projecttasks',
-                            ['WHERE'  => "`projects_id` = '$oldid'"]) as $data) {
-         $cd                   = new self();
+                            ['WHERE' => "`projects_id` = '$oldid'"]) as $data) {
+         $cd                  = new self();
          unset($data['id']);
          $data['projects_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
+         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -418,9 +418,9 @@ class ProjectTask extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td style='width:100px'>"._n('Project task template', 'Project task templates', 1)."</td><td>";
       ProjectTaskTemplate::dropdown(['value'     => $this->fields['projecttasktemplates_id'],
-                                   'entity'    => $this->getEntityID(),
-                                   'rand'      => $rand_template,
-                                   'on_change' => 'projecttasktemplate_update(this.value)']);
+                                     'entity'    => $this->getEntityID(),
+                                     'rand'      => $rand_template,
+                                     'on_change' => 'projecttasktemplate_update(this.value)']);
       echo "</td>";
       echo "</tr>";
       echo Html::scriptBlock('
@@ -435,12 +435,12 @@ class ProjectTask extends CommonDBChild {
 
                // set input name
                $("#textfield_name'.$rand_name.'").val(data.name);
-               
+
                // set textarea description
                $("#description'.$rand_description.'").val(data.description);
                 // set textarea comment
                $("#comment'.$rand_comment.'").val(data.comments);
-               
+
                // set project
                $("#dropdown_projects_id'.$rand_project.'").select2("val", data.projects_id);
                // set state
@@ -451,7 +451,7 @@ class ProjectTask extends CommonDBChild {
                $("#dropdown_percent_done'.$rand_percent.'").select2("val", data.percent_done);
                // set milestone
                $("#dropdown_is_milestone'.$rand_milestone.'").select2("val", data.is_milestone);
-               
+
                // set plan_start_date
                $("#showdate'.$rand_plan_start_date.'").val(data.plan_start_date);
                // set plan_end_date
@@ -460,9 +460,9 @@ class ProjectTask extends CommonDBChild {
                $("#showdate'.$rand_real_start_date.'").val(data.real_start_date);
                // set real_end_date
                $("#showdate'.$rand_real_end_date.'").val(data.real_end_date);
-               
+
                // set effective_duration
-               $("#dropdown_effective_duration'.$rand_effective_duration.'").select2("val", data.effective_duration);               
+               $("#dropdown_effective_duration'.$rand_effective_duration.'").select2("val", data.effective_duration);
                // set planned_duration
                $("#dropdown_planned_duration'.$rand_planned_duration.'").select2("val", data.planned_duration);
 
@@ -517,7 +517,7 @@ class ProjectTask extends CommonDBChild {
       echo "<td>"._x('item', 'State')."</td>";
       echo "<td>";
       ProjectState::dropdown(['value' => $this->fields["projectstates_id"],
-                              'rand'   => $rand_state]);
+                              'rand'  => $rand_state]);
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
@@ -1106,14 +1106,14 @@ class ProjectTask extends CommonDBChild {
          case 'Project' :
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable($this->getTable(),
-                                         ['projects_id' => $item->getID()]);
+                                          ['projects_id' => $item->getID()]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
          case __CLASS__ :
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable($this->getTable(),
-                                         ['projecttasks_id' => $item->getID()]);
+                                          ['projecttasks_id' => $item->getID()]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
