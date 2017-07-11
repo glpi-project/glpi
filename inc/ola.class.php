@@ -964,8 +964,8 @@ class OLA extends CommonDBChild {
     **/
    static function getOlaTypes() {
 
-      return array(SLM::TTO => __('Internal time to own'),
-                   SLM::TTR => __('Internal time to resolve'));
+      return [SLM::TTO => __('Internal time to own'),
+              SLM::TTR => __('Internal time to resolve')];
    }
 
 
@@ -993,7 +993,7 @@ class OLA extends CommonDBChild {
     **/
    static function getOlaTypeDropdown($options) {
 
-      $params = array('name'  => 'type');
+      $params = ['name'  => 'type'];
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;

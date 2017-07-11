@@ -726,14 +726,14 @@ function update91to92() {
       $migration->changeField("glpi_tickets", "slts_ttr_id", "slas_ttr_id", "integer");
       $migration->changeField('glpi_tickets', 'due_date', 'time_to_resolve', 'datetime');
       $migration->addField("glpi_tickets", "ola_waiting_duration", "datetime",
-                           array('after' => 'sla_waiting_duration'));
-      $migration->addField("glpi_tickets", "olas_tto_id", "integer", array('after' => 'ola_waiting_duration'));
-      $migration->addField("glpi_tickets", "olas_ttr_id", "integer", array('after' => 'olas_tto_id'));
-      $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", array('after' => 'olas_tto_id'));
+                           ['after' => 'sla_waiting_duration']);
+      $migration->addField("glpi_tickets", "olas_tto_id", "integer", ['after' => 'ola_waiting_duration']);
+      $migration->addField("glpi_tickets", "olas_ttr_id", "integer", ['after' => 'olas_tto_id']);
+      $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", ['after' => 'olas_tto_id']);
       $migration->addField("glpi_tickets", "internal_time_to_resolve", "datetime",
-                           array('after' => 'ttr_olalevels_id'));
+                           ['after' => 'ttr_olalevels_id']);
       $migration->addField("glpi_tickets", "internal_time_to_own", "datetime",
-                           array('after' => 'internal_time_to_resolve'));
+                           ['after' => 'internal_time_to_resolve']);
       $migration->migrationOneTable('glpi_tickets');
       $migration->dropKey('glpi_tickets', 'slts_tto_id');
       $migration->addKey('glpi_tickets', 'slas_tto_id');

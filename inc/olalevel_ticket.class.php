@@ -88,7 +88,7 @@ class OlaLevel_Ticket extends CommonDBTM {
                        AND `glpi_olas`.`type` = '$olaType'";
 
       foreach ($DB->request($query1) as $data) {
-         $this->delete(array('id' => $data['id']));
+         $this->delete(['id' => $data['id']]);
       }
    }
 
@@ -104,9 +104,9 @@ class OlaLevel_Ticket extends CommonDBTM {
 
       switch ($name) {
          case 'olaticket' :
-            return array('description' => __('Automatic actions of OLA'));
+            return ['description' => __('Automatic actions of OLA')];
       }
-      return array();
+      return [];
    }
 
 
@@ -190,7 +190,7 @@ class OlaLevel_Ticket extends CommonDBTM {
          if (($ticket->fields[$olaField] > 0)) {
             if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
-               $olalevelticket->delete(array('id' => $data['id']));
+               $olalevelticket->delete(['id' => $data['id']]);
 
             } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
                // No execution if ticket has been taken into account
@@ -208,7 +208,7 @@ class OlaLevel_Ticket extends CommonDBTM {
                      }
                      // Process rules
                      if ($doit) {
-                        $input = $olalevel->executeActions($input, array());
+                        $input = $olalevel->executeActions($input, []);
                      }
                   }
 
@@ -217,22 +217,22 @@ class OlaLevel_Ticket extends CommonDBTM {
                                                      $data['olalevels_id']);
                   $ola->addLevelToDo($ticket, $next);
                   // Action done : drop the line
-                  $olalevelticket->delete(array('id' => $data['id']));
+                  $olalevelticket->delete(['id' => $data['id']]);
 
                   $ticket->update($input);
                } else {
                   // Drop line
-                  $olalevelticket->delete(array('id' => $data['id']));
+                  $olalevelticket->delete(['id' => $data['id']]);
                }
             }
          } else {
             // Drop line
-            $olalevelticket->delete(array('id' => $data['id']));
+            $olalevelticket->delete(['id' => $data['id']]);
          }
 
       } else {
          // Drop line
-         $olalevelticket->delete(array('id' => $data['id']));
+         $olalevelticket->delete(['id' => $data['id']]);
       }
    }
 

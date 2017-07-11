@@ -99,6 +99,6 @@ if (isset($_POST["update"])) {
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
    Html::header(OlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "olalevel");
    //show computer form to add
-   $item->display(array('id' => $_GET["id"]));
+   $item->display(['id' => $_GET["id"]]);
    Html::footer();
 }

@@ -406,7 +406,7 @@ class Ticket extends CommonITILObject {
       list($dateField, $olaField) = OLA::getOlaFieldNames($type);
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
-      $data         = array();
+      $data         = [];
 
       $ola = new OLA();
       if ($ola->getFromDB($olas_id)) {
@@ -473,11 +473,11 @@ class Ticket extends CommonITILObject {
     *
     * @param $id
     * @param $type
-    * @param $delete_date      (default 0)
+    * @param $delete_date (default 0)
     *
     * @return type
     **/
-   function deleteOLA($id, $type, $delete_date=0) {
+   function deleteOLA($id, $type, $delete_date = 0) {
 
       switch ($type) {
          case SLM::TTR :

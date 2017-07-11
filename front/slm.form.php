@@ -80,6 +80,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(SLM::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm");
 
-   $slm->display(array('id' => $_GET["id"]));
+   $slm->display(['id' => $_GET["id"]]);
    Html::footer();
 }
