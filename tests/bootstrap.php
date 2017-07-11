@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+error_reporting(E_ALL);
 
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
@@ -446,6 +447,12 @@ function loadDataset() {
             'designation'         => '_test_simcard_1',
             'entities_id'         => '_test_root_entity',
             'is_recursive'        => 1,
+         ]
+      ], 'DeviceSensor' => [
+         [
+            'designation'  => '_test_sensor_1',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1
          ]
       ]
    ];

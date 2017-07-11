@@ -62,7 +62,7 @@ function update0831to084() {
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
-      if (TableExists($new_table)) {
+      if ($DB->tableExists($new_table)) {
          $migration->dropTable("backup_$new_table");
          $migration->displayWarning("$new_table table already exists. ".
                                     "A backup have been done to backup_$new_table.");
@@ -123,7 +123,7 @@ function update0831to084() {
              WHERE `itemtype` = 'States'";
    $DB->query($query);
 
-   if (TableExists('glpi_networkportmigrations')) {
+   if ($DB->tableExists('glpi_networkportmigrations')) {
       $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
       $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
                                  true);
@@ -263,7 +263,7 @@ function update0831to084() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'Merge entity and entitydatas'));
 
-   if (TableExists('glpi_entitydatas')) {
+   if ($DB->tableExists('glpi_entitydatas')) {
       $migration->changeField('glpi_entities', 'id', 'id', 'integer');
       $migration->migrationOneTable('glpi_entities');
       // pour que la procedure soit re-entrante
@@ -486,7 +486,7 @@ function update0831to084() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'contract and ticket costs'));
 
-   if (!TableExists('glpi_contractcosts')) {
+   if (!$DB->tableExists('glpi_contractcosts')) {
       $query = "CREATE TABLE `glpi_contractcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `contracts_id` int(11) NOT NULL DEFAULT '0',
@@ -537,7 +537,7 @@ function update0831to084() {
       $migration->dropField('glpi_contracts', 'cost');
    }
 
-   if (!TableExists('glpi_ticketcosts')) {
+   if (!$DB->tableExists('glpi_ticketcosts')) {
       $query = "CREATE TABLE `glpi_ticketcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -606,7 +606,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'rss flows'));
 
-   if (!TableExists('glpi_rssfeeds')) {
+   if (!$DB->tableExists('glpi_rssfeeds')) {
       $query = "CREATE TABLE `glpi_rssfeeds` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
@@ -628,7 +628,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds");
       $ADDTODISPLAYPREF['RSSFeed'] = [2,4,5,19,6,7];
    }
-   if (!TableExists('glpi_rssfeeds_users')) {
+   if (!$DB->tableExists('glpi_rssfeeds_users')) {
       $query = "CREATE TABLE `glpi_rssfeeds_users` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
@@ -641,7 +641,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_rssfeeds_users");
    }
 
-   if (!TableExists('glpi_groups_rssfeeds')) {
+   if (!$DB->tableExists('glpi_groups_rssfeeds')) {
       $query = "CREATE TABLE `glpi_groups_rssfeeds` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
@@ -659,7 +659,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_groups_rssfeeds");
    }
 
-   if (!TableExists('glpi_profiles_rssfeeds')) {
+   if (!$DB->tableExists('glpi_profiles_rssfeeds')) {
       $query = "CREATE TABLE `glpi_profiles_rssfeeds` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
@@ -676,7 +676,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_profiles_rssfeeds");
    }
 
-   if (!TableExists('glpi_entities_rssfeeds')) {
+   if (!$DB->tableExists('glpi_entities_rssfeeds')) {
       $query = "CREATE TABLE `glpi_entities_rssfeeds` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `rssfeeds_id` int(11) NOT NULL DEFAULT '0',
@@ -693,7 +693,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
-   if (!TableExists('glpi_planningrecalls')) {
+   if (!$DB->tableExists('glpi_planningrecalls')) {
       $query = "CREATE TABLE `glpi_planningrecalls` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `items_id` int(11) NOT NULL DEFAULT '0',
@@ -867,7 +867,7 @@ function update0831to084() {
    $migration->addField("glpi_configs", 'x509_cn_restrict', "string",
                         ['after' => 'x509_email_field']);
 
-   if (!TableExists('glpi_slalevelcriterias')) {
+   if (!$DB->tableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `slalevels_id` int(11) NOT NULL DEFAULT '0',
@@ -916,7 +916,7 @@ function update0831to084() {
 
    $DB->queryOrDie($query, "0.84 clean targets for fieldunicity notification");
 
-   if (!TableExists('glpi_blacklists')) {
+   if (!$DB->tableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `type` int(11) NOT NULL DEFAULT '0',
@@ -957,7 +957,7 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
    }
 
-   if (!TableExists('glpi_ssovariables')) {
+   if (!$DB->tableExists('glpi_ssovariables')) {
       $query = "CREATE TABLE `glpi_ssovariables` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1145,7 +1145,7 @@ function update0831to084() {
    }
 
    // Add multiple suppliers for itil objects
-   if (!TableExists('glpi_problems_suppliers')) {
+   if (!$DB->tableExists('glpi_problems_suppliers')) {
       $query = "CREATE TABLE `glpi_problems_suppliers` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `problems_id` int(11) NOT NULL DEFAULT '0',
@@ -1168,7 +1168,7 @@ function update0831to084() {
       $migration->dropField('glpi_problems', 'suppliers_id_assign');
    }
 
-   if (!TableExists('glpi_suppliers_tickets')) {
+   if (!$DB->tableExists('glpi_suppliers_tickets')) {
       $query = "CREATE TABLE `glpi_suppliers_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -1770,14 +1770,14 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $originTables[$table] = 'origin_'.$table;
    }
 
-   if (!TableExists('origin_glpi_networkequipments')) {
+   if (!$DB->tableExists('origin_glpi_networkequipments')) {
       // remove of mac field from glpi_networkequipments is done at the end of migration
       // framework process
-      if (!FieldExists('glpi_networkequipments', 'mac')) {
+      if (!$DB->fieldExists('glpi_networkequipments', 'mac')) {
          // Nothing to be done : migration of NetworkPort already OK !
 
          // But don't add display preference for NetworkPortMigration if none exists
-         if (!TableExists('glpi_networkportmigrations')) {
+         if (!$DB->tableExists('glpi_networkportmigrations')) {
             unset($ADDTODISPLAYPREF['NetworkPortMigration']);
          }
 
@@ -1788,7 +1788,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       }
 
       foreach ($originTables as $table => $originTable) {
-         if (!TableExists($originTable) && TableExists($table)) {
+         if (!$DB->tableExists($originTable) && $DB->tableExists($table)) {
             $migration->copyTable($table, $originTable);
             $migration->displayWarning("To be safe, we are working on $originTable. ".
                                        "It is a copy of $table", false);
@@ -1821,7 +1821,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_fqdns'));
 
    // Adding FQDN table
-   if (!TableExists('glpi_fqdns')) {
+   if (!$DB->tableExists('glpi_fqdns')) {
       $query = "CREATE TABLE `glpi_fqdns` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1859,7 +1859,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_ipaddresses'));
 
    // Adding IPAddress table
-   if (!TableExists('glpi_ipaddresses')) {
+   if (!$DB->tableExists('glpi_ipaddresses')) {
       $query = "CREATE TABLE `glpi_ipaddresses` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1884,7 +1884,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'glpi_wifinetworks'));
 
    // Adding WifiNetwork table
-   if (!TableExists('glpi_wifinetworks')) {
+   if (!$DB->tableExists('glpi_wifinetworks')) {
       $query = "CREATE TABLE `glpi_wifinetworks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
                  `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1906,7 +1906,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks"));
 
    // Adding IPNetwork table
-   if (!TableExists('glpi_ipnetworks')) {
+   if (!$DB->tableExists('glpi_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipnetworks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -2021,7 +2021,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks_vlans"));
 
    // Adding IPNetwork table
-   if (!TableExists('glpi_ipnetworks_vlans')) {
+   if (!$DB->tableExists('glpi_ipnetworks_vlans')) {
       $query = "CREATE TABLE `glpi_ipnetworks_vlans` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
@@ -2036,7 +2036,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_networknames"));
 
    // Adding NetworkName table
-   if (!TableExists('glpi_networknames')) {
+   if (!$DB->tableExists('glpi_networknames')) {
       $query = "CREATE TABLE `glpi_networknames` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -2075,7 +2075,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkaliases"));
 
    // Adding NetworkAlias table
-   if (!TableExists('glpi_networkaliases')) {
+   if (!$DB->tableExists('glpi_networkaliases')) {
       $query = "CREATE TABLE `glpi_networkaliases` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -2095,7 +2095,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Data migration - %s'), "glpi_ipaddresses_ipnetworks"));
 
    // Adding IPAddress_IPNetwork table
-   if (!TableExists('glpi_ipaddresses_ipnetworks')) {
+   if (!$DB->tableExists('glpi_ipaddresses_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipaddresses_ipnetworks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `ipaddresses_id` int(11) NOT NULL DEFAULT '0',
@@ -2196,7 +2196,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportethernets"));
 
    // Adding NetworkPortEthernet table
-   if (!TableExists('glpi_networkportethernets')) {
+   if (!$DB->tableExists('glpi_networkportethernets')) {
       $query = "CREATE TABLE `glpi_networkportethernets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -2221,7 +2221,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportwifis"));
 
    // Adding NetworkPortWifi table
-   if (!TableExists('glpi_networkportwifis')) {
+   if (!$DB->tableExists('glpi_networkportwifis')) {
       $query = "CREATE TABLE `glpi_networkportwifis` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -2250,7 +2250,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportlocals"));
 
    // Adding NetworkPortLocal table
-   if (!TableExists('glpi_networkportlocals')) {
+   if (!$DB->tableExists('glpi_networkportlocals')) {
       $query = "CREATE TABLE `glpi_networkportlocals` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -2267,7 +2267,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportdialups"));
 
    // Adding NetworkPortDialup table
-   if (!TableExists('glpi_networkportdialups')) {
+   if (!$DB->tableExists('glpi_networkportdialups')) {
       $query = "CREATE TABLE `glpi_networkportdialups` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -2284,7 +2284,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaggregates"));
 
    // Adding NetworkPortAggregate table
-   if (!TableExists('glpi_networkportaggregates')) {
+   if (!$DB->tableExists('glpi_networkportaggregates')) {
       $query = "CREATE TABLE `glpi_networkportaggregates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
@@ -2368,7 +2368,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaliases"));
 
    // Adding NetworkPortAlias table
-   if (!TableExists('glpi_networkportaliases')) {
+   if (!$DB->tableExists('glpi_networkportaliases')) {
       $query = "CREATE TABLE `glpi_networkportaliases` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',

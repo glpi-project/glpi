@@ -43,7 +43,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Security
-if (!TableExists($_POST['table'])) {
+if (!$DB->tableExists($_POST['table'])) {
    exit();
 }
 

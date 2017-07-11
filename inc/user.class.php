@@ -116,6 +116,12 @@ class User extends CommonDBTM {
          return true;
       }
 
+      if (($_SESSION['glpiactive_entity'] > 0)
+          && (Profile::getDefault() == 0)) {
+         echo "<div class='tab_cadre_fixe warning'>".
+                __('You must define a default profile to create a new user')."</div>";
+      }
+
       return false;
    }
 
@@ -3753,7 +3759,7 @@ class User extends CommonDBTM {
             if (!($item = getItemForItemtype($itemtype))) {
                continue;
             }
-            if ($item->canView()) {
+            if ($item->canView() && $item->isField($field_group)) {
                $itemtable = getTableForItemType($itemtype);
                $query = "SELECT *
                          FROM `$itemtable`
@@ -4247,7 +4253,7 @@ class User extends CommonDBTM {
    /**
    * Get personal token checking that it is unique
    *
-   * @deprecated since version 9.2; @see User::getUniqueToken()
+   * @deprecated 9.2 @see User::getUniqueToken()
    *
    * @return string personal token
    **/
@@ -4289,7 +4295,7 @@ class User extends CommonDBTM {
     *
     * @param $ID user ID
    *
-   * @deprecated since version 9.2; @see User::getToken()
+   * @deprecated 9.2 @see User::getToken()
     *
     * @return string personal token
    **/

@@ -4766,8 +4766,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
-      if ($canupdate && $canpriority) {
-         // Only change during creation OR when allowed to change priority OR when user is the creator
+      if ($canupdate) {
          echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
          echo $tt->getEndHiddenFieldValue('urgency', $this);
@@ -5018,45 +5017,44 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets',
+                                               Session::getPluralNumber());
+      $rand_linked_ticket = mt_rand();
       if ($canupdate) {
-         echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
-         $rand_linked_ticket = mt_rand();
-         if ($canupdate) {
-            echo "<span class='fa fa-plus pointer' onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
-                   title=\"".__s('Add')."\"><span class='sr-only'>" . __s('Add') . "</span></span>";
-         }
-         echo '</th>';
-         echo "<td colspan='3'>";
-         if ($canupdate) {
-            echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
-            echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
-            Ticket_Ticket::dropdownLinks('_link[link]',
-                                         (isset($values["_link"])?$values["_link"]['link']:''));
-            echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
-            echo "</td><td width='70%'>";
-            $linkparam = ['name'        => '_link[tickets_id_2]',
-                          'used'        => [$this->getID()],
-                          'displaywith' => ['id']];
-
-            if (isset($values["_link"])) {
-               $linkparam['value'] = $values["_link"]['tickets_id_2'];
-            }
-            Ticket::dropdown($linkparam);
-            echo "</td></tr></table>";
-            echo "</div>";
-
-            if (isset($values["_link"])
-                && !empty($values["_link"]['tickets_id_2'])) {
-               echo "<script language='javascript'>";
-               echo "$(function() {";
-               echo Html::jsShow("linkedticket$rand_linked_ticket");
-               echo "});</script>";
-            }
-         }
-
-         Ticket_Ticket::displayLinkedTicketsTo($ID);
-         echo "</td>";
+         echo "<span class='fa fa-plus pointer' onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
+                title=\"".__s('Add')."\"><span class='sr-only'>" . __s('Add') . "</span></span>";
       }
+      echo '</th>';
+      echo "<td colspan='3'>";
+      if ($canupdate) {
+         echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
+         echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
+         Ticket_Ticket::dropdownLinks('_link[link]',
+                                      (isset($values["_link"])?$values["_link"]['link']:''));
+         echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
+         echo "</td><td width='70%'>";
+         $linkparam = ['name'        => '_link[tickets_id_2]',
+                       'used'        => [$this->getID()],
+                       'displaywith' => ['id']];
+
+         if (isset($values["_link"])) {
+            $linkparam['value'] = $values["_link"]['tickets_id_2'];
+         }
+         Ticket::dropdown($linkparam);
+         echo "</td></tr></table>";
+         echo "</div>";
+
+         if (isset($values["_link"])
+             && !empty($values["_link"]['tickets_id_2'])) {
+            echo "<script language='javascript'>";
+               echo "$(function() {";
+            echo Html::jsShow("linkedticket$rand_linked_ticket");
+            echo "});</script>";
+         }
+      }
+
+      Ticket_Ticket::displayLinkedTicketsTo($ID);
+      echo "</td>";
       echo "</tr>";
 
       // View files added
@@ -6949,6 +6947,17 @@ class Ticket extends CommonITILObject {
             echo $group->getLink()."&nbsp;";
             echo Html::showToolTip($group->getComments(),
                                    ['link' => $group->getLinkURL()]);
+            echo "</div>";
+         }
+         if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
+            echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
+            $user->getFromDB($item_i['users_id_editor']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            echo sprintf(
+               __('Last edited on %1$s by %2$s'),
+               Html::convDateTime($item_i['date_mod']),
+               $user->getLink()
+            );
             echo "</div>";
          }
 

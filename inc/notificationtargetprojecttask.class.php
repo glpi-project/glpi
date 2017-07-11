@@ -586,7 +586,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
    /**
     * Add team users to the notified user list
     *
-    * @deprecated Use NotificationTargetProjectTask::addTeamUsers()
+    * @deprecated 9.2 Use NotificationTargetProjectTask::addTeamUsers()
     *
     * @return void
    **/
@@ -601,7 +601,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     *
     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
     *
-    * @deprecated Use NotificationTargetProjectTask::addTeamGroups()
+    * @deprecated 9.2 Use NotificationTargetProjectTask::addTeamGroups()
     *
     * @return void
    **/
@@ -614,7 +614,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
    /**
     * Add team contacts to the notified user list
     *
-    * @deprecated Use NotificationTargetProjectTask::addTeamContacts()
+    * @deprecated 9.2 Use NotificationTargetProjectTask::addTeamContacts()
     *
     * @return void
    **/
@@ -627,7 +627,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
    /**
     * Add team suppliers to the notified user list
     *
-    * @deprecated Use NotificationTargetProjectTask::addTeamSuppliers()
+    * @deprecated 9.2 Use NotificationTargetProjectTask::addTeamSuppliers()
     *
     * @return void
    **/

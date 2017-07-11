@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,21 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
+include ('../inc/includes.php');
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-/// Class NetworkEquipmentFirmware
-class NetworkEquipmentFirmware extends CommonDropdown {
-
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Firmware', 'Firmware', $nb);
-   }
-}
+$item_device = new Item_DeviceSensor();
+include (GLPI_ROOT . "/front/item_device.common.form.php");

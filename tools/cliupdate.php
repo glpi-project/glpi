@@ -61,81 +61,11 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
 
-// Old itemtype for compatibility
-define("GENERAL_TYPE", 0);
-define("COMPUTER_TYPE", 1);
-define("NETWORKING_TYPE", 2);
-define("PRINTER_TYPE", 3);
-define("MONITOR_TYPE", 4);
-define("PERIPHERAL_TYPE", 5);
-define("SOFTWARE_TYPE", 6);
-define("CONTACT_TYPE", 7);
-define("ENTERPRISE_TYPE", 8);
-define("INFOCOM_TYPE", 9);
-define("CONTRACT_TYPE", 10);
-define("CARTRIDGEITEM_TYPE", 11);
-define("TYPEDOC_TYPE", 12);
-define("DOCUMENT_TYPE", 13);
-define("KNOWBASE_TYPE", 14);
-define("USER_TYPE", 15);
-define("TRACKING_TYPE", 16);
-define("CONSUMABLEITEM_TYPE", 17);
-define("CONSUMABLE_TYPE", 18);
-define("CARTRIDGE_TYPE", 19);
-define("SOFTWARELICENSE_TYPE", 20);
-define("LINK_TYPE", 21);
-define("STATE_TYPE", 22);
-define("PHONE_TYPE", 23);
-define("DEVICE_TYPE", 24);
-define("REMINDER_TYPE", 25);
-define("STAT_TYPE", 26);
-define("GROUP_TYPE", 27);
-define("ENTITY_TYPE", 28);
-define("RESERVATION_TYPE", 29);
-define("AUTHMAIL_TYPE", 30);
-define("AUTHLDAP_TYPE", 31);
-define("OCSNG_TYPE", 32);
-define("REGISTRY_TYPE", 33);
-define("PROFILE_TYPE", 34);
-define("MAILGATE_TYPE", 35);
-define("RULE_TYPE", 36);
-define("TRANSFER_TYPE", 37);
-define("BOOKMARK_TYPE", 38);
-define("SOFTWAREVERSION_TYPE", 39);
-define("PLUGIN_TYPE", 40);
-define("COMPUTERDISK_TYPE", 41);
-define("NETWORKING_PORT_TYPE", 42);
-define("FOLLOWUP_TYPE", 43);
-define("BUDGET_TYPE", 44);
-
-// Old devicetype for compatibility
-define("MOBOARD_DEVICE", 1);
-define("PROCESSOR_DEVICE", 2);
-define("RAM_DEVICE", 3);
-define("HDD_DEVICE", 4);
-define("NETWORK_DEVICE", 5);
-define("DRIVE_DEVICE", 6);
-define("CONTROL_DEVICE", 7);
-define("GFX_DEVICE", 8);
-define("SND_DEVICE", 9);
-define("PCI_DEVICE", 10);
-define("CASE_DEVICE", 11);
-define("POWER_DEVICE", 12);
-
-
-if (is_writable(GLPI_SESSION_DIR)) {
-   Session::setPath();
-} else {
-   die("Can't write in ".GLPI_SESSION_DIR."\n");
-}
-Session::start();
-
-// Init debug variable
-$_SESSION = ['glpilanguage' => (isset($args['lang']) ? $args['lang'] : 'en_GB')];
-$_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-
 $DB = new DB();
+
+$update = new Update($DB);
+$update->initSession();
+
 Session::loadLanguage();
 if (!$DB->connected) {
    die("No DB connection\n");
@@ -189,237 +119,40 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (!TableExists("glpi_configs")) {
-   // Get current version
-   // Use language from session, even if sometime not reliable
-   $query = "SELECT `version`, 'language'
-             FROM `glpi_config`";
-   $result = $DB->queryOrDie($query, "get current version");
-
-   $current_version     = trim($DB->result($result, 0, 0));
-   $current_db_version  = $current_version;
-   $glpilanguage        = trim($DB->result($result, 0, 1));
-   // < 0.85
-} else if (FieldExists('glpi_configs', 'version')) {
-   // Get current version and language
-   $query = "SELECT `version`, `language`
-             FROM `glpi_configs`";
-   $result = $DB->queryOrDie($query, "get current version");
-
-   $current_version     = trim($DB->result($result, 0, 0));
-   $current_db_version  = $current_version;
-   $glpilanguage        = trim($DB->result($result, 0, 1));
-} else {
-   $configurationValues = Config::getConfigurationValues(
-      'core',
-      ['version', 'dbversion', 'language']
-   );
-
-   $current_version     = $configurationValues['version'];
-   $current_db_version  = isset($configurationValues['dbversion']) ? $configurationValues['dbversion'] : $current_version;
-   $glpilanguage        = $configurationValues['language'];
-}
+$currents            = $update->getCurrents();
+$current_version     = $currents['version'];
+$current_db_version  = $currents['dbversion'];
+$glpilanguage        = $currents['language'];
 
 $migration = new CliMigration(GLPI_SCHEMA_VERSION);
+$update->setMigration($migration);
 
 $migration->displayWarning("Current GLPI version         : " . $current_version);
 $migration->displayWarning("New GLPI version             : " . GLPI_VERSION);
 $migration->displayWarning("Current GLPI database version: " . $current_db_version);
 $migration->displayWarning("New GLPI database version    : " . GLPI_SCHEMA_VERSION);
-$migration->displayWarning("Default GLPI Language: $glpilanguage");
-
-
-// To prevent problem of execution time
-ini_set("max_execution_time", "0");
+$migration->displayWarning("Default GLPI Language        : $glpilanguage");
 
 if (defined('GLPI_PREVER')) {
+   $migration->displayWarning("Development version          : Yes");
    if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($args['dev'])) {
       die(GLPI_SCHEMA_VERSION . " is not a stable release. Please upgrade manually - or add --dev.\n");
    }
 }
 
-switch ($current_version) {
-   case "0.72.3" :
-   case "0.72.4" :
-      include_once("../install/update_0723_078.php");
-      update0723to078();
-
-   case "0.78" :
-      include_once("../install/update_078_0781.php");
-      update078to0781();
-
-   case "0.78.1" :
-      include_once("../install/update_0781_0782.php");
-      update0781to0782();
-
-   case "0.78.2":
-   case "0.78.3":
-   case "0.78.4":
-   case "0.78.5":
-      include_once("../install/update_0782_080.php");
-      update0782to080();
-
-   case "0.80" :
-      include_once("../install/update_080_0801.php");
-      update080to0801();
-      // nobreak;
-
-   case "0.80.1" :
-   case "0.80.2" :
-      include_once("../install/update_0801_0803.php");
-      update0801to0803();
-      // nobreak;
-
-   case "0.80.3" :
-   case "0.80.4" :
-   case "0.80.5" :
-   case "0.80.6" :
-   case "0.80.61" :
-   case "0.80.7" :
-      include_once("../install/update_0803_083.php");
-      update0803to083();
-      // nobreak;
-
-   case "0.83" :
-      include_once("../install/update_083_0831.php");
-      update083to0831();
-      // nobreak;
-
-   case "0.83.1" :
-   case "0.83.2" :
-      include_once("../install/update_0831_0833.php");
-      update0831to0833();
-
-   case "0.83.3" :
-   case "0.83.31" :
-   case "0.83.4" :
-   case "0.83.5" :
-   case "0.83.6" :
-   case "0.83.7" :
-   case "0.83.8" :
-   case "0.83.9" :
-   case "0.83.91" :
-      include_once("../install/update_0831_084.php");
-      update0831to084();
-
-   case "0.84" :
-      include_once("../install/update_084_0841.php");
-      update084to0841();
-
-   case "0.84.1" :
-   case "0.84.2" :
-      include_once("../install/update_0841_0843.php");
-      update0841to0843();
-
-   case "0.84.3" :
-      include_once("../install/update_0843_0844.php");
-      update0843to0844();
-
-   case "0.84.4" :
-   case "0.84.5" :
-      include_once("../install/update_0845_0846.php");
-      update0845to0846();
-
-   case "0.84.6" :
-   case "0.84.7" :
-   case "0.84.8" :
-   case "0.84.9" :
-      include_once("../install/update_084_085.php");
-      update084to085();
-
-   case "0.85" :
-   case "0.85.1" :
-   case "0.85.2" :
-      include_once("../install/update_085_0853.php");
-      update085to0853();
-
-   case "0.85.3" :
-   case "0.85.4" :
-      include_once("../install/update_0853_0855.php");
-      update0853to0855();
-
-   case "0.85.5" :
-      include_once("../install/update_0855_090.php");
-      update0855to090();
-
-   case "0.90" :
-      include_once("../install/update_090_0901.php");
-      update090to0901();
-
-   case "0.90.1" :
-   case "0.90.2" :
-   case "0.90.3" :
-   case "0.90.4" :
-      include_once("../install/update_0901_0905.php");
-      update0901to0905();
-
-   case "0.90.5" :
-      include_once("../install/update_0905_91.php");
-      update0905to91();
-
-      /* remember to also change --force below for last version */
-   case "0.91" : // // for change name of the version - to delete in next version
-   case "9.1" :
-      include_once("../install/update_91_911.php");
-      update91to911();
-
-   case "9.1.1":
-   case "9.1.2":
-      include_once("../install/update_911_913.php");
-      update911to913();
-
-   case "9.1.3":
-   case "9.1.4":
-      include_once("../install/update_91_92.php");
-      update91to92();
-      break;
-
-   case GLPI_VERSION:
-   case GLPI_SCHEMA_VERSION:
-   case GLPI_PREVER:
-      $current_db_version = GLPI_SCHEMA_VERSION;
-      break;
-
-   default :
-      die("Unsupported version ($current_version)\n");
+if (substr($current_version, -4) === '-dev') {
+   $current_version = str_replace('-dev', '', $current_version);
 }
+$update->doUpdates($current_version);
 
 if (version_compare($current_db_version, GLPI_SCHEMA_VERSION, 'ne')) {
-
-   // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
-                                           'dbversion'           => GLPI_SCHEMA_VERSION,
-                                           'founded_new_version' => '']);
-
-   // Update process desactivate all plugins
-   $plugin = new Plugin();
-   $plugin->unactivateAll();
-
    $migration->displayWarning("\nMigration Done.");
-} else if (isset($args['force']) || isset($args['dev'])) {
+} else if (isset($args['force']) || $current_db_version != GLPI_SCHEMA_VERSION && isset($args['dev'])) {
 
    include_once("../install/update_91_92.php");
    update91to92();
 
-   if (defined('GLPI_PREVER')) {
-      Config::setConfigurationValues(
-         'core',
-         [
-            'version'               => GLPI_VERSION,
-            'dbversion'             => GLPI_SCHEMA_VERSION,
-            'founded_new_version'   => ''
-         ]
-      );
-   }
-
-   $migration->displayWarning("\nForced migration Done.");
+   $migration->displayWarning((isset($args['force']) ? "\nForced" : "\nDevelopment") . " migration Done.");
 } else {
    $migration->displayWarning("No migration needed.");
-}
-
-
-if (isset($args['optimize'])) {
-
-   DBmysql::optimize_tables($migration);
-   $migration->displayWarning("Optimize done.");
 }

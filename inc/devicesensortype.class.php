@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,11 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-include ('../inc/includes.php');
+/**
+ * @since 9.2
+ */
+class DeviceSensorType extends CommonDeviceType {
 
-$dropdown = new NetworkEquipmentFirmware();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+   static function getTypeName($nb = 0) {
+      return _n('Sensor type', 'Sensor types', $nb);
+   }
+
+}

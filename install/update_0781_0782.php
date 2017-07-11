@@ -208,7 +208,7 @@ function update0781to0782($output = 'HTML') {
 
    }
 
-   if (!FieldExists('glpi_ocsservers', 'ocs_db_utf8', false)) {
+   if (!$DB->fieldExists('glpi_ocsservers', 'ocs_db_utf8', false)) {
       $query = "ALTER TABLE `glpi_ocsservers`
                 ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
 

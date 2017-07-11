@@ -161,6 +161,9 @@ $RELATION = ["glpi_authldaps"
                         "glpi_devicefirmwares"
                         => ['glpi_items_devicefirmwares' => 'devicefirmwares_id'],
 
+                        "glpi_devicesensors"
+                        => ['glpi_items_devicesensors' => 'devicesensors_id'],
+
                         "glpi_devicesimcards"
                         => ['glpi_items_devicesimcards' => 'devicesimcards_id'],
 
@@ -345,6 +348,7 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_devicefiremwares'    => 'manufacturers_id',
                                  'glpi_devicebatteries'     => 'manufacturers_id',
                                  'glpi_devicegenerics'      => 'manufacturers_id',
+                                 'glpi_devicesensors'       => 'manufacturers_id',
                                  'glpi_devicesimcards'      => 'manufacturers_id',
                                  'glpi_monitors'            => 'manufacturers_id',
                                  'glpi_networkequipments'   => 'manufacturers_id',
@@ -362,9 +366,6 @@ $RELATION = ["glpi_authldaps"
 
                         "glpi_netpoints"
                         => ['glpi_networkportethernets'   => 'netpoints_id'],
-
-                        "glpi_networkequipmentfirmwares"
-                        => ['glpi_networkequipments' =>'networkequipmentfirmwares_id'],
 
                         "glpi_networkequipmentmodels"
                         => ['glpi_networkequipments' =>'networkequipmentmodels_id'],

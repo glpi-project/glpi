@@ -70,7 +70,7 @@ function update084to085() {
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
-      if (TableExists($new_table)) {
+      if ($DB->tableExists($new_table)) {
          $migration->dropTable("backup_$new_table");
          $migration->displayWarning("$new_table table already exists. ".
                                     "A backup have been done to backup_$new_table.");
@@ -85,8 +85,8 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'config table'));
 
-   if (FieldExists('glpi_configs', 'version')) {
-      if (!TableExists('origin_glpi_configs')) {
+   if ($DB->fieldExists('glpi_configs', 'version')) {
+      if (!$DB->tableExists('origin_glpi_configs')) {
          $migration->copyTable('glpi_configs', 'origin_glpi_configs');
       }
 
@@ -131,8 +131,8 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'profile table'));
 
-   if (!TableExists('glpi_profilerights')) {
-      if (!TableExists('origin_glpi_profiles')) {
+   if (!$DB->tableExists('glpi_profilerights')) {
+      if (!$DB->tableExists('origin_glpi_profiles')) {
          $migration->copyTable('glpi_profiles', 'origin_glpi_profiles');
       }
 
@@ -993,7 +993,7 @@ function update084to085() {
 
    $migration->displayMessage('Update for mailqueue');
 
-   if (!TableExists('glpi_queuedmails')) {
+   if (!$DB->tableExists('glpi_queuedmails')) {
       $query = "CREATE TABLE `glpi_queuedmails` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `itemtype` varchar(100) default NULL,
@@ -1079,7 +1079,7 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
    // changes management
-   if (!TableExists('glpi_changes')) {
+   if (!$DB->tableExists('glpi_changes')) {
       $query = "CREATE TABLE `glpi_changes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
@@ -1140,7 +1140,7 @@ function update084to085() {
    $migration->addField('glpi_itilcategories', 'is_change', 'bool', ['value' => 1]);
    $migration->addKey('glpi_itilcategories', 'is_change');
 
-   if (!TableExists('glpi_changes_users')) {
+   if (!$DB->tableExists('glpi_changes_users')) {
       $query = "CREATE TABLE `glpi_changes_users` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1155,7 +1155,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_users");
    }
 
-   if (!TableExists('glpi_changes_groups')) {
+   if (!$DB->tableExists('glpi_changes_groups')) {
       $query = "CREATE TABLE `glpi_changes_groups` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1168,7 +1168,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_groups");
    }
 
-   if (!TableExists('glpi_changes_suppliers')) {
+   if (!$DB->tableExists('glpi_changes_suppliers')) {
       $query = "CREATE TABLE `glpi_changes_suppliers` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1181,7 +1181,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_suppliers");
    }
 
-   if (!TableExists('glpi_changes_items')) {
+   if (!$DB->tableExists('glpi_changes_items')) {
       $query = "CREATE TABLE `glpi_changes_items` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1194,7 +1194,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_items");
    }
 
-   if (!TableExists('glpi_changes_tickets')) {
+   if (!$DB->tableExists('glpi_changes_tickets')) {
       $query = "CREATE TABLE `glpi_changes_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1206,7 +1206,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_tickets");
    }
 
-   if (!TableExists('glpi_changes_problems')) {
+   if (!$DB->tableExists('glpi_changes_problems')) {
       $query = "CREATE TABLE `glpi_changes_problems` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1218,7 +1218,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_problems");
    }
 
-   if (!TableExists('glpi_changetasks')) {
+   if (!$DB->tableExists('glpi_changetasks')) {
       $query = "CREATE TABLE `glpi_changetasks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1244,7 +1244,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
-   if (!TableExists('glpi_changecosts')) {
+   if (!$DB->tableExists('glpi_changecosts')) {
       $query = "CREATE TABLE `glpi_changecosts` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
                `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -1271,7 +1271,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changecosts");
    }
 
-   if (!TableExists('glpi_changevalidations')) {
+   if (!$DB->tableExists('glpi_changevalidations')) {
       $query = "CREATE TABLE `glpi_changevalidations` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1428,7 +1428,7 @@ function update084to085() {
                         ['comment' => "json encoded array of from/dest allowed status change"]);
 
    // Add problem costs
-   if (!TableExists('glpi_problemcosts')) {
+   if (!$DB->tableExists('glpi_problemcosts')) {
       $query = "CREATE TABLE `glpi_problemcosts` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
                `problems_id` int(11) NOT NULL DEFAULT '0',
@@ -1485,7 +1485,7 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_knowbaseitemtranslations'));
 
    Config::setConfigurationValues('core', ['translate_kb' => 0]);
-   if (!TableExists("glpi_knowbaseitemtranslations")) {
+   if (!$DB->tableExists("glpi_knowbaseitemtranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
@@ -1503,7 +1503,7 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
 
    Config::setConfigurationValues('core', ['translate_dropdowns' => 0]);
-   if (!TableExists("glpi_dropdowntranslations")) {
+   if (!$DB->tableExists("glpi_dropdowntranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `items_id` int(11) NOT NULL DEFAULT '0',
@@ -1698,7 +1698,7 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_slas'));
 
    // * Convert SLA resolution time to new system (ticket #4346)
-   if (!FieldExists("glpi_slas", "definition_time")) {
+   if (!$DB->fieldExists("glpi_slas", "definition_time")) {
       $migration->addField("glpi_slas", 'definition_time', "string");
       $migration->addField("glpi_slas", 'end_of_working_day', "bool");
       $migration->migrationOneTable('glpi_slas');
@@ -1825,7 +1825,7 @@ function update084to085() {
 
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
 
-   if (!TableExists("glpi_blacklistedmailcontents")) {
+   if (!$DB->tableExists("glpi_blacklistedmailcontents")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_blacklistedmailcontents` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) DEFAULT NULL,
@@ -1895,7 +1895,7 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_projects'));
 
-   if (!TableExists("glpi_projects")) {
+   if (!$DB->tableExists("glpi_projects")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_projects` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1971,7 +1971,7 @@ function update084to085() {
                                                      AND `rights` & ".Change::READMY);
    }
 
-   if (!TableExists('glpi_projectcosts')) {
+   if (!$DB->tableExists('glpi_projectcosts')) {
       $query = "CREATE TABLE `glpi_projectcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `projects_id` int(11) NOT NULL DEFAULT '0',
@@ -1995,7 +1995,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projectcosts");
    }
 
-   if (!TableExists('glpi_projectstates')) {
+   if (!$DB->tableExists('glpi_projectstates')) {
       $query = "CREATE TABLE `glpi_projectstates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2026,7 +2026,7 @@ function update084to085() {
          $DB->queryOrDie($query, "0.85 insert default project state $key");
       }
    }
-   if (!TableExists('glpi_projecttypes')) {
+   if (!$DB->tableExists('glpi_projecttypes')) {
       $query = "CREATE TABLE `glpi_projecttypes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2040,7 +2040,7 @@ function update084to085() {
                                                                    'value'  => 1]);
    $migration->addKey('glpi_groups', 'is_manager');
 
-   if (!TableExists('glpi_changes_projects')) {
+   if (!$DB->tableExists('glpi_changes_projects')) {
       $query = "CREATE TABLE `glpi_changes_projects` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
@@ -2052,7 +2052,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changes_projects");
    }
 
-   if (!TableExists('glpi_projectteams')) {
+   if (!$DB->tableExists('glpi_projectteams')) {
       $query = "CREATE TABLE `glpi_projectteams` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `projects_id` int(11) NOT NULL DEFAULT '0',
@@ -2065,7 +2065,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projectteams");
    }
 
-   if (!TableExists('glpi_items_projects')) {
+   if (!$DB->tableExists('glpi_items_projects')) {
       $query = "CREATE TABLE `glpi_items_projects` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `projects_id` int(11) NOT NULL DEFAULT '0',
@@ -2078,7 +2078,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_items_projects");
    }
 
-   if (!TableExists("glpi_projecttasks")) {
+   if (!$DB->tableExists("glpi_projecttasks")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_projecttasks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2122,7 +2122,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttasks");
       $ADDTODISPLAYPREF['ProjectTask'] = [2,12,14,5,7,8, 13];
    }
-   if (!TableExists('glpi_projecttasktypes')) {
+   if (!$DB->tableExists('glpi_projecttasktypes')) {
       $query = "CREATE TABLE `glpi_projecttasktypes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2132,7 +2132,7 @@ function update084to085() {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 create glpi_projecttasktypes");
    }
-   if (!TableExists('glpi_projecttaskteams')) {
+   if (!$DB->tableExists('glpi_projecttaskteams')) {
       $query = "CREATE TABLE `glpi_projecttaskteams` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `projecttasks_id` int(11) NOT NULL DEFAULT '0',
@@ -2145,7 +2145,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_projecttaskteams");
    }
 
-   if (!TableExists('glpi_projecttasks_tickets')) {
+   if (!$DB->tableExists('glpi_projecttasks_tickets')) {
       $query = "CREATE TABLE `glpi_projecttasks_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -2338,7 +2338,7 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'notepad'));
    // Create new notepad table
-   if (!TableExists('glpi_notepads')) {
+   if (!$DB->tableExists('glpi_notepads')) {
       $query = "CREATE TABLE `glpi_notepads` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `itemtype` varchar(100) default NULL,
@@ -2366,7 +2366,7 @@ function update084to085() {
 
       foreach ($notepad_tables as $t) {
          // Migrate data
-         if (FieldExists($t, 'notepad')) {
+         if ($DB->fieldExists($t, 'notepad')) {
             $query = "SELECT id, notepad
                       FROM `$t`
                       WHERE notepad IS NOT NULL
@@ -2507,14 +2507,40 @@ function update084to085() {
    // Device update
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
 
-   foreach (array_merge(CommonDevice::getDeviceTypes(),
-                        Item_Devices::getDeviceTypes()) as $itemtype) {
+   $devices = [
+      'DeviceMotherboard',
+      'DeviceProcessor',
+      'DeviceMemory',
+      'DeviceHardDrive',
+      'DeviceNetworkCard',
+      'DeviceDrive',
+      'DeviceControl',
+      'DeviceGraphicCard',
+      'DeviceSoundCard',
+      'DevicePci',
+      'DeviceCase',
+      'DevicePowerSupply',
+      'Item_DeviceMotherboard',
+      'Item_DeviceProcessor',
+      'Item_DeviceMemory',
+      'Item_DeviceHardDrive',
+      'Item_DeviceNetworkCard',
+      'Item_DeviceDrive',
+      'Item_DeviceControl',
+      'Item_DeviceGraphicCard',
+      'Item_DeviceSoundCard',
+      'Item_DevicePci',
+      'Item_DeviceCase',
+      'Item_DevicePowerSupply'
+   ];
+
+   foreach ($devices as $itemtype) {
       $table = $itemtype::getTable();
-      if (!FieldExists($table, 'entities_id')) {
+      if (!$DB->fieldExists($table, 'entities_id')) {
          $migration->addField($table, 'entities_id', 'integer');
          $migration->addKey($table, ['entities_id'], 'entities_id');
       }
-      if (!FieldExists($table, 'is_recursive')) {
+      if (!$DB->fieldExists($table, 'is_recursive')) {
          $migration->addField($table, 'is_recursive', 'bool', ['update' => '1',
                                                                     'after'  => 'entities_id']);
          $migration->addKey($table, ['is_recursive'], 'is_recursive');
@@ -2524,7 +2550,7 @@ function update084to085() {
 
    // Adding the Registered ID class that contains PCI IDs and USB IDs for vendors
    // as well devices
-   if (!TableExists('glpi_registeredids')) {
+   if (!$DB->tableExists('glpi_registeredids')) {
       $query = "CREATE TABLE `glpi_registeredids` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
                  `name` varchar(255) DEFAULT NULL,
@@ -2544,7 +2570,7 @@ function update084to085() {
                   'glpi_items_devicegraphiccards', 'glpi_items_devicemotherboards',
                   'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
                   'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards'] as $table) {
-      if (!FieldExists($table, 'serial')) {
+      if (!$DB->fieldExists($table, 'serial')) {
          $migration->addField($table, 'serial', 'string');
          $migration->addKey($table, 'serial');
       }
@@ -2555,7 +2581,7 @@ function update084to085() {
                   'glpi_items_devicememories', 'glpi_items_devicenetworkcards',
                   'glpi_items_devicepcis', 'glpi_items_deviceprocessors',
                   'glpi_items_devicesoundcards'] as $table) {
-      if (!FieldExists($table, 'busID')) {
+      if (!$DB->fieldExists($table, 'busID')) {
          $migration->addField($table, 'busID', 'string');
          $migration->addKey($table, 'busID');
       }
@@ -2573,7 +2599,7 @@ function update084to085() {
       $migration->addKey($table, ['itemtype', 'items_id'], 'item');
    }
 
-   if (!FieldExists('glpi_devicegraphiccards', 'chipset')) {
+   if (!$DB->fieldExists('glpi_devicegraphiccards', 'chipset')) {
       $migration->addField('glpi_devicegraphiccards', 'chipset', 'string');
       $migration->addKey('glpi_devicegraphiccards', 'chipset');
    }
@@ -2807,3 +2833,4 @@ function update084to085() {
    return $updateresult;
 }
 
+class Bookmark extends SavedSearch {}

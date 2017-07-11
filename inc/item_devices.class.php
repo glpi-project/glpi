@@ -1182,14 +1182,14 @@ class Item_Devices extends CommonDBRelation {
       $computer = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
 
       if ($computer instanceOf CommonDBTM) {
-         if ($CFG_GLPI["is_location_autoupdate"]
+         if (isset($CFG_GLPI['is_location_autoupdate']) && $CFG_GLPI["is_location_autoupdate"]
             && (!isset($input['locations_id']) ||
             $computer->fields['locations_id'] != $input['locations_id'])
          ) {
             $input['locations_id'] = $computer->fields['locations_id'];
          }
 
-         if (($CFG_GLPI["state_autoupdate_mode"] < 0)
+         if ((isset($CFG_GLPI['state_autoupdate_mode']) && $CFG_GLPI["state_autoupdate_mode"] < 0)
             && (!isset($input['states_id']) ||
             $computer->fields['states_id'] != $input['states_id'])
          ) {
@@ -1197,7 +1197,7 @@ class Item_Devices extends CommonDBRelation {
             $input['states_id'] = $computer->fields['states_id'];
          }
 
-         if (($CFG_GLPI["state_autoupdate_mode"] > 0)
+         if ((isset($CFG_GLPI['state_autoupdate_mode']) && $CFG_GLPI["state_autoupdate_mode"] > 0)
             && (!isset($input['states_id']) ||
             $input['states_id'] != $CFG_GLPI["state_autoupdate_mode"])
          ) {

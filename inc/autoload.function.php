@@ -160,7 +160,7 @@ function _sx($ctx, $str, $domain = 'glpi') {
  * @param string $str    String to translate
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @deprecated since 9.2; will be removed in the future.
+ * @deprecated 9.2 will be removed in the future.
  *
  * @return void
  */
@@ -241,7 +241,7 @@ function _x($ctx, $str, $domain = 'glpi') {
  * @param string $str    to translated
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
- * @deprecated since 9.2; will be removed in the future.
+ * @deprecated 9.2 will be removed in the future.
  *
  * @return string
  */

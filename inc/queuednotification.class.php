@@ -453,9 +453,10 @@ class QueuedNotification extends CommonDBTM {
     *
     * @return true if send false if not
     *
-    * @deprecated, see QueuedNotification::sendById
+    * @deprecated 9.2 see QueuedNotification::sendById
    **/
    function sendMailById($ID) {
+      Toolbox::logDebug('sendMailById() method is deprecated');
       return $this->sendById($ID);
    }
 

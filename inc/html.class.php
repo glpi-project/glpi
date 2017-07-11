@@ -2441,10 +2441,13 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
-    * \deprecated since 0.84
+    *
+    * @deprecated 0.84
    **/
    static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false) {
       global $CFG_GLPI;
+
+      Toolbox::logDebug('openArrowMassives() method is deprecated');
 
       if ($fixed) {
          echo "<table class='tab_glpi' width='950px'>";
@@ -2482,9 +2485,12 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
-    * \deprecated since 0.84
+    *
+    * @deprecated 0.84
    **/
    static function closeArrowMassives($actions, $confirm = []) {
+
+      Toolbox::logDebug('closeArrowMassives() method is deprecated');
 
       if (count($actions)) {
          foreach ($actions as $name => $label) {
@@ -2978,31 +2984,6 @@ class Html {
    /**
     * Display Date form with calendar
     *
-    * @param $element      name of the element
-    * @param $value        default value to display (default '')
-    * @param $maybeempty   may be empty ? (true by default)
-    * @param $can_edit     could not modify element (true by default)
-    * @param $minDate      minimum allowed date (default '')
-    * @param $maxDate      maximum allowed date (default '')
-    * @param $displayYear  should we set/diplay the year? (true by default)
-    *
-    * @return rand value used
-    * \deprecated since 0.84 used Html::showDateField instead
-   **/
-   static function showDateFormItem($element, $value = '', $maybeempty = true, $can_edit = true,
-                                    $minDate = '', $maxDate = '', $displayYear = true) {
-      return self::showDateField($element, ['value'       => $value,
-                                                 'maybeempty'  => $maybeempty,
-                                                 'canedit'     => $can_edit,
-                                                 'min'         => $minDate,
-                                                 'max'         => $maxDate,
-                                                 'showyear' => $displayYear]);
-   }
-
-
-   /**
-    * Display Date form with calendar
-    *
     * @since version 0.84
     *
     * @param $name      name of the element
@@ -3146,38 +3127,6 @@ class Html {
       }
       return $output;
    }
-
-
-   /**
-    * Display DateTime form with calendar
-    *
-    * @param $element      name of the element
-    * @param $value        default value to display (default '')
-    * @param $time_step    step for time in minute (-1 use default config) (default -1)
-    * @param $maybeempty   may be empty ? (true by default)
-    * @param $can_edit     could not modify element (true by default)
-    * @param $minDate      minimum allowed date (default '')
-    * @param $maxDate      maximum allowed date (default '')
-    * @param $minTime      minimum allowed time (default '')
-    * @param $maxTime      maximum allowed time (default '')
-    *
-    * @return rand value used
-    * \deprecated since 0.84 used Html::showDateTimeField instead
-   **/
-   static function showDateTimeFormItem($element, $value = '', $time_step = -1, $maybeempty = true,
-                                        $can_edit = true, $minDate = '', $maxDate = '', $minTime = '',
-                                        $maxTime = '') {
-
-      return self::showDateTimeField($element, ['value'      => $value,
-                                                     'timestep'   => $time_step,
-                                                     'maybeempty' => $maybeempty,
-                                                     'canedit'    => $can_edit,
-                                                     'mindate'    => $minDate,
-                                                     'maxdate'    => $maxDate,
-                                                     'mintime'    => $minTime,
-                                                     'maxtime'    => $maxTime]);
-   }
-
 
 
    /**

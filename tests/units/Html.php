@@ -59,7 +59,11 @@ class Html extends atoum {
       $expected = date('m-d-Y');
       $this->string(\Html::convDate($mydate, 2))->isIdenticalTo($expected);
 
-      $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
+      $this->exception(
+         function () {
+            $this->string(\Html::convDate('not a date', 2))->isIdenticalTo('not a date');
+         }
+      )->message->contains('Invalid date');
    }
 
    public function testConvDateTime() {

@@ -43,77 +43,10 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
 
-// Old itemtype for compatibility
-define("GENERAL_TYPE", 0);
-define("COMPUTER_TYPE", 1);
-define("NETWORKING_TYPE", 2);
-define("PRINTER_TYPE", 3);
-define("MONITOR_TYPE", 4);
-define("PERIPHERAL_TYPE", 5);
-define("SOFTWARE_TYPE", 6);
-define("CONTACT_TYPE", 7);
-define("ENTERPRISE_TYPE", 8);
-define("INFOCOM_TYPE", 9);
-define("CONTRACT_TYPE", 10);
-define("CARTRIDGEITEM_TYPE", 11);
-define("TYPEDOC_TYPE", 12);
-define("DOCUMENT_TYPE", 13);
-define("KNOWBASE_TYPE", 14);
-define("USER_TYPE", 15);
-define("TRACKING_TYPE", 16);
-define("CONSUMABLEITEM_TYPE", 17);
-define("CONSUMABLE_TYPE", 18);
-define("CARTRIDGE_TYPE", 19);
-define("SOFTWARELICENSE_TYPE", 20);
-define("LINK_TYPE", 21);
-define("STATE_TYPE", 22);
-define("PHONE_TYPE", 23);
-define("DEVICE_TYPE", 24);
-define("REMINDER_TYPE", 25);
-define("STAT_TYPE", 26);
-define("GROUP_TYPE", 27);
-define("ENTITY_TYPE", 28);
-define("RESERVATION_TYPE", 29);
-define("AUTHMAIL_TYPE", 30);
-define("AUTHLDAP_TYPE", 31);
-define("OCSNG_TYPE", 32);
-define("REGISTRY_TYPE", 33);
-define("PROFILE_TYPE", 34);
-define("MAILGATE_TYPE", 35);
-define("RULE_TYPE", 36);
-define("TRANSFER_TYPE", 37);
-define("BOOKMARK_TYPE", 38);
-define("SOFTWAREVERSION_TYPE", 39);
-define("PLUGIN_TYPE", 40);
-define("COMPUTERDISK_TYPE", 41);
-define("NETWORKING_PORT_TYPE", 42);
-define("FOLLOWUP_TYPE", 43);
-define("BUDGET_TYPE", 44);
-
-// Old devicetype for compatibility
-define("MOBOARD_DEVICE", 1);
-define("PROCESSOR_DEVICE", 2);
-define("RAM_DEVICE", 3);
-define("HDD_DEVICE", 4);
-define("NETWORK_DEVICE", 5);
-define("DRIVE_DEVICE", 6);
-define("CONTROL_DEVICE", 7);
-define("GFX_DEVICE", 8);
-define("SND_DEVICE", 9);
-define("PCI_DEVICE", 10);
-define("CASE_DEVICE", 11);
-define("POWER_DEVICE", 12);
-
-// Use default session dir if not writable
-if (is_writable(GLPI_SESSION_DIR)) {
-   Session::setPath();
-}
-
-// Init debug variable
-// Only show errors
-Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-
 $DB = new DB();
+
+$update = new Update($DB);
+$update->initSession();
 
 
 /* ----------------------------------------------------------------- */
@@ -374,9 +307,9 @@ function location_create_new($split_char, $add_first) {
 function showLocationUpdateForm() {
    global $DB, $CFG_GLPI;
 
-   if ((TableExists ("glpi_dropdown_locations")
-        && FieldExists("glpi_dropdown_locations", "parentID", false))
-       || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id", false))) {
+   if (($DB->tableExists ("glpi_dropdown_locations")
+        && $DB->fieldExists("glpi_dropdown_locations", "parentID", false))
+       || ($DB->tableExists ("glpi_locations") && $DB->fieldExists("glpi_locations", "locations_id", false))) {
       updateTreeDropdown();
       return true;
    }
@@ -389,7 +322,7 @@ function showLocationUpdateForm() {
       $_POST['car_sep'] = '';
    }
 
-   if (!TableExists("glpi_dropdown_locations_new")) {
+   if (!$DB->tableExists("glpi_dropdown_locations_new")) {
       $query = " CREATE TABLE `glpi_dropdown_locations_new` (
                   `ID` INT NOT NULL auto_increment,
                   `name` VARCHAR(255) NOT NULL ,
@@ -461,7 +394,7 @@ function test_connect() {
 function changeVarcharToID($table1, $table2, $chps) {
    global $DB;
 
-   if (!FieldExists($table2, "ID", false)) {
+   if (!$DB->fieldExists($table2, "ID", false)) {
       $query = " ALTER TABLE `$table2`
                  ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
       $DB->queryOrDie($query);
@@ -496,380 +429,25 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 
 
-//update database up to 0.31
-function updateDbUpTo031() {
-   global $DB, $migration;
+//update database
+function doUpdateDb() {
+   global $DB, $migration, $update;
 
-   $ret = [];
-
-   // Before 0.31
-   if (!TableExists("glpi_config") && !TableExists("glpi_configs")) {
-      $query = "CREATE TABLE `glpi_config` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `num_of_events` varchar(200) NOT NULL default '',
-                  `jobs_at_login` varchar(200) NOT NULL default '',
-                  `sendexpire` varchar(200) NOT NULL default '',
-                  `cut` varchar(200) NOT NULL default '',
-                  `expire_events` varchar(200) NOT NULL default '',
-                  `list_limit` varchar(200) NOT NULL default '',
-                  `version` varchar(200) NOT NULL default '',
-                  `logotxt` varchar(200) NOT NULL default '',
-                  `root_doc` varchar(200) NOT NULL default '',
-                  `event_loglevel` varchar(200) NOT NULL default '',
-                  `mailing` varchar(200) NOT NULL default '',
-                  `imap_auth_server` varchar(200) NOT NULL default '',
-                  `imap_host` varchar(200) NOT NULL default '',
-                  `ldap_host` varchar(200) NOT NULL default '',
-                  `ldap_basedn` varchar(200) NOT NULL default '',
-                  `ldap_rootdn` varchar(200) NOT NULL default '',
-                  `ldap_pass` varchar(200) NOT NULL default '',
-                  `admin_email` varchar(200) NOT NULL default '',
-                  `mailing_signature` varchar(200) NOT NULL default '',
-                  `mailing_new_admin` varchar(200) NOT NULL default '',
-                  `mailing_followup_admin` varchar(200) NOT NULL default '',
-                  `mailing_finish_admin` varchar(200) NOT NULL default '',
-                  `mailing_new_all_admin` varchar(200) NOT NULL default '',
-                  `mailing_followup_all_admin` varchar(200) NOT NULL default '',
-                  `mailing_finish_all_admin` varchar(200) NOT NULL default '',
-                  `mailing_new_all_normal` varchar(200) NOT NULL default '',
-                  `mailing_followup_all_normal` varchar(200) NOT NULL default '',
-                  `mailing_finish_all_normal` varchar(200) NOT NULL default '',
-                  `mailing_new_attrib` varchar(200) NOT NULL default '',
-                  `mailing_followup_attrib` varchar(200) NOT NULL default '',
-                  `mailing_finish_attrib` varchar(200) NOT NULL default '',
-                  `mailing_new_user` varchar(200) NOT NULL default '',
-                  `mailing_followup_user` varchar(200) NOT NULL default '',
-                  `mailing_finish_user` varchar(200) NOT NULL default '',
-                  `ldap_field_name` varchar(200) NOT NULL default '',
-                  `ldap_field_email` varchar(200) NOT NULL default '',
-                  `ldap_field_location` varchar(200) NOT NULL default '',
-                  `ldap_field_realname` varchar(200) NOT NULL default '',
-                  `ldap_field_phone` varchar(200) NOT NULL default '',
-                PRIMARY KEY (`ID`)
-                ) TYPE=MyISAM AUTO_INCREMENT=2 ";
-      $DB->queryOrDie($query);
-
-      $query = "INSERT INTO `glpi_config`
-                VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet',
-                        '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE',
-                        '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1',
-                        'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
-      $DB->queryOrDie($query);
-
-      echo "<p class='center'>Version > 0.31  </p>";
-   }
-
-   // Save if problem with session during update
-   $glpilanguage = $_SESSION["glpilanguage"];
-
-   if (TableExists("glpi_config")) {
-      // < 0.78
-      // Get current version
-      // Use language from session, even if sometime not reliable
-      $query = "SELECT `version`, 'language'
-                FROM `glpi_config`";
-      $result = $DB->queryOrDie($query, "get current version");
-
-      $current_version     = trim($DB->result($result, 0, 0));
-      $current_db_version  = $current_version;
-      $glpilanguage        = trim($DB->result($result, 0, 1));
-   } else if (FieldExists('glpi_configs', 'version')) {
-      // < 0.85
-      // Get current version and language
-      $query = "SELECT `version`, `language`
-                FROM `glpi_configs`";
-      $result = $DB->queryOrDie($query, "get current version");
-
-      $current_version     = trim($DB->result($result, 0, 0));
-      $current_db_version  = $current_version;
-      $glpilanguage        = trim($DB->result($result, 0, 1));
-   } else {
-      $configurationValues = Config::getConfigurationValues('core', ['version', 'language']);
-
-      $current_version     = $configurationValues['version'];
-      $current_db_version  = isset($configurationValues['dbversion']) ? $configurationValues['dbversion'] : $current_version;
-      $glpilanguage        = $configurationValues['language'];
-   }
-
-   // To prevent problem of execution time
-   ini_set("max_execution_time", "0");
+   $currents            = $update->getCurrents();
+   $current_version     = $currents['version'];
+   $current_db_version  = $currents['dbversion'];
+   $glpilanguage        = $currents['language'];
 
    $migration = new Migration(GLPI_SCHEMA_VERSION);
+   $update->setMigration($migration);
 
    if (defined('GLPI_PREVER')) {
       if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($_POST['agree_dev'])) {
-         return $ret;
+         return;
       }
    }
 
-   switch ($current_version) {
-      case "0.31" :
-         include_once("update_031_04.php");
-         update031to04();
-
-      case "0.4" :
-      case "0.41" :
-         include_once("update_04_042.php");
-         update04to042();
-
-      case "0.42" :
-         showLocationUpdateForm();
-         include_once("update_042_05.php");
-         update042to05();
-
-      case "0.5" :
-         include_once("update_05_051.php");
-         update05to051();
-
-      case "0.51" :
-      case "0.51a" :
-         include_once("update_051_06.php");
-         update051to06();
-
-      case "0.6" :
-         include_once("update_06_065.php");
-         update06to065();
-
-      case "0.65" :
-         include_once("update_065_068.php");
-         update065to068();
-
-      case "0.68" :
-         include_once("update_068_0681.php");
-         update068to0681();
-
-      case "0.68.1" :
-      case "0.68.2" :
-      case "0.68.3" :
-         // Force update content
-         if (showLocationUpdateForm()) {
-            $query = "UPDATE `glpi_config`
-                      SET `version` = ' 0.68.3x'";
-            $DB->queryOrDie($query, "0.68.3");
-
-            showContentUpdateForm();
-            exit();
-         }
-      case "0.68.3x": // Special version for replay upgrade process from here
-         include_once("update_0681_07.php");
-         update0681to07();
-
-      case "0.7" :
-      case "0.70.1" :
-      case "0.70.2" :
-         include_once("update_07_071.php");
-         update07to071();
-
-      case "0.71" :
-      case "0.71.1" :
-         include_once("update_071_0712.php");
-         update071to0712();
-
-      case "0.71.2" :
-         include_once("update_0712_0713.php");
-         update0712to0713();
-
-      case "0.71.3" :
-      case "0.71.4" :
-      case "0.71.5" :
-      case "0.71.6" :
-         include_once("update_0713_072.php");
-         update0713to072();
-
-      case "0.72" :
-         include_once("update_072_0721.php");
-         update072to0721();
-
-      case "0.72.1" :
-         include_once("update_0721_0722.php");
-         update0721to0722();
-
-      case "0.72.2" :
-      case "0.72.21" :
-         include_once("update_0722_0723.php");
-         update0722to0723();
-
-      case "0.72.3" :
-      case "0.72.4" :
-         include_once("update_0723_078.php");
-         update0723to078();
-
-      case "0.78" :
-         include_once("update_078_0781.php");
-         update078to0781();
-
-      case "0.78.1" :
-         include_once("update_0781_0782.php");
-         update0781to0782();
-
-      case "0.78.2":
-      case "0.78.3":
-      case "0.78.4":
-      case "0.78.5":
-         include_once("update_0782_080.php");
-         update0782to080();
-
-      case "0.80" :
-         include_once("update_080_0801.php");
-         update080to0801();
-
-      case "0.80.1" :
-      case "0.80.2" :
-         include_once("update_0801_0803.php");
-         update0801to0803();
-
-      case "0.80.3" :
-      case "0.80.4" :
-      case "0.80.5" :
-      case "0.80.6" :
-      case "0.80.61" :
-      case "0.80.7" :
-         include_once("update_0803_083.php");
-         update0803to083();
-
-      case "0.83" :
-         include_once("update_083_0831.php");
-         update083to0831();
-
-      case "0.83.1" :
-      case "0.83.2" :
-         include_once("update_0831_0833.php");
-         update0831to0833();
-
-      case "0.83.3" :
-      case "0.83.31" :
-      case "0.83.4" :
-      case "0.83.5" :
-      case "0.83.6" :
-      case "0.83.7" :
-      case "0.83.8" :
-      case "0.83.9" :
-      case "0.83.91" :
-         include_once("update_0831_084.php");
-         update0831to084();
-
-      case "0.84" :
-         include_once("update_084_0841.php");
-         update084to0841();
-
-      case "0.84.1" :
-      case "0.84.2" :
-         include_once("update_0841_0843.php");
-         update0841to0843();
-
-      case "0.84.3" :
-         include_once("update_0843_0844.php");
-         update0843to0844();
-
-      case "0.84.4" :
-      case "0.84.5" :
-         include_once("update_0845_0846.php");
-         update0845to0846();
-
-      case "0.84.6" :
-      case "0.84.7" :
-      case "0.84.8" :
-      case "0.84.9" :
-         include_once("update_084_085.php");
-         update084to085();
-
-      case "0.85" :
-      case "0.85.1" :
-      case "0.85.2" :
-         include_once("update_085_0853.php");
-         update085to0853();
-
-      case "0.85.3" :
-      case "0.85.4" :
-         include_once("update_0853_0855.php");
-         update0853to0855();
-
-      case "0.85.5" :
-         include_once("update_0855_090.php");
-         update0855to090();
-
-      case "0.90" :
-         include_once("update_090_0901.php");
-         update090to0901();
-
-      case "0.90.1" :
-      case "0.90.2" :
-      case "0.90.3" :
-      case "0.90.4" :
-         include("update_0901_0905.php");
-         update0901to0905();
-
-      case "0.90.5" :
-         include_once("update_0905_91.php");
-         update0905to91();
-
-      case "9.1" :
-      case "0.91":
-         include_once("update_91_911.php");
-         update91to911();
-
-      case "9.1.1":
-      case "9.1.2":
-         include_once("update_911_913.php");
-         update911to913();
-
-      case "9.1.3":
-      case "9.1.4":
-      case GLPI_PREVER:
-         include_once("update_91_92.php");
-         update91to92();
-         break;
-
-      case GLPI_VERSION:
-      case GLPI_SCHEMA_VERSION:
-         break;
-
-      default :
-         include_once("update_031_04.php");
-         update031to04();
-         include_once("update_04_042.php");
-         update04to042();
-         showLocationUpdateForm();
-         include_once("update_042_05.php");
-         update042to05();
-         include_once("update_05_051.php");
-         update05to051();
-         include_once("update_051_06.php");
-         update051to06();
-         include_once("update_06_065.php");
-         update06to065();
-         include_once("update_065_068.php");
-         update065to068();
-         include_once("update_068_0681.php");
-         update068to0681();
-         // Force update content
-         $query = "UPDATE `glpi_config`
-                   SET `version` = ' 0.68.3x'";
-         $DB->queryOrDie($query, "0.68.3");
-
-         showContentUpdateForm();
-         exit();
-   }
-
-   // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
-                                           'dbversion'           => GLPI_SCHEMA_VERSION,
-                                           'language'            => $glpilanguage,
-                                           'founded_new_version' => '']);
-
-   // Update process desactivate all plugins
-   $plugin = new Plugin();
-   $plugin->unactivateAll();
-
-   if (defined('GLPI_SYSTEM_CRON')) {
-      // Downstream packages may provide a good system cron
-      $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-      $DB->queryOrDie($query);
-   }
-
-   DBmysql::optimize_tables($migration);
-
-   return $ret;
+   $update->doUpdates($current_version);
 }
 
 
@@ -877,28 +455,28 @@ function updateTreeDropdown() {
    global $DB;
 
    // Update Tree dropdown
-   if (TableExists("glpi_dropdown_locations")
-       && !FieldExists("glpi_dropdown_locations", "completename", false)) {
+   if ($DB->tableExists("glpi_dropdown_locations")
+       && !$DB->fieldExists("glpi_dropdown_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in dropdown_locations");
    }
 
-   if (TableExists("glpi_dropdown_kbcategories")
-       && !FieldExists("glpi_dropdown_kbcategories", "completename", false)) {
+   if ($DB->tableExists("glpi_dropdown_kbcategories")
+       && !$DB->fieldExists("glpi_dropdown_kbcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_kbcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in dropdown_kbcategories");
    }
 
-   if (TableExists("glpi_locations") && !FieldExists("glpi_locations", "completename", false)) {
+   if ($DB->tableExists("glpi_locations") && !$DB->fieldExists("glpi_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in glpi_locations");
    }
 
-   if (TableExists("glpi_knowbaseitemcategories")
-       && !FieldExists("glpi_knowbaseitemcategories", "completename", false)) {
+   if ($DB->tableExists("glpi_knowbaseitemcategories")
+       && !$DB->fieldExists("glpi_knowbaseitemcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->queryOrDie($query, "0.6 add completename in glpi_knowbaseitemcategories");
@@ -939,14 +517,14 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    if (empty($from_install) && !isset($_POST["from_update"])) {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".__('Impossible to accomplish an update by this way!')."</span>";
+      echo "<h3><span class='migred'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p>";
       echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
       echo "</div>";
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
+      echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
@@ -962,45 +540,35 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
          $current_version = "0.31";
          $config_table    = "glpi_config";
 
-         if (TableExists("glpi_configs")) {
+         if ($DB->tableExists("glpi_configs")) {
             $config_table = "glpi_configs";
          }
 
-         // Find 2 tables to manage databases before 0.78
-         if (!TableExists($config_table)) {
-            include_once("update_to_031.php");
-            updateDbTo031();
-            $tab = updateDbUpTo031();
-
-         } else {
+         if ($DB->tableExists($config_table)) {
             $current_version = Config::getCurrentDBVersion();
-            $tab = updateDbUpTo031();
          }
-
          echo "<div class='center'>";
-         if (!empty($tab) && $tab["adminchange"]) {
-            echo "<div class='center'> <h2>". __("All users having administrators rights have have been updated to 'super-admin' rights with the creation of his new user type.") ."<h2></div>";
-         }
+         doUpdateDb();
 
          if (showLocationUpdateForm()) {
             switch ($current_version) {
-               case "0.31" :
-               case "0.4" :
-               case "0.41" :
-               case "0.42" :
-               case "0.5" :
-               case "0.51" :
-               case "0.51a" :
-               case "0.6" :
-               case "0.65" :
-               case "0.68" :
-               case "0.68.1" :
-               case "0.68.2" :
-               case "0.68.3" :
+               case "0.31":
+               case "0.4":
+               case "0.41":
+               case "0.42":
+               case "0.5":
+               case "0.51":
+               case "0.51a":
+               case "0.6":
+               case "0.65":
+               case "0.68":
+               case "0.68.1":
+               case "0.68.2":
+               case "0.68.3":
                   showContentUpdateForm();
                   break;
 
-               default :
+               default:
                   echo "<a class='vsubmit' href='../index.php'>".__('Use GLPI')."</a>";
             }
          }

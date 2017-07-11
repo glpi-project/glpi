@@ -46,7 +46,7 @@ Session::checkLoginUser();
 if (isset($_POST["table"])
     && isset($_POST["value"])) {
    // Security
-   if (!TableExists($_POST['table'])) {
+   if (!$DB->tableExists($_POST['table'])) {
       exit();
    }
 

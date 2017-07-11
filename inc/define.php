@@ -222,7 +222,8 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
                                                   'Item_DeviceSoundCard', 'Item_DeviceControl',
                                                   'Item_DeviceHardDrive', 'Item_DeviceDrive', 'Item_DeviceMemory',
                                                   'Item_DeviceProcessor', 'Item_DeviceGeneric',
-                                                  'Item_DeviceBattery', 'Item_DeviceFirmware', 'Item_DeviceSimcard'];
+                                                  'Item_DeviceBattery', 'Item_DeviceFirmware', 'Item_DeviceSimcard',
+                                                  'Item_DeviceSensor'];
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
@@ -297,7 +298,7 @@ $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmwar
                                                   'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
                                                   'DeviceSoundCard', 'DeviceControl', 'DevicePci',
                                                   'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-                                                  'DeviceSimcard'];
+                                                  'DeviceSimcard', 'DeviceSensor'];
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer'];
@@ -320,6 +321,7 @@ $CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
+$CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral'];
 
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
@@ -403,6 +405,10 @@ $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract'
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense'];
+
+$CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Computer_SoftwareLicense',
+                                           'Computer_SoftwareVersion', 'ComputerDisk', 'ComputerVirtualMachine',
+                                           'NetworkPort', 'NetworkName', 'IPAddress'];
 
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
                                            'Contract', 'Entity',

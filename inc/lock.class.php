@@ -77,7 +77,7 @@ class Lock {
       echo "<input type='hidden' name='id' value='$ID'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2''>".__('Locked items')."</th></tr>";
+      echo "<tr><th colspan='2'>".__('Locked items')."</th></tr>";
 
       //Use a hook to allow external inventory tools to manage per field lock
       $results =  Plugin::doHookFunction('display_locked_fields', ['item'   => $item,
@@ -309,7 +309,8 @@ class Lock {
          echo "</th><th>&nbsp</th></tr>\n";
          echo "</table>";
          Html::openArrowMassives('lock_form', true);
-         Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock')]);
+         Html::closeArrowMassives(['unlock' => _sx('button', 'Unlock'),
+                                   'purge'  => _sx('button', 'Delete permanently')]);
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='2'>". __('No locked item')."</td></tr>";

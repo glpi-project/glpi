@@ -286,7 +286,8 @@ class Plugin extends CommonDBTM {
          // Check install is ok for activated plugins
          if ($install_ok
              && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
-            $usage_ok = true;
+            $usage_ok = $this->checkVersions($plug);
+
             $function = "plugin_".$plug."_check_prerequisites";
             if (function_exists($function)) {
                if (!$function()) {
@@ -504,7 +505,8 @@ class Plugin extends CommonDBTM {
                       && function_exists("plugin_".$plug['directory']."_check_config")) {
 
                      $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                     $do_install = true;
+                     $do_install = $this->checkVersions($plug['directory']);
+
                      if (function_exists($function)) {
                         ob_start();
                         $do_install = $function();
@@ -579,11 +581,12 @@ class Plugin extends CommonDBTM {
 
                case self::NOTACTIVATED :
                   echo "<td>";
+                  $process = $this->checkVersions($plug['directory']);
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
                       || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                      echo __('Not CSRF compliant');
-                  } else if (function_exists($function) && $function()) {
+                  } else if (function_exists($function) && $function() && $process) {
                      Html::showSimpleForm(static::getFormURL(), ['action' => 'activate'],
                                           _x('button', 'Enable'), ['id' => $ID]);
                   }
@@ -999,12 +1002,12 @@ class Plugin extends CommonDBTM {
 
          foreach ($types as $num => $name) {
             $itemtable = getTableForItemType($name);
-            if (!TableExists($itemtable)) {
+            if (!$DB->tableExists($itemtable)) {
                // Just for security, shouldn't append
                continue;
             }
             $do_recursive = false;
-            if (FieldExists($itemtable, 'is_recursive')) {
+            if ($DB->fieldExists($itemtable, 'is_recursive')) {
                $do_recursive = true;
             }
             foreach ($entities as $entID => $val) {
@@ -1323,7 +1326,11 @@ class Plugin extends CommonDBTM {
       $fct = 'plugin_version_'.strtolower($plugin);
       if (function_exists($fct)) {
          $res = $fct();
+         if (!isset($res['requirements']) && isset($res['minGlpiVersion'])) {
+            $res['requirements'] = ['glpi' => ['min' => $res['minGlpiVersion']]];
+         }
       } else {
+         Toolbox::logDebug("$fct method must be defined!");
          $res = [];
       }
       if (isset($info)) {
@@ -1474,8 +1481,259 @@ class Plugin extends CommonDBTM {
                $name
             );
             break;
+         case 'glpiparam':
+            return sprintf(
+               __('This plugin requires GLPI parameter %1$s'),
+               $name
+            );
+            break;
          default:
             throw new \RuntimeException("messageMissing type $type is unknwown!");
       }
+   }
+
+   /**
+    * Check declared versions (GLPI, PHP, ...)
+    *
+    * @since 9.2
+    *
+    * @param integer $plugid Plugin id
+    *
+    * @return boolean
+    */
+   public function checkVersions($name) {
+      $infos = self::getInfo($name);
+      $ret = true;
+      if (isset($infos['requirements'])) {
+         if (isset($infos['requirements']['glpi'])) {
+            $glpi = $infos['requirements']['glpi'];
+            if (isset($glpi['min']) || isset($glpi['max'])) {
+               $ret = $ret && $this->checkGlpiVersion($infos['requirements']['glpi']);
+            }
+            if (isset($glpi['params'])) {
+               $ret = $ret && $this->checkGlpiParameters($glpi['params']);
+            }
+            if (isset($glpi['plugins'])) {
+               $ret = $ret && $this->checkGlpiPlugins($glpi['plugins']);
+            }
+         }
+         if (isset($infos['requirements']['php'])) {
+            $php = $infos['requirements']['php'];
+            if (isset($php['min']) || isset($php['max'])) {
+               $ret = $ret && $this->checkPhpVersion($php);
+            }
+            if (isset($php['exts'])) {
+               $ret = $ret && $this->checkPhpExtensions($php['exts']);
+            }
+            if (isset($php['params'])) {
+               $ret = $ret && $this->checkPhpParameters($php['params']);
+            }
+         }
+      }
+      return $ret;
+   }
+
+   /**
+    * Check for GLPI version
+    *
+    * @since 9.2
+    *
+    * @param array $infos Requirements infos:
+    *                     - min: minimal supported version,
+    *                     - max: maximal supported version,
+    *                     - dev: support GLPI development version
+    *                     One of min or max is required.
+    *
+    * @return boolean
+    */
+   public function checkGlpiVersion($infos) {
+      $compat = true;
+      $prever = true;
+
+      if (defined('GLPI_PREVER') && isset($infos['min']) && isset($infos['dev']) && $infos['dev'] == true) {
+         $prever = version_compare($this->getGlpiPrever(), $infos['min'], 'lt');
+      }
+
+      if (isset($infos['min']) && isset($infos['max'])) {
+         $compat = !($prever && (version_compare($this->getGlpiVersion(), $infos['min'], 'lt') || version_compare($this->getGlpiVersion(), $infos['max'], 'ge')));
+      } else if (isset($infos['min'])) {
+         $compat = !($prever && version_compare($this->getGlpiVersion(), $infos['min'], 'lt'));
+      } else if (isset($infos['max'])) {
+         $compat = !(version_compare($this->getGlpiVersion(), $infos['max'], 'ge'));
+      } else {
+         throw new LogicException('Either "min" or "max" is required for GLPI requirements!');
+      }
+
+      if (!$compat) {
+         echo Plugin::messageIncompatible(
+            'core',
+            (isset($infos['min']) ? $infos['min'] : null),
+            (isset($infos['max']) ? $infos['max'] : null)
+         );
+      }
+
+      return $compat;
+   }
+
+   /**
+    * Check for PHP version
+    *
+    * @since 9.2
+    *
+    * @param array $infos Requirements infos:
+    *                     - min: minimal supported version,
+    *                     - max: maximal supported version.
+    *                     One of min or max is required.
+    *
+    * @return boolean
+    */
+   public function checkPhpVersion($infos) {
+      $compat = true;
+
+      if (isset($infos['min']) && isset($infos['max'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['min'], 'lt') || version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
+      } else if (isset($infos['min'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['min'], 'lt'));
+      } else if (isset($infos['max'])) {
+         $compat = !(version_compare($this->getPhpVersion(), $infos['max'], 'ge'));
+      } else {
+         throw new LogicException('Either "min" or "max" is required for PHP requirements!');
+      }
+
+      if (!$compat) {
+         echo Plugin::messageIncompatible(
+            'php',
+            (isset($infos['min']) ? $infos['min'] : null),
+            (isset($infos['max']) ? $infos['max'] : null)
+         );
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check fo required PHP extensions
+    *
+    * @since 9.2
+    *
+    * @param array $exts Extensions lists/config @see Config::checkExtensions()
+    *
+    * @return boolean
+    */
+   public function checkPhpExtensions($exts) {
+      $report = Config::checkExtensions($exts);
+      if (count($report['missing'])) {
+         foreach (array_keys($report['missing']) as $ext) {
+            echo self::messageMissingRequirement('ext', $ext);
+         }
+         return false;
+      }
+      return true;
+   }
+
+
+   /**
+    * Check expected GLPI parameters
+    *
+    * @since 9.2
+    *
+    * @param array $params Expected parameters to be setup
+    *
+    * @return boolean
+    */
+   public function checkGlpiParameters($params) {
+      global $CFG_GLPI;
+
+      $compat = true;
+      foreach ($params as $param) {
+         if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
+            echo self::messageMissingRequirement('glpiparam', $param);
+            $compat = false;
+         }
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check expected PHP parameters
+    *
+    * @since 9.2
+    *
+    * @param array $params Expected parameters to be setup
+    *
+    * @return boolean
+    */
+   public function checkPhpParameters($params) {
+      $compat = true;
+      foreach ($params as $param) {
+         if (!ini_get($param) || trim(ini_get($param)) == '') {
+            echo self::messageMissingRequirement('param', $param);
+            $compat = false;
+         }
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Check expected GLPI plugins
+    *
+    * @since 9.2
+    *
+    * @param array $plugins Expected plugins
+    *
+    * @return boolean
+    */
+   public function checkGlpiPlugins($plugins) {
+      $compat = true;
+      foreach ($plugins as $plugin) {
+         if (!$this->isInstalled($plugin) || !$this->isActivated($plugin)) {
+            echo self::messageMissingRequirement('plugin', $plugin);
+            $compat = false;
+         }
+      }
+
+      return $compat;
+   }
+
+
+   /**
+    * Get GLPI version
+    * Used from unit tests to mock.
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   public function getGlpiVersion() {
+      return GLPI_VERSION;
+   }
+
+   /**
+    * Get GLPI pre version
+    * Used from unit tests to mock.
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   public function getGlpiPrever() {
+      return GLPI_PREVER;
+   }
+
+   /**
+    * Get PHP version
+    * Used from unit tests to mock.
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   public function getPhpVersion() {
+      return PHP_VERSION;
    }
 }

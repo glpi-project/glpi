@@ -38,7 +38,7 @@ use Glpi\Event;
 
 include ('../inc/includes.php');
 
-if (!TableExists('glpi_networkportmigrations')) {
+if (!$DB->tableExists('glpi_networkportmigrations')) {
    Html::displayNotFoundError();
 }
 

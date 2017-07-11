@@ -91,7 +91,9 @@ class Config extends CommonDBTM {
 
 
    function canViewItem() {
-      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+      if (isset($this->fields['context']) &&
+         ($this->fields['context'] == 'core' ||
+         in_array($this->fields['context'], $_SESSION['glpi_plugins']))) {
          return true;
       }
       return false;
@@ -1797,7 +1799,7 @@ class Config extends CommonDBTM {
       }
       echo "\n";
 
-      self::checkExtensions(true);
+      self::displayCheckExtensions(true);
 
       self::checkWriteAccessToDirs(true);
       toolbox::checkSELinux(true);
@@ -1887,18 +1889,12 @@ class Config extends CommonDBTM {
                [ 'name'    => 'PHPMailer',
                  'version' => $pm->Version ,
                  'check'   => 'PHPMailer' ],
-               [ 'name'    => 'Zend Framework',
-                 'check'   => 'Zend\\Loader\\StandardAutoloader' ],
                [ 'name'    => 'SimplePie',
                  'version' => SIMPLEPIE_VERSION,
                  'check'   => $sp ],
                [ 'name'    => 'TCPDF',
                  'version' => TCPDF_STATIC::getTCPDFVersion(),
                  'check'   => 'TCPDF' ],
-               [ 'name'    => 'ircmaxell/password-compat',
-                 'check'   => 'password_hash' ],
-               [ 'name'    => 'ramsey/array_column',
-                 'check'   => 'array_column' ],
                [ 'name'    => 'michelf/php-markdown',
                  'check'   => 'Michelf\\Markdown' ],
                [ 'name'    => 'true/punycode',
@@ -2129,74 +2125,140 @@ class Config extends CommonDBTM {
 
 
    /**
-    * Check for needed extensions
+    * Display extensions checks report
     *
-    * @param boolean $fordebug display for debug (no html required) (false by default)
+    * @since 9.2
     *
-    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK
-   **/
-   static function checkExtensions($fordebug = false) {
+    * @param boolean    $fordebug display for debug (no html required) (false by default)
+    *
+    * @return integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    **/
+   static function displayCheckExtensions($fordebug = false) {
       global $CFG_GLPI;
 
-      $extensions_to_check = [
-         'mysqli'   => [
-            'required'  => true
-         ],
-         'ctype'    => [
-            'required'  => true,
-            'function'  => 'ctype_digit',
-         ],
-         'fileinfo' => [
-            'required'  => true,
-            'class'     => 'finfo'
-         ],
-         'json'     => [
-            'required'  => true,
-            'function'  => 'json_encode'
-         ],
-         'mbstring' => [
-            'required'  => true,
-         ],
-         'zlib'     => [
-            'required'  => true,
-         ],
-         'curl'      => [
-            'required'  => true,
-         ],
-         'gd'       => [
-            'required'  => true,
-         ],
-         'simplexml' => [
-            'required'  => true,
-         ],
-         'xml'        => [
-            'required'  => true,
-            'function'  => 'utf8_decode'
-         ],
-         //to sync/connect from LDAP
-         'ldap'       => [
-            'required'  => false,
-         ],
-         //for mail collector
-         'imap'       => [
-            'required'  => false,
-         ],
-         //to enhance perfs
-         'Zend OPcache' => [
-            'required'  => false
-         ],
-         //to enhance perfs
-         'APCu'       => [
-            'required'  => false,
-            'function'  => 'apc_fetch'
-         ],
-         //for XMLRPC API
-         'xmlrpc'     => [
-            'required'  => false
-         ]
-      ];
+      $report = self::checkExtensions();
 
-      $error = 0;
+      foreach ($report['good'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                           alt=\"$msg\"
+                           title=\"$msg\"></td>";
+            echo "</tr>";
+         } else {
+            echo  "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                        alt=\"\">$msg\n";
+         }
+      }
+
+      foreach ($report['may'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $msg . "</td>";
+            echo "</tr>";
+         } else {
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . $msg . "\n";
+         }
+
+      }
+
+      foreach ($report['missing'] as $ext => $msg) {
+         if (!$fordebug) {
+            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+            echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . $msg . "</td>";
+            echo "</tr>";
+         } else {
+            echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\">" . $msg . "\n";
+         }
+      }
+
+      return $report['error'];
+   }
+
+
+   /**
+    * Check for needed extensions
+    *
+    * @since 9.2 Method signature and return has changed
+    *
+    * @param null|array $list     Extensions list (from plugins)
+    *
+    * @return array [
+    *                'error'     => integer 2: missing extension,  1: missing optionnal extension, 0: OK,
+    *                'good'      => [ext => message],
+    *                'missing'   => [ext => message],
+    *                'may'       => [ext => message]
+    *               ]
+   **/
+   static function checkExtensions($list = null) {
+      if ($list === null) {
+         $extensions_to_check = [
+            'mysqli'   => [
+               'required'  => true
+            ],
+            'ctype'    => [
+               'required'  => true,
+               'function'  => 'ctype_digit',
+            ],
+            'fileinfo' => [
+               'required'  => true,
+               'class'     => 'finfo'
+            ],
+            'json'     => [
+               'required'  => true,
+               'function'  => 'json_encode'
+            ],
+            'mbstring' => [
+               'required'  => true,
+            ],
+            'zlib'     => [
+               'required'  => true,
+            ],
+            'curl'      => [
+               'required'  => true,
+            ],
+            'gd'       => [
+               'required'  => true,
+            ],
+            'simplexml' => [
+               'required'  => true,
+            ],
+            'xml'        => [
+               'required'  => true,
+               'function'  => 'utf8_decode'
+            ],
+            //to sync/connect from LDAP
+            'ldap'       => [
+               'required'  => false,
+            ],
+            //for mail collector
+            'imap'       => [
+               'required'  => false,
+            ],
+            //to enhance perfs
+            'Zend OPcache' => [
+               'required'  => false
+            ],
+            //to enhance perfs
+            'APCu'       => [
+               'required'  => false,
+               'function'  => 'apc_fetch'
+            ],
+            //for XMLRPC API
+            'xmlrpc'     => [
+               'required'  => false
+            ]
+         ];
+      } else {
+         $extensions_to_check = $list;
+      }
+
+      $report = [
+         'error'     => 0,
+         'good'      => [],
+         'missing'   => [],
+         'may'       => []
+      ];
 
       //check for PHP extensions
       foreach ($extensions_to_check as $ext => $params) {
@@ -2206,7 +2268,7 @@ class Config extends CommonDBTM {
             if (!function_exists($params['function'])) {
                 $success = false;
             }
-         } else if (isset($param['class'])) {
+         } else if (isset($params['class'])) {
             if (!class_exists($params['class'])) {
                $success = false;
             }
@@ -2216,46 +2278,27 @@ class Config extends CommonDBTM {
             }
          }
 
-         if (!$fordebug) {
-            echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
-         }
          if ($success) {
             $msg = sprintf(__('%s extension is installed'), $ext);
-            if ($fordebug) {
-               echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
-                              alt=\"\">$msg\n";
-            } else {
-               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
-                              alt=\"$msg\"
-                              title=\"$msg\"></td>";
-            }
+            $report['good'][$ext] = $msg;
          } else {
             if (isset($params['required']) && $params['required'] === true) {
-               if ($error < 2) {
-                  $error = 2;
+               if ($report['error'] < 2) {
+                  $report['error'] = 2;
                }
-               if ($fordebug) {
-                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\">" . sprintf(__('%s extension is missing'), $ext) . "\n";
-               } else {
-                  echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
-               }
+               $msg = sprintf(__('%s extension is missing'), $ext);
+               $report['missing'][$ext] = $msg;
             } else {
-               if ($error < 1) {
-                  $error = 1;
+               if ($report['error'] < 1) {
+                  $report['error'] = 1;
                }
-               if ($fordebug) {
-                  echo "<img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\">" . sprintf(__('%s extension is not present'), $ext) . "\n";
-               } else {
-                  echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
-               }
+               $msg = sprintf(__('%s extension is not present'), $ext);
+               $report['may'][$ext] = $msg;
             }
-         }
-         if (!$fordebug) {
-            echo "</tr>";
          }
       }
 
-      return $error;
+      return $report;
    }
 
 
@@ -2407,11 +2450,11 @@ class Config extends CommonDBTM {
    static function getCurrentDBVersion() {
       global $DB;
 
-      if (!TableExists('glpi_configs')) {
+      if (!$DB->tableExists('glpi_configs')) {
          $query = "SELECT `version`
                    FROM `glpi_config`
                    WHERE `id` = '1'";
-      } else if (FieldExists('glpi_configs', 'version')) {
+      } else if ($DB->fieldExists('glpi_configs', 'version')) {
          $query = "SELECT `version`
                    FROM `glpi_configs`
                    WHERE `id` = '1'";
@@ -2467,7 +2510,7 @@ class Config extends CommonDBTM {
     * @param $context  string context to get values (default for glpi is core)
     * @param $values   array  of config names to set
     *
-    * @return array of config values
+    * @return void
    **/
    static function setConfigurationValues($context, array $values = []) {
 
@@ -2500,7 +2543,7 @@ class Config extends CommonDBTM {
     * @param $context string  context to get values (default for glpi is core)
     * @param $values  array   of config names to delete
     *
-    * @return array of config values
+    * @return void
    **/
    static function deleteConfigurationValues($context, array $values = []) {
 

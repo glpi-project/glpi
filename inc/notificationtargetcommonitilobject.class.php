@@ -1366,7 +1366,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add linked users to the notified users list
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addLinkedUserByType()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedUserByType()
     *
     * @param integer $type type of linked users
     *
@@ -1382,7 +1382,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param integer $type type of linked groups
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addLinkedGroupByType()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupByType()
     *
     * @return void
    **/
@@ -1398,7 +1398,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param integer $type type of linked groups
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addLinkedGroupWithoutSupervisorByType()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupWithoutSupervisorByType()
     *
     * @return void
     */
@@ -1413,7 +1413,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param integer $type type of linked groups
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addLinkedGroupSupervisorByType()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addLinkedGroupSupervisorByType()
     *
     * @return void
     */
@@ -1425,7 +1425,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add recipient
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addRecipientAddress()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addRecipientAddress()
     *
     * @return void
     */
@@ -1435,7 +1435,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
    /**
-    * @deprecated Use NotificationTargetCommonITILObject::addOldAssignTechnician()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addOldAssignTechnician()
     *
     * @return void
     */
@@ -1449,7 +1449,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param boolean $sendprivate (false by default)
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addSupplier()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addSupplier()
     *
     * @return void
    **/
@@ -1463,7 +1463,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param array $options Options
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addValidationApprover()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addValidationApprover()
     *
     * @return void
    **/
@@ -1501,7 +1501,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param array $options Options
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addTaskAuthor()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAuthor()
     *
     * @return void
     */
@@ -1516,7 +1516,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param array $options Options
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addTaskAssignUser()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAssignUser()
     *
     * @return void
     */
@@ -1533,7 +1533,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     *
     * @param array $options Options
     *
-    * @deprecated Use NotificationTargetCommonITILObject::addTaskAssignGroup()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::addTaskAssignGroup()
     *
     * @return void
     */
@@ -1550,7 +1550,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param array      $options Options
     * @param boolean    $simple  (false by default)
     *
-    * @deprecated Use NotificationTargetCommonITILObject::getDataForObject()
+    * @deprecated 9.2 Use NotificationTargetCommonITILObject::getDataForObject()
     *
     * @return array
     */

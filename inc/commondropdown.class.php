@@ -139,7 +139,9 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return array
    **/
    function getAdditionalFields() {
-      if (FieldExists($this->getTable(), 'product_number')) {
+      global $DB;
+
+      if ($DB->fieldExists($this->getTable(), 'product_number')) {
          return [['name' => 'product_number',
                             'type' => 'text',
                             'label' => __('Product Number')]];
@@ -421,6 +423,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function getSearchOptionsNew() {
+      global $DB;
       $tab = [];
 
       $tab[] = [
@@ -446,7 +449,7 @@ abstract class CommonDropdown extends CommonDBTM {
          'datatype'          => 'number'
       ];
 
-      if (FieldExists($this->getTable(), 'product_number')) {
+      if ($DB->fieldExists($this->getTable(), 'product_number')) {
          $tab[] = [
             'id'  => '3',
             'table'  => $this->getTable(),

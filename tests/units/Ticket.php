@@ -1039,4 +1039,42 @@ class Ticket extends DbTestCase {
          $assign = true
       );
    }
+
+   public function testUpdateFollowup() {
+      $uid = getItemByTypeName('User', 'tech', true);
+      $auth = new \Auth();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
+
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'         => '',
+            'description'  => 'A ticket to check followup updates',
+            'content'      => ''
+         ])
+      )->isGreaterThan(0);
+
+      //add a followup to the ticket
+      $fup = new \TicketFollowup();
+      $this->integer(
+         (int)$fup->add([
+            'tickets_id'   => $ticket->getID(),
+            'users_id'     => $uid,
+            'content'      => 'A simple followup'
+         ])
+      )->isGreaterThan(0);
+
+      $this->login();
+      $uid2 = getItemByTypeName('User', TU_USER, true);
+      $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
+      $this->boolean($fup->update([
+         'id'        => $fup->getID(),
+         'content'   => 'A simple edited followup'
+      ]))->isTrue();
+
+      $this->boolean($fup->getFromDB($fup->getID()))->isTrue();
+      $this->array($fup->fields)
+         ->variable['users_id']->isEqualTo($uid)
+         ->variable['users_id_editor']->isEqualTo($uid2);
+   }
 }
