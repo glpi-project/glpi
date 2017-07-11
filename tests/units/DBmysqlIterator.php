@@ -123,11 +123,13 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testDebug() {
-      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
-      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
-      $this->boolean(strpos($buf, 'From DBmysqlIterator') > 0)->isTrue();
-      $this->boolean(strpos($buf, $it->getSql()) > 0)->isTrue;
+      $it = null;
+      $this->exception(
+         function () use (&$it) {
+            $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+         }
+      )->message
+         ->contains('From DBmysqlIterator');
    }
 
 
@@ -180,14 +182,26 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testJoins() {
-      $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+      $this->exception(
+         function () {
+            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+         }
+      )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+      $this->exception(
+         function () {
+            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
+         }
+      )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)');
+      $this->exception(
+         function () {
+            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)');
+         }
+      )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
       $it = new \DBmysqlIterator(null, 'foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');

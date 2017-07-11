@@ -69,10 +69,11 @@ class MigrationCleaner extends CommonGLPI {
 
 
    static function canView() {
+      global $DB;
 
       if (!isset($_SESSION['glpishowmigrationcleaner'])) {
 
-         if (TableExists('glpi_networkportmigrations')
+         if ($DB->tableExists('glpi_networkportmigrations')
              && (countElementsInTable('glpi_networkportmigrations') > 0)) {
             $_SESSION['glpishowmigrationcleaner'] = true;
          } else {

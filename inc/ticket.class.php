@@ -4397,8 +4397,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
-      if ($canupdate && $canpriority) {
-         // Only change during creation OR when allowed to change priority OR when user is the creator
+      if ($canupdate) {
          echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
          echo $tt->getEndHiddenFieldValue('urgency', $this);
@@ -6568,6 +6567,17 @@ class Ticket extends CommonITILObject {
             echo $group->getLink()."&nbsp;";
             echo Html::showToolTip($group->getComments(),
                                    ['link' => $group->getLinkURL()]);
+            echo "</div>";
+         }
+         if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
+            echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
+            $user->getFromDB($item_i['users_id_editor']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            echo sprintf(
+               __('Last edited on %1$s by %2$s'),
+               Html::convDateTime($item_i['date_mod']),
+               $user->getLink()
+            );
             echo "</div>";
          }
 

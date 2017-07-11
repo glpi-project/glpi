@@ -2450,11 +2450,11 @@ class Config extends CommonDBTM {
    static function getCurrentDBVersion() {
       global $DB;
 
-      if (!TableExists('glpi_configs')) {
+      if (!$DB->tableExists('glpi_configs')) {
          $query = "SELECT `version`
                    FROM `glpi_config`
                    WHERE `id` = '1'";
-      } else if (FieldExists('glpi_configs', 'version')) {
+      } else if ($DB->fieldExists('glpi_configs', 'version')) {
          $query = "SELECT `version`
                    FROM `glpi_configs`
                    WHERE `id` = '1'";

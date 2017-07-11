@@ -278,48 +278,52 @@ class Rule extends DbTestCase {
       $this->string($ruleTicket->getCriteriaName('location'))->isIdenticalTo(__('Unavailable')."&nbsp;");
    }
 
-   public function testGetActionName() {
-      $ruleTicket = new \RuleTicket();
+   protected function actionsNamesProvider() {
+      return [
+         [__('Location')               , 'locations_id'],
+         ["&nbsp;"                     , 'location'],
+         [__('Type')                   , 'type'],
+         [__('Category')               , 'itilcategories_id'],
+         [__('Requester')              , '_users_id_requester'],
+         [__('Requester group')        , '_groups_id_requester'],
+         [__('Technician')             , '_users_id_assign'],
+         [__('Technician group')       , '_groups_id_assign'],
+         [__('Assigned to a supplier') , '_suppliers_id_assign'],
+         [__('Watcher')                , '_users_id_observer'],
+         [__('Watcher group')          , '_groups_id_observer'],
+         [__('Urgency')                , 'urgency'],
+         [__('Impact')                 , 'impact'],
+         [__('Priority')               , 'priority'],
+         [__('Status')                 , 'status'],
+         [_n('Associated element',
+            'Associated elements', 2)  , 'affectobject'],
+         [sprintf(__('%1$s %2$s'),
+                  __('SLT'),
+                  __('Time to resolve')) , 'slts_ttr_id'],
+         [sprintf(__('%1$s %2$s'),
+                  __('SLT'),
+                  __('Time to own'))     , 'slts_tto_id'],
+         [sprintf(__('%1$s - %2$s'),
+                  __('Send an approval request'),
+                  __('User'))            , 'users_id_validate'],
+         [sprintf(__('%1$s - %2$s'),
+                  __('Send an approval request'),
+                  __('Group'))           , 'groups_id_validate'],
+         [sprintf(__('%1$s - %2$s'),
+                  __('Send an approval request'),
+                  __('Minimum validation required')) , 'validation_percent'],
+         [__('Approval request to requester group manager') , 'users_id_validate_requester_supervisor'],
+         [__('Approval request to technician group manager') , 'users_id_validate_assign_supervisor'],
+         [__('Request source'), 'requesttypes_id']
+      ];
+   }
 
-      $actions = [__('Location')               => 'locations_id',
-                  "&nbsp;"                     => 'location',
-                  __('Type')                   => 'type',
-                  __('Category')               => 'itilcategories_id',
-                  __('Requester')              => '_users_id_requester',
-                  __('Requester group')        => '_groups_id_requester',
-                  __('Technician')             => '_users_id_assign',
-                  __('Technician group')       => '_groups_id_assign',
-                  __('Assigned to a supplier') => '_suppliers_id_assign',
-                  __('Watcher')                => '_users_id_observer',
-                  __('Watcher group')          => '_groups_id_observer',
-                  __('Urgency')                => 'urgency',
-                  __('Impact')                 => 'impact',
-                  __('Priority')               => 'priority',
-                  __('Status')                 => 'status',
-                  _n('Associated element',
-                     'Associated elements', 2) => 'affectobject',
-                  sprintf(__('%1$s %2$s'),
-                           __('SLT'),
-                           __('Time to resolve')) => 'slts_ttr_id',
-                  sprintf(__('%1$s %2$s'),
-                           __('SLT'),
-                           __('Time to own'))     => 'slts_tto_id',
-                  sprintf(__('%1$s - %2$s'),
-                           __('Send an approval request'),
-                           __('User'))            => 'users_id_validate',
-                  sprintf(__('%1$s - %2$s'),
-                           __('Send an approval request'),
-                           __('Group'))           => 'groups_id_validate',
-                  sprintf(__('%1$s - %2$s'),
-                           __('Send an approval request'),
-                           __('Minimum validation required')) => 'validation_percent',
-                  __('Approval request to requester group manager') => 'users_id_validate_requester_supervisor',
-                  __('Approval request to technician group manager') => 'users_id_validate_assign_supervisor',
-                  __('Request source') => 'requesttypes_id'
-                 ];
-      foreach ($actions as $label => $field) {
-         $this->string($ruleTicket->getActionName($field))->isIdenticalTo($label);
-      }
+   /**
+    * @dataProvider actionsNamesProvider
+    */
+   public function testGetActionName($label, $field) {
+      $ruleTicket = new \RuleTicket();
+      $this->string($ruleTicket->getActionName($field))->isIdenticalTo($label);
    }
 
    public function testProcess() {

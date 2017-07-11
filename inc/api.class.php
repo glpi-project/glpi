@@ -1047,7 +1047,7 @@ abstract class API extends CommonGLPI {
             }
             $search_value                      = $params['searchText']['all'];
             $params['searchText'][$labelfield] = $search_value;
-            if (FieldExists($table, 'comment')) {
+            if ($DB->fieldExists($table, 'comment')) {
                $params['searchText']['comment'] = $search_value;
             }
          }

@@ -308,28 +308,39 @@ class DbFunction extends DbTestCase {
    }
 
    public function testTableExist() {
-      $this->boolean(tableExists('glpi_configs'))->isTrue();
-      $this->boolean(tableExists('fakeTable'))->isFalse();
+      $this->exception(
+         function() {
+            $this->boolean(TableExists('glpi_configs'))->isTrue();
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('TableExists() function is deprecated');
+
+      $this->exception(
+         function() {
+            $this->boolean(tableExists('fakeTable'))->isFalse();
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('TableExists() function is deprecated');
    }
 
    public function testFieldExist() {
-      $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
-      $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
-      $this->when(
-         function () {
-            $this->boolean(fieldExists('fakeTable', 'id'))->isFalse();
+      $this->exception(
+         function() {
+            $this->boolean(fieldExists('glpi_configs', 'id'))->isTrue();
          }
-      )->error
-         ->withType(E_USER_WARNING)
-         ->exists();
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('FieldExists() function is deprecated');
 
-      $this->when(
-         function () {
-            $this->boolean(fieldExists('fakeTable', 'fakeField'))->isFalse();
+      $this->exception(
+         function() {
+            $this->boolean(fieldExists('glpi_configs', 'fakeField'))->isFalse();
          }
-      )->error
-         ->withType(E_USER_WARNING)
-         ->exists();
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('FieldExists() function is deprecated');
    }
 
 

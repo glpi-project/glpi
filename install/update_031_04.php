@@ -63,7 +63,7 @@ function update031to04() {
    //0.4 Prefixage des tables :
    echo "<p class='center'>Version 0.4 </p>";
 
-   if (!TableExists("glpi_computers")) {
+   if (!$DB->tableExists("glpi_computers")) {
       $query = "ALTER TABLE `computers` RENAME `glpi_computers`";
       $DB->queryOrDie($query);
 
@@ -124,7 +124,7 @@ function update031to04() {
       $query = "ALTER TABLE `networking_wire` RENAME `glpi_networking_wire`";
       $DB->queryOrDie($query);
 
-      if (TableExists("prefs") && !TableExists("glpi_prefs")) {
+      if ($DB->tableExists("prefs") && !$DB->tableExists("glpi_prefs")) {
          $query = "ALTER TABLE `prefs` RENAME `glpi_prefs`";
          $DB->queryOrDie($query);
       }
@@ -158,7 +158,7 @@ function update031to04() {
    }
 
    //Ajout d'un champs ID dans la table users
-   if (!FieldExists("glpi_users", "ID", false)) {
+   if (!$DB->fieldExists("glpi_users", "ID", false)) {
       $query = "ALTER TABLE `glpi_users`
                 DROP PRIMARY KEY";
       $DB->queryOrDie($query);
@@ -178,7 +178,7 @@ function update031to04() {
 
    //Mise a jour des ID pour les tables dropdown et type
    //cles primaires sur les tables dropdown et type, et mise a jour des champs lies
-   if (!FieldExists("glpi_dropdown_os", "ID", false)) {
+   if (!$DB->fieldExists("glpi_dropdown_os", "ID", false)) {
       changeVarcharToID("glpi_computers", "glpi_dropdown_os", "os");
       changeVarcharToID("glpi_computers", "glpi_dropdown_hdtype", "hdtype");
       changeVarcharToID("glpi_computers", "glpi_dropdown_sndcard", "sndcard");
@@ -218,7 +218,7 @@ function update031to04() {
       changeVarcharToID("glpi_users", "glpi_dropdown_locations", "location");
    }
 
-   if (!TableExists("glpi_type_peripherals")) {
+   if (!$DB->tableExists("glpi_type_peripherals")) {
       $query = "CREATE TABLE `glpi_type_peripherals` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255),
@@ -227,7 +227,7 @@ function update031to04() {
       $DB->queryOrDie($query, "0A");
    }
 
-   if (!TableExists("glpi_peripherals")) {
+   if (!$DB->tableExists("glpi_peripherals")) {
       $query = "CREATE TABLE `glpi_peripherals` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) NOT NULL default '',
@@ -248,7 +248,7 @@ function update031to04() {
       $DB->queryOrDie($query, "0");
    }
 
-   if (TableExists("glpi_prefs") && !FieldExists("glpi_prefs", "ID", false)) {
+   if ($DB->tableExists("glpi_prefs") && !$DB->fieldExists("glpi_prefs", "ID", false)) {
       $query = "ALTER TABLE `glpi_prefs`
                 DROP PRIMARY KEY";
       $DB->queryOrDie($query, "1");
@@ -258,7 +258,7 @@ function update031to04() {
       $DB->queryOrDie($query, "3");
    }
 
-   if (!FieldExists("glpi_config", "ID", false)) {
+   if (!$DB->fieldExists("glpi_config", "ID", false)) {
       $query = "ALTER TABLE `glpi_config`
                 CHANGE `config_id` `ID` INT(11) NOT NULL AUTO_INCREMENT";
       $DB->queryOrDie($query, "4");
@@ -354,7 +354,7 @@ function update031to04() {
       $DB->queryOrDie($query, "22");
    }
 
-   if (!TableExists("glpi_dropdown_firmware")) {
+   if (!$DB->tableExists("glpi_dropdown_firmware")) {
       $query = "CREATE TABLE `glpi_dropdown_firmware` (
                   `ID` INT NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NOT NULL,
@@ -362,25 +362,25 @@ function update031to04() {
       $DB->queryOrDie($query, "23");
    }
 
-   if (!FieldExists("glpi_networking", "firmware", false)) {
+   if (!$DB->fieldExists("glpi_networking", "firmware", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `firmware` INT(11)";
       $DB->queryOrDie($query, "24");
    }
 
-   if (!FieldExists("glpi_tracking", "realtime", false)) {
+   if (!$DB->fieldExists("glpi_tracking", "realtime", false)) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD `realtime` FLOAT NOT NULL";
       $DB->queryOrDie($query, "25");
    }
 
-   if (!FieldExists("glpi_printers", "flags_usb", false)) {
+   if (!$DB->fieldExists("glpi_printers", "flags_usb", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `flags_usb` TINYINT DEFAULT '0' NOT NULL AFTER `flags_par`";
       $DB->queryOrDie($query, "26");
    }
 
-   if (!FieldExists("glpi_licenses", "expire", false)) {
+   if (!$DB->fieldExists("glpi_licenses", "expire", false)) {
       $query = "ALTER TABLE `glpi_licenses`
                 ADD `expire` date default NULL";
       $DB->queryOrDie($query, "27");
@@ -446,7 +446,7 @@ function update031to04() {
       $DB->queryOrDie($query, "45");
    }
 
-   if (!TableExists("glpi_dropdown_netpoint")) {
+   if (!$DB->tableExists("glpi_dropdown_netpoint")) {
       $query = " CREATE TABLE `glpi_dropdown_netpoint` (
                      `ID` INT NOT NULL AUTO_INCREMENT ,
                      `location` INT NOT NULL ,
@@ -461,7 +461,7 @@ function update031to04() {
       $DB->queryOrDie($query, "47");
    }
 
-   if (!FieldExists("glpi_networking_ports", "netpoint", false)) {
+   if (!$DB->fieldExists("glpi_networking_ports", "netpoint", false)) {
       $query = "ALTER TABLE `glpi_networking_ports`
                 ADD `netpoint` INT default NULL";
       $DB->queryOrDie($query, "27");
@@ -553,7 +553,7 @@ function update031to04() {
       $DB->queryOrDie($query, "40");
    }
 
-   if (!FieldExists("glpi_config", "ldap_condition", false)) {
+   if (!$DB->fieldExists("glpi_config", "ldap_condition", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `ldap_condition` VARCHAR(255) NOT NULL DEFAULT ''";
       $DB->queryOrDie($query, "48");
@@ -575,13 +575,13 @@ function update031to04() {
       }
    }
 
-   if (!FieldExists("glpi_users", "password_md5", false)) {
+   if (!$DB->fieldExists("glpi_users", "password_md5", false)) {
       $query = "ALTER TABLE `glpi_users`
                 ADD `password_md5` VARCHAR(80) NOT NULL AFTER `password`";
       $DB->queryOrDie($query, "glpi_users.Password_md5");
    }
 
-   if (!FieldExists("glpi_config", "permit_helpdesk", false)) {
+   if (!$DB->fieldExists("glpi_config", "permit_helpdesk", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `permit_helpdesk` VARCHAR(200) NOT NULL";
       $DB->queryOrDie($query, "glpi_config_permit_helpdesk");

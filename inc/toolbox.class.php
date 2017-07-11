@@ -410,7 +410,11 @@ class Toolbox {
       }
 
       $tps = microtime(true);
-      self::logInFile('php-errors', $msg."\n", true);
+      if (defined('TU_USER')) {
+         throw new \RuntimeException($msg);
+      } else {
+         self::logInFile('php-errors', $msg."\n", true);
+      }
    }
 
 
@@ -540,9 +544,6 @@ class Toolbox {
 
       $err .= self::backtrace(false, $hide, $skip);
 
-      // Save error
-      self::logInFile("php-errors", $err);
-
       // For unit test
       if (class_exists('GlpitestPHPerror')) {
          if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
@@ -557,6 +558,9 @@ class Toolbox {
          }
          */
       }
+
+      // Save error
+      static::logInFile("php-errors", $err);
 
       return $errortype[$errno];
    }
@@ -1502,7 +1506,7 @@ class Toolbox {
    **/
    static function getRandomString($length, $high = false) {
 
-      if (extension_loaded('mcrypt')) {
+      if (extension_loaded('mcrypt') && !defined('TU_USER')) {
          Toolbox::logDebug('Please disable deprecated mcrypt extension!');
       }
       $factory = new RandomLib\Factory();

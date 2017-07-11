@@ -92,14 +92,14 @@ class Update extends CommonGLPI {
       $currents = [];
       $DB = $this->DB;
 
-      if (!TableExists('glpi_config') && !TableExists('glpi_configs')) {
+      if (!$DB->tableExists('glpi_config') && !$DB->tableExists('glpi_configs')) {
          //very, very old version!
          $currents = [
             'version'   => '0.1',
             'dbversion' => '0.1',
             'language'  => 'en_GB'
          ];
-      } else if (!TableExists("glpi_configs")) {
+      } else if (!$DB->tableExists("glpi_configs")) {
          // < 0.78
          // Get current version
          $query = "SELECT `version`, 'language'
@@ -109,7 +109,7 @@ class Update extends CommonGLPI {
          $currents['version']    = trim($DB->result($result, 0, 0));
          $currents['dbversion']  = $currents['version'];
          $currents['language']   = trim($DB->result($result, 0, 1));
-      } else if (FieldExists('glpi_configs', 'version')) {
+      } else if ($DB->fieldExists('glpi_configs', 'version')) {
          // < 0.85
          // Get current version and language
          $query = "SELECT `version`, `language`
