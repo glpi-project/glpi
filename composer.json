@@ -50,6 +50,8 @@
         }
     },
     "scripts": {
+        "test": "vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/units",
+        "testapi": "vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/api",
         "post-install-cmd": [
            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
         ],

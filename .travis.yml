@@ -18,8 +18,8 @@ before_script:
 
 script:
   - mysql -u root -e 'select version();'
-  - vendor/bin/atoum --debug -bf tests/bootstrap.php --no-cc -mcn 1 -d tests/units
-  - vendor/bin/atoum --debug -bf tests/bootstrap.php --no-cc -mcn 1 -d tests/api
+  - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/units
+  - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/api
   - if [[ "$CS" == "true" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
