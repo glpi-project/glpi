@@ -1751,6 +1751,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Get tasks list
     *
+    * @since 9.2
+    *
     * @return DBmysqlIterator
     */
    public static function getTaskList($status, $showgrouptickets) {
@@ -1765,8 +1767,12 @@ abstract class CommonITILTask  extends CommonDBTM {
             break;
 
       }
-      if ($showgrouptickets && isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
-         $prep_req['WHERE']['groups_id_tech'] = $_SESSION['glpigroups'];
+      if ($showgrouptickets) {
+         if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
+            $prep_req['WHERE']['groups_id_tech'] = $_SESSION['glpigroups'];
+         } else {
+            return false;
+         }
       } else {
          $prep_req['WHERE']['users_id_tech'] = $_SESSION['glpiID'];
       }
@@ -1791,16 +1797,18 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
 
-      $req = semf::getTaskList();
-      $numrows = $req->numrows();
+      $req = self::getTaskList();
+      $numrows = 0;
+      if ($req !== false) {
+         $numrows = $req->numrows();
+      }
 
-      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
+      $number = 0;
+      if ($_SESSION['glpidisplay_count_on_home'] > 0 && $req !== false) {
          $prep_req['START'] = intval($start);
          $prep_req['LIMIT'] = intval($_SESSION['glpidisplay_count_on_home']);
          $req = $DB->request($prep_req);
          $number = $req->numrows();
-      } else {
-         $number = 0;
       }
 
       if ($numrows > 0) {

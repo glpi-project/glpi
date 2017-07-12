@@ -67,12 +67,24 @@ class TicketTask extends DbTestCase {
          ]);
       }
 
-      $iterator = $task::getTaskList('todo', true);
+      $iterator = $task::getTaskList('todo', false);
       $this->string($iterator->getSql())->isIdenticalTo(
          'SELECT `id` FROM `glpi_tickettasks` WHERE `state` = 1 AND `users_id_tech` = 6 ORDER BY `date_mod` DESC'
       );
       //only 1 task created? why?
       $this->integer(count($iterator))->isIdenticalTo(1);
+
+      $iterator = $task::getTaskList('todo', true);
+      $this->boolean($iterator)->isFalse();
+
+      $_SESSION['glpigroups'] = [42, 157];
+      $iterator = $task::getTaskList('todo', true);
+      $this->string($iterator->getSql())->isIdenticalTo(
+         'SELECT `id` FROM `glpi_tickettasks` WHERE `state` = 1 AND `groups_id_tech` IN (42, 157) ORDER BY `date_mod` DESC'
+      );
+      //no task for those groups
+      $this->integer(count($iterator))->isIdenticalTo(0);
+
    }
 
 }
