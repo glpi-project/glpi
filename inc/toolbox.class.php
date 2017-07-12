@@ -2683,4 +2683,19 @@ class Toolbox {
 
       return $json;
    }
+
+   /**
+    * Checks if a string starts with another one
+    *
+    * @since 9.1.5
+    *
+    * @param string $haystack String to check
+    * @param string $needle   String to find
+    *
+    * @return boolean
+    */
+   static public function startsWith($haystack, $needle) {
+      $length = strlen($needle);
+      return (substr($haystack, 0, $length) === $needle);
+   }
 }
