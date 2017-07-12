@@ -14534,7 +14534,7 @@ msgstr "Le plugin %1$s a été installé !"
 
 #: inc/plugin.class.php:708
 msgid "Do you want to %activate_link it?"
-msgstr "Souhaitez-vous %activate_link_it ?"
+msgstr "Souhaitez-vous l'%activate_link ?"
 
 #: inc/plugin.class.php:713
 #, php-format
