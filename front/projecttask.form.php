@@ -82,6 +82,12 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates a task'), $_SESSION["glpiname"]));
    Html::back();
+
+} else if (isset($_GET['_in_modal'])) {
+   Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
+   $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
+   Html::popFooter();
+
 } else {
    Html::header(ProjectTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
    $task->display($_GET);
