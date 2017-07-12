@@ -522,68 +522,72 @@ if (isset($_GET["xmlnow"]) && ($_GET["xmlnow"] != "")) {
 if (isset($_GET["file"]) && ($_GET["file"] != "")
     && is_file($path."/".$_GET["file"])) {
 
-   $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
-   init_time(); //initialise le temps
+   $filepath = realpath("$path/{$_GET['file']}");
+   if (is_file($filepath) && Toolbox::startsWith($filepath, $path)) {
+      $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
+      init_time(); //initialise le temps
 
-   //debut de fichier
-   if (!isset($_GET["offset"])) {
-      $offset = 0;
-   } else {
-      $offset = $_GET["offset"];
-   }
-
-   //timeout de 5 secondes par defaut, -1 pour utiliser sans timeout
-   if (!isset($_GET["duree"])) {
-      $duree = $defaulttimeout;
-   } else {
-      $duree = $_GET["duree"];
-   }
-
-   $fsize = filesize($path."/".$_GET["file"]);
-   if (isset($offset)) {
-      if ($offset == -1) {
-         $percent = 100;
+      //debut de fichier
+      if (!isset($_GET["offset"])) {
+         $offset = 0;
       } else {
-         $percent = min(100,round(100*$offset/$fsize,0));
-      }
-   } else {
-      $percent = 0;
-   }
-
-   if ($percent >= 0) {
-      Html::displayProgressBar(400, $percent);
-      echo '<br>';
-   }
-
-   if ($offset != -1) {
-      if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
-         echo "<div class='center'>".
-              "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
-                    "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">";
-         echo __('Automatic redirection, else click')."</a>";
-         echo "<script language='javascript' type='text/javascript'>".
-               "window.location=\"backup.php?file=".
-                $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
-                "</script></div>";
-         Html::glpi_flush();
-         exit;
+         $offset = $_GET["offset"];
       }
 
-   } else {
-      DBmysql::optimize_tables(NULL, true);
-      // Compatiblity for old version for utf8 complete conversion
-      $cnf                = new Config();
-      $input['id']        = 1;
-      $input['utf8_conv'] = 1;
-      $cnf->update($input);
+      //timeout de 5 secondes par defaut, -1 pour utiliser sans timeout
+      if (!isset($_GET["duree"])) {
+         $duree = $defaulttimeout;
+      } else {
+         $duree = $_GET["duree"];
+      }
+
+      $fsize = filesize($filepath);
+      if (isset($offset)) {
+         if ($offset == -1) {
+            $percent = 100;
+         } else {
+            $percent = min(100,round(100*$offset/$fsize, 0));
+         }
+      } else {
+         $percent = 0;
+      }
+
+      if ($percent >= 0) {
+         Html::displayProgressBar(400, $percent);
+         echo '<br>';
+      }
+
+      if ($offset != -1) {
+         if (restoreMySqlDump($DB, $filepath, $duree)) {
+            echo "<div class='center'>".
+               "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
+                     "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">";
+            echo __('Automatic redirection, else click')."</a>";
+            echo "<script language='javascript' type='text/javascript'>".
+                  "window.location=\"backup.php?file=".
+                  $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
+                  "</script></div>";
+            Html::glpi_flush();
+            exit;
+         }
+
+      } else {
+         DBmysql::optimize_tables(null, true);
+         // Compatiblity for old version for utf8 complete conversion
+         $cnf                = new Config();
+         $input['id']        = 1;
+         $input['utf8_conv'] = 1;
+         $cnf->update($input);
+      }
    }
 }
 
 if (isset($_POST["delfile"])) {
    if (isset($_POST['file']) && ($_POST["file"] != "")) {
-      $filename = $_POST["file"];
-      if (is_file($path."/".$_POST["file"])) {
-         unlink($path."/".$_POST["file"]);
+      $filepath = realpath("$path/{$_POST['file']}");
+      if (is_file($filepath) && Toolbox::startsWith($filepath, $path)) {
+         $filename = $_POST["file"];
+         unlink($filepath);
          // TRANS: %s is a file name
          echo "<div class ='center spaced'>".sprintf(__('%s deleted'), $filename)."</div>";
       }
