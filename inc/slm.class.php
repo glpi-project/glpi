@@ -32,6 +32,7 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -60,7 +61,7 @@ class SLM extends CommonDBTM {
    /**
     * Force calendar of the SLM if value -1: calendar of the entity
     *
-    * @param $calendars_id calendars_id of the ticket
+    * @param integer $calendars_id calendars_id of the ticket
    **/
    function setTicketCalendar($calendars_id) {
 
@@ -97,12 +98,12 @@ class SLM extends CommonDBTM {
    /**
     * Print the slm form
     *
-    * @param $ID        integer  ID of the item
-    * @param $options   array    of possible options:
+    * @param integer $ID ID of the item
+    * @param array   $options of possible options:
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    *@return boolean item found
+    * @return boolean item found
    **/
    function showForm($ID, $options = []) {
 
@@ -170,11 +171,7 @@ class SLM extends CommonDBTM {
       return $tab;
    }
 
-   /**
-    *  @see CommonGLPI::getMenuContent()
-    *
-    *  @since version 9.1
-    **/
+
    static function getMenuContent() {
 
       $menu = [];

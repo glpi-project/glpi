@@ -32,6 +32,7 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -40,7 +41,6 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * SLA Class
- * @since version 9.1
 **/
 class SLA extends CommonDBChild {
 
@@ -84,9 +84,7 @@ class SLA extends CommonDBChild {
       return $ong;
    }
 
-   /**
-    * @see CommonDBTM::getFromDB
-   **/
+
    function getFromDB($ID) {
       if (!parent::getFromDB($ID)) {
          return false;
@@ -103,9 +101,6 @@ class SLA extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::post_getEmpty()
-   */
    function post_getEmpty() {
       $this->fields['number_time'] = 4;
       $this->fields['definition_time'] = 'hour';
@@ -253,8 +248,7 @@ class SLA extends CommonDBChild {
    /**
     * Print the HTML array for SLAs linked to a SLA
     *
-    * @param SLM $slm
-    * @return boolean
+    * @param SLM $slm Slm item
     */
    static function showForSlm(SLM $slm) {
       global $CFG_GLPI;
@@ -376,9 +370,6 @@ class SLA extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -395,14 +386,6 @@ class SLA extends CommonDBChild {
    }
 
 
-   /**
-    *
-    * @param $item            CommonGLPI item
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-    *
-    * @return boolean
-   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -417,8 +400,10 @@ class SLA extends CommonDBChild {
    /**
     * Get SLA data by type and ticket
     *
-    * @param $tickets_id
-    * @param $type
+    * @param integer $tickets_id Ticket ID
+    * @param integer $type type
+    *
+    * @return boolean
     */
    function getSlaDataForTicket($tickets_id, $type) {
 
@@ -435,11 +420,13 @@ class SLA extends CommonDBChild {
    }
 
 
-    /**
+   /**
     * Get SLA datas by condition
     *
-    * @param $condition
-   **/
+    * @param string $condition condition used to search if needed (empty get all) (default '')
+    *
+    * @return array all retrieved data in a associative array by id
+    */
    function getSlaData($condition) {
       return $this->find($condition);
    }
@@ -448,10 +435,10 @@ class SLA extends CommonDBChild {
    /**
     * Get SLA table fields
     *
-    * @param $type
+    * @param integer $type slm type
     *
-    * @return array
-   **/
+    * @return array name of date and sla fields
+    */
    static function getSlaFieldNames($type) {
 
       $dateField = null;
@@ -475,11 +462,11 @@ class SLA extends CommonDBChild {
    /**
     * Show SLA for ticket
     *
-    * @param $ticket      Ticket item
-    * @param $type
-    * @param $tt
-    * @param $canupdate
-   **/
+    * @param  Ticket         $ticket Ticket item
+    * @param  integer        $type
+    * @param  TicketTemplate $tt ticket template object
+    * @param  bool           $canupdate update right
+    */
    function showSlaForTicket(Ticket $ticket, $type, $tt, $canupdate) {
       global $CFG_GLPI;
 
@@ -747,12 +734,12 @@ class SLA extends CommonDBChild {
    /**
     * Get date based on a sla
     *
-    * @param $start_date         datetime start date
-    * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
+    * @param datetime $start_date start date
+    * @param integer  $additional_delay additional delay to add or substract (for waiting time)
     *                                     (default 0)
     *
-    * @return due date time (null if slm not exists)
-   **/
+    * @return datetime due date time (null if slm not exists)
+    **/
    function computeDate($start_date, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
@@ -784,7 +771,7 @@ class SLA extends CommonDBChild {
    /**
     * Get computed resolution time
     *
-    * @return resolution time
+    * @return integer resolution time (default 0)
    **/
    function getSLATime() {
 
@@ -806,12 +793,12 @@ class SLA extends CommonDBChild {
    /**
     * Get execution date of a sla level
     *
-    * @param $start_date         datetime    start date
-    * @param $slalevels_id       integer     sla level id
-    * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
+    * @param datetime $start_date start date
+    * @param integer  $slalevels_id sla level id
+    * @param integer  $additional_delay additional delay to add or substract (for waiting time)
     *                                        (default 0)
     *
-    * @return execution date time (null if sla not exists)
+    * @return datetime execution date time (null if sla not exists)
    **/
    function computeExecutionDate($start_date, $slalevels_id, $additional_delay = 0) {
 
@@ -847,11 +834,11 @@ class SLA extends CommonDBChild {
    /**
     * Get active time between to date time for the active calendar
     *
-    * @param $start  datetime begin
-    * @param $end    datetime end
+    * @param datetime $start begin
+    * @param datetime $end end
     *
-    * @return timestamp of delay
-   **/
+    * @return integer timestamp of delay
+    **/
    function getActiveTimeBetween($start, $end) {
 
       if ($end < $start) {
@@ -881,11 +868,11 @@ class SLA extends CommonDBChild {
    /**
     * Add a level to do for a ticket
     *
-    * @param $ticket          Ticket object
-    * @param $slalevels_id
+    * @param Ticket  $ticket Ticket object
+    * @param integer $slalevels_id SlaLevel ID
     *
-    * @return execution date time (NULL if sla not exists)
-   **/
+    * @return datetime execution date time (NULL if sla not exists)
+    **/
    function addLevelToDo(Ticket $ticket, $slalevels_id = 0) {
 
       $slalevels_id = ($slalevels_id ? $slalevels_id
@@ -908,10 +895,10 @@ class SLA extends CommonDBChild {
    /**
     * Add a level to do for a ticket
     *
-    * @param $ticket Ticket object
+    * @param Ticket $ticket object
     *
-    * @return execution date time (NULL if sla not exists)
-   **/
+    * @return datetime execution date time (NULL if sla not exists)
+    **/
    static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
@@ -928,9 +915,6 @@ class SLA extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
    function prepareInputForAdd($input) {
 
       if ($input['definition_time'] != 'day') {
@@ -940,9 +924,6 @@ class SLA extends CommonDBChild {
    }
 
 
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
    function prepareInputForUpdate($input) {
 
       if (isset($input['definition_time']) && $input['definition_time'] != 'day') {
@@ -954,7 +935,7 @@ class SLA extends CommonDBChild {
    /**
     * Get SLA types
     *
-    * @return array of types
+    * @return array array of types
     **/
    static function getSlaTypes() {
 
@@ -983,8 +964,10 @@ class SLA extends CommonDBChild {
    /**
     * Get SLA types dropdown
     *
-    * @param $options
-    **/
+    * @param array $options
+    *
+    * @return string
+    */
    static function getSlaTypeDropdown($options) {
 
       $params = ['name'  => 'type'];

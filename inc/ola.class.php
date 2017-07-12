@@ -59,7 +59,7 @@ class OLA extends CommonDBChild {
    /**
     * Define calendar of the ticket using the OLA when using this calendar as ola-s calendar
     *
-    * @param $calendars_id calendars_id of the ticket
+    * @param integer $calendars_id calendars_id of the ticket
    **/
    function setTicketCalendar($calendars_id) {
 

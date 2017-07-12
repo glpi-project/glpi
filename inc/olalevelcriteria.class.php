@@ -32,14 +32,16 @@
 
 /** @file
 * @brief
-* @since version 0.84
+* @since version 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class OlaLevelCriteria
+/**
+ * Class OlaLevelCriteriaClass OlaLevelCriteria
+ */
 class OlaLevelCriteria extends RuleCriteria {
 
 

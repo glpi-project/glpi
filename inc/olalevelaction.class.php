@@ -32,13 +32,16 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class OlaLevelAction
+/**
+ * Class OlaLevelAction
+ */
 class OlaLevelAction extends RuleAction {
 
 

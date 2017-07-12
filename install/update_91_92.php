@@ -740,8 +740,10 @@ function update91to92() {
                         0, 24, 10, NULL, NULL, NULL); ";
       $DB->queryOrDie($query, "9.2 populate glpi_crontasks for olaticket");
 
-      // Changing the structure of the table 'glpi_slas'
-      $migration->renameTable('glpi_slas', 'glpi_slms');
+      if (!$DB->tableExists('glpi_slas')) {
+         // Changing the structure of the table 'glpi_slas'
+         $migration->renameTable('glpi_slas', 'glpi_slms');
+      }
 
       // Changing the structure of the table 'glpi_slts'
       $migration->renameTable('glpi_slts', 'glpi_slas');
