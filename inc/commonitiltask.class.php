@@ -1748,6 +1748,40 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
+   /**
+    * Get tasks list
+    *
+    * @since 9.2
+    *
+    * @return DBmysqlIterator
+    */
+   public static function getTaskList($status, $showgrouptickets) {
+      global $DB;
+
+      $prep_req = ['SELECT' => 'id', 'FROM' => self::getTable()];
+
+      $prep_req['WHERE'] = [];
+      switch ($status) {
+         case "todo" : // we display the task with the status `todo`
+            $prep_req['WHERE']['state'] = Planning::TODO;
+            break;
+
+      }
+      if ($showgrouptickets) {
+         if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
+            $prep_req['WHERE']['groups_id_tech'] = $_SESSION['glpigroups'];
+         } else {
+            return false;
+         }
+      } else {
+         $prep_req['WHERE']['users_id_tech'] = $_SESSION['glpiID'];
+      }
+      $prep_req['ORDER'] = ['date_mod DESC'];
+
+      $req = $DB->request($prep_req);
+      return $req;
+   }
+
 
    /**
     * Display tasks in homepage
@@ -1763,36 +1797,18 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
 
-      $prep_req = ['SELECT' => 'id', 'FROM' => self::getTable()];
-
-      $prep_req['AND'] = [];
-      switch ($status) {
-         case "todo" : // we display the task with the status `todo`
-            $prep_req['AND']['state'] = Planning::TODO;
-            break;
-
+      $req = self::getTaskList();
+      $numrows = 0;
+      if ($req !== false) {
+         $numrows = $req->numrows();
       }
-      if ($showgrouptickets) {
-         if (count($_SESSION['glpigroups'])) {
-            $prep_req['AND']['groups_id_tech'] = $_SESSION['glpigroups'];
-         } else {
-            $prep_req['AND'][0] = 1;
-         }
-      } else {
-         $prep_req['AND']['users_id_tech'] = $_SESSION['glpiID'];
-      }
-      $prep_req['ORDER'] = ['date_mod DESC'];
 
-      $req = $DB->request($prep_req);
-      $numrows = $req->numrows();
-
-      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
+      $number = 0;
+      if ($_SESSION['glpidisplay_count_on_home'] > 0 && $req !== false) {
          $prep_req['START'] = intval($start);
          $prep_req['LIMIT'] = intval($_SESSION['glpidisplay_count_on_home']);
          $req = $DB->request($prep_req);
          $number = $req->numrows();
-      } else {
-         $number = 0;
       }
 
       if ($numrows > 0) {
