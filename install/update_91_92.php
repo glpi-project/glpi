@@ -649,7 +649,7 @@ function update91to92() {
    }
 
    /** ************ New SLM structure ************ */
-   if (!TableExists('glpi_olas')) {
+   if (!$DB->tableExists('glpi_olas')) {
       $query = "CREATE TABLE `glpi_olas` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -673,7 +673,7 @@ function update91to92() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olas");
 
-      if (!TableExists('glpi_olalevelactions')) {
+      if (!$DB->tableExists('glpi_olalevelactions')) {
          $query = "CREATE TABLE `glpi_olalevelactions` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
                  `olalevels_id` int(11) NOT NULL DEFAULT '0',
@@ -686,7 +686,7 @@ function update91to92() {
          $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
       }
 
-      if (!TableExists('glpi_olalevelcriterias')) {
+      if (!$DB->tableExists('glpi_olalevelcriterias')) {
          $query = "CREATE TABLE `glpi_olalevelcriterias` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
                  `olalevels_id` int(11) NOT NULL DEFAULT '0',
@@ -700,7 +700,7 @@ function update91to92() {
          $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
       }
 
-      if (!TableExists('glpi_olalevels')) {
+      if (!$DB->tableExists('glpi_olalevels')) {
          $query = "CREATE TABLE `glpi_olalevels` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -719,7 +719,7 @@ function update91to92() {
          $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
       }
 
-      if (!TableExists('glpi_olalevels_tickets')) {
+      if (!$DB->tableExists('glpi_olalevels_tickets')) {
          $query = "CREATE TABLE `glpi_olalevels_tickets` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -1404,7 +1404,7 @@ Regards,',
    }
 
    //Firmware for phones
-   if (FieldExists('glpi_phones', 'firmware')) {
+   if ($DB->fieldExists('glpi_phones', 'firmware')) {
       $iterator = $DB->request([
          'SELECT' => ['id', 'firmware'],
          'FROM'   => 'glpi_phones',
@@ -1439,7 +1439,7 @@ Regards,',
    }
 
    //Firmware for network equipements
-   if (tableExists('glpi_networkequipmentfirmwares')) {
+   if ($DB->tableExists('glpi_networkequipmentfirmwares')) {
       $mapping = [];
       $iterator = $DB->request('glpi_networkequipmentfirmwares');
       while ($row = $iterator->next()) {
@@ -1472,21 +1472,21 @@ Regards,',
    }
 
    //add editor in followupps
-   if (!FieldExists('glpi_ticketfollowups', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_ticketfollowups', 'users_id_editor')) {
       $migration->addField("glpi_ticketfollowups", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_ticketfollowups", "users_id_editor");
    }
 
    //add editor in *tasks
-   if (!FieldExists('glpi_tickettasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_tickettasks', 'users_id_editor')) {
       $migration->addField("glpi_tickettasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_tickettasks", "users_id_editor");
    }
-   if (!FieldExists('glpi_changetasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_changetasks', 'users_id_editor')) {
       $migration->addField("glpi_changetasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_changetasks", "users_id_editor");
    }
-   if (!FieldExists('glpi_problemtasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_problemtasks', 'users_id_editor')) {
       $migration->addField("glpi_problemtasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }
