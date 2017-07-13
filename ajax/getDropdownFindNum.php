@@ -86,13 +86,13 @@ if ((strlen($_POST['searchText']) > 0)) {
    $where .= " AND (`name` ".$search."
                     OR `id` = '".$_POST['searchText']."'";
 
-   if (FieldExists($_POST['table'], "contact")) {
+   if ($DB->fieldExists($_POST['table'], "contact")) {
       $where .= " OR `contact` ".$search;
    }
-   if (FieldExists($_POST['table'], "serial")) {
+   if ($DB->fieldExists($_POST['table'], "serial")) {
       $where .= " OR `serial` ".$search;
    }
-   if (FieldExists($_POST['table'], "otherserial")) {
+   if ($DB->fieldExists($_POST['table'], "otherserial")) {
       $where .= " OR `otherserial` ".$search;
    }
    $where .= ")";
