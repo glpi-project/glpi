@@ -1301,7 +1301,7 @@ class ProjectTask extends CommonDBChild {
       }
 
       $DONE_EVENTS = '';
-      if (!$options['display_done_events']) {
+      if (!isset($options['display_done_events']) || !$options['display_done_events']) {
          $DONE_EVENTS = "`glpi_projecttasks`.`percent_done` < 100
                          AND (glpi_projectstates.is_finished = 0
                               OR glpi_projectstates.is_finished IS NULL)
