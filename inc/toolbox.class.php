@@ -994,9 +994,9 @@ class Toolbox {
 
       if (!isset($_REQUEST['skipCheckWriteAccessToDirs'])) {
          $suberr = Config::checkWriteAccessToDirs();
-      }
-      if ($suberr > $error) {
-         $error = $suberr;
+         if ($suberr > $error) {
+            $error = $suberr;
+         }
       }
 
       $suberr = self::checkSELinux();
