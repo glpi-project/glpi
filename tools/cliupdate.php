@@ -345,6 +345,7 @@ switch ($current_version) {
       update911to913();
 
    case "9.1.3":
+   case "9.1.4":
    case GLPI_VERSION :
       break;
 
