@@ -1797,7 +1797,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function showCentralList($start, $status = 'todo', $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
 
-      $req = self::getTaskList();
+      $req = self::getTaskList($status, $showgrouptickets);
       $numrows = 0;
       if ($req !== false) {
          $numrows = $req->numrows();
