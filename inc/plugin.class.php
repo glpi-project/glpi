@@ -405,7 +405,8 @@ class Plugin extends CommonDBTM {
          echo "<th>".__('CSRF compliant')."</th>";
          echo "<th colspan='2'>&nbsp;</th></tr>\n";
 
-         foreach ($pluglist as $ID => $plug) {
+         foreach ($pluglist as $plug) {
+            $ID = $plug['id'];
             if (function_exists("plugin_".$plug['directory']."_check_config")) {
                // init must not be called for incompatible plugins
                self::load($plug['directory'], true);
