@@ -586,19 +586,23 @@ function update0782to080() {
    $migration->renameTable("glpi_cartridges_printermodels", "glpi_cartridgeitems_printermodels");
 
    $migration->addField("glpi_monitors", "have_hdmi",
-                        "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`");
+                        "tinyint(1) NOT NULL DEFAULT 0",
+                        ['after' => 'have_pivot']);
    $migration->addField("glpi_monitors", "have_displayport",
-                        "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_hdmi`");
+                        "tinyint(1) NOT NULL DEFAULT 0",
+                        ['after' => 'have_hdmi']);
 
    $migration->dropField("glpi_configs", "dbreplicate_email");
    $migration->addField("glpi_configs", "auto_create_infocoms", "tinyint(1) NOT NULL DEFAULT 0");
 
-   $migration->addField("glpi_configs", "csv_delimiter", "CHAR( 1 ) NOT NULL AFTER `number_format`",
-                        ['update' => "';'"]);
+   $migration->addField("glpi_configs", "csv_delimiter", "CHAR( 1 ) NOT NULL",
+                        ['after'  => 'number_format',
+                         'update' => "';'"]);
 
-   $migration->addField("glpi_users", "csv_delimiter", "CHAR( 1 ) NULL AFTER `number_format`");
-   $migration->addField("glpi_users", "names_format",
-                        "INT( 11 ) NULL DEFAULT NULL AFTER `number_format`");
+   $migration->addField("glpi_users", "csv_delimiter", "CHAR( 1 ) NULL",
+                        ['after' => 'number_format']);
+   $migration->addField("glpi_users", "names_format", "INT( 11 ) NULL DEFAULT NULL",
+                        ['after' => 'number_format']);
 
    // drop car fait sur mauvais champ
    $migration->dropKey("glpi_budgets", "end_date");
@@ -628,11 +632,13 @@ function update0782to080() {
    $migration->addField("glpi_users", "user_dn", "TEXT DEFAULT NULL");
 
    $migration->addField("glpi_tickets", "users_id_lastupdater",
-                        "INT( 11 ) NOT NULL DEFAULT 0 AFTER `date_mod`");
+                        "INT( 11 ) NOT NULL DEFAULT 0",
+                        ['after' => 'date_mod']);
    $migration->addKey("glpi_tickets", "users_id_lastupdater");
 
    $migration->addField("glpi_tickets", "type",
-                        "INT( 11 ) NOT NULL DEFAULT 1 AFTER `ticketcategories_id`");
+                        "INT( 11 ) NOT NULL DEFAULT 1",
+                        ['after' => 'ticketcategories_id']);
    $migration->addKey("glpi_tickets", "type");
    $migration->addField("glpi_entitydatas", "tickettype", "INT( 11 ) NOT NULL DEFAULT 0");
 
@@ -757,19 +763,24 @@ function update0782to080() {
 
    $migration->addField("glpi_configs", "use_slave_for_search", "tinyint( 1 ) NOT NULL DEFAULT '0'");
    $migration->addField("glpi_configs", "admin_email_name",
-                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`");
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL",
+                        ['after' => 'admin_email']);
    $migration->addField("glpi_configs", "admin_reply_name",
-                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`");
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL",
+                        ['after' => 'admin_reply']);
 
    $migration->addField("glpi_entitydatas", "admin_email_name",
-                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`");
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL",
+                        ['after' => 'admin_email']);
    $migration->addField("glpi_entitydatas", "admin_reply_name",
-                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`");
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL",
+                        ['after' => 'admin_reply']);
 
    $migration->addField("glpi_notificationtemplates", "css", "text COLLATE utf8_unicode_ci");
 
    $migration->addField("glpi_configs", "url_maxlength",
-                        "int(11) NOT NULL DEFAULT '30' AFTER `list_limit_max`");
+                        "int(11) NOT NULL DEFAULT '30'",
+                        ['after' => 'list_limit_max']);
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Multi user group for tickets'));
 
@@ -1310,9 +1321,10 @@ function update0782to080() {
    $migration->addField('glpi_authldaps', 'registration_number_field',
                         'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
 
-   $migration->addField("glpi_users", "date_sync", "datetime default NULL AFTER `date_mod`",
-                        ['update'    => "`date_mod`",
-                              'condition' => " WHERE `auths_id` > 0"]);
+   $migration->addField("glpi_users", "date_sync", "datetime default NULL",
+                        ['after'     => "date_mod",
+                         'update'    => "`date_mod`",
+                         'condition' => " WHERE `auths_id` > 0"]);
 
    //Migrate OCS computers link from static config to rules engine
    if ($DB->fieldExists('glpi_ocsservers', 'is_glpi_link_enabled', false)) {
