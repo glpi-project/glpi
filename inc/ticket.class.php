@@ -4356,8 +4356,14 @@ class Ticket extends CommonITILObject {
          echo self::getStatus($this->fields["status"]);
          if (in_array($this->fields["status"], $this->getClosedStatusArray())
              && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
-            echo "&nbsp;<a class='vsubmit' href='".$this->getLinkURL().
-                  "&amp;forcetab=TicketFollowup$1&amp;_openfollowup=1'>". __('Reopen')."</a>";
+            $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
+            if (!$_SESSION['glpiticket_timeline']
+                || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+               $link .= "TicketFollowup$1";
+            } else {
+               $link .= "Ticket$1";
+            }
+            echo "&nbsp;<a class='vsubmit' href='$link'>". __('Reopen')."</a>";
          }
       }
       echo $tt->getEndHiddenFieldValue('status', $this);
@@ -6864,6 +6870,9 @@ class Ticket extends CommonITILObject {
 
       if (isset($_GET['load_kb_sol'])) {
          echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";
+      }
+      if (isset($_GET['_openfollowup'])) {
+         echo "viewAddSubitem" . $this->fields['id'] . "$rand('TicketFollowup')";
       }
       echo "</script>\n";
 
