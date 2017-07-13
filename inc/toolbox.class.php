@@ -2562,7 +2562,7 @@ class Toolbox {
     *
     * @return boolean
     */
-   static public function startWith($haystack, $needle) {
+   static public function startsWith($haystack, $needle) {
       $length = strlen($needle);
       return (substr($haystack, 0, $length) === $needle);
    }
