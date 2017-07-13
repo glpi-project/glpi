@@ -1230,7 +1230,7 @@ Regards,',
    }
 
    //Firmware for phones
-   if (FieldExists('glpi_phones', 'firmware')) {
+   if ($DB->fieldExists('glpi_phones', 'firmware')) {
       $iterator = $DB->request([
          'SELECT' => ['id', 'firmware'],
          'FROM'   => 'glpi_phones',
@@ -1298,21 +1298,21 @@ Regards,',
    }
 
    // add projecttemplate
-   if (!FieldExists('glpi_projects', 'projecttemplates_id')) {
+   if (!$DB->fieldExists('glpi_projects', 'projecttemplates_id')) {
       $migration->addField("glpi_projects", "projecttemplates_id", "integer");
       $migration->addField("glpi_projects", "is_template", "bool");
       $migration->addField("glpi_projects", "template_name", "string");
       $migration->addKey("glpi_projects", "projecttemplates_id");
    }
 
-   if (!FieldExists('glpi_projecttasks', 'projecttasktemplates_id')) {
+   if (!$DB->fieldExists('glpi_projecttasks', 'projecttasktemplates_id')) {
       $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
       $migration->addField("glpi_projecttasks", "is_template", "bool");
       $migration->addField("glpi_projecttasks", "template_name", "string");
       $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
    }
 
-   if (!TableExists('glpi_projecttasktemplates')) {
+   if (!$DB->tableExists('glpi_projecttasktemplates')) {
       $query = "CREATE TABLE `glpi_projecttasktemplates` (
                        `id` int(11) NOT NULL AUTO_INCREMENT,
                        `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1358,21 +1358,21 @@ Regards,',
    }
 
    //add editor in followupps
-   if (!FieldExists('glpi_ticketfollowups', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_ticketfollowups', 'users_id_editor')) {
       $migration->addField("glpi_ticketfollowups", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_ticketfollowups", "users_id_editor");
    }
 
    //add editor in *tasks
-   if (!FieldExists('glpi_tickettasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_tickettasks', 'users_id_editor')) {
       $migration->addField("glpi_tickettasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_tickettasks", "users_id_editor");
    }
-   if (!FieldExists('glpi_changetasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_changetasks', 'users_id_editor')) {
       $migration->addField("glpi_changetasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_changetasks", "users_id_editor");
    }
-   if (!FieldExists('glpi_problemtasks', 'users_id_editor')) {
+   if (!$DB->fieldExists('glpi_problemtasks', 'users_id_editor')) {
       $migration->addField("glpi_problemtasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }

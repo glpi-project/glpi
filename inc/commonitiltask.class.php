@@ -1889,16 +1889,16 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return void
     */
    static function showVeryShort($ID, $itemtype) {
-      global $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $job  = new $itemtype();
       $rand = mt_rand();
       if ($job->getFromDB($ID)) {
-         if (FieldExists($job->getTable(), 'tickets_id')) {
+         if ($DB->fieldExists($job->getTable(), 'tickets_id')) {
             $item_link = new Ticket();
             $item_link->getFromDB($job->fields['tickets_id']);
             $tab_name = "Ticket";
-         } else if (FieldExists($job->getTable(), 'problems_id')) {
+         } else if ($DB->fieldExists($job->getTable(), 'problems_id')) {
             $item_link = new Problem();
             $item_link->getFromDB($job->fields['problems_id']);
             $tab_name = "ProblemTask";
