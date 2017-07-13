@@ -3395,20 +3395,20 @@ class Ticket extends CommonITILObject {
          $rows       = 6;
          $content_id = "content$rand";
 
-         if ($CFG_GLPI["use_rich_text"]) {
-            $options["content"] = $this->setRichTextContent($content_id, $options["content"], $rand);
-            $cols              = 100;
-            $rows              = 10;
-         } else {
-            $options["content"] = $this->setSimpleTextContent($options["content"]);
-         }
-
-         echo "<div id='content$rand_text'>";
          $content = $options['content'];
          if (!$ticket_template) {
             $content = Html::cleanPostForTextArea($options['content']);
          }
 
+         if ($CFG_GLPI["use_rich_text"]) {
+            $content = $this->setRichTextContent($content_id, $content, $rand);
+            $cols    = 100;
+            $rows    = 10;
+         } else {
+            $content = $this->setSimpleTextContent($content);
+         }
+
+         echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
                 $content."</textarea></div>";
          echo "</td></tr>";
@@ -4417,29 +4417,30 @@ class Ticket extends CommonITILObject {
       $rows       = 6;
       $content_id = "content$rand";
 
+      $content = $this->fields['content'];
+      if (!isset($options['template_preview'])) {
+         $content = Html::cleanPostForTextArea($content);
+      }
+
       if ($CFG_GLPI["use_rich_text"]) {
-         $this->fields["content"] = $this->setRichTextContent($content_id,
-                                                               $this->fields["content"],
-                                                               $rand,
-                                                               !$canupdate);
+         $content = $this->setRichTextContent($content_id,
+                                              $content,
+                                              $rand,
+                                              !$canupdate);
          $rows = 10;
       } else {
-         $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
+         $content = $this->setSimpleTextContent($content);
       }
 
       echo "<div id='content$rand_text'>";
       if ($CFG_GLPI['use_rich_text'] || $canupdate) {
-         $content = $this->fields['content'];
-         if (!isset($options['template_preview'])) {
-            $content = Html::cleanPostForTextArea($content);
-         }
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                $content."</textarea></div>";
          if (!$CFG_GLPI["use_rich_text"]) {
             echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          }
       } else {
-         echo $this->fields['content'];
+         echo $content;
       }
       echo $tt->getEndHiddenFieldValue('content', $this);
 
