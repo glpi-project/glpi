@@ -849,6 +849,7 @@ class Group extends CommonTreeDropdown {
             if (!($item = getItemForItemtype($data['itemtype']))) {
                continue;
             }
+            $item->getFromDB($data['items_id']);
             echo "<tr class='tab_bg_1'><td>";
             if ($item->canUpdate($data['items_id'])
                 || ($item->canView($data['items_id'])
