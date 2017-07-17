@@ -912,7 +912,7 @@ class SLT extends CommonDBChild {
     *
     * @return execution date time (NULL if sla not exists)
    **/
-   function addLevelToDo(Ticket $ticket, $slalevels_id = 0, $current) {
+   function addLevelToDo(Ticket $ticket, $slalevels_id = 0, $current = 0) {
 
       if ( !$slalevels_id and !$current ){
          $slalevels_id = $ticket->fields["ttr_slalevels_id"];
