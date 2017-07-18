@@ -2584,7 +2584,7 @@ class Rule extends CommonDBTM {
 
       $add_condition = '';
       if ($p['condition'] > 0) {
-         $add_condition = ' AND `condition` & '.$p['condition'];
+         $add_condition = ' AND `condition` & '. (int) $p['condition'];
       }
 
       $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
