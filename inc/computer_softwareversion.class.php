@@ -683,7 +683,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $where        = '';
       if ($crit > -1) {
-         $where = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
+         $where = " AND `glpi_softwares`.`softwarecategories_id` = ". (int) $crit;
       }
 
       $add_dynamic  = '';
