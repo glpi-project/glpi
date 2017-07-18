@@ -3278,6 +3278,13 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Get default values from posted values on reload form
+      if (!$ticket_template) {
+         if (isset($_POST)) {
+            $options = $_POST;
+         }
+      }
+
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
