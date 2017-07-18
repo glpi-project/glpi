@@ -3052,7 +3052,7 @@ class Ticket extends CommonITILObject {
       // Get default values from posted values on reload form
       if (!$ticket_template) {
          if (isset($_POST)) {
-            $options = Html::cleanPostForTextArea($_POST);
+            $options = $_POST;
          }
       }
 
