@@ -1265,7 +1265,7 @@ Regards,',
    }
 
    //Firmware for network equipements
-   if (tableExists('glpi_networkequipmentfirmwares')) {
+   if ($DB->tableExists('glpi_networkequipmentfirmwares')) {
       $mapping = [];
       $iterator = $DB->request('glpi_networkequipmentfirmwares');
       while ($row = $iterator->next()) {
