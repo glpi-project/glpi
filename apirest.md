@@ -247,6 +247,7 @@ $ curl -X GET \
 * **Returns**:
   * 200 (OK).
   * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 404 (Not found) with a message indicating an error ig the profile does not exists or usable.
 
 Example usage (CURL):
 
