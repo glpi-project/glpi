@@ -1580,6 +1580,7 @@ class Ticket extends CommonITILObject {
 
       // fill auto-assign when no tech defined (only for tech)
       if (isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
+          && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'central'
           && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)) {
          $input['_users_id_assign'] = Session::getLoginUserID();
