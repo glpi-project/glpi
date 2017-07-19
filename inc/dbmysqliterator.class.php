@@ -329,7 +329,7 @@ class DBmysqlIterator implements Iterator, Countable {
             }
 
          } else if (is_array($value)) {
-            if (count($value) == 2 && in_array($value[0], $operators)) {
+            if (count($value) == 2 && in_array($value[0], $operators, true)) {
                if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
                   $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
                } else {
