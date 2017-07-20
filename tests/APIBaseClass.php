@@ -127,10 +127,27 @@ abstract class APIBaseClass extends atoum {
     * @covers  API::changeActiveProfile
     */
    public function testChangeActiveProfile() {
+      // test change to an existing and available profile
       $data = $this->query('changeActiveProfile',
                            ['verb'    => 'POST',
                             'headers' => ['Session-Token' => $this->session_token],
                             'json'    => ['profiles_id'   => 4]]);
+
+      // test change to a non existing profile
+      $data = $this->query('changeActiveProfile',
+                           ['verb'    => 'POST',
+                            'headers' => ['Session-Token' => $this->session_token],
+                            'json'    => ['profiles_id'   => 9999]],
+                           404,
+                           'ERROR_ITEM_NOT_FOUND');
+
+      // test a bad request
+      $data = $this->query('changeActiveProfile',
+                           ['verb'    => 'POST',
+                            'headers' => ['Session-Token' => $this->session_token],
+                            'json'    => ['something_bad' => 4]],
+                           400,
+                           'ERROR');
    }
 
    /**

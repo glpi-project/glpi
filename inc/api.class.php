@@ -358,10 +358,16 @@ abstract class API extends CommonGLPI {
 
       $this->initEndpoint();
 
+      if (!isset($params['profiles_id'])) {
+         $this->returnError();
+      }
+
       $profiles_id = intval($params['profiles_id']);
       if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
          return Session::changeProfile($profiles_id);
       }
+
+      $this->messageNotfoundError();
    }
 
 
