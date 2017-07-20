@@ -740,6 +740,23 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 copy add certificate type table");
    }
 
+   if (countElementsInTable("glpi_profilerights", "`name` = 'certificate'") == 0) {
+      //new right for certificate
+      //give full rights to profiles having config right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+         if ($profrights['rights'] && (READ + UPDATE)) {
+            $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
+         } else {
+            $rightValue = 0;
+         }
+         $query = "INSERT INTO `glpi_profilerights`
+                          (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'certificate',
+                           '".$rightValue."')";
+         $DB->queryOrDie($query, "9.1 add right for certificates");
+      }
+   }
+
    /************** Auto login **************/
    $migration->addConfig([
       'login_remember_time'      => 604800,
