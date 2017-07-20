@@ -6714,13 +6714,13 @@ class Ticket extends CommonITILObject {
          echo "<div class='b_right'>".__("Ticket recall")."</div>";
 
          echo "<div class='ticket_title'>";
-         echo html_entity_decode($this->fields['name']);
+         echo Html::setSimpleTextContent($this->fields['name']);
          echo "</div>";
 
          echo "<div class='ticket_description'>";
 
          if ($CFG_GLPI["use_rich_text"]) {
-            echo html_entity_decode($this->fields['content']);
+            echo Html::setRichTextContent('', $this->fields['content'], '', true);
          } else {
             echo Html::setSimpleTextContent($this->fields['content']);
          }
