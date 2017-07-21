@@ -2698,4 +2698,16 @@ class Toolbox {
       $length = strlen($needle);
       return (substr($haystack, 0, $length) === $needle);
    }
+
+   /**
+    * gets the IP address of the client
+    *
+    * @since 9.2
+    *
+    * @return string the IP address
+    */
+   public static function getRemoteIpAddress() {
+      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+                                                      : $_SERVER["REMOTE_ADDR"]);
+   }
 }

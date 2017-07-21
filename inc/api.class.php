@@ -101,8 +101,7 @@ abstract class API extends CommonGLPI {
       }
 
       // retrieve ip of client
-      $this->iptxt = (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
-                                                              : $_SERVER["REMOTE_ADDR"]);
+      $this->iptxt = Toolbox::getRemoteIpAddress();
       $this->ipnum = (strstr($this->iptxt, ':')===false ? ip2long($this->iptxt) : '');
 
       // check ip access
