@@ -31,7 +31,7 @@
  */
 
 /** @file
-* @brief
+* @since 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -651,5 +651,103 @@ class Certificate extends CommonDBTM {
          }
       }
       return $types;
+   }
+
+   /**
+    * Give cron information
+    *
+    * @param $name : task's name
+    *
+    * @return arrray of information
+   **/
+   static function cronInfo($name) {
+      return ['description' => __('Send alarms on expired certificate')];
+   }
+
+   /**
+    * Cron action on certificates : alert on expired certificates
+    *
+    * @param $task to log, if NULL display (default NULL)
+    *
+    * @return 0 : nothing to do 1 : done with success
+   **/
+   static function cronCertificate($task = null) {
+      global $DB, $CFG_GLPI;
+
+      $cron_status = 1;
+
+      if (!$CFG_GLPI['use_notifications']) {
+         return 0;
+      }
+
+      $message      = [];
+      $items_notice = [];
+      $items_end    = [];
+
+      foreach (Entity::getEntitiesToNotify('use_certificates_alert') as $entity => $value) {
+         $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
+         // Check licenses
+         $query = "SELECT `glpi_certificates`.*,
+                   FROM `glpi_certificates`
+                   LEFT JOIN `glpi_alerts`
+                        ON (`glpi_certificates`.`id` = `glpi_alerts`.`items_id`
+                            AND `glpi_alerts`.`itemtype` = '".__CLASS__."'
+                            AND `glpi_alerts`.`type` = '".Alert::END."')
+                   WHERE `glpi_alerts`.`date` IS NULL
+                         AND `glpi_certificates`.`date_expiration` IS NOT NULL
+                         AND DATEDIFF(`glpi_certificates`.`date_expiration`,
+                                      CURDATE()) < '$before'
+                         AND `glpi_certificates`.`entities_id` = '".$entity."'";
+
+         $message = "";
+         $items   = [];
+
+         foreach ($DB->request($query) as $certificate) {
+            $name     = $certificate['name'].' - '.$certificate['serial'];
+            //TRANS: %1$s the license name, %2$s is the expiration date
+            $message .= sprintf(__('Certificate %1$s expired on %2$s'),
+                                Html::convDate($certificate["date_expiration"]), $name)."<br>\n";
+            $items[$certificate['id']] = $certificate;
+         }
+
+         if (!empty($items)) {
+            $alert                   = new Alert();
+            $options['entities_id']  = $entity;
+            $options['Certificates'] = $items;
+
+            if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
+               $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
+               if ($task) {
+                  //TRANS: %1$s is the entity, %2$s is the message
+                  $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
+                  $task->addVolume(1);
+               } else {
+                  Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
+                                                           $entityname, $message));
+               }
+
+               $input["type"]     = Alert::END;
+               $input["itemtype"] = __CLASS__;
+
+               // add alerts
+               foreach ($items as $ID => $certificate) {
+                  $input["items_id"] = $ID;
+                  $alert->add($input);
+                  unset($alert->fields['id']);
+               }
+
+            } else {
+               $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+               //TRANS: %s is entity name
+               $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send Certificates alert failed'));
+               if ($task) {
+                  $task->log($msg);
+               } else {
+                  Session::addMessageAfterRedirect($msg, false, ERROR);
+               }
+            }
+         }
+      }
+      return $cron_status;
    }
 }

@@ -655,7 +655,7 @@ function update91to92() {
    $migration->addField('glpi_states', 'is_visible_certificate', 'bool');
    $migration->addKey('glpi_states', 'is_visible_certificate');
 
-   if (!TableExists('glpi_certificates')) {
+   if (!$DB->tableExists('glpi_certificates')) {
       $query = "CREATE TABLE `glpi_certificates` (
         `id` INT(11) NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
@@ -703,7 +703,7 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 copy add certificate table");
    }
 
-   if (!TableExists('glpi_certificates_items')) {
+   if (!$DB->tableExists('glpi_certificates_items')) {
       $query = "CREATE TABLE `glpi_certificates_items` (
            `id` INT(11) NOT NULL AUTO_INCREMENT,
            `certificates_id` INT(11) NOT NULL DEFAULT '0',
@@ -721,7 +721,7 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 copy add certificate items table");
    }
 
-   if (!TableExists('glpi_certificatetypes')) {
+   if (!$DB->tableExists('glpi_certificatetypes')) {
       $query = "CREATE TABLE `glpi_certificatetypes` (
            `id` INT(11) NOT NULL AUTO_INCREMENT,
            `entities_id` INT(11) NOT NULL DEFAULT '0',
@@ -756,6 +756,25 @@ function update91to92() {
          $DB->queryOrDie($query, "9.1 add right for certificates");
       }
    }
+
+   // add alert for certificates
+   $migration->addField("glpi_entities", 'use_certificates_alert', "integer",
+                        ['value' => -2,
+                         'after' => 'send_licenses_alert_before_delay']);
+   $migration->addField("glpi_entities", 'send_certificates_alert_before_delay', "integer",
+                        ['value'     => -2,
+                         'after'     => 'use_certificates_alert',
+                         'update'    => '0', // No delay for root entity
+                         'condition' => 'WHERE `id` = 0']);
+   CronTask::register(
+      'Certificate',
+      'certificate',
+      DAY_TIMESTAMP,
+      [
+         'comment' => '',
+         'mode'    => CronTask::MODE_INTERNAL
+      ]
+   );
 
    /************** Auto login **************/
    $migration->addConfig([

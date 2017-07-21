@@ -93,8 +93,9 @@ class Entity extends CommonTreeDropdown {
                                                    'default_contract_alert', 'default_infocom_alert',
                                                    'mailing_signature', 'cartridges_alert_repeat',
                                                    'consumables_alert_repeat', 'notclosed_delay',
-                                                   'use_licenses_alert',
+                                                   'use_licenses_alert', 'use_certificates_alert',
                                                    'send_licenses_alert_before_delay',
+                                                   'send_certificates_alert_before_delay',
                                                    'use_contracts_alert',
                                                    'send_contracts_alert_before_delay',
                                                    'use_reservations_alert', 'use_infocoms_alert',
@@ -848,6 +849,26 @@ class Entity extends CommonTreeDropdown {
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '56',
+         'table'              => $this->getTable(),
+         'field'              => 'use_certificates_alert',
+         'name'               => __('Alarms on expired certificates'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '57',
+         'table'              => $this->getTable(),
+         'field'              => 'send_certificates_alert_before_delay',
+         'name'               => __('Send Certificate alarms before'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'specific'
       ];
 
       $tab[] = [
@@ -1886,6 +1907,39 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='2'>";
+      echo _n('Certificate', 'Certificates', Session::getPluralNumber());
+      echo "</th>";
+      echo "<td>" . __('Alarms on expired certificates') . "</td><td>";
+      $default_value = $entity->fields['use_certificates_alert'];
+      Alert::dropdownYesNo(['name'           => "use_certificates_alert",
+                            'value'          => $default_value,
+                            'inherit_parent' => (($ID > 0) ? 1 : 0)]);
+      if ($entity->fields['use_certificates_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_certificates_alert', $entity->getField('entities_id'));
+         echo "<font class='green'><br>";
+         echo self::getSpecificValueToDisplay('use_certificates_alert', $tid);
+         echo "</font>";
+      }
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . __('Send certificates alarms before')."</td><td>";
+      Alert::dropdownIntegerNever('send_certificates_alert_before_delay',
+                                  $entity->fields['send_certificates_alert_before_delay'],
+                                  ['max'            => 99,
+                                   'inherit_parent' => (($ID > 0) ? 1 : 0),
+                                   'unit'           => 'day',
+                                   'never_string'   => __('No')]);
+      if ($entity->fields['send_certificates_alert_before_delay'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('send_certificates_alert_before_delay',
+                                    $entity->getField('entities_id'));
+         echo "<font class='green'><br>";
+         echo self::getSpecificValueToDisplay('send_certificates_alert_before_delay', $tid);
+         echo "</font>";
+      }
+
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='1'>";
       echo _n('Reservation', 'Reservations', Session::getPluralNumber());
       echo "</th>";
@@ -2478,6 +2532,7 @@ class Entity extends CommonTreeDropdown {
       }
       switch ($field) {
          case 'use_licenses_alert' :
+         case 'use_certificates_alert' :
          case 'use_contracts_alert' :
          case 'use_infocoms_alert' :
          case 'is_notif_enable_default' :
@@ -2510,6 +2565,7 @@ class Entity extends CommonTreeDropdown {
          case 'send_contracts_alert_before_delay' :
          case 'send_infocoms_alert_before_delay' :
          case 'send_licenses_alert_before_delay' :
+         case 'send_certificates_alert_before_delay' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
                   return __('Inheritance of the parent entity');
@@ -2656,6 +2712,7 @@ class Entity extends CommonTreeDropdown {
       $options['display'] = false;
       switch ($field) {
          case 'use_licenses_alert' :
+         case 'use_certificates_alert' :
          case 'use_contracts_alert' :
          case 'use_infocoms_alert' :
             $options['name']  = $name;
@@ -2671,6 +2728,7 @@ class Entity extends CommonTreeDropdown {
          case 'send_contracts_alert_before_delay' :
          case 'send_infocoms_alert_before_delay' :
          case 'send_licenses_alert_before_delay' :
+         case 'send_certificates_alert_before_delay' :
             $options['unit']         = 'day';
             $options['never_string'] = __('No');
             return Alert::dropdownIntegerNever($name, $values[$field], $options);
