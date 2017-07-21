@@ -852,7 +852,7 @@ class Entity extends CommonTreeDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '56',
+         'id'                 => '57',
          'table'              => $this->getTable(),
          'field'              => 'use_certificates_alert',
          'name'               => __('Alarms on expired certificates'),
@@ -862,7 +862,7 @@ class Entity extends CommonTreeDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '57',
+         'id'                 => '58',
          'table'              => $this->getTable(),
          'field'              => 'send_certificates_alert_before_delay',
          'name'               => __('Send Certificate alarms before'),
