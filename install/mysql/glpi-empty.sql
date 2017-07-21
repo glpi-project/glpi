@@ -4829,6 +4829,7 @@ INSERT INTO `glpi_notifications` VALUES(63, 'New user in assignees', 0, 'Ticket'
 INSERT INTO `glpi_notifications` VALUES(64, 'New group in assignees', 0, 'Ticket', 'assign_group', '', 1, 1, '2016-02-08 16:57:46', NULL);
 INSERT INTO `glpi_notifications` VALUES(65, 'New supplier in assignees', 0, 'Ticket', 'assign_supplier', '', 1, 1, '2016-02-08 16:57:46', NULL);
 INSERT INTO `glpi_notifications` VALUES(66, 'Saved searches', 0, 'SavedSearch_Alert', 'alert', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(67, 'Certificates', 0, 'Certificate', 'alert', '', 1, 1, NULL, NULL);
 
 
 ### Dump table glpi_notifications_notificationtemplates
@@ -4912,6 +4913,7 @@ INSERT INTO `glpi_notifications_notificationtemplates` VALUES(63, '63', 'mailing
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(64, '64', 'mailing', 4);
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(65, '65', 'mailing', 4);
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(66, '66', 'mailing', 24);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(67, '67', 'mailing', 25);
 
 
 ### Dump table glpi_notificationtargets
@@ -5099,6 +5101,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('21','Projects','Project','2014
 INSERT INTO `glpi_notificationtemplates` VALUES ('22','Project Tasks','ProjectTask','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('23','Unlock Item request','ObjectLock','2016-02-08 16:57:46',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('24','Saved searches alerts','SavedSearch_Alert','2017-04-05 14:87:34',NULL,NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('25','Certificates','Certificate',NULL,'',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -5717,6 +5720,23 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('24','24','','##save
       &lt;/tbody&gt;
       &lt;/table&gt;
       &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('25','25','','##certificate.action##  ##certificate.entity##','##lang.certificate.entity## : ##certificate.entity##
+
+##FOREACHcertificates##
+
+##lang.certificate.serial## : ##certificate.serial##
+
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+
+##certificate.url##
+ ##ENDFOREACHcertificates##','&lt;p&gt;
+##lang.certificate.entity## : ##certificate.entity##&lt;br /&gt;
+##FOREACHcertificates##
+&lt;br /&gt;##lang.certificate.name## : ##certificate.name##&lt;br /&gt;
+##lang.certificate.serial## : ##certificate.serial##&lt;br /&gt;
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+&lt;br /&gt; &lt;a href=\"##certificate.url##\"&gt; ##certificate.url##
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

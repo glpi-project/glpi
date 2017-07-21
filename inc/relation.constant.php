@@ -94,10 +94,10 @@ $RELATION = ["glpi_authldaps"
                         "glpi_computertypes"
                         => ['glpi_computers' => 'computertypes_id'],
 
-                  "glpi_certificatetypes"
+                        "glpi_certificatetypes"
                         => ['glpi_certificatetypes' => 'certificatetypes_id'],
 
-                  "glpi_consumableitems"
+                        "glpi_consumableitems"
                         => ['glpi_consumables' => 'consumableitems_id'],
 
                         "glpi_consumableitemtypes"
@@ -684,11 +684,11 @@ $RELATION = ["glpi_authldaps"
                         "glpi_wifinetworks"
                         => ['glpi_networkportwifis' => 'wifinetworks_id'],
 
-                // link from devices tables (computers, software, ...) : only used for unrecurs check
-                "_virtual_device" => array('glpi_contracts_items' => array('items_id', 'itemtype'),
-                                           'glpi_documents_items' => array('items_id', 'itemtype'),
-                                           'glpi_infocoms'        => array('items_id', 'itemtype')
-//                                            'glpi_ipaddresses'     => array('items_id', 'itemtype'),
-//                                            'glpi_networknames'    => array('items_id', 'itemtype'),
-                                           )
+                         // link from devices tables (computers, software, ...) : only used for unrecurs check
+                         "_virtual_device" => ['glpi_contracts_items' => ['items_id', 'itemtype'],
+                                               'glpi_documents_items' => ['items_id', 'itemtype'],
+                                               'glpi_infocoms'        => ['items_id', 'itemtype']
+                        //                     'glpi_ipaddresses'     => array('items_id', 'itemtype'),
+                        //                     'glpi_networknames'    => array('items_id', 'itemtype'),
+                                                    ]
                 ];

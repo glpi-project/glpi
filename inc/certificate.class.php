@@ -214,7 +214,6 @@ class Certificate extends CommonDBTM {
          'condition'          => '`is_visible_certificate`'
       ];
 
-
       $tab[] = [
          'id'                 => '49',
          'table'              => 'glpi_groups',
@@ -352,7 +351,7 @@ class Certificate extends CommonDBTM {
     * @param array $options
     * @return bool
     */
-    function showForm($ID, $options=array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
@@ -369,20 +368,20 @@ class Certificate extends CommonDBTM {
                              (isset($options['withtemplate'])
                                 && ( $options['withtemplate']== 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', ['value' => $objectName]);
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_certificate`"));
+      State::dropdown(['value'     => $this->fields["states_id"],
+                       'entity'    => $this->fields["entities_id"],
+                       'condition' => "`is_visible_certificate`"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";
       echo "<td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
+      Location::dropdown(['value'  => $this->fields["locations_id"],
+                          'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
@@ -396,16 +395,15 @@ class Certificate extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Technician in charge of the hardware')."</td>";
       echo "<td>";
-      User::dropdown(array('name'   => 'users_id_tech',
-                           'value'  => $this->fields["users_id_tech"],
-                           'right'  => 'own_ticket',
-                           'entity' => $this->fields["entities_id"]));
+      User::dropdown(['name'   => 'users_id_tech',
+                      'value'  => $this->fields["users_id_tech"],
+                      'right'  => 'own_ticket',
+                      'entity' => $this->fields["entities_id"]]);
       echo "</td>";
       echo "<td>".__('Manufacturer')." (" . __('Root CA') . ")";
       echo "<td>";
-      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(['value' => $this->fields["manufacturers_id"]]);
       echo "</td></tr>\n";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Serial number')."</td>";
@@ -418,31 +416,31 @@ class Certificate extends CommonDBTM {
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
-      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'otherserial', ['value' => $objectName]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Group::dropdown(array('name'      => 'groups_id_tech',
-                            'value'     => $this->fields['groups_id_tech'],
-                            'entity'    => $this->fields['entities_id'],
-                            'condition' => '`is_assign`'));
+      Group::dropdown(['name'      => 'groups_id_tech',
+                       'value'     => $this->fields['groups_id_tech'],
+                       'entity'    => $this->fields['entities_id'],
+                       'condition' => '`is_assign`']);
 
       echo "</td><td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User')."</td>";
       echo "<td>";
-      User::dropdown(array('value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+      User::dropdown(['value'  => $this->fields["users_id"],
+                      'entity' => $this->fields["entities_id"],
+                      'right'  => 'all']);
       echo "</td>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Group::dropdown(array('value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`'));
+      Group::dropdown(['value'     => $this->fields["groups_id"],
+                       'entity'    => $this->fields["entities_id"],
+                       'condition' => '`is_itemgroup`']);
 
       echo "</td></tr>\n";
 
@@ -461,7 +459,6 @@ class Certificate extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "dns_name");
       echo "</td></tr>\n";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('DNS suffix') . "</td>";
@@ -513,7 +510,7 @@ class Certificate extends CommonDBTM {
     * @param null $checkitem
     * @return an
     */
-   function getSpecificMassiveActions($checkitem = NULL) {
+   function getSpecificMassiveActions($checkitem = null) {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
@@ -601,9 +598,10 @@ class Certificate extends CommonDBTM {
             $input = $ma->getInput();
             foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
-                  $values = array('plugin_certificates_certificates_id' => $key,
-                     'items_id' => $input["item_item"],
-                     'itemtype' => $input['typeitem']);
+                  $values = ['plugin_certificates_certificates_id'
+                                        => $key,
+                             'items_id' => $input["item_item"],
+                             'itemtype' => $input['typeitem']];
                   if ($certif_item->add($values)) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                   } else {

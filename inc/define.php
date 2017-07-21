@@ -190,7 +190,7 @@ $LANG             = [];
 $CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Supplier','User'];
+                                                  'SoftwareLicense', 'Supplier','User', 'Certicate'];
 
 $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -270,7 +270,8 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
-                                                  'SoftwareLicense', 'Line', 'Certificate'];
+                                                  'SoftwareLicense', 'Certificate',
+                                                  'Line'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -331,11 +332,12 @@ $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral'];
 
 
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
-                                                  'Contract', 'Crontask', 'DBConnection',
-                                                  'FieldUnicity', 'Infocom', 'MailCollector',
-                                                  'ObjectLock', 'PlanningRecall', 'Problem',
-                                                  'Project', 'ProjectTask', 'Reservation',
-                                                  'SoftwareLicense', 'Ticket', 'User', 'SavedSearch_Alert'];
+                                             'Contract', 'Crontask', 'DBConnection',
+                                             'FieldUnicity', 'Infocom', 'MailCollector',
+                                             'ObjectLock', 'PlanningRecall', 'Problem',
+                                             'Project', 'ProjectTask', 'Reservation',
+                                             'SoftwareLicense', 'Ticket', 'User',
+                                             'SavedSearch_Alert', 'Certificate'];
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
                                                   'AllAssets'       => "asset_types"];

@@ -651,7 +651,6 @@ function update91to92() {
       }
    }
 
-
    $migration->addField('glpi_states', 'is_visible_certificate', 'bool');
    $migration->addKey('glpi_states', 'is_visible_certificate');
 
@@ -775,6 +774,42 @@ function update91to92() {
          'mode'    => CronTask::MODE_INTERNAL
       ]
    );
+   if (!countElementsInTable('glpi_notifications', "`itemtype`='Certificate'")) {
+      $query = "INSERT INTO `glpi_notificationtemplates` (`name`, `itemtype`, `date_mod`)
+                VALUES ('Certificates alerts', 'Certificate', NOW())";
+      $DB->queryOrDie($query, "9.2 Add certifcate alerts notification template");
+      $nottid = $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notifications`
+                VALUES (null,'Certificates','0','Certificate','alert',
+                        '".Notification_NotificationTemplate::MODE_MAIL."', $nottid, '','1','1',
+                        NOW(), NOW());";
+      $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
+      $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                  (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
+                VALUES ($notid, '', '##certificate.action##  ##certificate.entity##',
+                        '##lang.certificate.entity## : ##certificate.entity##
+
+##FOREACHcertificates##
+
+##lang.certificate.serial## : ##certificate.serial##
+
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+
+##certificate.url##
+ ##ENDFOREACHcertificates##','&lt;p&gt;
+##lang.certificate.entity## : ##certificate.entity##&lt;br /&gt;
+##FOREACHcertificates##
+&lt;br /&gt;##lang.certificate.name## : ##certificate.name##&lt;br /&gt;
+##lang.certificate.serial## : ##certificate.serial##&lt;br /&gt;
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+&lt;br /&gt; &lt;a href=\"##certificate.url##\"&gt; ##certificate.url##
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;')";
+
+      $DB->queryOrDie($query, "9.2 add saved searches alerts notification translation");
+   }
 
    /************** Auto login **************/
    $migration->addConfig([
@@ -1526,94 +1561,6 @@ Regards,',
       'instance_uuid'      => Telemetry::generateInstanceUuid(),
       'registration_uuid'  => Telemetry::generateRegistrationUuid()
    ]);
-
-   $migration->addField('glpi_states', 'is_visible_certificate', 'bool');
-   $migration->addKey('glpi_states', 'is_visible_certificate');
-
-   if (!TableExists('glpi_certificates')) {
-      $query = "CREATE TABLE `glpi_certificates` (
-        `id` INT(11) NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
-        `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,        
-        `entities_id` INT(11) NOT NULL DEFAULT '0',
-        `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
-        `comment` text COLLATE utf8_unicode_ci,
-        `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-        `is_template` tinyint(1) NOT NULL DEFAULT '0',
-        `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `certificatetypes_id`  INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
-        `dns_name` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
-        `dns_suffix` VARCHAR(255) COLLATE utf8_unicode_ci  DEFAULT NULL,
-        `users_id_tech` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
-        `groups_id_tech` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
-        `locations_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
-        `manufacturers_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
-        `users_id` int(11) NOT NULL DEFAULT '0',
-        `groups_id` int(11) NOT NULL DEFAULT '0',
-        `is_autosign` TINYINT(1) NOT NULL DEFAULT '0',
-        `date_expiration` DATE DEFAULT NULL,
-        `states_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
-        `command` TEXT COLLATE utf8_unicode_ci,
-        `certificate_request` TEXT COLLATE utf8_unicode_ci,
-        `certificate_item` TEXT COLLATE utf8_unicode_ci,
-        `date_creation` DATETIME DEFAULT NULL,
-        `date_mod` DATETIME DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        KEY `name` (`name`),
-        KEY `entities_id` (`entities_id`),
-        KEY `is_template` (`is_template`),
-        KEY `is_deleted` (`is_deleted`),
-        KEY `certificatetypes_id` (`certificatetypes_id`),
-        KEY `users_id_tech` (`users_id_tech`),
-        KEY `groups_id_tech` (`groups_id_tech`),
-        KEY `groups_id` (`groups_id`),
-        KEY `users_id` (`users_id`),
-        KEY `locations_id` (`locations_id`),
-        KEY `manufacturers_id` (`manufacturers_id`),
-        KEY `states_id` (`states_id`),
-        KEY `date_creation` (`date_creation`),
-        KEY `date_mod` (`date_mod`)
-      ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.2 copy add certificate table");
-   }
-
-   if (!TableExists('glpi_certificates_items')) {
-      $query = "CREATE TABLE `glpi_certificates_items` (
-           `id` INT(11) NOT NULL AUTO_INCREMENT,
-           `certificates_id` INT(11) NOT NULL DEFAULT '0',
-           `items_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-           `itemtype` VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
-           `date_creation` DATETIME DEFAULT NULL,
-           `date_mod` DATETIME DEFAULT NULL,
-           PRIMARY KEY (`id`),
-           UNIQUE KEY `unicity` (`certificates_id`, `itemtype`, `items_id`),
-           KEY `device` (`items_id`, `itemtype`),
-           KEY `item` (`itemtype`, `items_id`),
-           KEY `date_creation` (`date_creation`),
-           KEY `date_mod` (`date_mod`)
-        ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.2 copy add certificate items table");
-   }
-
-   if (!TableExists('glpi_certificatetypes')) {
-      $query = "CREATE TABLE `glpi_certificatetypes` (
-           `id` INT(11) NOT NULL AUTO_INCREMENT,
-           `entities_id` INT(11) NOT NULL DEFAULT '0',
-           `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
-           `name` VARCHAR(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `comment` TEXT COLLATE utf8_unicode_ci,
-           `date_creation` DATETIME DEFAULT NULL,
-           `date_mod` DATETIME DEFAULT NULL,
-           PRIMARY KEY (`id`),
-           KEY `entities_id` (`entities_id`),
-           KEY `is_recursive` (`is_recursive`),
-           KEY `name` (`name`),
-           KEY `date_creation` (`date_creation`),
-           KEY `date_mod` (`date_mod`)
-        ) ENGINE = MyISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.2 copy add certificate type table");
-   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

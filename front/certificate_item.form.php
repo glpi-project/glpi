@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
 
    foreach ($_POST["item"] as $key => $val) {
-      $input = array('id' => $key);
+      $input = ['id' => $key];
       if ($val == 1) {
          $certif_item->check($key, UPDATE);
          $certif_item->delete($input);

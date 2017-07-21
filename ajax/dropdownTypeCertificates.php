@@ -44,26 +44,24 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
 Session::checkCentralAccess();
 
 // Make a select box
-//if (isset($_POST["certificatetype"])) {
-   $used = [];
+$used = [];
 
-   // Clean used array
-   if (isset($_POST['used'])
-      && is_array($_POST['used'])
-         && (count($_POST['used']) > 0)) {
-      foreach ($DB->request('glpi_certificates',
-                            ['id'                  => $_POST['used'],
-                             'certificatetypes_id' => $_POST['certificatetype']
-                            ]) as $data) {
-         $used[$data['id']] = $data['id'];
-      }
+// Clean used array
+if (isset($_POST['used'])
+   && is_array($_POST['used'])
+      && (count($_POST['used']) > 0)) {
+   foreach ($DB->request('glpi_certificates',
+                         ['id'                  => $_POST['used'],
+                          'certificatetypes_id' => $_POST['certificatetype']
+                         ]) as $data) {
+      $used[$data['id']] = $data['id'];
    }
+}
 
-   Dropdown::show('Certificate',
-                  ['name'      => $_POST['name'],
-                   'used'      => $used,
-                   'width'     => '50%',
-                   'entity'    => $_POST['entity'],
-                   'rand'      => $_POST['rand'],
-                ]);
-//}
+Dropdown::show('Certificate',
+               ['name'      => $_POST['name'],
+                'used'      => $used,
+                'width'     => '50%',
+                'entity'    => $_POST['entity'],
+                'rand'      => $_POST['rand'],
+               ]);

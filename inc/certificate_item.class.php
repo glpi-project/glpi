@@ -268,7 +268,7 @@ class Certificate_Item extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-         $massiveactionparams = array();
+         $massiveactionparams = [];
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
@@ -324,8 +324,9 @@ class Certificate_Item extends CommonDBRelation {
                      $item->getFromDB($data["id"]);
                      Session::addToNavigateListItems($itemtype, $data["id"]);
                      $ID = "";
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"]))
+                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID = " (" . $data["id"] . ")";
+                     }
 
                      $link = Toolbox::getItemTypeFormURL($itemtype);
                      $name = "<a href=\"" . $link . "?id=" . $data["id"] . "\">"
@@ -375,7 +376,6 @@ class Certificate_Item extends CommonDBRelation {
     */
    static function showForItem(CommonDBTM $item, $withtemplate = '') {
       global $DB;
-
 
       $ID = $item->getField('id');
 
@@ -440,7 +440,7 @@ class Certificate_Item extends CommonDBRelation {
 
          echo "<div class='firstbloc'>";
 
-         if (Certificate::canView() && (!$nb || ($nb > count($used))) ) {
+         if (Certificate::canView() && (!$nb || ($nb > count($used)))) {
             echo "<form name='certificate_form$rand'
                         id='certificate_form$rand'
                         method='post'
