@@ -1672,6 +1672,7 @@ INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('31','Certificate','certificate','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
