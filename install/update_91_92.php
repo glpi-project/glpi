@@ -1391,7 +1391,7 @@ Regards,',
       MONTH_TIMESTAMP,
       [
          'comment'   => '',
-         'mode'      => CronTask::MODE_EXTERNAL
+         'mode'      => CronTask::MODE_INTERNAL
       ]
    );
    $migration->addConfig([
