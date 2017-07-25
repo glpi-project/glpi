@@ -137,7 +137,8 @@ class SlaLevel extends RuleTicket {
          $delay = $sla->getSLATime();
          self::dropdownExecutionTime('execution_time',
                                      ['max_time' => $delay,
-                                      'used'     => self::getAlreadyUsedExecutionTime($sla->fields['id'])]);
+                                      'used'     => self::getAlreadyUsedExecutionTime($sla->fields['id']),
+                                      'type'     => $sla->fields['type']]);
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
