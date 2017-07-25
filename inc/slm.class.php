@@ -55,7 +55,7 @@ class SLM extends CommonDBTM {
    const TTO = 1; // Time to own
 
    static function getTypeName($nb = 0) {
-      return _n('SLM', 'SLMs', $nb);
+      return _n('Service level', 'Service levels', $nb);
    }
 
    /**
@@ -176,7 +176,7 @@ class SLM extends CommonDBTM {
 
       $menu = [];
       if (Config::canUpdate()) {
-         $menu['title']           = self::getTypeName(1);
+         $menu['title']           = self::getTypeName(2);
          $menu['page']            = '/front/slm.php';
          $menu['links']['search'] = '/front/slm.php';
          $menu['links']['add']    = '/front/slm.form.php';
