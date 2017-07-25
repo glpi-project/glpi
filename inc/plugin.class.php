@@ -355,6 +355,33 @@ class Plugin extends CommonDBTM {
       return true;
    }
 
+   /**
+    * Get list of all plugins
+    *
+    * @param array $fields Fields to retrieve
+    * @param array $order  Query ORDER clause
+    *
+    * @return array
+    */
+   public function getList(array $fields = [], array $order = ['name', 'directory']) {
+      global $DB;
+
+      $query = [
+         'FROM'   => $this->getTable()
+      ];
+
+      if (count($fields) > 0) {
+         $query['FIELDS'] = $fields;
+      }
+
+      if (count($order) > 0) {
+         $query['ORDER'] = $order;
+      }
+
+      $iterator = $DB->request($query);
+      return iterator_to_array($iterator, false);
+   }
+
 
    /**
     * List available plugins
@@ -365,7 +392,7 @@ class Plugin extends CommonDBTM {
       $this->checkStates();
       echo "<div class='center'><table class='tab_cadrehov'>";
 
-      $pluglist          = $this->find("", "name, directory");
+      $pluglist          = $this->getList();
       $i                 = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
       echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
@@ -378,7 +405,8 @@ class Plugin extends CommonDBTM {
          echo "<th>".__('CSRF compliant')."</th>";
          echo "<th colspan='2'>&nbsp;</th></tr>\n";
 
-         foreach ($pluglist as $ID => $plug) {
+         foreach ($pluglist as $plug) {
+            $ID = $plug['id'];
             if (function_exists("plugin_".$plug['directory']."_check_config")) {
                // init must not be called for incompatible plugins
                self::load($plug['directory'], true);

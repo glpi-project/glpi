@@ -135,7 +135,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
    }
 
 
-   function getSender($options = []) {
+   function getSender() {
 
       $mails = new UserEmail();
       if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
@@ -145,10 +145,10 @@ class NotificationTargetObjectLock extends NotificationTarget {
                                               AND is_default = 1 " )) {
 
             $ret = ['email' => $mails->fields['email'],
-                         'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                                                   $_SESSION["glpifirstname"])];
+                    'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                                              $_SESSION["glpifirstname"])];
       } else {
-         $ret = parent::getSender($options);
+         $ret = parent::getSender();
       }
 
       return $ret;

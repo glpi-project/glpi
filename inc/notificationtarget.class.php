@@ -949,25 +949,39 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get admin which sends the notification
     *
-    * @param $options   array
-    *
-    * @return the sender's address
+    * @return array [email => sender address, name => sender name]
    **/
-   function getSender($options = []) {
-      global $DB, $CFG_GLPI;
+   function getSender() {
+      global $CFG_GLPI;
 
-      //If the entity administrator's address is defined, return it
-      foreach ($DB->request('glpi_entities',
-               ['id' => $this->getEntity()]) as $data) {
+      $sender = [
+         'email'  => null,
+         'name'   => null
+      ];
 
-         if (NotificationMailing::isUserAddressValid($data['admin_email'])) {
-            return ['email' => $data['admin_email'],
-                         'name'  => $data['admin_email_name']];
+      if (isset($CFG_GLPI['from_email'])
+         && !empty($CFG_GLPI['from_email'])
+         && NotificationMailing::isUserAddressValid($CFG_GLPI['from_email'])
+      ) {
+         //generic from, if defined
+         $sender['email'] = $CFG_GLPI['from_email'];
+         $sender['name']  = $CFG_GLPI['from_email_name'];
+      } else {
+         $entity = new \Entity();
+         $entity->getFromDB($this->getEntity());
+
+         if (NotificationMailing::isUserAddressValid($entity->fields['admin_email'])) {
+            //If the entity administrator's address is defined, return it
+            $sender['email'] = $entity->fields['admin_email'];
+            $sender['name']  = $entity->fields['admin_email_name'];
+         } else {
+            //Entity admin is not defined, return the global admin's address
+            $sender['email'] = $CFG_GLPI['admin_email'];
+            $sender['name']  = $CFG_GLPI['admin_email_name'];
          }
       }
-      //Entity admin is not defined, return the global admin's address
-      return ['email' => $CFG_GLPI['admin_email'],
-                   'name'  => $CFG_GLPI['admin_email_name']];
+
+      return $sender;
    }
 
 

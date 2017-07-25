@@ -441,4 +441,42 @@ class DbFunction extends DbTestCase {
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7');
    }
+
+   public function testGetAncestorsOf() {
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+      $ancestors = getAncestorsOf('glpi_entities', $ent0);
+      $this->array($ancestors)->isIdenticalTo([0 => '0']);
+
+      $ancestors = getAncestorsOf('glpi_entities', $ent1);
+      $this->array($ancestors)->isIdenticalTo([0 => '0', 1 => "$ent0"]);
+
+      $ancestors = getAncestorsOf('glpi_entities', $ent2);
+      $this->array($ancestors)->isIdenticalTo([0 => '0', 1 => "$ent0"]);
+
+      $entity = new \Entity();
+      $new_id = (int)$entity->add([
+         'name'         => 'Sub child entity',
+         'entities_id'  => $ent1
+      ]);
+      $this->integer($new_id)->isGreaterThan(0);
+
+      $ancestors = getAncestorsOf('glpi_entities', $new_id);
+      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"]);
+
+      $entity = new \Entity();
+      $new_id2 = (int)$entity->add([
+         'name'         => 'Sub child entity 2',
+         'entities_id'  => $ent2
+      ]);
+      $this->integer($new_id2)->isGreaterThan(0);
+
+      $ancestors = getAncestorsOf('glpi_entities', $new_id2);
+      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"]);
+
+      $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
+      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"]);
+   }
 }

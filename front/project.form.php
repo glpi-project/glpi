@@ -42,6 +42,9 @@ include ('../inc/includes.php');
 if (empty($_GET["id"])) {
    $_GET["id"] = '';
 }
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = '';
+}
 
 Session::checkLoginUser();
 
@@ -96,13 +99,19 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
+} else if (isset($_GET['_in_modal'])) {
+   Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
+   $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
+   Html::popFooter();
+
 } else {
    Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
 
    if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
       $project->showGantt(-1);
    } else {
-      $project->display($_GET);
+      $project->display(['id'           => $_GET["id"],
+                         'withtemplate' => $_GET["withtemplate"]]);
    }
    Html::footer();
 }

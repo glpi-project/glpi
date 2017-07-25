@@ -358,7 +358,7 @@ class NetworkEquipment extends CommonDBTM {
       Network::dropdown(['value' => $this->fields["networks_id"]]);
       echo "</td></tr>";
 
-      $rowspan        = 5;
+      $rowspan        = 4;
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
@@ -382,18 +382,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan=2>".__('The MAC address and the IP of the equipment are included in an aggregated network port')."</td>";
       echo "</tr>\n";
-
-      $firmware = new Item_DeviceFirmware();
-      $firmware->getFromDBByCrit([
-         'itemtype'  => $this->getType(),
-         'items_id'  => $this->getID()
-      ]);
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Firmware', 'Firmware', 1)."</td>";
-      echo "<td>";
-      DeviceFirmware::dropdown(['value' => $firmware->fields["devicefirmwares_id"]]);
-      echo "</td>";
-      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";

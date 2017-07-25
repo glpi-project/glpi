@@ -435,9 +435,6 @@ class TicketFollowup  extends CommonDBTM {
 
          $update['id'] = $this->input["_job"]->fields['id'];
 
-         // don't notify on Ticket - update event
-         $update['_disablenotif'] = true;
-
          // Use update method for history
          $this->input["_job"]->update($update);
          $reopened     = true;

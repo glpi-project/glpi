@@ -3863,6 +3863,9 @@ class Html {
    static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
       global $CFG_GLPI;
 
+      // load tinymce lib
+      Html::requireJs('tinymce');
+
       $language = $_SESSION['glpilanguage'];
       if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
          $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
@@ -6034,7 +6037,7 @@ class Html {
       // (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
       echo self::scriptBlock("
          var CFG_GLPI  = {
-            'url_base': '".$CFG_GLPI["url_base"]."',
+            'url_base': '".(isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')."',
             'root_doc': '".$CFG_GLPI["root_doc"]."',
          };
       ");

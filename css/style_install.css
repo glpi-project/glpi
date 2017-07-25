@@ -279,3 +279,7 @@ a.vsubmit:hover {
    background-color: #FEC95C;
    opacity: 0;
 }
+
+.ui-widget {
+   font-size: 12px;
+}

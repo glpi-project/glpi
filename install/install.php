@@ -59,7 +59,9 @@ function header_html($etape) {
 
     // LIBS
    echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+   echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
    echo Html::script("../lib/jqueryplugins/select2/select2.min.js");
+   echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
    echo Html::css("../lib/jqueryplugins/select2/select2.css");
 
    // CSS
@@ -438,6 +440,25 @@ function step4 ($databasename, $newdatabasename) {
 
 }
 
+//send telemetry informations
+function step6() {
+   global $DB;
+   echo "<h3>".__('Collect data')."</h3>";
+
+   include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
+   include_once(GLPI_CONFIG_DIR . "/config_db.php");
+   $DB = new DB();
+
+   echo "<form action='install.php' method='post'>";
+   echo "<input type='hidden' name='install' value='Etape_5'>";
+
+   echo Telemetry::showTelemetry();
+   echo Telemetry::showReference();
+
+   echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
+            __('Continue')."'></p>";
+   Html::closeForm();
+}
 
 // finish installation
 function step7() {
@@ -446,6 +467,12 @@ function step7() {
    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
+
+   if (isset($_POST['send_stats'])) {
+      //user has accepted to send telemetry infos; activate cronjob
+      $query = 'UPDATE glpi_crontasks SET state = 1 WHERE name=\'telemetry\'';
+      $DB->query($query);
+   }
 
    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
    $query = "UPDATE `glpi_configs`
@@ -594,7 +621,12 @@ if (!isset($_POST["install"])) {
                $_POST["newdatabasename"]);
          break;
 
-      case "Etape_4" : // finish installation
+      case "Etape_4" : // send telemetry informations
+         header_html(sprintf(__('Step %d'), 4));
+         step6();
+         break;
+
+      case "Etape_5" : // finish installation
          header_html(sprintf(__('Step %d'), 4));
          step7();
          break;

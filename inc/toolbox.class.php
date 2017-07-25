@@ -994,9 +994,9 @@ class Toolbox {
 
       if (!isset($_REQUEST['skipCheckWriteAccessToDirs'])) {
          $suberr = Config::checkWriteAccessToDirs();
-      }
-      if ($suberr > $error) {
-         $error = $suberr;
+         if ($suberr > $error) {
+            $error = $suberr;
+         }
       }
 
       $suberr = self::checkSELinux();
@@ -2682,5 +2682,32 @@ class Toolbox {
       }
 
       return $json;
+   }
+
+   /**
+    * Checks if a string starts with another one
+    *
+    * @since 9.1.5
+    *
+    * @param string $haystack String to check
+    * @param string $needle   String to find
+    *
+    * @return boolean
+    */
+   static public function startsWith($haystack, $needle) {
+      $length = strlen($needle);
+      return (substr($haystack, 0, $length) === $needle);
+   }
+
+   /**
+    * gets the IP address of the client
+    *
+    * @since 9.2
+    *
+    * @return string the IP address
+    */
+   public static function getRemoteIpAddress() {
+      return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+                                                      : $_SERVER["REMOTE_ADDR"]);
    }
 }

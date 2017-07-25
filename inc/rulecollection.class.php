@@ -105,7 +105,7 @@ class RuleCollection extends CommonDBTM {
                                              $this->entity, $recursive);
 
       if ($condition > 0) {
-         $restrict .= ' AND `condition` & '.$condition;
+         $restrict .= ' AND `condition` & '. (int) $condition;
       }
       return countElementsInTable("glpi_rules", $restrict);
    }
@@ -134,7 +134,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       if ($p['condition'] > 0) {
-         $sql_active .= " AND `condition` & ".$p['condition'];
+         $sql_active .= " AND `condition` & ". (int) $p['condition'];
       }
 
       $sql = "SELECT `glpi_rules`.*
@@ -595,7 +595,7 @@ class RuleCollection extends CommonDBTM {
       $add_condition = '';
 
       if ($condition > 0) {
-         $add_condition = ' AND `condition` & '.$condition;
+         $add_condition = ' AND `condition` & '. (int) $condition;
 
       }
 
@@ -1646,7 +1646,7 @@ class RuleCollection extends CommonDBTM {
 
       $limit = '';
       if ($condition > 0) {
-         $limit = " AND `glpi_rules`.`condition` & $condition ";
+         $limit = " AND `glpi_rules`.`condition` & ". (int) $condition;
       }
       $input = [];
       $res   = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`

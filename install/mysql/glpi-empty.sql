@@ -1246,6 +1246,12 @@ INSERT INTO `glpi_configs` VALUES ('175','core','notifications_ajax_check_interv
 INSERT INTO `glpi_configs` VALUES ('176','core','notifications_ajax_sound', NULL);
 INSERT INTO `glpi_configs` VALUES ('177','core','notifications_ajax_icon_url', '/pics/glpi.png');
 INSERT INTO `glpi_configs` VALUES ('178','core','dbversion','9.2-dev');
+INSERT INTO `glpi_configs` VALUES ('179','core','smtp_max_retries','5');
+INSERT INTO `glpi_configs` VALUES ('180','core','smtp_sender', NULL);
+INSERT INTO `glpi_configs` VALUES ('181','core','from_email', NULL);
+INSERT INTO `glpi_configs` VALUES ('182','core','from_email_name', NULL);
+INSERT INTO `glpi_configs` VALUES ('183','core','instance_uuid', NULL);
+INSERT INTO `glpi_configs` VALUES ('184','core','registration_uuid', NULL);
 
 
 ### Dump table glpi_consumableitems
@@ -1577,7 +1583,8 @@ INSERT INTO `glpi_crontasks` VALUES ('26','Crontask','circularlogs','86400','4',
 INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('30','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('31','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -6984,6 +6991,9 @@ CREATE TABLE `glpi_projects` (
   `comment` longtext COLLATE utf8_unicode_ci,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `projecttemplates_id` int(11) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `code` (`code`),
@@ -7003,7 +7013,9 @@ CREATE TABLE `glpi_projects` (
   KEY `real_end_date` (`real_end_date`),
   KEY `percent_done` (`percent_done`),
   KEY `show_on_global_gantt` (`show_on_global_gantt`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `projecttemplates_id` (`projecttemplates_id`),
+  KEY `is_template` (`is_template`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7054,6 +7066,9 @@ CREATE TABLE `glpi_projecttasks` (
   `users_id` int(11) NOT NULL DEFAULT '0',
   `percent_done` int(11) NOT NULL DEFAULT '0',
   `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
+  `projecttasktemplates_id` int(11) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7061,6 +7076,53 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `projects_id` (`projects_id`),
   KEY `projecttasks_id` (`projecttasks_id`),
   KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `plan_start_date` (`plan_start_date`),
+  KEY `plan_end_date` (`plan_end_date`),
+  KEY `real_start_date` (`real_start_date`),
+  KEY `real_end_date` (`real_end_date`),
+  KEY `percent_done` (`percent_done`),
+  KEY `projectstates_id` (`projectstates_id`),
+  KEY `projecttasktypes_id` (`projecttasktypes_id`),
+  KEY `projecttasktemplates_id` (`projecttasktemplates_id`),
+  KEY `is_template` (`is_template`),
+  KEY `is_milestone` (`is_milestone`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_projecttasktemplates
+
+DROP TABLE IF EXISTS `glpi_projecttasktemplates`;
+CREATE TABLE `glpi_projecttasktemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8_unicode_ci,
+  `comment` longtext COLLATE utf8_unicode_ci,
+  `projects_id` int(11) NOT NULL DEFAULT '0',
+  `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+  `plan_start_date` datetime DEFAULT NULL,
+  `plan_end_date` datetime DEFAULT NULL,
+  `real_start_date` datetime DEFAULT NULL,
+  `real_end_date` datetime DEFAULT NULL,
+  `planned_duration` int(11) NOT NULL DEFAULT '0',
+  `effective_duration` int(11) NOT NULL DEFAULT '0',
+  `projectstates_id` int(11) NOT NULL DEFAULT '0',
+  `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `percent_done` int(11) NOT NULL DEFAULT '0',
+  `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
+  `comments` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `projects_id` (`projects_id`),
+  KEY `projecttasks_id` (`projecttasks_id`),
+  KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `users_id` (`users_id`),
   KEY `plan_start_date` (`plan_start_date`),
@@ -7717,7 +7779,6 @@ CREATE TABLE `glpi_softwarelicenses` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
   `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),

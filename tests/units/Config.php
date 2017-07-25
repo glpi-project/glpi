@@ -335,8 +335,8 @@ class Config extends DbTestCase {
    public function testGetConfigurationValues() {
       $conf = \Config::getConfigurationValues('core');
       $this->array($conf)
-         ->hasSize(172)
-         ->hasKeys(['version', 'dbversion']);
+         ->hasKeys(['version', 'dbversion'])
+         ->size->isGreaterThan(170);
 
       $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
       $this->array($conf)->isIdenticalTo([

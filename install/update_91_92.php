@@ -57,23 +57,23 @@ function update91to92() {
 
    if (!$DB->tableExists("glpi_businesscriticities")) {
       $query = "CREATE TABLE `glpi_businesscriticities` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `comment` text COLLATE utf8_unicode_ci,
-                  `date_mod` datetime DEFAULT NULL,
-                  `date_creation` datetime DEFAULT NULL,
-                  `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
-                  `completename` text COLLATE utf8_unicode_ci,
-                  `level` int(11) NOT NULL DEFAULT '0',
-                  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
-                  `sons_cache` longtext COLLATE utf8_unicode_ci,
-                  PRIMARY KEY (`id`),
-                  KEY `name` (`name`),
-                  KEY `unicity` (`businesscriticities_id`,`name`),
-                  KEY `date_mod` (`date_mod`),
-                  KEY `date_creation` (`date_creation`)
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `entities_id` int(11) NOT NULL DEFAULT '0',
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
+        `completename` text COLLATE utf8_unicode_ci,
+        `level` int(11) NOT NULL DEFAULT '0',
+        `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+        `sons_cache` longtext COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `unicity` (`businesscriticities_id`,`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "Add business criticity table");
    }
@@ -110,36 +110,36 @@ function update91to92() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
    if (!$DB->tableExists('glpi_knowbaseitems_items')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_items` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL,
-                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-                  `items_id` int(11) NOT NULL DEFAULT '0',
-                  `date_creation` datetime DEFAULT NULL,
-                  `date_mod` datetime DEFAULT NULL,
-                  PRIMARY KEY (`id`),
-                  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
-                  KEY `itemtype` (`itemtype`),
-                  KEY `item_id` (`items_id`),
-                  KEY `item` (`itemtype`,`items_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
+                 KEY `itemtype` (`itemtype`),
+                 KEY `item_id` (`items_id`),
+                 KEY `item` (`itemtype`,`items_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_items");
    }
 
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item revisions'));
    if (!$DB->tableExists('glpi_knowbaseitems_revisions')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_revisions` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL,
-                  `revision` int(11) NOT NULL,
-                  `name` text COLLATE utf8_unicode_ci,
-                  `answer` longtext COLLATE utf8_unicode_ci,
-                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `date_creation` datetime DEFAULT NULL,
-                  PRIMARY KEY (`id`),
-                  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
-                  KEY `revision` (`revision`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `revision` int(11) NOT NULL,
+                 `name` text COLLATE utf8_unicode_ci,
+                 `answer` longtext COLLATE utf8_unicode_ci,
+                 `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `users_id` int(11) NOT NULL DEFAULT '0',
+                 `date_creation` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
+                 KEY `revision` (`revision`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_revisions");
    }
 
@@ -149,11 +149,11 @@ function update91to92() {
 
    //set kb translations users...
    foreach ($DB->request(['SELECT'     => ['glpi_knowbaseitems.id', 'glpi_knowbaseitems.users_id'],
-                         'FROM'       => 'glpi_knowbaseitems',
-                         'INNER JOIN' => ["glpi_knowbaseitemtranslations"
-                                      => ['FKEY' => ['glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
-                                                     'glpi_knowbaseitems'            => 'id']]]])
-           as $knowitems) {
+                          'FROM'       => 'glpi_knowbaseitems',
+                          'INNER JOIN' => ["glpi_knowbaseitemtranslations"
+                                           => ['FKEY' => ['glpi_knowbaseitemtranslations' => 'knowbaseitems_id',
+                                                          'glpi_knowbaseitems'            => 'id']]]])
+            as $knowitems) {
 
       $query = "UPDATE `glpi_knowbaseitemtranslations`
                 SET `users_id` = '{$knowitems['users_id']}'
@@ -167,15 +167,15 @@ function update91to92() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item comments'));
    if (!$DB->tableExists('glpi_knowbaseitems_comments')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_comments` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `knowbaseitems_id` int(11) NOT NULL,
-                  `users_id` int(11) NOT NULL DEFAULT '0',
-                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `comment` text COLLATE utf8_unicode_ci NOT NULL,
-                  `parent_comment_id` int(11) DEFAULT NULL,
-                  `date_creation` datetime DEFAULT NULL,
-                  `date_mod` datetime DEFAULT NULL,
-                  PRIMARY KEY (`id`)
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `users_id` int(11) NOT NULL DEFAULT '0',
+                 `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `comment` text COLLATE utf8_unicode_ci NOT NULL,
+                 `parent_comment_id` int(11) DEFAULT NULL,
+                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_comments");
    }
@@ -209,8 +209,8 @@ function update91to92() {
                      'Monitor'];
 
    foreach ($product_types as $type) {
-      if (class_exists($type.'Model')) {
-         $table = getTableForItemType($type.'Model');
+      if (class_exists($type . 'Model')) {
+         $table = getTableForItemType($type . 'Model');
          $migration->addField($table, 'product_number', 'string');
          $migration->migrationOneTable($table);
          $migration->addKey($table, 'product_number');
@@ -263,13 +263,13 @@ function update91to92() {
    foreach ($tables as $table) {
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE `$table` (
-                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                     `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                     `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
-                     `product_number` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                     PRIMARY KEY (`id`),
-                     INDEX `name` (`name`),
-                     INDEX `product_number` (`product_number`)
+                      `id` INT(11) NOT NULL AUTO_INCREMENT,
+                      `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                      `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
+                      `product_number` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                      PRIMARY KEY (`id`),
+                      INDEX `name` (`name`),
+                      INDEX `product_number` (`product_number`)
                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->queryOrDie($query, "9.2 add model tables for devices");
       }
@@ -320,34 +320,34 @@ function update91to92() {
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`),
                   KEY `devicegenericmodels_id` (`devicegenericmodels_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->queryOrDie($query, "9.2 add table glpi_devicegenerics");
    }
 
    if (!$DB->tableExists('glpi_items_devicegenerics')) {
       $query = "CREATE TABLE `glpi_items_devicegenerics` (
-                  `id` INT(11) NOT NULL AUTO_INCREMENT,
-                  `items_id` INT(11) NOT NULL DEFAULT '0',
-                  `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                  `devicegenerics_id` INT(11) NOT NULL DEFAULT '0',
-                  `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
-                  `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
-                  `entities_id` INT(11) NOT NULL DEFAULT '0',
-                  `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
-                  `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                  `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-                  `locations_id` INT(11) NOT NULL DEFAULT '0',
-                  `states_id` INT(11) NOT NULL DEFAULT '0',
-                  PRIMARY KEY (`id`),
-                  INDEX `computers_id` (`items_id`),
-                  INDEX `devicegenerics_id` (`devicegenerics_id`),
-                  INDEX `is_deleted` (`is_deleted`),
-                  INDEX `is_dynamic` (`is_dynamic`),
-                  INDEX `entities_id` (`entities_id`),
-                  INDEX `is_recursive` (`is_recursive`),
-                  INDEX `serial` (`serial`),
-                  INDEX `item` (`itemtype`, `items_id`),
-                  INDEX `otherserial` (`otherserial`)
+                   `id` INT(11) NOT NULL AUTO_INCREMENT,
+                   `items_id` INT(11) NOT NULL DEFAULT '0',
+                   `itemtype` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `devicegenerics_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_deleted` TINYINT(1) NOT NULL DEFAULT '0',
+                   `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
+                   `entities_id` INT(11) NOT NULL DEFAULT '0',
+                   `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                   `serial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `otherserial` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
+                   `locations_id` INT(11) NOT NULL DEFAULT '0',
+                   `states_id` INT(11) NOT NULL DEFAULT '0',
+                   PRIMARY KEY (`id`),
+                   INDEX `computers_id` (`items_id`),
+                   INDEX `devicegenerics_id` (`devicegenerics_id`),
+                   INDEX `is_deleted` (`is_deleted`),
+                   INDEX `is_dynamic` (`is_dynamic`),
+                   INDEX `entities_id` (`entities_id`),
+                   INDEX `is_recursive` (`is_recursive`),
+                   INDEX `serial` (`serial`),
+                   INDEX `item` (`itemtype`, `items_id`),
+                   INDEX `otherserial` (`otherserial`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_items_devicegenerics");
    }
@@ -357,8 +357,8 @@ function update91to92() {
                   `id` INT(11) NOT NULL AUTO_INCREMENT,
                   `name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
                   `comment` TEXT NULL COLLATE 'utf8_unicode_ci',
-                  PRIMARY KEY (`id`),
-                  INDEX `name` (`name`)
+                   PRIMARY KEY (`id`),
+                   INDEX `name` (`name`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_devicegenerictypes");
    }
@@ -634,13 +634,13 @@ function update91to92() {
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
       foreach ($new_notifications as $event => $notif_options) {
          $notifications_id = $notification->add([
-                        'name'                     => $notif_options['label'],
-                        'itemtype'                 => 'Ticket',
-                        'event'                    => $event,
-                        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                        'notificationtemplates_id' => 0,
-                        'is_recursive'             => 1,
-                        'is_active'                => 0]);
+                                                   'name'                     => $notif_options['label'],
+                                                   'itemtype'                 => 'Ticket',
+                                                   'event'                    => $event,
+                                                   'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                                                   'notificationtemplates_id' => 0,
+                                                   'is_recursive'             => 1,
+                                                   'is_active'                => 0]);
 
          $notificationtarget->add(['items_id'         => $notif_options['targets_id'],
                                    'type'             => 1,
@@ -913,8 +913,8 @@ function update91to92() {
       $rank = 1;
       foreach ($tab as $newval) {
          $query = "REPLACE INTO `glpi_displaypreferences`
-                          (`itemtype` ,`num` ,`rank` ,`users_id`)
-                   VALUES ('$type', '$newval', '".$rank++."', '0')";
+                           (`itemtype` ,`num` ,`rank` ,`users_id`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0')";
          $DB->query($query);
       }
    }
@@ -925,7 +925,7 @@ function update91to92() {
    } else {
       //Just display a Warning to the user.
       $migration->displayWarning("An index must be added in the 'id_search_option' field " .
-                                 "of the 'glpi_logs table'; but your gpi_logs table is " .
+         "of the 'glpi_logs table'; but your gpi_logs table is " .
                                  "too huge. You'll have to add it on your database.");
    }
 
@@ -944,9 +944,9 @@ function update91to92() {
    if (!countElementsInTable('glpi_crontasks',
                              "`itemtype`='SavedSearch_Alert' AND `name`='savedsearchesalerts'")) {
        $query = "INSERT INTO `glpi_crontasks`
-                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                 VALUES ('SavedSearch_Alert', 'savedsearchesalerts', 86400, NULL, 0, 1, 3,
+                VALUES ('SavedSearch_Alert', 'savedsearchesalerts', 86400, NULL, 0, 1, 3,
                         0, 24, 10, NULL, NULL, NULL); ";
       $DB->queryOrDie($query, "9.2 Add saved searches alerts cron task");
    }
@@ -965,17 +965,17 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 Add saved search alerts notification targets");
 
       $query = "INSERT INTO `glpi_notificationtemplates`
-                       (`name`, `itemtype`, `date_mod`)
-                VALUES ('Saved searches alerts', 'SavedSearch_Alert', NOW())";
+                     (`name`, `itemtype`, `date_mod`)
+               VALUES ('Saved searches alerts', 'SavedSearch_Alert', NOW())";
       $DB->queryOrDie($query, "9.2 Add saved search alerts notification template");
       $notid = $DB->insert_id();
 
       $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                        (`notificationtemplates_id`, `language`,`subject`,
-                        `content_text`,
-                        `content_html`)
-                VALUES ($notid, '', '##savedsearch.action## ##savedsearch.name##',
-                        '##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
+                              `content_text`,
+                              `content_html`)
+                     VALUES ($notid, '', '##savedsearch.action## ##savedsearch.name##',
+                     '##savedsearch.type## ###savedsearch.id## - ##savedsearch.name##
 
 ##savedsearch.message##
 
@@ -1018,10 +1018,10 @@ Regards,',
       /** Notifications modes */
       $migration->addConfig([
          'use_notifications'                 => $current_config['use_mailing'],
-         'notifications_mailing'             => $current_config['use_mailing'],
-         'notifications_ajax'                => 0,
-         'notifications_ajax_check_interval' => '5',
-         'notifications_ajax_sound'          => null,
+                                      'notifications_mailing'    => $current_config['use_mailing'],
+                                      'notifications_ajax'       => 0,
+                                      'notifications_ajax_check_interval' => '5',
+                                      'notifications_ajax_sound' => null,
          'notifications_ajax_icon_url'       => '/pics/glpi.png'
       ]);
    }
@@ -1473,6 +1473,66 @@ Regards,',
       $migration->dropTable('glpi_networkequipmentfirmwares');
    }
 
+   // add projecttemplate
+   if (!$DB->fieldExists('glpi_projects', 'projecttemplates_id')) {
+      $migration->addField("glpi_projects", "projecttemplates_id", "integer");
+      $migration->addField("glpi_projects", "is_template", "bool");
+      $migration->addField("glpi_projects", "template_name", "string");
+      $migration->addKey("glpi_projects", "projecttemplates_id");
+   }
+
+   if (!$DB->fieldExists('glpi_projecttasks', 'projecttasktemplates_id')) {
+      $migration->addField("glpi_projecttasks", "projecttasktemplates_id", "integer");
+      $migration->addField("glpi_projecttasks", "is_template", "bool");
+      $migration->addField("glpi_projecttasks", "template_name", "string");
+      $migration->addKey("glpi_projecttasks", "projecttasktemplates_id");
+   }
+
+   if (!$DB->tableExists('glpi_projecttasktemplates')) {
+      $query = "CREATE TABLE `glpi_projecttasktemplates` (
+                       `id` int(11) NOT NULL AUTO_INCREMENT,
+                       `entities_id` int(11) NOT NULL DEFAULT '0',
+                       `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                       `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                       `description` longtext COLLATE utf8_unicode_ci,
+                       `comment` longtext COLLATE utf8_unicode_ci,
+                       `projects_id` int(11) NOT NULL DEFAULT '0',
+                       `projecttasks_id` int(11) NOT NULL DEFAULT '0',
+                       `plan_start_date` datetime DEFAULT NULL,
+                       `plan_end_date` datetime DEFAULT NULL,
+                       `real_start_date` datetime DEFAULT NULL,
+                       `real_end_date` datetime DEFAULT NULL,
+                       `planned_duration` int(11) NOT NULL DEFAULT '0',
+                       `effective_duration` int(11) NOT NULL DEFAULT '0',
+                       `projectstates_id` int(11) NOT NULL DEFAULT '0',
+                       `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
+                       `users_id` int(11) NOT NULL DEFAULT '0',
+                       `percent_done` int(11) NOT NULL DEFAULT '0',
+                       `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
+                       `comments` text COLLATE utf8_unicode_ci,
+                       `date_mod` datetime DEFAULT NULL,
+                       `date_creation` datetime DEFAULT NULL,
+                       PRIMARY KEY (`id`),
+                       KEY `name` (`name`),
+                       KEY `entities_id` (`entities_id`),
+                       KEY `is_recursive` (`is_recursive`),
+                       KEY `projects_id` (`projects_id`),
+                       KEY `projecttasks_id` (`projecttasks_id`),
+                       KEY `date_creation` (`date_creation`),
+                       KEY `date_mod` (`date_mod`),
+                       KEY `users_id` (`users_id`),
+                       KEY `plan_start_date` (`plan_start_date`),
+                       KEY `plan_end_date` (`plan_end_date`),
+                       KEY `real_start_date` (`real_start_date`),
+                       KEY `real_end_date` (`real_end_date`),
+                       KEY `percent_done` (`percent_done`),
+                       KEY `projectstates_id` (`projectstates_id`),
+                       KEY `projecttasktypes_id` (`projecttasktypes_id`),
+                       KEY `is_milestone` (`is_milestone`)
+                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_projecttasktemplates");
+   }
+
    //add editor in followupps
    if (!$DB->fieldExists('glpi_ticketfollowups', 'users_id_editor')) {
       $migration->addField("glpi_ticketfollowups", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
@@ -1492,6 +1552,28 @@ Regards,',
       $migration->addField("glpi_problemtasks", "users_id_editor", "int(11) NOT NULL DEFAULT '0'", ['after' => 'users_id']);
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }
+
+   $migration->addConfig([
+      'smtp_max_retries'   => 5,
+      'smtp_sender'        => 'NULL',
+      'from_email'         => 'NULL',
+      'from_email_name'    => 'NULL'
+   ]);
+
+   //register telemetry crontask
+   CronTask::register(
+      'Telemetry',
+      'telemetry',
+      MONTH_TIMESTAMP,
+      [
+         'comment'   => '',
+         'mode'      => CronTask::MODE_INTERNAL
+      ]
+   );
+   $migration->addConfig([
+      'instance_uuid'      => Telemetry::generateInstanceUuid(),
+      'registration_uuid'  => Telemetry::generateRegistrationUuid()
+   ]);
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

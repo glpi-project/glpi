@@ -5093,6 +5093,10 @@ class Search {
       $default_values["sort"]        = 1;
       $default_values["is_deleted"]  = 0;
 
+      if (isset($params['start'])) {
+         $params['start'] = (int)$params['start'];
+      }
+
       if ($CFG_GLPI['allow_search_view'] == 2) {
          $default_criteria = 'view';
       } else {
