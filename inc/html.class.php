@@ -3863,6 +3863,9 @@ class Html {
    static function initEditorSystem($name, $rand = '', $display = true, $readonly = false) {
       global $CFG_GLPI;
 
+      // load tinymce lib
+      Html::requireJs('tinymce');
+
       $language = $_SESSION['glpilanguage'];
       if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
          $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
