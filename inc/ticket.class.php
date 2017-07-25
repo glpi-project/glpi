@@ -3622,8 +3622,7 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('content')
           || $tt->isPredefinedField('content')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content')).
-              "</td><td>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
 
          $rand       = mt_rand();
          $rand_text  = mt_rand();
@@ -3631,8 +3630,6 @@ class Ticket extends CommonITILObject {
          $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle'>";
 
          $content = $options['content'];
