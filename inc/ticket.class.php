@@ -3641,7 +3641,7 @@ class Ticket extends CommonITILObject {
          }
 
          if ($CFG_GLPI["use_rich_text"]) {
-            $content = $this->setRichTextContent($content_id, $content, $rand);
+            $content = Html::setRichTextContent($content_id, $content, $rand);
             $cols    = 100;
             $rows    = 10;
          } else {
