@@ -6936,6 +6936,14 @@ INSERT INTO `glpi_profilerights` VALUES ('849','5','devicesimcard_pinpuk','1');
 INSERT INTO `glpi_profilerights` VALUES ('850','6','devicesimcard_pinpuk','3');
 INSERT INTO `glpi_profilerights` VALUES ('851','7','devicesimcard_pinpuk','0');
 INSERT INTO `glpi_profilerights` VALUES ('852','8','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('853','1','certificate','0');
+INSERT INTO `glpi_profilerights` VALUES ('854','2','certificate','33');
+INSERT INTO `glpi_profilerights` VALUES ('855','3','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('856','4','certificate','255');
+INSERT INTO `glpi_profilerights` VALUES ('857','5','certificate','0');
+INSERT INTO `glpi_profilerights` VALUES ('858','6','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('859','7','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('860','8','certificate','161');
 
 ### Dump table glpi_profiles
 
