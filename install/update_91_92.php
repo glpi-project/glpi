@@ -740,17 +740,20 @@ function update91to92() {
                         0, 24, 10, NULL, NULL, NULL); ";
       $DB->queryOrDie($query, "9.2 populate glpi_crontasks for olaticket");
 
-      if (!$DB->tableExists('glpi_slas')) {
+      if (!$DB->tableExists('glpi_slms')) {
          // Changing the structure of the table 'glpi_slas'
          $migration->renameTable('glpi_slas', 'glpi_slms');
+         $migration->migrationOneTable('glpi_slas');
       }
 
       // Changing the structure of the table 'glpi_slts'
-      $migration->renameTable('glpi_slts', 'glpi_slas');
-      $migration->changeField('glpi_slas', 'slas_id', 'slms_id', 'integer');
-      $migration->migrationOneTable('glpi_slas');
-      $migration->dropKey('glpi_slas', 'slas_id');
-      $migration->addKey('glpi_slas', 'slms_id');
+      if ($DB->tableExists('glpi_slts')) {
+         $migration->renameTable('glpi_slts', 'glpi_slas');
+         $migration->migrationOneTable('glpi_slts');
+         $migration->changeField('glpi_slas', 'slas_id', 'slms_id', 'integer');
+         $migration->dropKey('glpi_slas', 'slas_id');
+         $migration->addKey('glpi_slas', 'slms_id');
+      }
 
       // Slalevels changes
       $migration->changeField('glpi_slalevels', 'slts_id', 'slas_id', 'integer');
