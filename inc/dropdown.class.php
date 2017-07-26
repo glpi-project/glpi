@@ -855,6 +855,8 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'Filesystem'           => _n('File system', 'File systems',
                                               Session::getPluralNumber()),
+                 'CertificateType'      => _n('Certificate type', 'Certificate types',
+                                               Session::getPluralNumber()),
                  'BudgetType'           => _n('Budget type', 'Budget types',
                                               Session::getPluralNumber()),
                  'DeviceSimcardType'    => _n('Simcard type', 'Simcard types',
