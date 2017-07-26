@@ -487,6 +487,94 @@ CREATE TABLE `glpi_cartridges` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_certificates
+
+DROP TABLE IF EXISTS `glpi_certificates`;
+CREATE TABLE `glpi_certificates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `certificatetypes_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_certificatetypes (id)',
+  `dns_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dns_suffix` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id_tech` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
+  `locations_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `is_autosign` tinyint(1) NOT NULL DEFAULT '0',
+  `date_expiration` date DEFAULT NULL,
+  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+  `command` text COLLATE utf8_unicode_ci,
+  `certificate_request` text COLLATE utf8_unicode_ci,
+  `certificate_item` text COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_template` (`is_template`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `certificatetypes_id` (`certificatetypes_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id` (`users_id`),
+  KEY `locations_id` (`locations_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `states_id` (`states_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_certificates_items
+
+DROP TABLE IF EXISTS `glpi_certificates_items`;
+CREATE TABLE `glpi_certificates_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `certificates_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`certificates_id`,`itemtype`,`items_id`),
+  KEY `device` (`items_id`,`itemtype`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_certificatetypes
+
+DROP TABLE IF EXISTS `glpi_certificatetypes`;
+CREATE TABLE `glpi_certificatetypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_changecosts
 
 DROP TABLE IF EXISTS `glpi_changecosts`;
@@ -1584,7 +1672,8 @@ INSERT INTO `glpi_crontasks` VALUES ('27','ObjectLock','unlockobject','86400','4
 INSERT INTO `glpi_crontasks` VALUES ('28','SavedSearch','countAll','604800',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('29','SavedSearch_Alert','savedsearchesalerts','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('30','Telemetry','telemetry','2592000',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('31','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('31','Certificate','certificate','86400',NULL,'0','1','3','0','24','10',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('32','OlaLevel_Ticket','olaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_devicecasemodels
 
@@ -2782,6 +2871,8 @@ CREATE TABLE `glpi_entities` (
   `consumables_alert_repeat` int(11) NOT NULL DEFAULT '-2',
   `use_licenses_alert` int(11) NOT NULL DEFAULT '-2',
   `send_licenses_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
+  `use_certificates_alert` int(11) NOT NULL DEFAULT '-2',
+  `send_certificates_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_contracts_alert` int(11) NOT NULL DEFAULT '-2',
   `send_contracts_alert_before_delay` int(11) NOT NULL DEFAULT '-2',
   `use_infocoms_alert` int(11) NOT NULL DEFAULT '-2',
@@ -2821,7 +2912,7 @@ CREATE TABLE `glpi_entities` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,0);
+INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,0);
 
 ### Dump table glpi_entities_knowbaseitems
 
@@ -4739,6 +4830,7 @@ INSERT INTO `glpi_notifications` VALUES(63, 'New user in assignees', 0, 'Ticket'
 INSERT INTO `glpi_notifications` VALUES(64, 'New group in assignees', 0, 'Ticket', 'assign_group', '', 1, 1, '2016-02-08 16:57:46', NULL);
 INSERT INTO `glpi_notifications` VALUES(65, 'New supplier in assignees', 0, 'Ticket', 'assign_supplier', '', 1, 1, '2016-02-08 16:57:46', NULL);
 INSERT INTO `glpi_notifications` VALUES(66, 'Saved searches', 0, 'SavedSearch_Alert', 'alert', '', 1, 1, '2016-02-08 16:57:46', NULL);
+INSERT INTO `glpi_notifications` VALUES(67, 'Certificates', 0, 'Certificate', 'alert', '', 1, 1, NULL, NULL);
 
 
 ### Dump table glpi_notifications_notificationtemplates
@@ -4822,6 +4914,7 @@ INSERT INTO `glpi_notifications_notificationtemplates` VALUES(63, '63', 'mailing
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(64, '64', 'mailing', 4);
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(65, '65', 'mailing', 4);
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(66, '66', 'mailing', 24);
+INSERT INTO `glpi_notifications_notificationtemplates` VALUES(67, '67', 'mailing', 25);
 
 
 ### Dump table glpi_notificationtargets
@@ -5009,6 +5102,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('21','Projects','Project','2014
 INSERT INTO `glpi_notificationtemplates` VALUES ('22','Project Tasks','ProjectTask','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('23','Unlock Item request','ObjectLock','2016-02-08 16:57:46',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('24','Saved searches alerts','SavedSearch_Alert','2017-04-05 14:87:34',NULL,NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('25','Certificates','Certificate',NULL,'',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -5627,6 +5721,23 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('24','24','','##save
       &lt;/tbody&gt;
       &lt;/table&gt;
       &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello &lt;br /&gt;Regards,&lt;/span&gt;&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('25','25','','##certificate.action##  ##certificate.entity##','##lang.certificate.entity## : ##certificate.entity##
+
+##FOREACHcertificates##
+
+##lang.certificate.serial## : ##certificate.serial##
+
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+
+##certificate.url##
+ ##ENDFOREACHcertificates##','&lt;p&gt;
+##lang.certificate.entity## : ##certificate.entity##&lt;br /&gt;
+##FOREACHcertificates##
+&lt;br /&gt;##lang.certificate.name## : ##certificate.name##&lt;br /&gt;
+##lang.certificate.serial## : ##certificate.serial##&lt;br /&gt;
+##lang.certificate.expirationdate## : ##certificate.expirationdate##
+&lt;br /&gt; &lt;a href=\"##certificate.url##\"&gt; ##certificate.url##
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHcertificates##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 
@@ -6826,6 +6937,14 @@ INSERT INTO `glpi_profilerights` VALUES ('849','5','devicesimcard_pinpuk','1');
 INSERT INTO `glpi_profilerights` VALUES ('850','6','devicesimcard_pinpuk','3');
 INSERT INTO `glpi_profilerights` VALUES ('851','7','devicesimcard_pinpuk','0');
 INSERT INTO `glpi_profilerights` VALUES ('852','8','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('853','1','certificate','0');
+INSERT INTO `glpi_profilerights` VALUES ('854','2','certificate','33');
+INSERT INTO `glpi_profilerights` VALUES ('855','3','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('856','4','certificate','255');
+INSERT INTO `glpi_profilerights` VALUES ('857','5','certificate','0');
+INSERT INTO `glpi_profilerights` VALUES ('858','6','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('859','7','certificate','127');
+INSERT INTO `glpi_profilerights` VALUES ('860','8','certificate','161');
 
 ### Dump table glpi_profiles
 
@@ -7988,6 +8107,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwarelicense` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_line` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_certificate` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -8002,6 +8122,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_softwareversion` (`is_visible_softwareversion`),
   KEY `is_visible_softwarelicense` (`is_visible_softwarelicense`),
   KEY `is_visible_line` (`is_visible_line`),
+  KEY `is_visible_certificate` (`is_visible_certificate`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
