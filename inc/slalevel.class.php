@@ -48,7 +48,7 @@ class SlaLevel extends RuleTicket {
    // No criteria
    protected $rulecriteriaclass = 'SlaLevelCriteria';
 
-   static $rightname            = 'sla';
+   static $rightname            = 'slm';
 
 
    /**
