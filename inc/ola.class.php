@@ -112,18 +112,8 @@ class OLA extends CommonDBChild {
       global $DB;
 
       // Clean ola_levels
-      $query = "SELECT `id`
-                FROM `glpi_olalevels`
-                WHERE `olas_id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $olalevel = new OlaLevel();
-            while ($data = $DB->fetch_assoc($result)) {
-               $olalevel->delete($data);
-            }
-         }
-      }
+      $slalevel = new OlaLevel();
+      $slalevel->deleteByCriteria(array('olas_id' => $this->getID()));
 
       // Update tickets : clean OLA
       list($dateField, $olaField) = self::getOlaFieldNames($this->fields['type']);

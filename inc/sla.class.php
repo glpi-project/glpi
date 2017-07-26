@@ -111,18 +111,8 @@ class SLA extends CommonDBChild {
       global $DB;
 
       // Clean sla_levels
-      $query = "SELECT `id`
-                FROM `glpi_slalevels`
-                WHERE `slas_id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $slalevel = new SlaLevel();
-            while ($data = $DB->fetch_assoc($result)) {
-               $slalevel->delete($data);
-            }
-         }
-      }
+      $slalevel = new SlaLevel();
+      $slalevel->deleteByCriteria(array('slas_id' => $this->getID()));
 
       // Update tickets : clean SLA
       list($dateField, $slaField) = self::getSlaFieldNames($this->fields['type']);

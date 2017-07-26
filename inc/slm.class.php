@@ -84,15 +84,11 @@ class SLM extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_slas`
-                WHERE `slms_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $sla = new Sla();
+      $sla->deleteByCriteria(array('slms_id' => $this->getID()));
 
-      $query = "DELETE
-                FROM `glpi_olas`
-                WHERE `slms_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $ola = new Ola();
+      $ola->deleteByCriteria(array('slms_id' => $this->getID()));
    }
 
    /**
