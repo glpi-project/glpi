@@ -855,6 +855,8 @@ function update91to92() {
    if (!countElementsInTable('glpi_notifications',
                              "`itemtype`='SavedSearch_Alert'")) {
       $query = "INSERT INTO `glpi_notifications`
+                (`id`, `name`, `entities_id`, `itemtype`, `event`, `comment`,
+                 `is_recursive`, `is_active`, `date_creation`, `date_mod`)
                 VALUES (null,'Saved searches','0','SavedSearch_Alert','alert',
                         '', '1', '1', NOW(), NOW());";
       $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
@@ -1161,6 +1163,8 @@ Regards,',
    );
    if (!countElementsInTable('glpi_notifications', "`itemtype`='Certificate'")) {
       $query = "INSERT INTO `glpi_notifications`
+               (`id`, `name`, `entities_id`, `itemtype`, `event`, `comment`,
+                `is_recursive`, `is_active`, `date_creation`, `date_mod`)
                 VALUES (null,'Certificates','0','Certificate','alert',
                         '', '1', '1', NOW(), NOW());";
       $DB->queryOrDie($query, "9.2 Add certificate alerts notification");
