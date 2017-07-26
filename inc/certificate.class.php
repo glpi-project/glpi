@@ -711,7 +711,7 @@ class Certificate extends CommonDBTM {
          if (!empty($items)) {
             $alert                   = new Alert();
             $options['entities_id']  = $entity;
-            $options['Certificates'] = $items;
+            $options['certificates'] = $items;
 
             if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
