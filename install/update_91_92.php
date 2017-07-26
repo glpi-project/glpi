@@ -778,7 +778,6 @@ function update91to92() {
                              WHERE `mode` = 'mail'",
                             '9.2 set default mode in notifications templates');
 
-
    // Migration Bookmark -> SavedSearch_Alert
    //TRANS: %s is the table or item to migrate
    if ($DB->tableExists('glpi_bookmarks_users')) {

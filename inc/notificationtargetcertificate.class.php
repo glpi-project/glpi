@@ -64,7 +64,7 @@ class NotificationTargetCertificate extends NotificationTarget {
       if (!isset($options['entities_id'])) {
          $options['entities_id'] = $options['item']->fields['entities_id'];
       }
-      
+
       $this->data['##certificate.action##'] = $events[$event];
       $this->data['##certificate.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                         $options['entities_id']);
