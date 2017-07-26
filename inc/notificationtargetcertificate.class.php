@@ -55,6 +55,16 @@ class NotificationTargetCertificate extends NotificationTarget {
 
       $events = $this->getAllEvents();
 
+      //These 2 params should be defined in $options table
+      //The only case where they're not defined in when displaying
+      //the debug tab of a certificate
+      if (!isset($options['certificates'])) {
+         $options['certificates'] = [];
+      }
+      if (!isset($options['entities_id'])) {
+         $options['entities_id'] = $options['item']->fields['entities_id'];
+      }
+      
       $this->data['##certificate.action##'] = $events[$event];
       $this->data['##certificate.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                         $options['entities_id']);

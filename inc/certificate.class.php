@@ -748,4 +748,11 @@ class Certificate extends CommonDBTM {
       }
       return $cron_status;
    }
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+      NotificationEvent::debugEvent($this);
+   }
 }
