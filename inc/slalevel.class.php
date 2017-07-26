@@ -313,7 +313,7 @@ class SlaLevel extends RuleTicket {
                                         'value'
                                              => $this->fields['execution_time'],
                                         'type'
-                                             => $slt->fields['type']]);
+                                             => $sla->fields['type']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
