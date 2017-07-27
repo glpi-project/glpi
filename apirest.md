@@ -23,7 +23,7 @@
 * [Add item(s)](#add-items)
 * [Update item(s)](#update-items)
 * [Delete item(s)](#delete-items)
-* [Download a document](#download-a-document)
+* [Special cases](#special-cases)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
 
@@ -534,6 +534,8 @@ $ curl -X GET \
 }
 ```
 
+Note: To download a document see [Download a document file](download-a-document-file).
+
 ## Get all items
 
 * **URL**: [apirest.php/:itemtype/](Computer/?debug)
@@ -1027,22 +1029,9 @@ $ curl -X POST \
 < Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
 < [ {"id":8, "message": ""}, {"id":false, "message": "You don't have permission to perform this action."}, {"id":9, "message": ""} ]
 
-
-# multipart example
-$ curl -X POST \
--H 'Content-Type: multipart/form-data' \
--H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
--H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
--F 'uploadManifest={"input": {"name": "Uploaded document", "_filename" : ["file.txt"]}};type=application/json' \
--F 'filename[0]=@file.txt' \
-'http://path/to/glpi/apirest.php/Document/'
-
-< 201 OK
-< Location: http://path/to/glpi/api/Document/1
-< {"id": 1, "message": "Document move succeeded.", "upload_result": {...}}
-
-
 ```
+
+Note: To upload a document see [Upload a document file](upload-a-document-file).
 
 ## Update item(s)
 
@@ -1159,7 +1148,32 @@ $ curl -X DELETE \
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
 ```
 
-## Download a document
+## Special cases
+
+### Upload a document file
+
+See [Add item(s)](add-item-s) and apply specific instructions below.
+
+Uploading a file requires use of 'multipart/data' content_type. The input data must be send in a 'uploadManifest' parameter and use the json format.
+
+Examples usage (CURL):
+
+```shell
+$ curl -X POST \
+-H 'Content-Type: multipart/form-data' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-F 'uploadManifest={"input": {"name": "Uploaded document", "_filename" : ["file.txt"]}};type=application/json' \
+-F 'filename[0]=@file.txt' \
+'http://path/to/glpi/apirest.php/Document/'
+
+< 201 OK
+< Location: http://path/to/glpi/api/Document/1
+< {"id": 1, "message": "Document move succeeded.", "upload_result": {...}}
+
+```
+
+### Download a document
 
 * **URL**: apirest.php/Document/:id
 * **Description**: Download a document.
