@@ -212,9 +212,10 @@ class SlaLevel_Ticket extends CommonDBTM {
                   }
 
                   // Put next level in todo list
-                  $next = $slalevel->getNextSlaLevel($ticket->fields[$slaField],
-                                                     $data['slalevels_id']);
-                  $sla->addLevelToDo($ticket, $next);
+                  if ($next = $slalevel->getNextSlaLevel($ticket->fields[$slaField],
+                                                     $data['slalevels_id'])) {
+                     $sla->addLevelToDo($ticket, $next);
+                  }
                   // Action done : drop the line
                   $slalevelticket->delete(['id' => $data['id']]);
 
