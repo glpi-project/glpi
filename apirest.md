@@ -23,6 +23,7 @@
 * [Add item(s)](#add-items)
 * [Update item(s)](#update-items)
 * [Delete item(s)](#delete-items)
+* [Download a document](#download-a-document)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
 
@@ -1157,6 +1158,39 @@ $ curl -X DELETE \
 < 207 OK
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
 ```
+
+## Download a document
+
+* **URL**: apirest.php/Document/:id
+* **Description**: Download a document.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+* **Parameters**: (query string)
+  * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
+
+   id parameter has precedence over input payload.
+
+* **Returns**:
+  * 200 (OK) *in case of multiple deletion*.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-d '{"input": {"id": 11}}' \
+'http://path/to/glpi/apirest.php/Document/'
+
+< 200 OK
+```
+
+The body of the answer cotnains the raw file attached to the document.
 
 ## Errors
 
