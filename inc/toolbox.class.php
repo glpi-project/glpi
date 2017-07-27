@@ -682,7 +682,7 @@ class Toolbox {
          if (isset($mimeTypeMap[$ext])) {
             $mime = $mimeTypeMap[$ext];
          } else {
-            $mime = 'application/octetstream';
+            $mime = 'application/octet-stream';
          }
       }
 
