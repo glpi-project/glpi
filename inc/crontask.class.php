@@ -1348,7 +1348,6 @@ class CronTask extends CommonDBTM{
          'field'              => 'state',
          'name'               => __('Status'),
          'searchtype'         => ['equals', 'notequals'],
-         'massiveaction'      => false,
          'datatype'           => 'specific'
       ];
 
