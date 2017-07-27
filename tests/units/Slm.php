@@ -55,6 +55,8 @@ class Slm extends DbTestCase {
    public function testLifecyle() {
       $this->login();
 
+      // ## 1 - test adding sla and sub objects
+
       // prepare a calendar with limited time ranges [8:00 -> 20:00]
       $cal    = new \Calendar();
       $calseg = new \CalendarSegment();
@@ -71,13 +73,11 @@ class Slm extends DbTestCase {
       }
 
       $slm    = new \Slm();
-      $slm_in = [
+      $slm_id = $slm->add($slm_in = [
          'name'         => $this->method,
          'comment'      => $this->getUniqueString(),
          'calendars_id' => $cal_id,
-         'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
-      ];
-      $slm_id = $slm->add($slm_in);
+      ]);
       $this->checkInput($slm, $slm_id, $slm_in);
 
       // prepare sla/ola inputs
@@ -165,7 +165,50 @@ class Slm extends DbTestCase {
       $this->checkInput($saction, $saction_id, $saction_in);
       $this->checkInput($oaction, $oaction_id, $oaction_in);
 
-      // ok all added, test to purge slm and check if we don't find any added object
+      // ## 2 - test using sla in tickets
+
+      // add rules for using sla
+      $ruleticket = new \RuleTicket;
+      $rulecrit   = new \RuleCriteria;
+      $ruleaction = new \RuleAction;
+
+      $ruletid = $ruleticket->add($ruleinput = [
+         'name'         => $this->method,
+         'match'        => 'AND',
+         'is_active'    => 1,
+         'sub_type'     => 'RuleTicket',
+         'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
+         'is_recursive' => 1
+      ]);
+      $this->checkInput($ruleticket, $ruletid, $ruleinput);
+      $crit_id = $rulecrit->add($crit_input = [
+         'rules_id'  => $ruletid,
+         'criteria'  => 'name',
+         'condition' => 2,
+         'pattern'   => $this->method
+      ]);
+      $this->checkInput($rulecrit, $crit_id, $crit_input);
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'slas_ttr_id',
+         'value'       => $sla2_id
+      ]);
+      $this->checkInput($ruleaction, $act_id, $act_input);
+
+      // create tickets
+      $ticket = new \Ticket;
+      $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
+      $tickets_id = $ticket->add($ticket_input = [
+         'date'    => $start_date,
+         'name'    => $this->method,
+         'content' => $this->method
+      ]);
+      $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('slas_ttr_id'))->isEqualTo($sla2_id);
+      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+      // ## 3 - test purge of slm and check if we don't find any sub objects
       $this->boolean($slm->delete(['id' => $slm_id], true))->isTrue();
       //sla
       $this->boolean($sla->getFromDB($sla1_id))->isFalse();
