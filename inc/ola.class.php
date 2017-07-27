@@ -113,7 +113,7 @@ class OLA extends CommonDBChild {
 
       // Clean ola_levels
       $slalevel = new OlaLevel();
-      $slalevel->deleteByCriteria(array('olas_id' => $this->getID()));
+      $slalevel->deleteByCriteria(['olas_id' => $this->getID()]);
 
       // Update tickets : clean OLA
       list($dateField, $olaField) = self::getOlaFieldNames($this->fields['type']);

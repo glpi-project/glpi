@@ -85,10 +85,10 @@ class SLM extends CommonDBTM {
       global $DB;
 
       $sla = new Sla();
-      $sla->deleteByCriteria(array('slms_id' => $this->getID()));
+      $sla->deleteByCriteria(['slms_id' => $this->getID()]);
 
       $ola = new Ola();
-      $ola->deleteByCriteria(array('slms_id' => $this->getID()));
+      $ola->deleteByCriteria(['slms_id' => $this->getID()]);
    }
 
    /**

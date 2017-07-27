@@ -120,7 +120,7 @@ class DbTestCase extends atoum {
     *
     * @return nothing (do tests)
     */
-   protected function checkInput(CommonDBTM $object, int $id, $input = []) {
+   protected function checkInput(CommonDBTM $object, $id = 0, $input = []) {
       $this->integer((int)$id)->isGreaterThan(0);
       $this->boolean($object->getFromDB($id))->isTrue();
       $this->variable($object->getField('id'))->isEqualTo($id);

@@ -99,7 +99,6 @@ class Slm extends DbTestCase {
       $sla2_id = $sla->add($sla2_in);
       $this->checkInput($sla, $sla2_id, $sla2_in);
 
-
       // add two ola (TTO & TTR), we re-use the same inputs as sla
       $ola  = new \Ola();
       $ola1_id = $ola->add($sla1_in);
@@ -160,8 +159,8 @@ class Slm extends DbTestCase {
       $ocrit_id   = $ocrit->add($ocrit_in);
       $saction_id = $saction->add($saction_in);
       $oaction_id = $oaction->add($oaction_in);
-      $this->checkInput($scrit,   $scrit_id,   $scrit_in);
-      $this->checkInput($ocrit,   $ocrit_id,   $ocrit_in);
+      $this->checkInput($scrit, $scrit_id, $scrit_in);
+      $this->checkInput($ocrit, $ocrit_id, $ocrit_in);
       $this->checkInput($saction, $saction_id, $saction_in);
       $this->checkInput($oaction, $oaction_id, $oaction_in);
 

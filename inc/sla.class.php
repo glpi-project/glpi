@@ -112,7 +112,7 @@ class SLA extends CommonDBChild {
 
       // Clean sla_levels
       $slalevel = new SlaLevel();
-      $slalevel->deleteByCriteria(array('slas_id' => $this->getID()));
+      $slalevel->deleteByCriteria(['slas_id' => $this->getID()]);
 
       // Update tickets : clean SLA
       list($dateField, $slaField) = self::getSlaFieldNames($this->fields['type']);
