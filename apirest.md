@@ -1167,8 +1167,10 @@ $ curl -X DELETE \
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
   * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *Accept*: must be **application/octet-stream**. This header OR the parameter *alt* is mandatory
 * **Parameters**: (query string)
   * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
+  * *alt*: must be 'media'. This parameter or the header **Accept** is mandatory.
 
    id parameter has precedence over input payload.
 
@@ -1184,13 +1186,27 @@ $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-H "Accept: application/octet-stream" \
 -d '{"input": {"id": 11}}' \
 'http://path/to/glpi/apirest.php/Document/'
 
 < 200 OK
 ```
 
-The body of the answer cotnains the raw file attached to the document.
+The body of the answer contains the raw file attached to the document.
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-d '{"input": {"id": 11}}' \
+'http://path/to/glpi/apirest.php/Document/&alt=media'
+
+< 200 OK
+```
+
+The body of the answer contains the raw file attached to the document.
 
 ## Errors
 
