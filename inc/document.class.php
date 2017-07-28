@@ -305,6 +305,17 @@ class Document extends CommonDBTM {
    }
 
 
+   public function post_getFromDB() {
+      if (isAPI()
+          && (isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] == 'application/octet-stream'
+              || isset($_GET['alt']) && $_GET['alt'] == 'media')) {
+         // This is a API request to download the document
+         $this->send();
+         exit();
+      }
+   }
+
+
    /**
     * @see CommonDBTM::prepareInputForUpdate()
    **/

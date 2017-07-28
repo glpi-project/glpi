@@ -23,6 +23,7 @@
 * [Add item(s)](#add-items)
 * [Update item(s)](#update-items)
 * [Delete item(s)](#delete-items)
+* [Special cases](#special-cases)
 * [Errors](#errors)
 * [Servers configuration](#servers-configuration)
 
@@ -533,6 +534,8 @@ $ curl -X GET \
 }
 ```
 
+Note: To download a document see [Download a document file](download-a-document-file).
+
 ## Get all items
 
 * **URL**: [apirest.php/:itemtype/](Computer/?debug)
@@ -1026,22 +1029,9 @@ $ curl -X POST \
 < Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
 < [ {"id":8, "message": ""}, {"id":false, "message": "You don't have permission to perform this action."}, {"id":9, "message": ""} ]
 
-
-# multipart example
-$ curl -X POST \
--H 'Content-Type: multipart/form-data' \
--H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
--H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
--F 'uploadManifest={"input": {"name": "Uploaded document", "_filename" : ["file.txt"]}};type=application/json' \
--F 'filename[0]=@file.txt' \
-'http://path/to/glpi/apirest.php/Document/'
-
-< 201 OK
-< Location: http://path/to/glpi/api/Document/1
-< {"id": 1, "message": "Document move succeeded.", "upload_result": {...}}
-
-
 ```
+
+Note: To upload a document see [Upload a document file](upload-a-document-file).
 
 ## Update item(s)
 
@@ -1157,6 +1147,80 @@ $ curl -X DELETE \
 < 207 OK
 [{"16":true, "message": ""},{"17":false, "message": "Item not found"}]
 ```
+
+## Special cases
+
+### Upload a document file
+
+See [Add item(s)](add-item-s) and apply specific instructions below.
+
+Uploading a file requires use of 'multipart/data' content_type. The input data must be send in a 'uploadManifest' parameter and use the json format.
+
+Examples usage (CURL):
+
+```shell
+$ curl -X POST \
+-H 'Content-Type: multipart/form-data' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-F 'uploadManifest={"input": {"name": "Uploaded document", "_filename" : ["file.txt"]}};type=application/json' \
+-F 'filename[0]=@file.txt' \
+'http://path/to/glpi/apirest.php/Document/'
+
+< 201 OK
+< Location: http://path/to/glpi/api/Document/1
+< {"id": 1, "message": "Document move succeeded.", "upload_result": {...}}
+
+```
+
+### Download a document
+
+* **URL**: apirest.php/Document/:id
+* **Description**: Download a document.
+* **Method**: GET
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+  * *Accept*: must be **application/octet-stream**. This header OR the parameter *alt* is mandatory
+* **Parameters**: (query string)
+  * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
+  * *alt*: must be 'media'. This parameter or the header **Accept** is mandatory.
+
+   id parameter has precedence over input payload.
+
+* **Returns**:
+  * 200 (OK) *in case of multiple deletion*.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-H "Accept: application/octet-stream" \
+-d '{"input": {"id": 11}}' \
+'http://path/to/glpi/apirest.php/Document/'
+
+< 200 OK
+```
+
+The body of the answer contains the raw file attached to the document.
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-d '{"input": {"id": 11}}' \
+'http://path/to/glpi/apirest.php/Document/&alt=media'
+
+< 200 OK
+```
+
+The body of the answer contains the raw file attached to the document.
 
 ## Errors
 
