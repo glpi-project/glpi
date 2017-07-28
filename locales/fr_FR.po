@@ -2632,13 +2632,13 @@ msgstr "Liste des balises disponibles"
 #: front/olalevel.form.php:52
 #, php-format
 msgid "%s updates a ola level"
-msgstr ""
+msgstr "%s met à jour un niveau d'OLA"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:76
 #, php-format
 msgid "%s purges a ola level"
-msgstr ""
+msgstr "%s purge un niveau d'OLA"
 
 #: front/planning.php:141 inc/commonitiltask.class.php:1530
 #: inc/commonitiltask.class.php:1700 inc/event.class.php:152
@@ -14222,7 +14222,7 @@ msgstr "Rappels automatiques des SLAs"
 
 #: inc/notificationtargetticket.class.php:245
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Rappel automatique des OLAs"
 
 #: inc/notificationtargetticket.class.php:247
 msgid "Satisfaction survey answer"
@@ -14259,20 +14259,20 @@ msgstr "SLAs"
 #: inc/ticket.class.php:2886
 msgid "OLA"
 msgid_plural "OLAs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "OLA"
+msgstr[1] "OLAs"
 
 #: inc/notificationtargetticket.class.php:730 inc/ola.class.php:957
 #: inc/ticket.class.php:2680 inc/ticket.class.php:2859
 #: inc/ticket.class.php:4571 inc/ticket.class.php:4573
 msgid "Internal time to own"
-msgstr ""
+msgstr "Temps interne de prise en compte"
 
 #: inc/notificationtargetticket.class.php:733 inc/ola.class.php:958
 #: inc/ticket.class.php:2644 inc/ticket.class.php:2873
 #: inc/ticket.class.php:4583 inc/ticket.class.php:4585
 msgid "Internal time to resolve"
-msgstr ""
+msgstr "Temps interne de résolution"
 
 #: inc/notificationtargetticket.class.php:741
 msgid "Location name"
@@ -14537,7 +14537,7 @@ msgstr "Délai avant déverrouillage forcé (heures)"
 #: inc/ola.class.php:186 inc/ola.class.php:671 inc/profile.class.php:1464
 #: inc/sla.class.php:181 inc/sla.class.php:654
 msgid "SLM"
-msgstr ""
+msgstr "SLM"
 
 #: inc/ola.class.php:206 inc/ola.class.php:316 inc/sla.class.php:201
 #: inc/sla.class.php:305
@@ -14557,11 +14557,11 @@ msgstr "Fin d'un jour ouvré"
 
 #: inc/ola.class.php:239
 msgid "The internal time is recalculated when assigning the OLA"
-msgstr ""
+msgstr "Le temps interne est recalculé lors de l'assignation d'un OLA"
 
 #: inc/ola.class.php:286
 msgid "Add a new OLA"
-msgstr ""
+msgstr "Ajout d'une nouvel OLA"
 
 #: inc/ola.class.php:352 inc/sla.class.php:341 inc/slm.class.php:124
 msgid "Calendar of the ticket"
@@ -14592,6 +14592,8 @@ msgstr ""
 #: inc/ola.class.php:564
 msgid "Escalations defined in the OLA will be triggered under this new date."
 msgstr ""
+"Les escalades définies dans l'OLA seront déclenchées en suivant cette "
+"nouvelle date."
 
 #: inc/olalevel.class.php:127 inc/slalevel.class.php:127
 msgid "Add an escalation level"
@@ -14605,7 +14607,7 @@ msgstr "Exécution"
 
 #: inc/olalevel.class.php:231
 msgid "Automatic reminders of OLA"
-msgstr ""
+msgstr "Rappel automatique des OLAs"
 
 #: inc/olalevel.class.php:314 inc/rule.class.php:721 inc/rule.class.php:872
 #: inc/rule.class.php:2730 inc/ruleright.class.php:78
@@ -14629,7 +14631,7 @@ msgstr[1] "- %d minutes"
 
 #: inc/olalevel_ticket.class.php:107
 msgid "Automatic actions of OLA"
-msgstr ""
+msgstr "Action automatique pour les OLAs"
 
 #: inc/operatingsystemarchitecture.class.php:48 inc/rule.class.php:460
 #: inc/ruledictionnaryoperatingsystemarchitecture.class.php:60
@@ -16699,20 +16701,22 @@ msgstr "L'action que vous avez réalisée n'est pas autorisée."
 
 #: inc/sla.class.php:275
 msgid "Add a new SLA"
-msgstr ""
+msgstr "Ajouter d'un nouveau SLA"
 
 #: inc/sla.class.php:546
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the date."
-msgstr ""
+msgstr "L'assignation d'un SLA au ticket entraîne le recalcul de la date."
 
 #: inc/sla.class.php:547
 msgid "Escalations defined in the SLA will be triggered under this new date."
 msgstr ""
+"Les escalades définies dans le SLA seront également déclenchées conformément"
+" à cette nouvelle date."
 
 #: inc/slalevel.class.php:232
 msgid "Automatic reminders of SLA"
-msgstr ""
+msgstr "Rappels automatiques pour les SLAs"
 
 #: inc/slalevel_ticket.class.php:106
 msgid "Automatic actions of SLA"
@@ -16721,8 +16725,8 @@ msgstr "Actions automatiques des SLA"
 #: inc/slm.class.php:58
 msgid "Service level"
 msgid_plural "Service levels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Niveau de services"
+msgstr[1] "Niveaux de services"
 
 #: inc/software.class.php:78 inc/software.class.php:1022
 msgid "Merging"
@@ -17101,19 +17105,19 @@ msgstr "Temps de prise en charge dépassé"
 
 #: inc/ticket.class.php:2655
 msgid "Internal time to resolve + Progress"
-msgstr ""
+msgstr "Temps interne de résolution + progression"
 
 #: inc/ticket.class.php:2665
 msgid "Internal time to resolve exceedeed"
-msgstr ""
+msgstr "Temps interne de résolution dépassé"
 
 #: inc/ticket.class.php:2691
 msgid "Internal time to own + Progress"
-msgstr ""
+msgstr "Temps interne de prise en charge + progression"
 
 #: inc/ticket.class.php:2701
 msgid "Internal time to own exceedeed"
-msgstr ""
+msgstr "Temps interne de prise en charge dépassé"
 
 #: inc/ticket.class.php:2951
 msgid "Response date"
