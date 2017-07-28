@@ -185,7 +185,7 @@ class SlaLevel_Ticket extends CommonDBTM {
          $slalevel = new SlaLevel();
          $sla      = new SLA();
          // Check if sla datas are OK
-         list($dateField, $slaField) = SLA::getSlaFieldNames($slaType);
+         list($dateField, $slaField) = SLA::getFieldNames($slaType);
          if (($ticket->fields[$slaField] > 0)) {
             if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
@@ -213,7 +213,7 @@ class SlaLevel_Ticket extends CommonDBTM {
 
                   // Put next level in todo list
                   if ($next = $slalevel->getNextSlaLevel($ticket->fields[$slaField],
-                                                     $data['slalevels_id'])) {
+                                                         $data['slalevels_id'])) {
                      $sla->addLevelToDo($ticket, $next);
                   }
                   // Action done : drop the line

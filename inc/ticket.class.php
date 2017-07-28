@@ -421,7 +421,7 @@ class Ticket extends CommonITILObject {
    **/
    function getDatasToAddSLA($slas_id, $entities_id, $date, $type) {
 
-      list($dateField, $slaField) = SLA::getSlaFieldNames($type);
+      list($dateField, $slaField) = SLA::getFieldNames($type);
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = [];
@@ -459,7 +459,7 @@ class Ticket extends CommonITILObject {
     **/
    function getDatasToAddOLA($olas_id, $entities_id, $date, $type) {
 
-      list($dateField, $olaField) = OLA::getOlaFieldNames($type);
+      list($dateField, $olaField) = OLA::getFieldNames($type);
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = [];
@@ -485,77 +485,51 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Delete SLA for the ticket
+    * Delete Level Agreement for the ticket
     *
-    * @since version 9.1 (before delete SLA without mandatory parameter $type)
+    * @since version 9.2
     *
-    * @param $id
-    * @param $type
-    * @param $delete_date      (default 0)
+    * @param string  $laType (SLA | OLA)
+    * @param integer $id the sla/ola id
+    * @param integer $subtype (SLM::TTR | SLM::TTO)
+    * @param bool    $delete_date (default false)
     *
-    * @return type
-   **/
-   function deleteSLA($id, $type, $delete_date = 0) {
-
-      switch ($type) {
-         case SLM::TTR :
-            $input['slas_ttr_id'] = 0;
-            if ($delete_date) {
-               $input['time_to_resolve'] = '';
-            }
-            break;
-
-         case SLM::TTO :
-            $input['slas_tto_id'] = 0;
-            if ($delete_date) {
-               $input['time_to_own'] = '';
-            }
-            break;
-      }
-
-      $input['sla_waiting_duration'] = 0;
-      $input['id']                   = $id;
-
-      $slaLevel_ticket = new SlaLevel_Ticket();
-      $slaLevel_ticket->deleteForTicket($id, $type);
-
-      return $this->update($input);
-   }
-
-   /**
-    * Delete OLA for the ticket
-    *
-    * @since version 9.1 (before delete OLA without mandatory parameter $type)
-    *
-    * @param $id
-    * @param $type
-    * @param $delete_date (default 0)
-    *
-    * @return type
+    * @return bool
     **/
-   function deleteOLA($id, $type, $delete_date = 0) {
+   function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false) {
+      switch ($laType) {
+         case "SLA":
+            $prefix        = "sla";
+            $prefix_ticket = "";
+            $level_ticket  = new SlaLevel_Ticket();
+            break;
+         case "OLA":
+            $prefix        = "ola";
+            $prefix_ticket = "internal_";
+            $level_ticket  = new OlaLevel_Ticket();
+            break;
+      }
 
-      switch ($type) {
+      $input = [];
+      switch ($subtype) {
          case SLM::TTR :
-            $input['olas_ttr_id'] = 0;
+            $input[$prefix.'s_ttr_id'] = 0;
             if ($delete_date) {
-               $input['internal_time_to_resolve'] = '';
+               $input[$prefix_ticket.'time_to_resolve'] = '';
             }
             break;
 
          case SLM::TTO :
-            $input['olas_tto_id'] = 0;
+            $input[$prefix.'s_tto_id'] = 0;
             if ($delete_date) {
-               $input['internal_time_to_own'] = '';
+               $input[$prefix_ticket.'time_to_own'] = '';
             }
             break;
       }
 
-      $input['ola_waiting_duration'] = 0;
-      $input['id']                   = $id;
-
-      $olaLevel_ticket = new OlaLevel_Ticket();
-      $olaLevel_ticket->deleteForTicket($id, $type);
+      $input[$prefix.'_waiting_duration'] = 0;
+      $input['id'] = $la_id;
+      $level_ticket->deleteForTicket($la_id, $subtype);
 
       return $this->update($input);
    }
@@ -1223,12 +1197,12 @@ class Ticket extends CommonITILObject {
       $manual_slas_id = [];
       $manual_olas_id = [];
       foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         list($dateField, $slaField) = SLA::getFieldNames($slmType);
          if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
             $manual_slas_id[$slmType] = $input[$slaField];
          }
 
-         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         list($dateField, $olaField) = OLA::getFieldNames($slmType);
          if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
             $manual_olas_id[$slmType] = $input[$olaField];
          }
@@ -1337,7 +1311,7 @@ class Ticket extends CommonITILObject {
     */
    function slaAffect($type, &$input, $manual_slas_id) {
 
-      list($dateField, $slaField) = SLA::getSlaFieldNames($type);
+      list($dateField, $slaField) = SLA::getFieldNames($type);
 
       // Restore slas
       if (isset($manual_slas_id[$type])
@@ -1414,7 +1388,7 @@ class Ticket extends CommonITILObject {
     */
    function olaAffect($type, &$input, $manual_olas_id) {
 
-      list($dateField, $olaField) = OLA::getOlaFieldNames($type);
+      list($dateField, $olaField) = OLA::getFieldNames($type);
 
       // Restore olas
       if (isset($manual_olas_id[$type])
@@ -1509,7 +1483,7 @@ class Ticket extends CommonITILObject {
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
       // Add first level in working table
-      $olalevels_id = SlaLevel::getFirstSlaLevel($slas_id);
+      $olalevels_id = OlaLevel::getFirstOlaLevel($slas_id);
 
       $ola = new OLA();
       if ($ola->getFromDB($slas_id)) {
@@ -1577,13 +1551,13 @@ class Ticket extends CommonITILObject {
 
       // Manage SLA / OLA Level : add actions
       foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         list($dateField, $slaField) = SLA::getFieldNames($slmType);
          if (in_array($slaField, $this->updates)
              && ($this->fields[$slaField] > 0)) {
             $this->manageSlaLevel($this->fields[$slaField]);
          }
 
-         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         list($dateField, $olaField) = OLA::getFieldNames($slmType);
          if (in_array($olaField, $this->updates)
              && ($this->fields[$olaField] > 0)) {
             $this->manageOlaLevel($this->fields[$olaField]);
@@ -1760,13 +1734,13 @@ class Ticket extends CommonITILObject {
                      // For time_to_resolve and time_to_own : check also slas
                      // For internal_time_to_resolve and internal_time_to_own : check also olas
                      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-                        list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+                        list($dateField, $slaField) = SLA::getFieldNames($slmType);
                         if (($key == $dateField)
                             && isset($input[$slaField]) && ($input[$slaField] > 0)
                             && isset($mandatory_missing[$dateField])) {
                            unset($mandatory_missing[$dateField]);
                         }
-                        list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+                        list($dateField, $olaField) = OLA::getFieldNames($slmType);
                         if (($key == $dateField)
                             && isset($input[$olaField]) && ($input[$olaField] > 0)
                             && isset($mandatory_missing[$dateField])) {
@@ -1846,11 +1820,11 @@ class Ticket extends CommonITILObject {
       $manual_slas_id = [];
       $manual_olas_id = [];
       foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         list($dateField, $slaField) = SLA::getFieldNames($slmType);
          if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
             $manual_slas_id[$slmType] = $input[$slaField];
          }
-         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         list($dateField, $olaField) = OLA::getFieldNames($slmType);
          if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
             $manual_olas_id[$slmType] = $input[$olaField];
          }
@@ -2108,11 +2082,11 @@ class Ticket extends CommonITILObject {
 
       // Manage SLA / OLA Level : add actions
       foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         list($dateField, $slaField) = SLA::getFieldNames($slmType);
          if (isset($this->input[$slaField]) && ($this->input[$slaField] > 0)) {
             $this->manageSlaLevel($this->input[$slaField]);
          }
-         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         list($dateField, $olaField) = OLA::getFieldNames($slmType);
          if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
             $this->manageOlaLevel($this->input[$olaField]);
          }
@@ -4585,14 +4559,43 @@ class Ticket extends CommonITILObject {
 
       if ($canupdate) {
          Html::showDateTimeField("date", ['value'      => $date,
-                                               'timestep'   => 1,
-                                               'maybeempty' => false,
-                                               'required'   => ($tt->isMandatoryField('date') && !$ID)]);
+                                          'timestep'   => 1,
+                                          'maybeempty' => false,
+                                          'required'   => ($tt->isMandatoryField('date') && !$ID)]);
       } else {
          echo Html::convDateTime($date);
       }
       echo $tt->getEndHiddenFieldValue('date', $this);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+
+      if ($ID) {
+         echo "<th width='$colsize1%'>".__('By')."</th>";
+         echo "<td width='$colsize2%'>";
+         if ($canupdate) {
+            User::dropdown(['name'   => 'users_id_recipient',
+                                 'value'  => $this->fields["users_id_recipient"],
+                                 'entity' => $this->fields["entities_id"],
+                                 'right'  => 'all']);
+         } else {
+            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
+         }
+
+         echo "</td>";
+      }
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      if ($ID) {
+         echo "<th width='$colsize3%'>".__('Last update')."</th>";
+         echo "<td width='$colsize4%' colspan='4'>";
+         if ($this->fields['users_id_lastupdater'] > 0) {
+            //TRANS: %1$s is the update date, %2$s is the last updater name
+            printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
+                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+         }
+         echo "</td>";
+      }
+      echo "</tr>";
 
       // SLAs
       echo "<tr class='tab_bg_1'>";
@@ -4606,7 +4609,7 @@ class Ticket extends CommonITILObject {
       echo "</th>";
       echo "<td width='$colsize2%' class='nopadding'>";
       $sla = new SLA();
-      $sla->showSlaForTicket($this, SLM::TTO, $tt, $canupdate);
+      $sla->showForTicket($this, SLM::TTO, $tt, $canupdate);
       echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('time_to_resolve');
       if (!$ID) {
@@ -4617,7 +4620,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('time_to_resolve');
       echo "</th>";
       echo "<td width='$colsize4%' class='nopadding'>";
-      $sla->showSlaForTicket($this, SLM::TTR, $tt, $canupdate);
+      $sla->showForTicket($this, SLM::TTR, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";
 
@@ -4633,7 +4636,7 @@ class Ticket extends CommonITILObject {
       echo "</th>";
       echo "<td width='$colsize2%' class='nopadding'>";
       $ola = new OLA();
-      $ola->showOlaForTicket($this, SLM::TTO, $tt, $canupdate);
+      $ola->showForTicket($this, SLM::TTO, $tt, $canupdate);
       echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('internal_time_to_resolve');
       if (!$ID) {
@@ -4644,34 +4647,9 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('internal_time_to_resolve');
       echo "</th>";
       echo "<td width='$colsize4%' class='nopadding'>";
-      $ola->showOlaForTicket($this, SLM::TTR, $tt, $canupdate);
+      $ola->showForTicket($this, SLM::TTR, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";
-
-      if ($ID) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th width='$colsize1%'>".__('By')."</th>";
-         echo "<td width='$colsize2%'>";
-         if ($canupdate) {
-            User::dropdown(['name'   => 'users_id_recipient',
-                                 'value'  => $this->fields["users_id_recipient"],
-                                 'entity' => $this->fields["entities_id"],
-                                 'right'  => 'all']);
-         } else {
-            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
-         }
-
-         echo "</td>";
-         echo "<th width='$colsize3%'>".__('Last update')."</th>";
-         echo "<td width='$colsize4%'>";
-         if ($this->fields['users_id_lastupdater'] > 0) {
-            //TRANS: %1$s is the update date, %2$s is the last updater name
-            printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
-                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</td>";
-         echo "</tr>";
-      }
 
       if ($ID
           && (in_array($this->fields["status"], $this->getSolvedStatusArray())
@@ -7496,6 +7474,108 @@ class Ticket extends CommonITILObject {
          }
       }
       return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);
+   }
+
+   function showStatsDates() {
+      $now                      = time();
+      $date_creation            = strtotime($this->fields['date']);
+      $date_takeintoaccount     = $date_creation + $this->fields['takeintoaccount_delay_stat'];
+      if ($date_takeintoaccount == $date_creation) {
+         $date_takeintoaccount  = 0;
+      }
+      $internal_time_to_own     = strtotime($this->fields['internal_time_to_own']);
+      $time_to_own              = strtotime($this->fields['time_to_own']);
+      $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve']);
+      $time_to_resolve          = strtotime($this->fields['time_to_resolve']);
+      $solvedate                = strtotime($this->fields['solvedate']);
+      $closedate                = strtotime($this->fields['closedate']);
+      $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
+      $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
+
+      $sla = new SLA;
+      $ola = new OLA;
+      $sla_tto_link =
+      $sla_ttr_link =
+      $ola_tto_link =
+      $ola_ttr_link = "";
+
+      if ($sla->getFromDB($this->fields['slas_tto_id'])) {
+         $sla_tto_link = "<a href='".$sla->getLinkURL()."'>
+                          <i class='fa fa-clock-o slt' title='".$sla->getName()."'></i></a>";
+      }
+      if ($sla->getFromDB($this->fields['slas_ttr_id'])) {
+         $sla_ttr_link = "<a href='".$sla->getLinkURL()."'>
+                          <i class='fa fa-clock-o slt' title='".$sla->getName()."'></i></a>";
+      }
+      if ($ola->getFromDB($this->fields['olas_tto_id'])) {
+         $ola_tto_link = "<a href='".$ola->getLinkURL()."'>
+                          <i class='fa fa-clock-o slt' title='".$ola->getName()."'></i></a>";
+      }
+      if ($ola->getFromDB($this->fields['olas_ttr_id'])) {
+         $ola_ttr_link = "<a href='".$ola->getLinkURL()."'>
+                          <i class='fa fa-clock-o slt' title='".$ola->getName()."'></i></a>";
+      }
+
+      $dates = [
+         $date_creation.'_date_creation' => [
+            'timestamp' => $date_creation,
+            'label'     => __('Opening date'),
+            'class'     => 'creation'
+         ],
+         $date_takeintoaccount.'_date_takeintoaccount' => [
+            'timestamp' => $date_takeintoaccount,
+            'label'     => __('Take into account'),
+            'class'     => 'checked'
+         ],
+         $internal_time_to_own.'_internal_time_to_own' => [
+            'timestamp' => $internal_time_to_own,
+            'label'     => __('Internal time to own')." ".$ola_tto_link,
+            'class'     => ($internal_time_to_own < $goal_takeintoaccount
+                               ? 'passed' : '')." ".
+                           ($date_takeintoaccount != ''
+                               ? 'checked' : ''),
+         ],
+         $time_to_own.'_time_to_own' => [
+            'timestamp' => $time_to_own,
+            'label'     => __('Time to own')." ".$sla_tto_link,
+            'class'     => ($time_to_own < $goal_takeintoaccount
+                               ? 'passed' : '')." ".
+                           ($date_takeintoaccount != ''
+                               ? 'checked' : ''),
+         ],
+         $internal_time_to_resolve.'_internal_time_to_resolve' => [
+            'timestamp' => $internal_time_to_resolve,
+            'label'     => __('Internal time to resolve')." ".$ola_ttr_link,
+            'class'     => ($internal_time_to_resolve < $goal_solvedate
+                               ? 'passed' : '')." ".
+                           ($solvedate != ''
+                               ? 'checked' : '')
+         ],
+         $time_to_resolve.'_time_to_resolve' => [
+            'timestamp' => $time_to_resolve,
+            'label'     => __('Time to resolve')." ".$sla_ttr_link,
+            'class'     => ($time_to_resolve < $goal_solvedate
+                               ? 'passed' : '')." ".
+                           ($solvedate != ''
+                               ? 'checked' : '')
+         ],
+         $solvedate.'_solvedate' => [
+            'timestamp' => $solvedate,
+            'label'     => __('Resolution date'),
+            'class'     => 'checked'
+         ],
+         $closedate.'_closedate' => [
+            'timestamp' => $closedate,
+            'label'     => __('Closing date'),
+            'class'     => 'end'
+         ]
+      ];
+
+      Html::showDatesTimelineGraph([
+         'title'   => _n('Date', 'Dates', Session::getPluralNumber()),
+         'dates'   => $dates,
+         'add_now' => $this->getField('closedate') == ""
+      ]);
    }
 
 }

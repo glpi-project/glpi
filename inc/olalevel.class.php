@@ -134,7 +134,7 @@ class OlaLevel extends RuleTicket {
          echo "</td><td><input  name='name' value=''>";
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
-         $delay = $ola->getOLATime();
+         $delay = $ola->getTime();
          self::dropdownExecutionTime('execution_time',
                                      ['max_time' => $delay,
                                       'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id'])]);
@@ -302,7 +302,7 @@ class OlaLevel extends RuleTicket {
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
 
-      $delay = $ola->getOLATime();
+      $delay = $ola->getTime();
 
       self::dropdownExecutionTime('execution_time',
                                   ['max_time'  => $delay,

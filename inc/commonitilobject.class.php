@@ -4532,16 +4532,18 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       echo "<div class='center'>";
+      $this->showStatsDates();
+      $this->showStatsTimes();
+      echo "</div>";
+   }
+
+   function showStatsDates() {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Date', 'Dates', Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
 
-      if ($this->getType() == 'Ticket') {
-         echo "<tr class='tab_bg_2'><td>".__('Time to own')."</td>";
-         echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
-      }
       echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['time_to_resolve'])."</td></tr>";
 
@@ -4555,7 +4557,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".__('Closing date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
+      echo "</table>";
+   }
 
+   function showStatsTimes() {
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Time', 'Times', Session::getPluralNumber())."</th></tr>";
 
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
@@ -4599,7 +4605,6 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table>";
-      echo "</div>";
    }
 
 

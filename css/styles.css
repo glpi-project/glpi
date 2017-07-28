@@ -1023,7 +1023,7 @@ td { }
    border-spacing: 0;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th {
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
    font-size: 12px;
    font-weight: bold;
    text-align: center;
@@ -3636,6 +3636,12 @@ a.copyright {
    margin-bottom: 55px;
 }
 
+.assign_la {
+   float: left;
+   white-space: nowrap;
+   margin-top: 4px;
+}
+
 .displayed_content a .fa {
    font-size: 1.5em;
 }
@@ -3741,6 +3747,108 @@ a.copyright {
    background-color: #FEC95C;
 }
 
+
+/** DATES TIMELINE */
+
+.dates_timelines {
+   width: 100%;
+   max-width: 950px;
+   font-size: 11px;
+   margin: 0 auto;
+   text-align: left;
+}
+.dates_timelines ul {
+   position: relative;
+}
+.dates_timelines ul:before {
+   content: '';
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 163px;
+   width: 3px;
+   background-color: #A8A8A8;
+}
+
+.dates_timelines li {
+   margin: 5px 0 25px 0;
+   display: block;
+}
+
+.dates_timelines time {
+   height: 30px;
+   position: absolute;
+   left: 0;
+   text-align: right;
+   width: 145px;
+   color: #999;
+}
+
+.dates_timelines .dot {
+   position: absolute;
+   left: 156px;
+   display: inline-block;
+   width: 14px;
+   height: 14px;
+   border-radius: 8px;
+   background-color: #FFF;
+   border: 2px solid #696969;
+}
+.dates_timelines .dot:before {
+   color: #929292;
+   font-family: 'FontAwesome';
+   padding-left: 2px;
+}
+
+.dates_timelines .now,
+.dates_timelines .now time {
+   font-weight: bold;
+   color: inherit !important;
+}
+.dates_timelines .now .dot {
+   background-color: #49BAF6;
+   border-color: #4A9BC5;
+}
+
+.dates_timelines .creation .dot {
+   border: 0;
+   font-size: 15px;
+   height: 18px;
+}
+.dates_timelines .creation .dot:before {
+   content: '\f069';
+}
+
+.dates_timelines .passed time,
+.dates_timelines .passed label,
+.dates_timelines .passed .dot {
+   border-color: #FF0014;
+   color: #FF0014;
+}
+.dates_timelines .passed .dot:before {
+   content: '\f12a';
+   padding-left: 6px;
+   color: #E54E5A;
+}
+
+.dates_timelines .checked .dot:before {
+   content: '\f00c';
+   padding-left: 2px;
+}
+
+.dates_timelines .end .dot {
+   border: 0;
+   font-size: 15px;
+}
+.dates_timelines .end .dot:before {
+   content: '\f024';
+}
+
+.dates_timelines label {
+   position: absolute;
+   left: 180px;
+   text-align: right;
+}
 
 /** SWITCHS **/
 /* Adadpted from http://materializecss.com/ */
