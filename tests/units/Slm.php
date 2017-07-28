@@ -83,14 +83,14 @@ class Slm extends DbTestCase {
       // prepare sla/ola inputs
       $sla1_in = $sla2_in = [
          'slms_id'         => $slm_id,
-         'name'            => $this->method." TTO",
+         'name'            => "SLA TTO",
          'comment'         => $this->getUniqueString(),
          'type'            => \SLM::TTO,
          'number_time'     => 4,
          'definition_time' => 'day',
       ];
       $sla2_in['type'] = \SLM::TTR;
-      $sla2_in['name'] = $this->method." TTR";
+      $sla2_in['name'] = "SLA TTR";
 
       // add two sla (TTO & TTR)
       $sla    = new \Sla();
@@ -101,6 +101,8 @@ class Slm extends DbTestCase {
 
       // add two ola (TTO & TTR), we re-use the same inputs as sla
       $ola  = new \Ola();
+      $sla1_in['name'] = str_replace("SLA", "OLA", $sla1_in['name']);
+      $sla2_in['name'] = str_replace("SLA", "OLA", $sla2_in['name']);
       $ola1_id = $ola->add($sla1_in);
       $this->checkInput($ola, $ola1_id, $sla1_in);
       $ola2_id = $ola->add($sla2_in);
@@ -190,12 +192,30 @@ class Slm extends DbTestCase {
       $act_id = $ruleaction->add($act_input = [
          'rules_id'    => $ruletid,
          'action_type' => 'assign',
+         'field'       => 'slas_tto_id',
+         'value'       => $sla1_id
+      ]);
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
          'field'       => 'slas_ttr_id',
          'value'       => $sla2_id
       ]);
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'olas_tto_id',
+         'value'       => $ola1_id
+      ]);
+      $act_id = $ruleaction->add($act_input = [
+         'rules_id'    => $ruletid,
+         'action_type' => 'assign',
+         'field'       => 'olas_ttr_id',
+         'value'       => $ola2_id
+      ]);
       $this->checkInput($ruleaction, $act_id, $act_input);
 
-      // create tickets
+      // test create ticket
       $ticket = new \Ticket;
       $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
       $tickets_id = $ticket->add($ticket_input = [
@@ -204,7 +224,28 @@ class Slm extends DbTestCase {
          'content' => $this->method
       ]);
       $this->checkInput($ticket, $tickets_id, $ticket_input);
+      $this->integer((int)$ticket->getField('slas_tto_id'))->isEqualTo($sla1_id);
       $this->integer((int)$ticket->getField('slas_ttr_id'))->isEqualTo($sla2_id);
+      $this->integer((int)$ticket->getField('olas_tto_id'))->isEqualTo($ola1_id);
+      $this->integer((int)$ticket->getField('olas_ttr_id'))->isEqualTo($ola2_id);
+      $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
+
+      // test update ticket
+      $ticket = new \Ticket;
+      $tickets_id_2 = $ticket->add($ticket_input_2 = [
+         'name'    => "to be updated",
+         'content' => $this->method
+      ]);
+      $ticket->update([
+         'id'   => $tickets_id_2,
+         'name' => $this->method
+      ]);
+      $ticket_input_2['name'] = $this->method;
+      $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
+      $this->integer((int)$ticket->getField('slas_tto_id'))->isEqualTo($sla1_id);
+      $this->integer((int)$ticket->getField('slas_ttr_id'))->isEqualTo($sla2_id);
+      $this->integer((int)$ticket->getField('olas_tto_id'))->isEqualTo($ola1_id);
+      $this->integer((int)$ticket->getField('olas_ttr_id'))->isEqualTo($ola2_id);
       $this->string($ticket->getField('time_to_resolve'))->length->isEqualTo(19);
 
       // ## 3 - test purge of slm and check if we don't find any sub objects

@@ -3006,13 +3006,14 @@ class Rule extends CommonDBTM {
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
-            case 'SLM' :
+            case 'SLA' :
+            case 'OLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_ruleactions',
-                                            ['field' => 'slms_id',
+                                            ['field' => $item::getFieldNames($item->fields['type'])[1],
                                              'value' => $item->getID()]);
                }
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+               return self::createTabEntry(self::getTypeName($nb), $nb);
 
             default:
                if ($item instanceof Rule) {
@@ -3064,9 +3065,8 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
-      } else if ($item->getType() == 'SLM') {
-         $rule = new RuleTicket();
-         $rule->showAndAddRuleForm($item);
+      } else if ($item instanceof LevelAgreement) {
+         $item->showRulesList();
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
          switch ($tabnum) {
