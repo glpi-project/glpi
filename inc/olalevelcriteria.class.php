@@ -32,15 +32,29 @@
 
 /** @file
 * @brief
-* @since version 9.1
+* @since version 9.2
 */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
+}
 
-Session::checkRight("sla", READ);
+/**
+ * Class OlaLevelCriteriaClass OlaLevelCriteria
+ */
+class OlaLevelCriteria extends RuleCriteria {
 
-Html::header(SLT::getTypeName(1), $_SERVER['PHP_SELF'], "config", "sla", "slt");
 
-Search::show('SLT');
+   static public $itemtype  = 'OlaLevel';
+   static public $items_id  = 'olalevels_id';
+   public $dohistory        = true;
 
-Html::footer();
+
+   /**
+   * Constructor
+   **/
+   function __construct() {
+      // Override in order not to use glpi_rules table.
+   }
+
+}

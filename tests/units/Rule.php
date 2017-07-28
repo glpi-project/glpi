@@ -243,7 +243,7 @@ class Rule extends DbTestCase {
       $this->integer($rule->maxActionsCount())->isIdenticalTo(0);
 
       $rule = new \RuleTicket();
-      $this->integer($rule->maxActionsCount())->isIdenticalTo(23);
+      $this->integer($rule->maxActionsCount())->isIdenticalTo(25);
 
       $rule = new \RuleDictionnarySoftware();
       $this->integer($rule->maxActionsCount())->isIdenticalTo(4);
@@ -298,11 +298,11 @@ class Rule extends DbTestCase {
          [_n('Associated element',
             'Associated elements', 2)  , 'affectobject'],
          [sprintf(__('%1$s %2$s'),
-                  __('SLT'),
-                  __('Time to resolve')) , 'slts_ttr_id'],
+                  __('SLA'),
+                  __('Time to resolve')) , 'slas_ttr_id'],
          [sprintf(__('%1$s %2$s'),
-                  __('SLT'),
-                  __('Time to own'))     , 'slts_tto_id'],
+                  __('SLA'),
+                  __('Time to own'))     , 'slas_tto_id'],
          [sprintf(__('%1$s - %2$s'),
                   __('Send an approval request'),
                   __('User'))            , 'users_id_validate'],

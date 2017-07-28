@@ -385,7 +385,7 @@ class Html extends atoum {
          'CommonDropdown',
          'CommonDevice',
          'Notification',
-         'SLA',
+         'SLM',
          'Config',
          'Control',
          'Crontask',

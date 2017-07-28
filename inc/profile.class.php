@@ -1460,9 +1460,9 @@ class Profile extends CommonDBTM {
                       ['itemtype'  => 'Notification',
                             'label'     => _n('Notification', 'Notifications', Session::getPluralNumber()),
                             'field'     => 'notification'],
-                      ['itemtype'  => 'SLA',
-                            'label'     => __('SLA'),
-                            'field'     => 'sla'],
+                      ['itemtype'  => 'SLM',
+                            'label'     => __('SLM'),
+                            'field'     => 'slm'],
                       ['itemtype'  => 'LineOperator',
                        'label'     => _n('Line operator', 'Line operators', Session::getPluralNumber()),
                        'field'     => 'lineoperator']];

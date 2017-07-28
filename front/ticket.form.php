@@ -138,10 +138,20 @@ if (isset($_POST["add"])) {
    }
    $track->redirectToList();
 
-} else if (isset($_POST['slt_delete'])) {
+} else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"], UPDATE);
 
-   $track->deleteSLT($_POST["id"], $_POST['type'], $_POST['delete_date']);
+   $track->deleteSLA($_POST["id"], $_POST['type'], $_POST['delete_date']);
+   Event::log($_POST["id"], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+
+} else if (isset($_POST['ola_delete'])) {
+   $track->check($_POST["id"], UPDATE);
+
+   $track->deleteOLA($_POST["id"], $_POST['type'], $_POST['delete_date']);
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));

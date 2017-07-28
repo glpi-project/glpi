@@ -910,9 +910,9 @@ class Stat extends CommonGLPI {
          case "inter_solved_late" :
             $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
                         AND `$table`.`solvedate` IS NOT NULL
-                        AND `$table`.`due_date` IS NOT NULL
+                        AND `$table`.`time_to_resolve` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
-                        AND `$table`.`solvedate` > `$table`.`due_date`";
+                        AND `$table`.`solvedate` > `$table`.`time_to_resolve`";
 
             $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,

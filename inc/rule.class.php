@@ -2951,6 +2951,10 @@ class Rule extends CommonDBTM {
 
       self::cleanForItemActionOrCriteria($item, $field,
                                          new SlaLevel(), 'glpi_slalevelactions', 'value', 'field');
+
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new OlaLevel(), 'glpi_olalevelactions', 'value', 'field');
+
    }
 
 
@@ -3002,10 +3006,10 @@ class Rule extends CommonDBTM {
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
-            case 'SLA' :
+            case 'SLM' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_ruleactions',
-                                            ['field' => 'slas_id',
+                                            ['field' => 'slms_id',
                                              'value' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -3060,7 +3064,7 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
-      } else if ($item->getType() == 'SLA') {
+      } else if ($item->getType() == 'SLM') {
          $rule = new RuleTicket();
          $rule->showAndAddRuleForm($item);
       } else if ($item instanceof Rule) {

@@ -620,7 +620,7 @@ class Change extends CommonITILObject {
                $options['urgency']             = $ticket->getField('urgency');
                $options['priority']            = $ticket->getField('priority');
                $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
-               $options['due_date']            = $ticket->getField('due_date');
+               $options['time_to_resolve']     = $ticket->getField('time_to_resolve');
             }
          }
 
@@ -633,7 +633,7 @@ class Change extends CommonITILObject {
                $options['urgency']             = $problem->getField('urgency');
                $options['priority']            = $problem->getField('priority');
                $options['itilcategories_id']   = $problem->getField('itilcategories_id');
-               $options['due_date']            = $problem->getField('due_date');
+               $options['time_to_resolve']     = $problem->getField('time_to_resolve');
             }
          }
       }
@@ -673,11 +673,11 @@ class Change extends CommonITILObject {
       echo "<th width='$colsize1%'>".__('Time to resolve')."</th>";
       echo "<td width='$colsize2%' class='left'>";
 
-      if ($this->fields["due_date"] == 'NULL') {
-         $this->fields["due_date"] = '';
+      if ($this->fields["time_to_resolve"] == 'NULL') {
+         $this->fields["time_to_resolve"] = '';
       }
-      Html::showDateTimeField("due_date", ['value'    => $this->fields["due_date"],
-                                                'timestep' => 1]);
+      Html::showDateTimeField("time_to_resolve", ['value'    => $this->fields["time_to_resolve"],
+                                                  'timestep' => 1]);
 
       echo "</td></tr>";
 

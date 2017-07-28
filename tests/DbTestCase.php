@@ -110,4 +110,25 @@ class DbTestCase extends atoum {
       $res = Session::changeActiveEntities(getItemByTypeName('Entity', $entityname, true), $subtree);
       $this->boolean($res)->isTrue();
    }
+
+   /**
+    * Generic method to test if an added object is corretly inserted
+    *
+    * @param  Object $object The object to test
+    * @param  int    $id     The id of added object
+    * @param  array  $input  the input used for add object (optionnal)
+    *
+    * @return nothing (do tests)
+    */
+   protected function checkInput(CommonDBTM $object, $id = 0, $input = []) {
+      $this->integer((int)$id)->isGreaterThan(0);
+      $this->boolean($object->getFromDB($id))->isTrue();
+      $this->variable($object->getField('id'))->isEqualTo($id);
+
+      if (count($input)) {
+         foreach ($input as $k => $v) {
+            $this->variable($object->getField($k))->isEqualTo($v);
+         }
+      }
+   }
 }

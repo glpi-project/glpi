@@ -32,6 +32,7 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,14 +40,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * SlaLevel class
+ * OlaLevel class
 **/
-class SlaLevel extends RuleTicket {
+class OlaLevel extends RuleTicket {
 
-   protected $rules_id_field    = 'slalevels_id';
-   protected $ruleactionclass   = 'SlaLevelAction';
+   protected $rules_id_field    = 'olalevels_id';
+   protected $ruleactionclass   = 'OlaLevelAction';
    // No criteria
-   protected $rulecriteriaclass = 'SlaLevelCriteria';
+   protected $rulecriteriaclass = 'OlaLevelCriteria';
 
    static $rightname            = 'slm';
 
@@ -57,7 +58,6 @@ class SlaLevel extends RuleTicket {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
-
 
    static function getTable($classname = null) {
       return CommonDBTM::getTable(__CLASS__);
@@ -95,50 +95,49 @@ class SlaLevel extends RuleTicket {
       parent::cleanDBOnPurge();
 
       $sql = "DELETE
-              FROM `glpi_slalevels_tickets`
+              FROM `glpi_olalevels_tickets`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
    }
 
 
    /**
-    * @param $sla SLA object
+    * @param $ola OLA object
     *
-    * @since version 9.1 (before showForSLA)
+    * @since version 9.1 (before showForOLA)
    **/
-   function showForSLA(SLA $sla) {
+   function showForOLA(OLA $ola) {
       global $DB;
 
-      $ID = $sla->getField('id');
-      if (!$sla->can($ID, READ)) {
+      $ID = $ola->getField('id');
+      if (!$ola->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $sla->can($ID, UPDATE);
+      $canedit = $ola->can($ID, UPDATE);
 
       $rand    = mt_rand();
 
       if ($canedit) {
          echo "<div class='center first-bloc'>";
-         echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
+         echo "<form name='olalevel_form$rand' id='olalevel_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add an escalation level')."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>".__('Name')."";
-         echo "<input type='hidden' name='slas_id' value='$ID'>";
-         echo "<input type='hidden' name='entities_id' value='".$sla->getEntityID()."'>";
-         echo "<input type='hidden' name='is_recursive' value='".$sla->isRecursive()."'>";
+         echo "<input type='hidden' name='olas_id' value='$ID'>";
+         echo "<input type='hidden' name='entities_id' value='".$ola->getEntityID()."'>";
+         echo "<input type='hidden' name='is_recursive' value='".$ola->isRecursive()."'>";
          echo "<input type='hidden' name='match' value='AND'>";
          echo "</td><td><input  name='name' value=''>";
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
-         $delay = $sla->getSLATime();
+         $delay = $ola->getOLATime();
          self::dropdownExecutionTime('execution_time',
                                      ['max_time' => $delay,
-                                      'used'     => self::getAlreadyUsedExecutionTime($sla->fields['id']),
-                                      'type'     => $sla->fields['type']]);
+                                      'used'     => self::getAlreadyUsedExecutionTime($ola->fields['id'])]);
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active", 1);
@@ -152,8 +151,8 @@ class SlaLevel extends RuleTicket {
       }
 
       $query = "SELECT *
-                FROM `glpi_slalevels`
-                WHERE `slas_id` = '$ID'
+                FROM `glpi_olalevels`
+                WHERE `olas_id` = '$ID'
                 ORDER BY `execution_time`";
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
@@ -161,8 +160,8 @@ class SlaLevel extends RuleTicket {
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                                      'container'      => 'mass'.__CLASS__.$rand];
+         $massiveactionparams = ['num_displayed'  => $numrows,
+                                 'container'      => 'mass'.__CLASS__.$rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -175,13 +174,13 @@ class SlaLevel extends RuleTicket {
       echo "<th>".__('Execution')."</th>";
       echo "<th>".__('Active')."</th>";
       echo "</tr>";
-      Session::initNavigateListItems('SlaLevel',
+      Session::initNavigateListItems('OlaLevel',
       //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'), SLA::getTypeName(1),
-                                             $sla->getName()));
+                                     sprintf(__('%1$s = %2$s'), OLA::getTypeName(1),
+                                             $ola->getName()));
 
       while ($data = $DB->fetch_assoc($result)) {
-         Session::addToNavigateListItems('SlaLevel', $data["id"]);
+         Session::addToNavigateListItems('OlaLevel', $data["id"]);
 
          echo "<tr class='tab_bg_2'>";
          if ($canedit) {
@@ -190,7 +189,7 @@ class SlaLevel extends RuleTicket {
 
          echo "<td>";
          if ($canedit) {
-            echo "<a href='".Toolbox::getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
+            echo "<a href='".Toolbox::getItemTypeFormURL('OlaLevel')."?id=".$data["id"]."'>";
          }
          echo $data["name"];
          if (empty($data["name"])) {
@@ -228,10 +227,10 @@ class SlaLevel extends RuleTicket {
 
       $actions                            = parent::getActions();
 
-      unset($actions['slas_id']);
-      $actions['recall']['name']          = __('Automatic reminders of SLA');
-      $actions['recall']['type']          = 'yesonly';
-      $actions['recall']['force_actions'] = ['send'];
+      unset($actions['olas_id']);
+      $actions['recall_ola']['name']          = __('Automatic reminders of OLA');
+      $actions['recall_ola']['type']          = 'yesonly';
+      $actions['recall_ola']['force_actions'] = ['send'];
 
       // Only append actors
       $actions['_users_id_requester']['force_actions']  = ['append'];
@@ -255,7 +254,7 @@ class SlaLevel extends RuleTicket {
 
       $actions                      = parent::getActions();
 
-      unset($actions['slas_id']);
+      unset($actions['olas_id']);
       // Could not be used as criteria
       unset($actions['users_id_validate_requester_supervisor']);
       unset($actions['users_id_validate_assign_supervisor']);
@@ -279,7 +278,7 @@ class SlaLevel extends RuleTicket {
    **/
    function showForm($ID, $options = []) {
 
-      $canedit = $this->can('sla', UPDATE);
+      $canedit = $this->can('ola', UPDATE);
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -294,26 +293,21 @@ class SlaLevel extends RuleTicket {
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo"</td></tr>\n";
 
-      $sla = new SLA();
-      $sla->getFromDB($this->fields['slas_id']);
+      $ola = new OLA();
+      $ola->getFromDB($this->fields['olas_id']);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".SLA::getTypeName(1)."</td>";
-      echo "<td>".$sla->getLink()."</td>";
+      echo "<td>".OLA::getTypeName(1)."</td>";
+      echo "<td>".$ola->getLink()."</td>";
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
 
-      $delay = $sla->getSLATime();
+      $delay = $ola->getOLATime();
 
       self::dropdownExecutionTime('execution_time',
-                                  ['max_time'
-                                             => $delay,
-                                        'used'
-                                             => self::getAlreadyUsedExecutionTime($sla->fields['id']),
-                                        'value'
-                                             => $this->fields['execution_time'],
-                                        'type'
-                                             => $sla->fields['type']]);
+                                  ['max_time'  => $delay,
+                                   'used'      => self::getAlreadyUsedExecutionTime($ola->fields['id']),
+                                   'value'     => $this->fields['execution_time']]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -328,7 +322,7 @@ class SlaLevel extends RuleTicket {
 
 
    /**
-    * Dropdown execution time for SLA
+    * Dropdown execution time for OLA
     *
     * @param $name      string   name of the select
     * @param $options   array    of possible options:
@@ -389,11 +383,7 @@ class SlaLevel extends RuleTicket {
          }
       }
       if (!in_array(0, $p['used'])) {
-         if ($p['type'] == 1) {
-             $possible_values[0] = __('Time to own');
-         } else {
-            $possible_values[0] = __('Time to resolve');
-         }
+         $possible_values[0] = __('Time to resolve');
       }
       ksort($possible_values);
 
@@ -402,19 +392,19 @@ class SlaLevel extends RuleTicket {
 
 
    /**
-    * Get already used execution time for a SLA
+    * Get already used execution time for a OLA
     *
-    * @param $slas_id   integer  id of the SLA
+    * @param $olas_id   integer  id of the OLA
     *
     * @return array of already used execution times
    **/
-   static function getAlreadyUsedExecutionTime($slas_id) {
+   static function getAlreadyUsedExecutionTime($olas_id) {
       global $DB;
 
       $result = [];
       $query  = "SELECT DISTINCT `execution_time`
-                 FROM `glpi_slalevels`
-                 WHERE `slas_id` = '$slas_id';";
+                 FROM `glpi_olalevels`
+                 WHERE `olas_id` = '$olas_id';";
 
       foreach ($DB->request($query) as $data) {
          $result[$data['execution_time']] = $data['execution_time'];
@@ -424,20 +414,20 @@ class SlaLevel extends RuleTicket {
 
 
    /**
-    * Get first level for a SLA
+    * Get first level for a OLA
     *
-    * @param $slas_id   integer  id of the SLA
+    * @param $olas_id   integer  id of the OLA
     *
-    * @since version 9.1 (before getFirst SlaLevel)
+    * @since version 9.1 (before getFirst OlaLevel)
     *
-    * @return id of the sla level : 0 if not exists
+    * @return id of the ola level : 0 if not exists
    **/
-   static function getFirstSlaLevel($slas_id) {
+   static function getFirstOlaLevel($olas_id) {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `glpi_slalevels`
-                WHERE `slas_id` = '$slas_id'
+                FROM `glpi_olalevels`
+                WHERE `olas_id` = '$olas_id'
                      AND `is_active` = 1
                 ORDER BY `execution_time` ASC LIMIT 1;";
 
@@ -451,28 +441,28 @@ class SlaLevel extends RuleTicket {
 
 
    /**
-    * Get next level for a SLA
+    * Get next level for a OLA
     *
-    * @param $slas_id         integer id of the SLA
-    * @param $slalevels_id    integer id of the current SLA level
+    * @param $olas_id         integer id of the OLA
+    * @param $olalevels_id    integer id of the current OLA level
     *
-    * @return id of the sla level : 0 if not exists
+    * @return id of the ola level : 0 if not exists
    **/
-   static function getNextSlaLevel($slas_id, $slalevels_id) {
+   static function getNextOlaLevel($olas_id, $olalevels_id) {
       global $DB;
 
       $query = "SELECT `execution_time`
-                FROM `glpi_slalevels`
-                WHERE `id` = '$slalevels_id';";
+                FROM `glpi_olalevels`
+                WHERE `id` = '$olalevels_id';";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             $execution_time = $DB->result($result, 0, 0);
 
             $query = "SELECT `id`
-                      FROM `glpi_slalevels`
-                       WHERE `slas_id` = '$slas_id'
-                             AND `id` <> '$slalevels_id'
+                      FROM `glpi_olalevels`
+                       WHERE `olas_id` = '$olas_id'
+                             AND `id` <> '$olalevels_id'
                              AND `execution_time` > '$execution_time'
                              AND `is_active` = 1
                       ORDER BY `execution_time` ASC LIMIT 1;";
@@ -493,9 +483,9 @@ class SlaLevel extends RuleTicket {
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
-            case 'SLA' :
+            case 'OLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  countElementsInTable($this->getTable(), ['slas_id' => $item->getID()]);
+                  $nb =  countElementsInTable($this->getTable(), ['olas_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -506,9 +496,9 @@ class SlaLevel extends RuleTicket {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if ($item->getType() == 'SLA') {
-         $slalevel = new self();
-         $slalevel->showForSLA($item);
+      if ($item->getType() == 'OLA') {
+         $olalevel = new self();
+         $olalevel->showForOLA($item);
       }
       return true;
    }

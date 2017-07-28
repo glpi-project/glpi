@@ -4074,11 +4074,14 @@ class Search {
          case "glpi_projects.priority" :
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
 
-         case "glpi_tickets.due_date" :
-         case "glpi_problems.due_date" :
-         case "glpi_changes.due_date" :
+         case "glpi_tickets.time_to_resolve" :
+         case "glpi_tickets.internal_time_to_resolve" :
+         case "glpi_problems.time_to_resolve" :
+         case "glpi_changes.time_to_resolve" :
          case "glpi_tickets.time_to_own" :
+         case "glpi_tickets.internal_time_to_own" :
             if (($ID <> 151) && ($ID <> 158)
+                && ($ID <> 181) && ($ID <> 186)
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
@@ -4429,12 +4432,15 @@ class Search {
                }
                break;
 
-            case "glpi_tickets.due_date" :
-            case "glpi_problems.due_date" :
-            case "glpi_changes.due_date" :
+            case "glpi_tickets.time_to_resolve" :
+            case "glpi_problems.time_to_resolve" :
+            case "glpi_changes.time_to_resolve" :
             case "glpi_tickets.time_to_own" :
+            case "glpi_tickets.internal_time_to_own" :
+            case "glpi_tickets.internal_time_to_resolve" :
                // Due date + progress
-               if (($ID == 151) || ($ID == 158)) {
+               if (($ID == 151) || ($ID == 158)
+                   ||($ID == 181) ||($ID == 186)) {
                   $out = Html::convDateTime($data[$num][0]['name']);
 
                   // No due date in waiting status
@@ -4455,7 +4461,7 @@ class Search {
                   $percentage  = 0;
                   $totaltime   = 0;
                   $currenttime = 0;
-                  $sltField    = 'slts_id';
+                  $slaField    = 'slas_id';
 
                   switch ($table.'.'.$field) {
                      // If ticket has been taken into account : no progression display
@@ -4466,12 +4472,12 @@ class Search {
                         break;
                   }
 
-                  if ($item->isField($sltField) && $item->fields[$sltField] != 0) { // Have SLT
-                     $slt = new SLT();
-                     $slt->getFromDB($item->fields[$sltField]);
-                     $currenttime = $slt->getActiveTimeBetween($item->fields['date'],
+                  if ($item->isField($slaField) && $item->fields[$slaField] != 0) { // Have SLA
+                     $sla = new SLA();
+                     $sla->getFromDB($item->fields[$slaField]);
+                     $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
-                     $totaltime   = $slt->getActiveTimeBetween($item->fields['date'],
+                     $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
                                                                $data[$num][0]['name']);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',

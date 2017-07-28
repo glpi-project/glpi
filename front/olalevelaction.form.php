@@ -32,16 +32,26 @@
 
 /** @file
 * @brief
-* @since version 9.1
+* @since version 9.2
 */
-
 include ('../inc/includes.php');
 
-Session::checkRight("slm", READ);
 
-Html::header(SlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config",
-             "sla", "slalevel");
+$criteria = new OlaLevelAction();
 
-Search::show('SlaLevel');
+if (isset($_POST["add"])) {
+   $criteria->check(-1, CREATE, $_POST);
+   $criteria->add($_POST);
 
-Html::footer();
+   Html::back();
+} else if (isset($_POST["update"])) {
+   $criteria->check($_POST['id'], UPDATE);
+   $criteria->update($_POST);
+
+   Html::back();
+} else if (isset($_POST["purge"])) {
+   $criteria->check($_POST['id'], PURGE);
+   $criteria->delete($_POST, 1);
+
+   Html::back();
+}

@@ -352,38 +352,76 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Get Datas to be added for SLT add
+    * Get Datas to be added for SLA add
     *
-    * @param $slts_id      SLT id
+    * @param $slas_id      SLA id
     * @param $entities_id  entity ID of the ticket
     * @param $date         begin date of the ticket
-    * @param $type         type of SLT
+    * @param $type         type of SLA
     *
     * @since version 9.1 (before getDatasToAddSla without type parameter)
     *
     * @return array of datas to add in ticket
    **/
-   function getDatasToAddSLT($slts_id, $entities_id, $date, $type) {
+   function getDatasToAddSLA($slas_id, $entities_id, $date, $type) {
 
-      list($dateField, $sltField) = SLT::getSltFieldNames($type);
+      list($dateField, $slaField) = SLA::getSlaFieldNames($type);
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = [];
 
-      $slt = new SLT();
-      if ($slt->getFromDB($slts_id)) {
-         $slt->setTicketCalendar($calendars_id);
-         if ($slt->fields['type'] == SLT::TTR) {
-            $data["ttr_slalevels_id"] = SlaLevel::getFirstSltLevel($slts_id);
+      $sla = new SLA();
+      if ($sla->getFromDB($slas_id)) {
+         $sla->setTicketCalendar($calendars_id);
+         if ($sla->fields['type'] == SLM::TTR) {
+            $data["ttr_slalevels_id"] = SlaLevel::getFirstSlaLevel($slas_id);
          }
-         // Compute due_date
-         $data[$dateField]             = $slt->computeDate($date);
+         // Compute time_to_resolve
+         $data[$dateField]             = $sla->computeDate($date);
          $data['sla_waiting_duration'] = 0;
 
       } else {
          $data["ttr_slalevels_id"]     = 0;
-         $data[$sltField]              = 0;
+         $data[$slaField]              = 0;
          $data['sla_waiting_duration'] = 0;
+      }
+      return $data;
+
+   }
+
+   /**
+    * Get Datas to be added for OLA add
+    *
+    * @param $olas_id      OLA id
+    * @param $entities_id  entity ID of the ticket
+    * @param $date         begin date of the ticket
+    * @param $type         type of OLA
+    *
+    * @since version 9.2 (before getDatasToAddOla without type parameter)
+    *
+    * @return array of datas to add in ticket
+    **/
+   function getDatasToAddOLA($olas_id, $entities_id, $date, $type) {
+
+      list($dateField, $olaField) = OLA::getOlaFieldNames($type);
+
+      $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
+      $data         = [];
+
+      $ola = new OLA();
+      if ($ola->getFromDB($olas_id)) {
+         $ola->setTicketCalendar($calendars_id);
+         if ($ola->fields['type'] == SLM::TTR) {
+            $data["ttr_olalevels_id"] = OlaLevel::getFirstOlaLevel($olas_id);
+         }
+         // Compute time_to_resolve
+         $data[$dateField]             = $ola->computeDate($date);
+         $data['ola_waiting_duration'] = 0;
+
+      } else {
+         $data["ttr_olalevels_id"]     = 0;
+         $data[$olaField]              = 0;
+         $data['ola_waiting_duration'] = 0;
       }
       return $data;
 
@@ -391,7 +429,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Delete SLT for the ticket
+    * Delete SLA for the ticket
     *
     * @since version 9.1 (before delete SLA without mandatory parameter $type)
     *
@@ -401,18 +439,18 @@ class Ticket extends CommonITILObject {
     *
     * @return type
    **/
-   function deleteSLT($id, $type, $delete_date = 0) {
+   function deleteSLA($id, $type, $delete_date = 0) {
 
       switch ($type) {
-         case SLT::TTR :
-            $input['slts_ttr_id'] = 0;
+         case SLM::TTR :
+            $input['slas_ttr_id'] = 0;
             if ($delete_date) {
-               $input['due_date'] = '';
+               $input['time_to_resolve'] = '';
             }
             break;
 
-         case SLT::TTO :
-            $input['slts_tto_id'] = 0;
+         case SLM::TTO :
+            $input['slas_tto_id'] = 0;
             if ($delete_date) {
                $input['time_to_own'] = '';
             }
@@ -424,6 +462,44 @@ class Ticket extends CommonITILObject {
 
       $slaLevel_ticket = new SlaLevel_Ticket();
       $slaLevel_ticket->deleteForTicket($id, $type);
+
+      return $this->update($input);
+   }
+
+   /**
+    * Delete OLA for the ticket
+    *
+    * @since version 9.1 (before delete OLA without mandatory parameter $type)
+    *
+    * @param $id
+    * @param $type
+    * @param $delete_date (default 0)
+    *
+    * @return type
+    **/
+   function deleteOLA($id, $type, $delete_date = 0) {
+
+      switch ($type) {
+         case SLM::TTR :
+            $input['olas_ttr_id'] = 0;
+            if ($delete_date) {
+               $input['internal_time_to_resolve'] = '';
+            }
+            break;
+
+         case SLM::TTO :
+            $input['olas_tto_id'] = 0;
+            if ($delete_date) {
+               $input['internal_time_to_own'] = '';
+            }
+            break;
+      }
+
+      $input['ola_waiting_duration'] = 0;
+      $input['id']                   = $id;
+
+      $olaLevel_ticket = new OlaLevel_Ticket();
+      $olaLevel_ticket->deleteForTicket($id, $type);
 
       return $this->update($input);
    }
@@ -594,10 +670,15 @@ class Ticket extends CommonITILObject {
                                                 AND `glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."'");
                   break;
 
-               case 'SLT' :
+               case 'SLA' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             ['slts_tto_id' => $item->getID(),
-                                              'slts_ttr_id' => $item->getID()]);
+                                             "`slas_tto_id` = ".$item->getID()." 
+                                             OR `slas_ttr_id` = ".$item->getID());
+                  break;
+               case 'OLA' :
+                  $nb = countElementsInTable('glpi_tickets',
+                                             "`olas_tto_id` = ".$item->getID()." 
+                                             OR `olas_ttr_id` = ".$item->getID());
                   break;
 
                case 'Group' :
@@ -722,7 +803,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Group' :
-         case 'SLT' :
+         case 'SLA' :
+         case 'OLA' :
          default :
             self::showListForItem($item, $withtemplate);
       }
@@ -807,8 +889,12 @@ class Ticket extends CommonITILObject {
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $slaLevel_ticket = new SlaLevel_Ticket();
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTO);
-      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTR);
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
+
+      $olaLevel_ticket = new OlaLevel_Ticket();
+      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTO);
+      $olaLevel_ticket->deleteForTicket($this->getID(), SLM::TTR);
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
@@ -1063,12 +1149,18 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Business Rules do not override manual SLT
-      $manual_slts_id = [];
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
-            $manual_slts_id[$sltType] = $input[$sltField];
+      // Business Rules do not override manual SLA and OLA
+      $manual_slas_id = [];
+      $manual_olas_id = [];
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
+            $manual_slas_id[$slmType] = $input[$slaField];
+         }
+
+         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
+            $manual_olas_id[$slmType] = $input[$olaField];
          }
       }
 
@@ -1138,11 +1230,12 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // SLT affect by rules : reset due_date
-      // Manual SLT defined : reset due date
-      // No manual SLT and due date defined : reset auto SLT
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         $this->sltAffect($sltType, $input, $manual_slts_id);
+      // SLA / OLA affect by rules : reset time_to_resolve / internal_time_to_resolve
+      // Manual SLA / OLA defined : reset time_to_resolve / internal_time_to_resolve
+      // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         $this->slaAffect($slmType, $input, $manual_slas_id);
+         $this->olaAffect($slmType, $input, $manual_olas_id);
       }
 
       if (isset($input['content'])) {
@@ -1162,30 +1255,31 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    *  SLT affect by rules : reset due_date and time_to_own
-    *  Manual SLT defined : reset due date and time_to_own
-    *  No manual SLT and due date defined : reset auto SLT
+    *  SLA affect by rules : reset time_to_resolve and time_to_own
+    *  Manual SLA defined : reset time_to_resolve and time_to_own
+    *  No manual SLA and due date defined : reset auto SLA
     *
     *  @since version 9.1
     *
     * @param $type
     * @param $input
-    * @param $manual_slts_id
+    * @param $manual_slas_id
     */
-   function sltAffect($type, &$input, $manual_slts_id) {
+   function slaAffect($type, &$input, $manual_slas_id) {
 
-      list($dateField, $sltField) = SLT::getSltFieldNames($type);
+      list($dateField, $slaField) = SLA::getSlaFieldNames($type);
 
-      // Restore slts
-      if (isset($manual_slts_id[$type])) {
-         $input[$sltField] = $manual_slts_id[$type];
+      // Restore slas
+      if (isset($manual_slas_id[$type])
+          && !isset($input['_'.$slaField])) {
+         $input[$slaField] = $manual_slas_id[$type];
       }
 
       // Ticket update
       if (isset($this->fields['id']) && $this->fields['id'] > 0) {
-         if (!isset($manual_slts_id[$type])
-             && isset($input[$sltField]) && ($input[$sltField] > 0)
-             && ($input[$sltField] != $this->fields[$sltField])) {
+         if (!isset($manual_slas_id[$type])
+             && isset($input[$slaField]) && ($input[$slaField] > 0)
+             && ($input[$slaField] != $this->fields[$slaField])) {
 
             if (isset($input[$dateField])) {
                // Unset due date
@@ -1193,30 +1287,30 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         if (isset($input[$sltField]) && ($input[$sltField] > 0)
-             && ($input[$sltField] != $this->fields[$sltField])) {
+         if (isset($input[$slaField]) && ($input[$slaField] > 0)
+             && ($input[$slaField] != $this->fields[$slaField])) {
 
             $date = $this->fields['date'];
             /// Use updated date if also done
             if (isset($input["date"])) {
                $date = $input["date"];
             }
-            // Get datas to initialize SLT and set it
-            $slt_data = $this->getDatasToAddSLT($input[$sltField], $this->fields['entities_id'],
+            // Get datas to initialize SLA and set it
+            $sla_data = $this->getDatasToAddSLA($input[$slaField], $this->fields['entities_id'],
                                                 $date, $type);
-            if (count($slt_data)) {
-               foreach ($slt_data as $key => $val) {
+            if (count($sla_data)) {
+               foreach ($sla_data as $key => $val) {
                   $input[$key] = $val;
                }
             }
          }
       } else { // Ticket add
-         if (!isset($manual_slts_id[$type])
+         if (!isset($manual_slas_id[$type])
              && isset($input[$dateField]) && ($input[$dateField] != 'NULL')) {
             // Valid due date
             if ($input[$dateField] >= $input['date']) {
-               if (isset($input[$sltField])) {
-                  unset($input[$sltField]);
+               if (isset($input[$slaField])) {
+                  unset($input[$slaField]);
                }
             } else {
                // Unset due date
@@ -1224,12 +1318,87 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
-            // Get datas to initialize SLT and set it
-            $slt_data = $this->getDatasToAddSLT($input[$sltField], $input['entities_id'],
+         if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
+            // Get datas to initialize SLA and set it
+            $sla_data = $this->getDatasToAddSLA($input[$slaField], $input['entities_id'],
                                                 $input['date'], $type);
-            if (count($slt_data)) {
-               foreach ($slt_data as $key => $val) {
+            if (count($sla_data)) {
+               foreach ($sla_data as $key => $val) {
+                  $input[$key] = $val;
+               }
+            }
+         }
+      }
+   }
+
+   /**
+    *  OLA affect by rules : reset internal_time_to_resolve and internal_time_to_own
+    *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
+    *  No manual OLA and due date defined : reset auto OLA
+    *
+    *  @since version 9.1
+    *
+    * @param $type
+    * @param $input
+    * @param $manual_olas_id
+    */
+   function olaAffect($type, &$input, $manual_olas_id) {
+
+      list($dateField, $olaField) = OLA::getOlaFieldNames($type);
+
+      // Restore olas
+      if (isset($manual_olas_id[$type])
+          && !isset($input['_'.$olaField])) {
+         $input[$olaField] = $manual_olas_id[$type];
+      }
+
+      // Ticket update
+      if (isset($this->fields['id']) && $this->fields['id'] > 0) {
+         if (!isset($manual_olas_id[$type])
+             && isset($input[$olaField]) && ($input[$olaField] > 0)
+             && ($input[$olaField] != $this->fields[$olaField])) {
+
+            if (isset($input[$dateField])) {
+               // Unset due date
+               unset($input[$dateField]);
+            }
+         }
+
+         if (isset($input[$olaField]) && ($input[$olaField] > 0)
+             && ($input[$olaField] != $this->fields[$olaField]
+                 || isset($input['_'.$olaField]))) {
+
+            $date = date('Y-m-d H:i:s');
+
+            // Get datas to initialize OLA and set it
+            $ola_data = $this->getDatasToAddOLA($input[$olaField], $this->fields['entities_id'],
+                                                $date, $type);
+            if (count($ola_data)) {
+               foreach ($ola_data as $key => $val) {
+                  $input[$key] = $val;
+               }
+            }
+         }
+      } else { // Ticket add
+         if (!isset($manual_olas_id[$type])
+             && isset($input[$dateField]) && ($input[$dateField] != 'NULL')) {
+            // Valid due date
+            if ($input[$dateField] >= $input['date']) {
+               if (isset($input[$olaField])) {
+                  unset($input[$olaField]);
+               }
+            } else {
+               // Unset due date
+               unset($input[$dateField]);
+            }
+         }
+
+         if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
+            // Get datas to initialize OLA and set it
+            $ola_data = $this->getDatasToAddOLA($input[$olaField], $input['entities_id'],
+                                                $input['date'], $type);
+            if (count($ola_data)) {
+               foreach ($ola_data as $key => $val) {
                   $input[$key] = $val;
                }
             }
@@ -1239,24 +1408,45 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Manage SLT level escalation
+    * Manage SLA level escalation
     *
     * @since version 9.1
     *
-    * @param $slts_id
+    * @param $slas_id
    **/
-   function manageSltLevel($slts_id) {
+   function manageSlaLevel($slas_id) {
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
       // Add first level in working table
-      $slalevels_id = SlaLevel::getFirstSltLevel($slts_id);
+      $slalevels_id = SlaLevel::getFirstSlaLevel($slas_id);
 
-      $slt = new SLT();
-      if ($slt->getFromDB($slts_id)) {
-         $slt->setTicketCalendar($calendars_id);
-         $slt->addLevelToDo($this, $slalevels_id);
+      $sla = new SLA();
+      if ($sla->getFromDB($slas_id)) {
+         $sla->setTicketCalendar($calendars_id);
+         $sla->addLevelToDo($this, $slalevels_id);
       }
-      SlaLevel_Ticket::replayForTicket($this->getID(), $slt->getField('type'));
+      SlaLevel_Ticket::replayForTicket($this->getID(), $sla->getField('type'));
+   }
+
+   /**
+    * Manage OLA level escalation
+    *
+    * @since version 9.1
+    *
+    * @param $slas_id
+   **/
+   function manageOlaLevel($slas_id) {
+
+      $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+      // Add first level in working table
+      $olalevels_id = SlaLevel::getFirstSlaLevel($slas_id);
+
+      $ola = new OLA();
+      if ($ola->getFromDB($slas_id)) {
+         $ola->setTicketCalendar($calendars_id);
+         $ola->addLevelToDo($this, $olalevels_id);
+      }
+      OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
    }
 
 
@@ -1315,12 +1505,18 @@ class Ticket extends CommonITILObject {
          $donotif = true;
       }
 
-      // Manage SLT Level : add actions
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-         if (in_array($sltField, $this->updates)
-             && ($this->fields[$sltField] > 0)) {
-            $this->manageSltLevel($this->fields[$sltField]);
+      // Manage SLA / OLA Level : add actions
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         if (in_array($slaField, $this->updates)
+             && ($this->fields[$slaField] > 0)) {
+            $this->manageSlaLevel($this->fields[$slaField]);
+         }
+
+         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         if (in_array($olaField, $this->updates)
+             && ($this->fields[$olaField] > 0)) {
+            $this->manageOlaLevel($this->fields[$olaField]);
          }
       }
 
@@ -1491,11 +1687,18 @@ class Ticket extends CommonITILObject {
                         unset($mandatory_missing['_add_validation']);
                      }
 
-                     // For due_date and time_to_own : check also slts
-                     foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-                        list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
+                     // For time_to_resolve and time_to_own : check also slas
+                     // For internal_time_to_resolve and internal_time_to_own : check also olas
+                     foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                        list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
                         if (($key == $dateField)
-                            && isset($input[$sltField]) && ($input[$sltField] > 0)
+                            && isset($input[$slaField]) && ($input[$slaField] > 0)
+                            && isset($mandatory_missing[$dateField])) {
+                           unset($mandatory_missing[$dateField]);
+                        }
+                        list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+                        if (($key == $dateField)
+                            && isset($input[$olaField]) && ($input[$olaField] > 0)
                             && isset($mandatory_missing[$dateField])) {
                            unset($mandatory_missing[$dateField]);
                         }
@@ -1569,12 +1772,17 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Business Rules do not override manual SLT
-      $manual_slts_id = [];
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
-            $manual_slts_id[$sltType] = $input[$sltField];
+      // Business Rules do not override manual SLA and OLA
+      $manual_slas_id = [];
+      $manual_olas_id = [];
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
+            $manual_slas_id[$slmType] = $input[$slaField];
+         }
+         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
+            $manual_olas_id[$slmType] = $input[$olaField];
          }
       }
 
@@ -1724,11 +1932,12 @@ class Ticket extends CommonITILObject {
          $input["status"] = self::ASSIGNED;
       }
 
-      // Manage SLT signment
-      // Manual SLT defined : reset due date
-      // No manual SLT and due date defined : reset auto SLT
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         $this->sltAffect($sltType, $input, $manual_slts_id);
+      // Manage SLA / OLA asignment
+      // Manual SLA / OLA defined : reset due date
+      // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         $this->slaAffect($slmType, $input, $manual_slas_id);
+         $this->olaAffect($slmType, $input, $manual_olas_id);
       }
 
       // auto set type if not set
@@ -1826,11 +2035,15 @@ class Ticket extends CommonITILObject {
          $ticket_ticket->add($input2);
       }
 
-      // Manage SLT Level : add actions
-      foreach ([SLT::TTR, SLT::TTO] as $sltType) {
-         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-         if (isset($this->input[$sltField]) && ($this->input[$sltField] > 0)) {
-            $this->manageSltLevel($this->input[$sltField]);
+      // Manage SLA / OLA Level : add actions
+      foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+         list($dateField, $slaField) = SLA::getSlaFieldNames($slmType);
+         if (isset($this->input[$slaField]) && ($this->input[$slaField] > 0)) {
+            $this->manageSlaLevel($this->input[$slaField]);
+         }
+         list($dateField, $olaField) = OLA::getOlaFieldNames($slmType);
+         if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
+            $this->manageOlaLevel($this->input[$olaField]);
          }
       }
 
@@ -2425,6 +2638,80 @@ class Ticket extends CommonITILObject {
       ];
 
       $tab[] = [
+         'id'                 => '180',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '181',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_resolve',
+         'name'               => __('Internal time to resolve + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '182',
+         'table'              => $this->getTable(),
+         'field'              => 'is_late',
+         'name'               => __('Internal time to resolve exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`internal_time_to_resolve` IS NOT NULL
+                                            AND TABLE.`status` <> 4
+                                            AND (TABLE.`solvedate` > TABLE.`internal_time_to_resolve`
+                                                 OR (TABLE.`solvedate` IS NULL
+                                                      AND TABLE.`internal_time_to_resolve` < NOW())),
+                                            1, 0)'
+      ];
+
+      $tab[] = [
+         'id'                 => '185',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_own',
+         'name'               => __('Internal time to own'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '186',
+         'table'              => $this->getTable(),
+         'field'              => 'internal_time_to_own',
+         'name'               => __('Internal time to own + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
+
+      $tab[] = [
+         'id'                 => '187',
+         'table'              => 'glpi_tickets',
+         'field'              => 'is_late',
+         'name'               => __('Internal time to own exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`internal_time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> '.self::WAITING.'
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`internal_time_to_own`,
+                                                                               TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`internal_time_to_own` < NOW())),
+                                            1, 0)'
+      ];
+
+      $tab[] = [
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'type',
@@ -2509,48 +2796,99 @@ class Ticket extends CommonITILObject {
       $tab = array_merge($tab, $this->getSearchOptionsActors());
 
       $tab[] = [
-         'id'                 => 'slt',
-         'name'               => __('SLT')
+         'id'                 => 'sla',
+         'name'               => __('SLA')
       ];
 
       $tab[] = [
          'id'                 => '37',
-         'table'              => 'glpi_slts',
+         'table'              => 'glpi_slas',
          'field'              => 'name',
-         'linkfield'          => 'slts_tto_id',
-         'name'               => __('SLT')."&nbsp;".__('Time to own'),
+         'linkfield'          => 'slas_tto_id',
+         'name'               => __('SLA')."&nbsp;".__('Time to own'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLT::TTO."'"
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
          ],
-         'condition'          => "`glpi_slts`.`type` = '".SLT::TTO."'"
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTO."'"
       ];
 
       $tab[] = [
          'id'                 => '30',
-         'table'              => 'glpi_slts',
+         'table'              => 'glpi_slas',
          'field'              => 'name',
-         'linkfield'          => 'slts_ttr_id',
-         'name'               => __('SLT')."&nbsp;".__('Time to resolve'),
+         'linkfield'          => 'slas_ttr_id',
+         'name'               => __('SLA')."&nbsp;".__('Time to resolve'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'condition'          => "AND NEWTABLE.`type` = '".SLT::TTR."'"
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
          ],
-         'condition'          => "`glpi_slts`.`type` = '".SLT::TTR."'"
+         'condition'          => "`glpi_slas`.`type` = '".SLM::TTR."'"
       ];
 
       $tab[] = [
          'id'                 => '32',
          'table'              => 'glpi_slalevels',
          'field'              => 'name',
-         'name'               => __('Escalation level'),
+         'name'               => __('SLA')."&nbsp;".__('Escalation level'),
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_slalevels_tickets',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ],
+         'forcegroupby'       => true
+      ];
+
+      $tab[] = [
+         'id'                 => 'ola',
+         'name'               => __('OLA')
+      ];
+
+      $tab[] = [
+         'id'                 => '190',
+         'table'              => 'glpi_olas',
+         'field'              => 'name',
+         'linkfield'          => 'olas_tto_id',
+         'name'               => __('OLA')."&nbsp;".__('Internal time to own'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTO."'"
+         ],
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTO."'"
+      ];
+
+      $tab[] = [
+         'id'                 => '191',
+         'table'              => 'glpi_olas',
+         'field'              => 'name',
+         'linkfield'          => 'olas_ttr_id',
+         'name'               => __('OLA')."&nbsp;".__('Internal time to resolve'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'condition'          => "AND NEWTABLE.`type` = '".SLM::TTR."'"
+         ],
+         'condition'          => "`glpi_olas`.`type` = '".SLM::TTR."'"
+      ];
+
+      $tab[] = [
+         'id'                 => '192',
+         'table'              => 'glpi_olalevels',
+         'field'              => 'name',
+         'name'               => __('OLA')."&nbsp;".__('Escalation level'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_olalevels_tickets',
                'joinparams'         => [
                   'jointype'           => 'child'
                ]
@@ -3789,10 +4127,14 @@ class Ticket extends CommonITILObject {
                     'locations_id'              => 0,
                     'plan'                      => [],
                     'global_validation'         => CommonITILValidation::NONE,
-                    'due_date'                  => 'NULL',
+                    'time_to_resolve'           => 'NULL',
                     'time_to_own'               => 'NULL',
-                    'slts_tto_id'                => 0,
-                    'slts_ttr_id'                => 0,
+                    'slas_tto_id'               => 0,
+                    'slas_ttr_id'               => 0,
+                    'internal_time_to_resolve'  => 'NULL',
+                    'internal_time_to_own'      => 'NULL',
+                    'olas_tto_id'               => 0,
+                    'olas_ttr_id'               => 0,
                     '_add_validation'           => 0,
                     'users_id_validate'         => [],
                     'type'                      => $type,
@@ -4195,7 +4537,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('date', $this);
       echo "</td><td colspan='2'></td></tr>";
 
-      // SLTs
+      // SLAs
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('time_to_own');
       if (!$ID) {
@@ -4206,19 +4548,46 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('time_to_own');
       echo "</th>";
       echo "<td width='$colsize2%' class='nopadding'>";
-      $slt = new SLT();
-      $slt->showSltForTicket($this, SLT::TTO, $tt, $canupdate);
+      $sla = new SLA();
+      $sla->showSlaForTicket($this, SLM::TTO, $tt, $canupdate);
       echo "</td>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('time_to_resolve');
       if (!$ID) {
-         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('due_date'));
+         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('time_to_resolve'));
       } else {
          echo __('Time to resolve');
       }
-      echo $tt->getEndHiddenFieldText('due_date');
+      echo $tt->getEndHiddenFieldText('time_to_resolve');
       echo "</th>";
       echo "<td width='$colsize4%' class='nopadding'>";
-      $slt->showSltForTicket($this, SLT::TTR, $tt, $canupdate);
+      $sla->showSlaForTicket($this, SLM::TTR, $tt, $canupdate);
+      echo "</td>";
+      echo "</tr>";
+
+      // OLAs
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('internal_time_to_own');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Internal time to own'), $tt->getMandatoryMark('internal_time_to_own'));
+      } else {
+         echo __('Internal time to own');
+      }
+      echo $tt->getEndHiddenFieldText('internal_time_to_own');
+      echo "</th>";
+      echo "<td width='$colsize2%' class='nopadding'>";
+      $ola = new OLA();
+      $ola->showOlaForTicket($this, SLM::TTO, $tt, $canupdate);
+      echo "</td>";
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('internal_time_to_resolve');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Internal time to resolve'), $tt->getMandatoryMark('internal_time_to_resolve'));
+      } else {
+         echo __('Internal time to resolve');
+      }
+      echo $tt->getEndHiddenFieldText('internal_time_to_resolve');
+      echo "</th>";
+      echo "<td width='$colsize4%' class='nopadding'>";
+      $ola->showOlaForTicket($this, SLM::TTR, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";
 
@@ -5466,10 +5835,21 @@ class Ticket extends CommonITILObject {
             $options['criteria'][0]['link']       = 'AND';
             break;
 
-         case 'SLT' :
-            $restrict  = "`slts_tto_id` = '".$item->getID()."'
-                           OR `slts_ttr_id` = '".$item->getID()."'";
-            $order     = '`glpi_tickets`.`due_date` DESC';
+         case 'SLA' :
+            $restrict  = "`slas_tto_id` = '".$item->getID()."'
+                           OR `slas_ttr_id` = '".$item->getID()."'";
+            $order     = '`glpi_tickets`.`time_to_resolve` DESC';
+
+            $options['criteria'][0]['field']      = 30;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
+            break;
+
+         case 'OLA' :
+            $restrict  = "`olas_tto_id` = '".$item->getID()."'
+                           OR `olas_ttr_id` = '".$item->getID()."'";
+            $order     = '`glpi_tickets`.`internal_time_to_resolve` DESC';
 
             $options['criteria'][0]['field']      = 30;
             $options['criteria'][0]['searchtype'] = 'equals';
@@ -7010,12 +7390,12 @@ class Ticket extends CommonITILObject {
    **/
    function getCalendar() {
 
-      if (isset($this->fields['slts_ttr_id']) && $this->fields['slts_ttr_id'] > 0) {
-         $sla = new SLA();
-         if ($sla->getFromDB($this->fields['slts_ttr_id'])) {
+      if (isset($this->fields['slas_ttr_id']) && $this->fields['slas_ttr_id'] > 0) {
+         $slm = new SLM();
+         if ($slm->getFromDB($this->fields['slas_ttr_id'])) {
             // not -1: calendar of the entity
-            if ($sla->getField('calendars_id') >= 0) {
-               return $sla->getField('calendars_id');
+            if ($slm->getField('calendars_id') >= 0) {
+               return $slm->getField('calendars_id');
             }
          }
       }

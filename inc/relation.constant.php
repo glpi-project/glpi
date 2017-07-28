@@ -58,7 +58,7 @@ $RELATION = ["glpi_authldaps"
                         "glpi_calendars"
                         => ['_glpi_calendarsegments'   => 'calendars_id',
                                  '_glpi_calendars_holidays' => 'calendars_id',
-                                 'glpi_slas'                => 'calendars_id',
+                                 'glpi_slms'                => 'calendars_id',
                                  'glpi_entities'            => 'calendars_id',],
 
                         "glpi_cartridgeitems"
@@ -240,7 +240,7 @@ $RELATION = ["glpi_authldaps"
                                  '_glpi_reservationitems'               => 'entities_id',
                                  'glpi_rules'                           => 'entities_id',
                                  '_glpi_slalevels'                      => 'entities_id',
-                                 'glpi_slas'                            => 'entities_id',
+                                 'glpi_slms'                            => 'entities_id',
                                  'glpi_softwarelicenses'                => 'entities_id',
                                  'glpi_softwareversions'                => 'entities_id',
                                  'glpi_softwares'                       => 'entities_id',
@@ -505,22 +505,30 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_tickets'           => 'ttr_slalevels_id',
                                  'glpi_slalevels_tickets' => 'slalevels_id'],
 
-                        "glpi_slts"
-                        => ['glpi_slalevels' => 'slts_id',
-                                 'glpi_tickets'   => ['slts_ttr_id',
-                                                           'slts_tto_id']],
+                        "glpi_slas"
+                        => ['glpi_slalevels' => 'slas_id',
+                            'glpi_tickets'   => ['slas_ttr_id', 'slas_tto_id']],
+
+                        "glpi_olalevels"
+                        => ['glpi_olalevelactions'   => 'olalevels_id',
+                            'glpi_olalevelcriterias' => 'olalevels_id',
+                            'glpi_tickets'           => 'ttr_olalevels_id',
+                            'glpi_olalevels_tickets' => 'olalevels_id'],
+
+                        "glpi_olas"
+                        => ['glpi_slalevels' => 'slas_id',
+                            'glpi_tickets'   => ['olas_ttr_id', 'olas_tto_id']],
 
                         "glpi_softwarecategories"
                         => ['glpi_softwares' => 'softwarecategories_id',
-                                 'glpi_configs'   => 'softwarecategories_id_ondelete'],
+                            'glpi_configs'   => 'softwarecategories_id_ondelete'],
 
                         "glpi_softwarelicensetypes"
                         => ['glpi_softwarelicenses' =>'softwarelicensetypes_id'],
 
                         "glpi_softwareversions"
-                        => ['glpi_computers_softwareversions'
-                                                         => 'softwareversions_id',
-                                 'glpi_softwarelicenses' => ['softwareversions_id_buy',
+                        => ['glpi_computers_softwareversions' => 'softwareversions_id',
+                            'glpi_softwarelicenses'           => ['softwareversions_id_buy',
                                                                   'softwareversions_id_use']],
 
                         "glpi_softwarelicenses"
@@ -528,15 +536,14 @@ $RELATION = ["glpi_authldaps"
 
                         "glpi_softwares"
                         => ['glpi_softwarelicenses' => 'softwares_id',
-                                 'glpi_softwareversions' => 'softwares_id',
-                                 'glpi_softwares'        => 'softwares_id'],
+                            'glpi_softwareversions' => 'softwares_id',
+                            'glpi_softwares'        => 'softwares_id'],
 
                         "glpi_solutiontypes"
-                        => [
-                                 'glpi_changes'           => 'solutiontypes_id',
-                                 'glpi_problems'          => 'solutiontypes_id',
-                                 'glpi_tickets'           => 'solutiontypes_id',
-                                 'glpi_solutiontemplates' => 'solutiontypes_id'],
+                        => ['glpi_changes'           => 'solutiontypes_id',
+                            'glpi_problems'          => 'solutiontypes_id',
+                            'glpi_tickets'           => 'solutiontypes_id',
+                            'glpi_solutiontemplates' => 'solutiontypes_id'],
 
                         "glpi_states"
                         => ['glpi_computers'         => 'states_id',
@@ -551,66 +558,61 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_states'            => 'states_id'],
 
                         "glpi_suppliers"
-                        => [
-                                 'glpi_changes_suppliers'   => 'suppliers_id',
-                                 'glpi_contacts_suppliers'  => 'suppliers_id',
-                                 'glpi_contracts_suppliers' => 'suppliers_id',
-                                 'glpi_infocoms'            => 'suppliers_id',
-                                 'glpi_problems_suppliers'  => 'suppliers_id',
-                                 'glpi_suppliers_tickets'   => 'suppliers_id',],
+                        => ['glpi_changes_suppliers'   => 'suppliers_id',
+                            'glpi_contacts_suppliers'  => 'suppliers_id',
+                            'glpi_contracts_suppliers' => 'suppliers_id',
+                            'glpi_infocoms'            => 'suppliers_id',
+                            'glpi_problems_suppliers'  => 'suppliers_id',
+                            'glpi_suppliers_tickets'   => 'suppliers_id',],
 
                         "glpi_suppliertypes"
                         => ['glpi_suppliers' => 'suppliertypes_id'],
 
                         "glpi_taskcategories"
-                        => [
-                                 'glpi_changetasks'    => 'taskcategories_id',
-                                 'glpi_problemtasks'   => 'taskcategories_id',
-                                 'glpi_taskcategories' => 'taskcategories_id',
-                                 'glpi_tickettasks'    => 'taskcategories_id',
-                                 'glpi_tasktemplates'  => 'taskcategories_id'],
+                        => ['glpi_changetasks'    => 'taskcategories_id',
+                            'glpi_problemtasks'   => 'taskcategories_id',
+                            'glpi_taskcategories' => 'taskcategories_id',
+                            'glpi_tickettasks'    => 'taskcategories_id',
+                            'glpi_tasktemplates'  => 'taskcategories_id'],
 
                         "glpi_itilcategories"
-                        => [
-                                 'glpi_changes'         => 'itilcategories_id',
-                                 'glpi_itilcategories'  => 'itilcategories_id',
-                                 'glpi_tickets'         => 'itilcategories_id',
-                                 'glpi_problems'        => 'itilcategories_id'],
+                        => ['glpi_changes'         => 'itilcategories_id',
+                            'glpi_itilcategories'  => 'itilcategories_id',
+                            'glpi_tickets'         => 'itilcategories_id',
+                            'glpi_problems'        => 'itilcategories_id'],
 
                         "glpi_tickettemplates"
                         => ['glpi_entities'            => 'tickettemplates_id',
-                                 'glpi_itilcategories'      => ['tickettemplates_id_incident',
-                                                                     'tickettemplates_id_demand'],
-                                 'glpi_ticketrecurrents'    => 'tickettemplates_id',
-                                 '_glpi_tickettemplatehiddenfields'
-                                                            => 'tickettemplates_id',
-                                 '_glpi_tickettemplatepredefinedfields'
-                                                            => 'tickettemplates_id',
-                                 '_glpi_tickettemplatemandatoryfields'
-                                                            => 'tickettemplates_id'],
+                            'glpi_itilcategories'      => ['tickettemplates_id_incident',
+                                                           'tickettemplates_id_demand'],
+                            'glpi_ticketrecurrents'    => 'tickettemplates_id',
+                            '_glpi_tickettemplatehiddenfields'
+                                                       => 'tickettemplates_id',
+                            '_glpi_tickettemplatepredefinedfields'
+                                                       => 'tickettemplates_id',
+                            '_glpi_tickettemplatemandatoryfields'
+                                                       => 'tickettemplates_id'],
 
                         "glpi_tickets"
                         => ['_glpi_documents'          => 'tickets_id',
-                                 'glpi_changes_tickets'     => 'tickets_id',
-                                 'glpi_groups_tickets'      => 'tickets_id',
-                                 'glpi_problems_tickets'    => 'tickets_id',
-                                 'glpi_projecttasks_tickets'=> 'tickets_id',
-                                 'glpi_slalevels_tickets'   => 'tickets_id',
-                                 'glpi_suppliers_tickets'   => 'tickets_id',
-                                 'glpi_ticketfollowups'     => 'tickets_id',
-                                 'glpi_ticketsatisfactions' => 'tickets_id',
-                                 'glpi_tickettasks'         => 'tickets_id',
-                                 'glpi_ticketvalidations'   => 'tickets_id',
-                                 'glpi_tickets_tickets'     => ['tickets_id_1',
-                                                                     'tickets_id_2'],
-                                 'glpi_tickets_users'       => 'tickets_id'],
+                            'glpi_changes_tickets'     => 'tickets_id',
+                            'glpi_groups_tickets'      => 'tickets_id',
+                            'glpi_problems_tickets'    => 'tickets_id',
+                            'glpi_projecttasks_tickets'=> 'tickets_id',
+                            'glpi_slalevels_tickets'   => 'tickets_id',
+                            'glpi_suppliers_tickets'   => 'tickets_id',
+                            'glpi_ticketfollowups'     => 'tickets_id',
+                            'glpi_ticketsatisfactions' => 'tickets_id',
+                            'glpi_tickettasks'         => 'tickets_id',
+                            'glpi_ticketvalidations'   => 'tickets_id',
+                            'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
+                            'glpi_tickets_users'       => 'tickets_id'],
 
                         "glpi_solutiontypes"
-                        => [
-                                    'glpi_changes'             => 'solutiontypes_id',
-                                    'glpi_tickets'             => 'solutiontypes_id',
-                                    'glpi_solutiontemplates'   => 'solutiontypes_id',
-                                    'glpi_problems'            => 'solutiontypes_id'],
+                        => ['glpi_changes'             => 'solutiontypes_id',
+                            'glpi_tickets'             => 'solutiontypes_id',
+                            'glpi_solutiontemplates'   => 'solutiontypes_id',
+                            'glpi_problems'            => 'solutiontypes_id'],
 
                         "glpi_ssovariables"
                         => ['glpi_configs' => 'ssovariables_id'],
@@ -667,7 +669,7 @@ $RELATION = ["glpi_authldaps"
 
                         "glpi_usertitles"
                         => ['glpi_contacts'   => 'usertitles_id',
-                                 'glpi_users'      => 'usertitles_id'],
+                            'glpi_users'      => 'usertitles_id'],
 
                         "glpi_vlans"
                         => ['glpi_networkports_vlans' => 'vlans_id'],

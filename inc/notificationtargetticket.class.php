@@ -242,6 +242,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'delete'            => __('Deletion of a ticket'),
                       'alertnotclosed'    => __('Not solved tickets'),
                       'recall'            => __('Automatic reminders of SLAs'),
+                      'recall_ola'        => __('Automatic reminders of OLAs'),
                       'satisfaction'      => __('Satisfaction survey'),
                       'replysatisfaction' => __('Satisfaction survey answer')];
 
@@ -325,10 +326,27 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       $autoclose_value);
       }
 
-      $data['##ticket.sla##'] = '';
-      if ($item->getField('slas_id')) {
-         $data['##ticket.sla##'] = Dropdown::getDropdownName('glpi_slas',
-                                                              $item->getField('slas_id'));
+      $data['##ticket.sla_tto##'] = '';
+      if ($item->getField('slas_tto_id')) {
+         $data['##ticket.sla_tto##'] = Dropdown::getDropdownName('glpi_slas',
+                                                                 $item->getField('slas_tto_id'));
+      }
+      $data['##ticket.sla_ttr##'] = '';
+      if ($item->getField('slas_ttr_id')) {
+         $data['##ticket.sla_ttr##'] = Dropdown::getDropdownName('glpi_slas',
+                                                                 $item->getField('slas_ttr_id'));
+      }
+      $data['##ticket.sla##'] = $data['##ticket.sla_ttr##'];
+
+      $data['##ticket.ola_tto##'] = '';
+      if ($item->getField('olas_tto_id')) {
+         $data['##ticket.ola_tto##'] = Dropdown::getDropdownName('glpi_olas',
+                                                                 $item->getField('olas_tto_id'));
+      }
+      $data['##ticket.ola_ttr##'] = '';
+      if ($item->getField('olas_ttr_id')) {
+         $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName('glpi_olas',
+                                                                 $item->getField('olas_ttr_id'));
       }
 
       $data['##ticket.location##'] = '';
@@ -701,6 +719,18 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Locales
       $tags = ['ticket.type'                  => __('Type'),
                     'ticket.sla'                   => __('SLA'),
+                    'ticket.sla_tto'               => sprintf(__('%1$s / %2$s'),
+                                                              __('SLA'),
+                                                              __('Time to own')),
+                    'ticket.sla_ttr'               => sprintf(__('%1$s / %2$s'),
+                                                              __('SLA'),
+                                                              __('Time to resolve')),
+                    'ticket.ola_tto'               => sprintf(__('%1$s / %2$s'),
+                                                              __('OLA'),
+                                                              __('Internal time to own')),
+                    'ticket.ola_ttr'               => sprintf(__('%1$s / %2$s'),
+                                                              __('OLA'),
+                                                              __('Internal time to resolve')),
                     'ticket.requesttype'           => __('Request source'),
                     'ticket.itemtype'              => __('Item type'),
                     'ticket.item.name'             => __('Associated item'),

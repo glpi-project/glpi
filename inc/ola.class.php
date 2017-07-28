@@ -35,36 +35,31 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * SLT Class
- * @since version 9.1
+ * OLA Class
+ * @since version 9.2
 **/
-class SLT extends CommonDBChild {
+class OLA extends CommonDBChild {
 
    // From CommonDBTM
    var $dohistory                      = true;
 
    // From CommonDBChild
-   static public $itemtype             = 'SLA';
-   static public $items_id             = 'slas_id';
+   static public $itemtype             = 'SLM';
+   static public $items_id             = 'slms_id';
 
-   static $rightname                   = 'sla';
+   static $rightname                   = 'slm';
 
-   static protected $forward_entity_to = ['SLALevel'];
-
-   const TTR = 0; // Time to resolve
-   const TTO = 1; // Time to own
-
+   static protected $forward_entity_to = ['OLALevel'];
 
    static function getTypeName($nb = 0) {
-      // Acronymous, no plural
-      return __('SLT');
+      return _n('OLA', 'OLAs', $nb);
    }
 
 
    /**
-    * Define calendar of the ticket using the SLT when using this calendar as slt-s calendar
+    * Define calendar of the ticket using the OLA when using this calendar as ola-s calendar
     *
-    * @param $calendars_id calendars_id of the ticket
+    * @param integer $calendars_id calendars_id of the ticket
    **/
    function setTicketCalendar($calendars_id) {
 
@@ -78,7 +73,7 @@ class SLT extends CommonDBChild {
 
       $ong = [];
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('SlaLevel', $ong, $options);
+      $this->addStandardTab('OlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
 
@@ -93,10 +88,10 @@ class SLT extends CommonDBChild {
          return false;
       }
 
-      // get calendar from sla
-      $sla = new SLA;
-      if ($sla->getFromDB($this->fields['slas_id'])) {
-         $this->fields['calendars_id'] = $sla->fields['calendars_id'];
+      // get calendar from ola
+      $slm = new SLM;
+      if ($slm->getFromDB($this->fields['slms_id'])) {
+         $this->fields['calendars_id'] = $slm->fields['calendars_id'];
          return true;
       } else {
          return false;
@@ -116,31 +111,21 @@ class SLT extends CommonDBChild {
    function cleanDBonPurge() {
       global $DB;
 
-      // Clean sla_levels
-      $query = "SELECT `id`
-                FROM `glpi_slalevels`
-                WHERE `slts_id` = '".$this->fields['id']."'";
+      // Clean ola_levels
+      $slalevel = new OlaLevel();
+      $slalevel->deleteByCriteria(['olas_id' => $this->getID()]);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $slalevel = new SlaLevel();
-            while ($data = $DB->fetch_assoc($result)) {
-               $slalevel->delete($data);
-            }
-         }
-      }
-
-      // Update tickets : clean SLT
-      list($dateField, $sltField) = self::getSltFieldNames($this->fields['type']);
+      // Update tickets : clean OLA
+      list($dateField, $olaField) = self::getOlaFieldNames($this->fields['type']);
       $query = "SELECT `id`
                 FROM `glpi_tickets`
-                WHERE `$sltField` = '".$this->fields['id']."'";
+                WHERE `$olaField` = '".$this->fields['id']."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) > 0) {
             $ticket = new Ticket();
             while ($data = $DB->fetch_assoc($result)) {
-               $ticket->deleteSLT($data['id'], $this->fields['type']);
+               $ticket->deleteOLA($data['id'], $this->fields['type']);
             }
          }
       }
@@ -150,7 +135,7 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * Print the sla form
+    * Print the ola form
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    of possible options:
@@ -160,28 +145,29 @@ class SLT extends CommonDBChild {
     *@return boolean item found
    **/
    function showForm($ID, $options = []) {
+      global $CFG_GLPI;
 
-      $rowspan = 4;
+      $rowspan = 3;
       if ($ID > 0) {
-         $rowspan = 6;
+         $rowspan = 5;
       }
 
-      // Get SLA object
-      $sla = new SLA();
+      // Get SLM object
+      $slm = new SLM();
       if (isset($options['parent'])) {
-         $sla = $options['parent'];
+         $slm = $options['parent'];
       } else {
-         $sla->getFromDB($this->fields['slas_id']);
+         $slm->getFromDB($this->fields['slms_id']);
       }
 
       if ($ID > 0) {
          $this->check($ID, READ);
       } else {
          // Create item
-         $options[static::$items_id] = $sla->getField('id');
+         $options[static::$items_id] = $slm->getField('id');
 
          //force itemtype of parent
-         static::$itemtype = get_class($sla);
+         static::$itemtype = get_class($slm);
 
          $this->check(-1, CREATE, $options);
       }
@@ -197,10 +183,10 @@ class SLT extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('SLA')."</td>";
+      echo "<td>".__('SLM')."</td>";
       echo "<td>";
-      echo $sla->getLink();
-      echo "<input type='hidden' name='slas_id' value='".$this->fields['slas_id']."'>";
+      echo $slm->getLink();
+      echo "<input type='hidden' name='slms_id' value='".$this->fields['slms_id']."'>";
       echo "</td></tr>";
 
       if ($ID > 0) {
@@ -213,7 +199,7 @@ class SLT extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
       echo "<td>";
-      self::getSltTypeDropdown(['value' => $this->fields["type"]]);
+      self::getOlaTypeDropdown(['value' => $this->fields["type"]]);
       echo "</td>";
       echo "</tr>";
 
@@ -246,7 +232,12 @@ class SLT extends CommonDBChild {
       echo "<td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
       echo "<td><div id='dropdown_endworkingday'>";
       Dropdown::showYesNo("end_of_working_day", $this->fields["end_of_working_day"]);
-      echo "</div></td></tr>";
+      echo "</div></td>";
+
+      echo "<td colspan='2'>";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'>";
+      echo __('The internal time is recalculated when assigning the OLA')."</td>";
+      echo "</tr>";
 
       $this->showFormButtons($options);
 
@@ -255,54 +246,54 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * Print the HTML array for SLTs linked to a SLA
+    * Print the HTML array for OLAs linked to a OLA
     *
-    * @param SLA $sla
+    * @param OLA $ola
     * @return boolean
     */
-   static function showForSla(SLA $sla) {
+   static function showForOla(SLM $slm) {
       global $CFG_GLPI;
 
-      $instID   = $sla->fields['id'];
-      $slt      = new self();
+      $instID   = $slm->fields['id'];
+      $ola      = new self();
       $calendar = new Calendar();
 
-      if (!$sla->can($instID, READ)) {
+      if (!$slm->can($instID, READ)) {
          return false;
       }
 
-      $canedit = ($sla->canEdit($instID)
+      $canedit = ($slm->canEdit($instID)
                   && isset($_SESSION["glpiactiveprofile"])
                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
 
       $rand = mt_rand();
 
       if ($canedit) {
-         echo "<div id='viewslt$instID$rand'></div>\n";
+         echo "<div id='viewola$instID$rand'></div>\n";
 
          echo "<script type='text/javascript' >";
-         echo "function viewAddSlt$instID$rand() {";
-         $params = ['type'                     => $slt->getType(),
-                         'parenttype'               => $sla->getType(),
-                         $sla->getForeignKeyField() => $instID,
-                         'id'                       => -1];
-         Ajax::updateItemJsCode("viewslt$instID$rand",
+         echo "function viewAddOla$instID$rand() {";
+         $params = ['type'                     => $ola->getType(),
+                    'parenttype'               => $slm->getType(),
+                    $slm->getForeignKeyField() => $instID,
+                    'id'                       => -1];
+         Ajax::updateItemJsCode("viewola$instID$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "}";
          echo "</script>";
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='javascript:viewAddSlt$instID$rand();'>";
-         echo __('Add a new SLT')."</a></div>\n";
+               "<a class='vsubmit' href='javascript:viewAddOla$instID$rand();'>";
+         echo __('Add a new OLA')."</a></div>\n";
       }
 
-      // SLT list
-      $sltList = $slt->find("`slas_id` = '".$instID."'");
-      Session::initNavigateListItems('SLT',
+      // OLA list
+      $olaList = $ola->find("`slms_id` = '".$instID."'");
+      Session::initNavigateListItems('OLA',
       //TRANS : %1$s is the itemtype name,
       //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'), $sla::getTypeName(1), $sla->getName()));
+                                     sprintf(__('%1$s = %2$s'), $slm::getTypeName(1), $slm->getName()));
       echo "<div class='spaced'>";
-      if (count($sltList)) {
+      if (count($olaList)) {
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = ['container' => 'mass'.__CLASS__.$rand];
@@ -326,17 +317,17 @@ class SLT extends CommonDBChild {
          $header_end .= "<th>".__('Calendar')."</th>";
 
          echo $header_begin.$header_top.$header_end;
-         foreach ($sltList as $val) {
-            $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditSlt".
+         foreach ($olaList as $val) {
+            $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditOla".
                         $instID.$val["id"]."$rand();\""
                         : '');
             echo "\n<script type='text/javascript' >\n";
-            echo "function viewEditSlt". $instID.$val["id"]."$rand() {\n";
-            $params = ['type'                     => $slt->getType(),
-                            'parenttype'               => $sla->getType(),
-                            $sla->getForeignKeyField() => $instID,
-                            'id'                       => $val["id"]];
-            Ajax::updateItemJsCode("viewslt$instID$rand",
+            echo "function viewEditOla". $instID.$val["id"]."$rand() {\n";
+            $params = ['type'                     => $ola->getType(),
+                       'parenttype'               => $slm->getType(),
+                       $slm->getForeignKeyField() => $instID,
+                       'id'                       => $val["id"]];
+            Ajax::updateItemJsCode("viewola$instID$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
             echo "</script>\n";
@@ -344,22 +335,22 @@ class SLT extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10' $edit>";
             if ($canedit) {
-               Html::showMassiveActionCheckBox($slt->getType(), $val['id']);
+               Html::showMassiveActionCheckBox($ola->getType(), $val['id']);
             }
             echo "</td>";
-            $slt->getFromDB($val['id']);
-            echo "<td $edit>".$slt->getLink()."</td>";
-            echo "<td $edit>".$slt->getSpecificValueToDisplay('type', $slt->fields['type'])."</td>";
+            $ola->getFromDB($val['id']);
+            echo "<td $edit>".$ola->getLink()."</td>";
+            echo "<td $edit>".$ola->getSpecificValueToDisplay('type', $ola->fields['type'])."</td>";
             echo "<td $edit>";
-            echo $slt->getSpecificValueToDisplay('number_time',
-                  ['number_time'     => $slt->fields['number_time'],
-                        'definition_time' => $slt->fields['definition_time']]);
+            echo $ola->getSpecificValueToDisplay('number_time',
+                  ['number_time'     => $ola->fields['number_time'],
+                   'definition_time' => $ola->fields['definition_time']]);
             echo "</td>";
-            if (!$sla->fields['calendars_id']) {
+            if (!$slm->fields['calendars_id']) {
                $link =  __('24/7');
-            } else if ($sla->fields['calendars_id'] == -1) {
+            } else if ($slm->fields['calendars_id'] == -1) {
                $link = __('Calendar of the ticket');
-            } else if ($calendar->getFromDB($sla->fields['calendars_id'])) {
+            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
                $link = $calendar->getLink();
             }
             echo "<td $edit>".$link."</td>";
@@ -388,11 +379,11 @@ class SLT extends CommonDBChild {
       if (!$withtemplate) {
          $nb = 0;
          switch ($item->getType()) {
-            case 'SLA' :
+            case 'SLM' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_slts', ['slas_id' => $item->getField('id')]);
+                  $nb = countElementsInTable('glpi_olas', ['slms_id' => $item->getField('id')]);
                }
-               return self::createTabEntry(self::getTypeName(1), $nb);
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -410,8 +401,8 @@ class SLT extends CommonDBChild {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
-         case 'SLA' :
-            self::showForSla($item);
+         case 'SLM' :
+            self::showForOla($item);
             break;
       }
       return true;
@@ -419,20 +410,20 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * Get SLT data by type and ticket
+    * Get OLA data by type and ticket
     *
     * @param $tickets_id
     * @param $type
     */
-   function getSltDataForTicket($tickets_id, $type) {
+   function getOlaDataForTicket($tickets_id, $type) {
 
       switch ($type) {
-         case SLT::TTR :
-            $field = 'slts_ttr_id';
+         case SLM::TTR :
+            $field = 'olas_ttr_id';
             break;
 
-         case SLT::TTO :
-            $field = 'slts_tto_id';
+         case SLM::TTO :
+            $field = 'olas_tto_id';
             break;
       }
       return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
@@ -440,54 +431,54 @@ class SLT extends CommonDBChild {
 
 
     /**
-    * Get SLT datas by condition
+    * Get OLA datas by condition
     *
     * @param $condition
    **/
-   function getSltData($condition) {
+   function getOlaData($condition) {
       return $this->find($condition);
    }
 
 
    /**
-    * Get SLT table fields
+    * Get OLA table fields
     *
     * @param $type
     *
     * @return array
    **/
-   static function getSltFieldNames($type) {
+   static function getOlaFieldNames($type) {
 
       $dateField = null;
-      $sltField  = null;
+      $olaField  = null;
 
       switch ($type) {
-         case self::TTO:
-            $dateField = 'time_to_own';
-            $sltField  = 'slts_tto_id';
+         case SLM::TTO:
+            $dateField = 'internal_time_to_own';
+            $olaField  = 'olas_tto_id';
             break;
 
-         case self::TTR:
-            $dateField = 'due_date';
-            $sltField  = 'slts_ttr_id';
+         case SLM::TTR:
+            $dateField = 'internal_time_to_resolve';
+            $olaField  = 'olas_ttr_id';
             break;
       }
-      return [$dateField, $sltField];
+      return [$dateField, $olaField];
    }
 
 
    /**
-    * Show SLT for ticket
+    * Show OLA for ticket
     *
     * @param $ticket      Ticket item
     * @param $type
     * @param $tt
     * @param $canupdate
    **/
-   function showSltForTicket(Ticket $ticket, $type, $tt, $canupdate) {
+   function showOlaForTicket(Ticket $ticket, $type, $tt, $canupdate) {
       global $CFG_GLPI;
 
-      list($dateField, $sltField) = self::getSltFieldNames($type);
+      list($dateField, $olaField) = self::getOlaFieldNames($type);
 
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_1'>";
@@ -497,41 +488,41 @@ class SLT extends CommonDBChild {
       }
 
       if ($ticket->fields['id']) {
-         if ($this->getSltDataForTicket($ticket->fields['id'], $type)) {
+         if ($this->getOlaDataForTicket($ticket->fields['id'], $type)) {
             echo "<td>";
             echo Html::convDateTime($ticket->fields[$dateField]);
             echo "</td>";
-            echo "<th>".__('SLT')."</th>";
+            echo "<th>".__('OLA')."</th>";
             echo "<td>";
-            echo Dropdown::getDropdownName('glpi_slts', $ticket->fields[$sltField])."&nbsp;";
-            $commentsla = "";
-            $slalevel   = new SlaLevel();
-            $nextaction = new SlaLevel_Ticket();
+            echo Dropdown::getDropdownName('glpi_olas', $ticket->fields[$olaField])."&nbsp;";
+            $commentola = "";
+            $olalevel   = new OlaLevel();
+            $nextaction = new OlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
-               $commentsla .= '<span class="b spaced">'.
+               $commentola .= '<span class="b spaced">'.
                                 sprintf(__('Next escalation: %s'),
                                         Html::convDateTime($nextaction->fields['date'])).
                                            '</span><br>';
-               if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
-                  $commentsla .= '<span class="b spaced">'.
+               if ($olalevel->getFromDB($nextaction->fields['olalevels_id'])) {
+                  $commentola .= '<span class="b spaced">'.
                                    sprintf(__('%1$s: %2$s'), __('Escalation level'),
-                                           $slalevel->getName()).'</span>';
+                                           $olalevel->getName()).'</span>';
                }
             }
 
-            $slaoptions = [];
-            if (Session::haveRight('sla', READ)) {
-               $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLT').
+            $olaoptions = [];
+            if (Session::haveRight('slm', READ)) {
+               $olaoptions['link'] = Toolbox::getItemTypeFormURL('OLA').
                                           "?id=".$this->fields["id"];
             }
-            Html::showToolTip($commentsla, $slaoptions);
+            Html::showToolTip($commentola, $olaoptions);
             if ($canupdate) {
-               $fields = ['slt_delete'        => 'slt_delete',
-                               'id'                => $ticket->getID(),
-                               'type'              => $type,
-                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
-                               '_glpi_simple_form' => 1];
-               $JS = "  function delete_date$type(){
+               $fields = ['ola_delete'        => 'ola_delete',
+                          'id'                => $ticket->getID(),
+                          'type'              => $type,
+                          '_glpi_csrf_token'  => Session::getNewCSRFToken(),
+                          '_glpi_simple_form' => 1];
+               $JS = "  function delete_internal_date$type(){
                            if (nativeConfirm('".addslashes(__('Also delete date ?'))."')) {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
@@ -543,7 +534,7 @@ class SLT extends CommonDBChild {
                            }
                         }";
                echo Html::scriptBlock($JS);
-               echo "<a class='fa fa-times-circle pointer' onclick='delete_date$type();return false;' title='".
+               echo "<a class='fa fa-times-circle pointer' onclick='delete_internal_date$type();return false;' title='".
                       _x('button', 'Delete permanently')."'>";
                echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
                echo "</a>";
@@ -563,24 +554,24 @@ class SLT extends CommonDBChild {
             echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
             $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
-            $slt_data     = $this->getSltData("`type` = '$type' AND $sql_entities");
+            $ola_data     = $this->getOlaData("`type` = '$type' AND $sql_entities");
             if ($canupdate
-                && !empty($slt_data)) {
+                && !empty($ola_data)) {
                echo "<td>";
-               echo $tt->getBeginHiddenFieldText($sltField);
-               echo "<span id='slt_action$type'>";
-               echo "<a ".Html::addConfirmationOnAction([__('The assignment of a SLT to a ticket causes the recalculation of the date.'),
-                       __("Escalations defined in the SLT will be triggered under this new date.")],
-                                                    "cleanhide('slt_action$type');cleandisplay('slt_choice$type');").
-                     " class='pointer' title='".__('SLT')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('SLT')."</span></a>";
+               echo $tt->getBeginHiddenFieldText($olaField);
+               echo "<span id='ola_action$type'>";
+               echo "<a ".Html::addConfirmationOnAction([__('The assignment of a OLA to a ticket causes the recalculation of the date.'),
+                       __("Escalations defined in the OLA will be triggered under this new date.")],
+                                                    "cleanhide('ola_action$type');cleandisplay('ola_choice$type');").
+                     " class='pointer' title='".__('OLA')."'><i class='fa fa-clock-o slt'></i><span class='sr-only'>".__('OLA')."</span></a>";
                echo "</span>";
-               echo "<div id='slt_choice$type' style='display:none'>";
-               echo "<span  class='b'>".__('SLT')."</span>&nbsp;";
-               Slt::dropdown(['name'      => $sltField,
-                                   'entity'    => $ticket->fields["entities_id"],
-                                   'condition' => "`type` = '".$type."'"]);
+               echo "<div id='ola_choice$type' style='display:none'>";
+               echo "<span  class='b'>".__('OLA')."</span>&nbsp;";
+               Ola::dropdown(['name'      => $olaField,
+                              'entity'    => $ticket->fields["entities_id"],
+                              'condition' => "`type` = '".$type."'"]);
                echo "</div>";
-               echo $tt->getEndHiddenFieldText($sltField);
+               echo $tt->getEndHiddenFieldText($olaField);
                echo "</td>";
             }
          }
@@ -596,21 +587,21 @@ class SLT extends CommonDBChild {
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
          $sql_entities = getEntitiesRestrictRequest("", "", "", $ticket->fields['entities_id'], true);
-         $slt_data     = $this->getSltData("`type` = '$type' AND $sql_entities");
+         $ola_data     = $this->getOlaData("`type` = '$type' AND $sql_entities");
          if ($canupdate
-             && !empty($slt_data)) {
-            echo "<th>".$tt->getBeginHiddenFieldText($sltField);
-            if (!$tt->isHiddenField($sltField) || $tt->isPredefinedField($sltField)) {
-               echo "<th>".sprintf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField))."</th>";
+             && !empty($ola_data)) {
+            echo "<th>".$tt->getBeginHiddenFieldText($olaField);
+            if (!$tt->isHiddenField($olaField) || $tt->isPredefinedField($olaField)) {
+               echo "<th>".sprintf(__('%1$s%2$s'), __('OLA'), $tt->getMandatoryMark($olaField))."</th>";
             }
-            echo $tt->getEndHiddenFieldText($sltField);
-            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($sltField);
-            Slt::dropdown(['name'      => $sltField,
-                                'entity'    => $ticket->fields["entities_id"],
-                                'value'     => isset($ticket->fields[$sltField])
-                                                  ? $ticket->fields[$sltField] : 0,
-                                'condition' => "`type` = '".$type."'"]);
-            echo $tt->getEndHiddenFieldValue($sltField, $ticket);
+            echo $tt->getEndHiddenFieldText($olaField);
+            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($olaField);
+            Ola::dropdown(['name'      => $olaField,
+                           'entity'    => $ticket->fields["entities_id"],
+                           'value'     => isset($ticket->fields[$olaField])
+                                             ? $ticket->fields[$olaField] : 0,
+                           'condition' => "`type` = '".$type."'"]);
+            echo $tt->getEndHiddenFieldValue($olaField, $ticket);
             echo "</td>";
          }
       }
@@ -618,53 +609,6 @@ class SLT extends CommonDBChild {
       echo "</tr>";
       echo "</table>";
    }
-
-
-   /**
-    * Get SLT types
-    *
-    * @return array of types
-   **/
-   static function getSltTypes() {
-
-      return [self::TTO => __('Time to own'),
-                   self::TTR => __('Time to resolve')];
-   }
-
-
-   /**
-    * Get SLT types name
-    *
-    * @param type $type
-    * @return string name
-   **/
-   static function getSltTypeName($type) {
-
-      $types = self::getSltTypes();
-      $name  = null;
-      if (isset($types[$type])) {
-         $name = $types[$type];
-      }
-      return $name;
-   }
-
-
-   /**
-    * Get SLT types dropdown
-    *
-    * @param $options
-   **/
-   static function getSltTypeDropdown($options) {
-
-      $params = ['name'  => 'type'];
-
-      foreach ($options as $key => $val) {
-         $params[$key] = $val;
-      }
-
-      return Dropdown::showFromArray($params['name'], self::getSltTypes(), $options);
-   }
-
 
    function getSearchOptionsNew() {
       $tab = [];
@@ -722,9 +666,9 @@ class SLT extends CommonDBChild {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => 'glpi_slas',
+         'table'              => 'glpi_slms',
          'field'              => 'name',
-         'name'               => __('SLA'),
+         'name'               => __('SLM'),
          'datatype'           => 'dropdown'
       ];
 
@@ -765,7 +709,7 @@ class SLT extends CommonDBChild {
             break;
 
          case 'type' :
-            return self::getSltTypeName($values[$field]);
+            return self::getOlaTypeName($values[$field]);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -788,25 +732,27 @@ class SLT extends CommonDBChild {
       switch ($field) {
          case 'type':
             $options['value'] = $values[$field];
-            return self::getSltTypeDropdown($options);
+            return self::getOlaTypeDropdown($options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
 
    /**
-    * Get date based on a slt
+    * Get date based on a ola
     *
     * @param $start_date         datetime start date
     * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
     *                                     (default 0)
     *
-    * @return due date time (NULL if sla not exists)
+    * @return due date time (NULL if ola not exists)
    **/
    function computeDate($start_date, $additional_delay = 0) {
 
+      $start_date = date('Y-m-d H:i:s');
+
       if (isset($this->fields['id'])) {
-         $delay = $this->getSLTTime();
+         $delay = $this->getOLATime();
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
@@ -836,7 +782,7 @@ class SLT extends CommonDBChild {
     *
     * @return resolution time
    **/
-   function getSLTTime() {
+   function getOLATime() {
 
       if (isset($this->fields['id'])) {
          if ($this->fields['definition_time'] == "minute") {
@@ -854,36 +800,36 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * Get execution date of a sla level
+    * Get execution date of a ola level
     *
     * @param $start_date         datetime    start date
-    * @param $slalevels_id       integer     sla level id
+    * @param $olalevels_id       integer     ola level id
     * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
     *                                        (default 0)
     *
-    * @return execution date time (NULL if sla not exists)
+    * @return execution date time (NULL if ola not exists)
    **/
-   function computeExecutionDate($start_date, $slalevels_id, $additional_delay = 0) {
+   function computeExecutionDate($start_date, $olalevels_id, $additional_delay = 0) {
 
       if (isset($this->fields['id'])) {
-         $slalevel = new SlaLevel();
+         $olalevel = new OlaLevel();
 
-         if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
-            if ($slalevel->fields['slts_id'] == $this->fields['id']) { // correct slt level
+         if ($olalevel->getFromDB($olalevels_id)) { // ola level exists
+            if ($olalevel->fields['olas_id'] == $this->fields['id']) { // correct ola level
                $work_in_days = ($this->fields['definition_time'] == 'day');
-               $delay        = $this->getSLTTime();
+               $delay        = $this->getOLATime();
 
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {
                   $cal = new Calendar();
                   if ($cal->getFromDB($this->fields['calendars_id'])) {
                      return $cal->computeEndDate($start_date, $delay,
-                                                 $slalevel->fields['execution_time'] + $additional_delay,
+                                                 $olalevel->fields['execution_time'] + $additional_delay,
                                                  $work_in_days);
                   }
                }
                // No calendar defined or invalid calendar
-               $delay    += $additional_delay+$slalevel->fields['execution_time'];
+               $delay    += $additional_delay+$olalevel->fields['execution_time'];
                $starttime = strtotime($start_date);
                $endtime   = $starttime+$delay;
                return date('Y-m-d H:i:s', $endtime);
@@ -932,24 +878,24 @@ class SLT extends CommonDBChild {
     * Add a level to do for a ticket
     *
     * @param $ticket          Ticket object
-    * @param $slalevels_id
+    * @param $olalevels_id
     *
-    * @return execution date time (NULL if sla not exists)
+    * @return execution date time (NULL if ola not exists)
    **/
-   function addLevelToDo(Ticket $ticket, $slalevels_id = 0) {
+   function addLevelToDo(Ticket $ticket, $olalevels_id = 0) {
 
-      $slalevels_id = ($slalevels_id ? $slalevels_id
-                                     : $ticket->fields["ttr_slalevels_id"]);
-      if ($slalevels_id > 0) {
+      $olalevels_id = ($olalevels_id ? $olalevels_id
+                                     : $ticket->fields["ttr_olalevels_id"]);
+      if ($olalevels_id > 0) {
          $toadd = [];
-         $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
-                                             $ticket->fields['sla_waiting_duration']);
+         $date = $this->computeExecutionDate($ticket->fields['date'], $olalevels_id,
+                                             $ticket->fields['ola_waiting_duration']);
          if ($date != null) {
             $toadd['date']         = $date;
-            $toadd['slalevels_id'] = $slalevels_id;
+            $toadd['olalevels_id'] = $olalevels_id;
             $toadd['tickets_id']   = $ticket->fields["id"];
-            $slalevelticket        = new SlaLevel_Ticket();
-            $slalevelticket->add($toadd);
+            $olalevelticket        = new OlaLevel_Ticket();
+            $olalevelticket->add($toadd);
          }
       }
    }
@@ -960,19 +906,19 @@ class SLT extends CommonDBChild {
     *
     * @param $ticket Ticket object
     *
-    * @return execution date time (NULL if sla not exists)
+    * @return execution date time (NULL if ola not exists)
    **/
    static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
-      if ($ticket->fields["ttr_slalevels_id"] > 0) {
+      if ($ticket->fields["ttr_olalevels_id"] > 0) {
          $query = "SELECT *
-                   FROM `glpi_slalevels_tickets`
+                   FROM `glpi_olalevels_tickets`
                    WHERE `tickets_id` = '".$ticket->fields["id"]."'";
 
-         $slalevelticket = new SlaLevel_Ticket();
+         $olalevelticket = new OlaLevel_Ticket();
          foreach ($DB->request($query) as $data) {
-            $slalevelticket->delete(['id' => $data['id']]);
+            $olalevelticket->delete(['id' => $data['id']]);
          }
       }
    }
@@ -999,6 +945,51 @@ class SLT extends CommonDBChild {
          $input['end_of_working_day'] = 0;
       }
       return $input;
+   }
+
+   /**
+    * Get OLA types
+    *
+    * @return array of types
+    **/
+   static function getOlaTypes() {
+
+      return [SLM::TTO => __('Internal time to own'),
+              SLM::TTR => __('Internal time to resolve')];
+   }
+
+
+   /**
+    * Get OLA types name
+    *
+    * @param type $type
+    * @return string name
+    **/
+   static function getOlaTypeName($type) {
+
+      $types = self::getOlaTypes();
+      $name  = null;
+      if (isset($types[$type])) {
+         $name = $types[$type];
+      }
+      return $name;
+   }
+
+
+   /**
+    * Get OLA types dropdown
+    *
+    * @param $options
+    **/
+   static function getOlaTypeDropdown($options) {
+
+      $params = ['name'  => 'type'];
+
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
+
+      return Dropdown::showFromArray($params['name'], self::getOlaTypes(), $options);
    }
 
 }

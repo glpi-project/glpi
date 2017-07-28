@@ -32,6 +32,7 @@
 
 /** @file
 * @brief
+* @since version 9.2
 */
 
 use Glpi\Event;
@@ -44,41 +45,41 @@ if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$sla = new SLA();
+$slm = new SLM();
 
 if (isset($_POST["add"])) {
-   $sla->check(-1, CREATE, $_POST);
+   $slm->check(-1, CREATE);
 
-   if ($newID = $sla->add($_POST)) {
-      Event::log($newID, "slas", 4, "setup",
+   if ($newID = $slm->add($_POST)) {
+      Event::log($newID, "slms", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($sla->getFormURL()."?id=".$newID);
+         Html::redirect($slm->getFormURL()."?id=".$newID);
       }
    }
-   Html::back();
+   Html::redirect($CFG_GLPI["root_doc"]."/front/slm.php");
 
 } else if (isset($_POST["purge"])) {
-   $sla->check($_POST["id"], PURGE);
-   $sla->delete($_POST, 1);
+   $slm->check($_POST["id"], PURGE);
+   $slm->delete($_POST, 1);
 
-   Event::log($_POST["id"], "slas", 4, "setup",
+   Event::log($_POST["id"], "slms", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $sla->redirectToList();
+   $slm->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $sla->check($_POST["id"], UPDATE);
-   $sla->update($_POST);
+   $slm->check($_POST["id"], UPDATE);
+   $slm->update($_POST);
 
-   Event::log($_POST["id"], "slas", 4, "setup",
+   Event::log($_POST["id"], "slms", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm", "sla");
+   Html::header(SLM::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slm");
 
-   $sla->display(['id' => $_GET["id"]]);
+   $slm->display(['id' => $_GET["id"]]);
    Html::footer();
 }
