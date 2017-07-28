@@ -3596,6 +3596,74 @@ class Html {
       return $val;
    }
 
+   /**
+    * Display or return a list of dates in a vertical way
+    *
+    * @since version 9.2
+    *
+    * @param $options   array of possible options:
+    *      - title, do we need to append an H2 title tag
+    *      - dates, an array containing a collection of theses keys:
+    *         * timestamp
+    *         * class, supported: passed, checked, now
+    *         * label
+    *      - display, boolean to precise if we need to display (true) or return (false) the html
+    *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
+    *        (with now class)
+    *
+    * @return array of posible values
+    * @see showGenericDateTimeSearch
+   **/
+   static function showDatesTimelineGraph($options = []) {
+      $default_options = [
+         'title'   => '',
+         'dates'   => [],
+         'display' => true,
+         'add_now' => true
+      ];
+      $options = array_merge($default_options, $options);
+
+      //append now date if needed
+      if ($options['add_now']) {
+         $now = time();
+         $options['dates'][$now."_now"] = [
+            'timestamp' => $now,
+            'label' => __('Now'),
+            'class' => 'now'
+         ];
+      }
+
+      ksort($options['dates']);
+
+      $out = "";
+      $out.= "<div class='dates_timelines'>";
+
+      // add title
+      if (strlen($options['title'])) {
+         $out.= "<h2 class='header'>".$options['title']."</h2>";
+      }
+
+      // construct timeline
+      $out.= "<ul>";
+      foreach ($options['dates'] as $key => $data) {
+         if ($data['timestamp'] != 0) {
+            $out.= "<li class='".$data['class']."'>&nbsp;";
+            $out.= "<time>".date("Y-m-d H:i:s", $data['timestamp'])."</time>";
+            $out.= "<span class='dot'></span>";
+            $out.= "<label>".$data['label']."</label>";
+            $out.= "</li>";
+         }
+      }
+      $out.= "</ul>";
+      $out.= "</div>";
+
+      if ($options['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
+   }
+
 
    /**
     * Print the form used to select profile if several are available

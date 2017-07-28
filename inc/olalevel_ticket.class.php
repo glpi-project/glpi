@@ -186,7 +186,7 @@ class OlaLevel_Ticket extends CommonDBTM {
          $olalevel = new OlaLevel();
          $ola      = new OLA();
          // Check if ola datas are OK
-         list($dateField, $olaField) = OLA::getOlaFieldNames($olaType);
+         list($dateField, $olaField) = OLA::getFieldNames($olaType);
          if (($ticket->fields[$olaField] > 0)) {
             if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
@@ -213,9 +213,10 @@ class OlaLevel_Ticket extends CommonDBTM {
                   }
 
                   // Put next level in todo list
-                  $next = $olalevel->getNextOlaLevel($ticket->fields[$olaField],
-                                                     $data['olalevels_id']);
-                  $ola->addLevelToDo($ticket, $next);
+                  if ($next = $olalevel->getNextOlaLevel($ticket->fields[$olaField],
+                                                         $data['olalevels_id'])) {
+                     $ola->addLevelToDo($ticket, $next);
+                  }
                   // Action done : drop the line
                   $olalevelticket->delete(['id' => $data['id']]);
 

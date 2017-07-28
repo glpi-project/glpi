@@ -108,7 +108,7 @@ class RuleTicket extends Rule {
       if ($showwarning) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><td>".
-               __('Urgency or impact used in actions, think to add Prioriy: recompute action if needed.').
+               __('Urgency or impact used in actions, think to add Priority: recompute action if needed.').
                "</td></tr>\n";
          echo "</table><br>";
       }
