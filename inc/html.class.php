@@ -2326,7 +2326,6 @@ class Html {
       if (!isCommandLine()) {
          echo "</div></div>";
 
-         echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
          echo "</body></html>";
       }
       closeDBConnections();
