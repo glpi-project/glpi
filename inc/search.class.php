@@ -2784,7 +2784,6 @@ class Search {
                   }
                }
             }
-            return "";
       }
       list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
       return $condition;
