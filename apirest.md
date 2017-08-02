@@ -534,7 +534,7 @@ $ curl -X GET \
 }
 ```
 
-Note: To download a document see [Download a document file](download-a-document-file).
+Note: To download a document see [Download a document file](#download-a-document-file).
 
 ## Get all items
 
@@ -1031,7 +1031,7 @@ $ curl -X POST \
 
 ```
 
-Note: To upload a document see [Upload a document file](upload-a-document-file).
+Note: To upload a document see [Upload a document file](#upload-a-document-file).
 
 ## Update item(s)
 
@@ -1152,7 +1152,7 @@ $ curl -X DELETE \
 
 ### Upload a document file
 
-See [Add item(s)](add-item-s) and apply specific instructions below.
+See [Add item(s)](#add-items) and apply specific instructions below.
 
 Uploading a file requires use of 'multipart/data' content_type. The input data must be send in a 'uploadManifest' parameter and use the json format.
 
@@ -1173,7 +1173,7 @@ $ curl -X POST \
 
 ```
 
-### Download a document
+### Download a document file
 
 * **URL**: apirest.php/Document/:id
 * **Description**: Download a document.
