@@ -2805,17 +2805,6 @@ class Search {
       }
 
       /* Hook to restrict user right on current itemtype */
-      /* @since 9.2, see CommonDBTM::can for code sample */
-      $item = getItemForItemtype($itemtype);
-      Plugin::doHook("item_can", $item);
-      if (isset($item->add_where)) {
-         if ($condition) {
-            $condition = "($condition) AND ({$item->add_where})";
-         } else {
-            $condition = $item->add_where;
-         }
-         unset($item->add_where);
-      }
       list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
       return $condition;
    }
