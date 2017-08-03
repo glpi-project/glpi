@@ -684,15 +684,26 @@ class User extends CommonDBTM {
          self::dropPictureFiles($this->fields['picture']);
          $input['picture'] = 'NULL';
       } else {
-         if (isset($input["_picture"][0]) && !empty($input["_picture"][0]) == 1) {
-            $fullpath = GLPI_TMP_DIR."/".$input["_picture"][0];
+         $newPicture = false;
+         if (isAPI()) {
+            if (isset($input["_picture"]) && !empty($input["_picture"]) == 1) {
+               $newPicture = true;
+            }
+         } else {
+            if (isset($input["_picture"][0]) && !empty($input["_picture"][0]) == 1) {
+               $input["_picture"] = $input["_picture"][0];
+               $newPicture = true;
+            }
+         }
+         if ($newPicture) {
+            $fullpath = GLPI_TMP_DIR."/".$input["_picture"];
             if (toolbox::getMime($fullpath, 'image')) {
                // Unlink old picture (clean on changing format)
                self::dropPictureFiles($this->fields['picture']);
                // Move uploaded file
                $filename     = uniqid($this->fields['id'].'_');
                $sub          = substr($filename, -2); /* 2 hex digit */
-               $tmp          = explode(".", $input["_picture"][0]);
+               $tmp          = explode(".", $input["_picture"]);
                $extension    = Toolbox::strtolower(array_pop($tmp));
                @mkdir(GLPI_PICTURE_DIR . "/$sub");
                $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
