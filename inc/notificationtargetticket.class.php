@@ -63,8 +63,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       parent::__construct($entity, $event, $object, $options);
 
-      $this->options['sendprivate'] = false;
-
       if (isset($options['followup_id'])) {
          $this->options['sendprivate'] = $options['is_private'];
       }

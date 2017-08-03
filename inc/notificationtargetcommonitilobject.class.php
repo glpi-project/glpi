@@ -50,8 +50,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       parent::__construct($entity, $event, $object, $options);
 
-      // For compatibility
-      $this->options['sendprivate'] = true;
+      $this->options['sendprivate'] = false;
    }
 
    /**
