@@ -4303,17 +4303,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (isset($options['content'])) {
-         // Clean new lines to be fix encoding
-         $order            = ['\\r', '\\n', "\\"];
-         $replace          = ["", "", ""];
-
-         $options['content'] = str_replace($order, $replace, $options['content']);
-      }
-      if (isset($options['name'])) {
-         $options['name'] = str_replace("\\", "", $options['name']);
-      }
-
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
