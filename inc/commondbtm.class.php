@@ -2482,7 +2482,7 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }
-    
+
       $this->right = $right;
       plugin::doHook('item_can', $this);
       switch ($this->right) {
@@ -3211,6 +3211,13 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
+
+      if ($this->maybeRecursive()) {
+         $tab[86]['table']         = $this->getTable();
+         $tab[86]['field']         = 'is_recursive';
+         $tab[86]['name']          = __('Child entities');
+         $tab[86]['datatype']      = 'bool';
+      }
 
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
