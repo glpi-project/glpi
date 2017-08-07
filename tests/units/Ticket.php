@@ -244,7 +244,7 @@ class Ticket extends DbTestCase {
       $this->boolean($ttp->isNewItem())->isFalse();
       $ttp->add([
          'tickettemplates_id' => $tickettemplate_id,
-         'num'                => '175',
+         'num'                => '176',
          'value'              => $ttB_id,
       ]);
       $this->boolean($ttp->isNewItem())->isFalse();

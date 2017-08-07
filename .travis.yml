@@ -10,6 +10,12 @@ before_script:
   - composer install --optimize-autoloader
   # cannot disable mcrypt on travis...
   - sed -e "s/return extension_loaded('mcrypt');/return false;/" -i vendor/ircmaxell/random-lib/lib/RandomLib/AbstractMcryptMixer.php
+  #install 0.72.3 database
+  - mysql -u root -e 'create database glpitest0723;'
+  - mysql -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
+  - cp tests/travis.config_db.php tests/config_db.php
+  - php tools/cliupdate.php --config-dir=../tests --dev
+  - rm tests/config_db.php
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
@@ -19,6 +25,7 @@ before_script:
 
 script:
   - mysql -u root -e 'select version();'
+  - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
   - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/units
   - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/api
   - if [[ "$CS" == "true" ]]; then vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./; fi
