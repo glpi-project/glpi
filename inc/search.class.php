@@ -1221,7 +1221,6 @@ class Search {
 
                $search_config_top    .= Html::jsGetElementbyID('search_config_top').
                                                       ".dialog('open');\"";
-               $search_config_bottom .= " onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\"";
 
