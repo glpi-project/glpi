@@ -2833,4 +2833,4 @@ function update084to085() {
    return $updateresult;
 }
 
-class Bookmark extends SavedSearch {}
+require_once __DIR__ .'/old_objects.php';

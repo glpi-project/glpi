@@ -1367,14 +1367,32 @@ function update0831to084() {
    $types = ['glpi_computers_items', 'glpi_computervirtualmachines',
                   'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports',
                   'glpi_computers_softwarelicenses', 'glpi_networknames', 'glpi_ipaddresses'];
-   foreach (Item_Devices::getDeviceTypes() as $id => $type) {
+
+   $devices = [
+      'Item_DeviceMotherboard',
+      'Item_DeviceProcessor',
+      'Item_DeviceMemory',
+      'Item_DeviceHardDrive',
+      'Item_DeviceNetworkCard',
+      'Item_DeviceDrive',
+      'Item_DeviceControl',
+      'Item_DeviceGraphicCard',
+      'Item_DeviceSoundCard',
+      'Item_DevicePci',
+      'Item_DeviceCase',
+      'Item_DevicePowerSupply'
+   ];
+
+   foreach ($devices as $type) {
       $types[] = getTableForItemType($type);
    }
    //Add is_deleted for relations
    foreach ($types as $table) {
-      if ($migration->addField($table, 'is_deleted', 'bool', ['value' => 0])) {
-         $migration->migrationOneTable($table);
-         $migration->addKey($table, 'is_deleted');
+      if ($DB->tableExists($table)) {
+         if ($migration->addField($table, 'is_deleted', 'bool', ['value' => 0])) {
+            $migration->migrationOneTable($table);
+            $migration->addKey($table, 'is_deleted');
+         }
       }
    }
 
