@@ -2656,6 +2656,16 @@ class User extends CommonDBTM {
          'massiveaction'      => false
       ];
 
+      $tab[] = [
+         'id'                 => '150',
+         'table'              => $this->getTable(),
+         'field'              => 'picture',
+         'name'               => __('Picture'),
+         'datatype'           => 'specific',
+         'nosearch'           => true,
+         'massiveaction'      => false
+      ];
+
       $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
 
       $tab[] = [
@@ -2996,6 +3006,11 @@ class User extends CommonDBTM {
                $auths_id = $values['auths_id'];
             }
             return Auth::getMethodName($values[$field], $auths_id);
+         case 'picture':
+            if (isset($options['html']) && $options['html']) {
+               return Html::image(self::getThumbnailURLForPicture($values['picture']),
+                                  ['class' => 'user_picture_small', 'alt' => __('Picture')]);
+            }
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
