@@ -200,7 +200,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Event::getCountLogin();
       echo "</div>";
    }
-   echo "<div id='footer-login'>" . Html::getCopyrightMessage() . "</div>";
+   echo "<div id='footer-login' class='home'>" . Html::getCopyrightMessage() . "</div>";
 
 }
 // call cron
