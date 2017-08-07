@@ -456,7 +456,7 @@ $CFG_GLPI['javascript'] = [
          'notificationtemplate' => ['tinymce']
       ]
    ],
-   'admin'     => ['clipboard'],
+   'admin'     => ['colorpicker', 'clipboard'],
    'preference'=> ['colorpicker', 'clipboard'],
 ];
 
