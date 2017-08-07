@@ -235,14 +235,6 @@ class Line extends CommonDBTM {
       ];
 
       $tab[] = [
-            'id'                 => '86',
-            'table'              => $this->getTable(),
-            'field'              => 'is_recursive',
-            'name'               => __('Child entities'),
-            'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
