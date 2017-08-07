@@ -454,6 +454,13 @@ class Session {
    static function initEntityProfiles($userID) {
       global $DB;
 
+      $_SESSION['glpiprofiles'] = [];
+
+      if (!$DB->tableExists('glpi_profiles_users')) {
+         //table does not exists in old GLPI versions
+         return;
+      }
+
       $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
@@ -462,7 +469,6 @@ class Session {
                 ORDER BY `glpi_profiles`.`name`";
       $result = $DB->query($query);
 
-      $_SESSION['glpiprofiles'] = [];
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];

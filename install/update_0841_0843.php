@@ -204,3 +204,4 @@ function update0841to0843() {
    return $updateresult;
 }
 
+require_once __DIR__ .'/old_objects.php';

@@ -5692,3 +5692,5 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    return $updateresult;
 }
+
+require_once __DIR__ .'/old_objects.php';
