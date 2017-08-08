@@ -871,5 +871,35 @@ class Computer_Item extends CommonDBRelation{
       }
    }
 
-}
 
+   /**
+    * @since 9.1.7
+    *
+    * @param  $item        item linked to the computer to check
+    * $param  $entities
+    *
+    * @return boolean
+   **/
+   static function canUnrecursSpecif($item, $entities) {
+      global $DB;
+
+      // RELATION : computers -> items
+      $sql = "SELECT `itemtype`, GROUP_CONCAT(DISTINCT `items_id`) AS ids, `computers_id`
+              FROM `glpi_computers_items`
+              WHERE `glpi_computers_items`.`itemtype` = '".$item->getType()."'
+                    AND `glpi_computers_items`.`items_id` = ".$item->fields['id']."
+              GROUP BY `itemtype`";
+      $res = $DB->query($sql);
+
+      if ($res) {
+         while ($data = $DB->fetch_assoc($res)) {
+            if (countElementsInTable("glpi_computers", "`id` IN (".$data["computers_id"].")
+                                                        AND `entities_id` NOT IN $entities") > 0) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
+}
