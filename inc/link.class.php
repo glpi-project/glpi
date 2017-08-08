@@ -49,7 +49,8 @@ class Link extends CommonDBTM {
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]');
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]',
+                             '[NETEQTYPE]', '[NETEQMODEL]');
 
 
    static function getTypeName($nb=0) {
@@ -285,6 +286,18 @@ class Link extends CommonDBTM {
             $link = str_replace("[NETWORK]",
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
+      }
+      if (strstr($link,"[NETEQTYPE]")
+          && $item->isField('networkequipmenttypes_id')) {
+            $link = str_replace("[NETEQTYPE]",
+                              Dropdown::getDropdownName("glpi_networkequipmenttypes", 
+                                                         $item->getField('networkequipmenttypes_id'),0,false), $link);
+      }
+     if (strstr($link,"[NETEQMODEL]")
+          && $item->isField('networkequipmentmodels_id')) {
+            $link = str_replace("[NETEQMODEL]",
+                              Dropdown::getDropdownName("glpi_networkequipmentmodels", 
+                                                         $item->getField('networkequipmentmodels_id'),0,false), $link);
       }
       if (strstr($link,"[DOMAIN]")
           && $item->isField('domains_id')) {
