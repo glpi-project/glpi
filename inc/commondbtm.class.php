@@ -2053,7 +2053,7 @@ class CommonDBTM extends CommonGLPI {
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
       // check connections of a computer
-      $connectcomputer = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+      $connectcomputer = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
       if (in_array($this->getType(), $connectcomputer)) {
          return Computer_Item::canUnrecursSpecif($this, $entities);
       }
