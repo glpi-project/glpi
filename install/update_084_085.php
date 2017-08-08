@@ -2366,7 +2366,7 @@ function update084to085() {
 
       foreach ($notepad_tables as $t) {
          // Migrate data
-         if ($DB->fieldExists($t, 'notepad')) {
+         if ($DB->fieldExists($t, 'notepad', false)) {
             $query = "SELECT id, notepad
                       FROM `$t`
                       WHERE notepad IS NOT NULL
