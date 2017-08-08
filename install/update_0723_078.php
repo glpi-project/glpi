@@ -765,7 +765,7 @@ function update0723to078() {
                               => [['from'    => 'ldap_use_tls',
                                              'to'      => 'use_tls',
                                              'default' => 0,
-                                             'noindex '=> true],
+                                             'noindex' => true],
                                        ['from'    => 'use_dn',
                                              'to'      => 'use_dn',
                                              'default' => 1,
@@ -858,7 +858,7 @@ function update0723to078() {
                                        ['from'    => 'use_errorlog',
                                              'to'      => 'use_log_in_files',
                                              'default' => 0,
-                                             'noindex '=> true],
+                                             'noindex' => true],
                                        ['from'    => 'autoupdate_link_contact',
                                              'to'      => 'is_contact_autoupdate',
                                              'default' => 1,
@@ -870,7 +870,7 @@ function update0723to078() {
                                        ['from'    => 'autoupdate_link_group',
                                              'to'      => 'is_group_autoupdate',
                                              'default' => 1,
-                                             'noindex '=> true],//
+                                             'noindex' => true],//
                                        ['from'    => 'autoupdate_link_location',
                                              'to'      => 'is_location_autoupdate',
                                              'default' => 1,
@@ -1384,19 +1384,19 @@ function update0723to078() {
                          SET `$oldname` = 1
                          WHERE `$oldname` <> 0
                                AND `$oldname` IS NOT NULL";
-               $DB->queryOrDie($query, "0.78 prepare datas for update $oldname to $newname in $table");
+               $DB->queryOrDie($query, "0.78 prepare data for update $oldname to $newname in $table");
             } else {
                // Manage NULL fields
                $query = "UPDATE `$table`
                          SET `$oldname` = 0
                          WHERE `$oldname` IS NULL";
-               $DB->queryOrDie($query, "0.78 prepare datas for update $oldname to $newname in $table");
+               $DB->queryOrDie($query, "0.78 prepare data for update $oldname to $newname in $table");
 
                // Manage not zero values
                $query = "UPDATE `$table`
                          SET `$oldname` = 1
                          WHERE `$oldname` <> 0";
-               $DB->queryOrDie($query, "0.78 prepare datas for update $oldname to $newname in $table");
+               $DB->queryOrDie($query, "0.78 prepare data for update $oldname to $newname in $table");
             }
 
             $default = "DEFAULT NULL";

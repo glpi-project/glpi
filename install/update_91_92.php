@@ -211,7 +211,7 @@ function update91to92() {
    foreach ($product_types as $type) {
       if (class_exists($type . 'Model')) {
          $table = getTableForItemType($type . 'Model');
-         $migration->addField($table, 'product_number', 'string');
+         $migration->addField($table, 'product_number', 'string', ['after' => 'comment']);
          $migration->migrationOneTable($table);
          $migration->addKey($table, 'product_number');
       }
@@ -290,7 +290,7 @@ function update91to92() {
               'glpi_devicesoundcards'    => 'devicesoundcardmodels_id'];
 
    foreach ($tables as $table => $field) {
-      $migration->addField($table, $field, 'int');
+      $migration->addField($table, $field, 'int', ['after' => 'is_recursive']);
       $migration->migrationOneTable($table);
       $migration->addKey($table, $field);
    }
@@ -578,9 +578,9 @@ function update91to92() {
    }
 
    //Father/son for Software licenses
-   $migration->addField("glpi_softwarelicenses", "softwarelicenses_id", "integer");
-   $new = $migration->addField("glpi_softwarelicenses", "completename", "text");
-   $migration->addField("glpi_softwarelicenses", "level", "integer");
+   $migration->addField("glpi_softwarelicenses", "softwarelicenses_id", "integer", ['after' => 'softwares_id']);
+   $new = $migration->addField("glpi_softwarelicenses", "completename", "text", ['after' => 'softwarelicenses_id']);
+   $migration->addField("glpi_softwarelicenses", "level", "integer", ['after' => 'completename']);
    $migration->migrationOneTable("glpi_softwarelicenses");
    if ($new) {
       $query = "UPDATE `glpi_softwarelicenses`
@@ -651,7 +651,7 @@ function update91to92() {
       }
    }
 
-   $migration->addField('glpi_states', 'is_visible_certificate', 'bool');
+   $migration->addField('glpi_states', 'is_visible_certificate', 'bool', ['value' => 1]);
    $migration->addKey('glpi_states', 'is_visible_certificate');
 
    /** ************ New SLM structure ************ */
@@ -768,14 +768,14 @@ function update91to92() {
       $migration->addKey('glpi_slalevels', 'slas_id');
 
       // Ticket changes
-      $migration->changeField("glpi_tickets", "slts_tto_id", "slas_tto_id", "integer");
       $migration->changeField("glpi_tickets", "slts_ttr_id", "slas_ttr_id", "integer");
+      $migration->changeField("glpi_tickets", "slts_tto_id", "slas_tto_id", "integer");
       $migration->changeField('glpi_tickets', 'due_date', 'time_to_resolve', 'datetime');
-      $migration->addField("glpi_tickets", "ola_waiting_duration", "datetime",
+      $migration->addField("glpi_tickets", "ola_waiting_duration", "integer",
                            ['after' => 'sla_waiting_duration']);
       $migration->addField("glpi_tickets", "olas_tto_id", "integer", ['after' => 'ola_waiting_duration']);
       $migration->addField("glpi_tickets", "olas_ttr_id", "integer", ['after' => 'olas_tto_id']);
-      $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", ['after' => 'olas_tto_id']);
+      $migration->addField("glpi_tickets", "ttr_olalevels_id", "integer", ['after' => 'olas_ttr_id']);
       $migration->addField("glpi_tickets", "internal_time_to_resolve", "datetime",
                            ['after' => 'ttr_olalevels_id']);
       $migration->addField("glpi_tickets", "internal_time_to_own", "datetime",
@@ -920,13 +920,13 @@ function update91to92() {
       $query = "CREATE TABLE `glpi_notifications_notificationtemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `notifications_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+                  `mode` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'See Notification_NotificationTemplate::MODE_* constants',
                   `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`notifications_id`, `mode`, `notificationtemplates_id`),
                   KEY `notifications_id` (`notifications_id`),
                   KEY `notificationtemplates_id` (`notificationtemplates_id`),
-                  KEY `mode` (`mode`) COMMENT 'See Notification_NotificationTemplate::MODE_* constants'
+                  KEY `mode` (`mode`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_notifications_notificationtemplates");
 
@@ -1754,6 +1754,137 @@ Regards,',
       'instance_uuid'      => Telemetry::generateInstanceUuid(),
       'registration_uuid'  => Telemetry::generateRegistrationUuid()
    ]);
+
+   if (isIndex('glpi_authldaps', 'use_tls')) {
+      $query = "ALTER TABLE `glpi_authldaps` DROP INDEX `use_tls`";
+      $DB->queryOrDie($query, "9.2 drop index use_tls for glpi_authldaps");
+   }
+
+   //Fix some field order from old migrations
+   $migration->migrationOneTable('glpi_states');
+   $DB->queryOrDie("ALTER TABLE `glpi_budgets` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+   $DB->queryOrDie("ALTER TABLE `glpi_changetasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_problemtasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_tickettasks` CHANGE `groups_id_tech` `groups_id_tech` INT(11) NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $DB->queryOrDie("ALTER TABLE `glpi_knowbaseitemcategories` CHANGE `sons_cache` `sons_cache` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `level`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_followup_default` `is_followup_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_helpdesk_default`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `is_mailfollowup_default` `is_mailfollowup_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `is_mail_default`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `is_ticketfollowup`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `comment`");
+   $DB->queryOrDie("ALTER TABLE `glpi_requesttypes` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+   $DB->queryOrDie("ALTER TABLE `glpi_groups` CHANGE `is_task` `is_task` TINYINT(1) NOT NULL DEFAULT '1' AFTER `is_assign`");
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_mod` `date_mod` DATETIME NULL DEFAULT NULL AFTER `is_visible_certificate`");
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `date_creation` `date_creation` DATETIME NULL DEFAULT NULL AFTER `date_mod`");
+   $DB->queryOrDie("ALTER TABLE `glpi_taskcategories` CHANGE `is_active` `is_active` TINYINT(1) NOT NULL DEFAULT '1' AFTER `sons_cache`");
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `palette` `palette` CHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `layout`");
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `set_default_requester` `set_default_requester` TINYINT(1) NULL DEFAULT NULL AFTER `ticket_timeline_keep_replaced_tabs`");
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `plannings` `plannings` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `highcontrast_css`");
+
+   //Fix bad default values
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_softwarelicense` `is_visible_softwarelicense` TINYINT(1) NOT NULL DEFAULT '1'");
+   $DB->queryOrDie("ALTER TABLE `glpi_states` CHANGE `is_visible_line` `is_visible_line` TINYINT(1) NOT NULL DEFAULT '1'");
+
+   //Fields added in 0905_91 script but not in empty sql...
+   if (!$DB->fieldExists('glpi_changetasks', 'date_creation', false)) {
+      $migration->addField('glpi_changetasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_changetasks', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_networkportfiberchannels', 'date_mod', false)) {
+      $migration->addField('glpi_networkportfiberchannels', 'date_mod', 'datetime', ['after' => 'speed']);
+      $migration->addKey('glpi_networkportfiberchannels', 'date_mod');
+   }
+   if (!$DB->fieldExists('glpi_networkportfiberchannels', 'date_creation', false)) {
+      $migration->addField('glpi_networkportfiberchannels', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_networkportfiberchannels', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_problemtasks', 'date_creation', false)) {
+      $migration->addField('glpi_problemtasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_problemtasks', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_slms', 'date_creation', false)) {
+      $migration->addField('glpi_slms', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_slms', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_ticketfollowups', 'date_creation', false)) {
+      $migration->addField('glpi_ticketfollowups', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_ticketfollowups', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_tickettasks', 'date_creation', false)) {
+      $migration->addField('glpi_tickettasks', 'date_creation', 'datetime', ['after' => 'date_mod']);
+      $migration->addKey('glpi_tickettasks', 'date_creation');
+   }
+   if (!$DB->fieldExists('glpi_softwarelicenses', 'contact_num', false)) {
+      $migration->addField(
+         "glpi_softwarelicenses",
+         "contact_num",
+         "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL",
+         ['after' => 'contact']
+      );
+   }
+
+   //Fix comments...
+   $DB->queryOrDie("ALTER TABLE `glpi_savedsearches` CHANGE `type` `type` INT(11) NOT NULL DEFAULT '0' COMMENT 'see SavedSearch:: constants'");
+
+   //Fix unicity...
+   $tables = [
+      'glpi_slalevels_tickets'   => ['tickets_id', 'slalevels_id'],
+      'glpi_businesscriticities' => ['businesscriticities_id', 'name'],
+      'glpi_documentcategories'  => ['documentcategories_id', 'name'],
+      'glpi_olalevels_tickets'   => ['tickets_id', 'olalevels_id'],
+      'glpi_states'              => ['states_id', 'name'],
+      'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
+      'glpi_tickettemplatehiddenfields'      => ['tickettemplates_id', 'num'],
+      'glpi_tickettemplatemandatoryfields'   => ['tickettemplates_id', 'num'],
+      'glpi_tickettemplatepredefinedfields'  => ['tickettemplates_id', 'num']
+   ];
+   foreach ($tables as $table => $fields) {
+      $add = true;
+      $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+      if ($result && $DB->numrows($result)) {
+         $row = $result->fetch_assoc();
+         if ($row['Non_unique'] == 1) {
+            $migration->dropKey($table, 'unicity');
+            $migration->migrationOneTable($table);
+         } else {
+            $add = false;
+         }
+      }
+
+      if ($add) {
+         //missing or bad unique key ==> add it.
+         $migration->addKey(
+            $table,
+            $fields,
+            'unicity',
+            'UNIQUE'
+         );
+
+      }
+   }
+
+   //removed field
+   if ($DB->fieldExists('glpi_slms', 'resolution_time')) {
+      $migration->dropField('glpi_slms', 'resolution_time');
+   }
+
+   //wrong type
+   $DB->queryOrDie("ALTER TABLE `glpi_users` CHANGE `keep_devices_when_purging_item` `keep_devices_when_purging_item` TINYINT(1) NULL DEFAULT NULL");
+
+   //missing index
+   $migration->addKey('glpi_networknames', 'is_deleted');
+   $migration->addKey('glpi_networknames', 'is_dynamic');
+   $migration->addKey('glpi_projects', 'is_template');
+   $migration->addKey('glpi_projecttasks', 'is_template');
+   $migration->dropKey('glpi_savedsearches_users', 'bookmarks_id');
+   $migration->addKey('glpi_savedsearches_users', 'savedsearches_id');
+   //this one was not on the correct field
+   $migration->dropKey('glpi_softwarelicenses', 'is_deleted');
+   $migration->migrationOneTable('glpi_softwarelicenses');
+   $migration->addKey('glpi_softwarelicenses', 'is_deleted');
+   $migration->addKey('glpi_states', 'is_visible_line');
+   $migration->addKey('glpi_tasktemplates', 'is_private');
+   $migration->addKey('glpi_tasktemplates', 'users_id_tech');
+   $migration->addKey('glpi_tasktemplates', 'groups_id_tech');
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
