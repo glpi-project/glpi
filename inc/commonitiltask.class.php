@@ -1755,7 +1755,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @return DBmysqlIterator
     */
-   public static function getTaskList($status, $showgrouptickets) {
+   public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null) {
       global $DB;
 
       $prep_req = ['SELECT' => 'id', 'FROM' => self::getTable()];
@@ -1777,6 +1777,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          $prep_req['WHERE']['users_id_tech'] = $_SESSION['glpiID'];
       }
       $prep_req['ORDER'] = ['date_mod DESC'];
+
+      if ($start !== null) {
+         $prep_req['START'] = $start;
+      }
+      if ($limit !== null) {
+         $prep_req['LIMIT'] = $limit;
+      }
 
       $req = $DB->request($prep_req);
       return $req;
@@ -1805,9 +1812,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $number = 0;
       if ($_SESSION['glpidisplay_count_on_home'] > 0 && $req !== false) {
-         $prep_req['START'] = intval($start);
-         $prep_req['LIMIT'] = intval($_SESSION['glpidisplay_count_on_home']);
-         $req = $DB->request($prep_req);
+         $start = (int)$start;
+         $limit = (int)$_SESSION['glpidisplay_count_on_home'];
+         $req = self::getTaskList($status, $showgrouptickets, $start, $limit);
          $number = $req->numrows();
       }
 
