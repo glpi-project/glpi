@@ -672,12 +672,12 @@ class Ticket extends CommonITILObject {
 
                case 'SLA' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slas_tto_id` = ".$item->getID()." 
+                                             "`slas_tto_id` = ".$item->getID()."
                                              OR `slas_ttr_id` = ".$item->getID());
                   break;
                case 'OLA' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`olas_tto_id` = ".$item->getID()." 
+                                             "`olas_tto_id` = ".$item->getID()."
                                              OR `olas_ttr_id` = ".$item->getID());
                   break;
 
@@ -1787,7 +1787,8 @@ class Ticket extends CommonITILObject {
       }
 
       // fill auto-assign when no tech defined (only for tech)
-      if (isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
+      if (!isset($input['_auto_import'])
+          && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'central'
           && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)) {
