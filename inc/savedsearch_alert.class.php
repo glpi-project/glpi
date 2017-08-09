@@ -151,7 +151,7 @@ class SavedSearch_Alert extends CommonDBChild {
       Dropdown::showFromArray(
          'operator',
          $this->getOperators(),
-         $this->getField('operator')
+         ['value' => $this->getField('operator')]
       );
       echo "</td><td>".__('Value')."</td>";
       echo "<td>";
