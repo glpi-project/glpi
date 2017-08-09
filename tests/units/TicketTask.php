@@ -38,10 +38,12 @@ use \DbTestCase;
 
 class TicketTask extends DbTestCase {
 
-   public function testGetTaskList() {
-
-      $this->login();
-
+   /**
+    * Create a new ticket and return its id
+    *
+    * @return integer
+    */
+   private function getNewTicket() {
       //create reference ticket
       $ticket = new \Ticket();
       $this->integer((int)$ticket->add([
@@ -51,7 +53,14 @@ class TicketTask extends DbTestCase {
       ]))->isGreaterThan(0);
 
       $this->boolean($ticket->isNewItem())->isFalse();
-      $ticketId = $ticket->getID();
+      return (int)$ticket->getID();
+   }
+
+   public function testGetTaskList() {
+
+      $this->login();
+      $ticketId = $this->getNewTicket();
+      $uid = getItemByTypeName('User', TU_USER, true);
 
       $tasksstates = [
          \Planning::TODO,
@@ -61,18 +70,21 @@ class TicketTask extends DbTestCase {
       //create few tasks
       $task = new \TicketTask();
       foreach ($tasksstates as $taskstate) {
-         $task->add([
-            'state'        => $taskstate,
-            'tickets_id'   => $ticketId
-         ]);
+         $this->integer(
+            $task->add([
+               'state'        => $taskstate,
+               'tickets_id'   => $ticketId,
+               'users_id_tech'=> $uid
+            ])
+         )->isGreaterThan(0);
       }
 
       $iterator = $task::getTaskList('todo', false);
       $this->string($iterator->getSql())->isIdenticalTo(
-         'SELECT `id` FROM `glpi_tickettasks` WHERE `state` = 1 AND `users_id_tech` = 6 ORDER BY `date_mod` DESC'
+         'SELECT `id` FROM `glpi_tickettasks` WHERE `state` = 1 AND `users_id_tech` = ' . $uid . ' ORDER BY `date_mod` DESC'
       );
-      //only 1 task created? why?
-      $this->integer(count($iterator))->isIdenticalTo(1);
+      //we create two ones plus the one in bootstrap data
+      $this->integer(count($iterator))->isIdenticalTo(3);
 
       $iterator = $task::getTaskList('todo', true);
       $this->boolean($iterator)->isFalse();
@@ -84,7 +96,50 @@ class TicketTask extends DbTestCase {
       );
       //no task for those groups
       $this->integer(count($iterator))->isIdenticalTo(0);
-
    }
 
+   public function testCentralTaskList() {
+      $this->login();
+      $ticketId = $this->getNewTicket();
+      $uid = getItemByTypeName('User', TU_USER, true);
+
+      $tasksstates = [
+         \Planning::TODO,
+         \Planning::TODO,
+         \Planning::TODO,
+         \Planning::INFO,
+         \Planning::INFO
+      ];
+      //create few tasks
+      $task = new \TicketTask();
+      foreach ($tasksstates as $taskstate) {
+         $this->integer(
+            $task->add([
+               'state'        => $taskstate,
+               'tickets_id'   => $ticketId,
+               'users_id_tech'=> $uid
+            ])
+         )->isGreaterThan(0);
+      }
+
+      //How could we test there are 4 matching links?
+      $this->output(
+         function () {
+            \TicketTask::showCentralList(0, 'todo', false);
+         }
+      )
+         ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>4</span>")
+         ->matches("/a id='[^']+' href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
+
+      //How could we test there are 2 matching links?
+      $this->output(
+         function () {
+            $_SESSION['glpidisplay_count_on_home'] = 2;
+            \TicketTask::showCentralList(0, 'todo', false);
+            unset($_SESSION['glpidisplay_count_on_home']);
+         }
+      )
+         ->contains("Ticket tasks to do <span class='primary-bg primary-fg count'>2 on 4</span>")
+         ->matches("/a id='[^']+' href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/");
+   }
 }
