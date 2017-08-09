@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    // delete a saved search
    $savedsearch->check($_POST['id'], DELETE);
    $ok = $savedsearch->delete($_POST, 1);
