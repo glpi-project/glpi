@@ -1810,10 +1810,10 @@ class Search {
    **/
    static function getLogicalOperators() {
 
-      return ['AND'     => 'AND',
-                   'OR'      => 'OR',
-                   'AND NOT' => 'AND NOT',
-                   'OR NOT'  => 'OR NOT',];
+      return ['AND'     => __('AND'),
+                   'OR'      => __('OR'),
+                   'AND NOT' => __('AND NOT'),
+                   'OR NOT'  => __('OR NOT')];
    }
 
 
