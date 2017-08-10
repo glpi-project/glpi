@@ -359,12 +359,12 @@ class DBConnection extends CommonDBTM {
          echo "<div class='center'><p class ='b'>
                 A link to the SQL server could not be established. Please check your configuration.
                 </p><p class='b'>
-                Le serveur Mysql est inaccessible. V??rifiez votre configuration</p>
+                Le serveur Mysql est inaccessible. Vérifiez votre configuration</p>
                </div>";
          Html::nullFooter();
       } else {
          echo "A link to the SQL server could not be established. Please check your configuration.\n";
-         echo "Le serveur Mysql est inaccessible. V??rifiez votre configuration\n";
+         echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
       }
 
       die();
