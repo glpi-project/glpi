@@ -14,18 +14,7 @@ $ composer install -o
 
 Loading composer repositories with package information
 Installing dependencies (including require-dev) from lock file
-  - Installing react/promise (v2.4.1)
-    Loading from cache
-
-  - Installing guzzlehttp/streams (3.0.0)
-    Loading from cache
-
-  - Installing guzzlehttp/ringphp (1.1.0)
-    Loading from cache
-
-  - Installing guzzlehttp/guzzle (5.3.1)
-    Loading from cache
-
+[...]
 Generating optimized autoload files
 ```
 
