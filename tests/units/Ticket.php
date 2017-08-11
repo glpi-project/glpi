@@ -1077,4 +1077,171 @@ class Ticket extends DbTestCase {
          ->variable['users_id']->isEqualTo($uid)
          ->variable['users_id_editor']->isEqualTo($uid2);
    }
+
+   protected function _testGetTimelinePosition($tlp, $tickets_id) {
+      foreach ($tlp as $users_name => $user) {
+         $this->login($users_name, $user['pass']);
+         $uid = getItemByTypeName('User', $users_name, true);
+
+         // TicketFollowup
+         $fup = new \TicketFollowup();
+         $this->integer(
+            (int)$fup->add([
+               'tickets_id'   => $tickets_id,
+               'users_id'     => $uid,
+               'content'      => 'A simple followup'
+            ])
+         )->isGreaterThan(0);
+
+         $this->integer(
+            (int)$fup->fields['timeline_position']
+         )->isEqualTo($user['pos']);
+
+         // TicketTask
+         $task = new \TicketTask();
+         $this->integer(
+            (int)$task->add([
+               'tickets_id'   => $tickets_id,
+               'users_id'     => $uid,
+               'content'      => 'A simple Task'
+            ])
+         )->isGreaterThan(0);
+
+         $this->integer(
+            (int)$task->fields['timeline_position']
+         )->isEqualTo($user['pos']);
+
+         // Document and Document_Item
+         $doc = new \Document();
+         $this->integer(
+            (int)$doc->add([
+               'users_id'     => $uid,
+               'tickets_id'   => $tickets_id,
+               'name'         => 'A simple document object'
+            ])
+         )->isGreaterThan(0);
+
+         $doc_item = new \Document_Item();
+         $this->integer(
+            (int)$doc_item->add([
+               'users_id'      => $uid,
+               'items_id'      => $tickets_id,
+               'itemtype'      => 'Ticket',
+               'documents_id'  => $doc->getID()
+            ])
+         )->isGreaterThan(0);
+
+         $this->integer(
+            (int)$doc_item->fields['timeline_position']
+         )->isEqualTo($user['pos']);
+
+         // TicketValidation
+         $val = new \TicketValidation();
+         $this->integer(
+            (int)$val->add([
+               'tickets_id'   => $tickets_id,
+               'comment_submission'      => 'A simple validation',
+               'users_id_validate' => 5, // normal
+               'status' => 2
+            ])
+         )->isGreaterThan(0);
+
+         $this->integer(
+            (int)$val->fields['timeline_position']
+         )->isEqualTo($user['pos']);
+      }
+   }
+
+   protected function _testGetTimelinePositionSolution($tlp, $tickets_id) {
+      foreach ($tlp as $users_name => $user) {
+         $this->login($users_name, $user['pass']);
+         $uid = getItemByTypeName('User', $users_name, true);
+
+         // Ticket Solution
+         $tkt = new \Ticket();
+         $this->boolean(
+            (boolean)$tkt->update([
+               'id'   => $tickets_id,
+               'solution'      => 'A simple solution from '.$users_name
+            ])
+         )->isEqualto(true);
+
+         $this->integer(
+            (int)$tkt->getTimelinePosition($tickets_id, 'Solution', $uid)
+         )->isEqualTo($user['pos']);
+      }
+   }
+
+   function testGetTimelinePosition() {
+
+      // login TU_USER
+      $this->login();
+
+      // create ticket
+      // with post-only as requester
+      // tech as assigned to
+      // normal as observer
+      $ticket = new \Ticket();
+      $this->integer((int)$ticket->add([
+            'name'                => 'ticket title',
+            'description'         => 'a description',
+            'content'             => '',
+            '_users_id_requester' => '3', // post-only
+            '_users_id_observer'  => '5', // normal
+            '_users_id_assign'    => ['4', '5'] // tech and normal
+      ] ))->isGreaterThan(0);
+
+      $tlp = [
+         'glpi'      => ['pass' => 'glpi',     'pos' => \CommonITILObject::TIMELINE_LEFT],
+         'post-only' => ['pass' => 'postonly', 'pos' => \CommonITILObject::TIMELINE_LEFT],
+         'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT],
+         'normal'    => ['pass' => 'normal',   'pos' => \CommonITILObject::TIMELINE_RIGHT]
+      ];
+
+      $this->_testGetTimelinePosition($tlp, $ticket->getID());
+
+      // Solution timeline tests
+      $tlp = [
+         'tech'      => ['pass' => 'tech',     'pos' => \CommonITILObject::TIMELINE_RIGHT]
+      ];
+
+      $this->_testGetTimelinePositionSolution($tlp, $ticket->getID());
+
+      return $ticket->getID();
+   }
+
+   function testGetTimelineItems() {
+
+      $tkt_id = $this->testGetTimelinePosition();
+
+      // login TU_USER
+      $this->login();
+
+      $ticket = new \Ticket();
+      $this->boolean(
+         (boolean)$ticket->getFromDB($tkt_id)
+      )->isTrue();
+
+      // test timeline_position from getTimelineItems()
+      $timeline_items = $ticket->getTimelineItems();
+
+      foreach ($timeline_items as $item) {
+         switch ($item['type']) {
+            case 'TicketFollowup':
+            case 'TicketTask':
+            case 'TicketValidation':
+            case 'Document_Item':
+               if (in_array($item['item']['users_id'], [2, 3])) {
+                  $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_LEFT);
+               } else {
+                  $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
+               }
+               break;
+            case 'Solution':
+               $this->integer((int)$item['item']['timeline_position'])->isEqualTo(\CommonITILObject::TIMELINE_RIGHT);
+               break;
+         }
+      }
+   }
+
 }

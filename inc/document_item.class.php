@@ -114,6 +114,13 @@ class Document_Item extends CommonDBRelation{
          $input['users_id'] = Session::getLoginUserID();
       }
 
+      if (is_subclass_of($input['itemtype'], 'CommonITILObject')) {
+         $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
+         if (isset($input["users_id"])) {
+            $input['timeline_position'] = $input['itemtype']::getTimelinePosition($input['items_id'], $this->getType(), $input["users_id"]);
+         }
+      }
+
       return parent::prepareInputForAdd($input);
    }
 
