@@ -1935,6 +1935,38 @@ Regards,',
    $migration->addKey('glpi_tasktemplates', 'users_id_tech');
    $migration->addKey('glpi_tasktemplates', 'groups_id_tech');
 
+   //add timeline_position in ticketfollowups
+   //add timeline_position in tickettasks
+   //add timeline_position in documents_items
+   //add timeline_position in ticketvalidations
+   $timeline_tables = ['glpi_ticketfollowups', 'glpi_tickettasks', 'glpi_documents_items', 'glpi_ticketvalidations'];
+   foreach ($timeline_tables as $tl_table) {
+      //add timeline_position in $tl_table
+      if (!$DB->fieldExists($tl_table, 'timeline_position')) {
+         $migration->addField($tl_table, "timeline_position", "tinyint(1) NOT NULL DEFAULT '0'");
+         $where = "`$tl_table`.`tickets_id` ";
+         if (!$DB->fieldExists( $tl_table, 'tickets_id')) {
+            $where = "`$tl_table`.itemtype = 'Ticket' AND `$tl_table`.`items_id` ";
+         }
+         $migration->addPostQuery("UPDATE `$tl_table`,
+                                          `glpi_tickets_users`
+                                   SET `$tl_table`.`timeline_position` = IF(`glpi_tickets_users`.`type` NOT IN (1,3) AND `glpi_tickets_users`.`type` IN (2), 4, 1)
+                                   WHERE $where = `glpi_tickets_users`.`tickets_id`
+                                      AND `$tl_table`.`users_id` = `glpi_tickets_users`.`users_id`");
+         $migration->addPostQuery("UPDATE `$tl_table`,
+                                          `glpi_groups_tickets`,
+                                          `glpi_groups_users`
+                                   SET `$tl_table`.`timeline_position` = IF(`glpi_groups_tickets`.`type` NOT IN (1,3) AND `glpi_groups_tickets`.`type` IN (2), 4, 1)
+                                   WHERE $where = `glpi_groups_tickets`.`tickets_id`
+                                      AND `glpi_groups_users`.`groups_id` = `glpi_groups_tickets`.`groups_id`
+                                      AND `$tl_table`.`users_id` = `glpi_groups_users`.`users_id`");
+         $migration->addPostQuery("UPDATE  `$tl_table`
+                                   SET `$tl_table`.`timeline_position` = 1
+                                   WHERE `$tl_table`.`timeline_position` = 0");
+
+      }
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

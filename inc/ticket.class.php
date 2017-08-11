@@ -89,6 +89,62 @@ class Ticket extends CommonITILObject {
    const SURVEY           = 131072;
 
 
+   /**
+    * Summary of getTimelinePosition
+    * Returns the position of the $sub_type for the $user_id in the timeline
+    * @param int $items_id is the id of the ticket
+    * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
+    * @param int $users_id
+    * @since 9.2
+    */
+   static function getTimelinePosition($items_id, $sub_type, $users_id) {
+      $tkt = new self;
+      $tkt->fields['id'] = $items_id;
+      $actors = $tkt->getTicketActors();
+
+      // 1) rule for followups, documents, tasks and validations:
+      //    Matrix for position of timeline objects
+      //    R O A (R=Requester, O=Observer, A=AssignedTo)
+      //    0 0 1 -> Right
+      //    0 1 0 -> Left
+      //    0 1 1 -> R
+      //    1 0 0 -> L
+      //    1 0 1 -> L
+      //    1 1 0 -> L
+      //    1 1 1 -> L
+      //    if users_id is not in the actor list, then pos is left
+      // 2) rule for solutions: always on the right side
+
+      // default position is left
+      $pos = self::TIMELINE_LEFT;
+
+      $pos_matrix = [];
+      $pos_matrix[0][0][1] = self::TIMELINE_RIGHT;
+      $pos_matrix[0][1][1] = self::TIMELINE_RIGHT;
+
+      switch ($sub_type) {
+         case 'TicketFollowup':
+         case 'Document_Item':
+         case 'TicketTask':
+         case 'TicketValidation':
+            if (isset($actors[$users_id])) {
+               $r = in_array(CommonItilActor::REQUESTER, $actors[$users_id]) ? 1 : 0;
+               $o = in_array(CommonItilActor::OBSERVER, $actors[$users_id]) ? 1 : 0;
+               $a = in_array(CommonItilActor::ASSIGN, $actors[$users_id]) ? 1 : 0;
+               if (isset($pos_matrix[$r][$o][$a])) {
+                  $pos = $pos_matrix[$r][$o][$a];
+               }
+            }
+            break;
+         case 'Solution':
+            $pos = self::TIMELINE_RIGHT;
+            break;
+      }
+
+      return $pos;
+   }
+
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -6675,6 +6731,8 @@ class Ticket extends CommonITILObject {
          $item['date_mod'] = $document_item['date_mod'];
          $item['users_id'] = $document_item['users_id'];
 
+         $item['timeline_position'] = $document_item['timeline_position'];
+
          $timeline[$document_item['date_mod']."_document_".$document_item['documents_id']]
             = ['type' => 'Document_Item', 'item' => $item];
       }
@@ -6711,12 +6769,13 @@ class Ticket extends CommonITILObject {
 
          $timeline[$solution_date."_solution"]
             = ['type' => 'Solution',
-                    'item' => ['id'               => 0,
-                                    'content'          => Toolbox::unclean_cross_side_scripting_deep($solution_content),
-                                    'date'             => $solution_date,
-                                    'users_id'         => $users_id,
-                                    'solutiontypes_id' => $this->fields['solutiontypes_id'],
-                                    'can_edit'         => Ticket::canUpdate() && $this->canSolve()]];
+               'item' => ['id'                => 0,
+                          'content'           => Toolbox::unclean_cross_side_scripting_deep($solution_content),
+                          'date'              => $solution_date,
+                          'users_id'          => $users_id,
+                          'solutiontypes_id'  => $this->fields['solutiontypes_id'],
+                          'can_edit'          => Ticket::canUpdate() && $this->canSolve(),
+                          'timeline_position' => self::TIMELINE_RIGHT]];
       }
 
       // add ticket validation to timeline
@@ -6738,7 +6797,8 @@ class Ticket extends CommonITILObject {
                                        'content'   => __('Validation request')." => ".$user->getlink().
                                                       "<br>".$validation['comment_submission'],
                                        'users_id'  => $validation['users_id'],
-                                       'can_edit'  => $canedit]];
+                                       'can_edit'  => $canedit,
+                                       'timeline_position' => $validation['timeline_position']]];
 
             if (!empty($validation['validation_date'])) {
                $timeline[$validation['validation_date']."_validation_".$validations_id]
@@ -6751,7 +6811,8 @@ class Ticket extends CommonITILObject {
                                                          ."<br>".$validation['comment_validation'],
                                           'users_id'  => $validation['users_id_validate'],
                                           'status'    => "status_".$validation['status'],
-                                          'can_edit'  => $canedit]];
+                                          'can_edit'  => $canedit,
+                                          'timeline_position' => $validation['timeline_position']]];
             }
          }
       }
@@ -6771,9 +6832,6 @@ class Ticket extends CommonITILObject {
    function showTimeline($rand) {
       global $CFG_GLPI, $DB, $autolink_options;
 
-      //get ticket actors
-      $ticket_users_keys = $this->getTicketActors();
-
       $user              = new User();
       $group             = new Group();
       $followup_obj      = new TicketFollowup();
@@ -6784,9 +6842,6 @@ class Ticket extends CommonITILObject {
 
       //display timeline
       echo "<div class='timeline_history'>";
-
-      $tmp        = array_values($timeline);
-      $first_item = array_shift($tmp);
 
       // show approbation form on top when ticket is solved
       if ($this->fields["status"] == CommonITILObject::SOLVED) {
@@ -6824,12 +6879,23 @@ class Ticket extends CommonITILObject {
             $date = $item_i['date_mod'];
          }
 
-         // check if curent item user is assignee or requester
-         $user_position = 'left';
-         if ((isset($ticket_users_keys[$item_i['users_id']])
-              && ($ticket_users_keys[$item_i['users_id']] == CommonItilActor::ASSIGN))
-             || ($item['type'] == 'Assign')) {
-            $user_position = 'right';
+         // set item position depending on field timeline_position
+         $user_position = 'left'; // default position
+         if (isset($item_i['timeline_position'])) {
+            switch ($item_i['timeline_position']) {
+               case self::TIMELINE_LEFT:
+                  $user_position = 'left';
+                  break;
+               case self::TIMELINE_MIDLEFT:
+                  $user_position = 'left middle';
+                  break;
+               case self::TIMELINE_MIDRIGHT:
+                  $user_position = 'right middle';
+                  break;
+               case self::TIMELINE_RIGHT:
+                  $user_position = 'right';
+                  break;
+            }
          }
 
          //display solution in middle
@@ -7123,6 +7189,10 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * Summary of getTicketActors
+    * Get the list of actors for the current ticket
+    * will return an assoc array of users_id => array of roles.
+    * @return array[] of array[] of users and roles
     * @since version 0.90
    **/
    function getTicketActors() {
@@ -7140,14 +7210,12 @@ class Ticket extends CommonITILObject {
                       LEFT JOIN `glpi_users` usr ON gu.`users_id` = usr.`id`
                       WHERE gt.`tickets_id` = ".$this->getId()."
                      ) AS allactors
-                WHERE `type` != ".CommonItilActor::OBSERVER."
-                GROUP BY `users_id`
-                ORDER BY `type` DESC";
+                ";
 
       $res               = $DB->query($query);
       $ticket_users_keys = [];
       while ($current_tu = $DB->fetch_assoc($res)) {
-         $ticket_users_keys[$current_tu['users_id']] = $current_tu['type'];
+         $ticket_users_keys[$current_tu['users_id']][] = $current_tu['type'];
       }
 
       return $ticket_users_keys;
