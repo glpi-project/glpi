@@ -78,4 +78,30 @@ class Entity extends DbTestCase {
       $this->array(array_values(getSonsOf('glpi_entities', $ent2->getID())))
          ->isEqualTo([$ent2->getID()]);
    }
+
+   public function testPrepareInputForAdd() {
+      $entity = new \Entity();
+
+      $this->boolean(
+         $entity->prepareInputForAdd([
+            'name' => ''
+         ])
+      )->isFalse();
+
+      $this->boolean(
+         $entity->prepareInputForAdd([
+            'anykey' => 'anyvalue'
+         ])
+      )->isFalse();
+
+      $this->array(
+         $entity->prepareInputForAdd([
+            'name' => 'entname'
+         ])
+      )
+         ->string['name']->isIdenticalTo('entname')
+         ->string['completename']->isIdenticalTo('entname')
+         ->integer['level']->isIdenticalTo(1)
+         ->integer['entities_id']->isIdenticalTo(0);
+   }
 }
