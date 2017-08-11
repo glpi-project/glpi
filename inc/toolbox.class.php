@@ -506,9 +506,8 @@ class Toolbox {
     * @param $errmsg    string   error message.
     * @param $filename  string   filename that the error was raised in.
     * @param $linenum   integer  line number the error was raised at.
-    * @param $vars      array    that points to the active symbol table at the point the error occurred.
    **/
-   static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
+   static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum) {
 
       // Date et heure de l'erreur
       $errortype = [E_ERROR             => 'Error',
@@ -530,9 +529,6 @@ class Toolbox {
       $user_errors = [E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING];
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-      if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
-         $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
-      }
 
       $skip = ['Toolbox::backtrace()'];
       if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -573,12 +569,11 @@ class Toolbox {
     * @param $errmsg    string   error message.
     * @param $filename  string   filename that the error was raised in.
     * @param $linenum   integer  line number the error was raised at.
-    * @param $vars      array    that points to the active symbol table at the point the error occurred.
    **/
-   static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars) {
+   static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum) {
 
       // For file record
-      $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars);
+      $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum);
 
       // Display
       if (!isCommandLine()) {
