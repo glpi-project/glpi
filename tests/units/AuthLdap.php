@@ -37,6 +37,25 @@ use \DbTestCase;
 /* Test for inc/authldap.class.php */
 
 class AuthLDAP extends DbTestCase {
+   private $ldap;
+
+   public function beforeTestMethod($method) {
+      $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+
+      //make sure bootstrapped ldap is active and is default
+      $this->boolean(
+         $this->ldap->update([
+            'id'           => $this->ldap->getID(),
+            'is_active'    => 1,
+            'is_default'   => 1
+         ])
+      )->isTrue();
+   }
+
+   public function afterTestMethod($method) {
+      unset($_SESSION['ldap_import']);
+      parent::afterTestMethod($method);
+   }
 
    private function addLdapServers() {
       $ldap = new \AuthLDAP();
@@ -266,25 +285,13 @@ class AuthLDAP extends DbTestCase {
       $this->array($result)->hasSize(3);
    }
 
-   public function testGetAllGroups() {
-      //TODO
-   }
-
-   public function testGetGroupCNByDn() {
-      //TODO
-   }
-
-   public function testGetGroupsFromLDAP() {
-      //TODO
-   }
-
    public function testGetLdapServers() {
       $this->addLdapServers();
 
       //The list of ldap server show the default server in first position
       $result = \AuthLDAP::getLdapServers();
       $this->array($result)
-         ->hasSize(3);
+         ->hasSize(4);
       $this->array(current($result))
          ->string['name']->isIdenticalTo('LDAP3');
    }
@@ -303,7 +310,7 @@ class AuthLDAP extends DbTestCase {
       global $DB;
       $this->addLdapServers();
 
-      $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(2);
+      $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(3);
       $sql = "UPDATE `glpi_authldaps` SET `is_active`='0'";
       $DB->query($sql);
       $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(0);
@@ -375,8 +382,7 @@ class AuthLDAP extends DbTestCase {
    }
 
    public function testGetDefault() {
-      //No default server defined : return 0
-      $this->integer(\AuthLDAP::getDefault())->isIdenticalTo(0);
+      $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$this->ldap->getID());
 
       //Load ldap servers
       $this->addLdapServers();
@@ -432,7 +438,6 @@ class AuthLDAP extends DbTestCase {
    public function testPrepareInputForAdd() {
       $ldap     = new \AuthLDAP();
 
-      //Create a server : as it's the first, it's the default one
       $ldaps_id = $ldap->add([
          'name'        => 'LDAP1',
          'is_active'   => 1,
@@ -443,20 +448,19 @@ class AuthLDAP extends DbTestCase {
       $this->integer((int)$ldaps_id)->isGreaterThan(0);
       $this->boolean($ldap->getFromDB($ldaps_id))->isTrue();
       $this->array($ldap->fields)
-         ->variable['is_default']->isEqualTo(1)
+         ->variable['is_default']->isEqualTo(0)
          ->string['rootdn_passwd']->isNotEqualTo('password');
    }
 
    public function testGetServersWithImportByEmailActive() {
-      //No server, method return should be an empty array
       $result = \AuthLDAP::getServersWithImportByEmailActive();
-      $this->array($result)->isEmpty();
+      $this->array($result)->hasSize(1);
 
       $this->addLdapServers();
 
-      //Return one ldap server : because LDAP2 is disabled
+      //Return two ldap server : because LDAP2 is disabled
       $result = \AuthLDAP::getServersWithImportByEmailActive();
-      $this->array($result)->hasSize(1);
+      $this->array($result)->hasSize(2);
 
       //Enable LDAP2
       $ldap = getItemByTypeName('AuthLDAP', 'LDAP2');
@@ -469,7 +473,7 @@ class AuthLDAP extends DbTestCase {
 
       //Now there should be 2 enabled servers
       $result = \AuthLDAP::getServersWithImportByEmailActive();
-      $this->array($result)->hasSize(2);
+      $this->array($result)->hasSize(3);
    }
 
    public function testgetTabNameForItem() {
@@ -536,5 +540,314 @@ class AuthLDAP extends DbTestCase {
 
       $result = $ldap->getAllReplicateForAMaster(100);
       $this->array($result)->hasSize(0);
+   }
+
+   //LDAP server must be installed and populated for the following tests.
+   /**
+    * Tets LDAP connection
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testTestLDAPConnection() {
+      $this->boolean(\AuthLDAP::testLDAPConnection(-1))->isFalse();
+
+      $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+      $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
+
+      $this->resource($ldap->connect())->isOfType('ldap link');
+   }
+
+   /**
+    * Test get users
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetAllUsers() {
+      $ldap = $this->ldap;
+      $results = [];
+      $limit = false;
+
+      $users = \AuthLDAP::getAllUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(909);
+      $this->array($results)->hasSize(0);
+
+      $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+      $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
+
+      $users = \AuthLDAP::getAllUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT,
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(12);
+      $this->array($results)->hasSize(0);
+
+      $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
+
+      $users = \AuthLDAP::getAllUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT,
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(1);
+      $this->array($results)->hasSize(0);
+   }
+
+   /**
+    * Test get groups
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetAllGroups() {
+      $ldap = $this->ldap;
+      $limit = false;
+
+      $groups = \AuthLDAP::getAllGroups(
+         $ldap->getID(),
+         \AuthLDAP::buildLdapFilter($ldap),
+         '',
+         0,
+         $limit
+      );
+
+      $this->array($groups)->hasSize(910);
+
+      /** TODO: filter search... I do not know how to do. */
+   }
+
+   /**
+    * Test import user
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testLdapImportUserByServerId() {
+      $ldap = $this->ldap;
+      $results = [];
+      $limit = false;
+
+      //get user to import
+      $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+      $_SESSION['ldap_import']['criterias'] = ['login_field' => 'ecuador0'];
+
+      $users = \AuthLDAP::getAllUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT,
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(1);
+      $this->array($results)->hasSize(0);
+
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'ecuador0'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('ecuador0')
+         ->string['phone']->isIdenticalTo('034596780')
+         ->string['realname']->isIdenticalTo('dor0')
+         ->string['firstname']->isIdenticalTo('ecua0')
+         ->string['language']->isIdenticalTo('es_ES')
+         ->variable['is_active']->isEqualTo(true)
+         ->variable['auths_id']->isEqualTo($ldap->getID())
+         ->variable['authtype']->isEqualTo(\Auth::LDAP)
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $this->integer((int)$user->fields['usertitles_id'])->isGreaterThan(0);
+      $this->integer((int)$user->fields['usercategories_id'])->isGreaterThan(0);
+   }
+
+   /**
+    * Test get groups
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetGroupCNByDn() {
+      $ldap = $this->ldap;
+
+      $connection = $ldap->connect();
+      $this->resource($connection)->isOfType('ldap link');
+
+      $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
+      $this->boolean($cn)->isFalse();
+
+      $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2, dc=glpi,dc=org');
+      $this->string($cn)->isIdenticalTo('glpi2-group1');
+   }
+
+   /**
+    * Test get user by dn
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetUserByDn() {
+      $ldap = $this->ldap;
+
+      $user = \AuthLDAP::getUserByDn(
+         $ldap->connect(),
+         'uid=walid,ou=people,ou=france,ou=europe,ou=ldap1, dc=glpi,dc=org',
+         []
+      );
+
+      $this->array($user)
+         ->hasSize(12)
+         ->hasKeys(['userpassword', 'uid', 'objectclass', 'sn']);
+   }
+
+   /**
+    * Test get group
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetGroupByDn() {
+      $ldap = $this->ldap;
+
+      $group = \AuthLDAP::getGroupByDn(
+         $ldap->connect(),
+         'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2, dc=glpi,dc=org'
+      );
+
+      $this->array($group)->isIdenticalTo([
+         'cn'     => [
+           'count'   => '1',
+            0        => 'glpi2-group1',
+         ],
+         0        => 'cn',
+         'count'  => '1',
+         'dn'     => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org'
+      ]);
+   }
+
+   /**
+    * Test import group
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testLdapImportGroup() {
+      $ldap = $this->ldap;
+
+      $import = \AuthLDAP::ldapImportGroup(
+         'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+         [
+            'authldaps_id' => $ldap->getID(),
+            'entities_id'  => 0,
+            'is_recursive' => true,
+            'type'         => 'groups'
+         ]
+      );
+
+      $this->integer($import)->isGreaterThan(0);
+
+      //check group
+      $group = new \Group();
+      $this->boolean($group->getFromDB($import))->isTrue();
+
+      $this->array($group->fields)
+         ->string['name']->isIdenticalTo('glpi2-group1')
+         ->string['completename']->isIdenticalTo('glpi2-group1')
+         ->string['ldap_group_dn']->isIdenticalTo('cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
+   }
+
+   /**
+    * Test import group and user
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testLdapImportUserGroup() {
+      $ldap = $this->ldap;
+
+      $import = \AuthLDAP::ldapImportGroup(
+         'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
+         [
+            'authldaps_id' => $ldap->getID(),
+            'entities_id'  => 0,
+            'is_recursive' => true,
+            'type'         => 'groups'
+         ]
+      );
+
+      $this->integer($import)->isGreaterThan(0);
+
+      //check group
+      $group = new \Group();
+      $this->boolean($group->getFromDB($import))->isTrue();
+
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'remi'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+      $usergroups = \Group_User::getUserGroups($user->getID());
+      $this->array($usergroups[0])
+         ->variable['id']->isEqualTo($group->getID())
+         ->string['name']->isIdenticalTo($group->fields['name']);
    }
 }

@@ -59,7 +59,7 @@ objectClass: top
 objectClass: groupOfNames
 description: Group 1, LDAP 2
 cn: glpi2-group1
-member: uid=remi,ou=people,ou=usa,ou=glpi2,dc=glpi,dc=org
+member: uid=remi,ou=people,ou=usa,ou=ldap2,dc=glpi,dc=org
 
 dn: ou=ldap1, dc=glpi,dc=org
 ou: ldap1

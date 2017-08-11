@@ -1262,7 +1262,7 @@ class User extends CommonDBTM {
     * @param $userdn             Basedn of the user
     * @param $login              User login
     *
-    * @return String : basedn of the user / false if not founded
+    * @return String : basedn of the user / false if not found
    **/
    private function getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB;
@@ -1399,7 +1399,7 @@ class User extends CommonDBTM {
     * @param $login                    User Login
     * @param $import          boolean  true for import, false for update (true by default)
     *
-    * @return boolean : true if found / false if not founded
+    * @return boolean : true if found / false if not
    **/
    function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login, $import = true) {
       global $DB, $CFG_GLPI;
