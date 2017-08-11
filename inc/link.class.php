@@ -295,9 +295,12 @@ class Link extends CommonDBTM {
       }
      if (strstr($link,"[NETEQMODEL]")
           && $item->isField('networkequipmentmodels_id')) {
+              echo "Pred ".$link."<br>";
             $link = str_replace("[NETEQMODEL]",
-                              Dropdown::getDropdownName("glpi_networkequipmentmodels", 
-                                                         $item->getField('networkequipmentmodels_id'),0,false), $link);
+            // Náhrda čo, čím v čom. Vyhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > ".
+                              str_replace("-","/",Dropdown::getDropdownName("glpi_networkequipmentmodels", 
+                                                         $item->getField('networkequipmentmodels_id'),0,false)), $link);
+                                                         echo "Po ".$link."<br>";
       }
       if (strstr($link,"[DOMAIN]")
           && $item->isField('domains_id')) {
