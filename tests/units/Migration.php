@@ -74,7 +74,7 @@ class Migration extends atoum {
          function () {
             new \Migration(GLPI_VERSION);
          }
-      )->isIdenticalTo("<div id='migration_message_9.2-dev'>\n            <p class='center'>Work in progress...</p></div>");
+      )->isIdenticalTo("<div id='migration_message_" . GLPI_VERSION . "'>\n            <p class='center'>Work in progress...</p></div>");
    }
 
    public function testPrePostQueries() {
