@@ -64,4 +64,22 @@ class EntityTest extends DbTestCase {
       $this->assertEquals([$ent2->getID()], array_keys(getSonsOf('glpi_entities', $ent2->getID())));
       $this->assertEquals([$ent2->getID()], array_values(getSonsOf('glpi_entities', $ent2->getID())));
    }
+
+   public function testPrepareInputForAdd() {
+      $entity = new \Entity();
+
+      $this->assertEquals(
+         false,
+         $entity->prepareInputForAdd([
+            'name' => ''
+         ])
+      );
+
+      $this->assertEquals(
+         false,
+         $entity->prepareInputForAdd([
+            'anykey' => 'anyvalue'
+         ])
+      );
+   }
 }
