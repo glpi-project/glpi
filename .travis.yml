@@ -1,9 +1,11 @@
+dist: precise
 language: php
 
 env:
   - DB=mysql
 
 before_script:
+  - ./tests/LDAP/ldap_run.sh
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
@@ -20,9 +22,9 @@ before_script:
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
   - php -S localhost:8088 tests/router.php &>/dev/null &
-  # ldap disabled, fails with ubuntu precise env
-  # - phpenv config-add tests/enable-ldap.ini 
-
+  # LDAP stuff
+  - phpenv config-add tests/enable-ldap.ini
+  - ./tests/LDAP/ldap_fixtures.sh
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
@@ -34,16 +36,44 @@ script:
 matrix:
   include:
     - php: 5.6
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.0
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.1
       addons:
         mariadb: 10.0
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.1
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.1
       env: CS=true
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: nightly
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
   allow_failures:
     - php: nightly
 
