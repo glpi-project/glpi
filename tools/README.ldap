@@ -1,4 +1,4 @@
-glpi-ldap.ldif provides :
+tests/LDAP/ldif/glpi-ldap.ldif provides :
 - 3 branches, to simulate 3 differents directories
 - users stored in using 2 differents objectclasses : person & inetOrgPerson
 - groups : groupOfNames & posixGroup
