@@ -243,6 +243,10 @@ abstract class CommonITILValidation  extends CommonDBChild {
       if (!isset($input["users_id_validate"]) || ($input["users_id_validate"] <= 0)) {
          return false;
       }
+
+      $itemtype = static::$itemtype;
+      $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
+
       return parent::prepareInputForAdd($input);
    }
 

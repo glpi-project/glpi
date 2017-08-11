@@ -81,6 +81,13 @@ abstract class CommonITILObject extends CommonDBTM {
    const TEST          = 11; // test
    const QUALIFICATION = 12; // qualification
 
+   const TIMELINE_NOTSET   = 0;
+   const TIMELINE_LEFT     = 1;
+   const TIMELINE_MIDLEFT  = 2;
+   const TIMELINE_MIDRIGHT = 3;
+   const TIMELINE_RIGHT    = 4;
+
+
 
    function post_getFromDB() {
       $this->loadActors();
@@ -5508,6 +5515,19 @@ abstract class CommonITILObject extends CommonDBTM {
     **/
    function getCalendar() {
       return Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+   }
+
+
+   /**
+    * Summary of getTimelinePosition
+    * Returns the position of the $sub_type for the $user_id
+    * @param int $items_id is the id of the item (tickets_id, problems_id, ...)
+    * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
+    * @param int $users_id
+    * @since 9.2
+    */
+   static function getTimelinePosition($items_id, $sub_type, $users_id) {
+      return self::TIMELINE_NOTSET;
    }
 
 }

@@ -422,6 +422,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input['is_private'] = 0;
       }
 
+      $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
+      if (isset($input["users_id"])) {
+         $input['timeline_position'] = $itemtype::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
+      }
+
       return $input;
    }
 
