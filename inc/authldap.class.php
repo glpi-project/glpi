@@ -1955,6 +1955,10 @@ class AuthLDAP extends CommonDBTM {
    static function getGroupCNByDn($ldap_connection, $group_dn) {
 
       $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", ["cn"]);
+      if ($sr === false) {
+         //group does not exists
+         return false;
+      }
       $v  = self::get_entries_clean($ldap_connection, $sr);
       if (!is_array($v) || (count($v) == 0) || empty($v[0]["cn"][0])) {
          return false;
@@ -2252,7 +2256,7 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
-    * Converts an array of parameters into a query string to be appended to a URL.
+    * Import grousp from an LDAP directory
     *
     * @param string $group_dn dn of the group to import
     * @param array  $options  array for
@@ -2260,9 +2264,9 @@ class AuthLDAP extends CommonDBTM {
     *             - entities_id where group must to be imported
     *             - is_recursive
     *
-    * @return void
+    * @return integer|false
     */
-   static function ldapImportGroup ($group_dn, $options = []) {
+   static function ldapImportGroup($group_dn, $options = []) {
 
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($options['authldaps_id']);
