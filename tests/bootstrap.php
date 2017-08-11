@@ -454,7 +454,34 @@ function loadDataset() {
             'entities_id'  => '_test_root_entity',
             'is_recursive' => 1
          ]
+      ], 'AuthLdap' => [
+         [
+            'name'            => '_local_ldap',
+            'host'            => '127.0.0.1',
+            'basedn'          => 'dc=glpi,dc=org',
+            'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+            'port'            => '3890',
+            'condition'       => '(objectclass=inetOrgPerson)',
+            'login_field'     => 'uid',
+            'sync_field'      => 'uid',
+            'rootdn_passwd'   => 'insecure',
+            'is_default'      => 1,
+            'is_active'       => 1,
+            'use_tls'         => 0,
+            'email1_field'    => 'mail',
+            'realname_field'  => 'cn',
+            'firstname_field' => 'sn',
+            'phone_field'     => 'telephonenumber',
+            'comment_field'   => 'description',
+            'title_field'     => 'title',
+            'category_field'  => 'businesscategory',
+            'language_field'  => 'preferredlanguage',
+            'group_search_type'  => \AuthLdap::GROUP_SEARCH_GROUP,
+            'group_condition' => '(objectclass=groupOfNames)',
+            'group_member_field' => 'member'
+         ]
       ]
+
    ];
 
    // To bypass various right checks
