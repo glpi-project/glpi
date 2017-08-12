@@ -52,7 +52,6 @@ class Link extends CommonDBTM {
                              '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]',
                              '[NETEQTYPE]', '[NETEQMODEL]');
 
-
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
    }
