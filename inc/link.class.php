@@ -49,8 +49,8 @@ class Link extends CommonDBTM {
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]',
-                             '[NETEQTYPE]', '[NETEQMODEL]');
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVEQTYPE]','[DEVEQMODEL]',
+                             '[NETEQTYPE]', '[NETEQMODEL]','[SWCATEGORY]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
@@ -286,21 +286,47 @@ class Link extends CommonDBTM {
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
       }
+      // Device equipment type
+      if (strstr($link,"[DEVEQTYPE]")
+      && $item->isField('peripheraltypes_id')) {
+        $link = str_replace("[DEVEQTYPE]",
+                          Dropdown::getDropdownName("glpi_peripheraltypes", 
+                                                     $item->getField('peripheraltypes_id'),0,false), $link);
+      }
+      // Device equipment model
+      if (strstr($link,"[DEVEQMODEL]")
+      && $item->isField('peripheralmodels_id')) {
+        $link = str_replace("[DEVEQMODEL]",
+                      Dropdown::getDropdownName("glpi_peripheralmodels", 
+                                                 $item->getField('peripheralmodels_id'),0,false), $link);
+      }
+      //Networkdevice equipment type 
       if (strstr($link,"[NETEQTYPE]")
-          && $item->isField('networkequipmenttypes_id')) {
-            $link = str_replace("[NETEQTYPE]",
-                              Dropdown::getDropdownName("glpi_networkequipmenttypes", 
-                                                         $item->getField('networkequipmenttypes_id'),0,false), $link);
+      && $item->isField('networkequipmenttypes_id')) {
+        $link = str_replace("[NETEQTYPE]",
+                    Dropdown::getDropdownName("glpi_networkequipmenttypes", 
+                                               $item->getField('networkequipmenttypes_id'),0,false), $link);
       }
-     if (strstr($link,"[NETEQMODEL]")
-          && $item->isField('networkequipmentmodels_id')) {
-              echo "Pred ".$link."<br>";
+      // Networkdevice eqipment model
+      if (strstr($link,"[NETEQMODEL]")
+      && $item->isField('networkequipmentmodels_id')) {
+              //debug info
+              //echo "Before ".$link."<br>";
             $link = str_replace("[NETEQMODEL]",
-            // Náhrada čo, čím v čom. Vyhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > ".
-                              str_replace("-","/",Dropdown::getDropdownName("glpi_networkequipmentmodels", 
-                                                         $item->getField('networkequipmentmodels_id'),0,false)), $link);
-                                                         echo "Po ".$link."<br>";
+                    Dropdown::getDropdownName("glpi_networkequipmentmodels", 
+                                              $item->getField('networkequipmentmodels_id'),0,false), $link);
+                                                         //debug info
+                                                         //echo "After ".$link."<br>";
       }
+      // Software category
+      if (strstr($link,"[SWCATEGORY]")
+      && $item->isField('softwarecategories_id')) {
+          $link = str_replace("[SWCATEGORY]",
+            // Náhrada čo (" > "), čím ("/") v čom (Dropdown ...). Výhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > "
+            // Replace " > " with "/" to generate path from TreeDropdown value
+                            str_replace(" > ","/", Dropdown::getDropdownName("glpi_softwarecategories", 
+                                               $item->getField('softwarecategories_id'),0,false)), $link);
+    }
       if (strstr($link,"[DOMAIN]")
           && $item->isField('domains_id')) {
             $link = str_replace("[DOMAIN]",
