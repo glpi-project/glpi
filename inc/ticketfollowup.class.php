@@ -279,10 +279,18 @@ class TicketFollowup  extends CommonDBTM {
       global $CFG_GLPI;
 
       $job      = new Ticket();
-      $mailsend = false;
 
       if ($job->getFromDB($this->fields["tickets_id"])) {
-         $job->updateDateMod($this->fields["tickets_id"]);
+         //Get user_id when not logged (from mailgate)
+         $uid = Session::getLoginUserID();
+         if ($uid === false) {
+            if (isset($this->fields['users_id_editor'])) {
+               $uid = $this->fields['users_id_editor'];
+            } else {
+               $uid = $this->fields['users_id'];
+            }
+         }
+         $job->updateDateMod($this->fields["tickets_id"], false, $uid);
 
          if (count($this->updates)) {
             if (!isset($this->input['_disablenotif'])
