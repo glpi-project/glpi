@@ -7104,7 +7104,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='h_content TicketContent'>";
 
-         echo "<div class='b_right'>".__("Ticket recall")."</div>";
+         echo "<div class='b_right'>".sprintf(__("Ticket# %s description"), $this->getID())."</div>";
 
          echo "<div class='ticket_title'>";
          echo Html::setSimpleTextContent($this->fields['name']);
