@@ -5369,6 +5369,7 @@ class Html {
 
       if ($p['enable_fileupload']) {
          $p_rt = $p;
+         unset($p_rt['name']);
          $p_rt['display'] = false;
          $display .= Html::file($p_rt);
       }
