@@ -1736,6 +1736,10 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
    if (is_array($value)) {
       $query .= " IN ('" . implode("','", $value) . "') ";
    } else {
+      if (strlen($value) == 0 && !isset($_SESSION['glpiactiveentities_string'])) {
+         //set root entity if not set
+         $value = 0;
+      }
       if (strlen($value) == 0) {
          $query .= " IN (".$_SESSION['glpiactiveentities_string'].") ";
       } else {
@@ -1749,9 +1753,8 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
          $ancestors = getAncestorsOf("glpi_entities", $value);
          $ancestors = array_diff($ancestors, $value);
 
-      } else if (strlen($value) == 0) {
+      } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
          $ancestors = $_SESSION['glpiparententities'];
-
       } else {
          $ancestors = getAncestorsOf("glpi_entities", $value);
       }
