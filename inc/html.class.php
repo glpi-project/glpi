@@ -5238,11 +5238,11 @@ class Html {
          // manage file upload without tinymce editor
          $display .= "<div id='{$p['dropZone']}'>";
          $display .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
-         $display .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]'
+         $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
                          data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
                          data-form-data='{\"name\": \"".$p['name']."\",
                                           \"showfilesize\": \"".$p['showfilesize']."\"}'>";
-         $display .= "<div id='progress$randupload' style='display:none'>".
+         $display .= "<div id='progress{$p['rand']}' style='display:none'>".
                  "<div class='uploadbar' style='width: 0%;'></div></div>";
          $display .= "</div>";
 
