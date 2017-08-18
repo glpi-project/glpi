@@ -5562,7 +5562,7 @@ class Search {
       $actions   = ['contains'  => __('contains'),
                          'searchopt' => []];
 
-      if (isset($searchopt[$field_num])) {
+      if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
          $actions['searchopt'] = $searchopt[$field_num];
 
          // Force search type
