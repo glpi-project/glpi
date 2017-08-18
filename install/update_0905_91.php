@@ -722,7 +722,7 @@ function update0905to91() {
                                  `end_of_working_day`, `date_creation`, `slas_id`)
                          VALUES ('".$data['id']."', '".Toolbox::addslashes_deep($data['name'])."',
                                  '".$data['entities_id']."',
-                                 '".$data['is_recursive']."', '".SLT::TTR."',
+                                 '".$data['is_recursive']."', '".SLM::TTR."',
                                  '".addslashes($data['comment'])."', '".$data['resolution_time']."',
                                  '".$data['date_mod']."',
                                  '".$data['definition_time']."', '".$data['end_of_working_day']."',
