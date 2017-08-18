@@ -290,7 +290,7 @@ class Contact extends CommonDBTM{
          'id'                 => '1',
          'table'              => $this->getTable(),
          'field'              => 'name',
-         'name'               => __('Last Name'),
+         'name'               => __('Last name'),
          'datatype'           => 'itemlink',
          'massiveaction'      => false
       ];
@@ -299,7 +299,7 @@ class Contact extends CommonDBTM{
          'id'                 => '11',
          'table'              => $this->getTable(),
          'field'              => 'firstname',
-         'name'               => __('First Name'),
+         'name'               => __('First name'),
          'datatype'           => 'string'
       ];
 
