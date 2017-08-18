@@ -2631,7 +2631,7 @@ class User extends CommonDBTM {
          'id'                 => '34',
          'table'              => $this->getTable(),
          'field'              => 'realname',
-         'name'               => __('Last Name'),
+         'name'               => __('Last name'),
          'datatype'           => 'string'
       ];
 
@@ -2639,7 +2639,7 @@ class User extends CommonDBTM {
          'id'                 => '9',
          'table'              => $this->getTable(),
          'field'              => 'firstname',
-         'name'               => __('First Name'),
+         'name'               => __('First name'),
          'datatype'           => 'string'
       ];
 

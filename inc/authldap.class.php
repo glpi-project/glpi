@@ -894,7 +894,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '10',
          'table'              => $this->getTable(),
          'field'              => 'firstname_field',
-         'name'               => __('First Name'),
+         'name'               => __('First name'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
