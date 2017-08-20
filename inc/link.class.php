@@ -49,8 +49,8 @@ class Link extends CommonDBTM {
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVEQTYPE]','[DEVEQMODEL]',
-                             '[NETEQTYPE]', '[NETEQMODEL]','[SWCATEGORY]');
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]','[DEVICEMODEL]',
+                             '[NETWORKTYPE]', '[NETWORKMODEL]','[SOFTWARECATEGORY]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
@@ -287,41 +287,41 @@ class Link extends CommonDBTM {
                                                           $item->getField('networks_id')), $link);
       }
       // Device equipment type
-      if (strstr($link,"[DEVEQTYPE]")
+      if (strstr($link,"[DEVICETYPE]")
       && $item->isField('peripheraltypes_id')) {
-        $link = str_replace("[DEVEQTYPE]",
+        $link = str_replace("[DEVICETYPE]",
                           Dropdown::getDropdownName("glpi_peripheraltypes", 
                                                      $item->getField('peripheraltypes_id'),0,false), $link);
       }
       // Device equipment model
-      if (strstr($link,"[DEVEQMODEL]")
+      if (strstr($link,"[DEVICEMODEL]")
       && $item->isField('peripheralmodels_id')) {
-        $link = str_replace("[DEVEQMODEL]",
+        $link = str_replace("[DEVICEMODEL]",
                       Dropdown::getDropdownName("glpi_peripheralmodels", 
                                                  $item->getField('peripheralmodels_id'),0,false), $link);
       }
       //Networkdevice equipment type 
-      if (strstr($link,"[NETEQTYPE]")
+      if (strstr($link,"[NETWORKTYPE]")
       && $item->isField('networkequipmenttypes_id')) {
-        $link = str_replace("[NETEQTYPE]",
+        $link = str_replace("[NETWORKTYPE]",
                     Dropdown::getDropdownName("glpi_networkequipmenttypes", 
                                                $item->getField('networkequipmenttypes_id'),0,false), $link);
       }
       // Networkdevice eqipment model
-      if (strstr($link,"[NETEQMODEL]")
+      if (strstr($link,"[NETWORKMODEL]")
       && $item->isField('networkequipmentmodels_id')) {
               //debug info
               //echo "Before ".$link."<br>";
-            $link = str_replace("[NETEQMODEL]",
+            $link = str_replace("[NETWORKMODEL]",
                     Dropdown::getDropdownName("glpi_networkequipmentmodels", 
                                               $item->getField('networkequipmentmodels_id'),0,false), $link);
                                                          //debug info
                                                          //echo "After ".$link."<br>";
       }
       // Software category
-      if (strstr($link,"[SWCATEGORY]")
+      if (strstr($link,"[SOFTWARECATEGORY]")
       && $item->isField('softwarecategories_id')) {
-          $link = str_replace("[SWCATEGORY]",
+          $link = str_replace("[SOFTWARECATEGORY]",
             // Náhrada čo (" > "), čím ("/") v čom (Dropdown ...). Výhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > "
             // Replace " > " with "/" to generate path from TreeDropdown value
                             str_replace(" > ","/", Dropdown::getDropdownName("glpi_softwarecategories", 
