@@ -49,8 +49,8 @@ class Link extends CommonDBTM {
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]','[DEVICEMODEL]',
-                             '[NETWORKTYPE]', '[NETWORKMODEL]','[SOFTWARECATEGORY]');
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]',
+                             '[DEVICEMODEL]', '[NETWORKTYPE]', '[NETWORKMODEL]','[SOFTWARECATEGORY]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
