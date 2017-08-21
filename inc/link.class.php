@@ -50,7 +50,8 @@ class Link extends CommonDBTM {
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
                              '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]',
-                             '[DEVICEMODEL]', '[NETWORKTYPE]', '[NETWORKMODEL]','[SOFTWARECATEGORY]');
+                             '[DEVICEMODEL]', '[NETWORKTYPE]', '[NETWORKMODEL]','[PRINTERTYPE]',
+                             '[PRINTERMODEL]', '[SOFTWARECATEGORY]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
@@ -317,6 +318,20 @@ class Link extends CommonDBTM {
                                               $item->getField('networkequipmentmodels_id'),0,false), $link);
                                                          //debug info
                                                          //echo "After ".$link."<br>";
+      }
+      // Printer type
+      if (strstr($link,"[PRINTERTYPE]")
+      && $item->isField('printertypes_id')) {
+           $link = str_replace("[PRINTERTYPE]",
+              Dropdown::getDropdownName("glpi_printertypes", 
+                                        $item->getField('printertypes_id'),0,false), $link);
+      }
+      // Printer model
+      if (strstr($link,"[PRINTERMODEL]")
+      && $item->isField('printermodels_id')) {
+            $link = str_replace("[PRINTERMODEL]",
+                    Dropdown::getDropdownName("glpi_printermodels", 
+                                              $item->getField('printermodels_id'),0,false), $link);
       }
       // Software category
       if (strstr($link,"[SOFTWARECATEGORY]")
