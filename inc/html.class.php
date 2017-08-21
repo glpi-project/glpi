@@ -1152,7 +1152,11 @@ class Html {
                   $jslibs = $CFG_GLPI['javascript'][$sector][$item];
                }
             } else {
-               $jslibs = $CFG_GLPI['javascript'][$sector];
+               if (isset($CFG_GLPI['javascript']['plugins'][$item][$option])) {
+                  $jslibs = $CFG_GLPI['javascript']['plugins'][$item][$option];
+               } else {
+                  $jslibs = $CFG_GLPI['javascript'][$sector];
+               }
             }
          }
 
