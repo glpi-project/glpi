@@ -290,9 +290,9 @@ class ITILCategory extends CommonTreeDropdown {
 
    /**
     * @param $tt           TicketTemplate object
-    * @param $withtemplate (default '')
+    * @param $withtemplate (default 0)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $itilcategory = new self();

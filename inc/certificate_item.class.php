@@ -370,11 +370,11 @@ class Certificate_Item extends CommonDBRelation {
     * @since version 9.2
     *
     * @param $item  CommonDBTM object for which associated certificates must be displayed
-    * @param $withtemplate (default '')
+    * @param $withtemplate (default 0)
     *
     * @return bool
     */
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
       $ID = $item->getField('id');

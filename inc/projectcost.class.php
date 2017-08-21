@@ -326,11 +326,11 @@ class ProjectCost extends CommonDBChild {
     * Print the project costs
     *
     * @param $project               Project object
-    * @param $withtemplate  boolean  Template or basic item (default '')
+    * @param $withtemplate  boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForProject(Project $project, $withtemplate = '') {
+   static function showForProject(Project $project, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID = $project->fields['id'];

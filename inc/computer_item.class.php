@@ -350,11 +350,11 @@ class Computer_Item extends CommonDBRelation{
     * Print the form for computers or templates connections to printers, screens or peripherals
     *
     * @param $comp                     Computer object
-    * @param $withtemplate    boolean  Template or basic item (default '')
+    * @param $withtemplate    boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate = '') {
+   static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID      = $comp->fields['id'];
@@ -503,11 +503,11 @@ class Computer_Item extends CommonDBRelation{
     * Prints a direct connection to a computer
     *
     * @param $item                     CommonDBTM object: the Monitor/Phone/Peripheral/Printer
-    * @param $withtemplate    integer  withtemplate param (default '')
+    * @param $withtemplate    integer  withtemplate param (default 0)
     *
     * @return nothing (print out a table)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       // Prints a direct connection to a computer
       global $DB;
 

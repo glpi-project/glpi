@@ -566,9 +566,9 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object for which associated documents must be displayed
-    * @param $withtemplate    (default '')
+    * @param $withtemplate    (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)) {
@@ -594,10 +594,10 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.90
     *
     * @param $item
-    * @param $withtemplate   (default '')
+    * @param $withtemplate   (default 0)
     * @param $colspan
    */
-   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = '', $colspan = 1) {
+   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = 0, $colspan = 1) {
 
       $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
@@ -627,12 +627,12 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.90
     *
     * @param $item
-    * @param $withtemplate    (default '')
+    * @param $withtemplate    (default 0)
     * @param $options         array
     *
     * @return boolean
    **/
-   static function showAddFormForItem(CommonDBTM $item, $withtemplate = '', $options = []) {
+   static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = []) {
       global $DB, $CFG_GLPI;
 
       //default options
@@ -756,10 +756,10 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.90
     *
     * @param $item
-    * @param $withtemplate   (default '')
+    * @param $withtemplate   (default 0)
     * @param $options        array
     */
-   static function showListForItem(CommonDBTM $item, $withtemplate = '', $options = []) {
+   static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = []) {
       global $DB, $CFG_GLPI;
 
       //default options

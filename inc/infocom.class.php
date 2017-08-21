@@ -919,9 +919,9 @@ class Infocom extends CommonDBChild {
     * Show Infocom form for an item (not a standard showForm)
     *
     * @param $item                  CommonDBTM object
-    * @param $withtemplate integer  template or basic item (default '')
+    * @param $withtemplate integer  template or basic item (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
       // Show Infocom or blank form

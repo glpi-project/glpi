@@ -179,7 +179,7 @@ class SavedSearch_Alert extends CommonDBChild {
     *
     * @return void
    **/
-   static function showForSavedSearch(SavedSearch $search, $withtemplate = '') {
+   static function showForSavedSearch(SavedSearch $search, $withtemplate = 0) {
       global $DB;
 
       $ID = $search->getID();
