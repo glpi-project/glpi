@@ -1046,9 +1046,14 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 Add saved search alerts notification template");
       $nottid = $DB->insert_id();
 
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates`
-                VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
-      $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
+      $where =  "`notifications_id`='$notid' AND `mode`='" .
+         Notification_NotificationTemplate::MODE_MAIL.
+         "' AND `notificationtemplates_id`='$nottid'";
+      if (countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
+         $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+                   VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
+         $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
+      }
 
       $query = "INSERT INTO `glpi_notificationtargets`
                 VALUES (null,'19','1','$notid');";
@@ -1353,9 +1358,14 @@ Regards,',
       $DB->queryOrDie($query, "9.2 Add certifcate alerts notification template");
       $nottid = $DB->insert_id();
 
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates`
-                VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
-      $DB->queryOrDie($query, "9.2 Add scertificates alerts notification templates");
+      $where =  "`notifications_id`='$notid' AND `mode`='" .
+         Notification_NotificationTemplate::MODE_MAIL.
+         "' AND `notificationtemplates_id`='$nottid'";
+      if (!countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
+         $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+                   VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
+         $DB->queryOrDie($query, "9.2 Add certificates alerts notification templates");
+      }
 
       $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                   (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
