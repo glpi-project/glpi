@@ -64,8 +64,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
    if (isset($_SESSION['ldap_import']['authldaps_id'])
        && ($_SESSION['ldap_import']['authldaps_id'] != NOT_AVAILABLE)
-       && isset($_SESSION['ldap_import']['criterias'])
-       && !empty($_SESSION['ldap_import']['criterias'])) {
+       && isset($_POST['search'])) {
 
       echo "<br />";
       AuthLdap::searchUser($authldap);
