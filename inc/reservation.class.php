@@ -1043,9 +1043,9 @@ class Reservation extends CommonDBChild {
     * Display reservations for an item
     *
     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
-    * @param $withtemplate    withtemplate param (default '')
+    * @param $withtemplate    withtemplate param (default 0)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $resaID = 0;

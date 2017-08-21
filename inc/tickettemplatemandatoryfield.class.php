@@ -182,11 +182,11 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     * @since version 0.83
     *
     * @param $tt                       Ticket Template
-    * @param $withtemplate    boolean  Template or basic item (default '')
+    * @param $withtemplate    boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = '') {
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate = 0) {
       global $DB;
 
       $ID = $tt->fields['id'];

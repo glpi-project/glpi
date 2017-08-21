@@ -329,11 +329,11 @@ class ContractCost extends CommonDBChild {
     * Print the contract costs
     *
     * @param $contract               Contract object
-    * @param $withtemplate  boolean  Template or basic item (default '')
+    * @param $withtemplate  boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForContract(Contract $contract, $withtemplate = '') {
+   static function showForContract(Contract $contract, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $ID = $contract->fields['id'];
