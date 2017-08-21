@@ -5932,10 +5932,13 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/lib/moment.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
-               $filename = "lib/jqueryplugins/fullcalendar/locale/".
-                  strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
-               if (file_exists(GLPI_ROOT . '/lib/' . $filename)) {
-                  $_SESSION['glpi_js_toload'][$name][] = $filename;
+               foreach ([2, 3] as $loc) {
+                  $filename = "lib/jqueryplugins/fullcalendar/locale/".
+                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]).".js";
+                  if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                     $_SESSION['glpi_js_toload'][$name][] = $filename;
+                     break;
+                  }
                }
             }
             break;
