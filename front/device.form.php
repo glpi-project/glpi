@@ -37,6 +37,8 @@ if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
       'Missing or incorrect device type called!'
    );
 }
-
+$options = [
+   'itemtype' => $_GET['itemtype']
+];
 $dropdown = new $_GET['itemtype'];
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
