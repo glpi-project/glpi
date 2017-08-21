@@ -652,11 +652,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Show software installed on a computer
     *
     * @param $comp            Computer object
-    * @param $withtemplate    template case of the view process (default '')
+    * @param $withtemplate    template case of the view process (default 0)
     *
     * @return nothing
    **/
-   static function showForComputer(Computer $comp, $withtemplate = '') {
+   static function showForComputer(Computer $comp, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       if (!Software::canView()) {

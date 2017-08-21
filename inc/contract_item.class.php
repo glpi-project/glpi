@@ -369,11 +369,11 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object wanted
-    * @param $withtemplate    not used (to be deleted) (default '')
+    * @param $withtemplate    not used (to be deleted) (default 0)
     *
     * @return Nothing (display)
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
       $itemtype = $item->getType();

@@ -88,7 +88,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForNotification(Notification $notif, $withtemplate = '') {
+   static function showForNotification(Notification $notif, $withtemplate = 0) {
       global $DB;
 
       $ID = $notif->getID();

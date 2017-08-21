@@ -247,10 +247,10 @@ class Log extends CommonDBTM {
     * Show History of an item
     *
     * @param $item                     CommonDBTM object
-    * @param $withtemplate    integer  withtemplate param (default '')
+    * @param $withtemplate    integer  withtemplate param (default 0)
 
    **/
-   static function showForItem(CommonDBTM $item, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
       $itemtype = $item->getType();
