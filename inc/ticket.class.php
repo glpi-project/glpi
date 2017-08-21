@@ -1582,7 +1582,8 @@ class Ticket extends CommonITILObject {
 
 
       // fill auto-assign when no tech defined (only for tech)
-      if ($_SESSION['glpiset_default_tech']
+      if (!isset($input['_auto_import'])
+          && $_SESSION['glpiset_default_tech']
           && $_SESSION['glpiactiveprofile']['interface'] == 'central'
           && (!isset($input['_users_id_assign'])
               || $input['_users_id_assign'] == 0)) {

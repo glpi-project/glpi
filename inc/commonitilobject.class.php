@@ -2299,7 +2299,6 @@ abstract class CommonITILObject extends CommonDBTM {
    static function dropdownStatus(array $options=array()) {
 
       $p['name']      = 'status';
-      $p['value']     = self::INCOMING;
       $p['showtype']  = 'normal';
       $p['display']   = true;
 
@@ -2307,6 +2306,10 @@ abstract class CommonITILObject extends CommonDBTM {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
+      }
+
+      if (!isset($p['value']) || empty($p['value'])) {
+         $p['value']     = self::INCOMING;
       }
 
       switch ($p['showtype']) {

@@ -232,6 +232,13 @@ class Entity extends CommonTreeDropdown {
    function prepareInputForAdd($input) {
       global $DB;
 
+      $input['name'] = trim($input['name']);
+      if (empty($input["name"])) {
+         Session::addMessageAfterRedirect(__("You can't add an entity without name"),
+                                          false, ERROR);
+         return false;
+      }
+
       $input = parent::prepareInputForAdd($input);
 
       $query = "SELECT MAX(`id`)+1 AS newID

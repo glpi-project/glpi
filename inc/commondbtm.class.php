@@ -1964,9 +1964,15 @@ class CommonDBTM extends CommonGLPI {
       }
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
-      return true;
-   }
+      // check connections of a computer
+      $connectcomputer = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+      if (in_array($this->getType(), $connectcomputer)) {
+         return Computer_Item::canUnrecursSpecif($this, $entities);
+      }
 
+      return true;
+
+   }
 
    /**
     * check if this action can be done on this field of this item by massive actions
@@ -2482,7 +2488,7 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }
-    
+
       $this->right = $right;
       plugin::doHook('item_can', $this);
       switch ($this->right) {
@@ -3211,6 +3217,13 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
+
+      if ($this->maybeRecursive()) {
+         $tab[86]['table']         = $this->getTable();
+         $tab[86]['field']         = 'is_recursive';
+         $tab[86]['name']          = __('Child entities');
+         $tab[86]['datatype']      = 'bool';
+      }
 
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
