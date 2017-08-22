@@ -367,7 +367,7 @@ abstract class CommonDevice extends CommonDropdown {
          $content .= __('Add')."&nbsp;";
 
          $content  = [$content,
-                     ['function'   => 'Dropdown::Number',
+                     ['function'   => 'Dropdown::showNumber',
                       'parameters' => [$field_name, ['value' => 0,
                                                      'min'   => 0,
                                                      'max'   => 10]]],
