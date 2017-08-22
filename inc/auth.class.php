@@ -218,6 +218,9 @@ class Auth extends CommonGLPI {
       if ($this->ldap_connection) {
          $params['method']                             = AuthLDAP::IDENTIFIER_LOGIN;
          $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
+         if (!empty($ldap_method['sync_field'])) {
+            $params['fields']['sync_field'] = $ldap_method['sync_field'];
+         }
          $infos = AuthLdap::searchUserDn($this->ldap_connection,
                                          ['basedn'            => $ldap_method['basedn'],
                                                'login_field'       => $ldap_method['login_field'],
@@ -231,8 +234,8 @@ class Auth extends CommonGLPI {
          if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
-            if (Plugin::doHookFunction("restrict_ldap_auth", $dn)) {
-               return $dn;
+            if (Plugin::doHookFunction("restrict_ldap_auth", $infos)) {
+               return $infos;
             }
             $this->addToError(__('User not authorized to connect in GLPI'));
             //Use is present by has no right to connect because of a plugin

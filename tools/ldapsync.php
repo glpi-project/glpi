@@ -47,7 +47,7 @@ if (isset($_SERVER['argv'])) {
    }
 }
 if (isset($_GET['help'])) {
-   echo "Usage : php ldapsync.php --entity=<id> | --ldap=<id> [ others options ]\n";
+   echo "Usage : php ldapsync.php --entity=<id> | --server=<id> [ others options ]\n";
    echo "Options values :\n";
    echo "\t--entity      only sync user of this entity\n";
    echo "\t--server      only sync user of entities attached to this server (ID or default)\n";
@@ -126,10 +126,10 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
       foreach ($req as $row) {
          $i++;
 
-         $result = AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'  => $row['name']],
-                                                      AuthLDAP::ACTION_SYNCHRONIZE,
-                                                      $row['auths_id']);
+         $user = new User();
+         $user->getFromResultSet($row);
+         $result = AuthLdap::forceOneUserSynchronization($user, false);
+
          if ($result) {
             $results[$result['action']] += 1;
             $users[$row['id']]           = $row['name'];

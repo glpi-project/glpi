@@ -31,6 +31,7 @@ dn: uid=remi,ou=people,ou=usa,ou=ldap2, dc=glpi,dc=org
 telephoneNumber: 0234596798
 mail: remi@mail.com
 uid: remi
+employeeNumber: 1
 userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 businessCategory: employee
 objectClass: top
@@ -9348,6 +9349,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil0
+employeeNumber: 2
 preferredLanguage: pt_BR
 cn: brazil0
 title: manager
@@ -9361,6 +9363,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil1
+employeeNumber: 3
 preferredLanguage: pt_BR
 cn: brazil1
 title: manager
@@ -9374,6 +9377,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil2
+employeeNumber: 4
 preferredLanguage: pt_BR
 cn: brazil2
 title: manager
@@ -9387,6 +9391,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil3
+employeeNumber: 5
 preferredLanguage: pt_BR
 cn: brazil3
 title: manager
@@ -9400,6 +9405,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil4
+employeeNumber: 6
 preferredLanguage: pt_BR
 cn: brazil4
 title: manager
@@ -9413,6 +9419,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil5
+employeeNumber: 7
 preferredLanguage: pt_BR
 cn: brazil5
 title: manager
@@ -9426,6 +9433,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil6
+employeeNumber: 8
 preferredLanguage: pt_BR
 cn: brazil6
 title: manager
@@ -9439,6 +9447,7 @@ userPassword:: e1NIQX1XNnBoNU1tNVB6OEdnaVVMYlBnekczN21qOWc9
 objectClass: top
 objectClass: inetOrgPerson
 uid: brazil7
+employeeNumber: 10
 preferredLanguage: pt_BR
 cn: brazil7
 title: manager
