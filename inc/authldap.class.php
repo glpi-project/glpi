@@ -188,7 +188,7 @@ class AuthLDAP extends CommonDBTM {
             unset($input['sync_field']);
          } else {
             Session::addMessageAfterRedirect(
-               __('Synchronization field cannot be changed once set.'),
+               __('Synchronization field cannot be changed once in use.'),
                false,
                ERROR
             );
@@ -1499,11 +1499,12 @@ class AuthLDAP extends CommonDBTM {
             foreach ($ldap_users as $userinfos) {
                $user = new User();
 
+               $sync_field = null;
                $user_sync_field = null;
                if ($config_ldap->isSyncFieldEnabled()) {
                   $sync_field = $config_ldap->fields['sync_field'];
                   if (isset($userinfos[$sync_field])) {
-                     $user_sync_field = $userinfos[$sync_field];
+                     $user_sync_field = self::getFieldValue($userinfos, $sync_field);
                   }
                }
                if (!$_SESSION['ldap_import']['mode'] && $config_ldap->getLdapExistingUser($userinfos['user'], $user_sync_field)) {
@@ -1531,8 +1532,8 @@ class AuthLDAP extends CommonDBTM {
                //Need to use " instead of ' because it doesn't work with names with ' inside !
                echo "<td>";
                $uid = $userinfos['user'];
-               if ($config_ldap->isSyncFieldEnabled() && isset($userinfos[$config_ldap->fields['sync_field']])) {
-                  $uid = $userinfos[$config_ldap->fields['sync_field']];
+               if ($config_ldap->isSyncFieldEnabled() && isset($userinfos[$sync_field])) {
+                  $uid = self::getFieldValue($userinfos, $sync_field);
                }
                echo Html::getMassiveActionCheckBox(__CLASS__, $uid);
                echo "</td>";
@@ -1540,7 +1541,7 @@ class AuthLDAP extends CommonDBTM {
                   echo "<td>";
                   $field_for_sync = $config_ldap->getLdapIdentifierToUse();
                   if (isset($userinfos[$field_for_sync])) {
-                     echo $userinfos[$field_for_sync];
+                     echo self::getFieldValue($userinfos, $field_for_sync);
                   } else if (!empty($user->fields['sync_field'])) {
                      echo $user->fields['sync_field'];
                   } else {
@@ -2800,7 +2801,7 @@ class AuthLDAP extends CommonDBTM {
                $login_attr => $info[$login_attr][0]
             ];
             if ($sync_attr !== null && isset($info[0][$sync_attr])) {
-               $ret['sync_field'] = $info[0][$sync_attr][0];
+               $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
             }
             return $ret;
          }
@@ -2808,13 +2809,16 @@ class AuthLDAP extends CommonDBTM {
 
       //$authentification_value = $values['user_params']['value'];
       // Tenter une recherche pour essayer de retrouver le DN
-      $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
+      $filter_value = $values['user_params']['value'];
+      if ($values['login_field'] == 'objectguid' && self::isValidGuid($filter_value)) {
+         $filter_value = self::guidToHex($filter_value);
+      }
+      $filter = "(".$values['login_field']."=".$filter_value.")";
 
       if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
 
-      $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          $info = self::get_entries_clean($ds, $result);
 
@@ -2824,7 +2828,7 @@ class AuthLDAP extends CommonDBTM {
                $login_attr => $info[0][$login_attr][0]
             ];
             if ($sync_attr !== null && isset($info[0][$sync_attr])) {
-               $ret['sync_field'] = $info[0][$sync_attr][0];
+               $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
             }
             return $ret;
          }
@@ -3541,7 +3545,7 @@ class AuthLDAP extends CommonDBTM {
     * @return array which contains ldap query results
     */
    static function get_entries_clean($link, $result) {
-      return Toolbox::clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
+      return ldap_get_entries($link, $result);
    }
 
 
@@ -3623,5 +3627,106 @@ class AuthLDAP extends CommonDBTM {
          ]
       );
       return $count > 0;
+   }
+
+   /**
+    * Get a LDAP field value
+    *
+    * @param $infos LDAP entry infos
+    * @param $field Field name to retrieve
+    *
+    * @return string
+    */
+   public static function getFieldValue($infos, $field) {
+      $value = null;
+      if (is_array($infos[$field])) {
+         $value = $infos[$field][0];
+      } else {
+         $value = $infos[$field];
+      }
+      if ($field != 'objectguid') {
+         return $value;
+      }
+
+      //handle special objectguid from AD directories
+      try {
+         $value = self::guidToString($value);
+         if (!self::isValidGuid($value)) {
+            throw new \RuntimeException('Not an objectguid!');
+         }
+      } catch (\Exception $e) {
+         //well... this is not an objectguid apparently
+         $value = $infos[$field];
+      }
+
+      return $value;
+   }
+
+   /**
+    * Converts a string representation of an objectguid to hexadecimal
+    * Used to build filters
+    *
+    * @param string $guid_str String representation
+    *
+    * @return string
+    */
+   public static function guidToHex($guid_str) {
+      $str_g = explode('-', $guid_str);
+
+      $str_g[0] = strrev($str_g[0]);
+      $str_g[1] = strrev($str_g[1]);
+      $str_g[2] = strrev($str_g[2]);
+
+      $guid_hex = '\\';
+      $strrev = 0;
+      foreach ($str_g as $str) {
+         for ($i = 0; $i < strlen($str)+2; $i++) {
+            if ($strrev < 3) {
+               $guid_hex .= strrev(substr($str, 0, 2)).'\\';
+            } else {
+               $guid_hex .= substr($str, 0, 2).'\\';
+            }
+            $str = substr($str, 2);
+         }
+         if ($strrev < 3) {
+            $guid_hex .= strrev($str);
+         } else {
+            $guid_hex .= $str;
+         }
+         $strrev++;
+      }
+      return $guid_hex;
+   }
+
+   /**
+    * Converts binary objectguid to string representation
+    *
+    * @param mixed $binary_guid Binary objectguid from AD
+    *
+    * @return string
+    */
+   public static function guidToString($guid_bin) {
+      $guid_hex = unpack("H*hex", $guid_bin);
+      $hex = $guid_hex["hex"];
+
+      $hex1 = substr($hex, -26, 2) . substr($hex, -28, 2) . substr($hex, -30, 2) . substr($hex, -32, 2);
+      $hex2 = substr($hex, -22, 2) . substr($hex, -24, 2);
+      $hex3 = substr($hex, -18, 2) . substr($hex, -20, 2);
+      $hex4 = substr($hex, -16, 4);
+      $hex5 = substr($hex, -12, 12);
+
+      $guid_str = $hex1 . "-" . $hex2 . "-" . $hex3 . "-" . $hex4 . "-" . $hex5;
+      return $guid_str;
+   }
+
+   /**
+    * Check if text representation of an objectguid is valid
+    *
+    * @param string $string Strign representation
+    *
+    * @return boolean
+    */
+   public static function isValidGuid($guid_str) {
+      return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
    }
 }

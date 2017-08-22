@@ -781,11 +781,11 @@ class AuthLDAP extends DbTestCase {
 
       $this->array($group)->isIdenticalTo([
          'cn'     => [
-           'count'   => '1',
+           'count'   => 1,
             0        => 'glpi2-group1',
          ],
          0        => 'cn',
-         'count'  => '1',
+         'count'  => 1,
          'dn'     => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org'
       ]);
    }
@@ -1102,5 +1102,26 @@ class AuthLDAP extends DbTestCase {
 
       global $DB;
       $DB->queryOrDie("UPDATE glpi_authldaps SET sync_field=NULL WHERE id=" . $ldap->getID());
+   }
+
+   public function testIsValidGuid() {
+      $this->boolean(\AuthLDAP::isValidGuid(''))->isFalse();
+      $this->boolean(\AuthLDAP::isValidGuid('00000000-0000-0000-0000-000000000000'))->isTrue();
+      $this->boolean(\AuthLDAP::isValidGuid('AB52DFB8-A352-BA53-CC58-ABFD5E9D200E'))->isTrue();
+      $this->boolean(\AuthLDAP::isValidGuid('ZB52DFH8-AH52-BH53-CH58-ABFD5E9D200E'))->isFalse();
+   }
+
+   public function testGuidToHex() {
+      $guid       = '891b903c-9982-4e64-9c2a-a6caff69f5b0';
+      $expected   = '\3c\90\1b\89\82\99\64\4e\9c\2a\a6\ca\ff\69\f5\b0';
+      $this->string(\AuthLDAP::guidToHex($guid))->isIdenticalTo($expected);
+   }
+
+   public function testGetFieldValue() {
+      $infos = ['field' => 'value'];
+      $this->string(\AuthLDAP::getFieldValue($infos, 'field'))->isIdenticalTo('value');
+
+      $infos = ['objectguid' => 'value'];
+      $this->string(\AuthLDAP::getFieldValue($infos, 'objectguid'))->isIdenticalTo('value');
    }
 }
