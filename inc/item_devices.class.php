@@ -711,8 +711,7 @@ class Item_Devices extends CommonDBRelation {
                   switch ($attributs['datatype']) {
                      case 'dropdown':
                         $dropdownType = getItemtypeForForeignKeyField($field);
-                        $dropdownType::dropdown(['value'  => $this->fields[$field],
-                              'entity' => $this->fields["entities_id"]]);
+                        $content = Dropdown::getDropdownName($dropdownType::getTable(), $link[$field]);
                         break;
 
                      default:
