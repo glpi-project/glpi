@@ -103,9 +103,7 @@ if (isset($_GET['getvcard'])) {
    Session::checkRight('user', User::UPDATEAUTHENT);
 
    $user->getFromDB($_POST["id"]);
-   AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                            'value'  => $user->fields["name"]],
-                                      true, $user->fields["auths_id"], true);
+   AuthLdap::forceOneUserSynchronization($user);
    Html::back();
 
 } else if (isset($_POST["update"])) {

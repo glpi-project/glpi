@@ -1743,6 +1743,17 @@ Regards,',
       $migration->addKey("glpi_problemtasks", "users_id_editor");
    }
 
+   //Add a new sync_field in LDAP configuration
+   if (!$DB->fieldExists('glpi_authldaps', 'sync_field')) {
+      $migration->addField("glpi_authldaps", "sync_field", "string", ['after' => 'login_field', 'null' => true]);
+      $migration->addKey('glpi_authldaps', 'sync_field');
+   }
+   //Add a new sync_field for users
+   if (!$DB->fieldExists('glpi_users', 'sync_field')) {
+      $migration->addField("glpi_users", "sync_field", "string", ['null' => true]);
+      $migration->addKey('glpi_users', 'sync_field');
+   }
+
    $migration->addConfig([
       'smtp_max_retries'   => 5,
       'smtp_sender'        => 'NULL',

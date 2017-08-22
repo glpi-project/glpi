@@ -421,12 +421,14 @@ select {
 
 
 textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-input) {
-   background-color:#FCFCFC;
-   color: black;
    border: 1px solid #D3D3D3;
    font-size: 11px;
    border-radius: 3px;
    padding: 0 5px;
+}
+textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-input):not([disabled]) {
+   background-color:#FCFCFC;
+   color: black;
 }
 
 textarea:focus, input:focus {

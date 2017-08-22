@@ -102,7 +102,7 @@ class AuthLDAP extends DbTestCase {
    public function testPost_getEmpty() {
       $ldap = new \AuthLDAP();
       $ldap->post_getEmpty();
-      $this->array($ldap->fields)->hasSize(22);
+      $this->array($ldap->fields)->hasSize(23);
    }
 
    public function testUnsetUndisclosedFields() {
@@ -118,16 +118,19 @@ class AuthLDAP extends DbTestCase {
       //login_field and sync_field must be filled
       $ldap->preconfig('AD');
       $this->array($ldap->fields)
-         ->string['login_field']->isIdenticalTo('samaccountname');
+         ->string['login_field']->isIdenticalTo('samaccountname')
+         ->string['sync_field']->isIdenticalTo('objectguid');
 
       //No preconfiguration model
       $ldap->preconfig('');
       //Login_field is set to uid (default)
       $this->string($ldap->fields['login_field'])->isIdenticalTo('uid');
+      $this->variable($ldap->fields['sync_field'])->isNull();
    }
 
    public function testPrepareInputForUpdate() {
-      $ldap   = new \Authldap();
+      $ldap   = new \mock\Authldap();
+      $this->calling($ldap)->isSyncFieldUsed = true;
 
       //------------ Password tests --------------------//
       $input  = ['name' => 'ldap', 'rootdn_passwd' => ''];
@@ -166,6 +169,24 @@ class AuthLDAP extends DbTestCase {
       $input['_login_field'] = 'TEST';
       $result         = $ldap->prepareInputForUpdate($input);
       $this->string($result['_login_field'])->isIdenticalTo('test');
+
+      $input['sync_field'] = 'sync_field';
+      $result = $ldap->prepareInputForUpdate($input);
+      $this->string($result['sync_field'])->isIdenticalTo('sync_field');
+
+      //test sync_field update
+      $ldap->fields['sync_field'] = 'sync_field';
+      $result = $ldap->prepareInputForUpdate($input);
+      $this->array($result)->notHasKey('sync_field');
+
+      $this->calling($ldap)->isSyncFieldUsed = false;
+      $result = $ldap->prepareInputForUpdate($input);
+      $this->array($result)->hasKey('sync_field');
+      $this->calling($ldap)->isSyncFieldUsed = true;
+
+      $input['sync_field'] = 'another_field';
+      $result = $ldap->prepareInputForUpdate($input);
+      $this->boolean($result)->isFalse();
    }
 
    public function testgetGroupSearchTypeName() {
@@ -222,7 +243,7 @@ class AuthLDAP extends DbTestCase {
    public function testGetSearchOptionsNew() {
       $ldap     = new \AuthLDAP();
       $options  = $ldap->getSearchOptionsNew();
-      $this->array($options)->hasSize(30);
+      $this->array($options)->hasSize(31);
    }
 
    public function testGetSyncFields() {
@@ -849,5 +870,237 @@ class AuthLDAP extends DbTestCase {
       $this->array($usergroups[0])
          ->variable['id']->isEqualTo($group->getID())
          ->string['name']->isIdenticalTo($group->fields['name']);
+   }
+
+   /**
+    * Test sync user
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testSyncUser() {
+      $ldap = $this->ldap;
+      $this->boolean($ldap->isSyncFieldEnabled())->isFalse();
+
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'ecuador0'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('ecuador0')
+         ->string['phone']->isIdenticalTo('034596780')
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $this->boolean(
+         ldap_modify(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['telephoneNumber' => '+33101010101']
+         )
+      );
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+
+      //reset entry before any test can fail
+      $this->boolean(
+         ldap_modify(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['telephoneNumber' => '034596780']
+         )
+      );
+
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('ecuador0')
+         ->string['phone']->isIdenticalTo('+33101010101')
+         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $this->boolean(
+         $ldap->update([
+            'id'           => $ldap->getID(),
+            'sync_field'   => 'employeenumber'
+         ])
+      )->isTrue();
+
+      $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
+
+      $this->boolean(
+         ldap_mod_add(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['employeeNumber' => '42']
+         )
+      );
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->variable($user->fields['sync_field'])->isEqualTo(42);
+
+      $this->boolean(
+         ldap_rename(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            'uid=testecuador',
+            null,
+            true
+         )
+      );
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+
+      //reset entry before any test can fail
+      $this->boolean(
+         ldap_rename(
+            $ldap->connect(),
+            'uid=testecuador,ou=people,ou=ldap3,dc=glpi,dc=org',
+            'uid=ecuador0',
+            null,
+            true
+         )
+      );
+
+      $this->boolean(
+         ldap_mod_del(
+            $ldap->connect(),
+            'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
+            ['employeeNumber' => 42]
+         )
+      );
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
+         ->variable['id']->isEqualTo($user->getID());
+
+      $this->variable($user->fields['sync_field'])->isEqualTo(42);
+      $this->string($user->fields['name'])->isIdenticalTo('testecuador');
+
+      global $DB;
+      $DB->queryOrDie("UPDATE glpi_authldaps SET sync_field=NULL WHERE id=" . $ldap->getID());
+   }
+
+   /**
+    * Test ldap authentication
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testLdapAuth() {
+      //try to login from a user that does not exists yet
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil6', 'password'))->isTrue();
+
+      $user = new \User();
+      $user->getFromDBbyName('brazil6');
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('brazil6')
+         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=ldap3,dc=glpi,dc=org');
+      $this->boolean($auth->user_present)->isFalse();
+      $this->boolean($auth->user_dn)->isFalse();
+      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+
+      //import user; then try to login
+      $ldap = $this->ldap;
+      $this->boolean(
+         $ldap->update([
+            'id'           => $ldap->getID(),
+            'sync_field'   => 'employeenumber'
+         ])
+      )->isTrue();
+      $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
+
+      //try to import an user from its sync_field
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => '10'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('brazil7')
+         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil7', 'password'))->isTrue();
+
+      $this->boolean($auth->user_present)->isTrue();
+      $this->string($auth->user_dn)->isIdenticalTo($user->fields['user_dn']);
+      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+
+      //change user login, and try again. Existing user should be updated.
+      $this->boolean(
+         ldap_rename(
+            $ldap->connect(),
+            'uid=brazil7,ou=people,ou=ldap3,dc=glpi,dc=org',
+            'uid=brazil7test',
+            null,
+            true
+         )
+      );
+
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil7', 'password'))->isFalse();
+      $this->boolean($auth->login('brazil7test', 'password'))->isTrue();
+
+      //reset entry before any test can fail
+      $this->boolean(
+         ldap_rename(
+            $ldap->connect(),
+            'uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org',
+            'uid=brazil7',
+            null,
+            true
+         )
+      );
+
+      $this->boolean($user->getFromDB($user->getID()))->isTrue();
+      $this->array($user->fields)
+         ->string['name']->isIdenticalTo('brazil7test')
+         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=ldap3,dc=glpi,dc=org');
+
+      $this->boolean($auth->user_present)->isTrue();
+      $this->resource($auth->ldap_connection)->isOfType('ldap link');
+
+      global $DB;
+      $DB->queryOrDie("UPDATE glpi_authldaps SET sync_field=NULL WHERE id=" . $ldap->getID());
    }
 }

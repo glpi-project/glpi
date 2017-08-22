@@ -145,22 +145,57 @@ function import(array $options) {
         break;
 
       case AuthLDAP::ACTION_ALL :
-         $actions_to_do = [AuthLDAP::ACTION_IMPORT,AuthLDAP::ACTION_ALL];
+         $actions_to_do = [AuthLDAP::ACTION_IMPORT, AuthLDAP::ACTION_ALL];
         break;
    }
 
    foreach ($actions_to_do as $action_to_do) {
       $options['mode']         = $action_to_do;
       $options['authldaps_id'] = $options['ldapservers_id'];
+      $authldap = new \AuthLdap();
+      $authldap->getFromDB($options['authldaps_id']);
       $users                   = AuthLdap::getAllUsers($options, $results, $limitexceeded);
       $contact_ok              = true;
 
       if (is_array($users)) {
          foreach ($users as $user) {
-            $result = AuthLdap::ldapImportUserByServerId(['method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                               'value'  => $user["user"]],
-                                                         $action_to_do,
-                                                         $options['ldapservers_id']);
+            //check if user exists
+            $user_sync_field = null;
+            if ($authldap->isSyncFieldEnabled()) {
+               $sync_field = $authldap->fields['sync_field'];
+               if (isset($user[$sync_field])) {
+                  $user_sync_field = $user[$sync_field];
+               }
+            }
+            $dbuser = $authldap->getLdapExistingUser(
+               $user['user'],
+               $user_sync_field
+            );
+
+            if ($dbuser && $action_to_do == AuthLdap::ACTION_IMPORT) {
+               continue;
+            }
+
+            $user_field = 'name';
+            $id_field = $authldap->fields['login_field'];
+            $value = $user['user'];
+            if ($authldap->isSyncFieldEnabled() && (!$dbuser || !empty($dbuser->fields['sync_field']))) {
+               $value = $user[$sync_field];
+               $user_field = 'sync_field';
+               $id_field   = $authldap->fields['sync_field'];
+            }
+
+            $result = AuthLdap::ldapImportUserByServerId(
+               [
+                  'method'             => AuthLDAP::IDENTIFIER_LOGIN,
+                  'value'              => $value,
+                  'identifier_field'   => $id_field,
+                  'user_field'         => $user_field
+               ],
+               $action_to_do,
+               $options['ldapservers_id']
+            );
+
             if ($result) {
                $results[$result['action']] += 1;
             }
