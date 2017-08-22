@@ -1450,7 +1450,10 @@ class User extends CommonDBTM {
          $this->fields["authtype"] = Auth::LDAP;
 
          foreach ($fields as $k => $e) {
-            $val = self::getLdapFieldValue($e, $v);
+            $val = AuthLDAP::getFieldValue(
+               [$e => self::getLdapFieldValue($e, $v)],
+               $e
+            );
             if (empty($val)) {
                switch ($k) {
                   case "language" :

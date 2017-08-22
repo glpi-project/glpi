@@ -164,7 +164,7 @@ function import(array $options) {
             if ($authldap->isSyncFieldEnabled()) {
                $sync_field = $authldap->fields['sync_field'];
                if (isset($user[$sync_field])) {
-                  $user_sync_field = $user[$sync_field];
+                  $user_sync_field = $authldap::getFieldValue($user, $sync_field);
                }
             }
             $dbuser = $authldap->getLdapExistingUser(
@@ -180,7 +180,7 @@ function import(array $options) {
             $id_field = $authldap->fields['login_field'];
             $value = $user['user'];
             if ($authldap->isSyncFieldEnabled() && (!$dbuser || !empty($dbuser->fields['sync_field']))) {
-               $value = $user[$sync_field];
+               $value = $user_sync_field;
                $user_field = 'sync_field';
                $id_field   = $authldap->fields['sync_field'];
             }
