@@ -463,7 +463,6 @@ function loadDataset() {
             'port'            => '3890',
             'condition'       => '(objectclass=inetOrgPerson)',
             'login_field'     => 'uid',
-            'sync_field'      => 'uid',
             'rootdn_passwd'   => 'insecure',
             'is_default'      => 1,
             'is_active'       => 1,

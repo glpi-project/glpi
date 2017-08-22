@@ -421,6 +421,16 @@ class User extends CommonDBTM {
       return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'");
    }
 
+   /**
+    * Retrieve an item from the database using its login
+    *
+    * @param $name login of the user
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBbySyncField($value) {
+      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sync_field` = '$value'");
+   }
 
    /**
     * Retrieve an item from the database using it's dn
@@ -1929,10 +1939,30 @@ class User extends CommonDBTM {
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
       } else {
-         echo "<td rowspan='3'></td>";
-         echo "<td rowspan='3'></td>";
+         echo "<td rowspan='4'></td>";
+         echo "<td rowspan='4'></td>";
       }
       echo "</tr>";
+
+      //If it's an external auth, check if the sync_field must be displayed
+      if ($extauth
+         && $this->fields['auths_id']
+            && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])) {
+         echo "<tr class='tab_bg_1'><td>" . __('Synchronization field') . "</td><td>";
+         if (self::canUpdate()
+             && (!$extauth || empty($ID))) {
+                Html::autocompletionTextField($this, "sync_field");
+         } else {
+            if (empty($this->fields['sync_field'])) {
+               echo Dropdown::EMPTY_VALUE;
+            } else {
+               echo $this->fields['sync_field'];
+            }
+         }
+         echo "</td></tr>";
+      } else {
+         echo "<tr><td colspan='2'></td></tr>";
+      }
 
       echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
       Html::autocompletionTextField($this, "realname");
@@ -2266,6 +2296,20 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
+         if ($extauth
+            && $this->fields['auths_id']
+               && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])) {
+            echo "<tr class='tab_bg_1'><td>" . __('Synchronization field') . "</td><td>";
+            if (empty($this->fields['sync_field'])) {
+               echo Dropdown::EMPTY_VALUE;
+            } else {
+               echo $this->fields['sync_field'];
+            }
+            echo "</td></tr>";
+         } else {
+            echo "<tr><td colspan='2'></td></tr>";
+         }
+
          echo "<tr class='tab_bg_1'>";
 
          if (!GLPI_DEMO_MODE) {
@@ -2546,7 +2590,6 @@ class User extends CommonDBTM {
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
-      global $DB;
 
       switch ($ma->getAction()) {
          case 'force_user_ldap_update' :
@@ -2554,11 +2597,7 @@ class User extends CommonDBTM {
                if ($item->can($id, UPDATE)) {
                   if (($item->fields["authtype"] == Auth::LDAP)
                       || ($item->fields["authtype"] == Auth::EXTERNAL)) {
-                     if (AuthLdap::ldapImportUserByServerId(['method'
-                                                                   => AuthLDAP::IDENTIFIER_LOGIN,
-                                                                  'value'
-                                                                   => $item->fields["name"]],
-                                                            1, $item->fields["auths_id"])) {
+                     if (AuthLdap::forceOneUserSynchronization($item, false)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -2664,6 +2703,15 @@ class User extends CommonDBTM {
          'datatype'           => 'specific',
          'nosearch'           => true,
          'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => $this->getTable(),
+         'field'              => 'sync_field',
+         'name'               => __('Synchronization field'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
       ];
 
       $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
