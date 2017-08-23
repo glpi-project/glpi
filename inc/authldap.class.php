@@ -1627,7 +1627,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
          }
-         $filter = Toolbox::unclean_cross_side_scripting_deep($filter);
+         $filter = Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($filter));
          $sr     = @ldap_search($ds, $values['basedn'], $filter, $attrs);
          if ($sr) {
             if (in_array(ldap_errno($ds), [4,11])) {
@@ -3173,9 +3173,11 @@ class AuthLDAP extends CommonDBTM {
                   }
                   echo "<td><label for='criterias$field'>$label</label></td><td>";
                   $field_counter++;
-                  echo "<input type='text' id='criterias$field' name='criterias[$field]' value='".
-                        (isset($_SESSION['ldap_import']['criterias'][$field])
-                         ?$_SESSION['ldap_import']['criterias'][$field]:'')."'>";
+                  $field_value = '';
+                  if (isset($_SESSION['ldap_import']['criterias'][$field])) {
+                     $field_value = Html::entities_deep(Toolbox::unclean_cross_side_scripting_deep(Toolbox::stripslashes_deep($_SESSION['ldap_import']['criterias'][$field])));
+                  }
+                  echo "<input type='text' id='criterias$field' name='criterias[$field]' value='$field_value'>";
                   echo "</td>";
                   if ($field_counter == 2) {
                      echo "</tr>";
