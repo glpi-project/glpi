@@ -987,7 +987,7 @@ class TicketFollowup  extends CommonDBTM {
             if ($data['users_id']) {
                $username = getUserName($data['users_id'], $showuserlink);
             }
-            $name = sprintf(__('Create by %1$s on %2$s'), $username,
+            $name = sprintf(__('Created by %1$s on %2$s'), $username,
                               Html::convDateTime($data['date']));
             if ($data['requesttypes_id']) {
                $name = sprintf(__('%1$s - %2$s'), $name,
