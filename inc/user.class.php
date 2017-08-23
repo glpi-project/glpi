@@ -4587,7 +4587,7 @@ class User extends CommonDBTM {
                                        return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');
                                     }, $map );
 
-      return addslashes($ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret);
+      return $ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret;
    }
 
    /**

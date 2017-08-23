@@ -409,6 +409,12 @@ class AuthLDAP extends DbTestCase {
       $this->addLdapServers();
       $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
       $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$ldap->getID());
+
+      $ldap->update([
+         'id'        => $ldap->getID(),
+         'is_active' => 0
+      ]);
+      $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo(0);
    }
 
    public function testPost_updateItem() {
@@ -911,7 +917,7 @@ class AuthLDAP extends DbTestCase {
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             ['telephoneNumber' => '+33101010101']
          )
-      );
+      )->isTrue();
 
       $synchro = $ldap->forceOneUserSynchronization($user);
 
@@ -922,7 +928,7 @@ class AuthLDAP extends DbTestCase {
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             ['telephoneNumber' => '034596780']
          )
-      );
+      )->isTrue();
 
       $this->array($synchro)
          ->hasSize(2)
@@ -950,7 +956,7 @@ class AuthLDAP extends DbTestCase {
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             ['employeeNumber' => '42']
          )
-      );
+      )->isTrue();
 
       $synchro = $ldap->forceOneUserSynchronization($user);
 
@@ -970,7 +976,7 @@ class AuthLDAP extends DbTestCase {
             null,
             true
          )
-      );
+      )->isTrue();
 
       $synchro = $ldap->forceOneUserSynchronization($user);
 
@@ -983,7 +989,7 @@ class AuthLDAP extends DbTestCase {
             null,
             true
          )
-      );
+      )->isTrue();
 
       $this->boolean(
          ldap_mod_del(
@@ -991,7 +997,7 @@ class AuthLDAP extends DbTestCase {
             'uid=ecuador0,ou=people,ou=ldap3,dc=glpi,dc=org',
             ['employeeNumber' => 42]
          )
-      );
+      )->isTrue();
 
       $this->boolean($user->getFromDB($user->getID()))->isTrue();
       $this->array($synchro)
@@ -1075,7 +1081,7 @@ class AuthLDAP extends DbTestCase {
             null,
             true
          )
-      );
+      )->isTrue();
 
       $auth = new \Auth();
       $this->boolean($auth->login('brazil7', 'password'))->isFalse();
@@ -1090,7 +1096,7 @@ class AuthLDAP extends DbTestCase {
             null,
             true
          )
-      );
+      )->isTrue();
 
       $this->boolean($user->getFromDB($user->getID()))->isTrue();
       $this->array($user->fields)
@@ -1123,5 +1129,174 @@ class AuthLDAP extends DbTestCase {
 
       $infos = ['objectguid' => 'value'];
       $this->string(\AuthLDAP::getFieldValue($infos, 'objectguid'))->isIdenticalTo('value');
+   }
+
+   /**
+    * Test get users
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testGetUsers() {
+      $ldap = $this->ldap;
+      $results = [];
+      $limit = false;
+
+      $users = \AuthLDAP::getUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(909);
+      $this->array($results)->hasSize(0);
+
+      $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+      $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
+      $_SESSION['ldap_import']['mode'] = 0;
+
+      $users = \AuthLDAP::getUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT,
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(12);
+      $this->array($results)->hasSize(0);
+
+      $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
+
+      $users = \AuthLDAP::getUsers(
+         [
+            'authldaps_id' => $ldap->getID(),
+            'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
+            'mode'         => \AuthLDAP::ACTION_IMPORT,
+         ],
+         $results,
+         $limit
+      );
+
+      $this->array($users)->hasSize(1);
+      $this->array($results)->hasSize(0);
+
+      //hardcode tsmap
+      $users[0]['stamp'] = 1503470443;
+      $this->array($users[0])->isIdenticalTo([
+         'link'      => 'remi',
+         'stamp'     => 1503470443,
+         'date_sync' => '-----',
+         'uid'       =>'remi'
+
+      ]);
+   }
+
+   /**
+    * Test removed users
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testRemovedUser() {
+      global $CFG_GLPI;
+
+      $ldap = $this->ldap;
+
+      //put deleted LDAP users in dustbin
+      $CFG_GLPI['user_deleted_ldap'] = 1;
+
+      //add a new user in directory
+      $this->boolean(
+         ldap_add(
+            $ldap->connect(),
+            'uid=toremovetest,ou=people,ou=ldap3,dc=glpi,dc=org',
+            [
+               'uid'          => 'toremovetest',
+               'sn'           => 'A SN',
+               'cn'           => 'A CN',
+               'userpassword' => 'password',
+               'objectClass'  => [
+                  'top',
+                  'inetOrgPerson'
+               ]
+            ]
+         )
+      )->isTrue();
+
+      //import the user
+      $import = \AuthLdap::ldapImportUserByServerId(
+         [
+            'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+            'value'  => 'toremovetest'
+         ],
+         \AuthLDAP::ACTION_IMPORT,
+         $ldap->getID(),
+         true
+      );
+      $this->array($import)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
+         ->integer['id']->isGreaterThan(0);
+
+      //check created user
+      $user = new \User();
+      $this->boolean($user->getFromDB($import['id']))->isTrue();
+
+      //check sync from an non reachable directory
+      $host = $ldap->fields['host'];
+      $port = $ldap->fields['port'];
+      $this->boolean(
+         $ldap->update([
+            'id'     => $ldap->getID(),
+            'host'   => 'server-does-not-exists.org',
+            'port'   => '1234'
+         ])
+      )->isTrue();
+      $ldap::$conn_cache = [];
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->boolean($synchro)->isFalse();
+
+      //reset directory configuration
+      $this->boolean(
+         $ldap->update([
+            'id'     => $ldap->getID(),
+            'host'   => $host,
+            'port'   => $port
+         ])
+      )->isTrue();
+
+      //check that user still exists
+      $uid = $import['id'];
+      $this->boolean($user->getFromDB($uid))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+
+      //drop test user
+      $this->boolean(
+         ldap_delete(
+            $ldap->connect(),
+            'uid=toremovetest,ou=people,ou=ldap3,dc=glpi,dc=org'
+         )
+      )->isTrue();
+
+      $synchro = $ldap->forceOneUserSynchronization($user);
+      $this->array($synchro)
+         ->hasSize(2)
+         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
+         ->variable['id']->isEqualTo($uid);
+      $CFG_GLPI['user_deleted_ldap'] = 0;
+
+      //check that user no longer exists
+      $this->boolean($user->getFromDB($uid))->isTrue();
+      $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
    }
 }
