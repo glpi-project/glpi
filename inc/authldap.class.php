@@ -65,6 +65,9 @@ class AuthLDAP extends CommonDBTM {
 
    static $rightname = 'config';
 
+   //connection caching stuff
+   static $conn_cache = [];
+
    static function getTypeName($nb = 0) {
       return _n('LDAP directory', 'LDAP directories', $nb);
    }
@@ -1439,7 +1442,7 @@ class AuthLDAP extends CommonDBTM {
       $rand          = mt_rand();
       $results       = [];
       $limitexceeded = false;
-      $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
+      $ldap_users    = self::getUsers($values, $results, $limitexceeded);
 
       $config_ldap   = new AuthLDAP();
       $config_ldap->getFromDB($values['authldaps_id']);
@@ -1497,70 +1500,30 @@ class AuthLDAP extends CommonDBTM {
             echo "</tr>";
 
             foreach ($ldap_users as $userinfos) {
-               $user = new User();
-
-               $sync_field = null;
-               $user_sync_field = null;
-               if ($config_ldap->isSyncFieldEnabled()) {
-                  $sync_field = $config_ldap->fields['sync_field'];
-                  if (isset($userinfos[$sync_field])) {
-                     $user_sync_field = self::getFieldValue($userinfos, $sync_field);
-                  }
-               }
-               if (!$_SESSION['ldap_import']['mode'] && $config_ldap->getLdapExistingUser($userinfos['user'], $user_sync_field)) {
-                  continue;
-               }
-               $link = $userinfos["user"];
-               if (isset($userinfos['id']) && User::canView()) {
-                  $user->getFromDB($userinfos['id']);
-                  $link = "<a href='".Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'].
-                          "'>". $user->fields['name'] . "</a>";
-               }
-               if (isset($userinfos["timestamp"])) {
-                  $stamp = $userinfos["timestamp"];
-               } else {
-                  $stamp = '';
-               }
-
-               if (isset($userinfos["date_sync"])) {
-                  $date_sync = $userinfos["date_sync"];
-               } else {
-                  $date_sync = '';
-               }
-
                echo "<tr class='tab_bg_2 center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
                echo "<td>";
-               $uid = $userinfos['user'];
-               if ($config_ldap->isSyncFieldEnabled() && isset($userinfos[$sync_field])) {
-                  $uid = self::getFieldValue($userinfos, $sync_field);
-               }
-               echo Html::getMassiveActionCheckBox(__CLASS__, $uid);
+               echo Html::getMassiveActionCheckBox(__CLASS__, $userinfos['uid']);
                echo "</td>";
                if ($config_ldap->isSyncFieldEnabled()) {
-                  echo "<td>";
-                  $field_for_sync = $config_ldap->getLdapIdentifierToUse();
-                  if (isset($userinfos[$field_for_sync])) {
-                     echo self::getFieldValue($userinfos, $field_for_sync);
-                  } else if (!empty($user->fields['sync_field'])) {
-                     echo $user->fields['sync_field'];
-                  } else {
-                     echo '-';
-                  }
-                  echo "</td>";
+                  echo "<td>" . $userinfos['uid'] . "</td>";
                }
-               echo "<td>" . $link . "</td>";
+               echo "<td>";
+               if (isset($userinfos['id']) && User::canView()) {
+                  echo "<a href='".$userinfos['link']."'>". $userinfos['name'] . "</a>";
+               } else {
+                  echo $userinfos['link'];
+               }
+               echo "</td>";
 
-               if ($stamp != '') {
-                  echo "<td>" .Html::convDateTime(date("Y-m-d H:i:s", $stamp)). "</td>";
+               if ($userinfos['stamp'] != '') {
+                  echo "<td>" .Html::convDateTime(date("Y-m-d H:i:s", $userinfos['stamp'])). "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if ($_SESSION['ldap_import']['mode']) {
-                  if ($date_sync != '') {
-                     echo "<td>" . Html::convDateTime($date_sync) . "</td>";
-                  } else {
-                     echo "<td>&nbsp;</td>";
+                  if ($userinfos['date_sync'] != '') {
+                     echo "<td>" . Html::convDateTime($userinfos['date_sync']) . "</td>";
                   }
                }
                echo "</tr>";
@@ -1655,7 +1618,7 @@ class AuthLDAP extends CommonDBTM {
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                if (in_array($field_for_sync, $info[$ligne])) {
-                  $uid = $info[$ligne][$field_for_sync][0];
+                  $uid = self::getFieldValue($info[$ligne], $field_for_sync);
 
                   if ($login_field != $field_for_sync && !isset($info[$ligne][$login_field])) {
                      Toolbox::logDebug("Missing field $login_field for LDAP entry $field_for_sync $uid");
@@ -2347,7 +2310,6 @@ class AuthLDAP extends CommonDBTM {
     */
    static function ldapImportUserByServerId(array $params, $action, $ldap_server,
                                             $display = false) {
-      static $conn_cache = [];
 
       $params      = Toolbox::stripslashes_deep($params);
       $config_ldap = new self();
@@ -2368,13 +2330,14 @@ class AuthLDAP extends CommonDBTM {
 
       $search_parameters = [];
       //Connect to the directory
-      if (isset($conn_cache[$ldap_server])) {
-         $ds = $conn_cache[$ldap_server];
+      if (isset(self::$conn_cache[$ldap_server])) {
+         $ds = self::$conn_cache[$ldap_server];
       } else {
          $ds = $config_ldap->connect();
       }
       if ($ds) {
-         $conn_cache[$ldap_server]                            = $ds;
+         $cache = &self::$conn_cache;
+         $cache[$ldap_server]                            = $ds;
          $search_parameters['method']                         = $params['method'];
          $search_parameters['fields'][self::IDENTIFIER_LOGIN] = $params['identifier_field'];
 
@@ -2390,64 +2353,68 @@ class AuthLDAP extends CommonDBTM {
                      'user_params'       => $params,
                      'condition'         => $config_ldap->fields['condition']];
 
-         $infos = self::searchUserDn($ds, $attribs);
-         $login   = $infos[$search_parameters['fields'][$search_parameters['method']]];
+         try {
+            $infos = self::searchUserDn($ds, $attribs);
+            $login   = self::getFieldValue($infos, $search_parameters['fields'][$search_parameters['method']]);
 
-         if ($infos && $infos['dn']) {
-            $user_dn = $infos['dn'];
-            $user    = new User();
+            if ($infos && $infos['dn']) {
+               $user_dn = $infos['dn'];
+               $user    = new User();
 
-            //Get information from LDAP
-            if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
-                                   ($action == self::ACTION_IMPORT))) {
-               // Add the auth method
-               // Force date sync
-               $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
-               $user->fields['is_deleted_ldap'] = 0;
+               //Get information from LDAP
+               if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
+                                    ($action == self::ACTION_IMPORT))) {
+                  // Add the auth method
+                  // Force date sync
+                  $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
+                  $user->fields['is_deleted_ldap'] = 0;
 
-               //Save information in database !
-               $input = $user->fields;
+                  //Save information in database !
+                  $input = $user->fields;
 
-               //clean picture from input
-               // (picture managed in User::post_addItem and prepareInputForUpdate)
-               unset($input['picture']);
+                  //clean picture from input
+                  // (picture managed in User::post_addItem and prepareInputForUpdate)
+                  unset($input['picture']);
 
-               if ($action == self::ACTION_IMPORT) {
-                  $input["authtype"] = Auth::LDAP;
-                  $input["auths_id"] = $ldap_server;
-                  // Display message after redirect
-                  if ($display) {
-                     $input['add'] = 1;
+                  if ($action == self::ACTION_IMPORT) {
+                     $input["authtype"] = Auth::LDAP;
+                     $input["auths_id"] = $ldap_server;
+                     // Display message after redirect
+                     if ($display) {
+                        $input['add'] = 1;
+                     }
+
+                     $user->fields["id"] = $user->add($input);
+                     return ['action' => self::USER_IMPORTED,
+                           'id'     => $user->fields["id"]];
                   }
+                  //Get the ID by user name
+                  if (!($id = User::getIdByfield($params['user_field'], $login))) {
+                     //In case user id as changed : get id by dn
+                     $id = User::getIdByfield('user_dn', $user_dn);
+                  }
+                  $input['id'] = $id;
 
-                  $user->fields["id"] = $user->add($input);
-                  return ['action' => self::USER_IMPORTED,
-                          'id'     => $user->fields["id"]];
+                  if ($display) {
+                     $input['update'] = 1;
+                  }
+                  $user->update($input);
+                  return ['action' => self::USER_SYNCHRONIZED,
+                        'id'     => $input['id']];
                }
-               //Get the ID by user name
-               if (!($id = User::getIdByfield($params['user_field'], $login))) {
-                  //In case user id as changed : get id by dn
-                  $id = User::getIdByfield('user_dn', $user_dn);
-               }
-               $input['id'] = $id;
+               return false;
 
-               if ($display) {
-                  $input['update'] = 1;
-               }
-               $user->update($input);
-               return ['action' => self::USER_SYNCHRONIZED,
-                       'id'     => $input['id']];
             }
+            if ($action != self::ACTION_IMPORT) {
+               $users_id = User::getIdByField($params['user_field'], $params['value']);
+               User::manageDeletedUserInLdap($users_id);
+               return ['action' => self::USER_DELETED_LDAP,
+                     'id'     => $users_id];
+            }
+         } catch (\RuntimeException $e) {
+            Toolbox::logDebug($e->getMessage());
             return false;
-
          }
-         if ($action != self::ACTION_IMPORT) {
-            $users_id = User::getIdByField($params['user_field'], $login);
-            User::manageDeletedUserInLdap($users_id);
-            return ['action' => self::USER_DELETED_LDAP,
-                    'id'    => $users_id];
-         }
-
       } else {
          return false;
       }
@@ -2820,6 +2787,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
+         //search has been done, let's check for found results
          $info = self::get_entries_clean($ds, $result);
 
          if (is_array($info) && ($info['count'] == 1)) {
@@ -2832,8 +2800,9 @@ class AuthLDAP extends CommonDBTM {
             }
             return $ret;
          }
+         return false;
       }
-      return false;
+      throw new \RuntimeException('Something went wrong searching in LDAP directory');
    }
 
 
@@ -3345,7 +3314,7 @@ class AuthLDAP extends CommonDBTM {
    static function getDefault() {
       global $DB;
 
-      foreach ($DB->request('glpi_authldaps', ['is_default' => 1]) as $data) {
+      foreach ($DB->request('glpi_authldaps', ['is_default' => 1, 'is_active' => 1]) as $data) {
          return $data['id'];
       }
       return 0;
@@ -3600,13 +3569,14 @@ class AuthLDAP extends CommonDBTM {
     * @return false|User
     */
    public function getLdapExistingUser($name, $sync = null) {
+      global $DB;
       $user = new User();
 
       if ($sync !== null && $user->getFromDBbySyncField($sync)) {
          return $user;
       }
 
-      if ($user->getFromDBbyName($name)) {
+      if ($user->getFromDBbyName($DB->escape($name))) {
          return $user;
       }
 
@@ -3650,9 +3620,12 @@ class AuthLDAP extends CommonDBTM {
 
       //handle special objectguid from AD directories
       try {
-         $value = self::guidToString($value);
+         //prevent double encoding
          if (!self::isValidGuid($value)) {
-            throw new \RuntimeException('Not an objectguid!');
+            $value = self::guidToString($value);
+            if (!self::isValidGuid($value)) {
+               throw new \RuntimeException('Not an objectguid!');
+            }
          }
       } catch (\Exception $e) {
          //well... this is not an objectguid apparently
@@ -3728,5 +3701,78 @@ class AuthLDAP extends CommonDBTM {
     */
    public static function isValidGuid($guid_str) {
       return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
+   }
+
+   /**
+    * Get the list of LDAP users to add/synchronize
+    * When importing, already existing users will be filtered
+    *
+    * @param array   $options       possible options:
+    *          - authldaps_id ID of the server to use
+    *          - mode user to synchronise or add?
+    *          - ldap_filter ldap filter to use
+    *          - basedn force basedn (default authldaps_id one)
+    *          - order display order
+    *          - begin_date begin date to time limit
+    *          - end_date end date to time limit
+    *          - script true if called by an external script
+    * @param type    $results       result stats
+    * @param boolean $limitexceeded limit exceeded exception
+    *
+    * @return array
+    */
+   public static function getUsers($values, &$results, &$limitexceeded) {
+      $users = [];
+      $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
+
+      $config_ldap   = new AuthLDAP();
+      $config_ldap->getFromDB($values['authldaps_id']);
+
+      if (!is_array($ldap_users) || count($ldap_users) == 0) {
+         return $users;
+      }
+
+      foreach ($ldap_users as $userinfos) {
+         $user_to_add = [];
+         $user = new User();
+
+         $user_sync_field = null;
+         if ($config_ldap->isSyncFieldEnabled()) {
+            $sync_field = $config_ldap->fields['sync_field'];
+            if (isset($userinfos[$sync_field])) {
+               $user_sync_field = self::getFieldValue($userinfos, $sync_field);
+            }
+         }
+
+         $user = $config_ldap->getLdapExistingUser($userinfos['user'], $user_sync_field);
+         if (isset($_SESSION['ldap_import']) && !$_SESSION['ldap_import']['mode'] && $user) {
+            continue;
+         }
+         $user_to_add['link'] = $userinfos["user"];
+         if (isset($userinfos['id']) && User::canView()) {
+            $user_to_add['id']   = $userinfos['id'];
+            $user_to_add['name'] = $user->fields['name'];
+            $user_to_add['link'] = Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'];
+         }
+
+         $user_to_add['stamp']      = (isset($userinfos["timestamp"])) ? $userinfos["timestamp"] : '';
+         $user_to_add['date_sync']  = (isset($userinfos["date_sync"])) ? $userinfos["date_sync"] : '';
+
+         $user_to_add['uid'] = $userinfos['user'];
+         if ($config_ldap->isSyncFieldEnabled()) {
+            if (isset($userinfos[$sync_field])) {
+               $user_to_add['uid'] = self::getFieldValue($userinfos, $sync_field);
+            }
+
+            $field_for_sync = $config_ldap->getLdapIdentifierToUse();
+            if (isset($userinfos[$field_for_sync])) {
+               $user_to_add['sync_field'] = $userinfos[$field_for_sync];
+            }
+         }
+
+         $users[] = $user_to_add;
+      }
+
+      return $users;
    }
 }
