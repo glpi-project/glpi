@@ -2511,7 +2511,8 @@ class Ticket extends CommonITILObject {
 
       return ((Session::haveRight("followup", TicketFollowup::ADDMYTICKET)
                && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                   || ($this->fields["users_id_recipient"] === Session::getLoginUserID())))
+                   || (isset($this->fields["users_id_recipient"])
+                        && ($this->fields["users_id_recipient"] === Session::getLoginUserID()))))
               || Session::haveRight('followup', TicketFollowup::ADDALLTICKET)
               || (Session::haveRight('followup', TicketFollowup::ADDGROUPTICKET)
                   && isset($_SESSION["glpigroups"])
