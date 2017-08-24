@@ -5136,7 +5136,7 @@ class Html {
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       $out .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
                 $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name'].
-                "&amp;showfilesize=".$p['showfilesize']."'>";
+                "&amp;showfilesize=".$p['showfilesize']."'".($p['multiple']?" multiple='multiple'":"").">";
       if ($addshowfilecontainer) {
          $out .= "<div id='".$p['showfilecontainer']."'></div>";
       }
