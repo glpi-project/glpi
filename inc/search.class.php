@@ -2398,7 +2398,7 @@ class Search {
          case "glpi_entities.completename" :
             if (($itemtype == 'User')
                 && ($ID == 80)) {
-               
+
                $addtable2 = '';
                if ($meta) {
                   $addtable2 = "_".$meta_type;
@@ -2587,7 +2587,7 @@ class Search {
       global $CFG_GLPI;
 
       $condition = '';
-    
+
       switch ($itemtype) {
          case 'Reminder' :
             $condition = Reminder::addVisibilityRestrict();
@@ -2623,7 +2623,7 @@ class Search {
             }
             $condition .= ") ";
             break;
-            
+
          case 'Project' :
             $condition = '';
             if (!Session::haveRight("project", Project::READALL)) {
@@ -5379,6 +5379,13 @@ class Search {
                $search[$itemtype][24]['field']         = 'name';
                $search[$itemtype][24]['linkfield']     = 'users_id_tech';
                $search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
+
+               $search[$itemtype][49]['table']          = 'glpi_groups';
+               $search[$itemtype][49]['field']          = 'completename';
+               $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
+               $search[$itemtype][49]['name']           = __('Group in charge of the hardware');
+               $search[$itemtype][49]['condition']      = '`is_assign`';
+               $search[$itemtype][49]['datatype']       = 'dropdown';
 
                $search[$itemtype][80]['table']         = 'glpi_entities';
                $search[$itemtype][80]['field']         = 'completename';
