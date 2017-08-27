@@ -292,6 +292,29 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`');
    }
 
+   public function testGroupBy() {
+
+      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => ['id']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
+
+      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => 'id']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
+
+      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => ['id', 'name']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
+   }
+
+   public function testNoFieldGroupBy() {
+      $this->when(
+         function () {
+            $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => []]);
+            $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
+         }
+      )->error()
+         ->withType(E_USER_ERROR)
+         ->withMessage('Missing group by field')
+         ->exists();
+   }
 
    public function testRange() {
 

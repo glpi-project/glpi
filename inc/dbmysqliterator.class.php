@@ -87,6 +87,7 @@ class DBmysqlIterator implements Iterator, Countable {
          $where    = '';
          $count    = '';
          $join     = '';
+         $groupby  = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                switch ((string)$key) {
@@ -125,6 +126,11 @@ class DBmysqlIterator implements Iterator, Countable {
 
                   case 'WHERE' :
                      $where = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'GROUPBY' :
+                     $groupby = $val;
                      unset($crit[$key]);
                      break;
 
@@ -199,6 +205,19 @@ class DBmysqlIterator implements Iterator, Countable {
             $this->sql .= " WHERE ".$this->analyseCrit($crit);
          } else if ($where) {
             $this->sql .= " WHERE ".$this->analyseCrit($where);
+         }
+
+         // GROUP BY field list
+         if (is_array($groupby)) {
+            if (count($groupby)) {
+               $groupby = array_map([__CLASS__, 'quoteName'], $groupby);
+               $this->sql .= ' GROUP BY '.implode(", ", $groupby);
+            } else {
+               trigger_error("Missing group by field", E_USER_ERROR);
+            }
+         } else if ($groupby) {
+            $groupby = self::quoteName($groupby);
+            $this->sql .= " GROUP BY $groupby";
          }
 
          // ORDER BY
