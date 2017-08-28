@@ -588,7 +588,7 @@ class Link extends CommonDBTM {
             $newlink          .= ">";
             $linkname          = sprintf(__('%1$s #%2$s'), $name, $i);
             // TODO: http://forum.glpi-project.org/viewtopic.php?id=155580
-            // $newlink          .= sprintf(__('%1$s: %2$s'), $linkname," "); // $val);
+            // $newlink       .= sprintf(__('%1$s: %2$s'), $linkname," "); // $val);
             $newlink          .= sprintf(__('%1$s: %2$s'), $linkname, $val);
             $newlink          .= "</a>";
             $computedlinks[]   = $newlink;
