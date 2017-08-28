@@ -64,7 +64,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
    if (isset($_SESSION['ldap_import']['authldaps_id'])
        && ($_SESSION['ldap_import']['authldaps_id'] != NOT_AVAILABLE)
-       && isset($_POST['search'])) {
+       && (isset($_POST['search']) || isset($_GET['start']) || isset($_POST['glpilist_limit']))) {
 
       echo "<br />";
       AuthLdap::searchUser($authldap);
@@ -72,3 +72,4 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 }
 
 Html::footer();
+
