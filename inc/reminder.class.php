@@ -917,7 +917,7 @@ class Reminder extends CommonDBVisible {
                   } else {
                      $interv[$key]["end"] = $data["end"];
                   }
-                  $interv[$key]["name"] = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
+                  $interv[$key]["name"] = Html::clean(Html::resume_text($data["name"], $CFG_GLPI["cut"]));
                   $interv[$key]["text"]
                      = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
                                          $CFG_GLPI["cut"]);
