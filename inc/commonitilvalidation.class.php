@@ -753,7 +753,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
-      if (Session::haveRightsOr(static::$rightname, TicketValidation::getCreateRights())) {
+      if (Session::haveRightsOr(static::$rightname, TicketValidation::getValidateRights())) {
          self::dropdownStatus("global_validation",
                               array('value'    => $item->fields["global_validation"]));
       } else {
