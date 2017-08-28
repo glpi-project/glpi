@@ -51,7 +51,7 @@ class Link extends CommonDBTM {
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
                              '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]',
                              '[DEVICEMODEL]', '[NETWORKTYPE]', '[NETWORKMODEL]','[PRINTERTYPE]',
-                             '[PRINTERMODEL]', '[SOFTWARECATEGORY]');
+                             '[PRINTERMODEL]', '[SOFTWARECATEGORY]', '[MANUFACTURER]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
@@ -340,9 +340,16 @@ class Link extends CommonDBTM {
             // Náhrada čo (" > "), čím ("/") v čom (Dropdown ...). Výhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > "
             // Replace " > " with "/" to generate path from TreeDropdown value
                             str_replace(" > ","/", Dropdown::getDropdownName("glpi_softwarecategories", 
-                                               $item->getField('softwarecategories_id'),0,false)), $link);
-    }
-      if (strstr($link,"[DOMAIN]")
+                                        $item->getField('softwarecategories_id'),0,false)), $link);
+      }
+      // Manufacturer 
+      if (strstr($link,"[MANUFACTURER]")
+      && $item->isField('manufacturers_id')) {
+            $link = str_replace("[MANUFACTURER]",
+                    Dropdown::getDropdownName("glpi_manufacturers", 
+                                              $item->getField('manufacturers_id'),0,false), $link);
+      }
+    if (strstr($link,"[DOMAIN]")
           && $item->isField('domains_id')) {
             $link = str_replace("[DOMAIN]",
                                 Dropdown::getDropdownName("glpi_domains",
@@ -580,6 +587,8 @@ class Link extends CommonDBTM {
             }
             $newlink          .= ">";
             $linkname          = sprintf(__('%1$s #%2$s'), $name, $i);
+            // TODO: http://forum.glpi-project.org/viewtopic.php?id=155580
+            // $newlink          .= sprintf(__('%1$s: %2$s'), $linkname," "); // $val);
             $newlink          .= sprintf(__('%1$s: %2$s'), $linkname, $val);
             $newlink          .= "</a>";
             $computedlinks[]   = $newlink;
