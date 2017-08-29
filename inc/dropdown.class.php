@@ -1340,42 +1340,6 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @deprecated 0.85 use Dropdown::showSelectItemFromItemtypes()
-    *
-    * @param $myname          select name
-    * @param $value_type      default value for the device type (default 0)
-    * @param $value           default value (default 0)
-    * @param $entity_restrict Restrict to a defined entity (default -1)
-    * @param $types           Types used (default '')
-    * @param $onlyglobal      Restrict to global items (false by default)
-    * @param $checkright      Restrict to items with read rights (false by default)
-    * @param $itemtypename    name used for itemtype select
-    *
-    * @return nothing (print out an HTML select box)
-   **/
-   static function showAllItems($myname, $value_type = 0, $value = 0, $entity_restrict = -1, $types = '',
-                                $onlyglobal = false, $checkright = false, $itemtypename = 'itemtype') {
-
-      Toolbox::logDebug('showAllItems() method is deprecated');
-      $options = [];
-      $options['itemtype_name']   = $itemtypename;
-      $options['items_id_name']   = $myname;
-      $options['itemtypes']       = $types;
-      $options['entity_restrict'] = $entity_restrict;
-      $options['onlyglobal']      = $onlyglobal;
-      $options['checkright']      = $checkright;
-
-      if ($value > 0) {
-         $options['default']         = $value_type;
-      }
-
-      self::showSelectItemFromItemtypes($options);
-   }
-
-
-   /**
-    * Make a select box for all items
-    *
     * @since version 0.85
     *
     * @param $options array:
