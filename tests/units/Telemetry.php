@@ -69,11 +69,13 @@ class Telemetry extends DbTestCase {
       $this->array($result)->isIdenticalTo($expected);
 
       $plugins = new \Plugin();
-      $this->integer((int)$plugins->add(['name' => 'test plugin', 'version' => '0.x.z']))
+      $this->integer((int)$plugins->add(['directory' => 'testplugin',
+                                         'name'      => 'test plugin',
+                                         'version'   => '0.x.z']))
          ->isGreaterThan(0);
 
       $expected['plugins'][] = [
-         'key'       => 'test plugin',
+         'key'       => 'testplugin',
          'version'   => '0.x.z'
       ];
       $this->array(\Telemetry::grabGlpiInfos())->isIdenticalTo($expected);
