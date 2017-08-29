@@ -85,9 +85,9 @@ class Telemetry extends CommonGLPI {
       ];
 
       $plugins = new Plugin();
-      foreach ($plugins->getList(['name', 'version']) as $plugin) {
+      foreach ($plugins->getList(['directory', 'version']) as $plugin) {
          $glpi['plugins'][] = [
-            'key'       => $plugin['name'],
+            'key'       => $plugin['directory'],
             'version'   => $plugin['version']
          ];
       }
