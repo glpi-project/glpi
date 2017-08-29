@@ -943,17 +943,6 @@ class Toolbox {
          $error = $suberr;
       }
 
-      //check fo mcrypt deprecated ext
-      if (extension_loaded('mcrypt')) {
-         if ($error < 1) {
-            $error = 1;
-         }
-         $msg = _('The mcrypt extension is deprecated and should not be used. Please disable it.');
-         echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), 'mcrypt') . "</td>";
-         echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . $msg . "</td>";
-         echo "</tr>";
-      }
-
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
@@ -1495,25 +1484,19 @@ class Toolbox {
     * Get a random string
     *
     * @param integer $length of the random string
-    * @param boolean $high strength of the random source (since 9.2)
     *
     * @return random string
+    *
+    * @see https://stackoverflow.com/questions/4356289/php-random-string-generator/31107425#31107425
    **/
-   static function getRandomString($length, $high = false) {
-
-      if (extension_loaded('mcrypt') && !defined('TU_USER')) {
-         Toolbox::logDebug('Please disable deprecated mcrypt extension!');
+   static function getRandomString($length) {
+      $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      $str = '';
+      $max = mb_strlen($keyspace, '8bit') - 1;
+      for ($i = 0; $i < $length; ++$i) {
+         $str .= $keyspace[random_int(0, $max)];
       }
-      $factory = new RandomLib\Factory();
-      if ($high) {
-         /* Notice "High" imply mcrypt extension, unwanted for now
-            See https://github.com/ircmaxell/RandomLib/issues/57 */
-         $generator = $factory->getMediumStrengthGenerator();
-      } else {
-         $generator = $factory->getLowStrengthGenerator();
-      }
-
-      return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
+      return $str;
    }
 
 

@@ -44,10 +44,6 @@ class Toolbox extends atoum {
          $str = \Toolbox::getRandomString($len);
          $this->integer(strlen($str))->isIdenticalTo($len);
          $this->boolean(ctype_alnum($str))->isTrue();
-         // High strength
-         $str = \Toolbox::getRandomString($len, true);
-         $this->integer(strlen($str))->isIdenticalTo($len);
-         $this->boolean(ctype_alnum ($str))->isTrue();
       }
    }
 
