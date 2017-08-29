@@ -4243,7 +4243,7 @@ class User extends CommonDBTM {
              || !Auth::useAuthExt()) {
 
             if (NotificationMailing::isUserAddressValid($email)) {
-               $input['password_forget_token']      = sha1(Toolbox::getRandomString(30, true));
+               $input['password_forget_token']      = sha1(Toolbox::getRandomString(30));
                $input['password_forget_token_date'] = $_SESSION["glpi_currenttime"];
                $input['id']                         = $this->fields['id'];
                $this->update($input);
@@ -4351,7 +4351,7 @@ class User extends CommonDBTM {
 
       $ok = false;
       do {
-         $key    = Toolbox::getRandomString(40, true);
+         $key    = Toolbox::getRandomString(40);
          $query  = "SELECT COUNT(*)
                     FROM `glpi_users`
                     WHERE `$field` = '$key'";

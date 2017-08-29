@@ -343,7 +343,7 @@ class Telemetry extends CommonGLPI {
     * @return string
     */
    public static final function generateUuid($type) {
-      $uuid = Toolbox::getRandomString(40, true);
+      $uuid = Toolbox::getRandomString(40);
       Config::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
       return $uuid;
    }

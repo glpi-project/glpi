@@ -300,7 +300,7 @@ class APIClient extends CommonDBTM {
 
       $ok = false;
       do {
-         $key    = Toolbox::getRandomString(40, true);
+         $key    = Toolbox::getRandomString(40);
          if (countElementsInTable(self::getTable(), ['app_token' => $key]) == 0) {
             return $key;
          }
