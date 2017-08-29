@@ -1220,6 +1220,33 @@ Regards,',
       $migration->dropField('glpi_computers', 'os_kernel_version');
    }
 
+   if (!$DB->fieldExists('glpi_items_operatingsystems', 'is_deleted')) {
+      $migration->addField(
+         'glpi_items_operatingsystems',
+         'is_deleted',
+         "tinyint(1) NOT NULL DEFAULT '0'"
+      );
+      $migration->addKey('glpi_items_operatingsystems', 'is_deleted');
+   }
+
+   if (!$DB->fieldExists('glpi_items_operatingsystems', 'is_dynamic')) {
+      $migration->addField(
+         'glpi_items_operatingsystems',
+         'is_dynamic',
+         "tinyint(1) NOT NULL DEFAULT '0'"
+      );
+      $migration->addKey('glpi_items_operatingsystems', 'is_dynamic');
+   }
+
+   if (!$DB->fieldExists('glpi_items_operatingsystems', 'entities_id')) {
+      $migration->addField(
+         'glpi_items_operatingsystems',
+         'entities_id',
+         "int(11) NOT NULL DEFAULT '0'"
+      );
+      $migration->addKey('glpi_items_operatingsystems', 'entities_id');
+   }
+
    //add db version
    $migration->addConfig(['dbversion' => GLPI_SCHEMA_VERSION]);
 
