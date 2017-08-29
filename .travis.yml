@@ -10,8 +10,6 @@ before_script:
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
-  # cannot disable mcrypt on travis...
-  - sed -e "s/return extension_loaded('mcrypt');/return false;/" -i vendor/ircmaxell/random-lib/lib/RandomLib/AbstractMcryptMixer.php
   #install 0.72.3 database
   - mysql -u root -e 'create database glpitest0723;'
   - mysql -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
