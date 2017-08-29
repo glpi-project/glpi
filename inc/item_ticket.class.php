@@ -1090,14 +1090,23 @@ class Item_Ticket extends CommonDBRelation{
 
       switch ($ma->getAction()) {
          case 'add_item' :
-            Dropdown::showAllItems("items_id", 0, 0, $_SESSION['glpiactive_entity'],
-                                       $CFG_GLPI["ticket_types"], false, true, 'item_itemtype');
+            Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
+                                                   'itemtype_name'   => 'item_itemtype',
+                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
+                                                   'checkright'      => true,
+                                                   'entity_restrict' => $_SESSION['glpiactive_entity']
+                                                  ]);
             echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
             break;
 
          case 'delete_item' :
-            Dropdown::showAllItems("items_id", 0, 0, $_SESSION['glpiactive_entity'],
-                                       $CFG_GLPI["ticket_types"], false, true, 'item_itemtype');
+            Dropdown::showSelectItemFromItemtypes(['items_id_name'   => 'items_id',
+                                                   'itemtype_name'   => 'item_itemtype',
+                                                   'itemtypes'       => $CFG_GLPI['ticket_types'],
+                                                   'checkright'      => true,
+                                                   'entity_restrict' => $_SESSION['glpiactive_entity']
+                                                  ]);
+
             echo "<br><input type='submit' name='delete' value=\"".__('Delete permanently')."\" class='submit'>";
             break;
       }
