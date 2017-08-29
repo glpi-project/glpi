@@ -74,5 +74,6 @@ The following methods have been dropped:
 - `Profile::dropdownNoneReadWrite()`
 - `Toolbox::get_magic_quotes_runtime()`
 - `Toolbox::get_magic_quotes_gpc()`
+- `Dropdown::showAllItems()`
 
 For older entries, please check [GLPI website](http://glpi-project.org).

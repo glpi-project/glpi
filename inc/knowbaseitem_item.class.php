@@ -278,15 +278,13 @@ class KnowbaseItem_Item extends CommonDBRelation {
       $entity_restrict = -1;
       $checkright = true;
 
-      $rand = Dropdown::showAllItems(
-         $name,                 //select/@name
-         0,
-         0,
-         $entity_restrict,      //entity restriction
-         $CFG_GLPI['kb_types'], //types list
-         $onlyglobal,
-         $checkright            //checkright
-      );
+      $rand = Dropdown::showSelectItemFromItemtypes([
+         'items_id_name'   => $name,
+         'entity_restrict' => $entity_restrict,
+         'itemtypes'       => $CFG_GLPI['kb_types'],
+         'onlyglobal'      => $onlyglobal,
+         'checkright'      => $checkright
+      ]);
 
       return $rand;
    }
