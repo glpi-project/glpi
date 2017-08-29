@@ -1003,6 +1003,7 @@ class Ticket extends CommonITILObject {
       $rules               = new RuleTicketCollection($entid);
       $rule                = $rules->getRuleClass();
       $changes             = array();
+      $post_added          = array();
       $tocleanafterrules   = array();
       $usertypes           = array(
          CommonITILActor::ASSIGN    => 'assign',
@@ -1020,14 +1021,20 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         //handle existing actors: lad all existing actors from ticket
+         //handle existing actors: load all existing actors from ticket
          //to make sure business rules will receive all informations, and not just
          //what have been entered in the html form.
+         //
+         //ref also this actor into $post_added to avoid the filling of $changes
+         //and triggering businness rules when not needed
          $users = $this->getUsers($k);
          if (count($users)) {
             $field = 'users_id';
             foreach ($users as $user) {
                if (!isset($input['_'.$field.'_'.$t]) || !in_array($user['id'], $input['_'.$field.'_'.$t])) {
+                  if (!isset($input['_'.$field.'_'.$t])) {
+                     $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
+                  }
                   $input['_'.$field.'_'.$t][]             = $user['id'];
                   $tocleanafterrules['_'.$field.'_'.$t][] = $user['id'];
                }
@@ -1039,6 +1046,9 @@ class Ticket extends CommonITILObject {
             $field = 'groups_id';
             foreach ($groups as $group) {
                if (!isset($input['_'.$field.'_'.$t]) || !in_array($group['id'], $input['_'.$field.'_'.$t])) {
+                  if (!isset($input['_'.$field.'_'.$t])) {
+                     $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
+                  }
                   $input['_'.$field.'_'.$t][]             = $group['id'];
                   $tocleanafterrules['_'.$field.'_'.$t][] = $group['id'];
                }
@@ -1050,6 +1060,9 @@ class Ticket extends CommonITILObject {
             $field = 'supliers_id';
             foreach ($suppliers as $supplier) {
                if (!isset($input['_'.$field.'_'.$t]) || !in_array($supplier['id'], $input['_'.$field.'_'.$t])) {
+                  if (!isset($input['_'.$field.'_'.$t])) {
+                     $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
+                  }
                   $input['_'.$field.'_'.$t][]             = $supplier['id'];
                   $tocleanafterrules['_'.$field.'_'.$t][] = $supplier['id'];
                }
@@ -1058,7 +1071,8 @@ class Ticket extends CommonITILObject {
       }
 
       foreach ($rule->getCriterias() as $key => $val) {
-         if (array_key_exists($key, $input) && substr($key, 0, 1) !== '_') {
+         if (array_key_exists($key, $input)
+             && !array_key_exists($key, $post_added)) {
             if (!isset($this->fields[$key])
                 || ($DB->escape($this->fields[$key]) != $input[$key])) {
                $changes[] = $key;
@@ -2291,7 +2305,8 @@ class Ticket extends CommonITILObject {
 
       return ((Session::haveRight("followup", TicketFollowup::ADDMYTICKET)
                && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-                   || ($this->fields["users_id_recipient"] === Session::getLoginUserID())))
+                   || (isset($this->fields["users_id_recipient"])
+                        && ($this->fields["users_id_recipient"] === Session::getLoginUserID()))))
               || Session::haveRight('followup', TicketFollowup::ADDALLTICKET)
               || (Session::haveRight('followup', TicketFollowup::ADDGROUPTICKET)
                   && isset($_SESSION["glpigroups"])
