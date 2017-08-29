@@ -1022,7 +1022,7 @@ class MassiveAction {
 
          case 'restore' :
             foreach ($ids as $id) {
-               if ($item->can($id, PURGE)) {
+               if ($item->can($id, DELETE)) {
                   if ($item->restore(["id" => $id])) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
