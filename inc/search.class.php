@@ -5485,6 +5485,7 @@ class Search {
          if ($withplugins) {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
+            $plugsearch = $plugsearch + Plugin::getAddSearchOptionsNew($itemtype);
             if (count($plugsearch)) {
                self::$search[$itemtype] += ['plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber())];
                self::$search[$itemtype] += $plugsearch;
