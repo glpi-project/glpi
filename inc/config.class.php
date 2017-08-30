@@ -994,10 +994,7 @@ class Config extends CommonDBTM {
 
       echo "<td width='30%'>" . __('Date format') ."</td>";
       echo "<td width='20%'>";
-      $date_formats = [0 => __('YYYY-MM-DD'),
-                            1 => __('DD-MM-YYYY'),
-                            2 => __('MM-DD-YYYY')];
-      Dropdown::showFromArray('date_format', $date_formats, ['value' => $data["date_format"]]);
+      Dropdown::showFromArray('date_format', Toolbox::phpDateFormats(), ['value' => $data["date_format"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
