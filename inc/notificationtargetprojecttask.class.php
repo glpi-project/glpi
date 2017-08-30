@@ -591,7 +591,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     * @return void
    **/
    function getTeamUsers() {
-      Toolbox::logDebug('getTeamUsers() method is deprecated');
+      Toolbox::deprecated('getTeamUsers() method is deprecated');
       $this->addTeamUsers();
    }
 
@@ -606,7 +606,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     * @return void
    **/
    function getTeamGroups($manager) {
-      Toolbox::logDebug('getTeamGroups() method is deprecated');
+      Toolbox::deprecated('getTeamGroups() method is deprecated');
       $this->addTeamGroups($manager);
    }
 
@@ -619,7 +619,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     * @return void
    **/
    function getTeamContacts() {
-      Toolbox::logDebug('getTeamContacts() method is deprecated');
+      Toolbox::deprecated('getTeamContacts() method is deprecated');
       $this->addTeamContacts();
    }
 
@@ -632,7 +632,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
     * @return void
    **/
    function getTeamSuppliers() {
-      Toolbox::logDebug('getTeamContacts() method is deprecated');
+      Toolbox::deprecated('getTeamContacts() method is deprecated');
       $this->addTeamSuppliers();
    }
 }

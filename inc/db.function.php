@@ -1389,7 +1389,7 @@ function getUserName($ID, $link = 0) {
 function TableExists($tablename) {
    global $DB;
 
-   Toolbox::logDebug('TableExists() function is deprecated');
+   Toolbox::deprecated('TableExists() function is deprecated');
    return $DB->tableExists($tablename);
 }
 
@@ -1406,7 +1406,7 @@ function TableExists($tablename) {
 function FieldExists($table, $field, $usecache = true) {
    global $DB;
 
-   Toolbox::logDebug('FieldExists() function is deprecated');
+   Toolbox::deprecated('FieldExists() function is deprecated');
    return $DB->fieldExists($table, $field, $usecache);
 }
 

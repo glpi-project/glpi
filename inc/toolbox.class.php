@@ -468,6 +468,16 @@ class Toolbox {
       }
    }
 
+   /**
+    * Send a deprecated message in log (with backtrace)
+    * @param  string $message the message to send
+    * @return void
+    */
+   static function deprecated($message = "Called method is deprecated") {
+      self::logDebug($message);
+      self::backtrace();
+   }
+
 
    /**
     * Log a message in log file
