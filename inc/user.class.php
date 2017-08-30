@@ -4411,8 +4411,7 @@ class User extends CommonDBTM {
    * @return string personal token
    **/
    static function getUniquePersonalToken() {
-      Toolbox::logDebug('getUniquePersonalToken() method is deprecated');
-      Toolbox::backtrace();
+      Toolbox::deprecated('getUniquePersonalToken() method is deprecated');
       return self::getUniqueToken('personal_token');
    }
 
@@ -4453,8 +4452,7 @@ class User extends CommonDBTM {
     * @return string personal token
    **/
    static function getPersonalToken($ID) {
-      Toolbox::logDebug('getPersonalToken() method is deprecated');
-      Toolbox::backtrace();
+      Toolbox::deprecated('getPersonalToken() method is deprecated');
       return self::getToken($ID, 'personal_token');
    }
 

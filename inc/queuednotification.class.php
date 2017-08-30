@@ -456,7 +456,7 @@ class QueuedNotification extends CommonDBTM {
     * @deprecated 9.2 see QueuedNotification::sendById
    **/
    function sendMailById($ID) {
-      Toolbox::logDebug('sendMailById() method is deprecated');
+      Toolbox::deprecated('sendMailById() method is deprecated');
       return $this->sendById($ID);
    }
 
