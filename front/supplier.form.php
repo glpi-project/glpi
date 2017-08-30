@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "suppliers", 4, "financial",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($ent->getFormURL()."?id=".$newID);
+         Html::redirect($ent->getLinkURL());
       }
    }
    Html::back();

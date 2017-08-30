@@ -69,7 +69,7 @@ if (isset($_POST['add'])) {
    }
    if ($newID = $track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($track->getFormURL()."?id=".$newID);
+         Html::redirect($track->getLinkURL());
       }
       if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
          echo "<div class='center spaced'>".

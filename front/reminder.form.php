@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "reminder", 4, "tools",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($remind->getFormURL()."?id=".$newID);
+         Html::redirect($remind->getLinkURL());
       }
    }
    Html::back();
