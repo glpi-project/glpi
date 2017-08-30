@@ -2688,4 +2688,95 @@ class Toolbox {
       return (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
                                                       : $_SERVER["REMOTE_ADDR"]);
    }
+
+   /**
+    * Get available date formats
+    *
+    * @since 9.2
+    *
+    * @param string $type Type for (either 'php' or 'js')
+    *
+    * @return array
+    */
+   public static function getDateFormats($type) {
+      $formats = [];
+      switch ($type) {
+         case 'js':
+            $formats = [
+               0 => 'YYYY MMM DD',
+               1 => 'DD MMM YYYY',
+               2 => 'MMM DD YYYY'
+            ];
+            break;
+         case 'php':
+            $formats = [
+               0 => __('YYYY-MM-DD'),
+               1 => __('DD-MM-YYYY'),
+               2 => __('MM-DD-YYYY')
+            ];
+            break;
+         default:
+            throw new \RuntimeException("Unknown type $type to get date formats.");
+      }
+      return $formats;
+   }
+
+   /**
+    * Get current date format
+    *
+    * @since 9.2
+    *
+    * @param string $type Type for (either 'php' or 'js')
+    *
+    * @return string
+    */
+   public static function getDateFormat($type) {
+      $formats = self::getDateFormats($type);
+      $format = $formats[$_SESSION["glpidate_format"]];
+      return $format;
+   }
+
+   /**
+    * Get current date format for php
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   public static function phpDateFormat() {
+      return self::getDateFormat('php');
+   }
+
+   /**
+    * Get available date formats for php
+    *
+    * @since 9.2
+    *
+    * @return array
+    */
+   public static function phpDateFormats() {
+      return self::getDateFormats('php');
+   }
+
+   /**
+    * Get current date format for javascript
+    *
+    * @since 9.2
+    *
+    * @return string
+    */
+   public static function jsDateFormat() {
+      return self::getDateFormat('js');
+   }
+
+   /**
+    * Get available date formats for javascript
+    *
+    * @since 9.2
+    *
+    * @return array
+    */
+   public static function jsDateFormats() {
+      return self::getDateFormats('js');
+   }
 }
