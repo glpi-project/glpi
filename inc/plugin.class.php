@@ -945,7 +945,9 @@ class Plugin extends CommonDBTM {
     * @param $plugin plugin directory
    **/
    function removeFromSession($plugin) {
-
+      if (!isset($_SESSION['glpi_plugins'])) {
+         return;
+      }
       $key = array_search($plugin, $_SESSION['glpi_plugins']);
       if ($key !== false) {
          unset($_SESSION['glpi_plugins'][$key]);
