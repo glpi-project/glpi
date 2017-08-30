@@ -1385,7 +1385,7 @@ abstract class API extends CommonGLPI {
       foreach ($params['forcedisplay'] as $forcedisplay) {
          if (isset($soptions[$forcedisplay]) && isset($soptions[$forcedisplay]['nodisplay'])
              && $soptions[$forcedisplay]['nodisplay']) {
-            return $this->returnError(__("Forbidden field ID in forcedisplay"));
+            return $this->returnError(__("ID is forbidden along with 'forcedisplay' parameter."));
          }
       }
 

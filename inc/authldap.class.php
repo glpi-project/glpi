@@ -391,7 +391,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input type='text' id='login_field' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
-         $info_message = __('Synchronization field cannot be changed once set.');
+         $info_message = __('Synchronization field cannot be changed once in use.');
          echo "<tr class='tab_bg_1'>";
          echo "<td><label for='sync_field'>" . __('Synchronization field') . "<i class='pointer fa fa-info' title='$info_message'></i></td>";
          echo "<td><input type='text' id='sync_field' name='sync_field' value='{$this->fields["sync_field"]}' title='$info_message'";
@@ -1535,7 +1535,7 @@ class AuthLDAP extends CommonDBTM {
             $num = 0;
 
             if ($config_ldap->isSyncFieldEnabled()) {
-               echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Synchonization field'), $num,
+               echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Synchronization field'), $num,
                                            $_SERVER['PHP_SELF'].
                                                "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             }

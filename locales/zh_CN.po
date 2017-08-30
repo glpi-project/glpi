@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:08+0200\n"
+"POT-Creation-Date: 2017-08-30 10:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Song Li <boltomli@gmail.com>, 2017\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/glpi/teams/1637/zh_CN/)\n"
@@ -26,18 +26,18 @@ msgstr "禁用API"
 msgid "GLPI - Authentication"
 msgstr "GLPI - 验证"
 
-#: index.php:125 inc/authldap.class.php:2903 inc/authmail.class.php:240
+#: index.php:125 inc/authldap.class.php:3119 inc/authmail.class.php:240
 #: inc/config.class.php:1747 inc/db.function.php:1318
 #: inc/mailcollector.class.php:261 inc/mailcollector.class.php:370
 #: inc/notificationtargetuser.class.php:111 inc/ruleright.class.php:264
-#: inc/user.class.php:1899 inc/user.class.php:2218 inc/user.class.php:2615
-#: inc/user.class.php:3526
+#: inc/user.class.php:1912 inc/user.class.php:2251 inc/user.class.php:2657
+#: inc/user.class.php:3592
 msgid "Login"
 msgstr "用户名"
 
 #: index.php:130 inc/authmail.class.php:243 inc/config.class.php:1749
-#: inc/mailcollector.class.php:265 inc/user.class.php:1950
-#: inc/user.class.php:2285 inc/user.class.php:4003
+#: inc/mailcollector.class.php:265 inc/user.class.php:1983
+#: inc/user.class.php:2332 inc/user.class.php:4069
 msgid "Password"
 msgstr "密码"
 
@@ -46,8 +46,8 @@ msgid "Remember me"
 msgstr "记住我"
 
 #: index.php:142 ajax/dropdownMassiveActionAuthMethods.php:69
-#: ajax/dropdownMassiveActionField.php:57 inc/authldap.class.php:1217
-#: inc/authldap.class.php:2132 inc/certificate.class.php:544
+#: ajax/dropdownMassiveActionField.php:57 inc/authldap.class.php:1264
+#: inc/authldap.class.php:2255 inc/certificate.class.php:544
 #: inc/certificate.class.php:553 inc/change_ticket.class.php:140
 #: inc/commonitilobject.class.php:2545
 #: inc/computer_softwarelicense.class.php:122
@@ -58,15 +58,15 @@ msgstr "记住我"
 #: inc/networkportmigration.class.php:348 inc/problem_ticket.class.php:172
 #: inc/rulecollection.class.php:1284
 #: inc/ruledictionnarysoftwarecollection.class.php:99
-#: inc/ticket_ticket.class.php:74 inc/user.class.php:2535
+#: inc/ticket_ticket.class.php:74 inc/user.class.php:2582
 #: install/update.php:355 install/update.php:371
 msgctxt "button"
 msgid "Post"
 msgstr "确定"
 
 #: index.php:151 front/lostpassword.php:48
-#: inc/notificationtargetuser.class.php:46 inc/user.class.php:3994
-#: inc/user.class.php:4042
+#: inc/notificationtargetuser.class.php:46 inc/user.class.php:4060
+#: inc/user.class.php:4108
 msgid "Forgotten password?"
 msgstr "忘记密码？"
 
@@ -106,11 +106,11 @@ msgstr "查看常见问题解答（FAQ）"
 #: ajax/getDropdownValue.php:626 ajax/getDropdownValue.php:645
 #: ajax/getDropdownValue.php:661 ajax/private_public.php:55 front/rule.php:52
 #: inc/cartridge.class.php:1008 inc/cartridgeitem.class.php:589
-#: inc/cartridgeitem.class.php:591 inc/commondbtm.class.php:2440
-#: inc/commondbtm.class.php:3254 inc/commondbtm.class.php:3258
-#: inc/commondbtm.class.php:3264 inc/commondbtm.class.php:3336
-#: inc/commondbtm.class.php:3847 inc/commondbtm.class.php:3853
-#: inc/commondbtm.class.php:4822 inc/commonglpi.class.php:854
+#: inc/cartridgeitem.class.php:591 inc/commondbtm.class.php:2438
+#: inc/commondbtm.class.php:3252 inc/commondbtm.class.php:3256
+#: inc/commondbtm.class.php:3262 inc/commondbtm.class.php:3334
+#: inc/commondbtm.class.php:3845 inc/commondbtm.class.php:3851
+#: inc/commondbtm.class.php:4820 inc/commonglpi.class.php:854
 #: inc/commonitilcost.class.php:245 inc/commonitilobject.class.php:5237
 #: inc/commonitilobject.class.php:5386 inc/commonitiltask.class.php:1229
 #: inc/computer_softwarelicense.class.php:478
@@ -148,9 +148,9 @@ msgstr "查看常见问题解答（FAQ）"
 #: inc/stat.class.php:1182 inc/state.class.php:286 inc/state.class.php:294
 #: inc/state.class.php:303 inc/state.class.php:311 inc/state.class.php:319
 #: inc/state.class.php:327 inc/state.class.php:335 inc/state.class.php:344
-#: inc/state.class.php:353 inc/ticket.class.php:4496 inc/ticket.class.php:6129
-#: inc/ticketfollowup.class.php:508 inc/ticketfollowup.class.php:993
-#: inc/ticketfollowup.class.php:998 inc/tickettemplate.class.php:460
+#: inc/state.class.php:353 inc/ticket.class.php:4511 inc/ticket.class.php:6144
+#: inc/ticketfollowup.class.php:516 inc/ticketfollowup.class.php:1001
+#: inc/ticketfollowup.class.php:1006 inc/tickettemplate.class.php:460
 #: inc/vlan.class.php:167 install/update_0723_078.php:4824
 #, php-format
 msgid "%1$s - %2$s"
@@ -179,7 +179,7 @@ msgstr "%1$s - 网络出口 %2$s"
 #: ajax/getDropdownValue.php:419 ajax/getDropdownValue.php:650
 #: inc/apiclient.class.php:232 inc/cartridge.class.php:734
 #: inc/cartridgeitem.class.php:590 inc/change_item.class.php:216
-#: inc/commondbtm.class.php:3331 inc/commondbtm.class.php:4600
+#: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4598
 #: inc/commonglpi.class.php:866 inc/commonitilcost.class.php:572
 #: inc/commonitilobject.class.php:5385 inc/commonitilobject.class.php:5390
 #: inc/commonitiltask.class.php:1272 inc/commonitiltask.class.php:1298
@@ -241,11 +241,11 @@ msgstr "%1$s - 网络出口 %2$s"
 #: inc/rulemailcollector.class.php:203 inc/search.class.php:4667
 #: inc/search.class.php:4801 inc/session.class.php:366
 #: inc/session.class.php:369 inc/softwareversion.class.php:260
-#: inc/supplier.class.php:577 inc/ticket.class.php:2113
-#: inc/ticket.class.php:4499 inc/ticket.class.php:5973
-#: inc/ticket.class.php:6128 inc/tickettemplatemandatoryfield.class.php:234
-#: inc/tickettemplatemandatoryfield.class.php:236 inc/user.class.php:2799
-#: inc/user.class.php:2854 inc/user.class.php:3708 inc/user.class.php:3789
+#: inc/supplier.class.php:577 inc/ticket.class.php:2127
+#: inc/ticket.class.php:4514 inc/ticket.class.php:5988
+#: inc/ticket.class.php:6143 inc/tickettemplatemandatoryfield.class.php:234
+#: inc/tickettemplatemandatoryfield.class.php:236 inc/user.class.php:2860
+#: inc/user.class.php:2915 inc/user.class.php:3774 inc/user.class.php:3855
 #, php-format
 msgid "%1$s (%2$s)"
 msgstr "%1$s (%2$s)"
@@ -293,18 +293,18 @@ msgstr "邮件后续追踪"
 #: front/stat.graph.php:174 front/stat.graph.php:182 front/stat.graph.php:189
 #: front/stat.graph.php:196 front/stat.graph.php:203 front/stat.graph.php:211
 #: front/stat.graph.php:219 front/stat.graph.php:227 front/stat.graph.php:244
-#: front/stat.graph.php:256 inc/auth.class.php:911 inc/auth.class.php:913
-#: inc/auth.class.php:919 inc/auth.class.php:921 inc/auth.class.php:927
-#: inc/auth.class.php:939 inc/auth.class.php:952 inc/authldap.class.php:528
+#: front/stat.graph.php:256 inc/auth.class.php:914 inc/auth.class.php:916
+#: inc/auth.class.php:922 inc/auth.class.php:924 inc/auth.class.php:930
+#: inc/auth.class.php:942 inc/auth.class.php:955 inc/authldap.class.php:565
 #: inc/budget.class.php:467 inc/budget.class.php:501
 #: inc/cartridgeitem.class.php:522 inc/cartridgeitem.class.php:525
 #: inc/certificate.class.php:720 inc/certificate.class.php:723
 #: inc/certificate.class.php:740 inc/change.class.php:694
-#: inc/change_item.class.php:229 inc/commondbtm.class.php:1079
-#: inc/commondbtm.class.php:1355 inc/commondbtm.class.php:1541
-#: inc/commondbtm.class.php:1581 inc/commondbtm.class.php:1688
-#: inc/commondbtm.class.php:3144 inc/commondbtm.class.php:3747
-#: inc/commondbtm.class.php:3843 inc/commonglpi.class.php:1242
+#: inc/change_item.class.php:229 inc/commondbtm.class.php:1077
+#: inc/commondbtm.class.php:1353 inc/commondbtm.class.php:1539
+#: inc/commondbtm.class.php:1579 inc/commondbtm.class.php:1686
+#: inc/commondbtm.class.php:3142 inc/commondbtm.class.php:3745
+#: inc/commondbtm.class.php:3841 inc/commonglpi.class.php:1242
 #: inc/commonglpi.class.php:1245 inc/commonglpi.class.php:1248
 #: inc/commonglpi.class.php:1251 inc/commonglpi.class.php:1254
 #: inc/commonitilobject.class.php:2404 inc/commonitilobject.class.php:3346
@@ -330,8 +330,8 @@ msgstr "邮件后续追踪"
 #: inc/infocom.class.php:520 inc/infocom.class.php:538
 #: inc/ipaddress.class.php:135 inc/item_problem.class.php:233
 #: inc/item_project.class.php:229 inc/item_ticket.class.php:541
-#: inc/item_ticket.class.php:967 inc/item_ticket.class.php:1344
-#: inc/item_ticket.class.php:1383 inc/knowbaseitem.class.php:716
+#: inc/item_ticket.class.php:967 inc/item_ticket.class.php:1353
+#: inc/item_ticket.class.php:1392 inc/knowbaseitem.class.php:716
 #: inc/knowbaseitem.class.php:863 inc/knowbaseitem.class.php:890
 #: inc/knowbaseitem.class.php:1308 inc/link.class.php:546
 #: inc/link.class.php:570 inc/lock.class.php:301 inc/log.class.php:384
@@ -480,10 +480,10 @@ msgstr "邮件后续追踪"
 #: inc/problem.class.php:964 inc/problem.class.php:1128
 #: inc/profile_user.class.php:357 inc/profile_user.class.php:483
 #: inc/profile_user.class.php:1039 inc/profile_user.class.php:1041
-#: inc/projectcost.class.php:434 inc/projecttask.class.php:605
-#: inc/projecttask.class.php:608 inc/projecttask.class.php:1545
-#: inc/projecttask.class.php:1559 inc/projecttask.class.php:1568
-#: inc/projecttask.class.php:1573 inc/projecttask.class.php:1581
+#: inc/projectcost.class.php:434 inc/projecttask.class.php:610
+#: inc/projecttask.class.php:613 inc/projecttask.class.php:1550
+#: inc/projecttask.class.php:1564 inc/projecttask.class.php:1573
+#: inc/projecttask.class.php:1578 inc/projecttask.class.php:1586
 #: inc/registeredid.class.php:116 inc/reminder.class.php:958
 #: inc/reminder.class.php:985 inc/reservationitem.class.php:669
 #: inc/reservationitem.class.php:674 inc/reservationitem.class.php:692
@@ -491,11 +491,11 @@ msgstr "邮件后续追踪"
 #: inc/sla.class.php:490 inc/softwarelicense.class.php:884
 #: inc/softwarelicense.class.php:887 inc/softwarelicense.class.php:904
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
-#: inc/ticket.class.php:2115 inc/ticket.class.php:4497
-#: inc/ticket.class.php:6073 inc/ticket.class.php:6323
-#: inc/ticket.class.php:6413 inc/ticket_ticket.class.php:70
-#: inc/toolbox.class.php:973 inc/user.class.php:2018 inc/user.class.php:2218
-#: inc/user.class.php:3575 inc/vlan.class.php:168 inc/vlan.class.php:170
+#: inc/ticket.class.php:2129 inc/ticket.class.php:4512
+#: inc/ticket.class.php:6088 inc/ticket.class.php:6338
+#: inc/ticket.class.php:6428 inc/ticket_ticket.class.php:70
+#: inc/toolbox.class.php:962 inc/user.class.php:2051 inc/user.class.php:2251
+#: inc/user.class.php:3641 inc/vlan.class.php:168 inc/vlan.class.php:170
 #: install/update_0681_07.php:533 install/update_0681_07.php:556
 #: install/update_0681_07.php:563 install/update_0681_07.php:570
 #: install/update_0681_07.php:577
@@ -504,14 +504,14 @@ msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
 #: ajax/dropdownItilActors.php:113 ajax/dropdownItilActors.php:196
-#: ajax/uemailUpdate.php:122 inc/auth.class.php:1383 inc/auth.class.php:1389
-#: inc/auth.class.php:1395 inc/auth.class.php:1401 inc/authldap.class.php:709
-#: inc/authldap.class.php:712 inc/authldap.class.php:717
-#: inc/authldap.class.php:720 inc/authldap.class.php:959
-#: inc/authldap.class.php:968 inc/authldap.class.php:977
-#: inc/authldap.class.php:986 inc/authldap.class.php:2904
-#: inc/authldap.class.php:2906 inc/authldap.class.php:2908
-#: inc/authldap.class.php:2910 inc/blacklist.class.php:235
+#: ajax/uemailUpdate.php:122 inc/auth.class.php:1386 inc/auth.class.php:1392
+#: inc/auth.class.php:1398 inc/auth.class.php:1404 inc/authldap.class.php:746
+#: inc/authldap.class.php:749 inc/authldap.class.php:754
+#: inc/authldap.class.php:757 inc/authldap.class.php:996
+#: inc/authldap.class.php:1005 inc/authldap.class.php:1014
+#: inc/authldap.class.php:1023 inc/authldap.class.php:3121
+#: inc/authldap.class.php:3123 inc/authldap.class.php:3125
+#: inc/authldap.class.php:3127 inc/blacklist.class.php:235
 #: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:268
 #: inc/commonitilobject.class.php:2404 inc/commonitilobject.class.php:3346
 #: inc/contact.class.php:209 inc/contact.class.php:351
@@ -524,8 +524,8 @@ msgstr "%1$s: %2$s"
 #: inc/notificationtargetcommonitilobject.class.php:1255
 #: inc/queuednotification.class.php:720 inc/ruleright.class.php:257
 #: inc/supplier.class.php:167 inc/supplier.class.php:315
-#: inc/user.class.php:1978 inc/user.class.php:2315 inc/user.class.php:2650
-#: inc/user.class.php:4000 inc/useremail.class.php:56
+#: inc/user.class.php:2011 inc/user.class.php:2362 inc/user.class.php:2692
+#: inc/user.class.php:4066 inc/useremail.class.php:56
 #: install/update_0681_07.php:577 install/update_0723_078.php:3665
 msgid "Email"
 msgid_plural "Emails"
@@ -541,7 +541,7 @@ msgstr[0] "Email"
 #: inc/change_problem.class.php:163 inc/change_problem.class.php:265
 #: inc/change_project.class.php:185 inc/change_project.class.php:280
 #: inc/change_ticket.class.php:275 inc/change_ticket.class.php:377
-#: inc/commondbrelation.class.php:1117 inc/commondbtm.class.php:2203
+#: inc/commondbrelation.class.php:1117 inc/commondbtm.class.php:2201
 #: inc/commonitiltask.class.php:1747 inc/commontreedropdown.class.php:417
 #: inc/computer_softwarelicense.class.php:391
 #: inc/computer_softwareversion.class.php:838
@@ -553,7 +553,7 @@ msgstr[0] "Email"
 #: inc/group_user.class.php:315 inc/item_devices.class.php:481
 #: inc/item_problem.class.php:148 inc/item_project.class.php:144
 #: inc/item_ticket.class.php:281 inc/item_ticket.class.php:448
-#: inc/item_ticket.class.php:1095 inc/knowbaseitem_comment.class.php:377
+#: inc/item_ticket.class.php:1099 inc/knowbaseitem_comment.class.php:377
 #: inc/knowbaseitem_item.class.php:155 inc/link_itemtype.class.php:104
 #: inc/netpoint.class.php:280 inc/netpoint.class.php:303
 #: inc/networkport.class.php:560 inc/notepad.class.php:318
@@ -561,13 +561,13 @@ msgstr[0] "Email"
 #: inc/planning.class.php:1454 inc/planning.class.php:1541
 #: inc/problem_ticket.class.php:313 inc/problem_ticket.class.php:423
 #: inc/profile_user.class.php:149 inc/profile_user.class.php:306
-#: inc/project.class.php:1166 inc/projecttask.class.php:1177
+#: inc/project.class.php:1166 inc/projecttask.class.php:1182
 #: inc/projecttask_ticket.class.php:195 inc/reservation.class.php:751
 #: inc/reservationitem.class.php:584 inc/rule.class.php:2737
 #: inc/ruleright.class.php:85 inc/savedsearch.class.php:415
-#: inc/slalevel.class.php:146 inc/ticket.class.php:5155
-#: inc/ticket.class.php:7293 inc/ticket.class.php:7352
-#: inc/ticketfollowup.class.php:550
+#: inc/slalevel.class.php:146 inc/ticket.class.php:5170
+#: inc/ticket.class.php:7308 inc/ticket.class.php:7367
+#: inc/ticketfollowup.class.php:558
 #: inc/tickettemplatehiddenfield.class.php:231
 #: inc/tickettemplatemandatoryfield.class.php:242
 #: inc/tickettemplatepredefinedfield.class.php:293
@@ -577,13 +577,13 @@ msgstr "添加"
 
 #: ajax/dropdownMassiveActionAddValidator.php:52
 #: ajax/dropdownMassiveActionAddValidator.php:120 inc/apiclient.class.php:184
-#: inc/auth.class.php:1369 inc/authldap.class.php:363
-#: inc/authldap.class.php:699 inc/authldap.class.php:951
+#: inc/auth.class.php:1372 inc/authldap.class.php:384
+#: inc/authldap.class.php:736 inc/authldap.class.php:988
 #: inc/authmail.class.php:150 inc/authmail.class.php:202
 #: inc/budget.class.php:141 inc/budget.class.php:268
 #: inc/cartridgeitem.class.php:219 inc/cartridgeitem.class.php:418
 #: inc/certificate.class.php:177 inc/certificate.class.php:451
-#: inc/commondbtm.class.php:3137 inc/commondevice.class.php:230
+#: inc/commondbtm.class.php:3135 inc/commondevice.class.php:230
 #: inc/commondropdown.class.php:254 inc/commondropdown.class.php:465
 #: inc/commonitilcost.class.php:123 inc/commonitilcost.class.php:432
 #: inc/commonitilvalidation.class.php:960
@@ -629,7 +629,7 @@ msgstr "添加"
 #: inc/profile.class.php:594 inc/profile.class.php:1554
 #: inc/project.class.php:590 inc/project.class.php:1080
 #: inc/projectcost.class.php:148 inc/projectcost.class.php:303
-#: inc/projecttask.class.php:622 inc/projecttask.class.php:873
+#: inc/projecttask.class.php:627 inc/projecttask.class.php:878
 #: inc/projecttasktemplate.class.php:98 inc/reservation.class.php:744
 #: inc/reservation.class.php:1089 inc/reservation.class.php:1137
 #: inc/reservation.class.php:1207 inc/reservation.class.php:1270
@@ -644,9 +644,9 @@ msgstr "添加"
 #: inc/softwarelicense.class.php:1283 inc/softwareversion.class.php:125
 #: inc/softwareversion.class.php:185 inc/softwareversion.class.php:318
 #: inc/supplier.class.php:149 inc/supplier.class.php:377
-#: inc/ticket.class.php:2976 inc/ticketfollowup.class.php:1120
+#: inc/ticket.class.php:2991 inc/ticketfollowup.class.php:1128
 #: inc/ticketsatisfaction.class.php:149 inc/transfer.class.php:109
-#: inc/transfer.class.php:3284 inc/user.class.php:2046 inc/user.class.php:2763
+#: inc/transfer.class.php:3284 inc/user.class.php:2079 inc/user.class.php:2824
 #: inc/vlan.class.php:171
 msgid "Comments"
 msgstr "备注"
@@ -657,18 +657,18 @@ msgstr "备注"
 #: front/report.contract.php:69 front/report.year.php:57
 #: front/report.year.php:70 inc/change.class.php:508
 #: inc/commonglpi.class.php:719 inc/commonitilvalidation.class.php:443
-#: inc/config.class.php:391 inc/dropdown.class.php:2005
+#: inc/config.class.php:391 inc/dropdown.class.php:1969
 #: inc/notificationtemplatetranslation.class.php:372
 #: inc/planning.class.php:357 inc/problem.class.php:565
 #: inc/profile_user.class.php:533 inc/search.class.php:1189
-#: inc/search.class.php:1586 inc/ticket.class.php:3449 inc/user.class.php:3432
+#: inc/search.class.php:1586 inc/ticket.class.php:3464 inc/user.class.php:3498
 msgid "All"
 msgstr "全部"
 
 #: ajax/dropdownMassiveActionAddValidator.php:113
 #: ajax/dropdownValidator.php:135 inc/commonitiltask.class.php:1277
 #: inc/commonitiltask.class.php:1600 inc/dbconnection.class.php:456
-#: inc/dropdown.class.php:2006 inc/group_user.class.php:176
+#: inc/dropdown.class.php:1970 inc/group_user.class.php:176
 #: inc/group_user.class.php:263 inc/htmltablemain.class.php:242
 #: inc/item_devices.class.php:674 inc/planningrecall.class.php:251
 #: inc/profileright.class.php:313 inc/search.class.php:4555
@@ -677,7 +677,7 @@ msgstr "无"
 
 #: ajax/dropdownMassiveAction.php:46 ajax/massiveaction.php:50
 #: front/massiveaction.php:52 front/tracking.injector.php:88
-#: inc/authldap.class.php:1322 inc/html.class.php:526 inc/html.class.php:567
+#: inc/authldap.class.php:1421 inc/html.class.php:526 inc/html.class.php:567
 #: inc/html.class.php:861 inc/massiveaction.class.php:806
 #: inc/ola.class.php:238
 msgid "Warning"
@@ -735,16 +735,16 @@ msgid "Public"
 msgstr "公开"
 
 #: ajax/private_public.php:71 ajax/subvisibility.php:70 ajax/visibility.php:95
-#: inc/authldap.class.php:1806 inc/budget.class.php:285
-#: inc/certificate.class.php:271 inc/commondbtm.class.php:2461
-#: inc/commondbtm.class.php:3413 inc/commondropdown.class.php:485
+#: inc/authldap.class.php:1930 inc/budget.class.php:285
+#: inc/certificate.class.php:271 inc/commondbtm.class.php:2459
+#: inc/commondbtm.class.php:3411 inc/commondropdown.class.php:485
 #: inc/commonglpi.class.php:864 inc/commontreedropdown.class.php:663
 #: inc/contact.class.php:448 inc/contract.class.php:878
 #: inc/document.class.php:850 inc/fieldunicity.class.php:371
 #: inc/infocom.class.php:1775 inc/knowbaseitem.class.php:1709
 #: inc/networkequipment.class.php:643 inc/notification.class.php:408
 #: inc/printer.class.php:801 inc/profile_user.class.php:904
-#: inc/project.class.php:624 inc/projecttask.class.php:897
+#: inc/project.class.php:624 inc/projecttask.class.php:902
 #: inc/rule.class.php:755 inc/savedsearch.class.php:102
 #: inc/software.class.php:622 inc/softwarelicense.class.php:668
 #: inc/supplier.class.php:394
@@ -779,7 +779,7 @@ msgstr "设定为个人"
 #: inc/reservation.class.php:1135 inc/reservation.class.php:1203
 #: inc/reservation.class.php:1266 inc/stat.class.php:1552
 #: inc/ticketrecurrent.class.php:152 inc/ticketrecurrent.class.php:264
-#: inc/user.class.php:2914
+#: inc/user.class.php:2975
 msgid "End date"
 msgstr "结束日期"
 
@@ -853,8 +853,8 @@ msgstr "没有限制"
 #: inc/budget.class.php:276 inc/budget.class.php:334 inc/budget.class.php:673
 #: inc/cartridgeitem.class.php:426 inc/certificate.class.php:263
 #: inc/certificate_item.class.php:285 inc/certificate_item.class.php:495
-#: inc/change_item.class.php:171 inc/commondbtm.class.php:3776
-#: inc/commondbtm.class.php:4592 inc/commondbvisible.class.php:262
+#: inc/change_item.class.php:171 inc/commondbtm.class.php:3774
+#: inc/commondbtm.class.php:4590 inc/commondbvisible.class.php:262
 #: inc/commondevice.class.php:256 inc/commondropdown.class.php:474
 #: inc/commonitilcost.class.php:187 inc/commonitilobject.class.php:2828
 #: inc/commonitilobject.class.php:5479 inc/commontreedropdown.class.php:432
@@ -913,7 +913,7 @@ msgstr "没有限制"
 #: inc/profile.class.php:2099 inc/profile_user.class.php:195
 #: inc/profile_user.class.php:895 inc/profile_user.class.php:1039
 #: inc/project.class.php:616 inc/project.class.php:656
-#: inc/projectcost.class.php:188 inc/projecttask.class.php:889
+#: inc/projectcost.class.php:188 inc/projecttask.class.php:894
 #: inc/queuednotification.class.php:370 inc/reservation.class.php:1205
 #: inc/reservation.class.php:1268 inc/reservationitem.class.php:269
 #: inc/rule.class.php:746 inc/rulecollection.class.php:489
@@ -922,13 +922,13 @@ msgstr "没有限制"
 #: inc/ruleimportcomputer.class.php:436 inc/ruleimportentity.class.php:164
 #: inc/rulemailcollector.class.php:182 inc/ruleright.class.php:291
 #: inc/rulerightcollection.class.php:159 inc/ruleticket.class.php:443
-#: inc/search.class.php:5404 inc/software.class.php:588
+#: inc/search.class.php:5411 inc/software.class.php:588
 #: inc/software.class.php:982 inc/softwarelicense.class.php:660
 #: inc/softwarelicense.class.php:996 inc/softwarelicense.class.php:1215
 #: inc/softwarelicense.class.php:1280 inc/stat.class.php:1161
 #: inc/supplier.class.php:385 inc/supplier.class.php:490
-#: inc/user.class.php:2083 inc/user.class.php:2800 inc/user.class.php:2854
-#: inc/user.class.php:3673 inc/user.class.php:3753 inc/user.class.php:4266
+#: inc/user.class.php:2116 inc/user.class.php:2861 inc/user.class.php:2915
+#: inc/user.class.php:3739 inc/user.class.php:3819 inc/user.class.php:4332
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] "实体"
@@ -959,7 +959,7 @@ msgstr ""
 #: ajax/ticketassigninformation.php:112 ajax/ticketassigninformation.php:113
 #: inc/change.class.php:506 inc/commonitilobject.class.php:3584
 #: inc/commonitilobject.class.php:3585 inc/problem.class.php:563
-#: inc/ticket.class.php:3447 install/update_084_085.php:2015
+#: inc/ticket.class.php:3462 install/update_084_085.php:2015
 msgid "Processing"
 msgstr "处理中"
 
@@ -1137,7 +1137,7 @@ msgstr "检查是否有新版本"
 
 #: front/backup.php:607 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:763
-#: inc/problem.class.php:936 inc/ticket.class.php:5742
+#: inc/problem.class.php:936 inc/ticket.class.php:5757
 msgid "Deleted"
 msgstr "已删除"
 
@@ -1192,8 +1192,8 @@ msgstr "大小"
 #: inc/notificationtargetticket.class.php:923
 #: inc/notificationtargetticket.class.php:930
 #: inc/notimportedemail.class.php:202 inc/project.class.php:652
-#: inc/ticket.class.php:3014 inc/ticketfollowup.class.php:687
-#: inc/ticketfollowup.class.php:1082 inc/ticketfollowup.class.php:1173
+#: inc/ticket.class.php:3029 inc/ticketfollowup.class.php:695
+#: inc/ticketfollowup.class.php:1090 inc/ticketfollowup.class.php:1181
 msgid "Date"
 msgid_plural "Dates"
 msgstr[0] "日期"
@@ -1207,8 +1207,8 @@ msgstr "删除文件 %s"
 #: front/backup.php:652 front/backup.php:703 inc/backup.class.php:78
 #: inc/cartridge.class.php:658 inc/cartridge.class.php:931
 #: inc/change_ticket.class.php:288 inc/commondbrelation.class.php:1119
-#: inc/commondbtm.class.php:2242 inc/commondbtm.class.php:2252
-#: inc/commondbtm.class.php:4619 inc/commondbtm.class.php:4704
+#: inc/commondbtm.class.php:2240 inc/commondbtm.class.php:2250
+#: inc/commondbtm.class.php:4617 inc/commondbtm.class.php:4702
 #: inc/commondbvisible.class.php:180 inc/commonitilobject.class.php:2337
 #: inc/commonitilobject.class.php:2417 inc/commonitilobject.class.php:3362
 #: inc/computer_softwarelicense.class.php:457
@@ -1223,9 +1223,9 @@ msgstr "删除文件 %s"
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
 #: inc/reservation.class.php:761 inc/rule.class.php:2779
 #: inc/savedsearch.class.php:421 inc/sla.class.php:521 inc/sla.class.php:522
-#: inc/ticket.class.php:5140 inc/ticket.class.php:7028
-#: inc/ticket.class.php:7029 inc/ticketfollowup.class.php:804
-#: inc/ticketfollowup.class.php:1028 inc/tickettask.class.php:310
+#: inc/ticket.class.php:5155 inc/ticket.class.php:7043
+#: inc/ticket.class.php:7044 inc/ticketfollowup.class.php:812
+#: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
 #: inc/ticket_ticket.class.php:185 inc/transfer.class.php:3296
 #: inc/transfer.class.php:3301 inc/transfer.class.php:3318
 #: inc/transfer.class.php:3325
@@ -1274,8 +1274,8 @@ msgstr "下载"
 #: front/rssfeed.form.php:53 front/rule.common.form.php:72
 #: front/sla.form.php:54 front/slm.form.php:55 front/software.form.php:56
 #: front/supplier.form.php:55 front/transfer.form.php:54
-#: front/user.form.php:72 front/user.form.php:184
-#: inc/rulecollection.class.php:1369 inc/ticket.class.php:1963
+#: front/user.form.php:72 front/user.form.php:182
+#: inc/rulecollection.class.php:1369 inc/ticket.class.php:1977
 #, php-format
 msgid "%1$s adds the item %2$s"
 msgstr "%1$s 添加项目 %2$s"
@@ -1359,7 +1359,7 @@ msgstr "%s 清除一个项目"
 #: front/software.form.php:97 front/supplier.form.php:93
 #: front/ticket.form.php:98 front/ticket.form.php:147
 #: front/ticket.form.php:157 front/ticketsatisfaction.form.php:51
-#: front/transfer.form.php:72 front/user.form.php:116
+#: front/transfer.form.php:72 front/user.form.php:114
 #: inc/rulecollection.class.php:1379
 #, php-format
 msgid "%s updates an item"
@@ -1437,7 +1437,7 @@ msgstr "由于你已不能访问此项目，你已被重定向。"
 #: front/change_ticket.form.php:46 front/change_ticket.form.php:52
 #: front/item_ticket.form.php:55 front/problem_ticket.form.php:47
 #: front/problem_ticket.form.php:53 inc/document_item.class.php:143
-#: inc/ticket.class.php:1077 inc/ticket.class.php:1719
+#: inc/ticket.class.php:1077 inc/ticket.class.php:1733
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
 msgstr "必填字段没有填写。请改正: %s"
@@ -1497,7 +1497,7 @@ msgstr[0] "更改"
 #: inc/notificationtargetprojecttask.class.php:574 inc/profile.class.php:647
 #: inc/profile.class.php:995 inc/profile.class.php:1016
 #: inc/profile.class.php:1027 inc/ticket.class.php:112
-#: inc/ticket.class.php:2115 inc/ticket.class.php:5728
+#: inc/ticket.class.php:2129 inc/ticket.class.php:5743
 #: inc/ticket_ticket.class.php:70 inc/transfer.class.php:3324
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -1684,12 +1684,12 @@ msgstr "任务 %s 已执行"
 #. TRANS: %1$s is a number maybe float or string and %2$s the unit
 #. TRANS: %1$s is postcode, %2$s is town
 #. TRANS: %1$s is country, %2$s is state
-#: front/crontask.php:45 inc/auth.class.php:1389 inc/auth.class.php:1395
-#: inc/auth.class.php:1401 inc/authldap.class.php:712
-#: inc/authldap.class.php:717 inc/authldap.class.php:720
-#: inc/authldap.class.php:968 inc/authldap.class.php:977
-#: inc/authldap.class.php:986 inc/authldap.class.php:2905
-#: inc/authldap.class.php:2907 inc/authldap.class.php:2909
+#: front/crontask.php:45 inc/auth.class.php:1392 inc/auth.class.php:1398
+#: inc/auth.class.php:1404 inc/authldap.class.php:749
+#: inc/authldap.class.php:754 inc/authldap.class.php:757
+#: inc/authldap.class.php:1005 inc/authldap.class.php:1014
+#: inc/authldap.class.php:1023 inc/authldap.class.php:3122
+#: inc/authldap.class.php:3124 inc/authldap.class.php:3126
 #: inc/commondbvisible.class.php:234 inc/commondbvisible.class.php:242
 #: inc/commondbvisible.class.php:265 inc/commondbvisible.class.php:267
 #: inc/commondbvisible.class.php:290 inc/commondbvisible.class.php:296
@@ -1701,14 +1701,14 @@ msgstr "任务 %s 已执行"
 #: inc/contract_item.class.php:501 inc/crontask.class.php:829
 #: inc/crontask.class.php:837 inc/crontask.class.php:851
 #: inc/dropdown.class.php:357 inc/dropdown.class.php:641
-#: inc/dropdown.class.php:1585 inc/group.class.php:502 inc/group.class.php:510
+#: inc/dropdown.class.php:1549 inc/group.class.php:502 inc/group.class.php:510
 #: inc/html.class.php:155 inc/html.class.php:4326
-#: inc/item_ticket.class.php:1266 inc/log.class.php:672 inc/log.class.php:683
+#: inc/item_ticket.class.php:1275 inc/log.class.php:672 inc/log.class.php:683
 #: inc/networkportinstantiation.class.php:777 inc/problem.class.php:975
 #: inc/problem.class.php:1006 inc/profile_user.class.php:234
 #: inc/profile_user.class.php:399 inc/profile_user.class.php:556
 #: inc/project.class.php:783 inc/project.class.php:812
-#: inc/projectcost.class.php:398 inc/projecttask.class.php:1060
+#: inc/projectcost.class.php:398 inc/projecttask.class.php:1065
 #: inc/projecttask_ticket.class.php:361 inc/projecttask_ticket.class.php:370
 #: inc/reminder.class.php:1113 inc/reservation.class.php:475
 #: inc/rule.class.php:1866 inc/rule.class.php:1880
@@ -1725,10 +1725,10 @@ msgstr "任务 %s 已执行"
 #: inc/search.class.php:1731 inc/search.class.php:4174
 #: inc/search.class.php:4213 inc/search.class.php:4242
 #: inc/search.class.php:4281 inc/search.class.php:4672
-#: inc/search.class.php:4834 inc/ticket.class.php:6083
-#: inc/ticket.class.php:6134 inc/ticket_ticket.class.php:192
-#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:974
-#: inc/toolbox.class.php:1135 inc/useremail.class.php:169
+#: inc/search.class.php:4834 inc/ticket.class.php:6098
+#: inc/ticket.class.php:6149 inc/ticket_ticket.class.php:192
+#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:963
+#: inc/toolbox.class.php:1124 inc/useremail.class.php:169
 #: install/update_0681_07.php:538 install/update_0681_07.php:541
 #: install/update_0681_07.php:546 install/update_0681_07.php:549
 #, php-format
@@ -1763,7 +1763,7 @@ msgstr "您拥有的自动操作的数量超过每分钟允许的运行量。请
 #: inc/commondevice.class.php:266 inc/computer.class.php:795
 #: inc/dropdown.class.php:756 inc/event.class.php:151
 #: inc/item_devices.class.php:350 inc/item_devices.class.php:402
-#: inc/item_devices.class.php:1078 inc/lock.class.php:282
+#: inc/item_devices.class.php:1077 inc/lock.class.php:282
 #: inc/lock.class.php:492 inc/profile.class.php:1421
 #: inc/profile.class.php:1852 inc/transfer.class.php:3347
 #: install/update_0723_078.php:3868
@@ -1969,8 +1969,8 @@ msgstr[0] "电话型号"
 #: inc/phone.class.php:406 inc/printer.class.php:298 inc/printer.class.php:530
 #: inc/project.class.php:471 inc/project.class.php:1005
 #: inc/project.class.php:1192 inc/projecttask.class.php:522
-#: inc/projecttask.class.php:768 inc/projecttask.class.php:924
-#: inc/projecttask.class.php:1202 inc/projecttasktemplate.class.php:65
+#: inc/projecttask.class.php:773 inc/projecttask.class.php:929
+#: inc/projecttask.class.php:1207 inc/projecttasktemplate.class.php:65
 #: inc/projecttasktemplate.class.php:117 inc/projecttask_ticket.class.php:281
 #: inc/queuednotification.class.php:330 inc/queuednotification.class.php:673
 #: inc/rulecollection.class.php:1175
@@ -1989,9 +1989,9 @@ msgstr[0] "电话型号"
 #: inc/ruleticket.class.php:510 inc/sla.class.php:195 inc/sla.class.php:304
 #: inc/sla.class.php:646 inc/softwarelicense.class.php:342
 #: inc/softwarelicense.class.php:539 inc/softwarelicense.class.php:1000
-#: inc/supplier.class.php:489 inc/ticket.class.php:2719
-#: inc/ticket.class.php:2926 inc/ticket.class.php:3819
-#: inc/ticket.class.php:4652 inc/user.class.php:3672 inc/user.class.php:3752
+#: inc/supplier.class.php:489 inc/ticket.class.php:2734
+#: inc/ticket.class.php:2941 inc/ticket.class.php:3834
+#: inc/ticket.class.php:4667 inc/user.class.php:3738 inc/user.class.php:3818
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "类型"
@@ -2136,14 +2136,14 @@ msgstr[0] "下拉列表"
 msgid "Search the ID of your hardware"
 msgstr "搜索硬件的ID"
 
-#: front/find_num.php:85 inc/authldap.class.php:2959 inc/knowbase.class.php:69
+#: front/find_num.php:85 inc/authldap.class.php:3178 inc/knowbase.class.php:69
 #: inc/knowbaseitem.class.php:963 inc/planning.class.php:368
 #: inc/reservationitem.class.php:427 inc/search.class.php:1847
 msgctxt "button"
 msgid "Search"
 msgstr "搜索"
 
-#: front/find_num.php:93 inc/commondbtm.class.php:3116
+#: front/find_num.php:93 inc/commondbtm.class.php:3114
 #: inc/computer.class.php:446 inc/computer.class.php:685
 #: inc/config.class.php:537 inc/monitor.class.php:248
 #: inc/monitor.class.php:455 inc/networkequipment.class.php:335
@@ -2158,12 +2158,12 @@ msgstr "搜索"
 msgid "Alternate username"
 msgstr "备用用户名"
 
-#: front/find_num.php:94 inc/ticket.class.php:3881
+#: front/find_num.php:94 inc/ticket.class.php:3896
 msgid "Hardware type"
 msgstr "硬件类型"
 
 #: front/find_num.php:95 front/item_ticket.form.php:56
-#: inc/commonitilobject.class.php:5486 inc/item_ticket.class.php:1221
+#: inc/commonitilobject.class.php:5486 inc/item_ticket.class.php:1230
 #: inc/knowbaseitem_item.class.php:85
 #: inc/notificationtargetticket.class.php:738
 #: inc/notificationtargetticket.class.php:741
@@ -2173,17 +2173,17 @@ msgstr "硬件类型"
 #: inc/notificationtargetticket.class.php:753
 #: inc/notificationtargetticket.class.php:756 inc/problem.class.php:445
 #: inc/ruleticket.class.php:582 inc/stat.class.php:1159
-#: inc/ticket.class.php:2728 inc/ticket.class.php:4913
-#: inc/ticket.class.php:5622
+#: inc/ticket.class.php:2743 inc/ticket.class.php:4928
+#: inc/ticket.class.php:5637
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "相关元件"
 
-#: front/find_num.php:96 inc/apiclient.class.php:89 inc/authldap.class.php:829
+#: front/find_num.php:96 inc/apiclient.class.php:89 inc/authldap.class.php:866
 #: inc/authmail.class.php:107 inc/budget.class.php:209
 #: inc/cartridge.class.php:694 inc/cartridge.class.php:961
 #: inc/cartridgeitem.class.php:293 inc/certificate.class.php:84
-#: inc/commondbrelation.class.php:287 inc/commondbtm.class.php:3774
+#: inc/commondbrelation.class.php:287 inc/commondbtm.class.php:3772
 #: inc/commondropdown.class.php:447 inc/commonitilcost.class.php:114
 #: inc/commonitilobject.class.php:2696 inc/commonitilobject.class.php:5231
 #: inc/commonitiltask.class.php:1868 inc/commonitiltask.class.php:1917
@@ -2223,16 +2223,16 @@ msgstr[0] "相关元件"
 #: inc/search.class.php:5347 inc/sla.class.php:617 inc/slm.class.php:154
 #: inc/software.class.php:478 inc/softwarelicense.class.php:507
 #: inc/softwarelicense.class.php:1213 inc/supplier.class.php:242
-#: inc/ticket.class.php:4497 inc/ticket.class.php:6073
-#: inc/ticket_ticket.class.php:70 inc/user.class.php:2625
-#: inc/user.class.php:4265
+#: inc/ticket.class.php:4512 inc/ticket.class.php:6088
+#: inc/ticket_ticket.class.php:70 inc/user.class.php:2667
+#: inc/user.class.php:4331
 msgid "ID"
 msgstr "ID"
 
 #: front/find_num.php:97 inc/blacklist.class.php:233 inc/budget.class.php:336
 #: inc/certificate.class.php:93 inc/certificate.class.php:409
 #: inc/certificate_item.class.php:287 inc/change_item.class.php:173
-#: inc/commondbtm.class.php:3065 inc/commondbtm.class.php:3775
+#: inc/commondbtm.class.php:3063 inc/commondbtm.class.php:3773
 #: inc/computer.class.php:440 inc/computer.class.php:661
 #: inc/computer_item.class.php:452 inc/computer_item.class.php:598
 #: inc/computer_softwarelicense.class.php:486
@@ -2259,14 +2259,14 @@ msgstr "ID"
 #: inc/ruleimportcomputer.class.php:106 inc/search.class.php:5358
 #: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:519
 #: inc/softwarelicense.class.php:997 inc/softwarelicense.class.php:1214
-#: inc/supplier.class.php:492 inc/user.class.php:3675 inc/user.class.php:3755
+#: inc/supplier.class.php:492 inc/user.class.php:3741 inc/user.class.php:3821
 msgid "Serial number"
 msgstr "序列号"
 
 #: front/find_num.php:98 inc/budget.class.php:337
 #: inc/certificate.class.php:101 inc/certificate.class.php:412
 #: inc/certificate_item.class.php:288 inc/change_item.class.php:174
-#: inc/commondbtm.class.php:3070 inc/computer.class.php:451
+#: inc/commondbtm.class.php:3068 inc/computer.class.php:451
 #: inc/computer.class.php:669 inc/computer_item.class.php:453
 #: inc/computer_item.class.php:599 inc/computer_softwarelicense.class.php:487
 #: inc/computer_softwareversion.class.php:327 inc/contract_item.class.php:698
@@ -2284,7 +2284,7 @@ msgstr "序列号"
 #: inc/phone.class.php:439 inc/printer.class.php:346 inc/printer.class.php:563
 #: inc/reservationitem.class.php:204 inc/search.class.php:5362
 #: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:676
-#: inc/supplier.class.php:493 inc/user.class.php:3676 inc/user.class.php:3756
+#: inc/supplier.class.php:493 inc/user.class.php:3742 inc/user.class.php:3822
 msgid "Inventory number"
 msgstr "资产编号"
 
@@ -2318,7 +2318,7 @@ msgid_plural "Devices"
 msgstr[0] "设备"
 
 #. TRANS: %s is the user login
-#: front/group_user.form.php:51 front/user.form.php:124
+#: front/group_user.form.php:51 front/user.form.php:122
 #, php-format
 msgid "%s adds a user to a group"
 msgstr "%s 添加用户到群组"
@@ -2337,13 +2337,13 @@ msgstr "常见问题解答"
 
 #: front/helpdesk.faq.php:57 front/knowbaseitem.form.php:170
 #: front/knowbaseitemtranslation.form.php:84 inc/auth.class.php:103
-#: inc/config.class.php:606 inc/config.class.php:744 inc/user.class.php:2009
-#: inc/user.class.php:2724
+#: inc/config.class.php:606 inc/config.class.php:744 inc/user.class.php:2042
+#: inc/user.class.php:2785
 msgid "Authentication"
 msgstr "身份验证"
 
 #: front/helpdesk.public.php:95 front/ticket.form.php:233
-#: inc/notificationtargetticket.class.php:227 inc/ticket.class.php:4509
+#: inc/notificationtargetticket.class.php:227 inc/ticket.class.php:4524
 msgid "New ticket"
 msgstr "新增工作单"
 
@@ -2430,12 +2430,12 @@ msgstr ""
 
 #: front/ldap.group.import.php:44 front/ldap.group.php:43
 #: front/ldap.import.php:50 front/ldap.php:41 inc/group.class.php:166
-#: inc/group.class.php:333 inc/user.class.php:1841
+#: inc/group.class.php:333 inc/user.class.php:1854
 msgid "LDAP directory link"
 msgstr "LDAP 连接"
 
-#: front/ldap.group.import.php:76 inc/auth.class.php:252
-#: inc/authldap.class.php:3084
+#: front/ldap.group.import.php:76 inc/auth.class.php:255
+#: inc/authldap.class.php:3303
 msgid "Unable to connect to the LDAP directory"
 msgstr "不能连接到LDAP目录"
 
@@ -2443,7 +2443,7 @@ msgstr "不能连接到LDAP目录"
 #: front/rule.common.php:104 front/tracking.injector.php:91
 #: front/transfer.action.php:53 front/transfer.action.php:60
 #: inc/html.class.php:831 inc/html.class.php:833 inc/stat.class.php:402
-#: inc/user.class.php:4132 install/install.php:260 install/install.php:349
+#: inc/user.class.php:4198 install/install.php:260 install/install.php:349
 msgid "Back"
 msgstr "返回"
 
@@ -2459,11 +2459,11 @@ msgstr "导入新群组"
 msgid "Bulk import users from a LDAP directory"
 msgstr "从LDAP目录中批量导入用户"
 
-#: front/ldap.php:52 inc/authldap.class.php:2814
+#: front/ldap.php:52 inc/authldap.class.php:3015
 msgid "Synchronizing already imported users"
 msgstr "同步已导入的用户"
 
-#: front/ldap.php:56 inc/authldap.class.php:2815
+#: front/ldap.php:56 inc/authldap.class.php:3016
 msgid "Import new users"
 msgstr "导入新用户"
 
@@ -2655,16 +2655,16 @@ msgstr "根据合同的硬件列表"
 
 #: front/report.contract.list.php:178 front/report.infocom.php:130
 #: front/report.year.list.php:134 inc/apiclient.class.php:81
-#: inc/apiclient.class.php:180 inc/authldap.class.php:312
-#: inc/authldap.class.php:518 inc/authldap.class.php:820
-#: inc/authldap.class.php:2122 inc/authldapreplicate.class.php:87
+#: inc/apiclient.class.php:180 inc/authldap.class.php:334
+#: inc/authldap.class.php:555 inc/authldap.class.php:857
+#: inc/authldap.class.php:2245 inc/authldapreplicate.class.php:87
 #: inc/authmail.class.php:98 inc/authmail.class.php:185
 #: inc/budget.class.php:126 inc/budget.class.php:200 inc/budget.class.php:335
 #: inc/calendar_holiday.class.php:134 inc/cartridgeitem.class.php:192
 #: inc/cartridgeitem.class.php:284 inc/certificate.class.php:75
 #: inc/certificate.class.php:362 inc/certificate_item.class.php:283
 #: inc/certificate_item.class.php:493 inc/change_item.class.php:172
-#: inc/commondbtm.class.php:3404 inc/commondevice.class.php:213
+#: inc/commondbtm.class.php:3402 inc/commondevice.class.php:213
 #: inc/commondropdown.class.php:244 inc/commondropdown.class.php:438
 #: inc/commonitilcost.class.php:402 inc/commonitilcost.class.php:550
 #: inc/commontreedropdown.class.php:405 inc/commontreedropdown.class.php:430
@@ -2742,7 +2742,7 @@ msgstr "根据合同的硬件列表"
 #: inc/project.class.php:413 inc/project.class.php:662
 #: inc/project.class.php:965 inc/projectcost.class.php:287
 #: inc/projectcost.class.php:376 inc/projecttask.class.php:510
-#: inc/projecttask.class.php:720 inc/reservationitem.class.php:164
+#: inc/projecttask.class.php:725 inc/reservationitem.class.php:164
 #: inc/rssfeed.class.php:336 inc/rssfeed.class.php:603 inc/rule.class.php:695
 #: inc/rule.class.php:862 inc/rule.class.php:2724
 #: inc/rulecollection.class.php:481 inc/rulecollection.class.php:512
@@ -2763,16 +2763,16 @@ msgstr "根据合同的硬件列表"
 #: inc/tickettemplatehiddenfield.class.php:263
 #: inc/tickettemplatemandatoryfield.class.php:273
 #: inc/tickettemplatepredefinedfield.class.php:334 inc/transfer.class.php:91
-#: inc/transfer.class.php:3281 inc/user.class.php:2144 inc/user.class.php:3674
-#: inc/user.class.php:3754
+#: inc/transfer.class.php:3281 inc/user.class.php:2177 inc/user.class.php:3740
+#: inc/user.class.php:3820
 msgid "Name"
 msgstr "名称"
 
 #: front/report.contract.list.php:183 front/report.year.list.php:139
 #: front/stat.graph.php:143 front/stat.location.php:90
-#: front/stat.tracking.php:98 inc/authldap.class.php:748
+#: front/stat.tracking.php:98 inc/authldap.class.php:785
 #: inc/budget.class.php:159 inc/certificate.class.php:381
-#: inc/commondbtm.class.php:3085 inc/computer.class.php:389
+#: inc/commondbtm.class.php:3083 inc/computer.class.php:389
 #: inc/computer_softwarelicense.class.php:488
 #: inc/computer_softwareversion.class.php:328 inc/config.class.php:540
 #: inc/db.function.php:1339 inc/dropdown.class.php:411
@@ -2788,9 +2788,9 @@ msgstr "名称"
 #: inc/phone.class.php:194 inc/printer.class.php:293
 #: inc/profile.class.php:1431 inc/ruleimportentity.class.php:168
 #: inc/ruleticket.class.php:650 inc/software.class.php:270
-#: inc/softwarelicense.class.php:338 inc/ticket.class.php:2770
-#: inc/ticket.class.php:3892 inc/ticket.class.php:4865 inc/user.class.php:2061
-#: inc/user.class.php:2170 inc/user.class.php:2377
+#: inc/softwarelicense.class.php:338 inc/ticket.class.php:2785
+#: inc/ticket.class.php:3907 inc/ticket.class.php:4880 inc/user.class.php:2094
+#: inc/user.class.php:2203 inc/user.class.php:2424
 msgid "Location"
 msgid_plural "Locations"
 msgstr[0] "地点"
@@ -2803,7 +2803,7 @@ msgid "Date of purchase"
 msgstr "购买日期"
 
 #: front/report.contract.list.php:185 front/report.infocom.php:137
-#: front/report.year.list.php:141 inc/commondbtm.class.php:3128
+#: front/report.year.list.php:141 inc/commondbtm.class.php:3126
 #: inc/infocom.class.php:562 inc/infocom.class.php:1415
 msgid "Warranty expiration date"
 msgstr "保修到期日"
@@ -3037,21 +3037,21 @@ msgstr ""
 msgid "Search"
 msgstr "搜索"
 
-#: front/setup.auth.php:44 inc/auth.class.php:879 inc/dropdown.class.php:1035
+#: front/setup.auth.php:44 inc/auth.class.php:882 inc/dropdown.class.php:1035
 msgid "External authentications"
 msgstr "外部验证"
 
-#: front/setup.auth.php:51 inc/auth.class.php:913 inc/authldap.class.php:69
-#: inc/ruleright.class.php:241 inc/user.class.php:4214
+#: front/setup.auth.php:51 inc/auth.class.php:916 inc/authldap.class.php:72
+#: inc/ruleright.class.php:241 inc/user.class.php:4280
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
 msgstr[0] "LDAP目录"
 
-#: front/setup.auth.php:53 inc/authldap.class.php:391
+#: front/setup.auth.php:53 inc/authldap.class.php:428
 msgid "The LDAP extension of your PHP parser isn't installed"
 msgstr "PHP未安装LDAP扩展"
 
-#: front/setup.auth.php:54 inc/authldap.class.php:392
+#: front/setup.auth.php:54 inc/authldap.class.php:429
 msgid "Impossible to use LDAP as external source of connection"
 msgstr "不能用LDAP作为连接的外部来源"
 
@@ -3202,8 +3202,8 @@ msgid "Real duration"
 msgstr "实际持续时长"
 
 #: front/stat.global.php:165 front/stat.graph.php:439
-#: inc/notificationtargetticket.class.php:244 inc/ticket.class.php:2919
-#: inc/ticket.class.php:5597
+#: inc/notificationtargetticket.class.php:244 inc/ticket.class.php:2934
+#: inc/ticket.class.php:5612
 msgid "Satisfaction survey"
 msgstr "满意度调查"
 
@@ -3227,7 +3227,7 @@ msgstr[0] "答案"
 #: front/stat.graph.php:458 front/stat.graph.php:461
 #: inc/notificationtargetticket.class.php:832
 #: inc/notificationtargetticket.class.php:905 inc/stat.class.php:412
-#: inc/ticket.class.php:739 inc/ticket.class.php:2964
+#: inc/ticket.class.php:739 inc/ticket.class.php:2979
 #: inc/ticketsatisfaction.class.php:48
 msgid "Satisfaction"
 msgstr "满意度"
@@ -3255,9 +3255,9 @@ msgid_plural "Suppliers"
 msgstr[0] "供应商"
 
 #: front/stat.graph.php:109 front/stat.graph.php:116
-#: inc/authldap.class.php:1386 inc/authldap.class.php:1440
-#: inc/authldap.class.php:3237 inc/certificate.class.php:231
-#: inc/certificate.class.php:433 inc/commondbtm.class.php:3093
+#: inc/authldap.class.php:1493 inc/authldap.class.php:1542
+#: inc/authldap.class.php:3456 inc/certificate.class.php:231
+#: inc/certificate.class.php:433 inc/commondbtm.class.php:3091
 #: inc/commondbvisible.class.php:214 inc/commonitilactor.class.php:180
 #: inc/commonitilactor.class.php:260 inc/commonitilobject.class.php:3232
 #: inc/commonitilobject.class.php:3390 inc/commonitiltask.class.php:1483
@@ -3291,7 +3291,7 @@ msgstr[0] "供应商"
 #: inc/savedsearch.class.php:209 inc/search.class.php:5371
 #: inc/software.class.php:303 inc/software.class.php:551
 #: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:642
-#: inc/ticketfollowup.class.php:1189 inc/user.class.php:66
+#: inc/ticketfollowup.class.php:1197 inc/user.class.php:66
 #: install/update_0713_072.php:554
 msgid "User"
 msgid_plural "Users"
@@ -3299,8 +3299,8 @@ msgstr[0] "用户"
 
 #: front/stat.graph.php:129 front/stat.graph.php:219
 #: front/stat.tracking.php:86 front/stat.tracking.php:88
-#: inc/auth.class.php:1431 inc/authldap.class.php:738
-#: inc/authldap.class.php:942 inc/authldap.class.php:2917
+#: inc/auth.class.php:1434 inc/authldap.class.php:775
+#: inc/authldap.class.php:979 inc/authldap.class.php:3134
 #: inc/change.class.php:740 inc/commonitilobject.class.php:2813
 #: inc/commonitilobject.class.php:5488 inc/commonitiltask.class.php:1437
 #: inc/commonitiltask.class.php:1724
@@ -3314,16 +3314,16 @@ msgstr[0] "用户"
 #: inc/problem.class.php:1173 inc/ruledictionnarysoftware.class.php:131
 #: inc/rulesoftwarecategory.class.php:99 inc/ruleticket.class.php:345
 #: inc/ruleticket.class.php:506 inc/software.class.php:274
-#: inc/software.class.php:497 inc/ticket.class.php:3826
-#: inc/ticket.class.php:4677 inc/user.class.php:2038 inc/user.class.php:2881
+#: inc/software.class.php:497 inc/ticket.class.php:3841
+#: inc/ticket.class.php:4692 inc/user.class.php:2071 inc/user.class.php:2942
 msgid "Category"
 msgstr "类别"
 
 #: front/stat.graph.php:166 front/stat.graph.php:174
 #: front/stat.tracking.php:83 front/stat.tracking.php:110
-#: inc/authldap.class.php:1798 inc/authldap.class.php:3238
+#: inc/authldap.class.php:1922 inc/authldap.class.php:3457
 #: inc/certificate.class.php:240 inc/certificate.class.php:439
-#: inc/commondbtm.class.php:3102 inc/commondbvisible.class.php:231
+#: inc/commondbtm.class.php:3100 inc/commondbvisible.class.php:231
 #: inc/commonitilobject.class.php:3250 inc/commonitilobject.class.php:3393
 #: inc/commonitiltask.class.php:1513 inc/commonitilvalidation.class.php:636
 #: inc/commonitilvalidation.class.php:1321 inc/computer.class.php:486
@@ -3348,7 +3348,7 @@ msgstr "类别"
 #: inc/search.class.php:5385 inc/software.class.php:311
 #: inc/software.class.php:560 inc/softwarelicense.class.php:392
 #: inc/softwarelicense.class.php:651 inc/tasktemplate.class.php:82
-#: inc/user.class.php:2697 inc/user.class.php:3795
+#: inc/user.class.php:2758 inc/user.class.php:3861
 msgid "Group"
 msgid_plural "Groups"
 msgstr[0] "群组"
@@ -3360,7 +3360,7 @@ msgstr[0] "群组"
 #: inc/notificationtargetproject.class.php:562 inc/problem.class.php:1188
 #: inc/project.class.php:462 inc/project.class.php:659
 #: inc/project.class.php:976 inc/ruleticket.class.php:453
-#: inc/ruleticket.class.php:575 inc/ticket.class.php:4881
+#: inc/ruleticket.class.php:575 inc/ticket.class.php:4896
 msgid "Priority"
 msgstr "优先权"
 
@@ -3369,8 +3369,8 @@ msgstr "优先权"
 #: inc/config.class.php:893
 #: inc/notificationtargetcommonitilobject.class.php:1163
 #: inc/problem.class.php:1166 inc/ruleticket.class.php:447
-#: inc/ruleticket.class.php:569 inc/ticket.class.php:3854
-#: inc/ticket.class.php:4773
+#: inc/ruleticket.class.php:569 inc/ticket.class.php:3869
+#: inc/ticket.class.php:4788
 msgid "Urgency"
 msgstr "紧急"
 
@@ -3380,16 +3380,16 @@ msgstr "紧急"
 #: inc/notificationtargetchange.class.php:271
 #: inc/notificationtargetcommonitilobject.class.php:1164
 #: inc/problem.class.php:1180 inc/ruleticket.class.php:450
-#: inc/ruleticket.class.php:572 inc/ticket.class.php:4849
+#: inc/ruleticket.class.php:572 inc/ticket.class.php:4864
 msgid "Impact"
 msgstr "影响"
 
-#: front/stat.graph.php:203 front/stat.tracking.php:85 inc/auth.class.php:1425
-#: inc/authldap.class.php:734 inc/authldap.class.php:933
-#: inc/authldap.class.php:2916 inc/contact.class.php:228
+#: front/stat.graph.php:203 front/stat.tracking.php:85 inc/auth.class.php:1428
+#: inc/authldap.class.php:771 inc/authldap.class.php:970
+#: inc/authldap.class.php:3133 inc/contact.class.php:228
 #: inc/db.function.php:1345
 #: inc/notificationtargetcommonitilobject.class.php:1179
-#: inc/user.class.php:2055
+#: inc/user.class.php:2088
 msgctxt "person"
 msgid "Title"
 msgstr "标题"
@@ -3408,8 +3408,8 @@ msgstr[0] "解决方案类型"
 #: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:732
 #: inc/notificationtargetticket.class.php:768 inc/requesttype.class.php:46
 #: inc/ruleticket.class.php:431 inc/ruleticket.class.php:655
-#: inc/ticket.class.php:2761 inc/ticket.class.php:3043
-#: inc/ticket.class.php:4757 inc/ticketfollowup.class.php:1164
+#: inc/ticket.class.php:2776 inc/ticket.class.php:3058
+#: inc/ticket.class.php:4772 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "请求来源"
@@ -3480,9 +3480,9 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:795
 #: inc/notimportedemail.class.php:184 inc/problem.class.php:823
 #: inc/rulemailcollector.class.php:82 inc/ruleticket.class.php:357
-#: inc/ruleticket.class.php:514 inc/ticket.class.php:5621
-#: inc/ticket.class.php:6859 inc/ticket.class.php:7063
-#: inc/ticketfollowup.class.php:1082
+#: inc/ruleticket.class.php:514 inc/ticket.class.php:5636
+#: inc/ticket.class.php:6874 inc/ticket.class.php:7078
+#: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "请求者"
@@ -3499,7 +3499,7 @@ msgstr[0] "请求者"
 #: inc/notificationtargetprojecttask.class.php:468
 #: inc/notificationtargetreservation.class.php:160
 #: inc/notificationtargetticket.class.php:766 inc/reminder.class.php:326
-#: inc/ticket.class.php:3077
+#: inc/ticket.class.php:3092
 msgid "Writer"
 msgstr "作者"
 
@@ -3516,7 +3516,7 @@ msgid "Location tree"
 msgstr "地点树状结构"
 
 #: front/stat.tracking.php:104 inc/cartridgeitem.class.php:277
-#: inc/commondbrelation.class.php:280 inc/commondbtm.class.php:3397
+#: inc/commondbrelation.class.php:280 inc/commondbtm.class.php:3395
 #: inc/commondevice.class.php:206 inc/commondropdown.class.php:431
 #: inc/commonitilcost.class.php:97 inc/commonitilobject.class.php:2664
 #: inc/commonitiltask.class.php:559 inc/commontreedropdown.class.php:599
@@ -3536,15 +3536,15 @@ msgstr "地点树状结构"
 #: inc/peripheral.class.php:357 inc/phone.class.php:379
 #: inc/printer.class.php:503 inc/profile.class.php:1493
 #: inc/profile_user.class.php:851 inc/project.class.php:406
-#: inc/projectcost.class.php:122 inc/projecttask.class.php:713
+#: inc/projectcost.class.php:122 inc/projecttask.class.php:718
 #: inc/queuednotification.class.php:178 inc/reminder.class.php:309
 #: inc/reservationitem.class.php:157 inc/rssfeed.class.php:329
 #: inc/savedsearch.class.php:187 inc/search.class.php:5316
 #: inc/search.class.php:5337 inc/sla.class.php:601 inc/slm.class.php:138
 #: inc/software.class.php:462 inc/softwarelicense.class.php:490
 #: inc/softwareversion.class.php:162 inc/supplier.class.php:226
-#: inc/ticketfollowup.class.php:1149 inc/transfer.class.php:84
-#: inc/user.class.php:2608
+#: inc/ticketfollowup.class.php:1157 inc/transfer.class.php:84
+#: inc/user.class.php:2650
 msgid "Characteristics"
 msgstr "特征"
 
@@ -3625,15 +3625,15 @@ msgstr "%s 添加预定义栏目"
 msgid "%s purges link between tickets"
 msgstr "%s 清除票单之间的链接"
 
-#: front/tracking.injector.php:75 inc/ticket.class.php:2114
+#: front/tracking.injector.php:75 inc/ticket.class.php:2128
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "您的工作单已登记，正在进行处理。"
 
 #: front/tracking.injector.php:80 inc/config.class.php:2385
-#: inc/config.class.php:2405 inc/html.class.php:5671 inc/html.class.php:5830
+#: inc/config.class.php:2405 inc/html.class.php:5672 inc/html.class.php:5831
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:346
-#: inc/telemetry.class.php:393 inc/toolbox.class.php:1029
-#: inc/toolbox.class.php:1063 inc/toolbox.class.php:1064
+#: inc/telemetry.class.php:393 inc/toolbox.class.php:1018
+#: inc/toolbox.class.php:1052 inc/toolbox.class.php:1053
 msgid "OK"
 msgstr "OK"
 
@@ -3642,12 +3642,12 @@ msgid "Thank you for using our automatic helpdesk system."
 msgstr "感谢您使用自助服务系统。"
 
 #. TRANS: %s is the user login
-#: front/user.form.php:138
+#: front/user.form.php:136
 #, php-format
 msgid "%s deletes users from a group"
 msgstr "%s 从群组中删除用户"
 
-#: front/user.form.php:157
+#: front/user.form.php:155
 msgid "Lang has been changed!"
 msgstr ""
 
@@ -3736,7 +3736,7 @@ msgstr "每月"
 #: inc/dropdown.class.php:733 inc/entity.class.php:1827
 #: inc/entity.class.php:1873 inc/entity.class.php:1905
 #: inc/entity.class.php:1938 inc/entity.class.php:2504
-#: inc/entity.class.php:2592 inc/entity.class.php:2751 inc/html.class.php:5722
+#: inc/entity.class.php:2592 inc/entity.class.php:2751 inc/html.class.php:5723
 #: inc/plugin.class.php:505 inc/ruleimportcomputer.class.php:166
 #: inc/savedsearch.class.php:93 inc/savedsearch.class.php:388
 #: inc/savedsearch.class.php:1068 inc/savedsearch.class.php:1123
@@ -3748,7 +3748,7 @@ msgstr "否"
 #: inc/alert.class.php:145 inc/config.class.php:378 inc/config.class.php:379
 #: inc/config.class.php:393 inc/config.class.php:1050
 #: inc/dropdown.class.php:712 inc/dropdown.class.php:731
-#: inc/html.class.php:5718 inc/plugin.class.php:502 inc/rule.class.php:2162
+#: inc/html.class.php:5719 inc/plugin.class.php:502 inc/rule.class.php:2162
 #: inc/ruleimportcomputer.class.php:192 inc/savedsearch.class.php:92
 #: inc/savedsearch.class.php:387 inc/savedsearch.class.php:1071
 #: inc/savedsearch.class.php:1122 inc/savedsearch_user.class.php:54
@@ -3802,7 +3802,7 @@ msgid "Forbidden field ID in search criteria"
 msgstr ""
 
 #: inc/api.class.php:1388
-msgid "Forbidden field ID in forcedisplay"
+msgid "ID is forbidden along with 'forcedisplay' parameter."
 msgstr ""
 
 #: inc/api.class.php:1676 inc/api.class.php:1767 inc/api.class.php:2261
@@ -3822,13 +3822,13 @@ msgstr ""
 msgid "A session is active"
 msgstr ""
 
-#: inc/api.class.php:1850 inc/user.class.php:4154
+#: inc/api.class.php:1850 inc/user.class.php:4220
 msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
 msgstr "一封邮件已发送到您的邮箱，邮件中包含重置密码的信息。"
 
-#: inc/api.class.php:1862 inc/user.class.php:4119
+#: inc/api.class.php:1862 inc/user.class.php:4185
 msgid "Reset password successful."
 msgstr "重设密码成功。"
 
@@ -3867,7 +3867,7 @@ msgid_plural "API clients"
 msgstr[0] "API客户端"
 
 #: inc/apiclient.class.php:98 inc/apiclient.class.php:190
-#: inc/authldap.class.php:325 inc/authldap.class.php:1067
+#: inc/authldap.class.php:349 inc/authldap.class.php:1104
 #: inc/authmail.class.php:133 inc/authmail.class.php:190
 #: inc/computerantivirus.class.php:164 inc/computerantivirus.class.php:270
 #: inc/computerantivirus.class.php:358 inc/fieldunicity.class.php:76
@@ -3886,7 +3886,7 @@ msgstr[0] "API客户端"
 #: inc/slalevel.class.php:176 inc/slalevel.class.php:292
 #: inc/taskcategory.class.php:57 inc/taskcategory.class.php:76
 #: inc/ticketrecurrent.class.php:140 inc/ticketrecurrent.class.php:240
-#: inc/user.class.php:1972 inc/user.class.php:2665
+#: inc/user.class.php:2005 inc/user.class.php:2726
 msgid "Active"
 msgstr "激活"
 
@@ -4011,124 +4011,124 @@ msgstr "缺少id"
 msgid "Others"
 msgstr "其他"
 
-#: inc/auth.class.php:150 inc/auth.class.php:243 inc/auth.class.php:363
+#: inc/auth.class.php:150 inc/auth.class.php:246 inc/auth.class.php:366
 msgid "Incorrect username or password"
 msgstr "用户名或密码错误"
 
-#: inc/auth.class.php:237 inc/auth.class.php:756 inc/auth.class.php:777
+#: inc/auth.class.php:240 inc/auth.class.php:759 inc/auth.class.php:780
 msgid "User not authorized to connect in GLPI"
 msgstr "用户无权连接GLPI"
 
-#: inc/auth.class.php:337
+#: inc/auth.class.php:340
 msgid "Password field is empty"
 msgstr "密码为空"
 
-#: inc/auth.class.php:481
+#: inc/auth.class.php:484
 msgid "Login with external token disabled"
 msgstr "禁用外部令牌登录"
 
-#: inc/auth.class.php:501
+#: inc/auth.class.php:504
 msgid "Invalid cookie data"
 msgstr ""
 
-#: inc/auth.class.php:505
+#: inc/auth.class.php:508
 msgid "Auto login disabled"
 msgstr ""
 
-#: inc/auth.class.php:659 inc/auth.class.php:667
+#: inc/auth.class.php:662 inc/auth.class.php:670
 msgid "Empty login or password"
 msgstr "用户名或密码为空"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
-#: inc/auth.class.php:794
+#: inc/auth.class.php:797
 #, php-format
 msgid "%1$s log in from IP %2$s"
 msgstr "%1$s 登陆来自 IP %2$s"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
-#: inc/auth.class.php:804
+#: inc/auth.class.php:807
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
 msgstr " %1$s 从 IP %2$s登陆失败"
 
-#: inc/auth.class.php:870
+#: inc/auth.class.php:873
 msgid "Authentication on GLPI database"
 msgstr "在GLPI数据库中验证"
 
-#: inc/auth.class.php:878
+#: inc/auth.class.php:881
 msgid "Authentication on a LDAP directory"
 msgstr "在LDAP目录中验证"
 
-#: inc/auth.class.php:888
+#: inc/auth.class.php:891
 msgid "Authentication on mail server"
 msgstr "在邮件服务器中验证"
 
-#: inc/auth.class.php:921 inc/authmail.class.php:91
+#: inc/auth.class.php:924 inc/authmail.class.php:91
 #: inc/ruleright.class.php:249
 msgid "Email server"
 msgstr "邮件服务器"
 
-#: inc/auth.class.php:928 inc/auth.class.php:940 inc/auth.class.php:953
+#: inc/auth.class.php:931 inc/auth.class.php:943 inc/auth.class.php:956
 #: inc/commonglpi.class.php:864 inc/tickettemplatemandatoryfield.class.php:203
 #, php-format
 msgid "%1$s + %2$s"
 msgstr "%1$s + %2$s"
 
-#: inc/auth.class.php:929 inc/auth.class.php:933
+#: inc/auth.class.php:932 inc/auth.class.php:936
 msgid "CAS"
 msgstr "CAS中央认证服务"
 
-#: inc/auth.class.php:941 inc/auth.class.php:946 inc/auth.class.php:1314
+#: inc/auth.class.php:944 inc/auth.class.php:949 inc/auth.class.php:1317
 msgid "x509 certificate authentication"
 msgstr "x509证书认证"
 
-#: inc/auth.class.php:954 inc/auth.class.php:958 inc/profile.class.php:2332
+#: inc/auth.class.php:957 inc/auth.class.php:961 inc/profile.class.php:2332
 #: install/update_0723_078.php:3673
 msgid "Other"
 msgstr "其他"
 
-#: inc/auth.class.php:961
+#: inc/auth.class.php:964
 msgid "GLPI internal database"
 msgstr "GLPI内部数据库"
 
-#: inc/auth.class.php:964 inc/config.class.php:725 inc/config.class.php:2074
+#: inc/auth.class.php:967 inc/config.class.php:725 inc/config.class.php:2074
 msgid "API"
 msgstr "API"
 
-#: inc/auth.class.php:967
+#: inc/auth.class.php:970
 msgid "Not yet authenticated"
 msgstr "尚未验证"
 
-#: inc/auth.class.php:1197 inc/user.class.php:2512
+#: inc/auth.class.php:1200 inc/user.class.php:2559
 msgid "Force synchronization"
 msgstr "强制同步"
 
-#: inc/auth.class.php:1210
+#: inc/auth.class.php:1213
 msgid "Change of the authentication method"
 msgstr "变更验证方式"
 
-#: inc/auth.class.php:1243
+#: inc/auth.class.php:1246
 msgid "Synchronization"
 msgstr "同步"
 
-#: inc/auth.class.php:1286
+#: inc/auth.class.php:1289
 msgid "CAS authentication"
 msgstr "CAS验证"
 
-#: inc/auth.class.php:1288 inc/auth.class.php:1316 inc/auth.class.php:1339
+#: inc/auth.class.php:1291 inc/auth.class.php:1319 inc/auth.class.php:1342
 msgctxt "authentication"
 msgid "Enabled"
 msgstr "启用"
 
 #. TRANS: for CAS SSO system
-#: inc/auth.class.php:1295
+#: inc/auth.class.php:1298
 msgid "CAS Host"
 msgstr "CAS主机"
 
 #. TRANS: for CAS SSO system
 #. TRANS: Proxy port
 #. TRANS: SMTP port
-#: inc/auth.class.php:1298 inc/authldap.class.php:846
+#: inc/auth.class.php:1301 inc/authldap.class.php:883
 #: inc/authldapreplicate.class.php:89 inc/config.class.php:1742
 #: inc/notificationmailingsetting.class.php:207 inc/printer.class.php:419
 msgid "Port"
@@ -4136,68 +4136,68 @@ msgid_plural "Ports"
 msgstr[0] "端口"
 
 #. TRANS: for CAS SSO system
-#: inc/auth.class.php:1301
+#: inc/auth.class.php:1304
 msgid "Root directory (optional)"
 msgstr "根目录(可选)"
 
 #. TRANS: for CAS SSO system
-#: inc/auth.class.php:1304
+#: inc/auth.class.php:1307
 msgid "Log out fallback URL"
 msgstr "退出后备URL"
 
-#: inc/auth.class.php:1309
+#: inc/auth.class.php:1312
 msgid "The CURL extension for your PHP parser isn't installed"
 msgstr "PHP的CURL扩展没有安装"
 
-#: inc/auth.class.php:1311
+#: inc/auth.class.php:1314
 msgid "Impossible to use CAS as external source of connection"
 msgstr "不能用CAS作为连接的外部来源"
 
-#: inc/auth.class.php:1320
+#: inc/auth.class.php:1323
 msgid "Email attribute for x509 authentication"
 msgstr "电子邮件的x509验证属性"
 
-#: inc/auth.class.php:1324 inc/auth.class.php:1328 inc/auth.class.php:1332
+#: inc/auth.class.php:1327 inc/auth.class.php:1331 inc/auth.class.php:1335
 #, php-format
 msgid "Restrict %s field for x509 authentication (separator $)"
 msgstr "限制x509验证的 %s 字段  (分隔符 $)"
 
-#: inc/auth.class.php:1337
+#: inc/auth.class.php:1340
 msgid "Other authentication sent in the HTTP request"
 msgstr "在HTTP请求中发送的其它验证"
 
-#: inc/auth.class.php:1343 inc/dropdown.class.php:1036
+#: inc/auth.class.php:1346 inc/dropdown.class.php:1036
 #: inc/ssovariable.class.php:52
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
 msgstr[0] "在HTTP请求里存储登录名的字段"
 
-#: inc/auth.class.php:1351
+#: inc/auth.class.php:1354
 msgid "Remove the domain of logins like login@domain"
 msgstr "从login@domain.com中删除登陆domain"
 
-#: inc/auth.class.php:1357 inc/authldap.class.php:692
-#: inc/authldap.class.php:888 inc/authldap.class.php:2911
-#: inc/contact.class.php:159 inc/user.class.php:1937 inc/user.class.php:2223
+#: inc/auth.class.php:1360 inc/authldap.class.php:729
+#: inc/authldap.class.php:925 inc/authldap.class.php:3128
+#: inc/contact.class.php:159 inc/user.class.php:1970 inc/user.class.php:2256
 msgid "Surname"
 msgstr "姓"
 
-#: inc/auth.class.php:1363 inc/authldap.class.php:695
-#: inc/authldap.class.php:897 inc/authldap.class.php:2912
+#: inc/auth.class.php:1366 inc/authldap.class.php:732
+#: inc/authldap.class.php:934 inc/authldap.class.php:3129
 #: inc/contact.class.php:169 inc/contact.class.php:302
-#: inc/notificationtargetuser.class.php:113 inc/user.class.php:1941
-#: inc/user.class.php:2258 inc/user.class.php:2642
+#: inc/notificationtargetuser.class.php:113 inc/user.class.php:1974
+#: inc/user.class.php:2291 inc/user.class.php:2684
 msgid "First name"
 msgstr "名字"
 
-#: inc/auth.class.php:1376 inc/authldap.class.php:702 inc/user.class.php:2051
-#: inc/user.class.php:2368 inc/user.class.php:2827
+#: inc/auth.class.php:1379 inc/authldap.class.php:739 inc/user.class.php:2084
+#: inc/user.class.php:2415 inc/user.class.php:2888
 msgid "Administrative number"
 msgstr "管理号码"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
-#: inc/auth.class.php:1407 inc/authldap.class.php:724
-#: inc/authldap.class.php:906 inc/authldap.class.php:2913
+#: inc/auth.class.php:1410 inc/authldap.class.php:761
+#: inc/authldap.class.php:943 inc/authldap.class.php:3130
 #: inc/contact.class.php:175 inc/contact.class.php:319
 #: inc/contact_supplier.class.php:216 inc/contact_supplier.class.php:352
 #: inc/contract_supplier.class.php:364 inc/db.function.php:1329
@@ -4208,67 +4208,71 @@ msgstr "管理号码"
 #: inc/notificationtargetcommonitilobject.class.php:1249
 #: inc/phone.class.php:59 inc/profile.class.php:809 inc/profile.class.php:1682
 #: inc/supplier.class.php:145 inc/supplier.class.php:307
-#: inc/transfer.class.php:3417 inc/user.class.php:2002 inc/user.class.php:2149
-#: inc/user.class.php:2306 inc/user.class.php:2673
+#: inc/transfer.class.php:3417 inc/user.class.php:2035 inc/user.class.php:2182
+#: inc/user.class.php:2353 inc/user.class.php:2734
 #: install/update_0681_07.php:563 install/update_0723_078.php:3667
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] "电话"
 
-#: inc/auth.class.php:1413 inc/authldap.class.php:727
-#: inc/authldap.class.php:915 inc/authldap.class.php:2914
+#: inc/auth.class.php:1416 inc/authldap.class.php:764
+#: inc/authldap.class.php:952 inc/authldap.class.php:3131
 #: inc/contact.class.php:181 inc/contact.class.php:327
 #: inc/contact_supplier.class.php:353 inc/dropdown.class.php:365
 #: inc/notificationtargetcommonitilobject.class.php:1177
-#: inc/user.class.php:2043 inc/user.class.php:2157 inc/user.class.php:2347
-#: inc/user.class.php:2681
+#: inc/user.class.php:2076 inc/user.class.php:2190 inc/user.class.php:2394
+#: inc/user.class.php:2742
 msgid "Phone 2"
 msgstr "电话2"
 
-#: inc/auth.class.php:1419 inc/authldap.class.php:731
-#: inc/authldap.class.php:924 inc/authldap.class.php:2915
+#: inc/auth.class.php:1422 inc/authldap.class.php:768
+#: inc/authldap.class.php:961 inc/authldap.class.php:3132
 #: inc/contact.class.php:187 inc/contact.class.php:335
 #: inc/contact_supplier.class.php:354 inc/db.function.php:1334
 #: inc/dropdown.class.php:370
 #: inc/notificationtargetcommonitilobject.class.php:1175
-#: inc/user.class.php:2035 inc/user.class.php:2162 inc/user.class.php:2322
-#: inc/user.class.php:2689
+#: inc/user.class.php:2068 inc/user.class.php:2195 inc/user.class.php:2369
+#: inc/user.class.php:2750
 msgid "Mobile phone"
 msgstr "移动电话"
 
-#: inc/auth.class.php:1437 inc/authldap.class.php:741
-#: inc/authldap.class.php:1022 inc/config.class.php:986
+#: inc/auth.class.php:1440 inc/authldap.class.php:778
+#: inc/authldap.class.php:1059 inc/config.class.php:986
 #: inc/dropdowntranslation.class.php:364 inc/dropdowntranslation.class.php:439
 #: inc/knowbaseitemtranslation.class.php:229
 #: inc/knowbaseitemtranslation.class.php:291
 #: inc/notificationtemplatetranslation.class.php:131
 #: inc/notificationtemplatetranslation.class.php:209
-#: inc/notificationtemplatetranslation.class.php:289 inc/user.class.php:2272
-#: inc/user.class.php:2771
+#: inc/notificationtemplatetranslation.class.php:289 inc/user.class.php:2319
+#: inc/user.class.php:2832
 msgid "Language"
 msgstr "语言"
 
-#: inc/auth.class.php:1442 inc/authldap.class.php:464
-#: inc/authldap.class.php:635 inc/authldap.class.php:756
-#: inc/authldap.class.php:791 inc/notificationsettingconfig.class.php:117
-#: inc/savedsearch.class.php:419 inc/user.class.php:4019
-#: inc/user.class.php:4050
+#: inc/auth.class.php:1445 inc/authldap.class.php:501
+#: inc/authldap.class.php:672 inc/authldap.class.php:793
+#: inc/authldap.class.php:828 inc/notificationsettingconfig.class.php:117
+#: inc/savedsearch.class.php:419 inc/user.class.php:4085
+#: inc/user.class.php:4116
 msgid "Save"
 msgstr "保存"
 
-#: inc/authldap.class.php:305
+#: inc/authldap.class.php:194 inc/authldap.class.php:394
+msgid "Synchronization field cannot be changed once in use."
+msgstr ""
+
+#: inc/authldap.class.php:327
 msgid "Preconfiguration"
 msgstr "预设"
 
-#: inc/authldap.class.php:307
+#: inc/authldap.class.php:329
 msgid "Active Directory"
 msgstr "活动目录"
 
-#: inc/authldap.class.php:309 inc/config.class.php:2068
+#: inc/authldap.class.php:331 inc/config.class.php:2068
 msgid "Default values"
 msgstr "默认值"
 
-#: inc/authldap.class.php:315 inc/authldap.class.php:1004
+#: inc/authldap.class.php:337 inc/authldap.class.php:1041
 #: inc/authmail.class.php:141 inc/budget.class.php:218
 #: inc/certificate.class.php:185 inc/change.class.php:691
 #: inc/commondevice.class.php:238 inc/commondropdown.class.php:495
@@ -4289,206 +4293,214 @@ msgstr "默认值"
 #: inc/printer.class.php:605 inc/problem.class.php:1125
 #: inc/profile.class.php:1509 inc/project.class.php:598
 #: inc/project.class.php:653 inc/project.class.php:957
-#: inc/projecttask.class.php:504 inc/projecttask.class.php:785
+#: inc/projecttask.class.php:504 inc/projecttask.class.php:790
 #: inc/reminder.class.php:397 inc/reservationitem.class.php:240
 #: inc/rssfeed.class.php:424 inc/rule.class.php:764 inc/search.class.php:5389
 #: inc/sla.class.php:189 inc/software.class.php:505 inc/supplier.class.php:331
-#: inc/ticket.class.php:4609 inc/transfer.class.php:100
-#: inc/transfer.class.php:3290 inc/user.class.php:2781
+#: inc/ticket.class.php:4624 inc/transfer.class.php:100
+#: inc/transfer.class.php:3290 inc/user.class.php:2842
 msgid "Last update"
 msgstr "上次更新日期"
 
-#: inc/authldap.class.php:321 inc/authldap.class.php:870
+#: inc/authldap.class.php:344 inc/authldap.class.php:907
 #: inc/entity.class.php:1427
 msgid "Default server"
 msgstr "默认服务器"
 
-#: inc/authldap.class.php:330 inc/authldap.class.php:838
+#: inc/authldap.class.php:354 inc/authldap.class.php:875
 #: inc/authldapreplicate.class.php:88 inc/authmail.class.php:116
-#: inc/config.class.php:1739 inc/toolbox.class.php:1962
+#: inc/config.class.php:1739 inc/toolbox.class.php:1945
 msgid "Server"
 msgstr "服务器"
 
-#: inc/authldap.class.php:332
+#: inc/authldap.class.php:356
 msgid "Port (default=389)"
 msgstr "端口(default=389)"
 
-#: inc/authldap.class.php:336 inc/authldap.class.php:862
+#: inc/authldap.class.php:360 inc/authldap.class.php:899
 msgid "Connection filter"
 msgstr "连接过滤器"
 
-#: inc/authldap.class.php:342 inc/authldap.class.php:854
-#: inc/authldap.class.php:2857
+#: inc/authldap.class.php:366 inc/authldap.class.php:891
+#: inc/authldap.class.php:3059
 msgid "BaseDN"
 msgstr "BaseDN"
 
-#: inc/authldap.class.php:347
+#: inc/authldap.class.php:371
 msgid "RootDN (for non anonymous binds)"
 msgstr "RootDN (非匿名)"
 
-#: inc/authldap.class.php:352
+#: inc/authldap.class.php:377
 msgid "Password (for non-anonymous binds)"
 msgstr "密码(非匿名)"
 
-#: inc/authldap.class.php:355 inc/config.class.php:565
+#: inc/authldap.class.php:381 inc/config.class.php:565
 #: inc/config.class.php:1751 inc/html.class.php:3027 inc/html.class.php:3029
 #: inc/html.class.php:3225 inc/html.class.php:3227
 #: inc/mailcollector.class.php:268
-#: inc/notificationmailingsetting.class.php:219 inc/user.class.php:1929
-#: inc/user.class.php:2251 inc/user.class.php:2252
+#: inc/notificationmailingsetting.class.php:219 inc/user.class.php:1942
+#: inc/user.class.php:2284 inc/user.class.php:2285
 msgid "Clear"
 msgstr "清除"
 
-#: inc/authldap.class.php:359 inc/authldap.class.php:879
+#: inc/authldap.class.php:390 inc/authldap.class.php:916
 msgid "Login field"
 msgstr "登录字段"
 
-#: inc/authldap.class.php:412 inc/authldap.class.php:3241
+#: inc/authldap.class.php:396 inc/authldap.class.php:1112
+#: inc/authldap.class.php:1489 inc/authldap.class.php:1538
+#: inc/authldap.class.php:3120 inc/user.class.php:1954 inc/user.class.php:2305
+#: inc/user.class.php:2715
+msgid "Synchronization field"
+msgstr ""
+
+#: inc/authldap.class.php:449 inc/authldap.class.php:3460
 #: inc/entity.class.php:325 inc/entity.class.php:603
 msgid "Advanced information"
 msgstr "高级信息"
 
-#: inc/authldap.class.php:415
+#: inc/authldap.class.php:452
 msgid "Use TLS"
 msgstr "使用TLS"
 
-#: inc/authldap.class.php:419
+#: inc/authldap.class.php:456
 msgid "ldap_start_tls does not exist"
 msgstr "ldap_start_tls不存在"
 
-#: inc/authldap.class.php:422
+#: inc/authldap.class.php:459
 msgid "LDAP directory time zone"
 msgstr "LDAP目录时区"
 
-#: inc/authldap.class.php:428
+#: inc/authldap.class.php:465
 msgid "Use paged results"
 msgstr "使用分页结果"
 
-#: inc/authldap.class.php:431
+#: inc/authldap.class.php:468
 msgid "Page size"
 msgstr "页面大小"
 
-#: inc/authldap.class.php:439
+#: inc/authldap.class.php:476
 msgid "Maximum number of results"
 msgstr "结果的最大数量"
 
-#: inc/authldap.class.php:444 inc/contract.class.php:289
+#: inc/authldap.class.php:481 inc/contract.class.php:289
 #: inc/search.class.php:4540 inc/softwarelicense.class.php:425
 #: inc/softwarelicense.class.php:1141 inc/softwarelicense.class.php:1167
 msgid "Unlimited"
 msgstr "无限制"
 
-#: inc/authldap.class.php:454
+#: inc/authldap.class.php:491
 msgid "How LDAP aliases should be handled"
 msgstr "LDAP的别名应如何处理"
 
-#: inc/authldap.class.php:455
+#: inc/authldap.class.php:492
 msgid "Never dereferenced (default)"
 msgstr "从不解除引用（默认）"
 
-#: inc/authldap.class.php:456
+#: inc/authldap.class.php:493
 msgid "Always dereferenced"
 msgstr "始终解除引用"
 
-#: inc/authldap.class.php:457
+#: inc/authldap.class.php:494
 msgid "Dereferenced during the search (but not when locating)"
 msgstr "在搜索过程中解除引用（定位时除外）"
 
-#: inc/authldap.class.php:458
+#: inc/authldap.class.php:495
 msgid "Dereferenced when locating (not during the search)"
 msgstr "定位时解除引用（搜索过程除外）"
 
-#: inc/authldap.class.php:507
+#: inc/authldap.class.php:544
 msgid "List of LDAP directory replicates"
 msgstr "LDAP目录复制列表"
 
-#: inc/authldap.class.php:519 inc/authldap.class.php:3242
+#: inc/authldap.class.php:556 inc/authldap.class.php:3461
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] "Replicates"
 
-#: inc/authldap.class.php:533 inc/authldap.class.php:667
-#: inc/authldap.class.php:3236 inc/authmail.class.php:248
+#: inc/authldap.class.php:570 inc/authldap.class.php:704
+#: inc/authldap.class.php:3455 inc/authmail.class.php:248
 #: inc/authmail.class.php:352 inc/rule.class.php:918 inc/rule.class.php:922
 #: inc/rule.class.php:2531 inc/rulecollection.class.php:1521
 msgctxt "button"
 msgid "Test"
 msgstr "测试"
 
-#: inc/authldap.class.php:584 inc/group.class.php:581
+#: inc/authldap.class.php:621 inc/group.class.php:581
 msgid "In users"
 msgstr "根据用户"
 
-#: inc/authldap.class.php:585 inc/group.class.php:596
+#: inc/authldap.class.php:622 inc/group.class.php:596
 msgid "In groups"
 msgstr "根据群组"
 
-#: inc/authldap.class.php:586
+#: inc/authldap.class.php:623
 msgid "In users and groups"
 msgstr "根据用户和群组"
 
-#: inc/authldap.class.php:612
+#: inc/authldap.class.php:649
 msgid "Belonging to groups"
 msgstr "属于该群组"
 
-#: inc/authldap.class.php:614 inc/authldap.class.php:1059
+#: inc/authldap.class.php:651 inc/authldap.class.php:1096
 msgid "Search type"
 msgstr "搜索方式"
 
-#: inc/authldap.class.php:617 inc/authldap.class.php:1031
+#: inc/authldap.class.php:654 inc/authldap.class.php:1068
 msgid "User attribute containing its groups"
 msgstr "包含自身群组的用户属性"
 
-#: inc/authldap.class.php:621 inc/authldap.class.php:1040
-#: inc/authldap.class.php:1195
+#: inc/authldap.class.php:658 inc/authldap.class.php:1077
+#: inc/authldap.class.php:1242
 msgid "Filter to search in groups"
 msgstr "在群组中筛选搜索"
 
-#: inc/authldap.class.php:626 inc/authldap.class.php:1049
+#: inc/authldap.class.php:663 inc/authldap.class.php:1086
 msgid "Group attribute containing its users"
 msgstr "包含自身用户的群组属性"
 
-#: inc/authldap.class.php:629 inc/authldap.class.php:995
+#: inc/authldap.class.php:666 inc/authldap.class.php:1032
 msgid "Use DN in the search"
 msgstr "使用DN 做搜索"
 
-#: inc/authldap.class.php:656
+#: inc/authldap.class.php:693
 msgid "Test of connection to LDAP directory"
 msgstr "测试连接到LDAP目录"
 
-#: inc/authldap.class.php:690
+#: inc/authldap.class.php:727
 msgid "Binding to the LDAP directory"
 msgstr "绑定到LDAP目录"
 
-#: inc/authldap.class.php:745 inc/authldap.class.php:2918
-#: inc/notepad.class.php:335 inc/ticket.class.php:6848
-#: inc/ticket.class.php:7080 inc/ticketfollowup.class.php:978
-#: inc/user.class.php:1915 inc/user.class.php:1918 inc/user.class.php:1923
-#: inc/user.class.php:2236 inc/user.class.php:2239 inc/user.class.php:2243
+#: inc/authldap.class.php:782 inc/authldap.class.php:3135
+#: inc/notepad.class.php:335 inc/ticket.class.php:6863
+#: inc/ticket.class.php:7095 inc/ticketfollowup.class.php:986
+#: inc/user.class.php:1928 inc/user.class.php:1931 inc/user.class.php:1936
+#: inc/user.class.php:2269 inc/user.class.php:2272 inc/user.class.php:2276
+#: inc/user.class.php:2705 inc/user.class.php:3063
 msgid "Picture"
 msgstr "图片"
 
-#: inc/authldap.class.php:752
+#: inc/authldap.class.php:789
 msgid "You can use a field name or an expression using various %{fieldname}"
 msgstr "您可以使用字段名或 %{fieldname} 表达式"
 
-#: inc/authldap.class.php:753
+#: inc/authldap.class.php:790
 msgid "Example for location: %{city} > %{roomnumber}"
 msgstr "位置举例: %{city} > %{roomnumber}"
 
-#: inc/authldap.class.php:777
+#: inc/authldap.class.php:814
 msgid "Import entities from LDAP directory"
 msgstr "从LDAP目录中导入实体"
 
-#: inc/authldap.class.php:780
+#: inc/authldap.class.php:817
 msgid "Attribute representing entity"
 msgstr "代表实体的属性"
 
-#: inc/authldap.class.php:785
+#: inc/authldap.class.php:822
 msgid "Search filter for entities"
 msgstr "实体的搜索筛选"
 
-#: inc/authldap.class.php:1013 inc/budget.class.php:227
+#: inc/authldap.class.php:1050 inc/budget.class.php:227
 #: inc/certificate.class.php:279 inc/certificate_item.class.php:500
 #: inc/commondevice.class.php:247 inc/commondropdown.class.php:506
 #: inc/commontreedropdown.class.php:684 inc/computer.class.php:728
@@ -4509,147 +4521,148 @@ msgstr "实体的搜索筛选"
 #: inc/queuednotification.class.php:203 inc/queuednotification.class.php:706
 #: inc/reminder.class.php:406 inc/rssfeed.class.php:433 inc/rule.class.php:773
 #: inc/software.class.php:514 inc/softwareversion.class.php:202
-#: inc/supplier.class.php:340 inc/ticket.class.php:2940
-#: inc/user.class.php:2790
+#: inc/supplier.class.php:340 inc/ticket.class.php:2955
+#: inc/user.class.php:2851
 msgid "Creation date"
 msgstr "创建日期"
 
-#: inc/authldap.class.php:1194 inc/authldap.class.php:1208
-#: inc/authldap.class.php:2862
+#: inc/authldap.class.php:1241 inc/authldap.class.php:1255
+#: inc/authldap.class.php:3064
 msgid "Search filter for users"
 msgstr "根据用户筛选搜索"
 
-#: inc/authldap.class.php:1323
+#: inc/authldap.class.php:1422
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
 msgstr "警告：请求超过了目录的限制，只有部分结果。"
 
-#: inc/authldap.class.php:1366
+#: inc/authldap.class.php:1468
 msgctxt "button"
 msgid "Synchronize"
 msgstr "同步"
 
-#: inc/authldap.class.php:1369 inc/authldap.class.php:1785
+#: inc/authldap.class.php:1471 inc/authldap.class.php:1909
 #: inc/notimportedemail.class.php:78 inc/notimportedemail.class.php:95
 #: inc/rulecollection.class.php:806 inc/rulecollection.class.php:997
 msgctxt "button"
 msgid "Import"
 msgstr "导入"
 
-#: inc/authldap.class.php:1389 inc/authldap.class.php:1443
+#: inc/authldap.class.php:1496 inc/authldap.class.php:1545
 msgid "Last update in the LDAP directory"
 msgstr "LDAP目录的最后更新"
 
-#: inc/authldap.class.php:1391 inc/authldap.class.php:1445
+#: inc/authldap.class.php:1498 inc/authldap.class.php:1547
 msgid "Last update in GLPI"
 msgstr "GLPI的最后更新"
 
-#: inc/authldap.class.php:1457 inc/authldap.class.php:1462
+#: inc/authldap.class.php:1559 inc/authldap.class.php:1564
 msgid "No user to be synchronized"
 msgstr "没有用户需要同步"
 
-#: inc/authldap.class.php:1458 inc/authldap.class.php:1463
+#: inc/authldap.class.php:1560 inc/authldap.class.php:1565
 msgid "No user to be imported"
 msgstr "没有用户需要导入"
 
-#: inc/authldap.class.php:1801 inc/group.class.php:461 inc/group.class.php:600
+#: inc/authldap.class.php:1925 inc/group.class.php:461 inc/group.class.php:600
 msgid "Group DN"
 msgstr "群组 DN"
 
-#: inc/authldap.class.php:1802
+#: inc/authldap.class.php:1926
 msgid "Destination entity"
 msgstr "目标实体"
 
-#: inc/authldap.class.php:1855 inc/authldap.class.php:1858
+#: inc/authldap.class.php:1979 inc/authldap.class.php:1982
 msgid "No group to be imported"
 msgstr "没有群组需要导入"
 
-#: inc/authldap.class.php:2116
+#: inc/authldap.class.php:2239
 msgid "Please choose LDAP directory to import users and groups from"
 msgstr ""
 
-#: inc/authldap.class.php:2118 inc/authldap.class.php:2845
+#: inc/authldap.class.php:2241 inc/authldap.class.php:3047
+#: inc/authldap.class.php:3075
 msgid "LDAP directory choice"
 msgstr "选择LDAP 目录"
 
-#: inc/authldap.class.php:2137
+#: inc/authldap.class.php:2260
 msgid "No LDAP directory defined in GLPI"
 msgstr "GLPI中没有定义LDAP目录"
 
-#: inc/authldap.class.php:2459
+#: inc/authldap.class.php:2628
 msgid "User not found or several users found"
 msgstr "找不到用户或多个用户同时存在"
 
-#: inc/authldap.class.php:2462
+#: inc/authldap.class.php:2631
 msgid "Unable to add. The user already exist."
 msgstr "无法添加，用户已经存在"
 
-#: inc/authldap.class.php:2827
+#: inc/authldap.class.php:3028
 msgid "Expert mode"
 msgstr "专家模式"
 
-#: inc/authldap.class.php:2829
+#: inc/authldap.class.php:3030
 msgid "Simple mode"
 msgstr "简单模式"
 
-#: inc/authldap.class.php:2853
+#: inc/authldap.class.php:3055 inc/authldap.class.php:3083
 msgctxt "button"
-msgid "To change"
-msgstr "要更改"
+msgid "Change"
+msgstr ""
 
-#: inc/authldap.class.php:2875 inc/entity.class.php:1084
+#: inc/authldap.class.php:3091 inc/entity.class.php:1084
 #: inc/html.class.php:3628 inc/rulecollection.class.php:1207
 msgid "Select the desired entity"
 msgstr "选择所需的实体"
 
-#: inc/authldap.class.php:2925
+#: inc/authldap.class.php:3142
 msgid "Search criteria for users"
 msgstr "用户的搜索条件"
 
-#: inc/authldap.class.php:2963
+#: inc/authldap.class.php:3182
 msgid "No directory selected"
 msgstr "没有已选择的目录"
 
-#: inc/authldap.class.php:2968
+#: inc/authldap.class.php:3187
 msgid "No directory associated to entity: impossible search"
 msgstr "没有目录关联的实体：不能搜索"
 
-#: inc/authldap.class.php:3150 inc/transfer.class.php:3297
+#: inc/authldap.class.php:3369 inc/transfer.class.php:3297
 #: inc/transfer.class.php:3299
 msgid "Preserve"
 msgstr "保存"
 
-#: inc/authldap.class.php:3151
+#: inc/authldap.class.php:3370
 msgid "Put in dustbin"
 msgstr "放入垃圾箱"
 
-#: inc/authldap.class.php:3152 inc/authldap.class.php:3154
+#: inc/authldap.class.php:3371 inc/authldap.class.php:3373
 msgid "Withdraw dynamic authorizations and groups"
 msgstr "撤销动态验证和群组"
 
-#: inc/authldap.class.php:3153 inc/authldap.class.php:3154
+#: inc/authldap.class.php:3372 inc/authldap.class.php:3373
 msgid "Disable"
 msgstr "停止"
 
-#: inc/authldap.class.php:3200
+#: inc/authldap.class.php:3419
 msgid "Enable filtering by date"
 msgstr "启用日期筛选"
 
-#: inc/authldap.class.php:3204
+#: inc/authldap.class.php:3423
 msgid "View updated users"
 msgstr "查看更新的用户"
 
-#: inc/authldap.class.php:3205 inc/networkport.class.php:890
+#: inc/authldap.class.php:3424 inc/networkport.class.php:890
 #: inc/software.class.php:322
 msgid "from"
 msgstr "寄件人"
 
-#: inc/authldap.class.php:3212 inc/networkport.class.php:892
+#: inc/authldap.class.php:3431 inc/networkport.class.php:892
 msgid "to"
 msgstr "到"
 
-#: inc/authldap.class.php:3221
+#: inc/authldap.class.php:3440
 msgid "Disable filtering by date"
 msgstr "停用日期过滤"
 
@@ -4659,7 +4672,7 @@ msgstr "增加一个LDAP目录replica"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:124 inc/mailcollector.class.php:361
-#: inc/toolbox.class.php:2063
+#: inc/toolbox.class.php:2046
 msgid "Connection string"
 msgstr "连接参数"
 
@@ -4668,7 +4681,7 @@ msgid "Email domain Name (users email will be login@domain)"
 msgstr "邮件域名(用户邮件是login@domain)"
 
 #. TRANS: %s is the datetime of update
-#: inc/authmail.class.php:208 inc/commondbtm.class.php:2128
+#: inc/authmail.class.php:208 inc/commondbtm.class.php:2126
 #: inc/document.class.php:375 inc/knowbaseitem.class.php:689
 #: inc/knowbaseitem.class.php:902 inc/mailcollector.class.php:304
 #: inc/rule.class.php:899
@@ -4690,14 +4703,14 @@ msgid "Update Source"
 msgid_plural "Update Sources"
 msgstr[0] "更新来源"
 
-#: inc/backup.class.php:76 inc/commondbtm.class.php:4701 inc/log.class.php:718
+#: inc/backup.class.php:76 inc/commondbtm.class.php:4699 inc/log.class.php:718
 #: inc/profile.class.php:820 inc/profile.class.php:2540
 #: inc/reminder.class.php:1143 inc/report.class.php:450
 #: inc/rssfeed.class.php:967 inc/stat.class.php:1312
 msgid "Read"
 msgstr "读"
 
-#: inc/backup.class.php:77 inc/commondbtm.class.php:4700
+#: inc/backup.class.php:77 inc/commondbtm.class.php:4698
 #: inc/displaypreference.class.php:292
 msgid "Create"
 msgstr "创建"
@@ -4774,7 +4787,7 @@ msgstr "主要"
 #: inc/group.class.php:502 inc/infocom.class.php:141
 #: inc/ipaddress.class.php:246 inc/ipaddress.class.php:1007
 #: inc/item_devices.class.php:363 inc/item_devices.class.php:412
-#: inc/item_devices.class.php:1069 inc/item_problem.class.php:274
+#: inc/item_devices.class.php:1068 inc/item_problem.class.php:274
 #: inc/item_project.class.php:271 inc/item_ticket.class.php:590
 #: inc/knowbaseitem_item.class.php:211 inc/location.class.php:215
 #: inc/notificationtargetchange.class.php:338
@@ -4790,7 +4803,7 @@ msgid "Item"
 msgid_plural "Items"
 msgstr[0] "项目"
 
-#: inc/budget.class.php:327 inc/item_devices.class.php:1072
+#: inc/budget.class.php:327 inc/item_devices.class.php:1071
 #: inc/supplier.class.php:484
 msgid "No associated item"
 msgstr "没有相关的项目"
@@ -4854,7 +4867,7 @@ msgstr[0] "关联项目"
 #: inc/change_problem.class.php:191 inc/change_problem.class.php:287
 #: inc/change_project.class.php:206 inc/change_project.class.php:301
 #: inc/change_ticket.class.php:308 inc/change_ticket.class.php:405
-#: inc/commondbtm.class.php:3804 inc/commonitilcost.class.php:564
+#: inc/commondbtm.class.php:3802 inc/commonitilcost.class.php:564
 #: inc/commonitilvalidation.class.php:846 inc/computerantivirus.class.php:367
 #: inc/computerdisk.class.php:283 inc/computer_softwarelicense.class.php:477
 #: inc/computer_softwareversion.class.php:465
@@ -4874,7 +4887,7 @@ msgstr[0] "关联项目"
 #: inc/olalevel.class.php:179 inc/problem.class.php:1444
 #: inc/problem_ticket.class.php:346 inc/problem_ticket.class.php:449
 #: inc/profile_user.class.php:344 inc/project.class.php:912
-#: inc/projectcost.class.php:386 inc/projecttask.class.php:1031
+#: inc/projectcost.class.php:386 inc/projecttask.class.php:1036
 #: inc/projecttask_ticket.class.php:219 inc/projecttask_ticket.class.php:330
 #: inc/rule.class.php:2804 inc/savedsearch_alert.class.php:259
 #: inc/search.class.php:1614 inc/search.class.php:1616
@@ -4883,7 +4896,7 @@ msgstr[0] "关联项目"
 #: inc/search.class.php:1719 inc/search.class.php:1736 inc/sla.class.php:283
 #: inc/slalevel.class.php:180 inc/softwarelicense.class.php:1039
 #: inc/softwareversion.class.php:308 inc/supplier.class.php:610
-#: inc/ticket.class.php:5966 inc/user.class.php:3795
+#: inc/ticket.class.php:5981 inc/user.class.php:3861
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -5056,7 +5069,7 @@ msgstr "旧打印机弹药"
 #: inc/notificationtargetproject.class.php:580
 #: inc/notificationtargetprojecttask.class.php:470
 #: inc/notificationtargetprojecttask.class.php:485 inc/project.class.php:990
-#: inc/projecttask.class.php:517 inc/projecttask.class.php:760
+#: inc/projecttask.class.php:517 inc/projecttask.class.php:765
 #: inc/projecttasktemplate.class.php:61 inc/projecttasktemplate.class.php:109
 msgctxt "item"
 msgid "State"
@@ -5181,7 +5194,7 @@ msgstr "打印的页面"
 #: inc/contract.class.php:771 inc/contract.class.php:772
 #: inc/contract.class.php:789 inc/contract.class.php:790
 #: inc/contract.class.php:791 inc/contract.class.php:792
-#: inc/contract_supplier.class.php:254 inc/dropdown.class.php:1555
+#: inc/contract_supplier.class.php:254 inc/dropdown.class.php:1519
 #: inc/infocom.class.php:1161 inc/ticketrecurrent.class.php:192
 #: inc/ticketrecurrent.class.php:221
 #, php-format
@@ -5198,7 +5211,7 @@ msgstr "参考"
 
 #: inc/cartridgeitem.class.php:212 inc/cartridgeitem.class.php:388
 #: inc/certificate.class.php:203 inc/certificate.class.php:396
-#: inc/commondbtm.class.php:3110 inc/computer.class.php:403
+#: inc/commondbtm.class.php:3108 inc/computer.class.php:403
 #: inc/computer.class.php:762 inc/consumableitem.class.php:168
 #: inc/consumableitem.class.php:329 inc/itilcategory.class.php:61
 #: inc/itilcategory.class.php:121 inc/monitor.class.php:212
@@ -5225,6 +5238,7 @@ msgstr "负责硬件的技术员"
 #: inc/notificationtargetreservation.class.php:61 inc/peripheral.class.php:220
 #: inc/peripheral.class.php:512 inc/phone.class.php:218
 #: inc/phone.class.php:562 inc/printer.class.php:317 inc/printer.class.php:774
+#: inc/search.class.php:5405
 msgid "Group in charge of the hardware"
 msgstr "负责硬件的群组"
 
@@ -5291,9 +5305,9 @@ msgstr "添加兼容的打印机型号"
 #: inc/netpoint.class.php:316 inc/networkalias.class.php:396
 #: inc/notification_notificationtemplate.class.php:156
 #: inc/notificationtarget.class.php:1338 inc/profile_user.class.php:255
-#: inc/projectcost.class.php:425 inc/projecttask.class.php:1093
+#: inc/projectcost.class.php:425 inc/projecttask.class.php:1098
 #: inc/projecttask_ticket.class.php:401 inc/rule.class.php:2767
-#: inc/savedsearch_alert.class.php:275 inc/search.class.php:5842
+#: inc/savedsearch_alert.class.php:275 inc/search.class.php:5849
 #: inc/software.class.php:1000 inc/softwarelicense.class.php:1182
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
 #: inc/tickettemplatehiddenfield.class.php:277
@@ -5386,7 +5400,7 @@ msgstr ""
 
 #: inc/certificate.class.php:212 inc/certificate.class.php:373
 #: inc/certificate_item.class.php:502 inc/change.class.php:726
-#: inc/commondbtm.class.php:3077 inc/commonitilobject.class.php:2705
+#: inc/commondbtm.class.php:3075 inc/commonitilobject.class.php:2705
 #: inc/commonitilobject.class.php:5474 inc/commonitiltask.class.php:619
 #: inc/commonitiltask.class.php:801 inc/commonitiltask.class.php:1447
 #: inc/commonitilvalidation.class.php:1046 inc/computer.class.php:379
@@ -5407,7 +5421,7 @@ msgstr ""
 #: inc/peripheral.class.php:400 inc/phone.class.php:186
 #: inc/phone.class.php:422 inc/plugin.class.php:403 inc/printer.class.php:285
 #: inc/printer.class.php:546 inc/problem.class.php:1161
-#: inc/project.class.php:651 inc/projecttask.class.php:925
+#: inc/project.class.php:651 inc/projecttask.class.php:930
 #: inc/projecttask_ticket.class.php:282 inc/reminder.class.php:336
 #: inc/reminder.class.php:684 inc/report.class.php:114
 #: inc/ruleticket.class.php:579 inc/search.class.php:5331
@@ -5416,7 +5430,7 @@ msgstr ""
 #: inc/softwarelicense.class.php:623 inc/softwareversion.class.php:139
 #: inc/softwareversion.class.php:193 inc/softwareversion.class.php:315
 #: inc/state.class.php:155 inc/tasktemplate.class.php:70
-#: inc/ticket.class.php:4731 inc/user.class.php:3677 inc/user.class.php:3757
+#: inc/ticket.class.php:4746 inc/user.class.php:3743 inc/user.class.php:3823
 msgid "Status"
 msgid_plural "Statuses"
 msgstr[0] "状态"
@@ -5447,20 +5461,20 @@ msgstr "相关的项目数量"
 #: inc/search.class.php:4239 inc/search.class.php:4274
 #: inc/search.class.php:4278 inc/sla.class.php:577
 #: inc/softwarelicense.class.php:313 inc/softwarelicense.class.php:382
-#: inc/ticket.class.php:3819 inc/ticket.class.php:3826
-#: inc/ticket.class.php:3854 inc/ticket.class.php:3881
-#: inc/ticket.class.php:3892 inc/ticket.class.php:3901
-#: inc/ticket.class.php:3946 inc/ticket.class.php:3964
-#: inc/ticket.class.php:4520 inc/ticket.class.php:4545
-#: inc/ticket.class.php:4557 inc/ticket.class.php:4572
-#: inc/ticket.class.php:4584 inc/ticket.class.php:4652
-#: inc/ticket.class.php:4677 inc/ticket.class.php:4731
-#: inc/ticket.class.php:4757 inc/ticket.class.php:4773
-#: inc/ticket.class.php:4795 inc/ticket.class.php:4849
-#: inc/ticket.class.php:4865 inc/ticket.class.php:4881
-#: inc/ticket.class.php:4913 inc/ticket.class.php:4946
-#: inc/ticket.class.php:4966 inc/ticket.class.php:4987
-#: inc/ticket.class.php:5079
+#: inc/ticket.class.php:3834 inc/ticket.class.php:3841
+#: inc/ticket.class.php:3869 inc/ticket.class.php:3896
+#: inc/ticket.class.php:3907 inc/ticket.class.php:3916
+#: inc/ticket.class.php:3961 inc/ticket.class.php:3979
+#: inc/ticket.class.php:4535 inc/ticket.class.php:4560
+#: inc/ticket.class.php:4572 inc/ticket.class.php:4587
+#: inc/ticket.class.php:4599 inc/ticket.class.php:4667
+#: inc/ticket.class.php:4692 inc/ticket.class.php:4746
+#: inc/ticket.class.php:4772 inc/ticket.class.php:4788
+#: inc/ticket.class.php:4810 inc/ticket.class.php:4864
+#: inc/ticket.class.php:4880 inc/ticket.class.php:4896
+#: inc/ticket.class.php:4928 inc/ticket.class.php:4961
+#: inc/ticket.class.php:4981 inc/ticket.class.php:5002
+#: inc/ticket.class.php:5094
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -5526,12 +5540,12 @@ msgid_plural "Certificate types"
 msgstr[0] ""
 
 #: inc/change.class.php:182 inc/problem.class.php:409
-#: inc/ticket.class.php:2576
+#: inc/ticket.class.php:2591
 msgid "Add an actor"
 msgstr "添加角色"
 
 #: inc/change.class.php:184 inc/problem.class.php:411
-#: inc/ticket.class.php:2578
+#: inc/ticket.class.php:2593
 msgid "Set notifications for all actors"
 msgstr "为所有参与者设置通知"
 
@@ -5548,8 +5562,8 @@ msgstr "计划"
 #: inc/commonitilobject.class.php:2891
 #: inc/notificationtargetcommonitilobject.class.php:1204
 #: inc/problem.class.php:182 inc/problem.class.php:195
-#: inc/ticket.class.php:733 inc/ticket.class.php:7181
-#: inc/ticket.class.php:7182 inc/ticket.class.php:7313
+#: inc/ticket.class.php:733 inc/ticket.class.php:7196
+#: inc/ticket.class.php:7197 inc/ticket.class.php:7328
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "解决方案"
@@ -5575,7 +5589,7 @@ msgid "Checklist"
 msgstr "检查清单"
 
 #: inc/change.class.php:491 inc/plugin.class.php:458 inc/problem.class.php:551
-#: inc/ticket.class.php:3437
+#: inc/ticket.class.php:3452
 msgctxt "status"
 msgid "New"
 msgstr "新的"
@@ -5589,7 +5603,7 @@ msgstr "评估"
 #: inc/commonitilvalidation.class.php:1101
 #: inc/commonitilvalidation.class.php:1120
 #: inc/notificationtargetcommonitilobject.class.php:717
-#: inc/ticket.class.php:4799
+#: inc/ticket.class.php:4814
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "审批"
@@ -5600,7 +5614,7 @@ msgid "Accepted"
 msgstr "已接受"
 
 #: inc/change.class.php:495 inc/commonitilobject.class.php:4586
-#: inc/problem.class.php:555 inc/ticket.class.php:3440
+#: inc/problem.class.php:555 inc/ticket.class.php:3455
 msgid "Pending"
 msgstr "待决定"
 
@@ -5622,25 +5636,25 @@ msgid "Review"
 msgstr "复核"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
-#: inc/ticket.class.php:3442
+#: inc/ticket.class.php:3457
 msgctxt "status"
 msgid "Closed"
 msgstr "结案"
 
 #: inc/change.class.php:504 inc/problem.class.php:561
-#: inc/ticket.class.php:3445
+#: inc/ticket.class.php:3460
 msgctxt "status"
 msgid "Not solved"
 msgstr "未解决"
 
 #: inc/change.class.php:505 inc/problem.class.php:562
-#: inc/ticket.class.php:3446
+#: inc/ticket.class.php:3461
 msgctxt "status"
 msgid "Not closed"
 msgstr "未结案"
 
 #: inc/change.class.php:507 inc/problem.class.php:564
-#: inc/ticket.class.php:3448
+#: inc/ticket.class.php:3463
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "已解决 + 已结案"
@@ -5652,8 +5666,8 @@ msgstr "已解决 + 已结案"
 #: inc/notificationtargetproject.class.php:573
 #: inc/notificationtargetprojecttask.class.php:478
 #: inc/notificationtargetticket.class.php:764 inc/problem.class.php:1092
-#: inc/projecttask.class.php:776 inc/ticket.class.php:4520
-#: inc/ticket.class.php:4522
+#: inc/projecttask.class.php:781 inc/ticket.class.php:4535
+#: inc/ticket.class.php:4537
 msgid "Opening date"
 msgstr "开始日期"
 
@@ -5665,19 +5679,19 @@ msgstr "开始日期"
 #: inc/ruleticket.class.php:469 inc/ruleticket.class.php:485
 #: inc/ruleticket.class.php:590 inc/ruleticket.class.php:606
 #: inc/sla.class.php:933 inc/slalevel.class.php:205 inc/slalevel.class.php:395
-#: inc/ticket.class.php:2823 inc/ticket.class.php:4557
-#: inc/ticket.class.php:4559
+#: inc/ticket.class.php:2838 inc/ticket.class.php:4572
+#: inc/ticket.class.php:4574
 msgid "Time to resolve"
 msgstr "解决时间"
 
 #: inc/change.class.php:685 inc/change.class.php:694
 #: inc/commonitiltask.class.php:1480 inc/problem.class.php:1119
-#: inc/problem.class.php:1128 inc/projecttask.class.php:1545
+#: inc/problem.class.php:1128 inc/projecttask.class.php:1550
 #: inc/reminder.class.php:985 inc/reservation.class.php:681
 #: inc/reservation.class.php:1088 inc/reservation.class.php:1136
 #: inc/reservation.class.php:1206 inc/reservation.class.php:1269
 #: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:79
-#: inc/ticket.class.php:4597
+#: inc/ticket.class.php:4612
 msgid "By"
 msgstr "依"
 
@@ -5700,8 +5714,8 @@ msgstr "截止日期"
 #: inc/notificationtargetcommonitilobject.class.php:1166
 #: inc/notificationtargetcommonitilobject.class.php:1241
 #: inc/notificationtargetprojecttask.class.php:475 inc/problem.class.php:1186
-#: inc/projecttask.class.php:608 inc/stat.class.php:485
-#: inc/ticket.class.php:4946
+#: inc/projecttask.class.php:613 inc/stat.class.php:485
+#: inc/ticket.class.php:4961
 msgid "Total duration"
 msgstr "总期间"
 
@@ -5721,7 +5735,7 @@ msgstr "总期间"
 #: inc/notificationtargetticket.class.php:933 inc/problem.class.php:1209
 #: inc/projectcost.class.php:129 inc/reminder.class.php:316
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
-#: inc/ticket.class.php:3946 inc/ticket.class.php:4966 inc/user.class.php:2873
+#: inc/ticket.class.php:3961 inc/ticket.class.php:4981 inc/user.class.php:2934
 msgid "Title"
 msgstr "标题"
 
@@ -5752,18 +5766,18 @@ msgstr "标题"
 #: inc/notificationtargetticket.class.php:928
 #: inc/notificationtargetticket.class.php:935 inc/problem.class.php:824
 #: inc/problem.class.php:1216 inc/project.class.php:453
-#: inc/project.class.php:1072 inc/projecttask.class.php:615
-#: inc/projecttask.class.php:751 inc/projecttasktemplate.class.php:95
+#: inc/project.class.php:1072 inc/projecttask.class.php:620
+#: inc/projecttask.class.php:756 inc/projecttasktemplate.class.php:95
 #: inc/projecttasktemplate.class.php:197 inc/reminder.class.php:346
 #: inc/reminder.class.php:773 inc/rule.class.php:713 inc/rule.class.php:866
 #: inc/rule.class.php:2727 inc/rule.class.php:2796
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
-#: inc/ruleticket.class.php:340 inc/ticket.class.php:2999
-#: inc/ticket.class.php:3964 inc/ticket.class.php:4987
-#: inc/ticket.class.php:5623 inc/ticketfollowup.class.php:546
-#: inc/ticketfollowup.class.php:670 inc/ticketfollowup.class.php:722
-#: inc/ticketfollowup.class.php:1083 inc/ticketfollowup.class.php:1156
+#: inc/ruleticket.class.php:340 inc/ticket.class.php:3014
+#: inc/ticket.class.php:3979 inc/ticket.class.php:5002
+#: inc/ticket.class.php:5638 inc/ticketfollowup.class.php:554
+#: inc/ticketfollowup.class.php:678 inc/ticketfollowup.class.php:730
+#: inc/ticketfollowup.class.php:1091 inc/ticketfollowup.class.php:1164
 msgid "Description"
 msgstr "描述"
 
@@ -5787,7 +5801,7 @@ msgstr "最新更改"
 
 #: inc/change.class.php:1020 inc/group.class.php:154 inc/group.class.php:776
 #: inc/group_user.class.php:440 inc/problem.class.php:1391
-#: inc/ticket.class.php:5879
+#: inc/ticket.class.php:5894
 msgid "Child groups"
 msgstr "子群组"
 
@@ -5855,7 +5869,7 @@ msgstr "解决工作单"
 
 #: inc/change_ticket.class.php:292 inc/commonitiltask.class.php:1684
 #: inc/problem.class.php:406 inc/problem_ticket.class.php:332
-#: inc/ticket.class.php:2558
+#: inc/ticket.class.php:2573
 msgid "Add a new task"
 msgstr "添加新任务"
 
@@ -5879,9 +5893,9 @@ msgstr "项目未连接到物件"
 #: inc/reminder.class.php:1095 inc/reminder.class.php:1096
 #: inc/rssfeed.class.php:915 inc/rssfeed.class.php:916
 #: inc/ruleaction.class.php:396 inc/ruleticket.class.php:83
-#: inc/ruleticket.class.php:85 inc/ticket.class.php:4056
-#: inc/ticket.class.php:5038 inc/ticket.class.php:5185
-#: inc/ticket.class.php:5194 inc/ticket.class.php:5722
+#: inc/ruleticket.class.php:85 inc/ticket.class.php:4071
+#: inc/ticket.class.php:5053 inc/ticket.class.php:5200
+#: inc/ticket.class.php:5209 inc/ticket.class.php:5737
 msgid "Add"
 msgstr "添加"
 
@@ -5921,49 +5935,49 @@ msgstr "一次删除所有"
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #. TRANS: %1$s is the itemtype, %2$d is the id of the item
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-#: inc/commondbtm.class.php:1071 inc/commondbtm.class.php:1345
-#: inc/commondbtm.class.php:2445 inc/commonglpi.class.php:856
-#: inc/item_ticket.class.php:1335 inc/savedsearch.class.php:373
+#: inc/commondbtm.class.php:1069 inc/commondbtm.class.php:1343
+#: inc/commondbtm.class.php:2443 inc/commonglpi.class.php:856
+#: inc/item_ticket.class.php:1344 inc/savedsearch.class.php:373
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr "%1$s - ID %2$d"
 
-#: inc/commondbtm.class.php:1079 inc/item_ticket.class.php:1344
+#: inc/commondbtm.class.php:1077 inc/item_ticket.class.php:1353
 msgid "Item successfully added"
 msgstr "项目添加成功"
 
-#: inc/commondbtm.class.php:1355
+#: inc/commondbtm.class.php:1353
 msgid "Item successfully updated"
 msgstr "项目更新成功"
 
-#: inc/commondbtm.class.php:1541 inc/item_ticket.class.php:1383
+#: inc/commondbtm.class.php:1539 inc/item_ticket.class.php:1392
 msgid "Item successfully deleted"
 msgstr "项目删除成功"
 
-#: inc/commondbtm.class.php:1581
+#: inc/commondbtm.class.php:1579
 msgid "Item successfully purged"
 msgstr "项目清除成功"
 
-#: inc/commondbtm.class.php:1688
+#: inc/commondbtm.class.php:1686
 msgid "Item successfully restored"
 msgstr "项目恢复成功"
 
 #. TRANS: %s is the datetime of insertion
 #. TRANS: %s is the datetime of update
-#: inc/commondbtm.class.php:2111 inc/commondbtm.class.php:2121
+#: inc/commondbtm.class.php:2109 inc/commondbtm.class.php:2119
 #: inc/knowbaseitem.class.php:684 inc/knowbaseitem.class.php:897
 #, php-format
 msgid "Created on %s"
 msgstr "创建于%s"
 
 #. TRANS: %s is the template name
-#: inc/commondbtm.class.php:2138 inc/commondbtm.class.php:2424
+#: inc/commondbtm.class.php:2136 inc/commondbtm.class.php:2422
 #, php-format
 msgid "Created from the template %s"
 msgstr "从模版 %s 创建"
 
 #. TRANS : means update / actualize
-#: inc/commondbtm.class.php:2206 inc/commondbtm.class.php:2218
+#: inc/commondbtm.class.php:2204 inc/commondbtm.class.php:2216
 #: inc/commonglpi.class.php:1172 inc/commonitilactor.class.php:215
 #: inc/commonitilactor.class.php:279 inc/commonitilvalidation.class.php:778
 #: inc/config.class.php:442 inc/config.class.php:582 inc/config.class.php:626
@@ -5979,61 +5993,61 @@ msgstr "从模版 %s 创建"
 #: inc/profile.class.php:1194 inc/profile.class.php:1289
 #: inc/profile.class.php:1383 inc/profile.class.php:1478
 #: inc/reservation.class.php:772 inc/reservationitem.class.php:370
-#: inc/ticket.class.php:5134 inc/ticket.class.php:7354 inc/user.class.php:2394
-#: inc/user.class.php:4553
+#: inc/ticket.class.php:5149 inc/ticket.class.php:7369 inc/user.class.php:2441
+#: inc/user.class.php:4619
 msgctxt "button"
 msgid "Save"
 msgstr "保存"
 
-#: inc/commondbtm.class.php:2228 inc/massiveaction.class.php:535
-#: inc/ticket.class.php:5129
+#: inc/commondbtm.class.php:2226 inc/massiveaction.class.php:535
+#: inc/ticket.class.php:5144
 msgctxt "button"
 msgid "Restore"
 msgstr "恢复"
 
-#: inc/commondbtm.class.php:2234
+#: inc/commondbtm.class.php:2232
 msgid "Check to keep the devices while deleting this item"
 msgstr "当删除这个条目的时候检查保持该设备"
 
-#: inc/commondbtm.class.php:2254 inc/notepad.class.php:378
-#: inc/ticket.class.php:5141 inc/ticketfollowup.class.php:806
-#: inc/ticketfollowup.class.php:1032 inc/tickettask.class.php:312
+#: inc/commondbtm.class.php:2252 inc/notepad.class.php:378
+#: inc/ticket.class.php:5156 inc/ticketfollowup.class.php:814
+#: inc/ticketfollowup.class.php:1040 inc/tickettask.class.php:312
 msgid "Confirm the final deletion?"
 msgstr "最终确认删除吗？"
 
-#: inc/commondbtm.class.php:2258 inc/commondbtm.class.php:4710
-#: inc/massiveaction.class.php:557 inc/ticket.class.php:5146
+#: inc/commondbtm.class.php:2256 inc/commondbtm.class.php:4708
+#: inc/massiveaction.class.php:557 inc/ticket.class.php:5161
 #: inc/transfer.class.php:3300
 msgctxt "button"
 msgid "Put in dustbin"
 msgstr "放入垃圾箱"
 
-#: inc/commondbtm.class.php:2428
+#: inc/commondbtm.class.php:2426
 msgid "Template name"
 msgstr "模板名称"
 
-#: inc/commondbtm.class.php:2440 inc/knowbaseitem.class.php:600
+#: inc/commondbtm.class.php:2438 inc/knowbaseitem.class.php:600
 #: inc/knowbaseitem.class.php:625 inc/savedsearch.class.php:375
 msgid "New item"
 msgstr "新的项目"
 
-#: inc/commondbtm.class.php:2468
+#: inc/commondbtm.class.php:2466
 msgid "Can't change this attribute. It's inherited from its parent."
 msgstr "不能改变此属性。它继承了父对象。"
 
-#: inc/commondbtm.class.php:2473
+#: inc/commondbtm.class.php:2471
 msgid "You are not allowed to change the visibility flag for child entities."
 msgstr "您不允许在子实体上改变可见标志"
 
-#: inc/commondbtm.class.php:2477
+#: inc/commondbtm.class.php:2475
 msgid "Flag change forbidden. Linked items found."
 msgstr "禁止更改标记。发现有连接的项目。"
 
-#: inc/commondbtm.class.php:2481
+#: inc/commondbtm.class.php:2479
 msgid "Change visibility in child entities"
 msgstr "改变子实体的可见性"
 
-#: inc/commondbtm.class.php:3060 inc/commontreedropdown.class.php:606
+#: inc/commondbtm.class.php:3058 inc/commontreedropdown.class.php:606
 #: inc/db.function.php:601 inc/entity.class.php:467
 #: inc/notificationtargetcommonitilobject.class.php:1308
 #: inc/notificationtargetproject.class.php:651
@@ -6042,7 +6056,7 @@ msgid "Complete name"
 msgstr "全名"
 
 #. TRANS: Number of the alternate username
-#: inc/commondbtm.class.php:3121 inc/computer.class.php:436
+#: inc/commondbtm.class.php:3119 inc/computer.class.php:436
 #: inc/computer.class.php:693 inc/monitor.class.php:238
 #: inc/monitor.class.php:463 inc/networkequipment.class.php:325
 #: inc/networkequipment.class.php:510
@@ -6056,103 +6070,103 @@ msgstr "全名"
 msgid "Alternate username number"
 msgstr "用户编号"
 
-#: inc/commondbtm.class.php:3531
+#: inc/commondbtm.class.php:3529
 msgctxt "button"
 msgid "Unlock items"
 msgstr "解锁的项目"
 
-#: inc/commondbtm.class.php:3747
+#: inc/commondbtm.class.php:3745
 msgid "At least one field has an incorrect value"
 msgstr "至少有一个字段的值是错误的"
 
-#: inc/commondbtm.class.php:3808
+#: inc/commondbtm.class.php:3806
 #, php-format
 msgid "Impossible record for %s"
 msgstr "不能记录 %s"
 
-#: inc/commondbtm.class.php:3811
+#: inc/commondbtm.class.php:3809
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
 msgstr "项目添加成功，但是与记录 %s重复"
 
-#: inc/commondbtm.class.php:3814
+#: inc/commondbtm.class.php:3812
 msgid "Other item exist"
 msgstr "其它存在的项目"
 
-#: inc/commondbtm.class.php:3853
+#: inc/commondbtm.class.php:3851
 msgid "Item in the dustbin"
 msgstr "垃圾箱中的项目"
 
 #. TRANS: %1$s is the user login, %2$s the message
-#: inc/commondbtm.class.php:3979
+#: inc/commondbtm.class.php:3977
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s 尝试添加已经存在的项目: %2$s"
 
-#: inc/commondbtm.class.php:4263 inc/entity.class.php:1809
+#: inc/commondbtm.class.php:4261 inc/entity.class.php:1809
 #: inc/entity.class.php:1854 inc/search.class.php:4988
 msgid "Default value"
 msgstr "默认值"
 
-#: inc/commondbtm.class.php:4585
+#: inc/commondbtm.class.php:4583
 msgid "Choose a template"
 msgstr "选择模板"
 
-#: inc/commondbtm.class.php:4587
+#: inc/commondbtm.class.php:4585
 msgid "Blank Template"
 msgstr "空白模板"
 
-#: inc/commondbtm.class.php:4594
+#: inc/commondbtm.class.php:4592
 msgid "Templates"
 msgstr "模板"
 
-#: inc/commondbtm.class.php:4643
+#: inc/commondbtm.class.php:4641
 msgid "Add a template..."
 msgstr "添加模板..."
 
-#: inc/commondbtm.class.php:4702 inc/item_devices.class.php:686
+#: inc/commondbtm.class.php:4700 inc/item_devices.class.php:686
 #: inc/profile.class.php:821 inc/ruleticket.class.php:84
 #: inc/ruleticket.class.php:86 inc/supplier.class.php:450
-#: inc/ticket.class.php:4916 inc/ticket.class.php:4917
+#: inc/ticket.class.php:4931 inc/ticket.class.php:4932
 msgid "Update"
 msgstr "更新"
 
-#: inc/commondbtm.class.php:4703
+#: inc/commondbtm.class.php:4701
 msgid "Purge"
 msgstr "清除"
 
-#: inc/commondbtm.class.php:4709 inc/displaypreference.class.php:306
+#: inc/commondbtm.class.php:4707 inc/displaypreference.class.php:306
 #: inc/planning.class.php:1287
 msgid "Delete"
 msgstr "删除"
 
-#: inc/commondbtm.class.php:4713
+#: inc/commondbtm.class.php:4711
 msgid "Read notes"
 msgstr "阅读笔记"
 
-#: inc/commondbtm.class.php:4714
+#: inc/commondbtm.class.php:4712
 msgid "Read the item's notes"
 msgstr "阅读条目的笔记"
 
-#: inc/commondbtm.class.php:4715
+#: inc/commondbtm.class.php:4713
 msgid "Update notes"
 msgstr "更新笔记"
 
-#: inc/commondbtm.class.php:4716
+#: inc/commondbtm.class.php:4714
 msgid "Update the item's notes"
 msgstr "更新条目的笔记"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/commondbtm.class.php:4807
+#: inc/commondbtm.class.php:4805
 #, php-format
 msgid "Document Ticket %d"
 msgstr "工作单文档 %d"
 
-#: inc/commondbtm.class.php:4889
+#: inc/commondbtm.class.php:4887
 msgid "You can define an autofill template"
 msgstr ""
 
-#: inc/commondbtm.class.php:4900
+#: inc/commondbtm.class.php:4898
 msgid "Autofilled from template"
 msgstr ""
 
@@ -6203,7 +6217,7 @@ msgstr "R"
 #: inc/profile_user.class.php:357 inc/profile_user.class.php:483
 #: inc/profile_user.class.php:914 inc/ruleright.class.php:89
 #: inc/ruleright.class.php:315 inc/rulerightcollection.class.php:164
-#: inc/user.class.php:2079 inc/user.class.php:2799 inc/user.class.php:2855
+#: inc/user.class.php:2112 inc/user.class.php:2860 inc/user.class.php:2916
 msgid "Profile"
 msgid_plural "Profiles"
 msgstr[0] "配置文件"
@@ -6229,13 +6243,13 @@ msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr "如果你确认这个删除，所有相关的下拉菜单将会变成空白。"
 
-#: inc/commondropdown.class.php:597 inc/html.class.php:5761
+#: inc/commondropdown.class.php:597 inc/html.class.php:5762
 msgctxt "button"
 msgid "Confirm"
 msgstr "确认"
 
 #: inc/commondropdown.class.php:600 inc/commondropdown.class.php:630
-#: inc/html.class.php:5772
+#: inc/html.class.php:5773
 msgctxt "button"
 msgid "Cancel"
 msgstr "取消"
@@ -6260,12 +6274,12 @@ msgstr "合并"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5358
 #: inc/item_ticket.class.php:656 inc/item_ticket.class.php:740
-#: inc/rule.class.php:2198 inc/ticket.class.php:6117
+#: inc/rule.class.php:2198 inc/ticket.class.php:6132
 msgid "General"
 msgstr "通用"
 
 #. TRANSLATION_MODE] = __('Translation');
-#: inc/commonglpi.class.php:180 inc/user.class.php:2386
+#: inc/commonglpi.class.php:180 inc/user.class.php:2433
 msgid "Debug"
 msgstr "调试"
 
@@ -6283,8 +6297,8 @@ msgstr "清单"
 msgid "Last"
 msgstr "最后"
 
-#: inc/commonglpi.class.php:1154 inc/ticket.class.php:7183
-#: inc/ticket.class.php:7184
+#: inc/commonglpi.class.php:1154 inc/ticket.class.php:7198
+#: inc/ticket.class.php:7199
 msgid "Reset display options"
 msgstr "重置显示选项"
 
@@ -6318,7 +6332,7 @@ msgstr "邮件后续追踪"
 #: inc/notificationmailingsetting.class.php:82
 #: inc/notificationmailingsetting.class.php:96
 #: inc/notificationmailingsetting.class.php:113 inc/ticket_user.class.php:53
-#: inc/user.class.php:4189
+#: inc/user.class.php:4255
 msgid "Invalid email address"
 msgstr "无效的邮件地址"
 
@@ -6362,7 +6376,7 @@ msgstr[0] "花费"
 #: inc/notificationtargetcommonitilobject.class.php:1219
 #: inc/notificationtargetproject.class.php:629 inc/projectcost.class.php:156
 #: inc/projectcost.class.php:298 inc/projectcost.class.php:377
-#: inc/user.class.php:2906
+#: inc/user.class.php:2967
 msgid "Begin date"
 msgstr "开始日"
 
@@ -6604,7 +6618,7 @@ msgstr "至少非常高"
 #: inc/log.class.php:518 inc/notificationtargetcommonitilobject.class.php:541
 #: inc/notificationtargetcommonitilobject.class.php:1205
 #: inc/ruleticket.class.php:419 inc/ruleticket.class.php:553
-#: inc/ticket.class.php:3901
+#: inc/ticket.class.php:3916
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "监督"
@@ -6618,7 +6632,7 @@ msgid "Time to resolve exceedeed"
 msgstr "解决超时时间"
 
 #: inc/commonitilobject.class.php:2795 inc/commonitilobject.class.php:4543
-#: inc/ticket.class.php:4625
+#: inc/ticket.class.php:4640
 msgid "Resolution date"
 msgstr "决议通过日期"
 
@@ -6719,9 +6733,9 @@ msgstr "保存并添加到知识库"
 #: inc/notificationtargetticket.class.php:722 inc/ruleticket.class.php:477
 #: inc/ruleticket.class.php:493 inc/ruleticket.class.php:598
 #: inc/ruleticket.class.php:614 inc/sla.class.php:932
-#: inc/slalevel.class.php:393 inc/ticket.class.php:2607
-#: inc/ticket.class.php:2809 inc/ticket.class.php:4545
-#: inc/ticket.class.php:4547
+#: inc/slalevel.class.php:393 inc/ticket.class.php:2622
+#: inc/ticket.class.php:2824 inc/ticket.class.php:4560
+#: inc/ticket.class.php:4562
 msgid "Time to own"
 msgstr "保留时间"
 
@@ -6789,8 +6803,8 @@ msgstr "规划"
 #: inc/notificationtargetprojecttask.class.php:560
 #: inc/notificationtargetprojecttask.class.php:573 inc/profile.class.php:653
 #: inc/profile.class.php:954 inc/profile.class.php:1034
-#: inc/profile.class.php:1036 inc/ticket.class.php:7175
-#: inc/ticket.class.php:7176 inc/ticket.class.php:7303
+#: inc/profile.class.php:1036 inc/ticket.class.php:7190
+#: inc/ticket.class.php:7191 inc/ticket.class.php:7318
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "任务"
@@ -6863,7 +6877,7 @@ msgid "Recall on %s"
 msgstr "恢复于 %s"
 
 #: inc/commonitiltask.class.php:1207 inc/html.class.php:571
-#: inc/html.class.php:5667 inc/planning.class.php:165
+#: inc/html.class.php:5668 inc/planning.class.php:165
 #: inc/planning.class.php:185 inc/ticketrecurrent.class.php:88
 msgid "Information"
 msgid_plural "Information"
@@ -6905,15 +6919,15 @@ msgstr "提醒"
 #: inc/notificationtargetcommonitilobject.class.php:1235
 #: inc/notificationtargetplanningrecall.class.php:182
 #: inc/notificationtargetticket.class.php:765 inc/savedsearch.class.php:403
-#: inc/tasktemplate.class.php:73 inc/ticket.class.php:6979
-#: inc/ticketfollowup.class.php:707 inc/ticketfollowup.class.php:998
-#: inc/ticketfollowup.class.php:1181
+#: inc/tasktemplate.class.php:73 inc/ticket.class.php:6994
+#: inc/ticketfollowup.class.php:715 inc/ticketfollowup.class.php:1006
+#: inc/ticketfollowup.class.php:1189
 msgid "Private"
 msgstr "私人的"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #. TRANS: %1$s is the begin date, %2$s is the end date
-#: inc/commonitiltask.class.php:1562 inc/projecttask.class.php:1557
+#: inc/commonitiltask.class.php:1562 inc/projecttask.class.php:1562
 #: inc/reminder.class.php:700 inc/reminder.class.php:742
 #: inc/reminder.class.php:956 inc/reminder.class.php:1119
 #, php-format
@@ -7072,7 +7086,7 @@ msgstr "已审批请求的状态"
 msgid "Status of my validation"
 msgstr "我的验证状态"
 
-#: inc/commonitilvalidation.class.php:997 inc/ticketfollowup.class.php:1120
+#: inc/commonitilvalidation.class.php:997 inc/ticketfollowup.class.php:1128
 msgid "Optional when approved"
 msgstr "审批时可选"
 
@@ -7124,7 +7138,7 @@ msgstr "移动"
 #: inc/commontreedropdown.class.php:632
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetprojecttask.class.php:467 inc/project.class.php:441
-#: inc/projecttask.class.php:738 inc/projecttask.class.php:931
+#: inc/projecttask.class.php:743 inc/projecttask.class.php:936
 #: inc/projecttask_ticket.class.php:288 inc/softwarelicense.class.php:595
 msgid "Father"
 msgstr ""
@@ -7217,7 +7231,7 @@ msgstr "连接"
 #: inc/computer.class.php:578 inc/monitor.class.php:374
 #: inc/networkequipment.class.php:421 inc/peripheral.class.php:344
 #: inc/phone.class.php:366 inc/printer.class.php:491
-#: inc/software.class.php:365 inc/ticket.class.php:2590
+#: inc/software.class.php:365 inc/ticket.class.php:2605
 msgctxt "button"
 msgid "Link knowledgebase article"
 msgstr ""
@@ -7384,7 +7398,7 @@ msgstr "虚拟机的UUID"
 #: inc/devicememory.class.php:57 inc/item_devicegraphiccard.class.php:57
 #: inc/item_deviceharddrive.class.php:57 inc/item_devicememory.class.php:59
 #: inc/networkequipment.class.php:388 inc/networkequipment.class.php:582
-#: inc/toolbox.class.php:974 inc/toolbox.class.php:1126
+#: inc/toolbox.class.php:963 inc/toolbox.class.php:1115
 msgid "Mio"
 msgstr "MB"
 
@@ -7691,9 +7705,9 @@ msgstr "没有自动传输"
 msgid "Automatically update of the elements related to the computers"
 msgstr "自动更新此电脑的相关元件"
 
-#: inc/config.class.php:534 inc/dropdown.class.php:2082
-#: inc/dropdown.class.php:2090 inc/dropdown.class.php:2092
-#: inc/dropdown.class.php:2151
+#: inc/config.class.php:534 inc/dropdown.class.php:2046
+#: inc/dropdown.class.php:2054 inc/dropdown.class.php:2056
+#: inc/dropdown.class.php:2115
 msgid "Unit management"
 msgstr "单位管理"
 
@@ -7822,7 +7836,7 @@ msgstr ""
 #: inc/entity.class.php:331 inc/entity.class.php:883 inc/event.class.php:159
 #: inc/html.class.php:1285 inc/profile.class.php:97 inc/profile.class.php:102
 #: inc/profile.class.php:659 inc/profile.class.php:992
-#: inc/profile.class.php:2155 inc/search.class.php:5416
+#: inc/profile.class.php:2155 inc/search.class.php:5423
 msgid "Assistance"
 msgstr "协助"
 
@@ -8183,8 +8197,8 @@ msgstr "定时任务的最大数量（在CLI中运行）"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "记录日志到文件中（SQL,电子邮件，定时任务）"
 
-#: inc/config.class.php:1680 inc/user.class.php:1955 inc/user.class.php:2290
-#: inc/user.class.php:4012
+#: inc/config.class.php:1680 inc/user.class.php:1988 inc/user.class.php:2337
+#: inc/user.class.php:4078
 msgid "Password security policy"
 msgstr "密码安全策略"
 
@@ -8250,7 +8264,7 @@ msgid "Performance"
 msgstr ""
 
 #: inc/config.class.php:2164 inc/config.class.php:2177
-#: inc/config.class.php:2188 inc/toolbox.class.php:952
+#: inc/config.class.php:2188
 #, php-format
 msgid "%s extension test"
 msgstr ""
@@ -8565,7 +8579,7 @@ msgstr "状态"
 msgid "Country"
 msgstr "国家"
 
-#: inc/contact.class.php:233 inc/user.class.php:2116
+#: inc/contact.class.php:233 inc/user.class.php:2149
 msgid "Vcard"
 msgstr "名片"
 
@@ -8574,7 +8588,7 @@ msgctxt "button"
 msgid "Add a supplier"
 msgstr "添加供应商"
 
-#: inc/contact.class.php:293 inc/user.class.php:2634
+#: inc/contact.class.php:293 inc/user.class.php:2676
 msgid "Last name"
 msgstr ""
 
@@ -8710,13 +8724,13 @@ msgid "Periodicity"
 msgstr "周期性"
 
 #: inc/contract.class.php:589 inc/document.class.php:1390
-#: inc/ticket.class.php:2567
+#: inc/ticket.class.php:2582
 msgctxt "button"
 msgid "Add an item"
 msgstr "添加项目"
 
 #: inc/contract.class.php:590 inc/document.class.php:1391
-#: inc/ticket.class.php:2571
+#: inc/ticket.class.php:2586
 msgctxt "button"
 msgid "Remove an item"
 msgstr "删除项目"
@@ -9036,7 +9050,7 @@ msgstr "上次执行清单"
 #: inc/crontask.class.php:1100 inc/crontask.class.php:1158
 #: inc/fieldunicity.class.php:591 inc/problem.class.php:922
 #: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:998
-#: inc/stat.class.php:409 inc/ticket.class.php:5728
+#: inc/stat.class.php:409 inc/ticket.class.php:5743
 msgctxt "quantity"
 msgid "Number"
 msgstr "数字"
@@ -9136,7 +9150,7 @@ msgstr ""
 
 #. TRANS: %d is a number of minutes
 #: inc/crontask.class.php:1761 inc/crontask.class.php:1765
-#: inc/dropdown.class.php:1567 inc/ola.class.php:701
+#: inc/dropdown.class.php:1531 inc/ola.class.php:701
 #: inc/planningrecall.class.php:255 inc/sla.class.php:684
 #, php-format
 msgid "%d minute"
@@ -9144,7 +9158,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d 分钟"
 
 #. TRANS: %d is a number of hours
-#: inc/crontask.class.php:1770 inc/dropdown.class.php:1563
+#: inc/crontask.class.php:1770 inc/dropdown.class.php:1527
 #: inc/entity.class.php:2570 inc/ola.class.php:704
 #: inc/planningrecall.class.php:261 inc/sla.class.php:687
 #: inc/ticketrecurrent.class.php:185
@@ -9154,8 +9168,8 @@ msgid_plural "%d hours"
 msgstr[0] "%d 小时"
 
 #. TRANS: %d is a number of days
-#: inc/crontask.class.php:1776 inc/dropdown.class.php:1559
-#: inc/dropdown.class.php:1697 inc/entity.class.php:2227
+#: inc/crontask.class.php:1776 inc/dropdown.class.php:1523
+#: inc/dropdown.class.php:1661 inc/entity.class.php:2227
 #: inc/entity.class.php:2272 inc/entity.class.php:2594
 #: inc/entity.class.php:2629 inc/ola.class.php:707
 #: inc/planningrecall.class.php:265 inc/sla.class.php:690
@@ -9559,9 +9573,9 @@ msgstr[0] "文档标题"
 #: inc/notificationtargetprojecttask.class.php:534
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetticket.class.php:869 inc/profile.class.php:872
-#: inc/profile.class.php:1729 inc/ticket.class.php:2779
-#: inc/ticket.class.php:7177 inc/ticket.class.php:7178
-#: inc/ticket.class.php:7308 inc/transfer.class.php:3450
+#: inc/profile.class.php:1729 inc/ticket.class.php:2794
+#: inc/ticket.class.php:7192 inc/ticket.class.php:7193
+#: inc/ticket.class.php:7323 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "文档"
@@ -9673,15 +9687,15 @@ msgstr "文件移动失败"
 msgid "Temporary directory doesn't exist"
 msgstr ""
 
-#: inc/document.class.php:1115 inc/user.class.php:687
+#: inc/document.class.php:1115 inc/user.class.php:697
 msgid "File too large to be added."
 msgstr "文件太大，无法添加"
 
-#: inc/document.class.php:1160 inc/user.class.php:711
+#: inc/document.class.php:1160 inc/user.class.php:721
 msgid "The file is valid. Upload is successful."
 msgstr "文件有效，上载成功。"
 
-#: inc/document.class.php:1169 inc/user.class.php:719
+#: inc/document.class.php:1169 inc/user.class.php:729
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr "可能是上传攻击或文件太大。移动临时文件失败。"
@@ -9771,7 +9785,7 @@ msgstr[0] "文档类型"
 msgid "Help"
 msgstr "帮助"
 
-#: inc/dropdown.class.php:204 inc/user.class.php:3464
+#: inc/dropdown.class.php:204 inc/user.class.php:3530
 #, php-format
 msgid "Show %1$s"
 msgstr ""
@@ -10029,7 +10043,7 @@ msgid_plural "Ignored values for the unicity"
 msgstr[0] "忽略值的唯一性"
 
 #. TRANS: %d is a number of years
-#: inc/dropdown.class.php:1551 inc/infocom.class.php:1104
+#: inc/dropdown.class.php:1515 inc/infocom.class.php:1104
 #: inc/ticketrecurrent.class.php:196 inc/ticketrecurrent.class.php:224
 #, php-format
 msgid "%d year"
@@ -10037,97 +10051,97 @@ msgid_plural "%d years"
 msgstr[0] "%d 年"
 
 #. TRANS: %d is a number of seconds
-#: inc/dropdown.class.php:1571
+#: inc/dropdown.class.php:1535
 #, php-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d 秒"
 
 #. TRANS: %d is a number of milliseconds
-#: inc/dropdown.class.php:1575
+#: inc/dropdown.class.php:1539
 #, php-format
 msgid "%d millisecond"
 msgid_plural "%d milliseconds"
 msgstr[0] "%d 毫秒"
 
 #. TRANS: %d is the percentage. %% to display %
-#: inc/dropdown.class.php:1582 inc/entity.class.php:2275
+#: inc/dropdown.class.php:1546 inc/entity.class.php:2275
 #, php-format
 msgid "%d%%"
 msgstr "%d%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
-#: inc/dropdown.class.php:1694
+#: inc/dropdown.class.php:1658
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] "%1$d 天 %2$dh%3$s"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-#: inc/dropdown.class.php:1706
+#: inc/dropdown.class.php:1670
 #, php-format
 msgid "%1$dh%2$s"
 msgstr "%1$dh%2$s"
 
-#: inc/dropdown.class.php:1985
+#: inc/dropdown.class.php:1949
 msgid "Other..."
 msgstr "其他..."
 
-#: inc/dropdown.class.php:2064 inc/dropdown.class.php:2083
-#: inc/dropdown.class.php:2090 inc/dropdown.class.php:2092
-#: inc/dropdown.class.php:2154 inc/monitor.class.php:624
+#: inc/dropdown.class.php:2028 inc/dropdown.class.php:2047
+#: inc/dropdown.class.php:2054 inc/dropdown.class.php:2056
+#: inc/dropdown.class.php:2118 inc/monitor.class.php:624
 #: inc/peripheral.class.php:530 inc/phone.class.php:604
 #: inc/printer.class.php:792
 msgid "Global management"
 msgstr "全局管理"
 
-#: inc/dropdown.class.php:2068
+#: inc/dropdown.class.php:2032
 msgid "Use unitary management"
 msgstr "使用统一的管理"
 
-#: inc/dropdown.class.php:2070
+#: inc/dropdown.class.php:2034
 msgid "Do you really want to use unitary management for this item?"
 msgstr "您真的想在此项目使用统一管理吗？"
 
-#: inc/dropdown.class.php:2071 inc/dropdown.class.php:2075
-#: inc/dropdown.class.php:2076
+#: inc/dropdown.class.php:2035 inc/dropdown.class.php:2039
+#: inc/dropdown.class.php:2040
 msgid "Duplicate the element as many times as there are connections"
 msgstr "只有连接上就复制元素"
 
-#: inc/dropdown.class.php:2170
+#: inc/dropdown.class.php:2134
 msgid "Current page in landscape PDF"
 msgstr "当前页面为横向PDF"
 
-#: inc/dropdown.class.php:2171
+#: inc/dropdown.class.php:2135
 msgid "Current page in portrait PDF"
 msgstr "当前页面为纵向PDF"
 
-#: inc/dropdown.class.php:2172
+#: inc/dropdown.class.php:2136
 msgid "Current page in SLK"
 msgstr "当前页面为SLK"
 
-#: inc/dropdown.class.php:2173
+#: inc/dropdown.class.php:2137
 msgid "Current page in CSV"
 msgstr "当前页面为CSV"
 
-#: inc/dropdown.class.php:2174
+#: inc/dropdown.class.php:2138
 msgid "All pages in landscape PDF"
 msgstr "所有页面为横向PDF"
 
-#: inc/dropdown.class.php:2175
+#: inc/dropdown.class.php:2139
 msgid "All pages in portrait PDF"
 msgstr "所有页面为纵向PDF"
 
-#: inc/dropdown.class.php:2176
+#: inc/dropdown.class.php:2140
 msgid "All pages in SLK"
 msgstr "所有页面为SLK"
 
-#: inc/dropdown.class.php:2177
+#: inc/dropdown.class.php:2141
 msgid "All pages in CSV"
 msgstr "所有页面为CSV"
 
-#: inc/dropdown.class.php:2181 inc/dropdown.class.php:2182
+#: inc/dropdown.class.php:2145 inc/dropdown.class.php:2146
 #: inc/planning.class.php:1305 inc/planning.class.php:1309
 #: inc/rule.class.php:562 inc/rulecollection.class.php:807
 msgctxt "button"
@@ -10370,8 +10384,8 @@ msgid "to see the entity and its sub-entities"
 msgstr "显示实体及从属实体"
 
 #: inc/entity.class.php:1088 inc/html.class.php:1715
-#: inc/reservation.class.php:442 inc/ticket.class.php:5779
-#: inc/ticket.class.php:5972
+#: inc/reservation.class.php:442 inc/ticket.class.php:5794
+#: inc/ticket.class.php:5987
 msgid "Show all"
 msgstr "显示全部"
 
@@ -10539,7 +10553,7 @@ msgid "Security"
 msgstr "安全"
 
 #: inc/event.class.php:170 inc/html.class.php:1298 inc/html.class.php:2097
-#: inc/html.class.php:2121 inc/plugin.class.php:63 inc/search.class.php:5482
+#: inc/html.class.php:2121 inc/plugin.class.php:63 inc/search.class.php:5489
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "插件"
@@ -10602,7 +10616,7 @@ msgstr "必须选择一个类型和至少一个字段"
 
 #: inc/fieldunicity.class.php:584 inc/fieldunicity.class.php:609
 #: inc/notificationevent.class.php:211 inc/ola.class.php:368
-#: inc/project.class.php:1458 inc/sla.class.php:357 inc/user.class.php:4234
+#: inc/project.class.php:1458 inc/sla.class.php:357 inc/user.class.php:4300
 msgid "No item to display"
 msgstr "没有项目显示"
 
@@ -10777,7 +10791,7 @@ msgstr ""
 msgid "Move"
 msgstr "移动"
 
-#: inc/group_user.class.php:146 inc/user.class.php:2498
+#: inc/group_user.class.php:146 inc/user.class.php:2545
 msgid "Associate to a group"
 msgstr "关联群组"
 
@@ -10921,20 +10935,20 @@ msgstr ""
 msgid "Back to top of the page"
 msgstr ""
 
-#: inc/html.class.php:1817 inc/toolbox.class.php:1314
-#: inc/toolbox.class.php:1318
+#: inc/html.class.php:1817 inc/toolbox.class.php:1303
+#: inc/toolbox.class.php:1307
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "您可以在GLPI-PROJECT.org网站中找到。"
 
-#: inc/html.class.php:1819 inc/toolbox.class.php:1312
-#: inc/toolbox.class.php:1316 inc/toolbox.class.php:1324
-#: inc/toolbox.class.php:1327
+#: inc/html.class.php:1819 inc/toolbox.class.php:1301
+#: inc/toolbox.class.php:1305 inc/toolbox.class.php:1313
+#: inc/toolbox.class.php:1316
 #, php-format
 msgid "A new version is available: %s."
 msgstr "新版本可用:%s."
 
 #: inc/html.class.php:2048 inc/profile.class.php:2162
-#: inc/ticket.class.php:5722
+#: inc/ticket.class.php:5737
 msgid "Create a ticket"
 msgstr "创建工作单"
 
@@ -10943,8 +10957,8 @@ msgid "Plugins"
 msgstr "插件"
 
 #: inc/html.class.php:2163 inc/html.class.php:2164 inc/ticket.class.php:201
-#: inc/ticket.class.php:202 inc/ticket.class.php:3579
-#: inc/ticket.class.php:3580
+#: inc/ticket.class.php:202 inc/ticket.class.php:3594
+#: inc/ticket.class.php:3595
 msgid "Ticket waiting for your approval"
 msgstr "待您审批的工作单"
 
@@ -10975,7 +10989,7 @@ msgid "Now"
 msgstr "现在"
 
 #: inc/html.class.php:3412 inc/html.class.php:3415
-#: inc/ticketfollowup.class.php:925
+#: inc/ticketfollowup.class.php:933
 msgid "Today"
 msgstr "今天"
 
@@ -11126,15 +11140,15 @@ msgstr ""
 msgid "Upload successful"
 msgstr ""
 
-#: inc/html.class.php:5432
+#: inc/html.class.php:5433
 msgid "Check/uncheck all"
 msgstr ""
 
-#: inc/html.class.php:5477 inc/html.class.php:5584 inc/profile.class.php:2982
+#: inc/html.class.php:5478 inc/html.class.php:5585 inc/profile.class.php:2982
 msgid "Select/unselect all"
 msgstr ""
 
-#: inc/html.class.php:6168
+#: inc/html.class.php:6172
 msgid "Start typing to find a menu"
 msgstr ""
 
@@ -11171,8 +11185,8 @@ msgstr "线性"
 msgid "Decreasing"
 msgstr "递减"
 
-#: inc/infocom.class.php:710 inc/ticket.class.php:7019
-#: inc/ticket.class.php:7020
+#: inc/infocom.class.php:710 inc/ticket.class.php:7034
+#: inc/ticket.class.php:7035
 msgctxt "button"
 msgid "Show"
 msgstr "显示"
@@ -11405,23 +11419,23 @@ msgid "View"
 msgid_plural "Views"
 msgstr[0] "查看"
 
-#: inc/item_devices.class.php:817
+#: inc/item_devices.class.php:816
 msgid "Please select a device type"
 msgstr ""
 
-#: inc/item_devices.class.php:824
+#: inc/item_devices.class.php:823
 msgid "Please select a device"
 msgstr ""
 
-#: inc/item_devices.class.php:838
+#: inc/item_devices.class.php:837
 msgid "You must choose any unaffected device or ask to add new."
 msgstr ""
 
-#: inc/item_devices.class.php:1095
+#: inc/item_devices.class.php:1094
 msgid "Copy to clipboard failed"
 msgstr ""
 
-#: inc/item_devices.class.php:1221
+#: inc/item_devices.class.php:1220
 msgid "Update of "
 msgstr ""
 
@@ -11501,12 +11515,12 @@ msgstr "版本"
 msgid "Installed software"
 msgstr "已安装的软件。"
 
-#: inc/item_ticket.class.php:1101
+#: inc/item_ticket.class.php:1110
 msgid "Delete permanently"
 msgstr "永久删除"
 
-#: inc/item_ticket.class.php:1232 inc/link_itemtype.class.php:169
-#: inc/problem.class.php:462 inc/ticket.class.php:2745
+#: inc/item_ticket.class.php:1241 inc/link_itemtype.class.php:169
+#: inc/problem.class.php:462 inc/ticket.class.php:2760
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] ""
@@ -11542,14 +11556,14 @@ msgstr "事件模板"
 #: inc/itilcategory.class.php:196 inc/notificationtargetchange.class.php:269
 #: inc/notificationtargetproblem.class.php:208
 #: inc/notificationtargetprojecttask.class.php:504 inc/problem.class.php:527
-#: inc/search.class.php:5421
+#: inc/search.class.php:5428
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "工作单数量"
 
 #: inc/itilcategory.class.php:209 inc/notificationtargetchange.class.php:270
-#: inc/notificationtargetticket.class.php:771 inc/search.class.php:5438
-#: inc/ticket.class.php:3263
+#: inc/notificationtargetticket.class.php:771 inc/search.class.php:5445
+#: inc/ticket.class.php:3278
 msgctxt "quantity"
 msgid "Number of problems"
 msgstr "问题数量"
@@ -11561,16 +11575,16 @@ msgctxt "quantity"
 msgid "Number of changes"
 msgstr ""
 
-#: inc/itilcategory.class.php:327 inc/ticket.class.php:3399
-#: inc/ticket.class.php:3415
+#: inc/itilcategory.class.php:327 inc/ticket.class.php:3414
+#: inc/ticket.class.php:3430
 msgid "Incident"
 msgstr "事件"
 
 #: inc/itilcategory.class.php:328 inc/notificationtargetchange.class.php:300
 #: inc/notificationtargetchange.class.php:302
 #: inc/notificationtargetticket.class.php:797
-#: inc/notificationtargetticket.class.php:799 inc/ticket.class.php:3400
-#: inc/ticket.class.php:3418
+#: inc/notificationtargetticket.class.php:799 inc/ticket.class.php:3415
+#: inc/ticket.class.php:3433
 msgid "Request"
 msgstr "请求"
 
@@ -11595,7 +11609,7 @@ msgid_plural "Targets"
 msgstr[0] ""
 
 #: inc/knowbaseitem.class.php:206 inc/knowbaseitemtranslation.class.php:93
-#: inc/user.class.php:2177
+#: inc/user.class.php:2210
 msgid "Edit"
 msgstr "编辑"
 
@@ -11879,7 +11893,7 @@ msgid "Mobile Network Code"
 msgstr ""
 
 #: inc/link.class.php:55 inc/link.class.php:587 inc/profile.class.php:1458
-#: inc/profile.class.php:1895 inc/search.class.php:5474
+#: inc/profile.class.php:1895 inc/search.class.php:5481
 msgid "External link"
 msgid_plural "External links"
 msgstr[0] "外部链接"
@@ -12015,7 +12029,7 @@ msgstr "修改零部件 %1$s: %2$s"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:404 inc/projecttask.class.php:501
-#: inc/ticket.class.php:4613
+#: inc/ticket.class.php:4628
 #, php-format
 msgid "%1$s by %2$s"
 msgstr "%1$s by %2$s"
@@ -12806,7 +12820,7 @@ msgstr "最后更新者"
 msgid "Last update by %1$s on %2$s"
 msgstr ""
 
-#: inc/notepad.class.php:352 inc/ticketfollowup.class.php:990
+#: inc/notepad.class.php:352
 #, php-format
 msgid "Create by %1$s on %2$s"
 msgstr ""
@@ -13149,12 +13163,12 @@ msgstr ""
 #: inc/notificationtargetchange.class.php:62
 #: inc/notificationtargetchange.class.php:324
 #: inc/notificationtargetticket.class.php:231
-#: inc/notificationtargetticket.class.php:903 inc/ticket.class.php:6734
+#: inc/notificationtargetticket.class.php:903 inc/ticket.class.php:6749
 msgid "Validation request"
 msgstr "验证请求"
 
 #: inc/notificationtargetchange.class.php:63
-#: inc/notificationtargetticket.class.php:232 inc/ticket.class.php:6744
+#: inc/notificationtargetticket.class.php:232 inc/ticket.class.php:6759
 msgid "Validation request answer"
 msgstr "验证请求的答复"
 
@@ -13207,7 +13221,7 @@ msgstr "%s 回复了已审批的请求"
 #: inc/profile.class.php:1040 inc/profile.class.php:1042
 #: inc/profile.class.php:1102 inc/rule.class.php:2019 inc/rule.class.php:2040
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
-#: inc/ticket.class.php:7179 inc/ticket.class.php:7180
+#: inc/ticket.class.php:7194 inc/ticket.class.php:7195
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "验证"
@@ -13600,7 +13614,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:463
 #: inc/notificationtargetprojecttask.class.php:487 inc/project.class.php:536
 #: inc/project.class.php:1036 inc/projecttask.class.php:554
-#: inc/projecttask.class.php:815 inc/projecttask.class.php:927
+#: inc/projecttask.class.php:820 inc/projecttask.class.php:932
 #: inc/projecttasktemplate.class.php:77 inc/projecttasktemplate.class.php:149
 #: inc/projecttask_ticket.class.php:284
 msgid "Planned start date"
@@ -13611,7 +13625,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:464
 #: inc/notificationtargetprojecttask.class.php:488 inc/project.class.php:544
 #: inc/project.class.php:1046 inc/projecttask.class.php:568
-#: inc/projecttask.class.php:823 inc/projecttask.class.php:928
+#: inc/projecttask.class.php:828 inc/projecttask.class.php:933
 #: inc/projecttasktemplate.class.php:83 inc/projecttasktemplate.class.php:165
 #: inc/projecttask_ticket.class.php:285
 msgid "Planned end date"
@@ -13622,7 +13636,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:465
 #: inc/notificationtargetprojecttask.class.php:489 inc/project.class.php:563
 #: inc/project.class.php:1040 inc/projecttask.class.php:560
-#: inc/projecttask.class.php:831 inc/projecttasktemplate.class.php:80
+#: inc/projecttask.class.php:836 inc/projecttasktemplate.class.php:80
 #: inc/projecttasktemplate.class.php:157
 msgid "Real start date"
 msgstr ""
@@ -13632,7 +13646,7 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:466
 #: inc/notificationtargetprojecttask.class.php:490 inc/project.class.php:571
 #: inc/project.class.php:1050 inc/projecttask.class.php:573
-#: inc/projecttask.class.php:839 inc/projecttasktemplate.class.php:86
+#: inc/projecttask.class.php:844 inc/projecttasktemplate.class.php:86
 #: inc/projecttasktemplate.class.php:173
 msgid "Real end date"
 msgstr ""
@@ -13642,8 +13656,8 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:471
 #: inc/notificationtargetprojecttask.class.php:486 inc/project.class.php:496
 #: inc/project.class.php:994 inc/projecttask.class.php:529
-#: inc/projecttask.class.php:794 inc/projecttask.class.php:926
-#: inc/projecttask.class.php:1581 inc/projecttasktemplate.class.php:71
+#: inc/projecttask.class.php:799 inc/projecttask.class.php:931
+#: inc/projecttask.class.php:1586 inc/projecttasktemplate.class.php:71
 #: inc/projecttasktemplate.class.php:133 inc/projecttask_ticket.class.php:283
 msgid "Percent done"
 msgstr ""
@@ -13651,7 +13665,7 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:569
 #: inc/notificationtargetprojecttask.class.php:472 inc/project.class.php:552
 #: inc/project.class.php:1056 inc/projecttask.class.php:580
-#: inc/projecttask.class.php:847 inc/projecttask.class.php:929
+#: inc/projecttask.class.php:852 inc/projecttask.class.php:934
 #: inc/projecttasktemplate.class.php:89 inc/projecttasktemplate.class.php:181
 #: inc/projecttask_ticket.class.php:286
 msgid "Planned duration"
@@ -13659,8 +13673,8 @@ msgstr ""
 
 #: inc/notificationtargetproject.class.php:570
 #: inc/notificationtargetprojecttask.class.php:473 inc/project.class.php:579
-#: inc/project.class.php:1063 inc/projecttask.class.php:592
-#: inc/projecttask.class.php:860 inc/projecttask.class.php:930
+#: inc/project.class.php:1063 inc/projecttask.class.php:597
+#: inc/projecttask.class.php:865 inc/projecttask.class.php:935
 #: inc/projecttasktemplate.class.php:92 inc/projecttasktemplate.class.php:189
 #: inc/projecttask_ticket.class.php:287
 msgid "Effective duration"
@@ -13712,13 +13726,13 @@ msgstr ""
 #: inc/notificationtargetprojecttask.class.php:458
 #: inc/notificationtargetprojecttask.class.php:522 inc/profile.class.php:951
 #: inc/profile.class.php:956 inc/project.class.php:66
-#: inc/projecttask.class.php:473 inc/projecttask.class.php:729
+#: inc/projecttask.class.php:473 inc/projecttask.class.php:734
 msgid "Project"
 msgid_plural "Projects"
 msgstr[0] ""
 
 #: inc/notificationtargetprojecttask.class.php:474
-#: inc/projecttask.class.php:605
+#: inc/projecttask.class.php:610
 msgid "Tickets duration"
 msgstr ""
 
@@ -13801,7 +13815,7 @@ msgid "Deletion of a ticket"
 msgstr "删除工作单"
 
 #: inc/notificationtargetticket.class.php:241
-#: inc/notificationtargetticket.class.php:897 inc/ticket.class.php:6230
+#: inc/notificationtargetticket.class.php:897 inc/ticket.class.php:6245
 msgid "Not solved tickets"
 msgstr "未解决工作单"
 
@@ -13832,8 +13846,8 @@ msgstr[0] "没有回复的工作单将会在  %s 天后自动关闭"
 #: inc/ruleticket.class.php:476 inc/ruleticket.class.php:589
 #: inc/ruleticket.class.php:597 inc/sla.class.php:60 inc/sla.class.php:477
 #: inc/sla.class.php:549 inc/sla.class.php:552 inc/sla.class.php:577
-#: inc/ticket.class.php:2801 inc/ticket.class.php:2809
-#: inc/ticket.class.php:2823 inc/ticket.class.php:2836
+#: inc/ticket.class.php:2816 inc/ticket.class.php:2824
+#: inc/ticket.class.php:2838 inc/ticket.class.php:2851
 msgid "SLA"
 msgstr "SLA"
 
@@ -13842,22 +13856,22 @@ msgstr "SLA"
 #: inc/ola.class.php:495 inc/ola.class.php:566 inc/ola.class.php:569
 #: inc/ola.class.php:595 inc/ruleticket.class.php:484
 #: inc/ruleticket.class.php:492 inc/ruleticket.class.php:605
-#: inc/ruleticket.class.php:613 inc/ticket.class.php:2852
-#: inc/ticket.class.php:2860 inc/ticket.class.php:2874
-#: inc/ticket.class.php:2887
+#: inc/ruleticket.class.php:613 inc/ticket.class.php:2867
+#: inc/ticket.class.php:2875 inc/ticket.class.php:2889
+#: inc/ticket.class.php:2902
 msgid "OLA"
 msgid_plural "OLAs"
 msgstr[0] ""
 
 #: inc/notificationtargetticket.class.php:728 inc/ola.class.php:957
-#: inc/ticket.class.php:2681 inc/ticket.class.php:2860
-#: inc/ticket.class.php:4572 inc/ticket.class.php:4574
+#: inc/ticket.class.php:2696 inc/ticket.class.php:2875
+#: inc/ticket.class.php:4587 inc/ticket.class.php:4589
 msgid "Internal time to own"
 msgstr ""
 
 #: inc/notificationtargetticket.class.php:731 inc/ola.class.php:958
-#: inc/ticket.class.php:2645 inc/ticket.class.php:2874
-#: inc/ticket.class.php:4584 inc/ticket.class.php:4586
+#: inc/ticket.class.php:2660 inc/ticket.class.php:2889
+#: inc/ticket.class.php:4599 inc/ticket.class.php:4601
 msgid "Internal time to resolve"
 msgstr ""
 
@@ -13865,7 +13879,7 @@ msgstr ""
 msgid "Location name"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:769 inc/ticket.class.php:3028
+#: inc/notificationtargetticket.class.php:769 inc/ticket.class.php:3043
 msgctxt "quantity"
 msgid "Number of followups"
 msgstr "后续追踪的数量"
@@ -13906,8 +13920,8 @@ msgstr "邀请填写调查"
 
 #: inc/notificationtargetticket.class.php:863 inc/profile.class.php:650
 #: inc/profile.class.php:1031 inc/profile.class.php:1036
-#: inc/ticket.class.php:2986 inc/ticket.class.php:7173
-#: inc/ticket.class.php:7174 inc/ticket.class.php:7297
+#: inc/ticket.class.php:3001 inc/ticket.class.php:7188
+#: inc/ticket.class.php:7189 inc/ticket.class.php:7312
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
@@ -13919,8 +13933,8 @@ msgstr[0] "后续追踪"
 #: inc/notificationtargetticket.class.php:911
 #: inc/notificationtargetticket.class.php:914
 #: inc/notificationtargetticket.class.php:917
-#: inc/notificationtargetticket.class.php:920 inc/ticket.class.php:3109
-#: inc/ticket.class.php:5033
+#: inc/notificationtargetticket.class.php:920 inc/ticket.class.php:3124
+#: inc/ticket.class.php:5048
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "链接的工作单"
@@ -14154,8 +14168,8 @@ msgid "Next escalation: %s"
 msgstr "下一个提升: %s"
 
 #: inc/ola.class.php:508 inc/olalevel.class.php:88 inc/sla.class.php:490
-#: inc/slalevel.class.php:88 inc/ticket.class.php:2836
-#: inc/ticket.class.php:2887
+#: inc/slalevel.class.php:88 inc/ticket.class.php:2851
+#: inc/ticket.class.php:2902
 msgid "Escalation level"
 msgid_plural "Escalation levels"
 msgstr[0] "提升等级"
@@ -14538,17 +14552,17 @@ msgstr "以太网"
 msgid "Wifi"
 msgstr "WIFI"
 
-#: inc/problem.class.php:553 inc/ticket.class.php:3438
+#: inc/problem.class.php:553 inc/ticket.class.php:3453
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "处理中(已分派)"
 
-#: inc/problem.class.php:554 inc/ticket.class.php:3439
+#: inc/problem.class.php:554 inc/ticket.class.php:3454
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "处理中(已计划)"
 
-#: inc/problem.class.php:556 inc/ticket.class.php:3441
+#: inc/problem.class.php:556 inc/ticket.class.php:3456
 msgctxt "status"
 msgid "Solved"
 msgstr "已解决"
@@ -14638,7 +14652,7 @@ msgid "Entity right"
 msgstr "实体权利"
 
 #: inc/profile.class.php:599 inc/profile.class.php:1537
-#: inc/user.class.php:2091 inc/user.class.php:2333 inc/user.class.php:2889
+#: inc/user.class.php:2124 inc/user.class.php:2380 inc/user.class.php:2950
 msgid "Default profile"
 msgstr "缺省配置文件"
 
@@ -14821,7 +14835,7 @@ msgstr "给用户添加授权"
 #: inc/profile_user.class.php:146 inc/profile_user.class.php:303
 #: inc/profile_user.class.php:1041 inc/ruleright.class.php:91
 #: inc/ruleright.class.php:319 inc/rulerightcollection.class.php:169
-#: inc/user.class.php:2075
+#: inc/user.class.php:2108
 msgid "Recursive"
 msgstr "递归"
 
@@ -14840,7 +14854,7 @@ msgstr "找不到用户"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: inc/profile_user.class.php:986 inc/user.class.php:2074
+#: inc/profile_user.class.php:986 inc/user.class.php:2107
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "授权"
@@ -14882,11 +14896,11 @@ msgstr ""
 msgid "Sum of total effective durations of tasks"
 msgstr ""
 
-#: inc/project.class.php:1153 inc/projecttask.class.php:1164
+#: inc/project.class.php:1153 inc/projecttask.class.php:1169
 msgid "Add a team member"
 msgstr ""
 
-#: inc/project.class.php:1193 inc/projecttask.class.php:1203
+#: inc/project.class.php:1193 inc/projecttask.class.php:1208
 msgid "Member"
 msgid_plural "Members"
 msgstr[0] ""
@@ -14896,86 +14910,86 @@ msgstr[0] ""
 msgid "Invalid items (no start or end date): %s"
 msgstr ""
 
-#: inc/project.class.php:1428 inc/toolbox.class.php:2132
+#: inc/project.class.php:1428 inc/toolbox.class.php:2115
 msgid "January"
 msgstr "1月"
 
-#: inc/project.class.php:1428 inc/toolbox.class.php:2133
+#: inc/project.class.php:1428 inc/toolbox.class.php:2116
 msgid "February"
 msgstr "2月"
 
-#: inc/project.class.php:1428 inc/toolbox.class.php:2134
+#: inc/project.class.php:1428 inc/toolbox.class.php:2117
 msgid "March"
 msgstr "3月"
 
-#: inc/project.class.php:1428 inc/toolbox.class.php:2135
+#: inc/project.class.php:1428 inc/toolbox.class.php:2118
 msgid "April"
 msgstr "4月"
 
-#: inc/project.class.php:1428 inc/toolbox.class.php:2136
+#: inc/project.class.php:1428 inc/toolbox.class.php:2119
 msgid "May"
 msgstr "5月"
 
-#: inc/project.class.php:1429 inc/toolbox.class.php:2137
+#: inc/project.class.php:1429 inc/toolbox.class.php:2120
 msgid "June"
 msgstr "6月"
 
-#: inc/project.class.php:1429 inc/toolbox.class.php:2138
+#: inc/project.class.php:1429 inc/toolbox.class.php:2121
 msgid "July"
 msgstr "7月"
 
-#: inc/project.class.php:1429 inc/toolbox.class.php:2139
+#: inc/project.class.php:1429 inc/toolbox.class.php:2122
 msgid "August"
 msgstr "8月"
 
-#: inc/project.class.php:1429 inc/toolbox.class.php:2140
+#: inc/project.class.php:1429 inc/toolbox.class.php:2123
 msgid "September"
 msgstr "9月"
 
-#: inc/project.class.php:1430 inc/toolbox.class.php:2141
+#: inc/project.class.php:1430 inc/toolbox.class.php:2124
 msgid "October"
 msgstr "10月"
 
-#: inc/project.class.php:1430 inc/toolbox.class.php:2142
+#: inc/project.class.php:1430 inc/toolbox.class.php:2125
 msgid "November"
 msgstr "11月"
 
-#: inc/project.class.php:1430 inc/toolbox.class.php:2143
+#: inc/project.class.php:1430 inc/toolbox.class.php:2126
 msgid "December"
 msgstr "12月"
 
 #: inc/project.class.php:1432 inc/reservation.class.php:533
-#: inc/toolbox.class.php:2118
+#: inc/toolbox.class.php:2101
 msgid "Sunday"
 msgstr "星期天"
 
 #: inc/project.class.php:1432 inc/reservation.class.php:527
-#: inc/toolbox.class.php:2119
+#: inc/toolbox.class.php:2102
 msgid "Monday"
 msgstr "星期一"
 
 #: inc/project.class.php:1433 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2120
+#: inc/toolbox.class.php:2103
 msgid "Tuesday"
 msgstr "星期二"
 
 #: inc/project.class.php:1433 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2121
+#: inc/toolbox.class.php:2104
 msgid "Wednesday"
 msgstr "星期三"
 
 #: inc/project.class.php:1434 inc/reservation.class.php:530
-#: inc/toolbox.class.php:2122
+#: inc/toolbox.class.php:2105
 msgid "Thursday"
 msgstr "星期四"
 
 #: inc/project.class.php:1434 inc/reservation.class.php:531
-#: inc/toolbox.class.php:2123
+#: inc/toolbox.class.php:2106
 msgid "Friday"
 msgstr "星期五"
 
 #: inc/project.class.php:1435 inc/reservation.class.php:532
-#: inc/toolbox.class.php:2124
+#: inc/toolbox.class.php:2107
 msgid "Saturday"
 msgstr "星期六"
 
@@ -14996,30 +15010,30 @@ msgstr[0] ""
 msgid "Update (actor)"
 msgstr ""
 
-#: inc/projecttask.class.php:540 inc/projecttask.class.php:881
+#: inc/projecttask.class.php:540 inc/projecttask.class.php:886
 #: inc/projecttasktemplate.class.php:74 inc/projecttasktemplate.class.php:141
 msgid "Milestone"
 msgstr ""
 
-#: inc/projecttask.class.php:807 inc/rssfeed.class.php:346
+#: inc/projecttask.class.php:812 inc/rssfeed.class.php:346
 msgid "Creator"
 msgstr "作者"
 
-#: inc/projecttask.class.php:972
+#: inc/projecttask.class.php:977
 msgctxt "button"
 msgid "Add a task"
 msgstr ""
 
-#: inc/projecttask.class.php:984
+#: inc/projecttask.class.php:989
 msgid "Create a sub task from this task of project"
 msgstr ""
 
-#: inc/projecttask.class.php:1567
+#: inc/projecttask.class.php:1572
 #, php-format
 msgid "Start at %s"
 msgstr "开始与 %s"
 
-#: inc/projecttask.class.php:1572
+#: inc/projecttask.class.php:1577
 #, php-format
 msgid "End at %s"
 msgstr "结束于 %s"
@@ -15127,7 +15141,7 @@ msgid "Planning end date"
 msgstr "计划结束日期"
 
 #: inc/reminder.class.php:524 inc/reminder.class.php:569
-#: inc/rssfeed.class.php:524 inc/ticket.class.php:4977
+#: inc/rssfeed.class.php:524 inc/ticket.class.php:4992
 msgid "Without title"
 msgstr "没有标题"
 
@@ -15372,7 +15386,7 @@ msgid "Use"
 msgstr "使用"
 
 #. TRANS: short for : Assign a ticket
-#: inc/ruleaction.class.php:395 inc/ticket.class.php:6457
+#: inc/ruleaction.class.php:395 inc/ticket.class.php:6472
 msgid "Assign"
 msgstr "分配"
 
@@ -15581,26 +15595,26 @@ msgstr "本地规则: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "规则适用于子实体"
 
-#: inc/rulecriteria.class.php:514 inc/search.class.php:5579
-#: inc/search.class.php:5615 inc/search.class.php:5627
-#: inc/search.class.php:5633 inc/search.class.php:5638
-#: inc/search.class.php:5645 inc/search.class.php:5663
-#: inc/search.class.php:5670
+#: inc/rulecriteria.class.php:514 inc/search.class.php:5586
+#: inc/search.class.php:5622 inc/search.class.php:5634
+#: inc/search.class.php:5640 inc/search.class.php:5645
+#: inc/search.class.php:5652 inc/search.class.php:5670
+#: inc/search.class.php:5677
 msgid "is"
 msgstr "是"
 
-#: inc/rulecriteria.class.php:515 inc/search.class.php:5583
-#: inc/search.class.php:5616 inc/search.class.php:5628
-#: inc/search.class.php:5634 inc/search.class.php:5639
-#: inc/search.class.php:5646 inc/search.class.php:5664
-#: inc/search.class.php:5671
+#: inc/rulecriteria.class.php:515 inc/search.class.php:5590
+#: inc/search.class.php:5623 inc/search.class.php:5635
+#: inc/search.class.php:5641 inc/search.class.php:5646
+#: inc/search.class.php:5653 inc/search.class.php:5671
+#: inc/search.class.php:5678
 msgid "is not"
 msgstr "不是"
 
-#: inc/rulecriteria.class.php:516 inc/search.class.php:5562
-#: inc/search.class.php:5587 inc/search.class.php:5614
-#: inc/search.class.php:5629 inc/search.class.php:5649
-#: inc/search.class.php:5669
+#: inc/rulecriteria.class.php:516 inc/search.class.php:5569
+#: inc/search.class.php:5594 inc/search.class.php:5621
+#: inc/search.class.php:5636 inc/search.class.php:5656
+#: inc/search.class.php:5676
 msgid "contains"
 msgstr "包含"
 
@@ -15633,14 +15647,14 @@ msgid "does not exist"
 msgstr "不存在"
 
 #: inc/rulecriteria.class.php:540 inc/search.class.php:1644
-#: inc/search.class.php:1725 inc/search.class.php:5591
-#: inc/search.class.php:5678
+#: inc/search.class.php:1725 inc/search.class.php:5598
+#: inc/search.class.php:5685
 msgid "under"
 msgstr "在"
 
 #: inc/rulecriteria.class.php:541 inc/search.class.php:1649
-#: inc/search.class.php:1731 inc/search.class.php:5595
-#: inc/search.class.php:5679
+#: inc/search.class.php:1731 inc/search.class.php:5602
+#: inc/search.class.php:5686
 msgid "not under"
 msgstr "不在"
 
@@ -16221,11 +16235,11 @@ msgstr ""
 msgid "OR NOT"
 msgstr ""
 
-#: inc/search.class.php:5599 inc/search.class.php:5647
+#: inc/search.class.php:5606 inc/search.class.php:5654
 msgid "before"
 msgstr "之前"
 
-#: inc/search.class.php:5603 inc/search.class.php:5648
+#: inc/search.class.php:5610 inc/search.class.php:5655
 msgid "after"
 msgstr "之后"
 
@@ -16598,405 +16612,411 @@ msgstr ""
 msgid "No generated survey"
 msgstr "没有生成的调查"
 
-#: inc/ticket.class.php:1228 inc/ticket.class.php:2026
+#: inc/ticket.class.php:1242 inc/ticket.class.php:2040
 msgid "Unknown ticket"
 msgstr "未知的工作单"
 
-#: inc/ticket.class.php:1842
+#: inc/ticket.class.php:1856
 #, php-format
 msgid "Invalid email address %s"
 msgstr ""
 
-#: inc/ticket.class.php:2270
+#: inc/ticket.class.php:2284
 #, php-format
 msgid "%1$s updates the item %2$s"
 msgstr "%1$s 更新此项目 %2$s"
 
-#: inc/ticket.class.php:2554 inc/ticketfollowup.class.php:903
+#: inc/ticket.class.php:2569 inc/ticketfollowup.class.php:911
 msgid "Add a new followup"
 msgstr "添加新的后续追踪"
 
-#: inc/ticket.class.php:2563 inc/ticket.class.php:4795
+#: inc/ticket.class.php:2578 inc/ticket.class.php:4810
 #: inc/tickettemplate.class.php:269
 msgid "Approval request"
 msgstr "审批申请"
 
-#: inc/ticket.class.php:2580
+#: inc/ticket.class.php:2595
 msgctxt "button"
 msgid "Link tickets"
 msgstr "链接工作单"
 
-#: inc/ticket.class.php:2618
+#: inc/ticket.class.php:2633
 msgid "Time to own + Progress"
 msgstr "保留+进展时间"
 
-#: inc/ticket.class.php:2628
+#: inc/ticket.class.php:2643
 msgid "Time to own exceedeed"
 msgstr "保留超时时间"
 
-#: inc/ticket.class.php:2656
+#: inc/ticket.class.php:2671
 msgid "Internal time to resolve + Progress"
 msgstr ""
 
-#: inc/ticket.class.php:2666
+#: inc/ticket.class.php:2681
 msgid "Internal time to resolve exceedeed"
 msgstr ""
 
-#: inc/ticket.class.php:2692
+#: inc/ticket.class.php:2707
 msgid "Internal time to own + Progress"
 msgstr ""
 
-#: inc/ticket.class.php:2702
+#: inc/ticket.class.php:2717
 msgid "Internal time to own exceedeed"
 msgstr ""
 
-#: inc/ticket.class.php:2952
+#: inc/ticket.class.php:2967
 msgid "Response date"
 msgstr "回应日期"
 
-#: inc/ticket.class.php:3062
+#: inc/ticket.class.php:3077
 msgid "Private followup"
 msgstr "私人后续追踪"
 
-#: inc/ticket.class.php:3099
+#: inc/ticket.class.php:3114
 msgid "Take into account time"
 msgstr "考虑到的时间"
 
-#: inc/ticket.class.php:3116
+#: inc/ticket.class.php:3131
 msgid "All linked tickets"
 msgstr "所有链接的工作单"
 
-#: inc/ticket.class.php:3130
+#: inc/ticket.class.php:3145
 msgid "Duplicated tickets"
 msgstr "重复的工作单"
 
-#: inc/ticket.class.php:3145
+#: inc/ticket.class.php:3160
 msgid "Number of all linked tickets"
 msgstr "所有链接工作单的数量"
 
-#: inc/ticket.class.php:3158
+#: inc/ticket.class.php:3173
 msgid "Number of duplicated tickets"
 msgstr "重复工作单的数量"
 
-#: inc/ticket.class.php:3173
+#: inc/ticket.class.php:3188
 msgid "Parent tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3196
+#: inc/ticket.class.php:3211
 msgid "Child tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3218
+#: inc/ticket.class.php:3233
 msgid "Number of sons tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3234
+#: inc/ticket.class.php:3249
 msgid "Number of parent tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3256
+#: inc/ticket.class.php:3271
 msgid "Problems"
 msgstr "问题"
 
-#: inc/ticket.class.php:3581
+#: inc/ticket.class.php:3596
 msgid "Tickets awaiting approval"
 msgstr "待审批工作单"
 
-#: inc/ticket.class.php:3675
+#: inc/ticket.class.php:3690
 msgid "This ticket concerns me"
 msgstr "与我有关的工作单"
 
-#: inc/ticket.class.php:3697 inc/ticket.class.php:3727
+#: inc/ticket.class.php:3712 inc/ticket.class.php:3742
 msgid "Check your personnal information"
 msgstr "检查您的个人信息"
 
-#: inc/ticket.class.php:3812
+#: inc/ticket.class.php:3827
 msgid "Describe the incident or request"
 msgstr "描述您的事件或请求"
 
-#: inc/ticket.class.php:3865
+#: inc/ticket.class.php:3880
 msgid "Inform me about the actions taken"
 msgstr "采取的行动都通知我"
 
-#: inc/ticket.class.php:4007
+#: inc/ticket.class.php:4022
 msgid "Submit message"
 msgstr "发送消息"
 
-#: inc/ticket.class.php:4506
+#: inc/ticket.class.php:4521
 #, php-format
 msgid "The ticket will be added in the entity %s"
 msgstr "工作单将被添加到实体 %s"
 
-#: inc/ticket.class.php:4633
+#: inc/ticket.class.php:4648
 msgid "Close date"
 msgstr "结案日期"
 
-#: inc/ticket.class.php:4750
+#: inc/ticket.class.php:4765
 msgid "Reopen"
 msgstr ""
 
-#: inc/ticket.class.php:5078
+#: inc/ticket.class.php:5093
 #, php-format
 msgid "File (%s)"
 msgstr "文件 (%s)"
 
-#: inc/ticket.class.php:5094
+#: inc/ticket.class.php:5109
 msgid "Default documents:"
 msgstr ""
 
-#: inc/ticket.class.php:5375 inc/ticket.class.php:5547
+#: inc/ticket.class.php:5390 inc/ticket.class.php:5562
 msgid "Your tickets to close"
 msgstr "您待结案的工作单"
 
-#: inc/ticket.class.php:5391 inc/ticket.class.php:5458
+#: inc/ticket.class.php:5406 inc/ticket.class.php:5473
 msgid "Tickets on pending status"
 msgstr "待定状态中的工作单"
 
-#: inc/ticket.class.php:5407 inc/ticket.class.php:5474
+#: inc/ticket.class.php:5422 inc/ticket.class.php:5489
 msgid "Tickets to be processed"
 msgstr "需处理的工作单"
 
-#: inc/ticket.class.php:5423 inc/ticket.class.php:5563
+#: inc/ticket.class.php:5438 inc/ticket.class.php:5578
 msgid "Your observed tickets"
 msgstr "您关注的票单"
 
-#: inc/ticket.class.php:5440 inc/ticket.class.php:5614
+#: inc/ticket.class.php:5455 inc/ticket.class.php:5629
 msgid "Your tickets in progress"
 msgstr "您进行中的工作单"
 
-#: inc/ticket.class.php:5501
+#: inc/ticket.class.php:5516
 msgid "Your tickets to validate"
 msgstr "您待确认的工作单"
 
-#: inc/ticket.class.php:5518
+#: inc/ticket.class.php:5533
 msgid "Your rejected tickets"
 msgstr "您被拒绝的工作单"
 
-#: inc/ticket.class.php:5725
+#: inc/ticket.class.php:5740
 msgid "Ticket followup"
 msgstr "工作单后续追踪"
 
 #. TRANS: %d is the number of new tickets
-#: inc/ticket.class.php:5777
+#: inc/ticket.class.php:5792
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d 新工作单"
 
-#: inc/ticket.class.php:5793 inc/ticket.class.php:5981
-#: inc/ticket.class.php:6043
+#: inc/ticket.class.php:5808 inc/ticket.class.php:5996
+#: inc/ticket.class.php:6058
 msgid "No ticket found."
 msgstr "找不到工作单"
 
-#: inc/ticket.class.php:5877
+#: inc/ticket.class.php:5892
 msgid "Last tickets"
 msgstr "最近的工作单"
 
-#: inc/ticket.class.php:5955 inc/ticket.class.php:5991
+#: inc/ticket.class.php:5970 inc/ticket.class.php:6006
 msgid "New ticket for this item..."
 msgstr "为此项目新建工作单"
 
-#: inc/ticket.class.php:5970
+#: inc/ticket.class.php:5985
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "最近 %d 工作单"
 
-#: inc/ticket.class.php:5976
+#: inc/ticket.class.php:5991
 msgid "You don't have right to see all tickets"
 msgstr "您无权访问所有案例。"
 
-#: inc/ticket.class.php:6033
+#: inc/ticket.class.php:6048
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "链接到项目的工作单"
 
-#: inc/ticket.class.php:6144
+#: inc/ticket.class.php:6159
 msgid "No ticket in progress."
 msgstr "没有正在处理的工作单"
 
-#: inc/ticket.class.php:6201
+#: inc/ticket.class.php:6216
 msgid "Assign equipment"
 msgstr "分配装备"
 
-#: inc/ticket.class.php:6227
+#: inc/ticket.class.php:6242
 msgid "Automatic tickets closing"
 msgstr "工作单自动结案"
 
-#: inc/ticket.class.php:6233
+#: inc/ticket.class.php:6248
 msgid "Generation of satisfaction surveys"
 msgstr "生成满意度调查"
 
-#: inc/ticket.class.php:6447
+#: inc/ticket.class.php:6462
 msgid "See my ticket"
 msgstr ""
 
 #. TRANS: short for : See tickets created by my groups
-#: inc/ticket.class.php:6449
+#: inc/ticket.class.php:6464
 msgid "See group ticket"
 msgstr ""
 
-#: inc/ticket.class.php:6450
+#: inc/ticket.class.php:6465
 msgid "See tickets created by my groups"
 msgstr "查看我的群组创建的工作单"
 
-#: inc/ticket.class.php:6452
+#: inc/ticket.class.php:6467
 msgid "See all tickets"
 msgstr "查看所有工作单"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: inc/ticket.class.php:6454
+#: inc/ticket.class.php:6469
 msgid "See assigned"
 msgstr ""
 
-#: inc/ticket.class.php:6455
+#: inc/ticket.class.php:6470
 msgid "See assigned tickets"
 msgstr ""
 
-#: inc/ticket.class.php:6458
+#: inc/ticket.class.php:6473
 msgid "Assign a ticket"
 msgstr "分配工作单"
 
 #. TRANS: short for : Steal a ticket
-#: inc/ticket.class.php:6460
+#: inc/ticket.class.php:6475
 msgid "Steal"
 msgstr ""
 
-#: inc/ticket.class.php:6461
+#: inc/ticket.class.php:6476
 msgid "Steal a ticket"
 msgstr "窃取工作单"
 
 #. TRANS: short for : To be in charge of a ticket
-#: inc/ticket.class.php:6463
+#: inc/ticket.class.php:6478
 msgid "Beeing in charge"
 msgstr ""
 
-#: inc/ticket.class.php:6464
+#: inc/ticket.class.php:6479
 msgid "To be in charge of a ticket"
 msgstr "接手负责工作单"
 
-#: inc/ticket.class.php:6465
+#: inc/ticket.class.php:6480
 msgid "Change the priority"
 msgstr "改变优先级"
 
-#: inc/ticket.class.php:6466
+#: inc/ticket.class.php:6481
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr ""
 
-#: inc/ticket.class.php:6467
+#: inc/ticket.class.php:6482
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
 
-#: inc/ticket.class.php:6970
+#: inc/ticket.class.php:6985
 #, php-format
 msgid "Last edited on %1$s by %2$s"
 msgstr ""
 
-#: inc/ticket.class.php:7092
-msgid "Ticket recall"
+#: inc/ticket.class.php:7107
+#, php-format
+msgid "Ticket# %s description"
 msgstr ""
 
-#: inc/ticket.class.php:7158
+#: inc/ticket.class.php:7173
 msgid "Actions historical"
 msgstr ""
 
-#: inc/ticket.class.php:7171
+#: inc/ticket.class.php:7186
 msgid "Timeline filter"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:328
+#: inc/ticketfollowup.class.php:336
 msgid "You can't add a followup without description"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:358
+#: inc/ticketfollowup.class.php:366
 msgid "Solution approved"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:372 inc/ticketfollowup.class.php:644
+#: inc/ticketfollowup.class.php:380 inc/ticketfollowup.class.php:652
 msgid "If you want to reopen the ticket, you must specify a reason"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:376
+#: inc/ticketfollowup.class.php:384
 msgid "If you reject the solution, you must specify a reason"
 msgstr "如果您拒绝此解决方案，您必须说明原因"
 
-#: inc/ticketfollowup.class.php:543 inc/ticketfollowup.class.php:702
+#: inc/ticketfollowup.class.php:551 inc/ticketfollowup.class.php:710
 msgid "Source of followup"
 msgstr "后续追踪源"
 
-#: inc/ticketfollowup.class.php:901
+#: inc/ticketfollowup.class.php:909
 msgid "Reopen the ticket"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:913
+#: inc/ticketfollowup.class.php:921
 msgid "No followup for this ticket."
 msgstr "这个工作单没有后续追踪"
 
-#: inc/ticketfollowup.class.php:927
+#: inc/ticketfollowup.class.php:935
 msgid "This week"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:929
+#: inc/ticketfollowup.class.php:937
 msgid "Last week"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:931
+#: inc/ticketfollowup.class.php:939
 msgid "This month"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:933
+#: inc/ticketfollowup.class.php:941
 msgid "Last month"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:935
+#: inc/ticketfollowup.class.php:943
 msgid "Before the last month"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1117
+#: inc/ticketfollowup.class.php:998
+#, php-format
+msgid "Created by %1$s on %2$s"
+msgstr ""
+
+#: inc/ticketfollowup.class.php:1125
 msgid "Approval of the solution"
 msgstr "解决方案的审批"
 
-#: inc/ticketfollowup.class.php:1130
+#: inc/ticketfollowup.class.php:1138
 msgid "Approve the solution"
 msgstr "审批解决方案"
 
-#: inc/ticketfollowup.class.php:1134
+#: inc/ticketfollowup.class.php:1142
 msgid "Refuse the solution"
 msgstr "拒绝解决方案"
 
-#: inc/ticketfollowup.class.php:1209 inc/tickettask.class.php:244
+#: inc/ticketfollowup.class.php:1217 inc/tickettask.class.php:244
 msgid "Update all"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1210
+#: inc/ticketfollowup.class.php:1218
 msgid "Add to all tickets"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1211 inc/tickettask.class.php:246
+#: inc/ticketfollowup.class.php:1219 inc/tickettask.class.php:246
 msgid "See private ones"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1215
+#: inc/ticketfollowup.class.php:1223
 msgid "Add followup (associated groups)"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1216
+#: inc/ticketfollowup.class.php:1224
 msgid "Add a followup to tickets of associated groups"
 msgstr "为关联群组添加后续追踪"
 
-#: inc/ticketfollowup.class.php:1217
+#: inc/ticketfollowup.class.php:1225
 msgid "Update followups (author)"
 msgstr "更新后续追踪(作者)"
 
-#: inc/ticketfollowup.class.php:1218
+#: inc/ticketfollowup.class.php:1226
 msgid "Add followup (requester)"
 msgstr ""
 
-#: inc/ticketfollowup.class.php:1219
+#: inc/ticketfollowup.class.php:1227
 msgid "Add a followup to tickets (requester)"
 msgstr "添加后续追踪到工作单（请求者）"
 
-#: inc/ticketfollowup.class.php:1220 inc/tickettask.class.php:249
+#: inc/ticketfollowup.class.php:1228 inc/tickettask.class.php:249
 msgid "See public ones"
 msgstr ""
 
@@ -17179,186 +17199,180 @@ msgstr "您必须在php.ini中禁用Session_use_trans_id选项"
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr "Ok-sessions正常工作（trans_id没有问题）-完美！"
 
-#: inc/toolbox.class.php:951
-msgid ""
-"The mcrypt extension is deprecated and should not be used. Please disable "
-"it."
-msgstr ""
-
-#: inc/toolbox.class.php:958
+#: inc/toolbox.class.php:947
 msgid "Allocated memory test"
 msgstr "测试内存分配"
 
-#: inc/toolbox.class.php:966 inc/toolbox.class.php:967
+#: inc/toolbox.class.php:955 inc/toolbox.class.php:956
 msgid "Unlimited memory - Perfect!"
 msgstr "没有限制内存-完美！"
 
-#: inc/toolbox.class.php:973
+#: inc/toolbox.class.php:962
 msgid "Allocated memory"
 msgstr "内存分配"
 
-#: inc/toolbox.class.php:976
+#: inc/toolbox.class.php:965
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr ""
 
-#: inc/toolbox.class.php:977
+#: inc/toolbox.class.php:966
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "php.ini文件中尝试提高 memory_limit 参数"
 
-#: inc/toolbox.class.php:984 inc/toolbox.class.php:985
+#: inc/toolbox.class.php:973 inc/toolbox.class.php:974
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "内存分配 > 64MB - 完美！"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1027
+#: inc/toolbox.class.php:1016
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "SELinux 模式是 %s"
 
-#: inc/toolbox.class.php:1053
+#: inc/toolbox.class.php:1042
 msgid "Some features may require this to be on"
 msgstr ""
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1060
+#: inc/toolbox.class.php:1049
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "%s 的 SELinux 布尔配置 "
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1126
+#: inc/toolbox.class.php:1115
 msgid "o"
 msgstr "o"
 
-#: inc/toolbox.class.php:1126
+#: inc/toolbox.class.php:1115
 msgid "Kio"
 msgstr "Kio"
 
-#: inc/toolbox.class.php:1126
+#: inc/toolbox.class.php:1115
 msgid "Gio"
 msgstr "Gio"
 
-#: inc/toolbox.class.php:1126
+#: inc/toolbox.class.php:1115
 msgid "Tio"
 msgstr "Tio"
 
-#: inc/toolbox.class.php:1334 inc/toolbox.class.php:1336
-#: inc/toolbox.class.php:1341 inc/toolbox.class.php:1343
+#: inc/toolbox.class.php:1323 inc/toolbox.class.php:1325
+#: inc/toolbox.class.php:1330 inc/toolbox.class.php:1332
 msgid "You have the latest available version"
 msgstr "您拥有最新的可用版本"
 
-#: inc/toolbox.class.php:1614
+#: inc/toolbox.class.php:1597
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "连接失败，如果您使用代理，请配置它（%s）"
 
-#: inc/toolbox.class.php:1620
+#: inc/toolbox.class.php:1603
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "连接到代理服务器失败(%s)"
 
-#: inc/toolbox.class.php:1628
+#: inc/toolbox.class.php:1611
 msgid "No data available on the web site"
 msgstr "网站中没有任何可用数据。"
 
-#: inc/toolbox.class.php:1966
+#: inc/toolbox.class.php:1949
 msgid "Connection options"
 msgstr "连接选项"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1968
+#: inc/toolbox.class.php:1951
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1970
+#: inc/toolbox.class.php:1953
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1978
+#: inc/toolbox.class.php:1961
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1987
+#: inc/toolbox.class.php:1970
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1989
+#: inc/toolbox.class.php:1972
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2005
+#: inc/toolbox.class.php:1988
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2007
+#: inc/toolbox.class.php:1990
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2022
+#: inc/toolbox.class.php:2005
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2031
+#: inc/toolbox.class.php:2014
 msgid "SECURE"
 msgstr "安全"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2040
+#: inc/toolbox.class.php:2023
 msgid "DEBUG"
 msgstr "调试"
 
-#: inc/toolbox.class.php:2052
+#: inc/toolbox.class.php:2035
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "接受邮件目录（可选，通常是INBOX）"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2057
+#: inc/toolbox.class.php:2040
 msgid "Port (optional)"
 msgstr "端口(可选)"
 
-#: inc/toolbox.class.php:2333
+#: inc/toolbox.class.php:2316
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
 msgstr ""
 
-#: inc/toolbox.class.php:2339
+#: inc/toolbox.class.php:2322
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 msgstr ""
 
-#: inc/toolbox.class.php:2350
+#: inc/toolbox.class.php:2333
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
 
-#: inc/toolbox.class.php:2360
+#: inc/toolbox.class.php:2343
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr ""
 
-#: inc/toolbox.class.php:2367
+#: inc/toolbox.class.php:2350
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -17477,212 +17491,212 @@ msgstr ""
 msgid "You must define a default profile to create a new user"
 msgstr ""
 
-#: inc/user.class.php:531
+#: inc/user.class.php:541
 msgid "The login is not valid. Unable to add the user."
 msgstr ""
 
-#: inc/user.class.php:543
+#: inc/user.class.php:553
 msgid "Unable to add. The user already exists."
 msgstr "不能添加，该用户已经存在"
 
-#: inc/user.class.php:562 inc/user.class.php:760
+#: inc/user.class.php:572 inc/user.class.php:770
 msgid "Error: the two passwords do not match"
 msgstr "错误：两次密码不一致"
 
-#: inc/user.class.php:723
+#: inc/user.class.php:733
 msgid "The file is not an image file."
 msgstr ""
 
-#: inc/user.class.php:1829
+#: inc/user.class.php:1842
 msgid "Add user..."
 msgstr "添加用户..."
 
-#: inc/user.class.php:1835
+#: inc/user.class.php:1848
 msgid "... From an external source"
 msgstr "… 从外部来源"
 
-#: inc/user.class.php:1965 inc/user.class.php:2300 inc/user.class.php:4008
+#: inc/user.class.php:1998 inc/user.class.php:2347 inc/user.class.php:4074
 msgid "Password confirmation"
 msgstr "密码确认"
 
-#: inc/user.class.php:1988
+#: inc/user.class.php:2021
 msgid "Valid since"
 msgstr ""
 
-#: inc/user.class.php:1994
+#: inc/user.class.php:2027
 msgid "Valid until"
 msgstr ""
 
 #. TRANS: %s is the date of last sync
-#: inc/user.class.php:2013
+#: inc/user.class.php:2046
 #, php-format
 msgid "Last synchronization on %s"
 msgstr "上次同步于%s"
 
-#: inc/user.class.php:2018 inc/user.class.php:2818 inc/user.class.php:4216
+#: inc/user.class.php:2051 inc/user.class.php:2879 inc/user.class.php:4282
 msgid "User DN"
 msgstr "用户 DN"
 
-#: inc/user.class.php:2021
+#: inc/user.class.php:2054
 msgid "User missing in LDAP directory"
 msgstr ""
 
-#: inc/user.class.php:2100 inc/user.class.php:2360 inc/user.class.php:2898
+#: inc/user.class.php:2133 inc/user.class.php:2407 inc/user.class.php:2959
 msgid "Default entity"
 msgstr "默认实体"
 
-#: inc/user.class.php:2110
+#: inc/user.class.php:2143
 #, php-format
 msgid "Last login on %s"
 msgstr "上次登录 于 %s"
 
-#: inc/user.class.php:2383
+#: inc/user.class.php:2430
 msgid "Use GLPI in mode"
 msgstr "GLPI的运行模式"
 
-#: inc/user.class.php:2384
+#: inc/user.class.php:2431
 msgid "Normal"
 msgstr "正常"
 
-#: inc/user.class.php:2431
+#: inc/user.class.php:2478
 msgid "Unable to update login. A user already exists."
 msgstr "不能更新登录信息。用户已经存在"
 
-#: inc/user.class.php:2439
+#: inc/user.class.php:2486
 msgid "The login is not valid. Unable to update login."
 msgstr ""
 
-#: inc/user.class.php:2500
+#: inc/user.class.php:2547
 msgid "Dissociate from a group"
 msgstr ""
 
-#: inc/user.class.php:2502
+#: inc/user.class.php:2549
 msgid "Associate to a profile"
 msgstr "关联到档案"
 
-#: inc/user.class.php:2504
+#: inc/user.class.php:2551
 msgid "Dissociate from a profile"
 msgstr ""
 
-#: inc/user.class.php:2506
+#: inc/user.class.php:2553
 msgid "Move to group"
 msgstr ""
 
-#: inc/user.class.php:2511
+#: inc/user.class.php:2558
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "更改验证方法"
 
-#: inc/user.class.php:2715
+#: inc/user.class.php:2776
 msgid "Last login"
 msgstr "上次登录"
 
-#: inc/user.class.php:2738
+#: inc/user.class.php:2799
 msgid "LDAP directory for authentication"
 msgstr "用LDAP目录做验证"
 
-#: inc/user.class.php:2751
+#: inc/user.class.php:2812
 msgid "Email server for authentication"
 msgstr "Email服务器做验证"
 
-#: inc/user.class.php:2836
+#: inc/user.class.php:2897
 msgid "Last synchronization"
 msgstr "上次同步"
 
-#: inc/user.class.php:2844
+#: inc/user.class.php:2905
 msgid "Deleted user in LDAP directory"
 msgstr "在LDAP目录中删除用户"
 
-#: inc/user.class.php:2922
+#: inc/user.class.php:2983
 msgid "Number of tickets as requester"
 msgstr "请求的工作单数量"
 
-#: inc/user.class.php:2942
+#: inc/user.class.php:3003
 msgid "Number of written tickets"
 msgstr "提交的工作单数量"
 
-#: inc/user.class.php:2957
+#: inc/user.class.php:3018
 msgid "Number of assigned tickets"
 msgstr ""
 
-#: inc/user.class.php:3492 inc/user.class.php:3494 inc/user.class.php:3499
+#: inc/user.class.php:3558 inc/user.class.php:3560 inc/user.class.php:3565
 msgid "Import a user"
 msgstr "导入一个用户"
 
-#: inc/user.class.php:3524
+#: inc/user.class.php:3590
 msgid "Automatically add a user of an external source"
 msgstr "自动添加一个外部来源的用户"
 
-#: inc/user.class.php:3531
+#: inc/user.class.php:3597
 msgid "Import from directories"
 msgstr "从目录导入"
 
-#: inc/user.class.php:3537
+#: inc/user.class.php:3603
 msgid "Import from other sources"
 msgstr "从其他来源导入"
 
-#: inc/user.class.php:3576
+#: inc/user.class.php:3642
 msgid "Update authentification method to"
 msgstr "更新验证方法为"
 
-#: inc/user.class.php:3997
+#: inc/user.class.php:4063
 msgid "Please confirm your email address and enter your new password."
 msgstr "请确认电子邮件地址并输入新密码"
 
-#: inc/user.class.php:4026 inc/user.class.php:4095
+#: inc/user.class.php:4092 inc/user.class.php:4161
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr "您的密码重置请求已过期或无效，请重新提交。"
 
-#: inc/user.class.php:4045
+#: inc/user.class.php:4111
 msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
 msgstr "请输入您的邮箱地址，将会发送邮件给您，您将可以选择一个新密码、"
 
-#: inc/user.class.php:4099 inc/user.class.php:4193
+#: inc/user.class.php:4165 inc/user.class.php:4259
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
 msgstr "身份验证方法配置不允许您更改密码"
 
-#: inc/user.class.php:4103 inc/user.class.php:4197
+#: inc/user.class.php:4169 inc/user.class.php:4263
 msgid "Email address not found."
 msgstr "未发现邮件地址"
 
-#: inc/user.class.php:4220
+#: inc/user.class.php:4286
 msgid "User information"
 msgstr "用户信息"
 
-#: inc/user.class.php:4238
+#: inc/user.class.php:4304
 msgid "Connection failed"
 msgstr "连接失败"
 
 #. TRANS: short for : Add users from an external source
-#: inc/user.class.php:4465
+#: inc/user.class.php:4531
 msgid "Add external"
 msgstr ""
 
-#: inc/user.class.php:4466
+#: inc/user.class.php:4532
 msgid "Add users from an external source"
 msgstr "从外部数据源中添加用户"
 
 #. TRANS: short for : Read method for user authentication and synchronization
-#: inc/user.class.php:4468
+#: inc/user.class.php:4534
 msgid "Read auth"
 msgstr ""
 
-#: inc/user.class.php:4469
+#: inc/user.class.php:4535
 msgid "Read user authentication and synchronization method"
 msgstr ""
 
 #. TRANS: short for : Update method for user authentication and
 #. synchronization
-#: inc/user.class.php:4471
+#: inc/user.class.php:4537
 msgid "Update auth and sync"
 msgstr ""
 
-#: inc/user.class.php:4472
+#: inc/user.class.php:4538
 msgid "Update method for user authentication and synchronization"
 msgstr ""
 
