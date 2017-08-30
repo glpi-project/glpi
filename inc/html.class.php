@@ -3880,7 +3880,6 @@ class Html {
       }
 
       // init tinymce
-      Html::scriptStart();
       $js = "$(function() {
          tinyMCE.init({
             language: '$language',
