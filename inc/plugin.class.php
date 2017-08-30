@@ -274,12 +274,9 @@ class Plugin extends CommonDBTM {
          } else {
             // Check version
             if ($file_plugins[$plug]['version'] != $pluglist[$ID]['version']) {
-               $input       = $file_plugins[$plug];
-               $input['id'] = $ID;
                if ($pluglist[$ID]['version']) {
-                  $input['state'] = self::NOTUPDATED;
+                  $this->unactivate($ID);
                }
-               $this->update($input);
                $install_ok = false;
             }
          }
@@ -303,7 +300,6 @@ class Plugin extends CommonDBTM {
                $usage_ok = false;
             }
             if (!$usage_ok) {
-               $input = $file_plugins[$plug];
                $this->unactivate($ID);
             }
          }
@@ -891,6 +887,10 @@ class Plugin extends CommonDBTM {
                 WHERE `state` = ".self::ACTIVATED;
       $DB->query($query);
       $_SESSION['glpi_plugins'] = [];
+      // reset menu
+      if (isset($_SESSION['glpimenu'])) {
+         unset($_SESSION['glpimenu']);
+      }
    }
 
 
