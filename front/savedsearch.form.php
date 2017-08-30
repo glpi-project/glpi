@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
    $savedsearch->check(-1, CREATE, $_POST);
    if ($newID = $savedsearch->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($savedsearch->getFormURL()."?id=".$newID);
+         Html::redirect($savedsearch->getLinkURL());
       }
    }
    Html::back();

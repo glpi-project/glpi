@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s adds an alert'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($alert->getFormURL()."?id=".$newID);
+         Html::redirect($alert->getLinkURL());
       }
    }
    Html::back();

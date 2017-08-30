@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 
    if ($id = $track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($track->getFormURL()."?id=".$id);
+         Html::redirect($track->getLinkURL());
       }
    }
    Html::back();

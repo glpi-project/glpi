@@ -61,14 +61,14 @@ if (isset($_POST["add"])) {
          }
       }
       if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
-         Html::redirect($doc->getFormURL()."?id=".$newID);
+         Html::redirect($doc->getLinkURL());
       }
    } else if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
       // Not from item tab
       if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
-         Html::redirect($doc->getFormURL()."?id=".$newID);
+         Html::redirect($doc->getLinkURL());
       }
    }
 

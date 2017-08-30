@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
                   //TRANS: %1$s is the user login, %2$s is the name of the item to add
                   sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($budget->getFormURL()."?id=".$newID);
+         Html::redirect($budget->getLinkURL());
       }
    }
    Html::back();
