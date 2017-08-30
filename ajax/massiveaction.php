@@ -54,7 +54,7 @@ try {
 
 }
 
-echo "<div width='90%' class='center'><br>";
+echo "<div class='center massiveactions'>";
 Html::openMassiveActionsForm();
 $params = ['action' => '__VALUE__'];
 $input  = $ma->getInput();
