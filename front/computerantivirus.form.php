@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s adds an antivirus'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($antivirus->getFormURL()."?id=".$newID);
+         Html::redirect($antivirus->getLinkURL());
       }
    }
    Html::back();

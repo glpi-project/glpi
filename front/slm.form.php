@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "slms", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($slm->getFormURL()."?id=".$newID);
+         Html::redirect($slm->getLinkURL());
       }
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/slm.php");

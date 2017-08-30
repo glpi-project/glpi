@@ -54,7 +54,7 @@ if (isset($_POST["update"])) {
    if ($_POST["name"] != "") {
       if (($newID = $config_mail->add($_POST))
           && $_SESSION['glpibackcreated']) {
-         Html::redirect($config_mail->getFormURL()."?id=".$newID);
+         Html::redirect($config_mail->getLinkURL());
       }
    }
    Html::back();
@@ -78,3 +78,4 @@ Html::header(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "auth", "
 $config_mail->display(['id' => $_GET["id"]]);
 
 Html::footer();
+

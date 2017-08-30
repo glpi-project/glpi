@@ -60,7 +60,7 @@ if (isset($_POST["update"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($item->getFormURL()."?id=".$newID);
+         Html::redirect($item->getLinkURL());
       }
    }
    Html::back();
@@ -101,3 +101,4 @@ if (isset($_POST["update"])) {
    $item->display(['id' => $_GET["id"]]);
    Html::footer();
 }
+

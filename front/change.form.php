@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
               //TRANS: %1$s is the user login, %2$s is the name of the item
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($change->getFormURL()."?id=".$newID);
+      Html::redirect($change->getLinkURL());
    } else {
       Html::back();
    }

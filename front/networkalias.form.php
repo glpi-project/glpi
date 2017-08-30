@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, $alias->getType(), 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($alias->getFormURL()."?id=".$newID);
+         Html::redirect($alias->getLinkURL());
       }
    }
    Html::back();
@@ -98,3 +98,4 @@ if (isset($_GET['_in_modal'])) {
    $alias->display($_GET);
    Html::footer();
 }
+

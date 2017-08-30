@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "slas", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($sla->getFormURL()."?id=".$newID);
+         Html::redirect($sla->getLinkURL());
       }
    }
    Html::back();
@@ -82,3 +82,4 @@ if (isset($_POST["add"])) {
    $sla->display(['id' => $_GET["id"]]);
    Html::footer();
 }
+

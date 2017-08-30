@@ -71,7 +71,7 @@ if (isset($_GET['getvcard'])) {
       Event::log($newID, "users", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($user->getFormURL()."?id=".$newID);
+         Html::redirect($user->getLinkURL());
       }
    }
    Html::back();
