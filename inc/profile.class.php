@@ -2562,6 +2562,7 @@ class Profile extends CommonDBTM {
 
       $p['name']  = 'profiles_id';
       $p['value'] = '';
+      $p['rand']  = mt_rand();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2583,7 +2584,8 @@ class Profile extends CommonDBTM {
       }
       Dropdown::showFromArray($p['name'], $profiles,
                               ['value'               => $p['value'],
-                                    'display_emptychoice' => true]);
+                               'rand'                => $p['rand'],
+                               'display_emptychoice' => true]);
    }
 
 
