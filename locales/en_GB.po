@@ -15,8 +15,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"language/en_GB/)\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: apirest.php:48 apixmlrpc.php:47 inc/api.class.php:102
 msgid "API disabled"
