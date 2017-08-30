@@ -138,7 +138,7 @@ class DBmysqlIterator implements Iterator, Countable {
                   case 'LEFT JOIN' :
                   case 'INNER JOIN' :
                      if ($key == 'JOIN') {
-                        Toolbox::logDebug('"JOIN" is deprecated, please use "LEFT JOIN" instead.');
+                        Toolbox::deprecated('"JOIN" is deprecated, please use "LEFT JOIN" instead.');
                      }
                      if (is_array($val)) {
                         $jointype = ($key == 'INNER JOIN' ? 'INNER' : 'LEFT');

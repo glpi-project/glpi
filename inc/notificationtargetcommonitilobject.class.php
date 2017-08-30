@@ -1372,7 +1372,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
    **/
    function getLinkedUserByType($type) {
-      Toolbox::logDebug('getLinkedUserByType() method is deprecated');
+      Toolbox::deprecated('getLinkedUserByType() method is deprecated');
       $this->addLinkedUserByType($type);
    }
 
@@ -1386,7 +1386,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
    **/
    function getLinkedGroupByType($type) {
-      Toolbox::logDebug('getLinkedGroupByType() method is deprecated');
+      Toolbox::deprecated('getLinkedGroupByType() method is deprecated');
       $this->addLinkedGroupByType();
    }
 
@@ -1402,7 +1402,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getLinkedGroupWithoutSupervisorByType($type) {
-      Toolbox::logDebug('getLinkedGroupWithoutSupervisorByType() method is deprecated');
+      Toolbox::deprecated('getLinkedGroupWithoutSupervisorByType() method is deprecated');
       $this->addLinkedGroupWithoutSupervisorByType($type);
    }
 
@@ -1417,7 +1417,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getLinkedGroupSupervisorByType($type) {
-      Toolbox::logDebug('getLinkedGroupSupervisorByType() method is deprecated');
+      Toolbox::deprecated('getLinkedGroupSupervisorByType() method is deprecated');
       $this->addLinkedGroupSupervisorByType($type);
    }
 
@@ -1429,7 +1429,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getRecipientAddress() {
-      Toolbox::logDebug('getRecipientAddress() method is deprecated');
+      Toolbox::deprecated('getRecipientAddress() method is deprecated');
       return $this->addRecipientAddress();
    }
 
@@ -1439,7 +1439,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getOldAssignTechnicianAddress() {
-      Toolbox::logDebug('getOldAssignTechnicianAddress() method is deprecated');
+      Toolbox::deprecated('getOldAssignTechnicianAddress() method is deprecated');
       $this->addOldAssignTechnician();
    }
 
@@ -1453,7 +1453,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
    **/
    function getSupplierAddress($sendprivate = false) {
-      Toolbox::logDebug('getSupplierAddress() method is deprecated');
+      Toolbox::deprecated('getSupplierAddress() method is deprecated');
       $this->addSupplier($sendprivate);
    }
 
@@ -1467,7 +1467,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
    **/
    function getValidationApproverAddress($options = []) {
-      Toolbox::logDebug('getValidationApproverAddress() method is deprecated');
+      Toolbox::deprecated('getValidationApproverAddress() method is deprecated');
       $this->addValidationApprover($options);
    }
 
@@ -1479,7 +1479,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
    **/
    function getValidationRequesterAddress($options = []) {
-      Toolbox::logDebug('getValidationRequesterAddress() method is deprecated');
+      Toolbox::deprecated('getValidationRequesterAddress() method is deprecated');
       $this->addValidationRequester($options);
    }
 
@@ -1491,7 +1491,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getFollowupAuthor($options = []) {
-      Toolbox::logDebug('getFollowupAuthor() method is deprecated');
+      Toolbox::deprecated('getFollowupAuthor() method is deprecated');
       $this->addFollowupAuthor($options);
    }
 
@@ -1505,7 +1505,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getTaskAuthor($options = []) {
-      Toolbox::logDebug('getTaskAuthor() method is deprecated');
+      Toolbox::deprecated('getTaskAuthor() method is deprecated');
       $this->addTaskAuthor($options);
    }
 
@@ -1520,7 +1520,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getTaskAssignUser($options = []) {
-      Toolbox::logDebug('getTaskAssignUser() method is deprecated');
+      Toolbox::deprecated('getTaskAssignUser() method is deprecated');
       $this->addTaskAssignUser($options);
    }
 
@@ -1537,7 +1537,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return void
     */
    function getTaskAssignGroup($options = []) {
-      Toolbox::logDebug('getTaskAssignGroup() method is deprecated');
+      Toolbox::deprecated('getTaskAssignGroup() method is deprecated');
       $this->addTaskAssignGroup($options);
    }
 
@@ -1554,7 +1554,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @return array
     */
    function getDatasForObject(CommonDBTM $item, array $options, $simple = false) {
-      Toolbox::logDebug('getDatasForObject() method is deprecated');
+      Toolbox::deprecated('getDatasForObject() method is deprecated');
       return $this->getDataForObject($item, $options, $simple);
    }
 }

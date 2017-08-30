@@ -2447,7 +2447,7 @@ class Html {
    static function openArrowMassives($formname, $fixed = false, $ontop = false, $onright = false) {
       global $CFG_GLPI;
 
-      Toolbox::logDebug('openArrowMassives() method is deprecated');
+      Toolbox::deprecated('openArrowMassives() method is deprecated');
 
       if ($fixed) {
          echo "<table class='tab_glpi' width='950px'>";
@@ -2490,7 +2490,7 @@ class Html {
    **/
    static function closeArrowMassives($actions, $confirm = []) {
 
-      Toolbox::logDebug('closeArrowMassives() method is deprecated');
+      Toolbox::deprecated('closeArrowMassives() method is deprecated');
 
       if (count($actions)) {
          foreach ($actions as $name => $label) {

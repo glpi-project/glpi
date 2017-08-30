@@ -124,7 +124,7 @@ class NotificationTarget extends CommonDBChild {
       $this->options    = $options;
 
       if (method_exists($this, 'getNotificationTargets')) {
-         Toolbox::logDebug('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
+         Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
          $this->getNotificationTargets($this->entity);
       } else {
          $this->addNotificationTargets($this->entity);
@@ -132,7 +132,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->addAdditionalTargets($event);
       if (method_exists($this, 'getAdditionalTargets')) {
-         Toolbox::logDebug('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
+         Toolbox::deprecated('getAdditionalTargets() method is deprecated (' . get_called_class() . ')');
          $this->getAdditionalTargets();
       }
 
@@ -1063,7 +1063,7 @@ class NotificationTarget extends CommonDBChild {
                default :
                   //Maybe a target specific to a type
                   if (method_exists($this, 'getSpecificTargets')) {
-                     Toolbox::logDebug('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
+                     Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
                      $this->getSpecificTargets($data, $options);
                   } else {
                      $this->addSpecificTargets($data, $options);
@@ -1089,7 +1089,7 @@ class NotificationTarget extends CommonDBChild {
          default :
             //Maybe a target specific to a type
             if (method_exists($this, 'getSpecificTargets')) {
-               Toolbox::logDebug('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
+               Toolbox::deprecated('getSpecificTargets() method is deprecated (' . get_called_class() . ')');
                $this->getSpecificTargets($data, $options);
             } else {
                $this->addSpecificTargets($data, $options);
@@ -1155,7 +1155,7 @@ class NotificationTarget extends CommonDBChild {
       $this->addDataForTemplate($event, $options);
 
       if (method_exists($this, 'getDatasForTemplate')) {
-         Toolbox::logDebug('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
+         Toolbox::deprecated('getDatasForTemplate() method is deprecated (' . get_called_class() . ')');
          $this->getDatasForTemplate($event, $options);
       }
 
@@ -1407,7 +1407,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
     */
    function getItemAuthorAddress() {
-      Toolbox::logDebug('getItemAuthorAddress() method is deprecated');
+      Toolbox::deprecated('getItemAuthorAddress() method is deprecated');
       $this->addItemAuthor();
    }
 
@@ -1423,7 +1423,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getAddressesByGroup($manager, $group_id) {
-      Toolbox::logDebug('getAddressesByGroup() method is deprecated');
+      Toolbox::deprecated('getAddressesByGroup() method is deprecated');
       $this->addForGroup($manager, $group_id);
    }
 
@@ -1435,7 +1435,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
     */
    function getAdminAddress() {
-      Toolbox::logDebug('getAdminAddress() method is deprecated');
+      Toolbox::deprecated('getAdminAddress() method is deprecated');
       $this->addAdmin();
    }
 
@@ -1449,7 +1449,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemGroupAddress() {
-      Toolbox::logDebug('getItemGroupAddress() method is deprecated');
+      Toolbox::deprecated('getItemGroupAddress() method is deprecated');
       $this->addItemGroup();
    }
 
@@ -1463,7 +1463,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemGroupSupervisorAddress() {
-      Toolbox::logDebug('getItemGroupSupervisorAddress() method is deprecated');
+      Toolbox::deprecated('getItemGroupSupervisorAddress() method is deprecated');
       $this->addItemGroupSupervisor();
    }
 
@@ -1478,7 +1478,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemGroupWithoutSupervisorAddress() {
-      Toolbox::logDebug('getItemGroupWithoutSupervisorAddress() method is deprecated');
+      Toolbox::deprecated('getItemGroupWithoutSupervisorAddress() method is deprecated');
       $this->addItemGroupWithoutSupervisor();
    }
 
@@ -1490,7 +1490,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemGroupTechInChargeAddress() {
-      Toolbox::logDebug('getItemGroupTechInChargeAddress() method is deprecated');
+      Toolbox::deprecated('getItemGroupTechInChargeAddress() method is deprecated');
       $this->addItemTechnicianInCharge();
    }
 
@@ -1502,7 +1502,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemTechnicianInChargeAddress() {
-      Toolbox::logDebug('getItemTechnicianInChargeAddress() method is deprecated');
+      Toolbox::deprecated('getItemTechnicianInChargeAddress() method is deprecated');
       $this->addItemTechnicianInCharge();
    }
 
@@ -1514,7 +1514,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getItemOwnerAddress() {
-      Toolbox::logDebug('getItemOwnerAddress() method is deprecated');
+      Toolbox::deprecated('getItemOwnerAddress() method is deprecated');
       $this->addItemowner();
    }
 
@@ -1528,7 +1528,7 @@ class NotificationTarget extends CommonDBChild {
     * @return nothing
    **/
    function getUsersAddressesByProfile($profiles_id) {
-      Toolbox::logDebug('getUsersAddressesByProfile() method is deprecated');
+      Toolbox::deprecated('getUsersAddressesByProfile() method is deprecated');
       $this->addForProfile($profiles_id);
    }
 
@@ -1545,7 +1545,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getUserByField($field, $search_in_object = false) {
-      Toolbox::logDebug('getUserByField() method is deprecated');
+      Toolbox::deprecated('getUserByField() method is deprecated');
       $this->addUserByField($field, $search_in_object);
    }
 
@@ -1559,7 +1559,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void|false
    **/
    function addToAddressesList(array $data) {
-      Toolbox::logDebug('addToAddressesList() method is deprecated');
+      Toolbox::deprecated('addToAddressesList() method is deprecated');
       $this->addToRecipientsList($data);
    }
 
@@ -1575,7 +1575,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
    **/
    function getAddressesByTarget($data, $options = []) {
-      Toolbox::logDebug('getAddressesByTarget() method is deprecated');
+      Toolbox::deprecated('getAddressesByTarget() method is deprecated');
       $this->addForTarget($data, $options);
    }
 
@@ -1587,7 +1587,7 @@ class NotificationTarget extends CommonDBChild {
     * @return void
     */
    function getEntityAdminAddress() {
-      Toolbox::logDebug('getEntityAdminAddress() method is deprecated');
+      Toolbox::deprecated('getEntityAdminAddress() method is deprecated');
       $this->addEntityAdmin();
    }
 
@@ -1614,7 +1614,7 @@ class NotificationTarget extends CommonDBChild {
          * @return void
          */
          case 'getNotificationTargets':
-            Toolbox::logDebug('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
+            Toolbox::deprecated('getNotificationTargets() method is deprecated (' . get_called_class() . ')');
             call_user_func_array([$this, 'addNotificationTargets'], $arguments);
             break;
          /**
@@ -1628,7 +1628,7 @@ class NotificationTarget extends CommonDBChild {
          * @return void
          **/
          case 'getSpecificTargets':
-            Toolbox::logDebug('getSpecificTargets() method is deprecated');
+            Toolbox::deprecated('getSpecificTargets() method is deprecated');
             call_user_func_array([$this, 'addSpecificTargets'], $arguments);
             break;
          default:
@@ -1638,7 +1638,7 @@ class NotificationTarget extends CommonDBChild {
 
    public function __set($name, $value) {
       if ($name == 'datas') {
-         Toolbox::logDebug('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
+         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
          $this->data = $value;
       } else {
          $this->$name = $value;
@@ -1647,7 +1647,7 @@ class NotificationTarget extends CommonDBChild {
 
    public function &__get($name) {
       if ($name == 'datas') {
-         Toolbox::logDebug('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
+         Toolbox::deprecated('"datas" property has been renamed to "data" (' . get_called_class() . ')!');
          return $this->data;
       } else {
          return $this->$name;
