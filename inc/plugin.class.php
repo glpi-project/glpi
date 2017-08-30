@@ -1399,7 +1399,6 @@ class Plugin extends CommonDBTM {
     * @return Array containing plugin search options for given type
    **/
    static function getAddSearchOptions($itemtype) {
-      global $PLUGIN_HOOKS;
 
       $sopt = [];
       if (isset($_SESSION['glpi_plugins']) && count($_SESSION['glpi_plugins'])) {
@@ -1419,6 +1418,55 @@ class Plugin extends CommonDBTM {
       return $sopt;
    }
 
+
+   /**
+    * Get additional search options managed by plugins
+    *
+    * @param string $itemtype Item type
+    *
+    * @return array an *indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+   **/
+   static function getAddSearchOptionsNew($itemtype) {
+      $options = [];
+
+      if (isset($_SESSION['glpi_plugins']) && count($_SESSION['glpi_plugins'])) {
+         foreach ($_SESSION['glpi_plugins'] as $plug) {
+            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+            }
+            $function = "plugin_".$plug."_getAddSearchOptionsNew";
+            if (function_exists($function)) {
+               $tmp = $function($itemtype);
+               foreach ($tmp as $opt) {
+                  if (!isset($opt['id'])) {
+                     throw new \Exception($itemtype . ': invalid search option! ' . print_r($opt, true));
+                  }
+                  $optid = $opt['id'];
+                  unset($opt['id']);
+
+                  if (isset($options[$optid])) {
+                     $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                        $itemtype . " searchOptions!";
+
+                     if (defined('TU_USER')) {
+                        //will break tests
+                        throw new \RuntimeException($message);
+                     } else {
+                        Toolbox::logDebug($message);
+                     }
+                  }
+
+                  foreach ($opt as $k => $v) {
+                     $options[$optid][$k] = $v;
+                  }
+               }
+            }
+         }
+      }
+
+      return $options;
+   }
 
    /**
     * test is a import plugin is enable
