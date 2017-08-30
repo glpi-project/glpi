@@ -4521,6 +4521,15 @@ tr.linked-template td:not(.top) {
    display: table-cell;
 }
 
+.massiveactions {
+   padding: .5em;
+   width: 90%;
+}
+
+.massiveactions input.submit {
+   margin-top: .5em;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
