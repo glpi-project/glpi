@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s adds a task'), $_SESSION["glpiname"]));
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($task->getFormURL()."?id=".$newID);
+      Html::redirect($task->getLinkURL());
    } else {
       Html::redirect(ProjectTask::getFormURL()."?projects_id=".$task->fields['projects_id']);
    }

@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "mailcollector", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($mailgate->getFormURL()."?id=".$newID);
+         Html::redirect($mailgate->getLinkURL());
       }
    }
    Html::back();

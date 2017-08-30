@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       }
       if ($_SESSION['glpibackcreated']) {
-        $url = $dropdown->getFormURLWithID($newID);
+        $url = $dropdown->getLinkURL();
         if (isset($_REQUEST['_in_modal'])) {
           $url.="&_in_modal=1";
         }
