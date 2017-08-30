@@ -49,8 +49,9 @@ class Link extends CommonDBTM {
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]');
-
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]','[DEVICETYPE]',
+                             '[DEVICEMODEL]', '[NETWORKTYPE]', '[NETWORKMODEL]','[PRINTERTYPE]',
+                             '[PRINTERMODEL]', '[SOFTWARECATEGORY]', '[MANUFACTURER]');
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
@@ -286,7 +287,69 @@ class Link extends CommonDBTM {
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
       }
-      if (strstr($link,"[DOMAIN]")
+      // Device equipment type
+      if (strstr($link,"[DEVICETYPE]")
+      && $item->isField('peripheraltypes_id')) {
+        $link = str_replace("[DEVICETYPE]",
+                          Dropdown::getDropdownName("glpi_peripheraltypes", 
+                                                     $item->getField('peripheraltypes_id'),0,false), $link);
+      }
+      // Device equipment model
+      if (strstr($link,"[DEVICEMODEL]")
+      && $item->isField('peripheralmodels_id')) {
+        $link = str_replace("[DEVICEMODEL]",
+                      Dropdown::getDropdownName("glpi_peripheralmodels", 
+                                                 $item->getField('peripheralmodels_id'),0,false), $link);
+      }
+      //Networkdevice equipment type 
+      if (strstr($link,"[NETWORKTYPE]")
+      && $item->isField('networkequipmenttypes_id')) {
+        $link = str_replace("[NETWORKTYPE]",
+                    Dropdown::getDropdownName("glpi_networkequipmenttypes", 
+                                               $item->getField('networkequipmenttypes_id'),0,false), $link);
+      }
+      // Networkdevice eqipment model
+      if (strstr($link,"[NETWORKMODEL]")
+      && $item->isField('networkequipmentmodels_id')) {
+              //debug info
+              //echo "Before ".$link."<br>";
+            $link = str_replace("[NETWORKMODEL]",
+                    Dropdown::getDropdownName("glpi_networkequipmentmodels", 
+                                              $item->getField('networkequipmentmodels_id'),0,false), $link);
+                                                         //debug info
+                                                         //echo "After ".$link."<br>";
+      }
+      // Printer type
+      if (strstr($link,"[PRINTERTYPE]")
+      && $item->isField('printertypes_id')) {
+           $link = str_replace("[PRINTERTYPE]",
+              Dropdown::getDropdownName("glpi_printertypes", 
+                                        $item->getField('printertypes_id'),0,false), $link);
+      }
+      // Printer model
+      if (strstr($link,"[PRINTERMODEL]")
+      && $item->isField('printermodels_id')) {
+            $link = str_replace("[PRINTERMODEL]",
+                    Dropdown::getDropdownName("glpi_printermodels", 
+                                              $item->getField('printermodels_id'),0,false), $link);
+      }
+      // Software category
+      if (strstr($link,"[SOFTWARECATEGORY]")
+      && $item->isField('softwarecategories_id')) {
+          $link = str_replace("[SOFTWARECATEGORY]",
+            // Náhrada čo (" > "), čím ("/") v čom (Dropdown ...). Výhodne v Comboboxoch, ktoré generujú cestu s oddeľovačom " > "
+            // Replace " > " with "/" to generate path from TreeDropdown value
+                            str_replace(" > ","/", Dropdown::getDropdownName("glpi_softwarecategories", 
+                                        $item->getField('softwarecategories_id'),0,false)), $link);
+      }
+      // Manufacturer 
+      if (strstr($link,"[MANUFACTURER]")
+      && $item->isField('manufacturers_id')) {
+            $link = str_replace("[MANUFACTURER]",
+                    Dropdown::getDropdownName("glpi_manufacturers", 
+                                              $item->getField('manufacturers_id'),0,false), $link);
+      }
+    if (strstr($link,"[DOMAIN]")
           && $item->isField('domains_id')) {
             $link = str_replace("[DOMAIN]",
                                 Dropdown::getDropdownName("glpi_domains",
@@ -524,6 +587,8 @@ class Link extends CommonDBTM {
             }
             $newlink          .= ">";
             $linkname          = sprintf(__('%1$s #%2$s'), $name, $i);
+            // TODO: http://forum.glpi-project.org/viewtopic.php?id=155580
+            // $newlink       .= sprintf(__('%1$s: %2$s'), $linkname," "); // $val);
             $newlink          .= sprintf(__('%1$s: %2$s'), $linkname, $val);
             $newlink          .= "</a>";
             $computedlinks[]   = $newlink;
