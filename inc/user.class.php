@@ -1904,6 +1904,15 @@ class User extends CommonDBTM {
                    || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                        && !empty($this->fields["password"])));
 
+      $formtitle = $this->getTypeName(1);
+
+      if ($ID > 0) {
+         $formtitle .= "<a class='pointer fa fa-address-card-o' target='_blank' href='".$CFG_GLPI["root_doc"].
+                       "/front/user.form.php?getvcard=1&amp;id=$ID' title='".__('Download user VCard').
+                       "'><span class='sr-only'>". __('Vcard')."</span></a>";
+      }
+
+      $options['formtitle']   = $formtitle;
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
       $rand = mt_rand();
@@ -1921,8 +1930,8 @@ class User extends CommonDBTM {
       }
 
       if (!empty($this->fields["name"])) {
-         echo "<td rowspan='5'>" . __('Picture') . "</td>";
-         echo "<td rowspan='5'>";
+         echo "<td rowspan='4'>" . __('Picture') . "</td>";
+         echo "<td rowspan='4'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
          echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                 User::getThumbnailURLForPicture($this->fields['picture'])."'>";
@@ -1938,8 +1947,8 @@ class User extends CommonDBTM {
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
       } else {
-         echo "<td rowspan='5'></td>";
-         echo "<td rowspan='5'></td>";
+         echo "<td rowspan='4'></td>";
+         echo "<td rowspan='4'></td>";
       }
       echo "</tr>";
 
@@ -2283,8 +2292,8 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='5'>" . __('Picture') . "</td>";
-            echo "<td rowspan='5'>";
+            echo "<td rowspan='4'>" . __('Picture') . "</td>";
+            echo "<td rowspan='4'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
             echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                    User::getThumbnailURLForPicture($this->fields['picture'])."'>";
