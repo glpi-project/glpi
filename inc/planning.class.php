@@ -551,10 +551,7 @@ class Planning extends CommonGLPI {
          }";
       }
 
-      $date_formats = [0 => 'YYYY MMM DD',
-                            1 => 'DD MMM YYYY',
-                            2 => 'MMM DD YYYY'];
-      $date_format = $date_formats[$_SESSION["glpidate_format"]];
+      $date_format = Toolbox::jsDateFormat();
 
       self::initSessionForCurrentUser();
 
