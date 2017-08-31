@@ -1422,10 +1422,13 @@ class Plugin extends CommonDBTM {
    /**
     * Get additional search options managed by plugins
     *
+    * @since 9.2
+    *
     * @param string $itemtype Item type
     *
     * @return array an *indexed* array of search options
-    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    *
+    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    static function getAddSearchOptionsNew($itemtype) {
       $options = [];

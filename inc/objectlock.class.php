@@ -524,15 +524,6 @@ class ObjectLock extends CommonDBTM {
    }
 
 
-   /**
-    * Get the Search options to add to an item for the given Type
-    *
-    * @param string $itemtype Item type
-    *
-    * @return a *not indexed* array of search options
-    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
-    * @since 9.2
-   **/
    static public function getSearchOptionsToAddNew($itemtype) {
       global $CFG_GLPI;
       $tab = [];

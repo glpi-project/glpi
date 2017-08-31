@@ -3346,7 +3346,8 @@ class CommonDBTM extends CommonGLPI {
     * This should be overloaded in Class
     *
     * @return array an *indexed* array of search options
-    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    *
+    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    function getSearchOptions() {
       $options = [];
@@ -3381,11 +3382,13 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the Search options for the given Type
     *
+    * @since 9.2
+    *
     * This should be overloaded in Class
     *
     * @return array a *not indexed* array of search options
-    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
-    * @since 9.2
+    *
+    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    function getSearchOptionsNew() {
       $tab = [];
