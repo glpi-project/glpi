@@ -182,13 +182,6 @@ class Notepad extends CommonDBChild {
    }
 
 
-   /**
-    * Get the Search options to add to an item for the given Type
-    *
-    * @return a *not indexed* array of search options
-    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
-    * @since 9.2
-   **/
    static public function getSearchOptionsToAddNew() {
       $tab = [];
 
