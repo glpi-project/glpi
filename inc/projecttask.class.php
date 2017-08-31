@@ -475,23 +475,27 @@ class ProjectTask extends CommonDBChild {
       echo "<td>".__('Planned duration')."</td>";
       echo "<td>";
 
+      $toadd = array();
+      for ($i=9 ; $i<=100 ; $i++) {
+         $toadd[] = $i*HOUR_TIMESTAMP;
+      }
       Dropdown::showTimeStamp("planned_duration",
                               array('min'             => 0,
-                                    'max'             => 100*HOUR_TIMESTAMP,
-                                    'step'            => HOUR_TIMESTAMP,
+                                    'max'             => 8*HOUR_TIMESTAMP,
                                     'value'           => $this->fields["planned_duration"],
                                     'addfirstminutes' => true,
-                                    'inhours'         => true));
+                                    'inhours'         => true,
+                                    'toadd'           => $toadd));
       echo "</td>";
       echo "<td>".__('Effective duration')."</td>";
       echo "<td>";
       Dropdown::showTimeStamp("effective_duration",
                               array('min'             => 0,
-                                    'max'             => 100*HOUR_TIMESTAMP,
-                                    'step'            => HOUR_TIMESTAMP,
+                                    'max'             => 8*HOUR_TIMESTAMP,
                                     'value'           => $this->fields["effective_duration"],
                                     'addfirstminutes' => true,
-                                    'inhours'         => true));
+                                    'inhours'         => true,
+                                    'toadd'           => $toadd));
       if ($ID) {
          $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
          echo "<br>";

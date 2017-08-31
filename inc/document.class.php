@@ -462,7 +462,7 @@ class Document extends CommonDBTM {
       $filename_parts = explode(".", $this->fields['filename']);
       $extension = array_pop($filename_parts);
       $extension = strtolower($extension);
-      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
+      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp', 'pdf'))) {
          $attachment = " attachment;";
       }
 

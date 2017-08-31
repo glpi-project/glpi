@@ -945,14 +945,13 @@ class CommonDBTM extends CommonGLPI {
     * @return string : HTML link
    **/
    function getLinkURL() {
-      global $CFG_GLPI;
 
       if (!isset($this->fields['id'])) {
          return '';
       }
 
       $link  = $this->getFormURLWithID($this->getID());
-      $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
+      $link .= ($this->isTemplate() ? "&withtemplate=1" : "");
 
       return $link;
    }
@@ -962,7 +961,6 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on add action
    **/
    function addMessageOnAddAction() {
-      global $CFG_GLPI;
 
       $addMessAfterRedirect = false;
       if (isset($this->input['_add'])) {
