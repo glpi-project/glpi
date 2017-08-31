@@ -891,7 +891,7 @@ class MassiveAction {
             }
             echo Html::hidden('search_options', array('value' => $items_index));
             echo Html::hidden('field', array('value' => $fieldname));
-            echo "<br>\n";
+            echo "<br /><br />\n";
 
             $submitname = _sx('button','Post');
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
