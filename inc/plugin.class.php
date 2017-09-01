@@ -274,9 +274,19 @@ class Plugin extends CommonDBTM {
          } else {
             // Check version
             if ($file_plugins[$plug]['version'] != $pluglist[$ID]['version']) {
+               $input          = $file_plugins[$plug];
+               $input['id']    = $ID;
                if ($pluglist[$ID]['version']) {
-                  $this->unactivate($ID);
+                  $input['state'] = self::NOTUPDATED;
                }
+
+               $this->removeFromSession($this->fields['directory']);
+               // reset menu
+               if (isset($_SESSION['glpimenu'])) {
+                  unset($_SESSION['glpimenu']);
+               }
+
+               $this->update($input);
                $install_ok = false;
             }
          }
