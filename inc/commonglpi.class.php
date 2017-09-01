@@ -685,7 +685,6 @@ class CommonGLPI {
 
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
-      $extraparam     = "";
       $withtemplate   = "";
       if (is_array($options) && count($options)) {
          if (isset($options['withtemplate'])) {
@@ -698,8 +697,12 @@ class CommonGLPI {
          if (isset($cleaned_options['stock_image'])) {
             unset($cleaned_options['stock_image']);
          }
-         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
-         $extraparam     = "&".Toolbox::append_params($cleaned_options);
+         if ($this->getType() == 'Ticket') {
+            $this->input = $cleaned_options;
+            $this->saveInput();
+         } else {
+            $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
+         }
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
@@ -762,7 +765,6 @@ class CommonGLPI {
       }
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
-      $extraparam     = "";
       $withtemplate   = "";
 
       if (is_array($options) && count($options)) {
@@ -778,7 +780,6 @@ class CommonGLPI {
             }
          }
          $extraparamhtml = "&amp;".Toolbox::append_params($cleanoptions,'&amp;');
-         $extraparam     = "&".Toolbox::append_params($cleanoptions);
       }
 
       if (empty($withtemplate)
@@ -940,7 +941,6 @@ class CommonGLPI {
       }
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
-      $extraparam     = "";
       $withtemplate   = "";
 
       if (is_array($options) && count($options)) {
@@ -951,7 +951,6 @@ class CommonGLPI {
             // Do not include id options
             if (($key[0] != '_') && ($key != 'id')) {
                $extraparamhtml .= "&amp;$key=$val";
-               $extraparam     .= "&$key=$val";
             }
          }
       }
