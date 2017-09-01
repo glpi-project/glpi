@@ -256,7 +256,7 @@ class Location extends CommonTreeDropdown {
          $table = getTableForItemType($crit);
          $query = "SELECT `$table`.`id`, '$crit' AS type
                    FROM `$table`
-                   WHERE `$table`.`locations_id` = '$locations_id' ".
+                   WHERE `$table`.`locations_id` = '$locations_id' AND is_deleted=0".
                          getEntitiesRestrictRequest(" AND", $table, "entities_id");
       } else {
          foreach ($CFG_GLPI['location_types'] as $type) {
