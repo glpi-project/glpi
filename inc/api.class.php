@@ -313,23 +313,23 @@ abstract class API extends CommonGLPI {
          $params['lookup_recursive'] = false;
       }
 
-      $myentities = array();
+      $myentities = [];
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
          if ($entity['is_recursive'] == 1 && $params['lookup_recursive'] == 1) {
             $sons = getSonsOf('glpi_entities', $entity['id']);
             foreach ($sons as $entity_id) {
                if ($entity_id != $entity['id']) {
-                  $myentities[] = array('id'   => $entity_id,
-                                        'name' => Dropdown::getDropdownName("glpi_entities",
-                                                                            $entity_id));
+                  $myentities[] = ['id'   => $entity_id,
+                                   'name' => Dropdown::getDropdownName("glpi_entities",
+                                                                       $entity_id)];
                }
             }
          }
-         $myentities[] = array('id' => $entity['id'],
-                               'name' => Dropdown::getDropdownName("glpi_entities",
-                                                                   $entity['id']));
+         $myentities[] = ['id' => $entity['id'],
+                          'name' => Dropdown::getDropdownName("glpi_entities",
+                                                                   $entity['id'])];
       }
-      return array('myentities' => $myentities);
+      return ['myentities' => $myentities];
    }
 
 
