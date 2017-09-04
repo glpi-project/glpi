@@ -5124,12 +5124,19 @@ class Search {
       //                                  value =>   (contains)
 
       if (($itemtype != 'AllAssets')
-          && class_exists($itemtype)
-          && method_exists($itemtype, 'getDefaultSearchRequest')) {
+          && class_exists($itemtype)) {
 
-         $default_values = array_merge($default_values,
-                                       call_user_func([$itemtype,
-                                                            'getDefaultSearchRequest']));
+         $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+
+         if (!$user_default_values
+             && method_exists($itemtype, 'getDefaultSearchRequest')) {
+            // user has no default bookmark (nor public, nor private) for $itemtype
+            // then gets defined one for type
+            $user_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+         }
+         if ($user_default_values) {
+            $default_values = array_merge($default_values, $user_default_values);
+         }
       }
 
       // First view of the page or force bookmark : try to load a bookmark
@@ -5138,23 +5145,15 @@ class Search {
               && !isset($params["reset"])
               && !isset($_SESSION['glpisearch'][$itemtype]))) {
 
-         $query = "SELECT `savedsearches_id`
-                   FROM `glpi_savedsearches_users`
-                   WHERE `users_id`='".Session::getLoginUserID()."'
-                         AND `itemtype` = '$itemtype'";
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               $IDtoload = $DB->result($result, 0, 0);
-               // Set session variable
-               $_SESSION['glpisearch'][$itemtype] = [];
-               // Load bookmark on main window
+         $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+         if ($user_default_values) {
+            $_SESSION['glpisearch'][$itemtype] = [];
+            // Only get datas for bookmarks
+            if ($forcebookmark) {
+               $params = $user_default_values;
+            } else {
                $bookmark = new SavedSearch();
-               // Only get datas for bookmarks
-               if ($forcebookmark) {
-                  $params = $bookmark->getParameters($IDtoload);
-               } else {
-                  $bookmark->load($IDtoload, false);
-               }
+               $bookmark->load($user_default_values['savedsearches_id'], false);
             }
          }
       }
@@ -5199,7 +5198,7 @@ class Search {
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
-                && ($key == 'is_deleted' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                && ($key == 'is_deleted' || !isset($saved_params[$key])) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {

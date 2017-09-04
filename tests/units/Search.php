@@ -484,6 +484,130 @@ class Search extends DbTestCase {
          ->isInstanceOf('\RuntimeException')
          ->hasMessage($error);
    }
+
+   function testManageParams() {
+      // let's use TU_USER
+      $this->login();
+      $uid =  getItemByTypeName('User', TU_USER, true);
+
+      $search = \Search::manageParams('Ticket', ['reset' => 1], false, false);
+      $this->array(
+         $search
+      )->isEqualTo(['reset'        => 1,
+                    'start'        => 0,
+                    'order'        => 'DESC',
+                    'sort'         => 19,
+                    'is_deleted'   => 0,
+                    'criteria'     => [0 => ['field' => 12,
+                                             'searchtype' => 'equals',
+                                             'value' => 'notold'
+                                            ],
+                                      ],
+                    'metacriteria' => [],
+                   ]);
+
+      // now add a bookmark on Ticket view
+      $bk = new \SavedSearch();
+      $this->boolean(
+         (boolean)$bk->add(['name'         => 'All my tickets',
+                            'type'         => 1,
+                            'itemtype'     => 'Ticket',
+                            'users_id'     => $uid,
+                            'is_private'   => 1,
+                            'entities_id'  => 0,
+                            'is_recursive' => 1,
+                            'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]='.$uid
+                           ])
+      )->isTrue();
+
+      $bk_id = $bk->fields['id'];
+
+      $bk_user = new \SavedSearch_User();
+      $this->boolean(
+         (boolean)$bk_user->add(['users_id' => $uid,
+                                 'itemtype' => 'Ticket',
+                                 'savedsearches_id' => $bk_id
+                                ])
+      )->isTrue();
+
+      $search = \Search::manageParams('Ticket', ['reset' => 1], true, false);
+      $this->array(
+         $search
+      )->isEqualTo(['reset'        => 1,
+                    'start'        => 0,
+                    'order'        => 'DESC',
+                    'sort'         => 2,
+                    'is_deleted'   => 0,
+                    'criteria'     => [0 => ['field' => '5',
+                                             'searchtype' => 'equals',
+                                             'value' => $uid
+                                            ],
+                                      ],
+                    'metacriteria' => [],
+                    'itemtype' => 'Ticket',
+                    'savedsearches_id' => $bk_id,
+                   ]);
+
+      // let's test for Computers
+      $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
+      $this->array(
+         $search
+      )->isEqualTo(['reset'        => 1,
+                    'start'        => 0,
+                    'order'        => 'ASC',
+                    'sort'         => 1,
+                    'is_deleted'   => 0,
+                    'criteria'     => [0 => ['field' => 'view',
+                                             'link' => 'contains',
+                                             'value' => '',
+                                            ],
+                                      ],
+                    'metacriteria' => [],
+                   ]);
+
+      // now add a bookmark on Computer view
+      $bk = new \SavedSearch();
+      $this->boolean(
+         (boolean)$bk->add(['name'         => 'Computer test',
+                            'type'         => 1,
+                            'itemtype'     => 'Computer',
+                            'users_id'     => $uid,
+                            'is_private'   => 1,
+                            'entities_id'  => 0,
+                            'is_recursive' => 1,
+                            'url'         => 'front/computer.php?itemtype=Computer&sort=31&order=DESC&criteria%5B0%5D%5Bfield%5D=view&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=test'
+                           ])
+      )->isTrue();
+
+      $bk_id = $bk->fields['id'];
+
+      $bk_user = new \SavedSearch_User();
+      $this->boolean(
+         (boolean)$bk_user->add(['users_id' => $uid,
+                                 'itemtype' => 'Computer',
+                                 'savedsearches_id' => $bk_id
+                                ])
+      )->isTrue();
+
+      $search = \Search::manageParams('Computer', ['reset' => 1], true, false);
+      $this->array(
+         $search
+      )->isEqualTo(['reset'        => 1,
+                    'start'        => 0,
+                    'order'        => 'DESC',
+                    'sort'         => 31,
+                    'is_deleted'   => 0,
+                    'criteria'     => [0 => ['field' => 'view',
+                                             'searchtype' => 'contains',
+                                             'value' => 'test'
+                                            ],
+                                      ],
+                    'metacriteria' => [],
+                    'itemtype' => 'Computer',
+                    'savedsearches_id' => $bk_id,
+                   ]);
+
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
