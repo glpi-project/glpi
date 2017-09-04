@@ -3814,14 +3814,10 @@ class Ticket extends CommonITILObject {
          $this->userentities = array();
          if ($options["_users_id_requester"]) {
             //Get all the user's entities
-            $all_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
+            $requester_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
                                                           true);
-            //For each user's entity, check if the technician which creates the ticket have access to it
-            foreach ($all_entities as $tmp => $ID_entity) {
-               if (Session::haveAccessToEntity($ID_entity)) {
-                  $this->userentities[] = $ID_entity;
-               }
-            }
+            $user_entities = $_SESSION['glpiactiveentities'];
+            $this->userentities = array_intersect($requester_entities, $user_entities);
          }
          $this->countentitiesforuser = count($this->userentities);
 
