@@ -121,20 +121,27 @@ class GLPIUploadHandler extends UploadHandler {
       ];
       $params = array_merge($default_params, $params);
 
+      $pname = $params['name'];
+      $rand_name = uniqid('', true);
+      foreach ($_FILES[$pname]['name'] as &$name) {
+         $name = $rand_name . $name;
+      }
+
       $upload_dir     = GLPI_TMP_DIR.'/';
       $upload_handler = new self(['upload_dir'     => $upload_dir,
-                                  'param_name'     => $params['name'],
+                                  'param_name'     => $pname,
                                   'orient_image'   => false,
                                   'image_versions' => []],
                                  false);
       $response       = $upload_handler->post(false);
 
       // clean compute display filesize
-      if (isset($response[$params['name']]) && is_array($response[$params['name']])) {
-         foreach ($response[$params['name']] as $key => &$val) {
+      if (isset($response[$pname]) && is_array($response[$pname])) {
+         foreach ($response[$pname] as $key => &$val) {
             if (Document::isValidDoc(addslashes($val->name))) {
+               $val->prefix = $rand_name;
                if (isset($val->name)) {
-                  $val->display = $val->name;
+                  $val->display = str_replace($rand_name, '', $val->name);
                }
                if (isset($val->size)) {
                   $val->filesize = Toolbox::getSize($val->size);
