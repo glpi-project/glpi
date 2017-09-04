@@ -4814,6 +4814,9 @@ class CommonDBTM extends CommonGLPI {
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
             $input2["_only_if_upload_succeed"] = 1;
             $input2["_filename"]               = [$file];
+            if (isset($this->input['_prefix_filename'][$key])) {
+               $input2["_prefix_filename"]  = [$this->input['_prefix_filename'][$key]];
+            }
             $docID = $doc->add($input2);
             $docadded[$docID]['tag'] = $input['_tag'][$key];
          }

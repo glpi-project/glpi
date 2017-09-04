@@ -144,6 +144,12 @@ var displayUploadedFile = function(file, tag, editor, input_name) {
          .attr('name', '_'+input_name+'['+fileindex+']')
          .attr('value', file.name).appendTo(p);
 
+      // Prefix
+      $('<input/>')
+         .attr('type', 'hidden')
+         .attr('name', '_prefix_'+input_name+'['+fileindex+']')
+         .attr('value', file.prefix).appendTo(p);
+
       // Tag
       $('<input/>')
          .attr('type', 'hidden')
