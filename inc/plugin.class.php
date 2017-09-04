@@ -280,7 +280,7 @@ class Plugin extends CommonDBTM {
                   $input['state'] = self::NOTUPDATED;
                }
 
-               $this->removeFromSession($this->fields['directory']);
+               $this->removeFromSession($plug);
                // reset menu
                if (isset($_SESSION['glpimenu'])) {
                   unset($_SESSION['glpimenu']);
