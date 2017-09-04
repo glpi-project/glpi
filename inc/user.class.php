@@ -1248,7 +1248,7 @@ class User extends CommonDBTM {
          //getRawName should not add ID
          $bkp_conf = $CFG_GLPI['is_ids_visible'];
          $CFG_GLPI['is_ids_visible'] = 0;
-         $bkp_sessconf = $_SESSION["glpiis_ids_visible"];
+         $bkp_sessconf = (isset($_SESSION['glpiis_ids_visible']) ? $_SESSION["glpiis_ids_visible"] : 0);
          $_SESSION["glpiis_ids_visible"] = 0;
          $name = formatUserName($this->fields["id"],
                                $this->fields["name"],
