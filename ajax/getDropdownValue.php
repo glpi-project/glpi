@@ -59,6 +59,9 @@ if (isset($_POST["entity_restrict"])
    }
    $_POST["entity_restrict"] = $entities;
 }
+if (isset($_POST['entity_restrict']) && 'default' === $_POST['entity_restrict']) {
+   $_POST['entity_restrict'] = $_SESSION['glpiactiveentities'];
+}
 
 // Security
 if (!($item = getItemForItemtype($_POST['itemtype']))) {
