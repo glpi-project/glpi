@@ -5322,6 +5322,7 @@ class Html {
 
             // File
             $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex".$p['rand']."+']').attr('value',file.name).appendTo(p);\n
+            $('<input/>').attr('type', 'hidden').attr('name', '_prefix_".$p['name']."['+fileindex".$p['rand']."+']').attr('value',file.prefix).appendTo(p);\n
 
             // Tag
             $('<input/>').attr('type', 'hidden').attr('name', '_tag_".$p['name']."['+fileindex".$p['rand']."+']').attr('value', tag.name).appendTo(p);\n
