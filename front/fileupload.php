@@ -71,8 +71,13 @@ $errors =  array(
 
 $upload_dir = GLPI_TMP_DIR.'/';
 
+$pname = $_GET['name'];
+$rand_name = uniqid('', true);
+foreach ($_FILES[$pname]['name'] as &$name) {
+   $name = $rand_name . $name;
+}
 $upload_handler = new UploadHandler(array('upload_dir'        => $upload_dir,
-                                          'param_name'        => $_GET['name'],
+                                          'param_name'        => $pname,
                                           'orient_image'      => false,
                                           'image_versions'    => array()),
                                     false, $errors);
@@ -80,13 +85,14 @@ $response = $upload_handler->post(false);
 
 
 // clean compute display filesize
-if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
+if (isset($response[$pname]) && is_array($response[$pname])) {
 
 
-   foreach ($response[$_GET['name']] as $key => &$val) {
+   foreach ($response[$pname] as $key => &$val) {
       if (Document::isValidDoc(addslashes($val->name))) {
+         $val->prefix = $rand_name;
          if (isset($val->name)) {
-            $val->display = $val->name;
+            $val->display = str_replace($rand_name, '', $val->name);
          }
          if (isset($val->size)) {
             $val->filesize = Toolbox::getSize($val->size);
@@ -96,7 +102,7 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
          }
       } else { // Unlink file
          $val->error = $errors['accept_file_types'];
-	 if (file_exists($upload_dir.$val->name)) {
+         if (file_exists($upload_dir.$val->name)) {
             @unlink($upload_dir.$val->name);
          }
       }

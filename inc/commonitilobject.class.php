@@ -1750,6 +1750,9 @@ abstract class CommonITILObject extends CommonDBTM {
             $input2["_only_if_upload_succeed"] = 1;
             $input2["entities_id"]             = $this->fields["entities_id"];
             $input2["_filename"]               = array($file);
+            if (isset($this->input['_prefix_filename'][$key])) {
+               $input2["_prefix_filename"]  = [$this->input['_prefix_filename'][$key]];
+            }
             $docID = $doc->add($input2);
          }
 

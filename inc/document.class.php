@@ -900,7 +900,13 @@ class Document extends CommonDBTM {
    static function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
-      $fullpath = GLPI_UPLOAD_DIR."/".$filename;
+      $prefix = '';
+      if (isset($input['_prefix_filename'])) {
+         $prefix = array_shift($input['_prefix_filename']);
+      }
+
+      $fullpath = GLPI_TMP_DIR."/".$filename;
+      $filename = str_replace($prefix, '', $filename);
 
       if (!is_dir(GLPI_UPLOAD_DIR)) {
          Session::addMessageAfterRedirect(__("Upload directory doesn't exist"), false, ERROR);
@@ -982,7 +988,13 @@ class Document extends CommonDBTM {
    static function moveDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
+      $prefix = '';
+      if (isset($input['_prefix_filename'])) {
+         $prefix = array_shift($input['_prefix_filename']);
+      }
+
       $fullpath = GLPI_TMP_DIR."/".$filename;
+      $filename = str_replace($prefix, '', $filename);
       if (!is_dir(GLPI_TMP_DIR)) {
          Session::addMessageAfterRedirect(__("Temporary directory doesn't exist"), false, ERROR);
          return false;
