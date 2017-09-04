@@ -305,7 +305,7 @@ abstract class API extends CommonGLPI {
     *
     * @return array of entities (with id and name)
     */
-   protected function getMyEntities($params=array()) {
+   protected function getMyEntities($params = []) {
 
       $this->initEndpoint();
 
