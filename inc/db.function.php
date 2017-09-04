@@ -1689,7 +1689,7 @@ function getDbRelations() {
  * @param $table              table where apply the limit (if needed, multiple tables queries)
  *                            (default '')
  * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
  *                            single item or array (default '')
  * @param $is_recursive       need to use recursive process to find item
  *                            (field need to be named recursive) (false by default)
@@ -1749,14 +1749,18 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
    if ($is_recursive) {
       $ancestors = [];
-      if (is_array($value)) {
-         $ancestors = getAncestorsOf("glpi_entities", $value);
-         $ancestors = array_diff($ancestors, $value);
-
-      } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
+      if (isset($_SESSION['glpiactiveentities']) && $value == $_SESSION['glpiactiveentities']) {
          $ancestors = $_SESSION['glpiparententities'];
       } else {
-         $ancestors = getAncestorsOf("glpi_entities", $value);
+         if (is_array($value)) {
+            $ancestors = getAncestorsOf("glpi_entities", $value);
+            $ancestors = array_diff($ancestors, $value);
+
+         } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
+            $ancestors = $_SESSION['glpiparententities'];
+         } else {
+            $ancestors = getAncestorsOf("glpi_entities", $value);
+         }
       }
 
       if (count($ancestors)) {
