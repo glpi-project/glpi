@@ -5436,7 +5436,7 @@ class Ticket extends CommonITILObject {
           && ($item->getType() == 'User')
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
-          && ($item->fields['is_template'] == 0)) {
+          && isset($item->fields['is_template']) && ($item->fields['is_template'] == 0)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='$colspan'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
