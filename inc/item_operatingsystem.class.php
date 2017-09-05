@@ -203,7 +203,7 @@ class Item_OperatingSystem extends CommonDBRelation {
             $instance->fields['itemtype'] = $item->getType();
             $instance->fields['items_id'] = $item->getID();
          }
-         $instance->showForm($id);
+         $instance->showForm($id, ['canedit' => $canedit]);
          return;
       }
 
@@ -366,8 +366,8 @@ class Item_OperatingSystem extends CommonDBRelation {
       echo "<td >";
       Html::autocompletionTextField($this, 'license_number', ['rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
-
-      $this->showFormButtons(['formfooter' => false]);
+      $options['formfooter'] = false;
+      $this->showFormButtons($options);
    }
 
    function getRawName() {
