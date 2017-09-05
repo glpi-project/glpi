@@ -408,7 +408,7 @@ $CFG_GLPI['layout_excluded_pages'] = ["profile.form.php",
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',
                                            'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
-                                           'Group', 'KnowbaseItem', 'Link', 'Monitor',
+                                           'Group', 'KnowbaseItem', 'Line', 'Link', 'Monitor',
                                            'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
