@@ -4307,8 +4307,6 @@ class User extends CommonDBTM {
    }
 
 
-   }
-
    /**
     * Get current user entities
     *
@@ -4320,4 +4318,5 @@ class User extends CommonDBTM {
          $this->entities = Profile_User::getUserEntities($this->fields['id'], true);
       }
       return $this->entities;
+   }
 }
