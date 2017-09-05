@@ -377,13 +377,14 @@ function countElementsInTableForMyEntities($table, $condition='') {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string   table name
- * @param $entity       integer  the entity ID
- * @param $condition    string   additional condition (default '')
+ * @param string  $table     table name
+ * @param integer $entity    the entity ID
+ * @param string  $condition additional condition (default '')
+ * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
 **/
-function countElementsInTableForEntity($table, $entity, $condition='') {
+function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
 
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype = getItemTypeForTable($table);
@@ -393,7 +394,11 @@ function countElementsInTableForEntity($table, $entity, $condition='') {
       $condition .= " AND ";
    }
 
-   $condition .= getEntitiesRestrictRequest("", $table, '', $entity,$item->maybeRecursive());
+   if ($recursive) {
+      $recursive = $item->maybeRecursive();
+   }
+
+   $condition .= getEntitiesRestrictRequest("", $table, '', $entity, $recursive);
    return countElementsInTable($table, $condition);
 }
 

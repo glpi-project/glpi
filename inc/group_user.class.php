@@ -150,15 +150,11 @@ class Group_User extends CommonDBRelation{
 
          // All entities "edited user" have access
          $strict_entities = Profile_User::getUserEntities($ID, true);
-
+         $user_entities = $_SESSION['glpiactiveentities'];
          // Keep only entities "connected user" have access
-         foreach ($strict_entities as $key => $val) {
-            if (!Session::haveAccessToEntity($val)) {
-               unset($strict_entities[$key]);
-            }
-         }
+         $strict_entities = array_intersect($strict_entities, $user_entities);
 
-         $nb = countElementsInTableForEntity("glpi_groups", $strict_entities, '`is_usergroup`');
+         $nb = countElementsInTableForEntity("glpi_groups", $strict_entities, '`is_usergroup`', false);
          if ($nb > count($used)) {
             Group::dropdown(array('entity'    => $strict_entities,
                                   'used'      => $used,
