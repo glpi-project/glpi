@@ -3982,7 +3982,7 @@ msgstr "ID запрещенного поля в критерии поиска"
 
 #: inc/api.class.php:1388
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr ""
+msgstr "ID запрещен вместе с параметром 'forcedisplay'."
 
 #: inc/api.class.php:1676 inc/api.class.php:1767 inc/api.class.php:2261
 #: inc/html.class.php:527 inc/profile_user.class.php:425
@@ -4455,7 +4455,7 @@ msgstr "Сохранить"
 
 #: inc/authldap.class.php:194 inc/authldap.class.php:394
 msgid "Synchronization field cannot be changed once in use."
-msgstr ""
+msgstr "Поле синхронизации не может быть изменено после использования."
 
 #: inc/authldap.class.php:327
 msgid "Preconfiguration"
@@ -4549,7 +4549,7 @@ msgstr "Поле имени пользователя"
 #: inc/authldap.class.php:3120 inc/user.class.php:1954 inc/user.class.php:2305
 #: inc/user.class.php:2715
 msgid "Synchronization field"
-msgstr ""
+msgstr "Поле синхронизации"
 
 #: inc/authldap.class.php:449 inc/authldap.class.php:3460
 #: inc/entity.class.php:325 inc/entity.class.php:603
@@ -4817,7 +4817,7 @@ msgstr "Простой режим"
 #: inc/authldap.class.php:3055 inc/authldap.class.php:3083
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "Изменить"
 
 #: inc/authldap.class.php:3091 inc/entity.class.php:1084
 #: inc/html.class.php:3628 inc/rulecollection.class.php:1207
@@ -17992,7 +17992,7 @@ msgstr "Последнее редактирование %1$s %2$s"
 #: inc/ticket.class.php:7107
 #, php-format
 msgid "Ticket# %s description"
-msgstr ""
+msgstr "Заявка# %s описание"
 
 #: inc/ticket.class.php:7173
 msgid "Actions historical"
@@ -18053,7 +18053,7 @@ msgstr "Более двух месяцев"
 #: inc/ticketfollowup.class.php:998
 #, php-format
 msgid "Created by %1$s on %2$s"
-msgstr ""
+msgstr "Создано %1$s на %2$s"
 
 #: inc/ticketfollowup.class.php:1125
 msgid "Approval of the solution"
