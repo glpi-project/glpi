@@ -417,10 +417,17 @@ class APIRest extends API {
 
          // move files into _tmp folder
          $parameters['upload_result'] = [];
+         $parameters['input']->_filename = [];
+         $parameters['input']->_prefix_filename = [];
          foreach ($_FILES as $filename => $files) {
-            $parameters['upload_result'][]
+            $upload_result
                = GLPIUploadHandler::uploadFiles(['name'           => $filename,
                                                  'print_response' => false]);
+            foreach ($upload_result as $uresult) {
+               $parameters['input']->_filename[] = $uresult[0]->name;
+               $parameters['input']->_prefix_filename[] = $uresult[0]->prefix;
+            }
+            $parameters['upload_result'][] = $upload_result;
          }
 
       } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
