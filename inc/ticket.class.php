@@ -722,18 +722,49 @@ class Ticket extends CommonITILObject {
 
                default :
                   // Direct one
-                  $nb = countElementsInTable('glpi_items_tickets',
-                                             ['itemtype' => $item->getType(),
-                                              'items_id' => $item->getID()]);
+                  $nb = countElementsInTable(
+                     'glpi_items_tickets',
+                     [
+                        'INNER JOIN' => [
+                           'glpi_tickets', [
+                              'FKEY' => [
+                                 'glpi_items_tickets' => 'tickets_id',
+                                 'glpi_tickets'       => 'id'
+                              ]
+                           ]
+                        ],
+                        'WHERE' => [
+                           'itemtype' => $item->getType(),
+                           'items_id' => $item->getID(),
+                           'is_deleted' => 0
+                        ]
+                     ]
+                  );
+
                   // Linked items
                   $linkeditems = $item->getLinkedItems();
 
                   if (count($linkeditems)) {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
-                           $nb += countElementsInTable('glpi_items_tickets',
-                                                       ['itemtype' => $type,
-                                                        'items_id' => $ID]);
+                           $nb += countElementsInTable(
+                              'glpi_items_tickets',
+                              [
+                                 'INNER JOIN' => [
+                                    'glpi_tickets', [
+                                       'FKEY' => [
+                                          'glpi_items_tickets' => 'tickets_id',
+                                          'glpi_tickets'       => 'id'
+                                       ]
+                                    ]
+                                 ],
+                                 'WHERE' => [
+                                    'itemtype' => $type,
+                                    'items_id' => $ID,
+                                    'is_deleted' => 0
+                                 ]
+                              ]
+                           );
                         }
                      }
                   }
