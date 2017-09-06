@@ -2580,13 +2580,13 @@ msgstr "사용 가능한 태그 목록"
 #: front/olalevel.form.php:52
 #, php-format
 msgid "%s updates an ola level"
-msgstr ""
+msgstr "%s 가 운영수준동의 수준 갱신함"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:76
 #, php-format
 msgid "%s purges an ola level"
-msgstr ""
+msgstr "%s 운영수준동의 수준을 제거함"
 
 #: front/planning.php:141 inc/commonitiltask.class.php:1530
 #: inc/commonitiltask.class.php:1700 inc/event.class.php:152
@@ -3805,7 +3805,7 @@ msgstr "검색 기준 에서 금지된 항목 ID"
 
 #: inc/api.class.php:1388
 msgid "ID is forbidden along with 'forcedisplay' parameter."
-msgstr ""
+msgstr "'강제표시' 매개변수 사용시 ID는 금지됩니다."
 
 #: inc/api.class.php:1676 inc/api.class.php:1767 inc/api.class.php:2261
 #: inc/html.class.php:527 inc/profile_user.class.php:425
@@ -3814,15 +3814,15 @@ msgstr "아이템을 찾을 수 없습니다."
 
 #: inc/api.class.php:1830
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "이메일 통지가 비활성화됨"
 
 #: inc/api.class.php:1834
 msgid "email parameter missing"
-msgstr ""
+msgstr "이메일 매개변수가 없음"
 
 #: inc/api.class.php:1838
 msgid "A session is active"
-msgstr ""
+msgstr "세션이 활성화 됨"
 
 #: inc/api.class.php:1850 inc/user.class.php:4220
 msgid ""
@@ -3983,7 +3983,7 @@ msgstr "Rest API"
 
 #: inc/apirest.class.php:195
 msgid "Only HTTP verb PUT is allowed"
-msgstr ""
+msgstr "HTTP 의 PUT 만 허용됩니다."
 
 #: inc/apirest.class.php:317
 msgid "resource not found or not an instance of CommonDBTM"
@@ -4260,7 +4260,7 @@ msgstr "저장"
 
 #: inc/authldap.class.php:194 inc/authldap.class.php:394
 msgid "Synchronization field cannot be changed once in use."
-msgstr ""
+msgstr "동기화 항목은 일단 사용중이면 변경 할 수 없습니다."
 
 #: inc/authldap.class.php:327
 msgid "Preconfiguration"
@@ -4354,7 +4354,7 @@ msgstr "로그인 실패"
 #: inc/authldap.class.php:3120 inc/user.class.php:1954 inc/user.class.php:2305
 #: inc/user.class.php:2715
 msgid "Synchronization field"
-msgstr ""
+msgstr "동기화 항목"
 
 #: inc/authldap.class.php:449 inc/authldap.class.php:3460
 #: inc/entity.class.php:325 inc/entity.class.php:603
@@ -4581,7 +4581,7 @@ msgstr "불러올 그룹이 없습니다"
 
 #: inc/authldap.class.php:2239
 msgid "Please choose LDAP directory to import users and groups from"
-msgstr ""
+msgstr "사용자와 그룹을 불러올 LDAP 디렉토리를 선택해 주세요"
 
 #: inc/authldap.class.php:2241 inc/authldap.class.php:3047
 #: inc/authldap.class.php:3075
@@ -4611,7 +4611,7 @@ msgstr "단순 모드"
 #: inc/authldap.class.php:3055 inc/authldap.class.php:3083
 msgctxt "button"
 msgid "Change"
-msgstr ""
+msgstr "변경"
 
 #: inc/authldap.class.php:3091 inc/entity.class.php:1084
 #: inc/html.class.php:3628 inc/rulecollection.class.php:1207
@@ -8594,7 +8594,7 @@ msgstr "공급자 추가"
 
 #: inc/contact.class.php:293 inc/user.class.php:2676
 msgid "Last name"
-msgstr ""
+msgstr "성"
 
 #: inc/contact.class.php:414 inc/contract.class.php:900
 msgid "Associated supplier"
@@ -10191,7 +10191,7 @@ msgstr "검색된 번역 없음"
 
 #: inc/entity.class.php:239
 msgid "You can't add an entity without name"
-msgstr ""
+msgstr "이름이 없으면 요소를 추가할 수 없습니다"
 
 #: inc/entity.class.php:610 inc/entity.class.php:1406
 msgid "LDAP directory information attribute representing the entity"
@@ -16225,19 +16225,19 @@ msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:1813
 msgid "AND"
-msgstr ""
+msgstr "그리고"
 
 #: inc/search.class.php:1814
 msgid "OR"
-msgstr ""
+msgstr "또는"
 
 #: inc/search.class.php:1815
 msgid "AND NOT"
-msgstr ""
+msgstr "그리고 아님"
 
 #: inc/search.class.php:1816
 msgid "OR NOT"
-msgstr ""
+msgstr "또는 아님"
 
 #: inc/search.class.php:5606 inc/search.class.php:5654
 msgid "before"
@@ -16917,7 +16917,7 @@ msgstr "%1$s에서 %2$s 가 마지막으로 수정함"
 #: inc/ticket.class.php:7107
 #, php-format
 msgid "Ticket# %s description"
-msgstr ""
+msgstr "표 # %s 상세"
 
 #: inc/ticket.class.php:7173
 msgid "Actions historical"
@@ -16978,7 +16978,7 @@ msgstr "지난 달 전"
 #: inc/ticketfollowup.class.php:998
 #, php-format
 msgid "Created by %1$s on %2$s"
-msgstr ""
+msgstr "%2$s 에서 %1$s 의해 생성됨"
 
 #: inc/ticketfollowup.class.php:1125
 msgid "Approval of the solution"

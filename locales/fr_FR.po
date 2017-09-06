@@ -945,7 +945,7 @@ msgstr "Le mode débug a été défini à %1$s !"
 
 #: ajax/switchdebug.php:51 inc/html.class.php:1486
 msgid "on"
-msgstr "Sur"
+msgstr "allumé"
 
 #: ajax/switchdebug.php:51 inc/html.class.php:1486
 msgid "off"
@@ -3748,7 +3748,7 @@ msgstr "ou"
 
 #: inc/ajax.class.php:430
 msgid "try to reload"
-msgstr "essayer de rechercher"
+msgstr "essayer de recharger"
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
 #: inc/contract.class.php:1591 inc/entity.class.php:668
