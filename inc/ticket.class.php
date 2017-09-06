@@ -609,16 +609,19 @@ class Ticket extends CommonITILObject {
 
                default :
                   // Direct one
-                  $nb = countElementsInTable('glpi_items_tickets',
+                  $nb = countElementsInTable('glpi_items_tickets` INNER JOIN `glpi_tickets` '.
+                                             'ON `glpi_items_tickets`.`tickets_id`=`glpi_tickets`.`id',
                                              " `itemtype` = '".$item->getType()."'
-                                                AND `items_id` = '".$item->getID()."'");
+                                                AND `items_id` = '".$item->getID()."'
+                                                AND is_deleted=0");
                   // Linked items
                   $linkeditems = $item->getLinkedItems();
 
                   if (count($linkeditems)) {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
-                           $nb += countElementsInTable('glpi_items_tickets',
+                           $nb += countElementsInTable('glpi_items_tickets` INNER JOIN `glpi_tickets` '.
+                                                       'ON `glpi_items_tickets`.`tickets_id`=`glpi_tickets`.`id',
                                                        " `itemtype` = '$type'
                                                          AND `items_id` = '$ID'");
                         }
