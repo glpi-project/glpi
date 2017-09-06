@@ -1826,6 +1826,8 @@ abstract class API extends CommonGLPI {
 
 
    protected function lostPassword($params = []) {
+      global $CFG_GLPI;
+
       if ($CFG_GLPI['use_notifications'] == '0' || $CFG_GLPI['notifications_mailing'] == '0') {
          return $this->returnError(__("Email notifications are disabled"));
       }
