@@ -201,7 +201,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $DB->query($query);
             // Then, regenerate the old sons to reflect there new ancestors
             $this->regenerateTreeUnderID($oldParent, true, true);
-            $this->recursiveCleanSonsAboveID($oldParent);
+            $this->cleanParentsSons($oldParent);
          }
       }
 
@@ -223,7 +223,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $DB->query($query);
             // Then, regenerate the new sons to reflect there new ancestors
             $this->regenerateTreeUnderID($this->getID(), true, true);
-            $this->recursiveCleanSonsAboveID($this->getID());
+            $this->cleanParentsSons();
          }
       }
    }

@@ -342,7 +342,7 @@ function countElementsInTable($table, $condition = "") {
    $condition['COUNT'] = 'cpt';
 
    $row = $DB->request($table, $condition)->next();
-   return ($row ? $row['cpt'] : 0);
+   return ($row ? (int)$row['cpt'] : 0);
 }
 
 /**
@@ -680,8 +680,24 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
 function getAncestorsOf($table, $items_id) {
    global $DB;
 
+   $ckey = $table . '_ancestors_cache_';
+   if (is_array($items_id)) {
+      $ckey .= implode('|', $items_id);
+   } else {
+      $ckey .= $items_id;
+   }
+   $ancestors = [];
+
+   if (useCache()) {
+      if (apcu_exists($ckey)) {
+         $ancestors = apcu_fetch($ckey);
+         if ($ancestors) {
+            return $ancestors;
+         }
+      }
+   }
+
    // IDs to be present in the final array
-   $id_found      = [];
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = $DB->fieldExists($table, "ancestors_cache");
 
@@ -698,12 +714,12 @@ function getAncestorsOf($table, $items_id) {
 
       while ($row = $iterator->next()) {
          if ($row['id'] > 0) {
-            $ancestors = $row['ancestors_cache'];
-            $parent    = $row[$parentIDfield];
+            $rancestors = $row['ancestors_cache'];
+            $parent     = $row[$parentIDfield];
 
             // Return datas from cache in DB
-            if (!empty($ancestors)) {
-               $id_found = array_replace($id_found, importArrayFromDB($ancestors, true));
+            if (!empty($rancestors)) {
+               $ancestors = array_replace($ancestors, importArrayFromDB($rancestors, true));
             } else {
                $loc_id_found = [];
                // Recursive solution for table with-cache
@@ -723,43 +739,46 @@ function getAncestorsOf($table, $items_id) {
                       WHERE `id` = '".$row['id']."'";
                $DB->query($query);
 
-               $id_found = array_replace($id_found, $loc_id_found);
+               $ancestors = array_replace($ancestors, $loc_id_found);
             }
          }
       }
+   } else {
 
-      return $id_found;
-   }
+      // Get the ancestors
+      // iterative solution for table without cache
+      foreach ($items_id as $id) {
+         $IDf = $id;
+         while ($IDf > 0) {
+            // Get next elements
+            $iterator = $DB->request([
+               'SELECT' => [$parentIDfield],
+               'FROM'   => $table,
+               'WHERE'  => ['id' => $IDf]
+            ]);
 
-   // Get the ancestors
-   // iterative solution for table without cache
-   foreach ($items_id as $id) {
-      $IDf = $id;
-      while ($IDf > 0) {
-         // Get next elements
-         $iterator = $DB->request([
-            'SELECT' => [$parentIDfield],
-            'FROM'   => $table,
-            'WHERE'  => ['id' => $IDf]
-         ]);
+            if (count($iterator) > 0) {
+               $result = $iterator->current();
+               $IDf = $result[$parentIDfield];
+            } else {
+               $IDf = 0;
+            }
 
-         if (count($iterator) > 0) {
-            $result = $iterator->current();
-            $IDf = $result[$parentIDfield];
-         } else {
-            $IDf = 0;
-         }
-
-         if (!isset($id_found[$IDf])
-               && (($IDf > 0) || ($table == 'glpi_entities'))) {
-            $id_found[$IDf] = $IDf;
-         } else {
-            $IDf = 0;
+            if (!isset($ancestors[$IDf])
+                  && (($IDf > 0) || ($table == 'glpi_entities'))) {
+               $ancestors[$IDf] = $IDf;
+            } else {
+               $IDf = 0;
+            }
          }
       }
    }
 
-   return $id_found;
+   if (useCache()) {
+      apcu_store($ckey, $ancestors);
+   }
+
+   return $ancestors;
 }
 
 
@@ -774,77 +793,97 @@ function getAncestorsOf($table, $items_id) {
 function getSonsOf($table, $IDf) {
    global $DB;
 
+   $ckey = $table . '_sons_cache_' . $IDf;
+   $sons = [];
+
+   if (useCache()) {
+      if (apcu_exists($ckey)) {
+         $sons = apcu_fetch($ckey);
+         if ($sons) {
+            return $sons;
+         }
+      }
+   }
+
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = $DB->fieldExists($table, "sons_cache");
 
    if ($use_cache
        && ($IDf > 0)) {
 
-      $query = "SELECT `sons_cache`
-                FROM `$table`
-                WHERE `id` = '$IDf'";
+      $iterator = $DB->request([
+         'SELECT' => 'sons_cache',
+         'FROM'   => $table,
+         'WHERE'  => ['id' => $IDf]
+      ]);
 
-      if (($result = $DB->query($query))
-          && ($DB->numrows($result) > 0)) {
-         $sons = trim($DB->result($result, 0, 0));
-         if (!empty($sons)) {
-            return importArrayFromDB($sons, true);
+      if (count($iterator) > 0) {
+         $db_sons = trim($iterator->current()['sons_cache']);
+         if (!empty($db_sons)) {
+            $sons = importArrayFromDB($db_sons, true);
          }
       }
    }
 
-   // IDs to be present in the final array
-   $id_found[$IDf] = $IDf;
-   // current ID found to be added
-   $found = [];
-   // First request init the  varriables
-   $query = "SELECT `id`
-             FROM `$table`
-             WHERE `$parentIDfield` = '$IDf'
-             ORDER BY `name`";
-
-   if (($result = $DB->query($query))
-       && ($DB->numrows($result) > 0)) {
-      while ($row = $DB->fetch_assoc($result)) {
-         $id_found[$row['id']] = $row['id'];
-         $found[$row['id']]    = $row['id'];
-      }
-   }
-
-   // Get the leafs of previous found item
-   while (count($found) > 0) {
-      $first = true;
-      // Get next elements
-      $query = "SELECT `id`
-                FROM `$table`
-                WHERE `$parentIDfield` IN ('" . implode("','", $found) . "')";
-
-      // CLear the found array
-      unset($found);
+   if (!count($sons)) {
+      // IDs to be present in the final array
+      $sons[$IDf] = "$IDf";
+      // current ID found to be added
       $found = [];
+      // First request init the  varriables
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => $table,
+         'WHERE'  => [$parentIDfield => $IDf],
+         'ORDER'  => 'name'
+      ]);
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         while ($row = $DB->fetch_assoc($result)) {
-            if (!isset($id_found[$row['id']])) {
-               $id_found[$row['id']] = $row['id'];
-               $found[$row['id']]    = $row['id'];
+      if (count($iterator) > 0) {
+         while ($row = $iterator->next()) {
+            $sons[$row['id']]    = $row['id'];
+            $found[$row['id']]   = $row['id'];
+         }
+      }
+
+      // Get the leafs of previous found item
+      while (count($found) > 0) {
+         // Get next elements
+         $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => $table,
+            'WHERE'  => [$parentIDfield => $found]
+         ]);
+
+         // CLear the found array
+         unset($found);
+         $found = [];
+
+         if (count($iterator) > 0) {
+            while ($row = $iterator->next()) {
+               if (!isset($sons[$row['id']])) {
+                  $sons[$row['id']]    = $row['id'];
+                  $found[$row['id']]   = $row['id'];
+               }
             }
          }
       }
+
+      // Store cache data in DB
+      if ($use_cache
+         && ($IDf > 0)) {
+
+         $query = "UPDATE `$table`
+                  SET `sons_cache`='".exportArrayToDB($sons)."'
+                  WHERE `id` = '$IDf';";
+         $DB->query($query);
+      }
    }
 
-   // Store cache datas in DB
-   if ($use_cache
-       && ($IDf > 0)) {
-
-      $query = "UPDATE `$table`
-                SET `sons_cache`='".exportArrayToDB($id_found)."'
-                WHERE `id` = '$IDf';";
-      $DB->query($query);
+   if (useCache()) {
+      apcu_store($ckey, $sons);
    }
 
-   return $id_found;
+   return $sons;
 }
 
 
@@ -899,7 +938,6 @@ function getTreeForItem($table, $IDf) {
 
    // Get the leafs of previous founded item
    while (count($found) > 0) {
-      $first = true;
       // Get next elements
       $query = "SELECT *
                 FROM `$table`
@@ -1868,4 +1906,8 @@ function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
       }
    }
    return $crit;
+}
+
+function useCache() {
+   return function_exists('apcu_exists') && (!defined('TU_USER') || defined('CACHED_TESTS'));
 }
