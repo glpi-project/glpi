@@ -623,7 +623,8 @@ class Ticket extends CommonITILObject {
                            $nb += countElementsInTable('glpi_items_tickets` INNER JOIN `glpi_tickets` '.
                                                        'ON `glpi_items_tickets`.`tickets_id`=`glpi_tickets`.`id',
                                                        " `itemtype` = '$type'
-                                                         AND `items_id` = '$ID'");
+                                                         AND `items_id` = '$ID'
+                                                         AND is_deleted=0");
                         }
                      }
                   }
