@@ -1281,6 +1281,7 @@ abstract class APIBaseClass extends atoum {
 
    /**
     * @tags api
+    * @engine inline
     */
    public function testLostPasswordRequest() {
       global $CFG_GLPI;
@@ -1324,8 +1325,10 @@ abstract class APIBaseClass extends atoum {
                           'ERROR');
 
       //enable notifications
-      $CFG_GLPI['use_notifications'] = 1;
-      $CFG_GLPI['notifications_mailing'] = 1;
+      Config::setConfigurationValues('core', [
+         'use_notifications' => '1',
+         'notifications_mailing' => '1'
+      ]);
 
       // Test an unknown email is rejected
       $res = $this->query('lostPassword',
@@ -1389,8 +1392,10 @@ abstract class APIBaseClass extends atoum {
       $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
 
       //diable notifications
-      $CFG_GLPI['use_notifications'] = 0;
-      $CFG_GLPI['notifications_mailing'] = 0;
+      Config::setConfigurationValues('core', [
+         'use_notifications' => '0',
+         'notifications_mailing' => '0'
+      ]);
    }
 
    /**
