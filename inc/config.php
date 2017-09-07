@@ -264,18 +264,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             if ($older === true) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                if ($dev === true) {
-                  echo '<p class="red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
-                  echo "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
-                  echo "<script type=text/javascript>
-                        $(function() {
-                           $('[name=from_update]').on('click', function(event){
-                              if(!$('#agree_dev').is(':checked')) {
-                                 event.preventDefault();
-                                 alert('" . __('Please check the unstable version checkbox.') . "');
-                              }
-                           });
-                        });
-                        </script>";
+                  echo Config::agreeDevMessage();
                }
                echo "<p class='red'>";
                echo __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
