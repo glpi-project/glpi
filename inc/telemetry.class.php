@@ -136,22 +136,29 @@ class Telemetry extends CommonGLPI {
    static public function grabWebserverInfos() {
       global $CFG_GLPI;
 
-      $headers = get_headers($CFG_GLPI['url_base']);
-
-      //BEGIN EXTRACTING SERVER DETAILS
-      $pattern = '#^Server:*#i';
-      $matches = preg_grep($pattern, $headers);
-
+      $headers = false;
       $engine  = '';
       $version = '';
 
-      if (count($matches)) {
-         $infos = current($matches);
-         $pattern = '#Server: ([^ ]+)/([^ ]+)#i';
-         preg_match($pattern, $infos, $srv_infos);
-         if (count($srv_infos) == 3) {
-            $engine  = $srv_infos[1];
-            $version = $srv_infos[2];
+      // check if host is present (do no throw php warning in contrary of get_headers)
+      if (filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)),
+          FILTER_VALIDATE_IP)) {
+         $headers = get_headers($CFG_GLPI['url_base']);
+      }
+
+      if (is_array($headers)) {
+         //BEGIN EXTRACTING SERVER DETAILS
+         $pattern = '#^Server:*#i';
+         $matches = preg_grep($pattern, $headers);
+
+         if (count($matches)) {
+            $infos = current($matches);
+            $pattern = '#Server: ([^ ]+)/([^ ]+)#i';
+            preg_match($pattern, $infos, $srv_infos);
+            if (count($srv_infos) == 3) {
+               $engine  = $srv_infos[1];
+               $version = $srv_infos[2];
+            }
          }
       }
 
