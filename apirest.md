@@ -371,7 +371,7 @@ $ curl -X POST \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMyEntities'
+'http://path/to/glpi/apirest.php/getActiveEntities'
 
 < 200 OK
 < {
