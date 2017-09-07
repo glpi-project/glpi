@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a112ca97870e4cbbd8ab3ea4f359726",
+    "content-hash": "2f722d3fd9290b58d0136f882ef99aee",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -1088,22 +1088,21 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "3.1.1",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "6af6b609a108fd2e63f2f42efbb4f0b799e6c710"
+                "reference": "6f4ab88f3a1826aed2372c9f7f0d53b9303f672a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/6af6b609a108fd2e63f2f42efbb4f0b799e6c710",
-                "reference": "6af6b609a108fd2e63f2f42efbb4f0b799e6c710",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/6f4ab88f3a1826aed2372c9f7f0d53b9303f672a",
+                "reference": "6f4ab88f3a1826aed2372c9f7f0d53b9303f672a",
                 "shasum": ""
             },
             "require": {
                 "ext-hash": "*",
                 "ext-json": "*",
-                "ext-session": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
                 "php": "^5.6.0 || ^7.0.0"
@@ -1168,7 +1167,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2017-07-19T19:59:03+00:00"
+            "time": "2017-09-07T08:27:13+00:00"
         },
         {
             "name": "consolidation/annotated-command",
