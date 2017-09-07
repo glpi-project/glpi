@@ -161,7 +161,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $parent = $this->fields[$this->getForeignKeyField()];
       }
 
-      $this->recursiveCleanSonsAboveID($parent);
+      $this->cleanParentsSons();
       $tmp  = clone $this;
       $crit = ['FIELDS'                    => 'id',
                     $this->getForeignKeyField() => $this->fields["id"]];
@@ -186,6 +186,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
+            if (useCache()) {
+               $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+               if (apcu_exists($ckey)) {
+                  apcu_delete($ckey);
+               }
+            }
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
       }
@@ -206,6 +212,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function regenerateTreeUnderID($ID, $updateName, $changeParent) {
       global $DB;
 
+      //drop from sons cache when needed
+      if ($changeParent && useCache()) {
+         $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
+         if (apcu_exists($ckey)) {
+            apcu_delete($ckey);
+         }
+      }
+
       if (($updateName) || ($changeParent)) {
          $currentNode = clone $this;
 
@@ -216,9 +230,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $nextNodeLevel = 1;
          }
 
-         $query = "SELECT `id`, `name`
-                   FROM `".$this->getTable()."`
-                   WHERE `".$this->getForeignKeyField()."` = '$ID'";
+         $query = [
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [$this->getForeignKeyField() => $ID]
+         ];
          if (Session::haveTranslations($this->getType(), 'completename')) {
             DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
          }
@@ -258,10 +274,80 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
+    * Clean sons of all parents from caches
+    *
+    * @param null|integer $id   Parent id to clean. Default to current id
+    * @param boolean      $apcu Whether to clean APCu cache (defaults to true)
+    *
+    * @return void
+    */
+   protected function cleanParentsSons($id = null, $apcu = true) {
+      global $DB;
+
+      if ($id === null) {
+         $id = $this->getID();
+      }
+
+      $ancestors = getAncestorsOf($this->getTable(), $id);
+      if ($id != $this->getID()) {
+         $ancestors[$id] = "$id";
+      }
+      if (!count($ancestors)) {
+         return;
+      }
+
+      $query = "UPDATE `".$this->getTable()."`
+                  SET `sons_cache` = NULL
+                  WHERE `id` IN ('" . implode("', '", $ancestors) . "')";
+      $DB->query($query);
+
+      //drop from sons cache when needed
+      if ($apcu && useCache()) {
+         foreach ($ancestors as $ancestor) {
+            $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
+            if (apcu_exists($ckey)) {
+               $sons = apcu_fetch($ckey);
+               if (isset($sons[$this->getID()])) {
+                  unset($sons[$this->getID()]);
+                  apcu_store($ckey, $sons);
+               }
+            }
+         }
+      }
+   }
+
+
+   /**
+    * Add new son in its parent in cache
+    *
+    * @return void
+    */
+   protected function addSonInParents() {
+      //add sons cache when needed
+      if (useCache()) {
+         $ancestors = getAncestorsOf($this->getTable(), $this->getID());
+         foreach ($ancestors as $ancestor) {
+            $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
+            if (apcu_exists($ckey)) {
+               $sons = apcu_fetch($ckey);
+               if (!isset($sons[$this->getID()])) {
+                  $sons[$this->getID()] = (string)$this->getID();
+                  apcu_store($ckey, $sons);
+               }
+            }
+         }
+      }
+   }
+
+   /**
     * @param $ID
+    *
+    * @deprecated 9.2 @see CommonTreeDropdown::cleanParentsSons()
    **/
    function recursiveCleanSonsAboveID($ID) {
       global $DB;
+
+      Toolbox::deprecated();
 
       if ($ID > 0) {
          $query = "UPDATE `".$this->getTable()."`
@@ -283,7 +369,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function post_addItem() {
 
       $parent = $this->fields[$this->getForeignKeyField()];
-      $this->recursiveCleanSonsAboveID($parent);
+      //do not clean APCu, it will be updated
+      $this->cleanParentsSons(null, false);
+      $this->addSonInParents();
       if ($parent && $this->dohistory) {
          $changes[0] = '0';
          $changes[1] = '';
@@ -299,7 +387,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $ID           = $this->getID();
       $changeParent = in_array($this->getForeignKeyField(), $this->updates);
       $this->regenerateTreeUnderID($ID, in_array('name', $this->updates), $changeParent);
-      $this->recursiveCleanSonsAboveID($ID);
 
       if ($changeParent) {
          $oldParentID     = $this->oldvalues[$this->getForeignKeyField()];
@@ -309,7 +396,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
          $parent = clone $this;
          if ($oldParentID > 0) {
-            $this->recursiveCleanSonsAboveID($oldParentID);
+            $this->cleanParentsSons($oldParentID);
             if ($history) {
                if ($parent->getFromDB($oldParentID)) {
                   $oldParentNameID = $parent->getNameID();
@@ -323,6 +410,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
 
          if ($newParentID > 0) {
+            $this->cleanParentsSons(null, false);
+            $this->addSonInParents();
             if ($history) {
                if ($parent->getFromDB($newParentID)) {
                   $newParentNameID = $parent->getNameID();

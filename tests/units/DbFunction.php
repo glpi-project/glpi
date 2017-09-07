@@ -442,41 +442,307 @@ class DbFunction extends DbTestCase {
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7');
    }
 
-   public function testGetAncestorsOf() {
+   /**
+    * Run getAncestorsOf tests
+    *
+    * @param boolean $cache Is cache enabled?
+    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+    *
+    * @return void
+    */
+   private function runGetAncestorsOf($cache = false, $hit = false) {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
+      //Cache tests:
+      //- if $cache === 0; we do not expect anything,
+      //- if $cache === 1; we expect cache to be empty before call, and populated after
+      //- if $hit   === 1; we expect cache to be populated
+
+      $ckey = 'glpi_entities_ancestors_cache_';
+
+      //test on ent0
+      $expected = [0 => '0'];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent0))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+      }
+
       $ancestors = getAncestorsOf('glpi_entities', $ent0);
-      $this->array($ancestors)->isIdenticalTo([0 => '0']);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+      }
+
+      //test on ent1
+      $expected = [0 => '0', 1 => "$ent0"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent1))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent1);
-      $this->array($ancestors)->isIdenticalTo([0 => '0', 1 => "$ent0"]);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      //test on ent2
+      $expected = [0 => '0', 1 => "$ent0"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent2))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+      }
 
       $ancestors = getAncestorsOf('glpi_entities', $ent2);
-      $this->array($ancestors)->isIdenticalTo([0 => '0', 1 => "$ent0"]);
+      $this->array($ancestors)->isIdenticalTo($expected);
 
-      $entity = new \Entity();
-      $new_id = (int)$entity->add([
-         'name'         => 'Sub child entity',
-         'entities_id'  => $ent1
-      ]);
-      $this->integer($new_id)->isGreaterThan(0);
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+      }
+
+      //test with new sub entity
+      //Cache tests:
+      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
+      if (!$new_id) {
+         $entity = new \Entity();
+         $new_id = (int)$entity->add([
+            'name'         => 'Sub child entity',
+            'entities_id'  => $ent1
+         ]);
+         $this->integer($new_id)->isGreaterThan(0);
+      }
+
+      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$new_id"))->isIdenticalTo($expected);
+      }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id);
-      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"]);
+      $this->array($ancestors)->isIdenticalTo($expected);
 
-      $entity = new \Entity();
-      $new_id2 = (int)$entity->add([
-         'name'         => 'Sub child entity 2',
-         'entities_id'  => $ent2
-      ]);
-      $this->integer($new_id2)->isGreaterThan(0);
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$new_id"))->isIdenticalTo($expected);
+      }
+
+      //test with another new sub entity
+      $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
+      if (!$new_id2) {
+         $entity = new \Entity();
+         $new_id2 = (int)$entity->add([
+            'name'         => 'Sub child entity 2',
+            'entities_id'  => $ent2
+         ]);
+         $this->integer($new_id2)->isGreaterThan(0);
+      }
+
+      $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$new_id2"))->isIdenticalTo($expected);
+      }
 
       $ancestors = getAncestorsOf('glpi_entities', $new_id2);
-      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"]);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$new_id2"))->isIdenticalTo($expected);
+      }
+
+      //test on multiple entities
+      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $new_id . '|' . $new_id2))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+      }
 
       $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
-      $this->array($ancestors)->isIdenticalTo([0 => '0', $ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"]);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$new_id|$new_id2"))->isIdenticalTo($expected);
+      }
    }
+
+   public function testGetAncestorsOf() {
+      global $DB;
+      //ensure db cache is unset
+      $DB->query('UPDATE glpi_entities SET ancestors_cache=NULL');
+      $this->runGetAncestorsOf();
+
+      $this->integer(countElementsInTable('glpi_entities', ['ancestors_cache' => 'NULL']))->isIdenticalTo(0);
+      //run a second time: db cache must be set
+      $this->runGetAncestorsOf();
+   }
+
+   /**
+    * @extensions apcu
+    */
+   public function testGetAncestorsOfCached() {
+      //run with cache
+      define('CACHED_TESTS', true);
+      //first run: no cache hit expected
+      $this->runGetAncestorsOf(true);
+      //second run: cache hit expected
+      $this->runGetAncestorsOf(true, true);
+   }
+
+
+   /**
+    * Run getSonsOf tests
+    *
+    * @param boolean $cache Is cache enabled?
+    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+    *
+    * @return void
+    */
+   private function runGetSonsOf($cache = false, $hit = false) {
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+      //Cache tests:
+      //- if $cache === 0; we do not expect anything,
+      //- if $cache === 1; we expect cache to be empty before call, and populated after
+      //- if $hit   === 1; we expect cache to be populated
+
+      $ckey = 'glpi_entities_sons_cache_';
+
+      //test on ent0
+      $expected = [$ent0 => "$ent0", $ent1 => "$ent1", $ent2 => "$ent2"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent0))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+      }
+
+      $sons = getSonsOf('glpi_entities', $ent0);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
+      }
+
+      //test on ent1
+      $expected = [$ent1 => "$ent1"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent1))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      //test on ent2
+      $expected = [$ent2 => "$ent2"];
+      if ($cache === true && $hit === false) {
+         $this->boolean(apcu_exists($ckey . $ent2))->isFalse();
+      } else if ($cache === true && $hit === true) {
+         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+      }
+
+      $sons = getSonsOf('glpi_entities', $ent2);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
+      }
+
+      //test with new sub entity
+      //Cache tests:
+      //APCu cache is updated on entity creation; so even if we do not expect $hit; we got it.
+      $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
+      if (!$new_id) {
+         $entity = new \Entity();
+         $new_id = (int)$entity->add([
+            'name'         => 'Sub child entity',
+            'entities_id'  => $ent1
+         ]);
+         $this->integer($new_id)->isGreaterThan(0);
+      }
+
+      $expected = [$ent1 => $ent1, $new_id => "$new_id"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      //test with another new sub entity
+      $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
+      if (!$new_id2) {
+         $entity = new \Entity();
+         $new_id2 = (int)$entity->add([
+            'name'         => 'Sub child entity 2',
+            'entities_id'  => $ent1
+         ]);
+         $this->integer($new_id2)->isGreaterThan(0);
+      }
+
+      $expected = [$ent1 => $ent1, $new_id => "$new_id", $new_id2 => "$new_id2"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      //drop sub entity
+      $expected = [$ent1 => $ent1, $new_id2 => "$new_id2"];
+      $this->boolean($entity->delete(['id' => $new_id], true))->isTrue();
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      $expected = [$ent1 => $ent1];
+      $this->boolean($entity->delete(['id' => $new_id2], true))->isTrue();
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
+      }
+   }
+
+   public function testGetSonsOf() {
+      global $DB;
+      //ensure db cache is unset
+      $DB->query('UPDATE glpi_entities SET sons_cache=NULL');
+      $this->runGetSonsOf();
+
+      $this->integer(countElementsInTable('glpi_entities', ['sons_cache' => 'NULL']))->isIdenticalTo(0);
+      //run a second time: db cache must be set
+      $this->runGetSonsOf();
+   }
+
+   /**
+    * @extensions apcu
+    */
+   public function testGetSonsOfCached() {
+      //run with cache
+      define('CACHED_TESTS', true);
+      //first run: no cache hit expected
+      $this->runGetSonsOf(true);
+      //second run: cache hit expected
+      $this->runGetSonsOf(true, true);
+   }
+
 }

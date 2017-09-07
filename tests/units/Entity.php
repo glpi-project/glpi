@@ -104,4 +104,137 @@ class Entity extends DbTestCase {
          ->integer['level']->isIdenticalTo(1)
          ->integer['entities_id']->isIdenticalTo(0);
    }
+
+   /**
+    * Run getSonsOf tests
+    *
+    * @param boolean $cache Is cache enabled?
+    * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+    *
+    * @return void
+    */
+   public function runChangeEntityParent($cache = false, $hit = false) {
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+      $ackey = 'glpi_entities_ancestors_cache_';
+      $sckey = 'glpi_entities_sons_cache_';
+
+      $entity = new \Entity();
+      $new_id = (int)$entity->add([
+         'name'         => 'Sub child entity',
+         'entities_id'  => $ent1
+      ]);
+      $this->integer($new_id)->isGreaterThan(0);
+
+      $expected = [0 => '0', $ent0 => "$ent0", $ent1 => "$ent1"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ackey$new_id"))->isIdenticalTo($expected);
+      }
+
+      $ancestors = getAncestorsOf('glpi_entities', $new_id);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ackey$new_id"))->isIdenticalTo($expected);
+      }
+
+      $expected = [$ent1 => $ent1, $new_id => "$new_id"];
+
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$sckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      //change parent entity
+      $this->boolean(
+         $entity->update([
+            'id'           => $new_id,
+            'entities_id'  => $ent2
+         ])
+      )->isTrue();
+
+      $expected = [0 => '0', $ent0 => "$ent0", $ent2 => "$ent2"];
+      if ($cache === true) {
+         $this->array(apcu_fetch("$ackey$new_id"))->isIdenticalTo($expected);
+      }
+
+      $ancestors = getAncestorsOf('glpi_entities', $new_id);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$ackey$new_id"))->isIdenticalTo($expected);
+      }
+
+      $expected = [$ent1 => $ent1];
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$sckey$ent1"))->isIdenticalTo($expected);
+      }
+
+      $expected = [$ent2 => $ent2, $new_id => "$new_id"];
+      $sons = getSonsOf('glpi_entities', $ent2);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      if ($cache === true && $hit === false) {
+         $this->array(apcu_fetch("$sckey$ent2"))->isIdenticalTo($expected);
+      }
+
+      //clean new entity
+      $this->boolean(
+         $entity->delete(['id' => $new_id], true)
+      )->isTrue();
+   }
+
+   private function checkParentsSonsAreReset() {
+      $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+      $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+      $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+      $expected = [0 => '0', 1 => "$ent0"];
+      $ancestors = getAncestorsOf('glpi_entities', $ent1);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      $ancestors = getAncestorsOf('glpi_entities', $ent2);
+      $this->array($ancestors)->isIdenticalTo($expected);
+
+      $expected = [$ent1 => "$ent1"];
+      $sons = getSonsOf('glpi_entities', $ent1);
+      $this->array($sons)->isIdenticalTo($expected);
+
+      $expected = [$ent2 => "$ent2"];
+      $sons = getSonsOf('glpi_entities', $ent2);
+      $this->array($sons)->isIdenticalTo($expected);
+   }
+
+   public function testChangeEntityParent() {
+      global $DB;
+      //ensure db cache are unset
+      $DB->query('UPDATE glpi_entities SET ancestors_cache=NULL');
+      $DB->query('UPDATE glpi_entities SET sons_cache=NULL');
+      $this->runChangeEntityParent();
+      //reset cache (checking for expected defaults) then run a second time: db cache must be set
+      $this->checkParentsSonsAreReset();
+      $this->runChangeEntityParent();
+   }
+
+   /**
+    * @extensions apcu
+    */
+   public function testChangeEntityParentCached() {
+      //run with cache
+      define('CACHED_TESTS', true);
+      //first run: no cache hit expected
+      $this->runChangeEntityParent(true);
+      //reset cache (checking for expected defaults) then run a second time: cache hit expected
+      //second run: cache hit expected
+      $this->checkParentsSonsAreReset();
+      $this->runChangeEntityParent(true);
+   }
+
 }

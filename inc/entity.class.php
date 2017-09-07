@@ -130,6 +130,15 @@ class Entity extends CommonTreeDropdown {
       if ($this->input['id'] == 0) {
          return false;
       }
+
+      //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
+      $this->cleanParentsSons();
+      if (useCache()) {
+         $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
+         if (apcu_exists($ckey)) {
+            apcu_delete($ckey);
+         }
+      }
       return true;
    }
 

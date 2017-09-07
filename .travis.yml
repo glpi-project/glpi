@@ -23,6 +23,8 @@ before_script:
   # LDAP stuff
   - phpenv config-add tests/enable-ldap.ini
   - ./tests/LDAP/ldap_fixtures.sh
+  #APCu
+  - phpenv config-add tests/enable-apcu.ini
 script:
   - mysql -u root -e 'select version();'
   - vendor/bin/atoum --debug --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/database
