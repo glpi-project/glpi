@@ -2589,4 +2589,26 @@ class Config extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get message that informs the user he's using a development version
+    *
+    * @param boolean $bg Display a background
+    *
+    * @return void
+    */
+   public static function agreeDevMessage($bg = false) {
+      $msg = '<p class="'.($bg ? 'mig' : '') .'red"><strong>' . __('You are using a development version, be careful!') . '</strong><br/>';
+      $msg .= "<input type='checkbox' required='required' id='agree_dev' name='agree_dev'/><label for='agree_dev'>" . __('I know I am using a unstable version.') . "</label></p>";
+      $msg .= "<script type=text/javascript>
+            $(function() {
+               $('[name=from_update]').on('click', function(event){
+                  if(!$('#agree_dev').is(':checked')) {
+                     event.preventDefault();
+                     alert('" . __('Please check the unstable version checkbox.') . "');
+                  }
+               });
+            });
+            </script>";
+      return $msg;
+   }
 }
