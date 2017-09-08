@@ -5348,6 +5348,7 @@ class Html {
       $p['display']           = true;
       $p['cols']              = 100;
       $p['rows']              = 15;
+      $p['multiple']          = true;
 
       //merge default options with options parameter
       $p = array_merge($p, $options);
