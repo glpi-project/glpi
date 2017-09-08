@@ -4060,7 +4060,8 @@ class Ticket extends CommonITILObject {
                " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
                 $content."</textarea></div>";
          Html::file(['editor_id' => $content_id,
-                          'showtitle' => false]);
+                          'showtitle' => false,
+                          'multiple' => true]);
 
          echo "</td></tr>";
       }
@@ -5160,7 +5161,8 @@ class Ticket extends CommonITILObject {
       }
       Html::file(['filecontainer' => 'fileupload_info_ticket',
                        'editor_id'     => $content_id,
-                       'showtitle'     => false]);
+                       'showtitle'     => false,
+                       'multiple'     => true]);
       echo "</td>";
       echo "</tr>";
 
