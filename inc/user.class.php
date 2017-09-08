@@ -59,6 +59,7 @@ class User extends CommonDBTM {
 
    static $rightname = 'user';
 
+   private $entities = null;
 
 
    static function getTypeName($nb=0) {
@@ -92,10 +93,8 @@ class User extends CommonDBTM {
 
 
    function canViewItem() {
-
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
       if (Session::isViewAllEntities()
-          || Session::haveAccessToOneOfEntities($entities)) {
+          || Session::haveAccessToOneOfEntities($this->getEntities())) {
          return true;
       }
       return false;
@@ -128,10 +127,8 @@ class User extends CommonDBTM {
 
 
    function canUpdateItem() {
-
-      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities()
-          || Session::haveAccessToOneOfEntities($entities)) {
+          || Session::haveAccessToOneOfEntities($this->getEntities())) {
          return true;
       }
       return false;
@@ -139,10 +136,8 @@ class User extends CommonDBTM {
 
 
    function canDeleteItem() {
-
-      $entities = Profile_User::getUserEntities($this->fields['id'], true);
       if (Session::isViewAllEntities()
-          || Session::haveAccessToAllOfEntities($entities)) {
+          || Session::haveAccessToAllOfEntities($this->getEntities())) {
          return true;
       }
       return false;
@@ -290,7 +285,7 @@ class User extends CommonDBTM {
    function pre_deleteItem() {
       global $DB;
 
-      $entities = Profile_User::getUserEntities($this->fields["id"]);
+      $entities = $this->getEntities();
       $view_all = Session::isViewAllEntities();
       // Have right on all entities ?
       $all      = true;
@@ -2052,7 +2047,7 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if (!empty($ID)) {
          echo "<td>" . __('Location') . "</td><td>";
-         $entities = Profile_User::getUserEntities($ID, true);
+         $entities = $this->getEntities();
          if (count($entities) <= 0) {
             $entities = -1;
          }
@@ -2091,7 +2086,7 @@ class User extends CommonDBTM {
                                           'display_emptychoice' => true));
 
             echo "</td><td>" .  __('Default entity') . "</td><td>";
-            $entities = Profile_User::getUserEntities($this->fields['id'],1);
+            $entities = $this->getEntities();
             Entity::dropdown(array('value'  => $this->fields["entities_id"],
                                    'entity' => $entities));
             echo "</td></tr>";
@@ -2350,7 +2345,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-         $entities = Profile_User::getUserEntities($this->fields['id'], 1);
+         $entities = $this->getEntities();
          if (!GLPI_DEMO_MODE
              && (count($_SESSION['glpiactiveentities']) > 1)) {
             echo "<td>" . __('Default entity') . "</td><td>";
@@ -2371,7 +2366,6 @@ class User extends CommonDBTM {
          echo "</td><td colspan='2'></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
-         $entities = Profile_User::getUserEntities($ID, true);
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $entities));
 
@@ -4313,4 +4307,16 @@ class User extends CommonDBTM {
    }
 
 
+   /**
+    * Get current user entities
+    *
+    * @return array
+    */
+   private function getEntities() {
+      //get user entities
+      if ($this->entities == null) {
+         $this->entities = Profile_User::getUserEntities($this->fields['id'], true);
+      }
+      return $this->entities;
+   }
 }

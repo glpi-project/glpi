@@ -377,13 +377,14 @@ function countElementsInTableForMyEntities($table, $condition='') {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string   table name
- * @param $entity       integer  the entity ID
- * @param $condition    string   additional condition (default '')
+ * @param string  $table     table name
+ * @param integer $entity    the entity ID
+ * @param string  $condition additional condition (default '')
+ * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
 **/
-function countElementsInTableForEntity($table, $entity, $condition='') {
+function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
 
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype = getItemTypeForTable($table);
@@ -393,7 +394,11 @@ function countElementsInTableForEntity($table, $entity, $condition='') {
       $condition .= " AND ";
    }
 
-   $condition .= getEntitiesRestrictRequest("", $table, '', $entity,$item->maybeRecursive());
+   if ($recursive) {
+      $recursive = $item->maybeRecursive();
+   }
+
+   $condition .= getEntitiesRestrictRequest("", $table, '', $entity, $recursive);
    return countElementsInTable($table, $condition);
 }
 
@@ -1663,7 +1668,7 @@ function getDbRelations() {
  * @param $table              table where apply the limit (if needed, multiple tables queries)
  *                            (default '')
  * @param $field              field where apply the limit (id != entities_id) (default '')
- * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
  *                            single item or array (default '')
  * @param $is_recursive       need to use recursive process to find item
  *                            (field need to be named recursive) (false by default)
@@ -1719,18 +1724,19 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 
    if ($is_recursive) {
       $ancestors = array();
-      if (is_array($value)) {
-         foreach ($value as $val) {
+      if (isset($_SESSION['glpiactiveentities']) && $value == $_SESSION['glpiactiveentities']) {
+         $ancestors = $_SESSION['glpiparententities'];
+      } else {
+         if (is_array($value)) {
+            $ancestors = getAncestorsOf("glpi_entities", $value);
             $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val),
                                                   $ancestors));
+         } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
+            $ancestors = $_SESSION['glpiparententities'];
+
+         } else {
+            $ancestors = getAncestorsOf("glpi_entities", $value);
          }
-         $ancestors = array_diff($ancestors, $value);
-
-      } else if (strlen($value) == 0) {
-         $ancestors = $_SESSION['glpiparententities'];
-
-      } else {
-         $ancestors = getAncestorsOf("glpi_entities", $value);
       }
 
       if (count($ancestors)) {

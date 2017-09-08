@@ -609,18 +609,22 @@ class Ticket extends CommonITILObject {
 
                default :
                   // Direct one
-                  $nb = countElementsInTable('glpi_items_tickets',
+                  $nb = countElementsInTable('glpi_items_tickets` INNER JOIN `glpi_tickets` '.
+                                             'ON `glpi_items_tickets`.`tickets_id`=`glpi_tickets`.`id',
                                              " `itemtype` = '".$item->getType()."'
-                                                AND `items_id` = '".$item->getID()."'");
+                                                AND `items_id` = '".$item->getID()."'
+                                                AND is_deleted=0");
                   // Linked items
                   $linkeditems = $item->getLinkedItems();
 
                   if (count($linkeditems)) {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
-                           $nb += countElementsInTable('glpi_items_tickets',
+                           $nb += countElementsInTable('glpi_items_tickets` INNER JOIN `glpi_tickets` '.
+                                                       'ON `glpi_items_tickets`.`tickets_id`=`glpi_tickets`.`id',
                                                        " `itemtype` = '$type'
-                                                         AND `items_id` = '$ID'");
+                                                         AND `items_id` = '$ID'
+                                                         AND is_deleted=0");
                         }
                      }
                   }
@@ -3814,14 +3818,10 @@ class Ticket extends CommonITILObject {
          $this->userentities = array();
          if ($options["_users_id_requester"]) {
             //Get all the user's entities
-            $all_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
+            $requester_entities = Profile_User::getUserEntities($options["_users_id_requester"], true,
                                                           true);
-            //For each user's entity, check if the technician which creates the ticket have access to it
-            foreach ($all_entities as $tmp => $ID_entity) {
-               if (Session::haveAccessToEntity($ID_entity)) {
-                  $this->userentities[] = $ID_entity;
-               }
-            }
+            $user_entities = $_SESSION['glpiactiveentities'];
+            $this->userentities = array_intersect($requester_entities, $user_entities);
          }
          $this->countentitiesforuser = count($this->userentities);
 
@@ -5436,7 +5436,7 @@ class Ticket extends CommonITILObject {
           && ($item->getType() == 'User')
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
-          && ($item->fields['is_template'] == 0)) {
+          && isset($item->fields['is_template']) && ($item->fields['is_template'] == 0)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='$colspan'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),

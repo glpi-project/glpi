@@ -444,20 +444,18 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
 
-      if ($entity_assign) {
-         if ($fk == 'entities_id') {
-            $crit['id']  = $_SESSION['glpiactiveentities'];
-            $crit['id'] += $_SESSION['glpiparententities'];
-         } else {
-            $crit['entities_id'] = $_SESSION['glpiactiveentities'];
-         }
-      }
       $nb = 0;
       foreach ($DB->request($this->getTable(), $crit) as $data) {
          $nb++;
-         echo "<tr class='tab_bg_1'>";
-         echo "<td><a href='".$this->getFormURL();
-         echo '?id='.$data['id']."'>".$data['name']."</a></td>";
+         echo "<tr class='tab_bg_1'><td>";
+         if ((($fk == 'entities_id') && in_array($data['id'], $_SESSION['glpiactiveentities']))
+             || (($fk != 'entities_id') && in_array($data['entities_id'], $_SESSION['glpiactiveentities']))) {
+            echo "<a href='".$this->getFormURL();
+            echo '?id='.$data['id']."'>".$data['name']."</a>";
+         } else {
+            echo $data['name'];
+         }
+         echo "</td>";
          if ($entity_assign) {
             echo "<td>".Dropdown::getDropdownName("glpi_entities", $data["entities_id"])."</td>";
          }
