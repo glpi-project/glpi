@@ -52,9 +52,11 @@ if (isset($_POST["add"])) {
    if (isset($_POST['_filename']) && is_array($_POST['_filename'])) {
       $fic = $_POST['_filename'];
       $tag = $_POST['_tag_filename'];
+      $prefix = $_POST['_prefix_filename'];
       foreach ($fic as $key => $val) {
-         $_POST['_filename']     = [$fic[$key]];
-         $_POST['_tag_filename'] = [$tag[$key]];
+         $_POST['_filename']        = [$fic[$key]];
+         $_POST['_tag_filename']    = [$tag[$key]];
+         $_POST['_prefix_filename'] = [$prefix[$key]];
          if ($newID = $doc->add($_POST)) {
             Event::log($newID, "documents", 4, "login",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
