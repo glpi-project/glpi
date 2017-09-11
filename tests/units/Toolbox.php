@@ -99,4 +99,13 @@ class Toolbox extends atoum {
       // Restore values
       $_SERVER = $saveServer;
    }
+
+   public function testFormatOutputWebLink() {
+      $this->string(\Toolbox::formatOutputWebLink('www.glpi-project.org/'))
+         ->isIdenticalTo('http://www.glpi-project.org/');
+      $this->string(\Toolbox::formatOutputWebLink('http://www.glpi-project.org/'))
+         ->isIdenticalTo('http://www.glpi-project.org/');
+      $this->string(\Toolbox::formatOutputWebLink('https://www.glpi-project.org/'))
+         ->isIdenticalTo('https://www.glpi-project.org/');
+   }
 }

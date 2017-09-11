@@ -34,11 +34,9 @@ namespace tests\units;
 
 use \DbTestCase;
 
-require_once __DIR__ . '/../DbFunction.php';
+/* Test for inc/dbutils.class.php */
 
-/* Test for inc/db.function.php */
-
-class DbFunction extends DbTestCase {
+class DbUtils extends DbTestCase {
 
    public function setUp() {
       global $CFG_GLPI;
@@ -49,25 +47,36 @@ class DbFunction extends DbTestCase {
       unset($CFG_GLPI['glpitablesitemtype']);
    }
 
-   public function dataTableKey() {
+   protected function dataTableKey() {
 
-      return [['foo', ''],
-                   ['glpi_computers', 'computers_id'],
-                   ['glpi_users', 'users_id'],
-                   ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']];
+      return [
+         ['foo', ''],
+         ['glpi_computers', 'computers_id'],
+         ['glpi_users', 'users_id'],
+         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+      ];
    }
 
-   public function dataTableForeignKey() {
+   protected function dataTableForeignKey() {
 
-      return [['glpi_computers', 'computers_id'],
-                   ['glpi_users', 'users_id'],
-                   ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']];
+      return [
+         ['glpi_computers', 'computers_id'],
+         ['glpi_users', 'users_id'],
+         ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+      ];
    }
 
    /**
     * @dataProvider dataTableKey
    **/
    public function testGetForeignKeyFieldForTable($table, $key) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->getForeignKeyFieldForTable($table))
+            ->isIdenticalTo($key);
+
+      //keep testing old method from db.function
       $this->string(getForeignKeyFieldForTable($table))->isIdenticalTo($key);
    }
 
@@ -75,10 +84,25 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataTableForeignKey
    **/
    public function testIsForeignKeyFieldBase($table, $key) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->boolean($this->testedInstance->isForeignKeyField($key))->isTrue();
+
+      //keep testing old method from db.function
       $this->boolean(isForeignKeyField($key))->isTrue();
    }
 
    public function testIsForeignKeyFieldMore() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->boolean($this->testedInstance->isForeignKeyField('FakeId'))->isFalse()
+            ->boolean($this->testedInstance->isForeignKeyField('id_Another_Fake_Id'))->isFalse()
+            ->boolean($this->testedInstance->isForeignKeyField('users_id_tech'))->isTrue()
+            ->boolean($this->testedInstance->isForeignKeyField('_id'))->isFalse();
+
+      //keep testing old method from db.function
       $this->boolean(isForeignKeyField('FakeId'))->isFalse();
       $this->boolean(isForeignKeyField('id_Another_Fake_Id'))->isFalse();
       $this->boolean(isForeignKeyField('users_id_tech'))->isTrue();
@@ -90,10 +114,16 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataTableForeignKey
    **/
    public function testGetTableNameForForeignKeyField($table, $key) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->string($this->testedInstance->getTableNameForForeignKeyField($key))->isIdenticalTo($table);
+
+      //keep testing old method from db.function
       $this->string(getTableNameForForeignKeyField($key))->isIdenticalTo($table);
    }
 
-   public function dataTableType() {
+   protected function dataTableType() {
       // Pseudo plugin class for test
       require_once __DIR__ . '/../fixtures/pluginfoobar.php';
       require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
@@ -111,6 +141,12 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataTableType
    **/
    public function testGetTableForItemType($table, $type, $classexists) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->string($this->testedInstance->getTableForItemType($type))->isIdenticalTo($table);
+
+      //keep testing old method from db.function
       $this->string(getTableForItemType($type))->isIdenticalTo($table);
    }
 
@@ -118,6 +154,19 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataTableType
    **/
    public function testGetItemTypeForTable($table, $type, $classexists) {
+      if ($classexists) {
+         $this
+            ->if($this->newTestedInstance)
+            ->then
+               ->string($this->testedInstance->getItemTypeForTable($table))->isIdenticalTo($type);
+      } else {
+         $this
+            ->if($this->newTestedInstance)
+            ->then
+               ->string($this->testedInstance->getItemTypeForTable($table))->isIdenticalTo('UNKNOWN');
+      }
+
+      //keep testing old method from db.function
       if ($classexists) {
          $this->string(getItemTypeForTable($table))->isIdenticalTo($type);
       } else {
@@ -129,6 +178,19 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataTableType
    **/
    public function testGetItemForItemtype($table, $itemtype, $classexists) {
+      if ($classexists) {
+         $this
+            ->if($this->newTestedInstance)
+            ->then
+               ->object($this->testedInstance->getItemForItemtype($itemtype))->isInstanceOf($itemtype);
+      } else {
+         $this
+            ->if($this->newTestedInstance)
+            ->then
+               ->boolean($this->testedInstance->getItemForItemtype($itemtype))->isFalse();
+      }
+
+      //keep testing old method from db.function
       if ($classexists) {
          $this->object(getItemForItemtype($itemtype))
             ->isInstanceOf($itemtype);
@@ -151,11 +213,23 @@ class DbFunction extends DbTestCase {
                    ['licence', 'licences']];
    }
 
-    /**
+   /**
     * @dataProvider dataPlural
-   **/
+    */
    public function testGetPlural($singular, $plural) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->getPlural($singular))->isIdenticalTo($plural)
+            ->string(
+               $this->testedInstance->getPlural(
+                  $this->testedInstance->getPlural(
+                     $singular
+                  )
+               )
+            )->isIdenticalTo($plural);
 
+      //keep testing old method from db.function
       $this->string(getPlural($singular))->isIdenticalTo($plural);
       $this->string(getPlural(getPlural($singular)))->isIdenticalTo($plural);
    }
@@ -164,48 +238,91 @@ class DbFunction extends DbTestCase {
     * @dataProvider dataPlural
    **/
    public function testGetSingular($singular, $plural) {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->getSingular($plural))->isIdenticalTo($singular)
+            ->string(
+               $this->testedInstance->getSingular(
+                  $this->testedInstance->getSingular(
+                     $plural
+                  )
+               )
+            )->isIdenticalTo($singular);
+
+      //keep testing old method from db.function
       $this->string(getSingular($plural))->isIdenticalTo($singular);
       $this->string(getSingular(getSingular($plural)))->isIdenticalTo($singular);
    }
 
 
    public function testCountElementsInTable() {
-      global $DB;
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs'))->isGreaterThan(100)
+            ->integer($this->testedInstance->countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'core' AND name = 'version'"))->isIdenticalTo(1)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0)
+            ->integer($this->testedInstance->countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
+      //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
-      $this->integer((int)countElementsInTable('glpi_configs'))->isGreaterThan(100);
-      $this->integer((int)countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100);
-      $this->integer((int)countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100);
+      $this->integer(countElementsInTable('glpi_configs'))->isGreaterThan(100);
+      $this->integer(countElementsInTable(['glpi_configs', 'glpi_users']))->isGreaterThan(100);
+      $this->integer(countElementsInTable('glpi_configs', "context = 'core'"))->isGreaterThan(100);
       $this->integer(
-         (int)countElementsInTable(
+         countElementsInTable(
             'glpi_configs', "context = 'core' AND `name` = 'version'"
          )
       )->isIdenticalTo(1);
-      $this->integer((int)countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0);
+      $this->integer(countElementsInTable('glpi_configs', "context = 'fakecontext'"))->isIdenticalTo(0);
       // Using iterator
-      $this->integer((int)countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1);
-      $this->integer((int)countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100);
-      $this->integer((int)countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
+      $this->integer(countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->isIdenticalTo(1);
+      $this->integer(countElementsInTable('glpi_configs', ['context' => 'core']))->isGreaterThan(100);
+      $this->integer(countElementsInTable('glpi_configs', ['context' => 'fakecontext']))->isIdenticalTo(0);
    }
 
 
    public function testCountDistinctElementsInTable() {
-      global $DB;
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0)
+            ->integer(
+               countDistinctElementsInTable(
+                  'glpi_configs',
+                  'context',
+                  "name = 'version'"
+               )
+            )->isIdenticalTo(1)
+            ->integer(
+               countDistinctElementsInTable(
+                  'glpi_configs',
+                  'id',
+                  "context ='fakecontext'"
+               )
+            )->isIdenticalTo(0);
 
+      //keep testing old method from db.function
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
-      $this->integer((int)countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0);
-      $this->integer((int)countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0);
+      $this->integer(countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0);
+      $this->integer(countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0);
       $this->integer(
-         (int)countDistinctElementsInTable(
+         countDistinctElementsInTable(
             'glpi_configs',
             'context',
             "name = 'version'"
          )
       )->isIdenticalTo(1);
       $this->integer(
-         (int)countDistinctElementsInTable(
+         countDistinctElementsInTable(
             'glpi_configs',
             'id',
             "context ='fakecontext'"
@@ -213,81 +330,107 @@ class DbFunction extends DbTestCase {
       )->isIdenticalTo(0);
    }
 
-   public function testCountElementsInTableForMyEntities() {
+   protected function dataCountMyEntities() {
+      return [
+         ['_test_root_entity', true, 'glpi_computers', '', 6],
+         ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
+         ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
+         //test old syntax, once only
+         ['_test_root_entity', true, 'glpi_computers', 'name="_test_pc11"', 1],
 
-      $this->Login();
+         ['_test_root_entity', false, 'glpi_computers', '', 2],
+         ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
+         ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
 
-      $this->setEntity('_test_root_entity', true);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers')
-      )->isIdenticalTo(6);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"')
-      )->isIdenticalTo(1); // SQL restrict
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11'])
-      )->isIdenticalTo(1); // Criteria
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"')
-      )->isIdenticalTo(1);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01'])
-      )->isIdenticalTo(1);
-
-      $this->setEntity('_test_root_entity', false);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers')
-      )->isIdenticalTo(2);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"')
-      )->isIdenticalTo(0);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11'])
-      )->isIdenticalTo(0);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"')
-      )->isIdenticalTo(1);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01'])
-      )->isIdenticalTo(1);
-
-      $this->setEntity('_test_child_1', false);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers')
-      )->isIdenticalTo(2);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"')
-      )->isIdenticalTo(1);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11'])
-      )->isIdenticalTo(1);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"')
-      )->isIdenticalTo(0);
-      $this->integer(
-         (int)countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01'])
-      )->isIdenticalTo(0);
+         ['_test_child_1', false, 'glpi_computers', '', 2],
+         ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
+         ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
+      ];
    }
 
-   public function testCountElementsInTableForEntity() {
-      $e = getItemByTypeName('Entity', '_test_child_1', true);
-      $this->integer(
-         (int)countElementsInTableForEntity('glpi_computers', $e)
-      )->isIdenticalTo(2);
-      $this->integer(
-         (int)countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc11"')
-      )->isIdenticalTo(1);
-      $this->integer(
-         (int)countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"')
-      )->isIdenticalTo(0);
+   /**
+    * @dataProvider dataCountMyEntities
+    */
+   public function testCountElementsInTableForMyEntities(
+      $entity,
+      $recursive,
+      $table,
+      $condition,
+      $count
+   ) {
+      $this->Login();
+      $this->setEntity($entity, $recursive);
 
-      $e = getItemByTypeName('Entity', '_test_root_entity', true);
-      $this->integer(
-         (int)countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"')
-      )->isIdenticalTo(1);
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->integer($this->testedInstance->countElementsInTableForMyEntities($table, $condition))->isIdenticalTo($count);
+
+      //keep testing old method from db.function
+      $this->integer(countElementsInTableForMyEntities($table, $condition))->isIdenticalTo($count);
+   }
+
+   protected function dataCountEntities() {
+      return [
+         ['_test_root_entity', 'glpi_computers', '', 2],
+         ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc11'], 0],
+         ['_test_root_entity', 'glpi_computers', ['name' => '_test_pc01'], 1],
+         //test old syntax, once only
+         ['_test_root_entity', 'glpi_computers', 'name="_test_pc11"', 0],
+
+         ['_test_child_1', 'glpi_computers', '', 2],
+         ['_test_child_1', 'glpi_computers', ['name' => '_test_pc11'], 1],
+         ['_test_child_1', 'glpi_computers', ['name' => '_test_pc01'], 0],
+      ];
+   }
+
+
+   /**
+    * @dataProvider dataCountEntities
+    */
+   public function testCountElementsInTableForEntity(
+      $entity,
+      $table,
+      $condition,
+      $count
+   ) {
+      $eid = getItemByTypeName('Entity', $entity, true);
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->integer($this->testedInstance->countElementsInTableForEntity($table, $eid, $condition))->isIdenticalTo($count);
+
+      //keep testing old method from db.function
+      $this->integer(countElementsInTableForEntity($table, $eid, $condition))->isIdenticalTo($count);
    }
 
    public function testGetAllDatasFromTable() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs'))
+               ->size->isGreaterThan(100);
+
+      foreach ($data as $key => $array) {
+         $this->array($array)
+            ->variable['id']->isEqualTo($key);
+      }
+
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->array($this->testedInstance->getAllDataFromTable('glpi_configs', "context = 'core' AND `name` = 'version'"))->hasSize(1)
+            ->array($this->testedInstance->getAllDataFromTable('glpi_configs', ['context' => 'core', 'name' => 'version']))->hasSize(1)
+            ->array($data = $this->testedInstance->getAllDataFromTable('glpi_configs', "", false, 'name'))->isNotEmpty();
+      $previousArrayName = "";
+      foreach ($data as $key => $array) {
+         $this->boolean($previousArrayName <= $previousArrayName = $array['name'])->isTrue();
+      }
+
+      //TODO: test with cache === true
+
+      //keep testing old method from db.function
       $data = getAllDatasFromTable('glpi_configs');
       $this->array($data)
          ->size->isGreaterThan(100);
@@ -345,6 +488,23 @@ class DbFunction extends DbTestCase {
 
 
    public function testIsIndex() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->boolean($this->testedInstance->isIndex('glpi_configs', 'fakeField'))->isFalse()
+            ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isFalse()
+            ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
+            ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
+            ->boolean($this->testedInstance->isIndex('glpi_users', 'unicity'))->isTrue()
+         ->when(
+            function () {
+               $this->boolean($this->testedInstance->isIndex('fakeTable', 'id'))->isFalse();
+            }
+         )->error
+            ->withType(E_USER_WARNING)
+            ->exists();
+
+      //keep testing old method from db.function
       $this->boolean(isIndex('glpi_configs', 'fakeField'))->isFalse();
       $this->boolean(isIndex('glpi_configs', 'name'))->isFalse();
       $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
@@ -360,25 +520,33 @@ class DbFunction extends DbTestCase {
 
    }
 
-   public function testFormatOutputWebLink() {
-
-      $this->string(formatOutputWebLink('www.glpi-project.org/'))
-         ->isIdenticalTo('http://www.glpi-project.org/');
-      $this->string(formatOutputWebLink('http://www.glpi-project.org/'))
-         ->isIdenticalTo('http://www.glpi-project.org/');
-   }
-
    public function testGetEntityRestrict() {
       $this->Login();
+      $this->newTestedInstance();
 
       // See all, really all
       $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
+
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('AND', 'glpi_computers'))->isEmpty();
+
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('AND', 'glpi_computers'))->isEmpty();
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_computers`');
 
       // See all
       $this->setEntity('_test_root_entity', true);
+
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
+         ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1, 2, 3)');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
@@ -387,6 +555,14 @@ class DbFunction extends DbTestCase {
 
       // Root entity
       $this->setEntity('_test_root_entity', false);
+
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
+         ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1)');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
@@ -395,6 +571,14 @@ class DbFunction extends DbTestCase {
 
       // Child
       $this->setEntity('_test_child_1', false);
+
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
+         ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers'));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (2)');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
@@ -402,6 +586,13 @@ class DbFunction extends DbTestCase {
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (2)');
 
       // Child without table
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE'))
+         ->isIdenticalTo("WHERE ( `entities_id` IN ('2')  ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria());
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `entities_id` IN (2)');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE'))
          ->isIdenticalTo("WHERE ( `entities_id` IN ('2')  ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria());
@@ -410,6 +601,14 @@ class DbFunction extends DbTestCase {
 
       // Child + parent
       $this->setEntity('_test_child_2', false);
+
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true))
+         ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN ('0','1')) ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers', '', '', true));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN ('0','1')) ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
@@ -417,16 +616,41 @@ class DbFunction extends DbTestCase {
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
 
       //Child + parent on glpi_entities
+      $it = new \DBmysqlIterator(null, 'glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))');
+
+      //keep testing old method from db.function
       $it = new \DBmysqlIterator(null, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))');
 
       //Child + parent -- automatic recusrivity detection
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
+
+      //keep testing old method from db.function
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
       $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))');
 
       // Child + parent without table
+      $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', '', '', '', true))
+         ->isIdenticalTo("WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN ('0','1')) ) ");
+      $it = new \DBmysqlIterator(null, 'glpi_computers', $this->testedInstance->getEntitiesRestrictCriteria('', '', '', true));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (3) OR (`is_recursive` = 1 AND `entities_id` IN (0, 1)))');
+
+      $it = new \DBmysqlIterator(null, 'glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))');
+
+      $it = new \DBmysqlIterator(null, 'glpi_entities', $this->testedInstance->getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+      $this->string($it->getSql())
+         ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7');
+
+      //keep testing old method from db.function
       $this->string(getEntitiesRestrictRequest('WHERE', '', '', '', true))
          ->isIdenticalTo("WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN ('0','1')) ) ");
       $it = new \DBmysqlIterator(null, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
@@ -607,6 +831,7 @@ class DbFunction extends DbTestCase {
       $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
       $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
       $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+      $this->newTestedInstance();
 
       //Cache tests:
       //- if $cache === 0; we do not expect anything,
@@ -623,7 +848,7 @@ class DbFunction extends DbTestCase {
          $this->array(apcu_fetch("$ckey$ent0"))->isIdenticalTo($expected);
       }
 
-      $sons = getSonsOf('glpi_entities', $ent0);
+      $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent0);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
@@ -638,7 +863,7 @@ class DbFunction extends DbTestCase {
          $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
       }
 
-      $sons = getSonsOf('glpi_entities', $ent1);
+      $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
@@ -653,7 +878,7 @@ class DbFunction extends DbTestCase {
          $this->array(apcu_fetch("$ckey$ent2"))->isIdenticalTo($expected);
       }
 
-      $sons = getSonsOf('glpi_entities', $ent2);
+      $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent2);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
@@ -678,7 +903,7 @@ class DbFunction extends DbTestCase {
          $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
       }
 
-      $sons = getSonsOf('glpi_entities', $ent1);
+      $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
@@ -701,7 +926,7 @@ class DbFunction extends DbTestCase {
          $this->array(apcu_fetch("$ckey$ent1"))->isIdenticalTo($expected);
       }
 
-      $sons = getSonsOf('glpi_entities', $ent1);
+      $sons = $this->testedInstance->getSonsOf('glpi_entities', $ent1);
       $this->array($sons)->isIdenticalTo($expected);
 
       if ($cache === true && $hit === false) {
@@ -728,7 +953,7 @@ class DbFunction extends DbTestCase {
       $DB->query('UPDATE glpi_entities SET sons_cache=NULL');
       $this->runGetSonsOf();
 
-      $this->integer(countElementsInTable('glpi_entities', ['sons_cache' => 'NULL']))->isIdenticalTo(0);
+      $this->integer($this->testedInstance->countElementsInTable('glpi_entities', ['sons_cache' => 'NULL']))->isIdenticalTo(0);
       //run a second time: db cache must be set
       $this->runGetSonsOf();
    }
