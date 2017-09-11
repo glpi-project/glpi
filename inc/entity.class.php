@@ -1089,6 +1089,12 @@ class Entity extends CommonTreeDropdown {
 
       $rand = mt_rand();
 
+      if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
+         $actionurl = $CFG_GLPI["root_doc"]."/front/helpdesk.public.php?active_entity=";
+      } else {
+         $actionurl = $CFG_GLPI["root_doc"]."/front/central.php?active_entity=";
+      }
+
       echo "<div class='center'>";
       echo "<span class='b'>".__('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
@@ -1103,26 +1109,13 @@ class Entity extends CommonTreeDropdown {
       echo "</form>";
 
       echo "<script type='text/javascript'>";
-      echo "var _addSubEntlink = function(instance, nodes) {
-               for (i=0 ; i < nodes.length ; i++) {
-                  node = instance.get_node(nodes[i]);
-                  if (node.li_attr && node.original) {
-                     if ($('#' + node.li_attr.id).length > 0) {
-                        $('#' + node.li_attr.id + ' > a').after(node.original.sublink);
-                     }
-                  }
-                  if (node.children.length > 0) {
-                     _addSubEntlink(instance, node.children);
-                  }
-               }
-         };";
       echo "   $(function() {
                   $.getScript('{$CFG_GLPI["root_doc"]}/lib/jqueryplugins/jstree/jstree.min.js', function(data, textStatus, jqxhr) {
                      $('#tree_projectcategory$rand')
                      // call `.jstree` with the options object
                      .jstree({
                         // the `plugins` array allows you to configure the active plugins on this instance
-                        'plugins' : ['search'],
+                        'plugins' : ['search', 'qload', 'conditionalselect'],
                         'search': {
                            'case_insensitive': true,
                            'show_only_matches': true,
@@ -1131,25 +1124,36 @@ class Entity extends CommonTreeDropdown {
                               'url': '".$CFG_GLPI["root_doc"]."/ajax/entitytreesearch.php'
                            }
                         },
+                        'qload': {
+                           'prevLimit': 50,
+                           'nextLimit': 30,
+                           'moreText': '".__('Load more entities...')."'
+                        },
+                        'conditionalselect': function (node, event) {
+                           if (node === false) {
+                              return false;
+                           }
+                           var url = '$actionurl'+node.id;
+                           if (event.target.tagName == 'I'
+                               && event.target.className == '') {
+                              url += '&is_recursive=1';
+                           }
+                           document.location.href = url;
+                           return false;
+                        },
                         'core': {
                            'themes': {
                               'name': 'glpi'
                            },
                            'animation': 0,
                            'data': {
-                              url: function(node) {
+                              'url': function(node) {
                                  return node.id === '#' ?
                                     '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1' :
                                     '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+node.id;
                               }
                            }
-                        },
-                     }).on('open_node.jstree', function (e, data) {
-                        _addSubEntlink(data.instance, data.node.children);
-                     }).on('redraw.jstree', function (e, data) {
-                        _addSubEntlink(data.instance, data.nodes);
-                     }).on('select_node.jstree', function (e, data) {
-                        document.location.href = data.node.a_attr.href;
+                        }
                      });
 
                      var searchTree = function() {

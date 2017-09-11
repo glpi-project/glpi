@@ -660,6 +660,7 @@ class Planning extends CommonGLPI {
                }
 
                // add classes to current event
+               added_classes = '';
                if (typeof event.end !== 'undefined'
                    && event.end !== null) {
                   added_classes = event.end.isBefore(moment())      ? ' event_past'   : '';
