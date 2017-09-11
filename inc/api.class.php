@@ -303,17 +303,34 @@ abstract class API extends CommonGLPI {
    /**
     * Return all the possible entity of the current logged user (and for current active profile)
     *
+    * @param array $params array with theses options :
+    *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optionnal
+    *
     * @return array of entities (with id and name)
     */
-   protected function getMyEntities() {
+   protected function getMyEntities($params = []) {
 
       $this->initEndpoint();
 
+      if (!isset($params['is_recursive'])) {
+         $params['is_recursive'] = false;
+      }
+
       $myentities = [];
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $myentities[] = ['id'   => $entity['id'],
-                                            'name' => Dropdown::getDropdownName("glpi_entities",
-                                                                                $entity['id'])];
+         if ($entity['is_recursive'] == 1 && $params['is_recursive'] == 1) {
+            $sons = getSonsOf('glpi_entities', $entity['id']);
+            foreach ($sons as $entity_id) {
+               if ($entity_id != $entity['id']) {
+                  $myentities[] = ['id'   => $entity_id,
+                                   'name' => Dropdown::getDropdownName("glpi_entities",
+                                                                       $entity_id)];
+               }
+            }
+         }
+         $myentities[] = ['id' => $entity['id'],
+                          'name' => Dropdown::getDropdownName("glpi_entities",
+                                                                   $entity['id'])];
       }
       return ['myentities' => $myentities];
    }
