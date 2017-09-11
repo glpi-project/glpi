@@ -324,6 +324,8 @@ $ curl -X POST \
 * **Parameters**: (Headers)
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
   * *App-Token*: authorization string provided by the GLPI api configuration. Optional.
+* **Parameters**: (query string)
+  * *is_recursive* (default: false): Also display sub entities of the active entity. Optionnal
 * **Returns**:
   * 200 (OK) with an array of all entities (with id and name).
   * 400 (Bad Request) with a message indicating an error in input parameter.
