@@ -133,7 +133,7 @@ class Entity extends CommonTreeDropdown {
 
       //Cleaning sons calls getAncestorsOf and thus... Re-create cache. Call it before clean.
       $this->cleanParentsSons();
-      if (useCache()) {
+      if (Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
          if (apcu_exists($ckey)) {
             apcu_delete($ckey);
