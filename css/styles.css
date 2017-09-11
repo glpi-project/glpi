@@ -603,6 +603,20 @@ input.submit[type=reset] {
     background-image: url("../pics/d.png");
 }
 
+.jstree .jstree-node:not(.jstree-leaf) {
+   position: relative;
+}
+.jstree .jstree-node:not(.jstree-leaf) > a > i:last-child {
+   content: ' ';
+   height: 10px;
+   width: 10px;
+   background: url("../pics/entity_all.png") no-repeat;
+   position: absolute;
+   top: 8px;
+   margin-left: 6px;
+   cursor: pointer;
+}
+
 .treeroot {
    width:100%;
    background: url("../pics/treeroot.png") 0 2px no-repeat;

@@ -54,8 +54,8 @@ if (isset($_POST['str'])) {
    foreach ($DB->request($query) as $data) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {
-         if (!in_array('ent'.$val, $res)) {
-            $res[] = 'ent'.$val;
+         if (!in_array($val, $res)) {
+            $res[] = $val;
          }
       }
    }
