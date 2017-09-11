@@ -44,13 +44,6 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_GET['node'])) {
-
-   if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
-      $target = "helpdesk.public.php";
-   } else {
-      $target = "central.php";
-   }
-
    $nodes = [];
 
    // Get ancestors of current entity
@@ -65,10 +58,9 @@ if (isset($_GET['node'])) {
          $is_recursive                 = $entity['is_recursive'];
 
          $path = [
-            'id'     => 'ent'.$ID,
-            'text'   => Dropdown::getDropdownName("glpi_entities", $ID)
+            'id'   => $ID,
+            'text' => Dropdown::getDropdownName("glpi_entities", $ID)
          ];
-         $path['a_attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
 
          if ($is_recursive) {
             $path['children'] = true;
@@ -77,11 +69,8 @@ if (isset($_GET['node'])) {
                        WHERE `entities_id` = '$ID'";
             $result2 = $DB->query($query2);
             if ($DB->result($result2, 0, 0) > 0) {
-               $path['sublink'] = "&nbsp;<a title='".sprintf(__s('%1$s and sub-entities'), $path['text'])."' href='".
-                                                 $CFG_GLPI["root_doc"]."/front/".$target.
-                                                 "?active_entity=".$ID."&amp;is_recursive=1'>".
-                                         "<img alt='".sprintf(__s('%1$s and sub-entities'), $path['text'])."' src='".
-                                         $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+               //apend a i tag (one of shortest tags) to have the is_recursive link
+               $path['text'].= '<i/>';
                if (isset($ancestors[$ID])) {
                   $path['state']['opened'] = 'true';
                }
@@ -90,43 +79,34 @@ if (isset($_GET['node'])) {
          $nodes[] = $path;
       }
    } else { // standard node
-      $node_id = str_replace('ent', '', $_GET['node']);
-      $query   = "SELECT *
-                  FROM `glpi_entities`
-                  WHERE `entities_id` = '$node_id'
+      $node_id = $_GET['node'];
+      $query   = "SELECT ent.`id`, ent.`name`, ent.`sons_cache`, count(sub_entities.id) as nb_subs
+                  FROM `glpi_entities` as ent
+                  LEFT JOIN `glpi_entities` as sub_entities
+                     ON sub_entities.entities_id = ent.id
+                  WHERE ent.`entities_id` = '$node_id'
+                  GROUP BY ent.`id`, ent.`name`, ent.`sons_cache`
                   ORDER BY `name`";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
-            while ($row = $DB->fetch_assoc($result)) {
-               $path = [
-                  'id'     => 'ent'.$row['id'],
-                  'text'   => $row['name']
-               ];
-               $path['a_attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".
-                                                $row['id'];
+         while ($row = $DB->fetch_assoc($result)) {
+            $path = [
+               'id'   => $row['id'],
+               'text' => $row['name']
+            ];
 
-               $query2 = "SELECT count(*)
-                          FROM `glpi_entities`
-                          WHERE `entities_id` = '".$row['id']."'";
-               $result2 = $DB->query($query2);
-               if ($DB->result($result2, 0, 0) > 0) {
-                  $path['children'] = true;
-                  $path['sublink']  = "&nbsp;<a title='".sprintf(__s('%1$s and sub-entities'), $path['text'])."' href='".
-                                                    $CFG_GLPI["root_doc"]."/front/".$target.
-                                                    "?active_entity=".$row['id']."&amp;is_recursive=1'>".
-                                            "<img alt='".sprintf(__s('%1$s and sub-entities'), $path['text'])."' src='".
-                                            $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+            if ($row['nb_subs'] > 0) {
+               //apend a i tag (one of shortest tags) to have the is_recursive link
+               $path['text'].= '<i/>';
+               $path['children'] = true;
 
-                  if (isset($ancestors[$row['id']])) {
-                     $path['state']['opened'] = 'true';
-                  }
+               if (isset($ancestors[$row['id']])) {
+                  $path['state']['opened'] = 'true';
                }
-               $nodes[] = $path;
             }
+            $nodes[] = $path;
          }
       }
-
    }
    echo json_encode($nodes);
 }
