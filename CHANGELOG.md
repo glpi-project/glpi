@@ -54,7 +54,8 @@ The following methods have been deprecated:
 - `NotificationTarget*::get*Address()`
 - many `NotificationTarget*::get*()`
 - `QueuedMail::sendMailById()`
-- `CommonTreeDropodnw::recursiveCleanSonsAboveID()`
+- `CommonTreeDropodwn::recursiveCleanSonsAboveID()`
+- `formatOutputWebLink()`
 
 #### Removals
 

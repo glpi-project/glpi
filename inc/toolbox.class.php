@@ -2688,6 +2688,21 @@ class Toolbox {
    }
 
    /**
+    * Checks if a string starts with another one
+    *
+    * @since 9.2
+    *
+    * @param string $haystack String to check
+    * @param string $needle   String to find
+    *
+    * @return boolean
+    */
+   static public function endsWith($haystack, $needle) {
+      $length = strlen($needle);
+      return $length === 0 || (substr($haystack, -$length) === $needle);
+   }
+
+   /**
     * gets the IP address of the client
     *
     * @since 9.2
@@ -2789,4 +2804,30 @@ class Toolbox {
    public static function jsDateFormats() {
       return self::getDateFormats('js');
    }
+
+   /**
+    * Format a web link adding http:// if missing
+    *
+    * @param string $link link to format
+    *
+    * @return string formatted link.
+    **/
+   public static function formatOutputWebLink($link) {
+      if (!preg_match("/^https?/", $link)) {
+         return "http://".$link;
+      }
+      return $link;
+   }
+
+   /**
+    * Should APCu cache be used
+    *
+    * @since 9.2
+    *
+    * @return boolean
+    */
+   public static function useCache() {
+      return function_exists('apcu_exists') && (!defined('TU_USER') || defined('CACHED_TESTS'));
+   }
+
 }

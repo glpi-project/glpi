@@ -186,7 +186,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
             $input["ancestors_cache"] = '';
-            if (useCache()) {
+            if (Toolbox::useCache()) {
                $ckey = $this->getTable() . '_ancestors_cache_' . $this->getID();
                if (apcu_exists($ckey)) {
                   apcu_delete($ckey);
@@ -213,7 +213,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB;
 
       //drop from sons cache when needed
-      if ($changeParent && useCache()) {
+      if ($changeParent && Toolbox::useCache()) {
          $ckey = $this->getTable() . '_ancestors_cache_' . $ID;
          if (apcu_exists($ckey)) {
             apcu_delete($ckey);
@@ -302,7 +302,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $DB->query($query);
 
       //drop from sons cache when needed
-      if ($apcu && useCache()) {
+      if ($apcu && Toolbox::useCache()) {
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
             if (apcu_exists($ckey)) {
@@ -324,7 +324,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     */
    protected function addSonInParents() {
       //add sons cache when needed
-      if (useCache()) {
+      if (Toolbox::useCache()) {
          $ancestors = getAncestorsOf($this->getTable(), $this->getID());
          foreach ($ancestors as $ancestor) {
             $ckey = $this->getTable() . '_sons_cache_' . $ancestor;
