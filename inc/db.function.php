@@ -324,8 +324,8 @@ function getSingular($string) {
 /**
  * Count the number of elements in a table.
  *
- * @param $table        string/array   table names
- * @param $condition    string/array   condition to use (default '') or array of criteria
+ * @param string|array $table     table name(s)
+ * @param string|array $condition condition to use (default '') or array of criteria
  *
  * @return int nb of elements in table
 **/
@@ -357,20 +357,18 @@ function countElementsInTable($table, $condition = "") {
 function countDistinctElementsInTable($table, $field, $condition = "") {
    global $DB;
 
-   if (is_array($table)) {
-      $table = implode('`,`', $table);
+   if (!is_array($condition)) {
+      if (empty($condition)) {
+         $condition = [];
+      } else {
+         $condition = ['WHERE' => $condition]; // Deprecated use case
+      }
    }
+   $condition['COUNT'] = 'cpt';
+   $condition['SELECT DISTINCT'] = $field;
 
-   $query = "SELECT COUNT(DISTINCT `$field`) AS cpt
-             FROM `$table`";
-
-   if (!empty($condition)) {
-      $query .= " WHERE $condition ";
-   }
-
-   $result = $DB->query($query);
-   $ligne  = $DB->fetch_assoc($result);
-   return $ligne['cpt'];
+   $row = $DB->request($table, $condition)->next();
+   return ($row ? (int)$row['cpt'] : 0);
 }
 
 
@@ -644,26 +642,26 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
 
    $parentIDfield = getForeignKeyFieldForTable($table);
 
-   $query = "SELECT `name`, `$parentIDfield`
-             FROM `$table`
-             WHERE `id` = '$ID'";
+   $iterator = $DB->request([
+      'SELECT' => ['name', $parentIDfield],
+      'FROM'   => $table,
+      'WHERE'  => ['id' => $ID]
+   ]);
    $name = "";
 
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result)>0) {
-         $row      = $DB->fetch_assoc($result);
-         $parentID = $row[$parentIDfield];
+   if (count($iterator) > 0) {
+      $row      = $iterator->current();
+      $parentID = $row[$parentIDfield];
 
-         if ($wholename == "") {
-            $name = $row["name"];
-         } else {
-            $name = $row["name"] . " > ";
-         }
-
-         $level++;
-         list($tmpname, $level)  = getTreeValueName($table, $parentID, $name, $level);
-         $name                   = $tmpname. $name;
+      if ($wholename == "") {
+         $name = $row["name"];
+      } else {
+         $name = $row["name"] . " > ";
       }
+
+      $level++;
+      list($tmpname, $level)  = getTreeValueName($table, $parentID, $name, $level);
+      $name                   = $tmpname. $name;
    }
    return [$name, $level];
 }
@@ -920,44 +918,42 @@ function getTreeForItem($table, $IDf) {
    // current ID found to be added
    $found = [];
 
-   // First request init the  varriables
-   $query = "SELECT *
-             FROM `$table`
-             WHERE `$parentIDfield` = '$IDf'
-             ORDER BY `name`";
+   // First request init the  variables
+   $iterator = $DB->request([
+      $table, [
+         'WHERE'  => [$parentIDfield => $IDf],
+         'ORDER'  => 'name'
+      ]
+   ]);
 
-   if (($result = $DB->query($query))
-       && ($DB->numrows($result) > 0)) {
-
-      while ($row = $DB->fetch_assoc($result)) {
-         $id_found[$row['id']]['parent'] = $IDf;
-         $id_found[$row['id']]['name']   = $row['name'];
-         $found[$row['id']]              = $row['id'];
-      }
+   while ($row = $iterator->next()) {
+      $id_found[$row['id']]['parent'] = $IDf;
+      $id_found[$row['id']]['name']   = $row['name'];
+      $found[$row['id']]              = $row['id'];
    }
 
    // Get the leafs of previous founded item
    while (count($found) > 0) {
       // Get next elements
-      $query = "SELECT *
-                FROM `$table`
-                WHERE `$parentIDfield` IN ('" . implode("','", $found)."')
-                ORDER BY `name`";
+      $iterator = $DB->request([
+         $table, [
+            'WHERE'  => [$parentIDfield => $found],
+            'ORDER'  => 'name'
+         ]
+      ]);
+
       // CLear the found array
       unset($found);
       $found = [];
 
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         while ($row = $DB->fetch_assoc($result)) {
-            if (!isset($id_found[$row['id']])) {
-               $id_found[$row['id']]['parent'] = $row[$parentIDfield];
-               $id_found[$row['id']]['name']   = $row['name'];
-               $found[$row['id']]              = $row['id'];
-            }
+      while ($row = $iterator->next()) {
+         if (!isset($id_found[$row['id']])) {
+            $id_found[$row['id']]['parent'] = $row[$parentIDfield];
+            $id_found[$row['id']]['name']   = $row['name'];
+            $found[$row['id']]              = $row['id'];
          }
       }
-
    }
    $tree[$IDf]['name'] = Dropdown::getDropdownName($table, $IDf);
    $tree[$IDf]['tree'] = contructTreeFromList($id_found, $IDf);
@@ -1053,19 +1049,18 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
 function regenerateTreeCompleteName($table) {
    global $DB;
 
-   $query = "SELECT `id`
-             FROM `$table`";
+   $iterator = $DB->request([
+      'SELECT' => 'id',
+      'FROM'   => $table
+   ]);
 
-   $result = $DB->query($query);
-   if ($DB->numrows($result) > 0) {
-      while ($data=$DB->fetch_assoc($result)) {
-         list($name, $level) = getTreeValueName($table, $data['id']);
-         $query = "UPDATE `$table`
-                   SET `completename` = '".addslashes($name)."',
-                       `level` = '$level'
-                   WHERE `id` = '".$data['id']."'";
-         $DB->query($query);
-      }
+   while ($data = $iterator->next()) {
+      list($name, $level) = getTreeValueName($table, $data['id']);
+      $query = "UPDATE `$table`
+                  SET `completename` = '".addslashes($name)."',
+                     `level` = '$level'
+                  WHERE `id` = '".$data['id']."'";
+      $DB->query($query);
    }
 }
 
