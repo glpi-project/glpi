@@ -654,12 +654,14 @@ class Profile_User extends CommonDBRelation {
     * @since version 0.84
     *
     * @param $user_ID         integer   user ID
-    * @param $right                     right to check
-    * @param $is_recursive              check also using recursive rights (true by default)
+    * @param $name            string    is the name of the rights to check (CommonDBTM::$rightname)
+    * @param $rights          integer   rights to check (may be a OR combinaison of several rights)
+    *                                   (exp: CommonDBTM::READ | CommonDBTM::UPDATE ...)
+    * @param $is_recursive    boolean   check also using recursive rights (true by default)
     *
     * @return array of entities ID
    **/
-   static function getUserEntitiesForRight($user_ID, $right, $is_recursive=true) {
+   static function getUserEntitiesForRight($user_ID, $name, $rights, $is_recursive=true) {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`entities_id`,
@@ -670,8 +672,8 @@ class Profile_User extends CommonDBRelation {
                 INNER JOIN `glpi_profilerights`
                   ON (`glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`)
                 WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
-                  AND `glpi_profilerights`.`name` = '$right'
-                  AND `glpi_profilerights`.`rights` & ". (READ | CREATE | UPDATE | DELETE |PURGE);
+                  AND `glpi_profilerights`.`name` = '$name'
+                  AND `glpi_profilerights`.`rights` & $rights";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
