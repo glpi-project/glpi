@@ -2793,6 +2793,10 @@ class Search {
             $condition = "`context` IN ('$availableContexts')";
             break;
 
+         case 'SavedSearch':
+            $condition = SavedSearch::addVisibilityRestrict();
+            break;
+
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {
