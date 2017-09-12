@@ -146,7 +146,7 @@ class SavedSearch extends CommonDBTM {
    function canCreateItem() {
 
       if ($this->fields['is_private'] == 1) {
-         return (Session::haveRight('config', CREATE)
+         return (Session::haveRight('config', UPDATE)
                  || $this->fields['users_id'] == Session::getLoginUserID());
       }
       return parent::canCreateItem();
@@ -345,15 +345,9 @@ class SavedSearch extends CommonDBTM {
 
       $ID = $this->getID();
 
-      // Only an edit form : always check w right
-      if ($ID > 0) {
-         $this->check($ID, UPDATE);
-      } else {
-         $this->check(-1, CREATE);
-      }
+      $this->initForm($ID, $options);
+      $this->showFormHeader($options);
 
-      echo "<form method='post' name='form_save_query' action='".$this->getFormURL()."'>";
-      echo "<div class='center'>";
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'/>";
       }
@@ -366,7 +360,6 @@ class SavedSearch extends CommonDBTM {
          echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'/>";
       }
 
-      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>";
       if ($ID > 0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
@@ -405,25 +398,12 @@ class SavedSearch extends CommonDBTM {
             echo __('Public');
          }
       }
-      echo "</td></tr>";
-
-      echo "<tr>";
-      echo "<td class='tab_bg_2 top' colspan='2'>";
       if ($ID <= 0) { // add
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
-         echo "<div class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</div>";
       } else {
          echo "<input type='hidden' name='id' value='$ID'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-         echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
-         echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
-                class='submit'>";
       }
       echo "</td></tr>";
-
-      echo "</table>";
 
       if (isset($options['ajax'])) {
          $js = "$(function() {
@@ -445,8 +425,7 @@ class SavedSearch extends CommonDBTM {
          });";
          echo Html::scriptBlock($js);
       }
-      echo "</div>";
-      Html::closeForm();
+      $this->showFormButtons($options);
    }
 
 
@@ -1318,5 +1297,25 @@ class SavedSearch extends CommonDBTM {
 
          Session::addMessageAfterRedirect(__('Notification has been created!'), INFO);
       }
+   }
+
+   /**
+    * Return visibility SQL restriction to add
+    *
+    * @return string restrict to add
+   **/
+   static function addVisibilityRestrict() {
+      if (Session::haveRight('config', UPDATE)) {
+         return '';
+      }
+
+      $restrict = self::getTable() .'.is_private=1 AND ' . self::getTable() .
+         '.users_id='.Session::getLoginUserID();
+
+      if (Session::haveRight(self::$rightname, READ)) {
+         $restrict .= ' OR ' . self::getTable() . '.is_private=0';
+      }
+
+      return "($restrict)";
    }
 }
