@@ -914,6 +914,11 @@ langSwitch = function(elt) {
 }
 
 $(function(){
+   $('#menu li').on('mouseover', function() {
+      var _id = $(this).data('id');
+      menuAff('menu' + _id, 'menu');
+   });
+
    $("body").delegate('td','mouseover mouseleave', function(e) {
       var col = $(this).closest('tr').children().index($(this));
       var tr = $(this).closest('tr');

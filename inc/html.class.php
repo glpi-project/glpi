@@ -1552,7 +1552,7 @@ class Html {
                $menu_class = "active";
             }
 
-            echo "<li id='menu$i' class='$menu_class' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
+            echo "<li id='menu$i' data-id='$i' class='$menu_class'>";
             $link = "#";
 
             if (isset($data['default']) && !empty($data['default'])) {
