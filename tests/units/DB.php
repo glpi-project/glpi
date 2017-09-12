@@ -302,4 +302,15 @@ class DB extends \GLPITestCase {
          $this->string($dbu->getTableForItemType($type))->isIdenticalTo($table);
       }
    }
+
+   public function testEscape() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->string($this->testedInstance->escape('nothing to do'))->isIdenticalTo('nothing to do')
+            ->string($this->testedInstance->escape("shoul'be escaped"))->isIdenticalTo("shoul\\'be escaped")
+            ->string($this->testedInstance->escape("First\nSecond"))->isIdenticalTo("First\\nSecond")
+            ->string($this->testedInstance->escape("First\rSecond"))->isIdenticalTo("First\\rSecond")
+            ->string($this->testedInstance->escape('Hi, "you"'))->isIdenticalTo('Hi, \\"you\\"');
+   }
 }
