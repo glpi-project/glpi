@@ -530,14 +530,14 @@ class MailCollector  extends CommonDBTM {
             $blacklisted = 0;
 
             //get messages id
-            for ($i=1 ; ($i <= $tot); $i++) {
+            for ($i=1; ($i <= $tot); $i++) {
                $this->messages_uid[$i] = imap_uid($this->marubox, $i);
             }
 
             for ($i=1; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails); $i++) {
                $uid = $this->messages_uid[$i];
-               $tkt = $this->buildTicket($uid, array('mailgates_id' => $mailgateID,
-                                                     'play_rules'   => true));
+               $tkt = $this->buildTicket($uid, ['mailgates_id' => $mailgateID,
+                                                     'play_rules'   => true]);
 
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
@@ -665,7 +665,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return ticket fields array
     */
-   function buildTicket($uid, $options=array()) {
+   function buildTicket($uid, $options = []) {
       global $CFG_GLPI;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -1135,10 +1135,10 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $mid : Message ID.
    **/
-    function getStructure ($uid) {
+   function getStructure ($uid) {
 
       if (($uid != $this->uid)
-          || !$this->structure) {
+        || !$this->structure) {
          $this->structure = imap_fetchstructure($this->marubox, $uid, FT_UID);
 
          if ($this->structure) {
@@ -1194,7 +1194,8 @@ class MailCollector  extends CommonDBTM {
     * from      => From address of mail
     * fromName  => Form Name of Mail
    **/
-   function getHeaders($uid) { // Get Header info
+   function getHeaders($uid) {
+      // Get Header info
       //$mail_header  = imap_header($this->marubox, $mid);
       $mail_header = imap_rfc822_parse_headers(imap_fetchheader($this->marubox, $uid, FT_UID));
 
@@ -1287,7 +1288,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return data of false if error
    **/
-   function get_part($stream, $uid, $mime_type, $structure=false, $part_number=false) {
+   function get_part($stream, $uid, $mime_type, $structure = false, $part_number = false) {
 
       if ($structure) {
          if ($mime_type == $this->get_mime_type($structure)) {
@@ -1404,7 +1405,7 @@ class MailCollector  extends CommonDBTM {
     *
     * Result is stored in $this->files
    **/
-   function getRecursiveAttached($uid, $path, $maxsize, $structure, $part="") {
+   function getRecursiveAttached($uid, $path, $maxsize, $structure, $part = "") {
 
       if ($structure->type == 1) { // multipart
          foreach ($structure->parts as $index => $sub_structure) {
@@ -1458,7 +1459,7 @@ class MailCollector  extends CommonDBTM {
                     && $structure->subtype) {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
-             if (($message = $this->getDecodedFetchbody($structure, $uid, $part))
+            if (($message = $this->getDecodedFetchbody($structure, $uid, $part))
                     && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
                $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename);
@@ -1552,7 +1553,8 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $uid : mail UID
    **/
-   function getBody($uid) {// Get Message Body
+   function getBody($uid) {
+      // Get Message Body
 
       $this->getStructure($uid);
       $body = $this->get_part($this->marubox, $uid, "TEXT/HTML", $this->structure);
@@ -1577,7 +1579,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return Boolean
    **/
-   function deleteMails($uid, $folder='') {
+   function deleteMails($uid, $folder = '') {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $uid, $name, CP_UID)) {
