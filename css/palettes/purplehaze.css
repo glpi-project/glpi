@@ -70,7 +70,7 @@ a, a:link, .ui-widget-content a {
   background: linear-gradient(to top, #353166, #524b9d);
 }
 
-#c_preference a {
+#c_preference a, #language_link > span {
    color: #8783c2;
 }
 
