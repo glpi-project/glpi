@@ -204,9 +204,11 @@ class SavedSearch_Alert extends CommonDBChild {
 
       if (!$iterator->numRows()) {
          echo "<span class='required'><strong>" . __('Notification does not exists!') . "</strong></span>";
-         echo "<br/><a href='{$search->getFormURL()}?id={$search->getID()}&amp;create_notif=true'>"
-            . __('create it now') . "</a>";
-         $canedit = false;
+         if ($canedit) {
+            echo "<br/><a href='{$search->getFormURL()}?id={$search->getID()}&amp;create_notif=true'>"
+               . __('create it now') . "</a>";
+            $canedit = false;
+         }
       } else {
          echo _n('Notification used:', 'Notifications used:', $iterator->numRows()) . "&nbsp;";
          $first = true;
