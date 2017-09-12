@@ -48,4 +48,7 @@ class Bookmark_User extends CommonDBRelation {
    static public $itemtype_2          = 'User';
    static public $items_id_2          = 'users_id';
 
+   function prepareInputForUpdate($input) {
+      return $this->can($input['id'],READ) ? $input : false;
+   }
 }
