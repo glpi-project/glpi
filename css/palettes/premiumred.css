@@ -64,7 +64,7 @@ a, a:link, .ui-widget-content a {
    background-color: #A2291F;
 }
 
-#c_preference a {
+#c_preference a, #language_link > span {
    color: #E9CAC8;
 }
 

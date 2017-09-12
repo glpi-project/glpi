@@ -1518,10 +1518,15 @@ class Html {
            "<span class='sr-only'>" . __s('Help') . "</span>";
       echo "</a></li>";
 
-      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                 "/front/preference.php?forcetab=User\$1' title=\"".
-                 addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                 Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      if (!GLPI_DEMO_MODE) {
+         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                    "/front/preference.php?forcetab=User\$1' title=\"".
+                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      } else {
+         echo "<li id='language_link'><span>" .
+            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
+      }
 
       /// Search engine
       echo "<li id='c_recherche'>\n";
@@ -2022,10 +2027,15 @@ class Html {
                   "<span class='sr-only'>" . __s('Help')  . "</span>";
       echo "</a></li>";
 
-      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                 "/front/preference.php?forcetab=User\$1' title=\"".
-                 addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                 Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      if (!GLPI_DEMO_MODE) {
+         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                    "/front/preference.php?forcetab=User\$1' title=\"".
+                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      } else {
+         echo "<li id='language_link'><span>" .
+            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
+      }
 
       echo "</ul>";
       echo "</div>"; // c_preference
