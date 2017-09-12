@@ -1409,7 +1409,6 @@ class MailCollector  extends CommonDBTM {
       if ($structure->type == 1) { // multipart
          foreach ($structure->parts as $index => $sub_structure) {
             $this->getRecursiveAttached($mid, $path, $maxsize, $sub_structure,
-            $this->getRecursiveAttached($uid, $path, $maxsize, $sub,
                                         ($part ? $part.".".($index+1) : ($index+1)));
          }
 
