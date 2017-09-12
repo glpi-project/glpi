@@ -67,4 +67,24 @@ class DB extends atoum {
                ->withType(E_USER_WARNING)
                ->exists();
    }
+
+   public function testListTables() {
+      $dbu = new \DbUtils();
+      $this->newTestedInstance();
+      $list = $this->testedInstance->list_tables();
+      $this->object($list)->isInstanceOf('mysqli_result');
+      $this->integer($this->testedInstance->numrows($list))->isGreaterThan(200);
+
+      //check if each table has a corresponding itemtype
+      while ($line = $this->testedInstance->fetch_array($list)) {
+         $this->array($line)
+            ->hasSize(2);
+         $table = $line[0];
+         $type = $dbu->getItemTypeForTable($table);
+
+         $this->object($item = $dbu->getItemForItemtype($type))->isInstanceOf('CommonDBTM');
+         $this->string(get_class($item))->isIdenticalTo($type);
+         $this->string($dbu->getTableForItemType($type))->isIdenticalTo($table);
+      }
+   }
 }
