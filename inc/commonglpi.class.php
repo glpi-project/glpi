@@ -690,6 +690,10 @@ class CommonGLPI {
          if ($this->getType() == 'Ticket') {
             $this->input = $cleaned_options;
             $this->saveInput();
+            if (isset($cleaned_options['locked'])) {
+               $extraparamhtml = "&amp;".Toolbox::append_params(['locked' => $cleaned_options['locked']],
+                                                                '&amp;');
+            }
          } else {
             $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
          }
