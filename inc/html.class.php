@@ -1453,96 +1453,8 @@ class Html {
                       ['accesskey' => '1',
                             'title'     => __('Home')]);
       echo "</div>";
-
-      /// Prefs / Logout link
-      echo "<div id='c_preference' >";
-      echo "<ul>";
-
-      echo "<li id='deconnexion'>";
-      echo "<a href='".$CFG_GLPI["root_doc"].
-                       "/front/logout.php?noAUTO=1' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
-      echo "<span class='sr-only'>" . __s('Logout') . "</span>";
-      echo "</a>";
-      echo "</li>\n";
-
-      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\" class='fa fa-cog'>";
-      echo "<span class='sr-only'>" . __s('My settings') . "</span>";
-
-      // check user id : header used for display messages when session logout
-      if (Session::getLoginUserID()) {
-         echo "<span id='myname'>";
-         echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                              $_SESSION["glpifirstname"], 0, 20);
-         echo "</span>";
-      }
-      echo "</a></li>";
-
-      if (Config::canUpdate()) {
-         $current_mode = $_SESSION['glpi_use_mode'];
-         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
-         $title = sprintf(
-            __('Debug mode %1$s'),
-            ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
-         );
-         echo "<li id='debug_mode'>";
-         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
-                title='$title'>";
-         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
-         echo "</a>";
-         echo "</li>";
-      }
-
-      /// Bookmark load
-      echo "<li id='bookmark_link'>";
-      Ajax::createSlidePanel(
-         'showSavedSearches',
-         [
-            'title'     => __('Saved searches'),
-            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
-            'icon'      => '/pics/menu_config.png',
-            'icon_url'  => SavedSearch::getSearchURL(),
-            'icon_txt'  => __('Manage saved searches')
-         ]
-      );
-      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
-             __s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
-      echo "</a></li>";
-
-      echo "<li id='help_link'>".
-           "<a href='".(empty($CFG_GLPI["central_doc_url"])
-                         ? "http://glpi-project.org/help-central"
-                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
-                            __s('Help')."\" class='fa fa-question'>".
-           "<span class='sr-only'>" . __s('Help') . "</span>";
-      echo "</a></li>";
-
-      if (!GLPI_DEMO_MODE) {
-         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                    "/front/preference.php?forcetab=User\$1' title=\"".
-                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
-      } else {
-         echo "<li id='language_link'><span>" .
-            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
-      }
-
-      /// Search engine
-      echo "<li id='c_recherche'>\n";
-      if ($CFG_GLPI['allow_search_global']) {
-         echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
-         echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
-                                         placeholder='". __s('Search')."'>";
-         echo "</span>";
-         Html::closeForm();
-      }
-      echo "</li>";
-
-      echo "</ul>";
-      echo "</div>\n";
-
-      echo "</div>";
+      self::getTopMenu(true);
+      echo "</div>"; // header_top
 
       ///Main menu
       echo "<div id='c_menu'>";
@@ -1974,76 +1886,9 @@ class Html {
              __s('Home')."\"><span class='invisible'>Logo</span></a>";
       echo "</div>";
 
-      // Preferences adn logout link
-      echo "<div id='c_preference' >";
-      echo "<ul>";
-
-      echo "<li id='deconnexion'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/logout.php";
-            /// logout witout noAuto login for extauth
-      if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
-         echo "?noAUTO=1";
-      }
-
-      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
-      // check user id : header used for display messages when session logout
-      echo "<span class='sr-only'>" . __s('Logout') . "></span>";
-      echo "</a>";
-      echo "</li>\n";
-
-      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\" class='fa fa-cog'>";
-      echo "<span class='sr-only'>" . __s('My settings') . "</span>";
-
-      // check user id : header used for display messages when session logout
-      if (Session::getLoginUserID()) {
-         echo "<span id='myname'>";
-         echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                              $_SESSION["glpifirstname"], 0, 20);
-         echo "</span>";
-      }
-      echo "</a></li>";
-
-      /// Bookmark load
-      echo "<li id='bookmark_link'>";
-      Ajax::createSlidePanel(
-         'showSavedSearches',
-         [
-            'title'     => __('Saved searches'),
-            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
-            'icon'      => '/pics/menu_config.png',
-            'icon_url'  => SavedSearch::getSearchURL(),
-            'icon_txt'  => __('Manage saved searches')
-         ]
-      );
-      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".__s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
-      echo "</a></li>";
-
-      echo "<li id='help_link'><a href='".
-                 (empty($CFG_GLPI["helpdesk_doc_url"])
-                   ? "http://glpi-project.org/help-helpdesk"
-                   : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\" class='fa fa-question'>".
-                  "<span class='sr-only'>" . __s('Help')  . "</span>";
-      echo "</a></li>";
-
-      if (!GLPI_DEMO_MODE) {
-         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                    "/front/preference.php?forcetab=User\$1' title=\"".
-                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
-      } else {
-         echo "<li id='language_link'><span>" .
-            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
-      }
-
-      echo "</ul>";
-      echo "</div>"; // c_preference
-
-      //-- Le moteur de recherche --
-      echo "<div id='c_recherche'></div>";
-
-      echo "</div>"; // c_recherche
+      // Preferences and logout link
+      self::getTopMenu(false);
+      echo "</div>"; // header_top
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
@@ -6297,5 +6142,111 @@ class Html {
             return json_encode($fuzzy_entries);
             break;
       }
+   }
+
+   /**
+    * Get GLPI menus
+    *
+    * @param boolean $full True for full interface, false otherwise
+    *
+    * @return void
+    */
+   private static function getTopMenu($full) {
+      global $CFG_GLPI;
+
+      /// Prefs / Logout link
+      echo "<div id='c_preference' >";
+      echo "<ul>";
+
+      echo "<li id='deconnexion'>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/logout.php";
+            /// logout witout noAuto login for extauth
+      if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+         echo "?noAUTO=1";
+      }
+      echo "' title=\"".__s('Logout')."\" class='fa fa-sign-out'>";
+      // check user id : header used for display messages when session logout
+      echo "<span class='sr-only'>" . __s('Logout') . "></span>";
+      echo "</a>";
+      echo "</li>\n";
+
+      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+                 __s('My settings')."\" class='fa fa-cog'>";
+      echo "<span class='sr-only'>" . __s('My settings') . "</span>";
+
+      // check user id : header used for display messages when session logout
+      if (Session::getLoginUserID()) {
+         echo "<span id='myname'>";
+         echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                              $_SESSION["glpifirstname"], 0, 20);
+         echo "</span>";
+      }
+      echo "</a></li>";
+
+      if (Config::canUpdate()) {
+         $current_mode = $_SESSION['glpi_use_mode'];
+         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
+         $title = sprintf(
+            __('Debug mode %1$s'),
+            ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
+         );
+         echo "<li id='debug_mode'>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
+                title='$title'>";
+         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
+         echo "</a>";
+         echo "</li>";
+      }
+
+      /// Bookmark load
+      echo "<li id='bookmark_link'>";
+      Ajax::createSlidePanel(
+         'showSavedSearches',
+         [
+            'title'     => __('Saved searches'),
+            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
+            'icon'      => '/pics/menu_config.png',
+            'icon_url'  => SavedSearch::getSearchURL(),
+            'icon_txt'  => __('Manage saved searches')
+         ]
+      );
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
+             __s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
+      echo "</a></li>";
+
+      echo "<li id='help_link'>".
+           "<a href='".(empty($CFG_GLPI["central_doc_url"])
+                         ? "http://glpi-project.org/help-central"
+                         : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
+                            __s('Help')."\" class='fa fa-question'>".
+           "<span class='sr-only'>" . __s('Help') . "</span>";
+      echo "</a></li>";
+
+      if (!GLPI_DEMO_MODE) {
+         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                    "/front/preference.php?forcetab=User\$1' title=\"".
+                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      } else {
+         echo "<li id='language_link'><span>" .
+            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
+      }
+
+      echo "<li id='c_recherche'>\n";
+      if ($full === true) {
+         /// Search engine
+         if ($CFG_GLPI['allow_search_global']) {
+            echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+            echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
+                                          placeholder='". __s('Search')."'>";
+            echo "</span>";
+            Html::closeForm();
+         }
+      }
+      echo "</li>";
+
+      echo "</ul>";
+      echo "</div>\n";
    }
 }
