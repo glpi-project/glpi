@@ -4021,7 +4021,7 @@ class CommonDBTM extends CommonGLPI {
 
       $ok = false;
       if (is_array($crit) && (count($crit) > 0)) {
-         $crit['FIELDS'] = 'id';
+         $crit['FIELDS'] = [$this::getTable() => 'id'];
          $ok = true;
          foreach ($DB->request($this->getTable(), $crit) as $row) {
             if (!$this->delete($row, $force, $history)) {
