@@ -307,6 +307,13 @@ function glpi_autoload($classname) {
       die("Security die. trying to load a forbidden class name");
    }
 
+   //hack for \Zend\Loader\SplAutoloader :(
+   //@since 9.2 -- WILL BE REMOVED IN FUTURE RELEASE
+   if ($classname === 'Zend\\Loader\\SplAutoloader') {
+      require_once GLPI_ROOT . '/lib/zend-splautoloader.class.php';
+      return true;
+   }
+
    $dir = GLPI_ROOT . "/inc/";
 
    if ($plug = isPluginItemType($classname)) {
