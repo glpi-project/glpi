@@ -40,6 +40,7 @@ new whole window
 - `TableExists()` has been moved to `DBMysql::tableExists()`
 - `FieldExists()` has been moved to `DBMysql::fieldExists()`
 - `Profile_User::getUserEntitiesForRight()` signature has changed
+- `NotificationTarget` property `datas` has been renamed to `data`
 
 #### Deprecated
 
