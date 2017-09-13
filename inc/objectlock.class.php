@@ -173,8 +173,8 @@ class ObjectLock extends CommonDBTM {
 
       $msg = "<table><tr><td class=red>";
       $msg .= __("Locked by you!")."</td>";
-      $msg .= "<td><a class='vsubmit' onclick='javascript:unlockIt(this);'>".__('Unlock ').
-               $this->itemtypename." #".$this->itemid."</a>";
+      $msg .= "<td><a class='vsubmit' onclick='javascript:unlockIt(this);'>"
+              .sprintf(__('Unlock %1s #%2s'), $this->itemtypename, $this->itemid)."</a>";
       $msg .="</td></tr></table>";
 
       $this->displayLockMessage($msg);
