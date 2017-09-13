@@ -4780,6 +4780,7 @@ class Html {
       $p['rand']              = $randupload;
       $p['values']            = [];
       $p['display']           = true;
+      $p['multiple']          = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -4813,7 +4814,7 @@ class Html {
          $display .= "<input id='fileupload{$p['rand']}' type='file' name='".$p['name']."[]'
                          data-url='".$CFG_GLPI["root_doc"]."/ajax/fileupload.php'
                          data-form-data='{\"name\": \"".$p['name']."\",
-                                          \"showfilesize\": \"".$p['showfilesize']."\"}'>";
+                                          \"showfilesize\": \"".$p['showfilesize']."\"}'".($p['multiple']?" multiple='multiple'":"").">";
          $display .= "<div id='progress{$p['rand']}' style='display:none'>".
                  "<div class='uploadbar' style='width: 0%;'></div></div>";
          $display .= "</div>";
@@ -4920,6 +4921,7 @@ class Html {
       $p['display']           = true;
       $p['cols']              = 100;
       $p['rows']              = 15;
+      $p['multiple']          = true;
 
       //merge default options with options parameter
       $p = array_merge($p, $options);

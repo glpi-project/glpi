@@ -624,7 +624,7 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Ticket') {
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
-      Html::file();
+      Html::file(['multiple' => true]);
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
       echo "<td></td></tr>";
    }
@@ -719,7 +719,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
-         Html::file();
+         Html::file(['multiple' => true]);
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
