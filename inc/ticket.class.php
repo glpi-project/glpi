@@ -726,7 +726,7 @@ class Ticket extends CommonITILObject {
                      'glpi_items_tickets',
                      [
                         'INNER JOIN' => [
-                           'glpi_tickets', [
+                           'glpi_tickets' => [
                               'FKEY' => [
                                  'glpi_items_tickets' => 'tickets_id',
                                  'glpi_tickets'       => 'id'
@@ -751,7 +751,7 @@ class Ticket extends CommonITILObject {
                               'glpi_items_tickets',
                               [
                                  'INNER JOIN' => [
-                                    'glpi_tickets', [
+                                    'glpi_tickets' => [
                                        'FKEY' => [
                                           'glpi_items_tickets' => 'tickets_id',
                                           'glpi_tickets'       => 'id'
