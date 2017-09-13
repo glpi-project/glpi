@@ -1728,9 +1728,9 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
          $ancestors = $_SESSION['glpiparententities'];
       } else {
          if (is_array($value)) {
-            $ancestors = getAncestorsOf("glpi_entities", $value);
-            $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val),
-                                                  $ancestors));
+            foreach ($value as $val) {
+               $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val), $ancestors));
+            }
          } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
             $ancestors = $_SESSION['glpiparententities'];
 
