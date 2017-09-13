@@ -914,7 +914,7 @@ langSwitch = function(elt) {
 }
 
 $(function(){
-   $('#menu li').on('mouseover', function() {
+   $('#menu.fullmenu li').on('mouseover', function() {
       var _id = $(this).data('id');
       menuAff('menu' + _id, 'menu');
    });
