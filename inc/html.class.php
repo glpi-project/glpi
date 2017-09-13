@@ -1439,12 +1439,9 @@ class Html {
             $body_class = "";
          }
       }
-      // Generate array for menu and check right
-      $menu = self::generateMenuSession();
 
       // Body
       echo "<body class='$body_class'>";
-      $already_used_shortcut = ['1'];
 
       echo "<div id='header'>";
       echo "<div id='header_top'>";
@@ -1453,224 +1450,18 @@ class Html {
                       ['accesskey' => '1',
                             'title'     => __('Home')]);
       echo "</div>";
-      self::getTopMenu(true);
+
+      // Preferences and logout link
+      self::displayTopMenu(true);
       echo "</div>"; // header_top
 
-      ///Main menu
-      echo "<div id='c_menu'>";
-      echo "<ul id='menu'>";
-
-      // Get object-variables and build the navigation-elements
-      $i = 1;
-      foreach ($menu as $part => $data) {
-         if (isset($data['content']) && count($data['content'])) {
-            $menu_class = "";
-            if (isset($menu[$sector]) && $menu[$sector]['title'] == $data['title']) {
-               $menu_class = "active";
-            }
-
-            echo "<li id='menu$i' data-id='$i' class='$menu_class'>";
-            $link = "#";
-
-            if (isset($data['default']) && !empty($data['default'])) {
-               $link = $CFG_GLPI["root_doc"].$data['default'];
-            }
-
-            echo "<a href='$link' class='itemP' title='{$data['title']}'>{$data['title']}</a>";
-            echo "<ul class='ssmenu'>";
-
-            // list menu item
-            foreach ($data['content'] as $key => $val) {
-               $menu_class       = "";
-               $tmp_active_item  = explode("/", $item);
-               $active_item      = array_pop($tmp_active_item);
-               if (isset($menu[$sector]['content'])
-                   && isset($menu[$sector]['content'][$active_item])
-                   && isset($val['title'])
-                   && ($menu[$sector]['content'][$active_item]['title'] == $val['title'])) {
-                  $menu_class = "active";
-               }
-               if (isset($val['page'])
-                   && isset($val['title'])) {
-                  echo "<li class='$menu_class'><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-
-                  if (isset($val['shortcut']) && !empty($val['shortcut'])) {
-                     if (!isset($already_used_shortcut[$val['shortcut']])) {
-                        echo " accesskey='".$val['shortcut']."'";
-                        $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
-                     }
-                     echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
-                  } else {
-                     echo ">".$val['title']."</a></li>\n";
-                  }
-               }
-            }
-            echo "</ul></li>";
-            $i++;
-         }
-      }
-
-      echo "</ul>"; // #menu
-
-      // Display MENU ALL
-      self::displayMenuAll($menu);
-
-      // End navigation bar
-      // End headline
-
-      //  Le fil d ariane
-      echo "<div id='c_ssmenu2' >";
-      echo "<ul>";
-
-      // Display item
-      echo "<li class='breadcrumb_item'>".
-           "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
-             __('Home')."</a></li>";
-
-      if (isset($menu[$sector])) {
-         $link = "/front/central.php";
-
-         if (isset($menu[$sector]['default'])) {
-            $link = $menu[$sector]['default'];
-         }
-         echo "<li class='breadcrumb_item'>".
-              "<a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
-                    $menu[$sector]['title']."</a></li>";
-      }
-
-      if (isset($menu[$sector]['content'][$item])) {
-         // Title
-         $with_option = false;
-
-         if (!empty($option)
-             && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
-             && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
-
-            $with_option = true;
-         }
-
-         if (isset($menu[$sector]['content'][$item]['page'])) {
-            echo "<li class='breadcrumb_item'>".
-                 "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
-                       ($with_option?"":"class='here'")." title=\"".
-                       $menu[$sector]['content'][$item]['title']."\" >".
-                       $menu[$sector]['content'][$item]['title']."</a>".
-                 "</li>";
-         }
-
-         if ($with_option) {
-            echo "<li class='breadcrumb_item'>".
-                 "<a href='".$CFG_GLPI["root_doc"].
-                      $menu[$sector]['content'][$item]['options'][$option]['page'].
-                      "' class='here' title=\"".
-                      $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
-            echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
-                                   17);
-            echo "</a></li>";
-         }
-
-         $links = [];
-         // Item with Option case
-         if (!empty($option)
-             && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
-             && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
-            $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
-
-         } else if (isset($menu[$sector]['content'][$item]['links'])
-                    && is_array($menu[$sector]['content'][$item]['links'])) {
-            // Without option case : only item links
-
-            $links = $menu[$sector]['content'][$item]['links'];
-         }
-
-         // Add item
-         echo "<li class='icons_block'>";
-         echo "<span>";
-         if (isset($links['add'])) {
-            echo "<a href='{$CFG_GLPI['root_doc']}{$links['add']}' class='pointer'
-                              title='" . __('Add') ."'><i class='fa fa-plus'></i>
-                              <span class='sr-only'>" . __('Add') . "</span></a>";
-         } else {
-            echo "<a href='#' class='pointer disabled' title='".__('Add is disabled')."'>".
-                 "<i class='fa fa-plus'></i>".
-                 "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
-         }
-         echo "</span>";
-
-         // Search Item
-         echo "<span>";
-         if (isset($links['search'])) {
-            echo "<a href='{$CFG_GLPI['root_doc']}{$links['search']}' class='pointer'
-                              title='" . __s('Search') ."'><i class='fa fa-search'></i>
-                              <span class='sr-only'>" . __s('Search') . "</span></a>";
-         } else {
-            echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')."'>".
-                 "<i class='fa fa-search'></i>".
-                 "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
-         }
-         echo "</span>";
-         // Links
-         if (count($links) > 0) {
-            foreach ($links as $key => $val) {
-
-               switch ($key) {
-                  case "add" :
-                  case "search" :
-                     break;
-
-                  case "template" :
-                     echo "<span>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                      ['alt' => __('Manage templates...'),
-                                            'url' => $CFG_GLPI["root_doc"].$val]);
-                     echo "</span>";
-                     break;
-
-                  case "showall" :
-                     echo "<span>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
-                                      ['alt' => __('Show all'),
-                                            'url' => $CFG_GLPI["root_doc"].$val]);
-                     echo "</span>";
-                     break;
-
-                  case "summary" :
-                     echo "<span>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
-                                      ['alt' => __('Summary'),
-                                            'url' => $CFG_GLPI["root_doc"].$val]);
-                     echo "</span>";
-                     break;
-
-                  case "config" :
-                     echo "<span>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
-                                      ['alt' => __('Setup'),
-                                            'url' => $CFG_GLPI["root_doc"].$val]);
-                     echo "</span>";
-                     break;
-
-                  default :
-                     echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
-                     break;
-               }
-            }
-         }
-         echo "</li>";
-
-      } else {
-         echo "<li>&nbsp;</li>";
-      }
-
-      // Add common items
-
-      // Profile selector
-      // check user id : header used for display messages when session logout
-      if (Session::getLoginUserID()) {
-         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
-      }
-      echo "</ul>";
-      echo "</div>";
+      //Main menu
+      self::displayMainMenu(
+         true, [
+            'sector' => $sector,
+            'item'   => $item
+         ]
+      );
 
       echo "</div>\n"; // fin header
 
@@ -1886,154 +1677,13 @@ class Html {
              __s('Home')."\"><span class='invisible'>Logo</span></a>";
       echo "</div>";
 
-      // Preferences and logout link
-      self::getTopMenu(false);
+      //Preferences and logout link
+      self::displayTopMenu(false);
       echo "</div>"; // header_top
 
-      //-- Le menu principal --
-      echo "<div id='c_menu'>";
+      //Main menu
+      self::displayMainMenu(false);
 
-      // Build the navigation-elements
-      $menu = [];
-
-      //  Create ticket
-      if (Session::haveRight("ticket", CREATE)) {
-         $menu['create_ticket']['id']      = "menu2";
-         $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
-         $menu['create_ticket']['title']   = __s('Create a ticket');
-         $menu['create_ticket']['content'] = [true];
-      }
-
-      //  Tickets
-      if (Session::haveRight("ticket", CREATE)
-          || Session::haveRight("ticket", Ticket::READMY)
-          || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
-         $menu['tickets']['id']      = "menu3";
-         $menu['tickets']['default'] = '/front/ticket.php';
-         $menu['tickets']['title']   = _n('Ticket', 'Tickets', Session::getPluralNumber());
-         $menu['tickets']['content'] = [true];
-      }
-
-      // Reservation
-      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-         $menu['reservation']['id']      = "menu4";
-         $menu['reservation']['default'] = '/front/reservationitem.php';
-         $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
-         $menu['reservation']['content'] = [true];
-      }
-
-      // FAQ
-      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         $menu['faq']['id']      = "menu5";
-         $menu['faq']['default'] = '/front/helpdesk.faq.php';
-         $menu['faq']['title']   = __s('FAQ');
-         $menu['faq']['content'] = [true];
-      }
-
-      echo "<ul id='menu'>";
-
-      // Display Home menu
-      echo "<li id='menu1'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-             __s('Home')."\" class='itemP'>".__('Home')."</a>";
-      echo "</li>";
-
-      // display menu items
-      foreach ($menu as $menu_item) {
-         echo "<li id='".$menu_item['id']."'>";
-         echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
-                "title=\"".$menu_item['title']."\" class='itemP'>{$menu_item['title']}</a>";
-         echo "</li>";
-      }
-
-      // Plugins
-      $menu['plugins']['id']      = "menu5";
-      $menu['plugins']['default'] = "#";
-      $menu['plugins']['title']   = _sn('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['content'] = [];
-      if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
-          && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
-
-         foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
-            if ($active) {
-               $infos = Plugin::getInfo($plugin);
-               $link = "";
-               if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
-                  $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
-               }
-               $infos['page'] = $link;
-               $infos['title'] = $infos['name'];
-               $menu['plugins']['content'][$plugin] = $infos;
-            }
-         }
-      }
-
-      // Display plugins
-      if (isset($menu['plugins']['content']) && count($menu['plugins']['content']) > 0) {
-         asort($menu['plugins']['content']);
-         echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\"".
-                _sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
-                __('Plugins')."</a>"; // default none
-         echo "<ul class='ssmenu'>";
-
-         // list menu item
-         foreach ($menu['plugins']['content'] as $key => $val) {
-            echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'>".
-                       $val["title"]."</a></li>";
-         }
-         echo "</ul></li>";
-      }
-      echo "</ul>";
-
-      // Display MENU ALL
-      self::displayMenuAll($menu);
-
-      // End navigation bar
-      // End headline
-
-      //  Le fil d ariane
-      echo "<div id='c_ssmenu2'>";
-      echo "<ul>";
-      echo "<li class='breadcrumb_item'>".
-           "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
-             __('Home')."</a></li>";
-
-      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-         $opt                              = [];
-         $opt['reset']                     = 'reset';
-         $opt['criteria'][0]['field']      = 55; // validation status
-         $opt['criteria'][0]['searchtype'] = 'equals';
-         $opt['criteria'][0]['value']      = TicketValidation::WAITING;
-         $opt['criteria'][0]['link']       = 'AND';
-
-         $opt['criteria'][1]['field']      = 59; // validation aprobator
-         $opt['criteria'][1]['searchtype'] = 'equals';
-         $opt['criteria'][1]['value']      = Session::getLoginUserID();
-         $opt['criteria'][1]['link']       = 'AND';
-
-         $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
-                         Toolbox::append_params($opt, '&amp;');
-         $pic_validate = "<a href='$url_validate'>".
-                         "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                           __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
-         echo "<li class='icons_block'>$pic_validate</li>\n";
-      }
-
-      if (Session::haveRight('ticket', CREATE)
-          && strpos($_SERVER['PHP_SELF'], "ticket")) {
-         echo "<li class='icons_block'><a class='pointer' href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'title=\"".__s('Add').">";
-         echo "<i class='fa fa-plus'></i><span class='sr-only'>".__s('Add')."</span></a></li>";
-      }
-
-      // check user id : header used for display messages when session logout
-      if (Session::getLoginUserID()) {
-         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
-      }
-      echo "</ul></div>"; // fin c_ssmenu2
-
-      echo "</div>"; // fin c_menu
       echo "</div>"; // fin header
       echo "<div id='page' >";
 
@@ -6145,13 +5795,13 @@ class Html {
    }
 
    /**
-    * Get GLPI menus
+    * Display GLPI top menu
     *
     * @param boolean $full True for full interface, false otherwise
     *
     * @return void
     */
-   private static function getTopMenu($full) {
+   private static function displayTopMenu($full) {
       global $CFG_GLPI;
 
       /// Prefs / Logout link
@@ -6248,5 +5898,377 @@ class Html {
 
       echo "</ul>";
       echo "</div>\n";
+   }
+
+   /**
+    * Display GLPI main menu
+    *
+    * @param boolean $full    True for full interface, false otherwise
+    * @param array   $options Option
+    *
+    * @return void
+    */
+   private static function displayMainMenu($full, $options = []) {
+      global $CFG_GLPI;
+
+      $sector = '';
+
+      // Generate array for menu and check right
+      if ($full === true) {
+         $menu    = self::generateMenuSession();
+         $sector  = $options['sector'];
+         $item    = $options['item'];
+      } else {
+         $menu = [];
+
+         //  Create ticket
+         if (Session::haveRight("ticket", CREATE)) {
+            $menu['create_ticket'] = [
+               'id'        => "menu2",
+               'default'   => '/front/helpdesk.public.php?create_ticket=1',
+               'title'     => __s('Create a ticket'),
+               'content'   => [true]
+            ];
+         }
+
+         //  Tickets
+         if (Session::haveRight("ticket", CREATE)
+            || Session::haveRight("ticket", Ticket::READMY)
+            || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
+            $menu['tickets'] = [
+               'id'        => "menu3",
+               'default'   => '/front/ticket.php',
+               'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+               'content'   => [true]
+            ];
+         }
+
+         // Reservation
+         if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+            $menu['reservation'] = [
+               'id'        => "menu4",
+               'default'   => '/front/reservationitem.php',
+               'title'     => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+               'content'   => [true]
+            ];
+         }
+
+         // FAQ
+         if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+            $menu['faq'] = [
+               'id'        => "menu5",
+               'default'   => '/front/helpdesk.faq.php',
+               'title'     => __s('FAQ'),
+               'content'   => [true]
+            ];
+         }
+
+         // Plugins
+         $menu['plugins'] = [
+            'id'        => "menu5",
+            'default'   => "#",
+            'title'     => _sn('Plugin', 'Plugins', Session::getPluralNumber()),
+            'content'   => []
+         ];
+
+         if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
+            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
+
+            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+               if ($active) {
+                  $infos = Plugin::getInfo($plugin);
+                  $link = "";
+                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                     $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+                  }
+                  $infos['page'] = $link;
+                  $infos['title'] = $infos['name'];
+                  $menu['plugins']['content'][$plugin] = $infos;
+               }
+            }
+         }
+      }
+
+      $already_used_shortcut = ['1'];
+
+      echo "<div id='c_menu'>";
+      echo "<ul id='menu'";
+      if ($full === true) {
+         echo " class='fullmenu'";
+      }
+      echo ">";
+
+      if ($full === false) {
+         // Display Home menu
+         echo "<li id='menu1'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
+               __s('Home')."\" class='itemP'>".__('Home')."</a>";
+         echo "</li>";
+      }
+
+      // Get object-variables and build the navigation-elements
+      $i = 1;
+      foreach ($menu as $part => $data) {
+         if (isset($data['content']) && count($data['content'])) {
+            $menu_class = "";
+            if (isset($menu[$sector]) && $menu[$sector]['title'] == $data['title']) {
+               $menu_class = "active";
+            }
+
+            echo "<li id='menu$i' data-id='$i' class='$menu_class'>";
+            $link = "#";
+
+            if (isset($data['default']) && !empty($data['default'])) {
+               $link = $CFG_GLPI["root_doc"].$data['default'];
+            }
+
+            echo "<a href='$link' class='itemP' title='{$data['title']}'>{$data['title']}</a>";
+            if (!isset($data['content'][0]) || $data['content'][0] !== true) {
+               echo "<ul class='ssmenu'>";
+
+               // list menu item
+               foreach ($data['content'] as $key => $val) {
+                  $menu_class       = "";
+                  $tmp_active_item  = explode("/", $item);
+                  $active_item      = array_pop($tmp_active_item);
+                  if (isset($menu[$sector]['content'])
+                     && isset($menu[$sector]['content'][$active_item])
+                     && isset($val['title'])
+                     && ($menu[$sector]['content'][$active_item]['title'] == $val['title'])) {
+                     $menu_class = "active";
+                  }
+                  if (isset($val['page'])
+                     && isset($val['title'])) {
+                     echo "<li class='$menu_class'><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+
+                     if (isset($val['shortcut']) && !empty($val['shortcut'])) {
+                        if (!isset($already_used_shortcut[$val['shortcut']])) {
+                           echo " accesskey='".$val['shortcut']."'";
+                           $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
+                        }
+                        echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
+                     } else {
+                        echo ">".$val['title']."</a></li>\n";
+                     }
+                  }
+               }
+               echo "</ul>";
+            }
+            echo "</li>";
+            $i++;
+         }
+      }
+
+      if ($full === false) {
+         // Display plugins
+         if (isset($menu['plugins']['content']) && count($menu['plugins']['content']) > 0) {
+            asort($menu['plugins']['content']);
+            echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
+            echo "<a href='#' title=\"".
+                  _sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
+                  __('Plugins')."</a>"; // default none
+            echo "<ul class='ssmenu'>";
+
+            // list menu item
+            foreach ($menu['plugins']['content'] as $key => $val) {
+               echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'>".
+                        $val["title"]."</a></li>";
+            }
+            echo "</ul></li>";
+         }
+      }
+
+      echo "</ul>"; // #menu
+
+      // Display MENU ALL
+      self::displayMenuAll($menu);
+
+      // End navigation bar
+      // End headline
+
+      //  Le fil d ariane
+      echo "<div id='c_ssmenu2' >";
+      echo "<ul>";
+
+      // Display item
+      $mainurl = ($full === true) ? 'central' : 'helpdesk.public';
+      echo "<li class='breadcrumb_item'>".
+           "<a href='".$CFG_GLPI["root_doc"]."/front/$mainurl.php' title=\"". __s('Home')."\">".
+             __('Home')."</a></li>";
+
+      if ($full === true) {
+         if (isset($menu[$sector])) {
+            $link = "/front/central.php";
+
+            if (isset($menu[$sector]['default'])) {
+               $link = $menu[$sector]['default'];
+            }
+            echo "<li class='breadcrumb_item'>".
+               "<a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
+                     $menu[$sector]['title']."</a></li>";
+         }
+
+         if (isset($menu[$sector]['content'][$item])) {
+            // Title
+            $with_option = false;
+
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+
+               $with_option = true;
+            }
+
+            if (isset($menu[$sector]['content'][$item]['page'])) {
+               echo "<li class='breadcrumb_item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+                        ($with_option?"":"class='here'")." title=\"".
+                        $menu[$sector]['content'][$item]['title']."\" >".
+                        $menu[$sector]['content'][$item]['title']."</a>".
+                  "</li>";
+            }
+
+            if ($with_option) {
+               echo "<li class='breadcrumb_item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].
+                        $menu[$sector]['content'][$item]['options'][$option]['page'].
+                        "' class='here' title=\"".
+                        $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+               echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
+                                    17);
+               echo "</a></li>";
+            }
+
+            $links = [];
+            // Item with Option case
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+               $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
+
+            } else if (isset($menu[$sector]['content'][$item]['links'])
+                     && is_array($menu[$sector]['content'][$item]['links'])) {
+               // Without option case : only item links
+
+               $links = $menu[$sector]['content'][$item]['links'];
+            }
+
+            // Add item
+            echo "<li class='icons_block'>";
+            echo "<span>";
+            if (isset($links['add'])) {
+               echo "<a href='{$CFG_GLPI['root_doc']}{$links['add']}' class='pointer'
+                                 title='" . __('Add') ."'><i class='fa fa-plus'></i>
+                                 <span class='sr-only'>" . __('Add') . "</span></a>";
+            } else {
+               echo "<a href='#' class='pointer disabled' title='".__('Add is disabled')."'>".
+                  "<i class='fa fa-plus'></i>".
+                  "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
+            }
+            echo "</span>";
+
+            // Search Item
+            echo "<span>";
+            if (isset($links['search'])) {
+               echo "<a href='{$CFG_GLPI['root_doc']}{$links['search']}' class='pointer'
+                                 title='" . __s('Search') ."'><i class='fa fa-search'></i>
+                                 <span class='sr-only'>" . __s('Search') . "</span></a>";
+            } else {
+               echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')."'>".
+                  "<i class='fa fa-search'></i>".
+                  "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
+            }
+            echo "</span>";
+            // Links
+            if (count($links) > 0) {
+               foreach ($links as $key => $val) {
+
+                  switch ($key) {
+                     case "add" :
+                     case "search" :
+                        break;
+
+                     case "template" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
+                                       ['alt' => __('Manage templates...'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "showall" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
+                                       ['alt' => __('Show all'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "summary" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
+                                       ['alt' => __('Summary'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     case "config" :
+                        echo "<span>";
+                        echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
+                                       ['alt' => __('Setup'),
+                                             'url' => $CFG_GLPI["root_doc"].$val]);
+                        echo "</span>";
+                        break;
+
+                     default :
+                        echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
+                        break;
+                  }
+               }
+            }
+            echo "</li>";
+
+         } else {
+            echo "<li>&nbsp;</li>";
+         }
+      } else {
+         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+            $opt                              = [];
+            $opt['reset']                     = 'reset';
+            $opt['criteria'][0]['field']      = 55; // validation status
+            $opt['criteria'][0]['searchtype'] = 'equals';
+            $opt['criteria'][0]['value']      = TicketValidation::WAITING;
+            $opt['criteria'][0]['link']       = 'AND';
+
+            $opt['criteria'][1]['field']      = 59; // validation aprobator
+            $opt['criteria'][1]['searchtype'] = 'equals';
+            $opt['criteria'][1]['value']      = Session::getLoginUserID();
+            $opt['criteria'][1]['link']       = 'AND';
+
+            $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
+                           Toolbox::append_params($opt, '&amp;');
+            $pic_validate = "<a href='$url_validate'>".
+                           "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+                              __s('Ticket waiting for your approval')."\" src='".
+                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
+            echo "<li class='icons_block'>$pic_validate</li>\n";
+         }
+
+         if (Session::haveRight('ticket', CREATE)
+            && strpos($_SERVER['PHP_SELF'], "ticket")) {
+            echo "<li class='icons_block'><a class='pointer' href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'title=\"".__s('Add')."\">";
+            echo "<i class='fa fa-plus'></i><span class='sr-only'>".__s('Add')."</span></a></li>";
+         }
+      }
+
+      // Add common items
+
+      // Profile selector
+      // check user id : header used for display messages when session logout
+      if (Session::getLoginUserID()) {
+         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/$mainurl.php");
+      }
+      echo "</ul>";
+      echo "</div>";
    }
 }
