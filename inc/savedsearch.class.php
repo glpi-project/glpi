@@ -349,15 +349,15 @@ class SavedSearch extends CommonDBTM {
       $this->showFormHeader($options);
 
       if (isset($options['itemtype'])) {
-         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'/>";
+         echo Html::hidden('itemtype', ['value' => $options['itemtype']]);
       }
 
       if (isset($options['type']) && ($options['type'] != 0)) {
-         echo "<input type='hidden' name='type' value='".$options['type']."'/>";
+         echo Html::hidden('type', ['value' => $options['type']]);
       }
 
       if (isset($options['url'])) {
-         echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'/>";
+         echo Html::hidden('url', ['value' => rawurlencode($options['url'])]);
       }
 
       echo "<tr><th colspan='4'>";
@@ -399,9 +399,9 @@ class SavedSearch extends CommonDBTM {
          }
       }
       if ($ID <= 0) { // add
-         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
+         echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
       } else {
-         echo "<input type='hidden' name='id' value='$ID'>";
+         echo Html::hidden('id', ['value' => $ID]);
       }
       echo "</td></tr>";
 
