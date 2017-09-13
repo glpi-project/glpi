@@ -1459,7 +1459,8 @@ class Html {
       self::displayMainMenu(
          true, [
             'sector' => $sector,
-            'item'   => $item
+            'item'   => $item,
+            'option' => $option
          ]
       );
 
@@ -5920,6 +5921,7 @@ class Html {
          $menu    = self::generateMenuSession();
          $sector  = $options['sector'];
          $item    = $options['item'];
+         $option  = $options['option'];
       } else {
          $menu = [];
 
