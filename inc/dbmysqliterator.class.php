@@ -271,9 +271,11 @@ class DBmysqlIterator implements Iterator, Countable {
    private static function quoteName($name) {
       if (strpos($name, '.')) {
          $n = explode('.', $name, 2);
-         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
+         $table = self::quoteName($n[0]);
+         $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
+         return "$table.$field";
       }
-      return ($name[0]=='`' ? $name : "`$name`");
+      return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
    }
 
 
