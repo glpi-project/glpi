@@ -2260,7 +2260,7 @@ class Config extends CommonDBTM {
             //to enhance perfs
             'APCu'       => [
                'required'  => false,
-               'function'  => 'apc_fetch'
+               'function'  => 'apcu_fetch'
             ],
             //for XMLRPC API
             'xmlrpc'     => [
