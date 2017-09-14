@@ -35,6 +35,8 @@
 class DbTestCase extends atoum {
    private $int;
    private $str;
+   protected $cached_methods = [];
+   protected $nscache;
 
    public function setUp() {
       global $DB;
@@ -51,9 +53,33 @@ class DbTestCase extends atoum {
       ];
    }
 
+   public function beforeTestMethod($method) {
+      if (in_array($method, $this->cached_methods)) {
+         $this->nscache = 'glpitestcache' . GLPI_VERSION;
+         global $GLPI_CACHE;
+         //run with cache
+         define('CACHED_TESTS', true);
+         //ZendCache does not works with PHP5 acpu...
+         $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
+         $GLPI_CACHE = \Zend\Cache\StorageFactory::factory([
+            'adapter'   => $adapter,
+            'options'   => [
+               'namespace' => $this->nscache
+            ]
+         ]);
+      }
+   }
 
    public function afterTestMethod($method) {
       global $DB;
+
+      if (in_array($method, $this->cached_methods)) {
+         global $GLPI_CACHE;
+         if ($GLPI_CACHE instanceof \Zend\Cache\Storage\Adapter\AbstractAdapter) {
+            $GLPI_CACHE->flush();
+         }
+         $GLPI_CACHE = false;
+      }
 
       // Cleanup log directory
       foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {

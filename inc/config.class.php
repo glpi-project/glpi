@@ -2258,7 +2258,7 @@ class Config extends CommonDBTM {
                'required'  => false
             ],
             //to enhance perfs
-            'APCu'       => [
+            'APCu'      => [
                'required'  => false,
                'function'  => 'apcu_fetch'
             ],
@@ -2282,7 +2282,9 @@ class Config extends CommonDBTM {
       foreach ($extensions_to_check as $ext => $params) {
          $success = true;
 
-         if (isset($params['function'])) {
+         if (isset($params['call'])) {
+            $success = call_user_func($params['call']);
+         } else if (isset($params['function'])) {
             if (!function_exists($params['function'])) {
                 $success = false;
             }
