@@ -670,14 +670,14 @@ final class DbUtils {
     * @return array of IDs of the sons
     */
    public function getSonsOf($table, $IDf) {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       $ckey = $table . '_sons_cache_' . $IDf;
       $sons = [];
 
       if (Toolbox::useCache()) {
-         if (apcu_exists($ckey)) {
-            $sons = apcu_fetch($ckey);
+         if ($GLPI_CACHE->hasItem($ckey)) {
+            $sons = $GLPI_CACHE->getItem($ckey);
             if ($sons) {
                return $sons;
             }
@@ -759,7 +759,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         apcu_store($ckey, $sons);
+         $GLPI_CACHE->addItem($ckey, $sons);
       }
 
       return $sons;
@@ -774,7 +774,7 @@ final class DbUtils {
     * @return array of IDs of the ancestors
     */
    public function getAncestorsOf($table, $items_id) {
-      global $DB;
+      global $DB, $GLPI_CACHE;
 
       $ckey = $table . '_ancestors_cache_';
       if (is_array($items_id)) {
@@ -785,8 +785,8 @@ final class DbUtils {
       $ancestors = [];
 
       if (Toolbox::useCache()) {
-         if (apcu_exists($ckey)) {
-            $ancestors = apcu_fetch($ckey);
+         if ($GLPI_CACHE->hasItem($ckey)) {
+            $ancestors = $GLPI_CACHE->getItem($ckey);
             if ($ancestors) {
                return $ancestors;
             }
@@ -871,7 +871,7 @@ final class DbUtils {
       }
 
       if (Toolbox::useCache()) {
-         apcu_store($ckey, $ancestors);
+         $GLPI_CACHE->addItem($ckey, $ancestors);
       }
 
       return $ancestors;
