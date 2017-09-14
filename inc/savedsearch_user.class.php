@@ -83,6 +83,6 @@ class SavedSearch_User extends CommonDBRelation {
    }
 
    function prepareInputForUpdate($input) {
-      return $this->can($input['id'],READ) ? $input : false;
+      return $this->can($input['id'], READ) ? $input : false;
    }
 }
