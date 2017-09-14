@@ -1883,8 +1883,7 @@ Regards,',
       'glpi_states'              => ['states_id', 'name'],
       'glpi_tickets_tickets'     => ['tickets_id_1', 'tickets_id_2'],
       'glpi_tickettemplatehiddenfields'      => ['tickettemplates_id', 'num'],
-      'glpi_tickettemplatemandatoryfields'   => ['tickettemplates_id', 'num'],
-      'glpi_tickettemplatepredefinedfields'  => ['tickettemplates_id', 'num']
+      'glpi_tickettemplatemandatoryfields'   => ['tickettemplates_id', 'num']
    ];
    foreach ($tables as $table => $fields) {
       $add = true;
@@ -1910,6 +1909,12 @@ Regards,',
 
       }
    }
+
+   // unique index added in a previous 9.2-dev
+   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity');
+   $migration->addKey('glpi_tickettemplatepredefinedfields',
+                      ['tickettemplates_id', 'num'],
+                      'tickettemplates_id_id_num');
 
    //removed field
    if ($DB->fieldExists('glpi_slms', 'resolution_time')) {
