@@ -35,6 +35,8 @@ error_reporting(E_ALL);
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', 'http://localhost:8088');
+define('TU_USER', '_test_user');
+define('TU_PASS', 'PhpUnit_4');
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
@@ -49,9 +51,6 @@ include_once __DIR__ . '/APIBaseClass.php';
 if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
-
-define('TU_USER', '_test_user');
-define('TU_PASS', 'PhpUnit_4');
 
 class GlpitestPHPerror extends Exception
 {

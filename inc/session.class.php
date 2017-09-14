@@ -541,7 +541,7 @@ class Session {
     * @return nothing (make an include)
    **/
    static function loadLanguage($forcelang = '') {
-      global $LANG, $CFG_GLPI, $TRANSLATE;
+      global $LANG, $CFG_GLPI, $TRANSLATE, $GLPI_CACHE;
 
       $file = "";
 
@@ -580,14 +580,9 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      try {
-         $TRANSLATE = new Zend\I18n\Translator\Translator;
-         $cache = Zend\Cache\StorageFactory::factory(['adapter' => 'apcu']);
-         $TRANSLATE->setCache($cache);
-      } catch (Exception $e) {
-         $TRANSLATE = new Zend\I18n\Translator\Translator;
-         // ignore when APC not available
-         // toolbox::logDebug($e->getMessage());
+      $TRANSLATE = new Zend\I18n\Translator\Translator;
+      if ($GLPI_CACHE !== false) {
+         $TRANSLATE->setCache($GLPI_CACHE);
       }
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 

@@ -2820,14 +2820,16 @@ class Toolbox {
    }
 
    /**
-    * Should APCu cache be used
+    * Should cache be used
     *
     * @since 9.2
     *
     * @return boolean
     */
    public static function useCache() {
-      return function_exists('apcu_exists') && (!defined('TU_USER') || defined('CACHED_TESTS'));
+      global $GLPI_CACHE;
+      return $GLPI_CACHE instanceof Zend\Cache\Storage\Adapter\AbstractAdapter
+         && (!defined('TU_USER') || defined('CACHED_TESTS'));
    }
 
 }
