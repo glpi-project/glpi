@@ -126,7 +126,7 @@ class NotificationAjax implements NotificationInterface {
                   method_exists($row['itemtype'], 'getFormURL')
                ) {
                   $item = new $row['itemtype'];
-                  $url = $item->getFormURL()."?id={$row['items_id']}";
+                  $url = $item->getFormURL(false)."?id={$row['items_id']}";
                }
 
                $return[] = [
