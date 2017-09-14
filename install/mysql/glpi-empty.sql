@@ -8559,7 +8559,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
+  KEY `tickettemplates_id_id_num` (`tickettemplates_id`,`num`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
