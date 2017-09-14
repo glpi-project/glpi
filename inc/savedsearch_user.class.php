@@ -81,4 +81,8 @@ class SavedSearch_User extends CommonDBRelation {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
+
+   function prepareInputForUpdate($input) {
+      return $this->can($input['id'], READ) ? $input : false;
+   }
 }
