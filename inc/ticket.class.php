@@ -1602,7 +1602,6 @@ class Ticket extends CommonITILObject {
              || in_array("cost_fixed", $this->updates)
              || in_array("cost_material", $this->updates)) {
 
-
             if (!empty($this->input["items_id"])) {
                foreach ($this->input["items_id"] as $itemtype => $items) {
                   foreach ($items as $items_id) {
