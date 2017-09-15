@@ -577,7 +577,7 @@ class QueuedNotification extends CommonDBTM {
          }
 
          $result = $eventclass::send($data);
-         if ($result !== false && count($result)) {
+         if ($result !== false) {
             $cron_status = 1;
             if (!is_null($task)) {
                $task->addVolume($result);
