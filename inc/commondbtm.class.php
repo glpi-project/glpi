@@ -4213,7 +4213,7 @@ class CommonDBTM extends CommonGLPI {
                      if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                         $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
                      }
-                     return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link".
+                     return "<a href=\"".Toolbox::formatOutputWebLink($orig_link)."\" target='_blank'>$link".
                             "</a>";
                   }
                   return "&nbsp;";

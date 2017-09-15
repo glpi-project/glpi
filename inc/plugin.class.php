@@ -494,7 +494,7 @@ class Plugin extends CommonDBTM {
             $weblink = trim($plug['homepage']);
             echo "<td>";
             if (!empty($weblink)) {
-               echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'>";
+               echo "<a href='".Toolbox::formatOutputWebLink($weblink)."' target='_blank'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
                       __s('Web')."\" title=\"".__s('Web')."\" ></a>";
             } else {
