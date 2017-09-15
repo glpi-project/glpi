@@ -601,6 +601,18 @@ class Ticket extends CommonITILObject {
       return Session::haveRight(self::$rightname, DELETE);
    }
 
+   /**
+    * is the current user could reopen the current ticket
+    * @since  9.2
+    * @return boolean
+    */
+   function canReopen() {
+      return Session::haveRight('followup', CREATE)
+             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
+                 || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
+   }
+
 
    /**
     * Is the current user have right to delete the current ticket ?
@@ -4799,8 +4811,7 @@ class Ticket extends CommonITILObject {
          TicketValidation::alertValidation($this, 'status');
       } else {
          echo self::getStatus($this->fields["status"]);
-         if (in_array($this->fields["status"], $this->getClosedStatusArray())
-             && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
+         if ($this->canReopen()) {
             $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
             if (!$_SESSION['glpiticket_timeline']
                 || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
@@ -7410,7 +7421,8 @@ class Ticket extends CommonITILObject {
       if ($item instanceof Document_Item) {
          Document_Item::showAddFormForItem($params['parent'], '');
 
-      } else if (method_exists($item, "showForm")) {
+      } else if (method_exists($item, "showForm")
+                 && $item->can(-1, CREATE, $params)) {
          $item->showForm($id, $params);
       }
    }
