@@ -952,7 +952,7 @@ class Document_Item extends CommonDBRelation{
             echo "<td class='center'>$downloadlink</td>";
             echo "<td class='center'>";
             if (!empty($data["link"])) {
-               echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"];
+               echo "<a target=_blank href='".Toolbox::formatOutputWebLink($data["link"])."'>".$data["link"];
                echo "</a>";
             } else {
                echo "&nbsp;";
