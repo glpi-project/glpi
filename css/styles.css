@@ -4653,6 +4653,14 @@ tr.linked-template td:not(.top) {
    margin-top: .5em;
 }
 
+.missing {
+   color: orange;
+}
+
+.ok {
+   color: green;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;
