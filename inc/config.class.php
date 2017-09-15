@@ -1520,8 +1520,6 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
-      global $CFG_GLPI;
-
       if (!Config::canUpdate()) {
          return false;
       }
@@ -1532,12 +1530,11 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('PHP opcode cache') . "</th></tr>";
       $ext = 'Zend OPcache';
       if (extension_loaded($ext) && ($info = opcache_get_status(false))) {
+         $msg = sprintf(__('%s extension is installed'), $ext);
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion($ext) . "</td>
                <td></td>
-               <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
-
-         // echo "<tr><td><pre>".print_r($info, true)."</pre></td></tr>";
+               <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'><span class='sr-only'>$msg</span></td></tr>";
 
          // Memory
          $used = $info['memory_usage']['used_memory'];
@@ -1549,8 +1546,14 @@ class Config extends CommonDBTM {
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
-         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate > 5 && $rate < 75 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__('%1$ss memory usage is too low or too high'), $ext);
+         if ($rate > 5 && $rate < 75) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__('%1$s memory usage is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
          // Hits
          $hits = $info['opcache_statistics']['hits'];
@@ -1561,15 +1564,27 @@ class Config extends CommonDBTM {
                <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
-         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__('%1$ss hits rate is low'), $ext);
+         if ($rate > 90) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__('%1$s hits rate is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
          // Restart (1 seems ok, can happen)
          $max = $info['opcache_statistics']['oom_restarts'];
          echo "<tr><td>" . __('Out of memory restart') . "</td>
                <td>$max</td><td>";
-         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-               ($max < 2 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__('%1$ss restart rate is too high'), $ext);
+         if ($max < 2) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__('%1$s restart rate is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
@@ -1578,21 +1593,22 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
+         $msg = sprintf(__('%s extension is not present'), $ext);
          echo "<tr><td colspan='3'>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
+               <td class='icons_block'><i class='fa fa-info-circle missing' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
       $ext = 'APCu';
       if (function_exists('apcu_fetch') && ini_get('apc.enabled')) {
+         $msg = sprintf(__('%s extension is installed'), $ext);
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion('apc') . "</td>
                <td></td>
-               <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
+               <td class='icons_block'><i class='fa fa-check-circle ok'i title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
          $info = apcu_sma_info(true);
          $stat = apcu_cache_info(true);
-         // echo "<tr><td><pre>Info:".print_r($info, true)."Stat:".print_r($stat, true)."</pre></td></tr>";
 
          // Memory
          $max  = $info['num_seg'] * $info['seg_size'];
@@ -1605,8 +1621,14 @@ class Config extends CommonDBTM {
                <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
-         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__('%1$ss memory usage is too low or too high'), $ext);
+         if ($rate > 5 && $rate < 50) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__('%1$s memory usage is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
          // Hits
          $hits = $stat['num_hits'];
@@ -1617,8 +1639,14 @@ class Config extends CommonDBTM {
                <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
          Html::displayProgressBar('100', $rate, ['simple'       => true,
                                                       'forcepadding' => false]);
-         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         $class   = 'info-circle missing';
+         $msg     = sprintf(__('%1$ss hits rate is low'), $ext);
+         if ($rate > 90) {
+            $class   = 'check-circle ok';
+            $msg     = sprintf(__('%1$s hits rate is correct'), $ext);
+         }
+         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             echo "<tr><td></td><td colspan='3'>";
@@ -1627,8 +1655,9 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
+         $msg = sprintf(__('%s extension is not present'), $ext);
          echo "<tr><td colspan='3'>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
-               <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
+               <td><i class='fa fa-info-circle missing' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
       }
 
       echo "</table></div>\n";
