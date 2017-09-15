@@ -2297,7 +2297,7 @@ msgstr "ID"
 #: inc/softwarelicense.class.php:997 inc/softwarelicense.class.php:1214
 #: inc/supplier.class.php:492 inc/user.class.php:3741 inc/user.class.php:3821
 msgid "Serial number"
-msgstr "Reeksnummer"
+msgstr "Serienummer"
 
 #: front/find_num.php:98 inc/budget.class.php:337
 #: inc/certificate.class.php:101 inc/certificate.class.php:412
