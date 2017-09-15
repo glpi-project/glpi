@@ -636,8 +636,16 @@ class Change extends CommonITILObject {
          $showuserlink = 1;
       }
 
+      if (!$this->isNewItem()) {
+         $options['formtitle'] = sprintf(
+            __('%1$s - ID %2$d'),
+            $this->getTypeName(1),
+            $ID
+         );
+         //set ID as already defined
+         $options['noid'] = true;
+      }
       $this->showFormHeader($options);
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
