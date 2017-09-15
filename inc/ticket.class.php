@@ -6944,10 +6944,11 @@ class Ticket extends CommonITILObject {
       $tmp = array('tickets_id' => $this->getID());
       $fup             = new TicketFollowup;
       $ttask           = new TicketTask;
-      $doc             = new Document;
 
-      $canadd_fup      = $fup->can(-1, CREATE, $tmp);
-      $canadd_task     = $ttask->can(-1, CREATE, $tmp);
+      $canadd_fup      = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
+      $canadd_task     = $ttask->can(-1, CREATE, $tmp) && !in_array($this->fields["status"],
+                         array_merge($this->getSolvedStatusArray(), $this->getClosedStatusArray()));
       $canadd_document = $canadd_fup || $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
