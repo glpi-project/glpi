@@ -1349,8 +1349,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $this->updates[] = "actiontime";
-
       if (count($this->updates)) {
          // Update Ticket Tco
          if (in_array("actiontime", $this->updates)
@@ -1358,9 +1356,6 @@ class Ticket extends CommonITILObject {
              || in_array("cost_fixed", $this->updates)
              || in_array("cost_material", $this->updates)) {
 
-
-            $item_ticket = new Item_Ticket();
-            $linked_items = $item_ticket->find("`tickets_id` = ".$this->fields['id']);
 
             if (!empty($this->input["items_id"])) {
                foreach ($this->input["items_id"] as $itemtype => $items) {
