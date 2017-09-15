@@ -2345,6 +2345,8 @@ class CommonDBTM extends CommonGLPI {
     *     - colspan for each column (default 2)
     *     - formoptions string (javascript p.e.)
     *     - canedit boolean edit mode of form ?
+    *     - formtitle specific form title
+    *     - noid Set to true if ID should not be append (eg. already done in formtitle)
     *
     * @return void
    **/
@@ -2358,6 +2360,7 @@ class CommonDBTM extends CommonGLPI {
       $params['formoptions']  = '';
       $params['canedit']      = true;
       $params['formtitle']    = null;
+      $params['noid']         = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2438,7 +2441,7 @@ class CommonDBTM extends CommonGLPI {
             printf(__('%1$s - %2$s'), __('New item'), $nametype);
          } else {
             $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-            if ($_SESSION['glpiis_ids_visible'] || empty($nametype)) {
+            if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
                //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
                $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
             }
