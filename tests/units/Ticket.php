@@ -748,7 +748,7 @@ class Ticket extends DbTestCase {
 
       //Form title
       preg_match(
-         '/.*Ticket - ID: ' . $ticket->getID() . '.*/s',
+         '/.*Ticket - ID ' . $ticket->getID() . '.*/s',
          $output,
          $matches
       );
