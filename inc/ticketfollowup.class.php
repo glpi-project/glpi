@@ -141,8 +141,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-          || (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
-            && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
+          || !$ticket->canReopen()) {
          return false;
       }
       return $ticket->canAddFollowups();
@@ -648,8 +647,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $reopen_case = false;
       if ($this->isNewID($ID)) {
-         if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-             && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+         if ($ticket->canReopen()) {
             $reopen_case = true;
             echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
          }
@@ -854,8 +852,7 @@ class TicketFollowup  extends CommonDBTM {
       $techs = $ticket->getAllUsers(CommonITILActor::ASSIGN);
 
       $reopen_case = false;
-      if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+      if ($ticket->canReopen()) {
          $reopen_case = true;
       }
 

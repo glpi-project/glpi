@@ -690,13 +690,11 @@ class CommonGLPI {
          if ($this->getType() == 'Ticket') {
             $this->input = $cleaned_options;
             $this->saveInput();
-            if (isset($cleaned_options['locked'])) {
-               $extraparamhtml = "&amp;".Toolbox::append_params(['locked' => $cleaned_options['locked']],
-                                                                '&amp;');
-            }
-         } else {
-            $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
+            // $extraparamhtml can be tool long in case of ticket with content
+            // (passed in GET in ajax request)
+            unset($cleaned_options['content']);
          }
+         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
