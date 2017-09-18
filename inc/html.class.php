@@ -5912,7 +5912,7 @@ class Html {
     * @return void
     */
    private static function displayMainMenu($full, $options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $sector = '';
 
@@ -5928,7 +5928,6 @@ class Html {
          //  Create ticket
          if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-               'id'        => "menu2",
                'default'   => '/front/helpdesk.public.php?create_ticket=1',
                'title'     => __s('Create a ticket'),
                'content'   => [true]
@@ -5940,7 +5939,6 @@ class Html {
             || Session::haveRight("ticket", Ticket::READMY)
             || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
             $menu['tickets'] = [
-               'id'        => "menu3",
                'default'   => '/front/ticket.php',
                'title'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                'content'   => [true]
@@ -5950,7 +5948,6 @@ class Html {
          // Reservation
          if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
             $menu['reservation'] = [
-               'id'        => "menu4",
                'default'   => '/front/reservationitem.php',
                'title'     => _n('Reservation', 'Reservations', Session::getPluralNumber()),
                'content'   => [true]
@@ -5960,36 +5957,10 @@ class Html {
          // FAQ
          if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
             $menu['faq'] = [
-               'id'        => "menu5",
                'default'   => '/front/helpdesk.faq.php',
                'title'     => __s('FAQ'),
                'content'   => [true]
             ];
-         }
-
-         // Plugins
-         $menu['plugins'] = [
-            'id'        => "menu5",
-            'default'   => "#",
-            'title'     => _sn('Plugin', 'Plugins', Session::getPluralNumber()),
-            'content'   => []
-         ];
-
-         if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
-            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
-
-            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
-               if ($active) {
-                  $infos = Plugin::getInfo($plugin);
-                  $link = "";
-                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
-                     $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
-                  }
-                  $infos['page'] = $link;
-                  $infos['title'] = $infos['name'];
-                  $menu['plugins']['content'][$plugin] = $infos;
-               }
-            }
          }
       }
 
@@ -6064,6 +6035,30 @@ class Html {
       }
 
       if ($full === false) {
+         // Plugins
+         $menu['plugins'] = [
+            'default'   => "#",
+            'title'     => _sn('Plugin', 'Plugins', Session::getPluralNumber()),
+            'content'   => []
+         ];
+
+         if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
+            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
+
+            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+               if ($active) {
+                  $infos = Plugin::getInfo($plugin);
+                  $link = "";
+                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                     $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+                  }
+                  $infos['page'] = $link;
+                  $infos['title'] = $infos['name'];
+                  $menu['plugins']['content'][$plugin] = $infos;
+               }
+            }
+         }
+
          // Display plugins
          if (isset($menu['plugins']['content']) && count($menu['plugins']['content']) > 0) {
             asort($menu['plugins']['content']);
