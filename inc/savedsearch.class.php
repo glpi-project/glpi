@@ -1162,9 +1162,9 @@ class SavedSearch extends CommonDBTM {
 
       if ($ID == 11) { //search for defaults/not defaults
          if ($val == 0) {
-            return 'glpi_savedsearches_users.users_id IS NULL';
+            return "$link glpi_savedsearches_users.users_id IS NULL";
          }
-         return 'glpi_savedsearches_users.users_id IS NOT NULL';
+         return "$link glpi_savedsearches_users.users_id IS NOT NULL";
       }
    }
 
