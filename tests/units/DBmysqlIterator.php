@@ -181,6 +181,12 @@ class DBmysqlIterator extends DbTestCase {
    public function testCount() {
       $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt, `name`, `version` FROM `foo`');
    }
 
 
