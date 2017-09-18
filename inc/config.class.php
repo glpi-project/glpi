@@ -35,6 +35,9 @@
 */
 
 use Glpi\Exception\PasswordTooWeakException;
+use Zend\Cache\Storage\AvailableSpaceCapableInterface;
+use Zend\Cache\Storage\TotalSpaceCapableInterface;
+use Zend\Cache\Storage\FlushableInterface;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -1525,6 +1528,8 @@ class Config extends CommonDBTM {
     * @since 9.1
    **/
    function showPerformanceInformations() {
+      global $GLPI_CACHE;
+
       if (!Config::canUpdate()) {
          return false;
       }
@@ -1604,62 +1609,49 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
-      $ext = 'APCu';
-      if (function_exists('apcu_fetch') && ini_get('apc.enabled')) {
-         $msg = sprintf(__s('%s extension is installed'), $ext);
+      if (Toolbox::useCache()) {
+         $ext = get_class($GLPI_CACHE);
+         $ext = substr($ext, strrpos($ext, '\\')+1);
+         $msg = sprintf(__s('The "%s" extension is installed'), $ext);
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
-               <td>" . phpversion('apc') . "</td>
+               <td>" . phpversion($ext) . "</td>
                <td></td>
                <td class='icons_block'><i class='fa fa-check-circle ok' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
 
-         $info = apcu_sma_info(true);
-         $stat = apcu_cache_info(true);
+         if ($GLPI_CACHE instanceof AvailableSpaceCapableInterface && $GLPI_CACHE instanceof TotalSpaceCapableInterface) {
+            $free = $GLPI_CACHE->getAvailableSpace();
+            $max  = $GLPI_CACHE->getTotalSpace();
+            $used = $max - $free;
+            $rate = round(100.0 * $used / $max);
+            $max  = Toolbox::getSize($max);
+            $used = Toolbox::getSize($used);
 
-         // Memory
-         $max  = $info['num_seg'] * $info['seg_size'];
-         $free = $info['avail_mem'];
-         $used = $max - $free;
-         $rate = round(100.0 * $used / $max);
-         $max  = Toolbox::getSize($used + $free);
-         $used = Toolbox::getSize($used);
-         echo "<tr><td>" . __('Memory') . "</td>
-               <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, ['simple'       => true,
-                                                      'forcepadding' => false]);
-
-         $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss memory usage is too low or too high'), $ext);
-         if ($rate > 5 && $rate < 50) {
-            $class   = 'check-circle ok';
-            $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
+            echo "<tr><td>" . __('Memory') . "</td>
+            <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
+            Html::displayProgressBar('100', $rate, ['simple'       => true,
+                                                    'forcepadding' => false]);
+            $class   = 'info-circle missing';
+            $msg     = sprintf(__s('%1$ss memory usage is too low or too high'), $ext);
+            if ($rate > 5 && $rate < 50) {
+               $class   = 'check-circle ok';
+               $msg     = sprintf(__s('%1$s memory usage is correct'), $ext);
+            }
+            echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
+         } else {
+            echo "<tr><td>" . __('Memory') . "</td>
+               <td>" . NOT_AVAILABLE. "</td><td>" . NOT_AVAILABLE . "</td><td></td></tr>";
          }
-         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
 
-         // Hits
-         $hits = $stat['num_hits'];
-         $miss = $stat['num_misses'];
-         $max  = $hits+$miss;
-         $rate = round(100 * $hits / ($hits + $miss));
-         echo "<tr><td>" . __('Hits rate') . "</td>
-               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
-         Html::displayProgressBar('100', $rate, ['simple'       => true,
-                                                      'forcepadding' => false]);
-
-         $class   = 'info-circle missing';
-         $msg     = sprintf(__s('%1$ss hits rate is low'), $ext);
-         if ($rate > 90) {
-            $class   = 'check-circle ok';
-            $msg     = sprintf(__s('%1$s hits rate is correct'), $ext);
-         }
-         echo "</td><td class='icons_block'><i title='$msg' class='fa fa-$class'></td></tr>";
-
-         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<tr><td></td><td colspan='3'>";
-            echo "<a class='vsubmit' href='config.form.php?reset_apcu=1'>";
-            echo __('Reset');
-            echo "</a></td></tr>\n";
+         if ($GLPI_CACHE instanceof FlushableInterface) {
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+               echo "<tr><td></td><td colspan='3'>";
+               echo "<a class='vsubmit' href='config.form.php?reset_cache=1'>";
+               echo __('Reset');
+               echo "</a></td></tr>\n";
+            }
          }
       } else {
+         $ext = 'APCu'; // Default cache, can be improved later
          $msg = sprintf(__s('%s extension is not present'), $ext);
          echo "<tr><td colspan='3'>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td><i class='fa fa-info-circle missing' title='$msg'></i><span class='sr-only'>$msg</span></td></tr>";
@@ -2384,6 +2376,8 @@ class Config extends CommonDBTM {
                                     => __('Checking write permissions for plugins document files'),
                             GLPI_TMP_DIR
                                     => __('Checking write permissions for temporary files'),
+                            GLPI_CACHE_DIR
+                                    => __('Checking write permissions for cache files'),
                             GLPI_RSS_DIR
                                     => __('Checking write permissions for rss files'),
                             GLPI_UPLOAD_DIR
@@ -2659,5 +2653,105 @@ class Config extends CommonDBTM {
             });
             </script>";
       return $msg;
+   }
+
+   /**
+    * Get a cache adapter from configuration
+    *
+    * @param string $optname name of the configuration field
+    * @param string $context name of the configuration context (default 'core')
+    *
+    * @return Zend\Cache\Storage\StorageInterface object or false
+    */
+   public static function getCache($optname, $context = 'core') {
+
+      if (defined('TU_USER') && ! defined('CACHED_TESTS')) {
+         return false;
+      }
+
+      /* Tested configuration values
+       *
+       * - (empty = no cache)
+       * - {"adapter":"apcu"}
+       * - {"adapter":"redis","options":{"server":{"host":"127.0.0.1"}},"plugins":["serializer"]}
+       * - {"adapter":"filesystem"}
+       * - {"adapter":"filesystem","options":{"cache_dir":"_cache_trans"},"plugins":["serializer"]}
+       * - {"adapter":"dba"}
+       * - {"adapter":"dba","options":{"pathname":"trans.db","handler":"flatfile"},"plugins":["serializer"]}
+       * - {"adapter":"memcache","options":{"servers":["127.0.0.1"]}}
+       * - {"adapter":"memcached","options":{"servers":["127.0.0.1"]}}
+       * - {"adapter":"wincache"}
+       *
+       */
+      // Read configuration
+      $conf = self::getConfigurationValues($context, [$optname]);
+
+      // Adapter default options
+      $opt = [];
+      if (isset($conf[$optname])) {
+         if (empty($conf[$optname])) { // to disable cache
+            return false;
+         }
+         $opt = json_decode($conf[$optname], true);
+         //Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
+      }
+      if (!isset($opt['options']['namespace'])) {
+         $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION;
+      }
+      if (!isset($opt['adapter'])) {
+         if (function_exists('apcu_fetch')) {
+            $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
+            /*
+            } else if (function_exists('wincache_ucache_add')) {
+               $opt['adapter'] = 'wincache';
+            */
+         } else {
+            return false;
+         }
+      }
+      // Adapter specific options
+      $ser = false;
+      switch ($opt['adapter']) {
+         case 'filesystem':
+            if (!isset($opt['options']['cache_dir'])) {
+               $opt['options']['cache_dir'] = $optname;
+            }
+            // Make configured directory relative to GLPI cache directory
+            $opt['options']['cache_dir'] = GLPI_CACHE_DIR . '/' . $opt['options']['cache_dir'];
+            if (!is_dir($opt['options']['cache_dir'])) {
+               mkdir($opt['options']['cache_dir']);
+            }
+            $ser = true;
+            break;
+
+         case 'dba':
+            if (!isset($opt['options']['pathname'])) {
+               $opt['options']['pathname'] = "$optname.data";
+            }
+            // Make configured path relative to GLPI cache directory
+            $opt['options']['pathname'] = GLPI_CACHE_DIR . '/' . $opt['options']['pathname'];
+            $ser = true;
+            break;
+
+         case 'redis':
+            $ser = true;
+            break;
+      }
+      // Some know plugins require data serialization
+      if ($ser && !isset($opt['plugins'])) {
+         $opt['plugins'] = ['serializer'];
+      }
+
+      // Create adapter
+      $cache = false;
+      try {
+         $cache = Zend\Cache\StorageFactory::factory($opt);
+      } catch (Exception $e) {
+         if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+            Toolbox::logDebug($e->getMessage());
+         }
+      }
+      //Toolbox::logDebug("CACHE $optname", get_class($cache));
+      return $cache;
    }
 }

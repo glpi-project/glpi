@@ -55,9 +55,9 @@ if (!empty($_GET['reset_opcache'])) {
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
-if (!empty($_GET['reset_apcu'])) {
+if (!empty($_GET['reset_cache'])) {
    $config->checkGlobal(UPDATE);
-   if (apcu_clear_cache()) {
+   if ($GLPI_CACHE->flush()) {
       Session::addMessageAfterRedirect(__('Cache reset successful'));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
