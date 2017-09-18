@@ -3154,7 +3154,7 @@ class Html {
       foreach ($options['dates'] as $key => $data) {
          if ($data['timestamp'] != 0) {
             $out.= "<li class='".$data['class']."'>&nbsp;";
-            $out.= "<time>".date("Y-m-d H:i:s", $data['timestamp'])."</time>";
+            $out.= "<time>".Html::convDateTime(date("Y-m-d H:i:s", $data['timestamp']))."</time>";
             $out.= "<span class='dot'></span>";
             $out.= "<label>".$data['label']."</label>";
             $out.= "</li>";
