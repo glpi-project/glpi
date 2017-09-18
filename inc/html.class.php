@@ -3475,6 +3475,17 @@ class Html {
                         alert('".__('The description field is mandatory')."');
                      }
                   });
+                  editor.on('keyup', function (e) {
+                     editor.save();
+                     if ($('#$name').val() == '') {
+                        $('.mce-edit-area').addClass('required');
+                     } else {
+                        $('.mce-edit-area').removeClass('required');
+                     }
+                  });
+                  editor.on('init', function (e) {
+                     $('.mce-edit-area').addClass('required');
+                  });
                }
             },
             plugins: [
