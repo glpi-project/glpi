@@ -110,6 +110,11 @@ if (!defined("GLPI_TMP_DIR")) {
    define("GLPI_TMP_DIR", GLPI_ROOT . "/files/_tmp");
 }
 
+// Path for cache
+if (!defined("GLPI_CACHE_DIR")) {
+   define("GLPI_CACHE_DIR", GLPI_ROOT . "/files/_cache");
+}
+
 // Path for rss storage
 if (!defined("GLPI_RSS_DIR")) {
    define("GLPI_RSS_DIR", GLPI_ROOT . "/files/_rss");
