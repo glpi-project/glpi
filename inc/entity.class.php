@@ -1128,7 +1128,7 @@ class Entity extends CommonTreeDropdown {
                         'qload': {
                            'prevLimit': 50,
                            'nextLimit': 30,
-                           'moreText': '".__('Load more entities...')."'
+                           'moreText': '".__s('Load more entities...')."'
                         },
                         'conditionalselect': function (node, event) {
                            if (node === false) {
