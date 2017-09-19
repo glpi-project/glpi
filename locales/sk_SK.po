@@ -928,9 +928,9 @@ msgstr "Žiadne obmedzenia"
 #: inc/user.class.php:3772 inc/user.class.php:3852 inc/user.class.php:4365
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Subjekt"
+msgstr[1] "Subjekty"
+msgstr[2] "Subjekty"
 
 #: ajax/switchdebug.php:50
 #, php-format
@@ -1650,7 +1650,7 @@ msgstr "%s aktualizoval virtuálny stroj"
 
 #: front/config.form.php:54 front/config.form.php:61
 msgid "Cache reset successful"
-msgstr ""
+msgstr "Reset cache úspešný"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:55
@@ -1855,9 +1855,9 @@ msgstr[2] ""
 #: inc/transfer.class.php:3397
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tlačiareň"
+msgstr[1] "Tlačiarne"
+msgstr[2] "Tlačiarne"
 
 #: front/dictionnary.php:69 front/stat.location.php:88
 #: inc/cartridgeitem_printermodel.class.php:181 inc/computer.class.php:429
@@ -17408,7 +17408,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3272
 msgid "Child tickets"
-msgstr ""
+msgstr "Podriadené požiadavky"
 
 #: inc/ticket.class.php:3294
 msgid "Number of sons tickets"
