@@ -842,6 +842,10 @@ class User extends CommonDBTM {
             }
          }
       }
+
+      if (isset($input['language']) && GLPI_DEMO_MODE) {
+         unset($input['language']);
+      }
       return $input;
    }
 
