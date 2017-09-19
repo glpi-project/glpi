@@ -3484,7 +3484,9 @@ class Html {
                      }
                   });
                   editor.on('init', function (e) {
-                     $('.mce-edit-area').addClass('required');
+                     if ($('#$name').val() == '') {
+                        $('.mce-edit-area').addClass('required');
+                     }
                   });
                }
             },
