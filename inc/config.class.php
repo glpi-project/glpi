@@ -2452,14 +2452,22 @@ class Config extends CommonDBTM {
 
       $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
+
+      //create a context to set timeout
+      $context = stream_context_create([
+         'http' => [
+            'timeout' => 2.0
+         ]
+      ]);
+
       /* TODO: could be improved, only default vhost checked */
-      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r')) {
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
          fclose($fic);
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='b left'>".
                __('Web access to files directory is protected')."</td>";
          }
-         if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/files/_log/php-errors.log', 'r')) {
+         if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/files/_log/php-errors.log', 'r', false, $context)) {
             fclose($fic);
             if ($fordebug) {
                echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
