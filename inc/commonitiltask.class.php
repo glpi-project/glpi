@@ -1763,25 +1763,38 @@ abstract class CommonITILTask  extends CommonDBTM {
    public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null) {
       global $DB;
 
-      $prep_req = ['SELECT' => 'id', 'FROM' => self::getTable()];
+      $prep_req = ['SELECT' => self::getTable() . '.id', 'FROM' => self::getTable()];
+
+      $itemtype = str_replace('Task', '', self::getType());
+      $fk_table = getTableForItemType($itemtype);
+      $fk_field = Toolbox::strtolower(getPlural($itemtype)) . '_id';
+
+      $prep_req['INNER JOIN'] = [
+         $fk_table => [
+            'FKEY' => [
+               self::getTable()  => $fk_field,
+               $fk_table         => 'id'
+            ]
+         ]
+      ];
 
       $prep_req['WHERE'] = [];
       switch ($status) {
          case "todo" : // we display the task with the status `todo`
-            $prep_req['WHERE']['state'] = Planning::TODO;
+            $prep_req['WHERE'][self::getTable() . '.state'] = Planning::TODO;
             break;
 
       }
       if ($showgrouptickets) {
          if (isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])) {
-            $prep_req['WHERE']['groups_id_tech'] = $_SESSION['glpigroups'];
+            $prep_req['WHERE'][self::getTable() . '.groups_id_tech'] = $_SESSION['glpigroups'];
          } else {
             return false;
          }
       } else {
-         $prep_req['WHERE']['users_id_tech'] = $_SESSION['glpiID'];
+         $prep_req['WHERE'][self::getTable() . '.users_id_tech'] = $_SESSION['glpiID'];
       }
-      $prep_req['ORDER'] = ['date_mod DESC'];
+      $prep_req['ORDER'] = [self::getTable() . '.date_mod DESC'];
 
       if ($start !== null) {
          $prep_req['START'] = $start;
