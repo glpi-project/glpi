@@ -144,7 +144,7 @@ if (isset($_GET['getvcard'])) {
    }
    Html::back();
 
-} else if (isset($_POST['language'])) {
+} else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
    $user->update(
       [
          'id'        => Session::getLoginUserID(),
