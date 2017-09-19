@@ -55,6 +55,8 @@ foreach ($searchopt as $key => $val) {
    $str_limit   = 28;
    if (!is_array($val)) {
       $group = $val;
+   } else if (is_array($val) && !isset($val['table'])) {
+      $group = $val['name'];
    } else {
       // No search on plugins
       if (!isPluginItemType($key) && !isset($val["nometa"])) {
