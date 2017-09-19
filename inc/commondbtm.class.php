@@ -1066,8 +1066,15 @@ class CommonDBTM extends CommonGLPI {
          }
          if (($name = $this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
-                                            $this->getTypeName(1), $this->fields['id']);
+            $this->fields['name'] = sprintf(
+               __('%1$s - %2$s'),
+               $this->getTypeName(1),
+               sprintf(
+                  __('%1$s %2$s'),
+                  __('ID'),
+                  $this->getID()
+               )
+            );
          }
          $display = (isset($this->input['_no_message_link'])?$this->getNameID()
                                                             :$this->getLink());
@@ -1340,8 +1347,15 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['name'] = stripslashes($this->fields['name']);
          } else {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
-                                            $this->getTypeName(1), $this->fields['id']);
+            $this->fields['name'] = sprintf(
+               __('%1$s - %2$s'),
+               $this->getTypeName(1),
+               sprintf(
+                  __('%1$s %2$s'),
+                  __('ID'),
+                  $this->getID()
+               )
+            );
          }
 
          if (isset($this->input['_no_message_link'])) {
@@ -2442,8 +2456,16 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
             if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
-               //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-               $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+               //TRANS: %1$s is the Itemtype name and $2$s the ID of the item
+               $nametype = sprintf(
+                  __('%1$s - %2$s'),
+                  $nametype,
+                  sprintf(
+                     __('%1$s %2$s'),
+                     __('ID'),
+                     $this->getID()
+                  )
+               );
             }
             echo $nametype;
          }

@@ -1088,9 +1088,13 @@ class Problem extends CommonITILObject {
 
       if (!$this->isNewItem()) {
          $options['formtitle'] = sprintf(
-            __('%1$s - ID %2$d'),
+            __('%1$s - %2$s'),
             $this->getTypeName(1),
-            $ID
+            sprintf(
+               __('%1$s %2$s'),
+               __('ID'),
+               $ID
+            )
          );
          //set ID as already defined
          $options['noid'] = true;
