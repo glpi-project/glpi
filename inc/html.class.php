@@ -5564,6 +5564,7 @@ class Html {
          default:
             $found = false;
             if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
+               $found = true;
                $jslibs = $PLUGIN_HOOKS['javascript'][$name];
                if (!is_array($jslibs)) {
                   $jslibs = [$jslibs];
