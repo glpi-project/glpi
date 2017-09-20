@@ -129,7 +129,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
              "' class='submit compare'>";
       echo "<table class='tab_cadre_fixehov'>";
       $header = '<tr>';
-      $header .= "<th title='" . __('Revision') . "'>#</th>";
+      $header .= "<th title='" . __s('Revision') . "'>#</th>";
       $header .= "<th>&nbsp;</th>";
       $header .= "<th>" . __('Author')  . "</th>";
       $header .= "<th>".__('Creation date')."</th>";
@@ -191,7 +191,7 @@ class KnowbaseItem_Revision extends CommonDBTM {
             $(function() {
                $('.restore').on('click', function(e) {
                   lastClickedElement = e.target;
-                  return window.confirm('" . __('Do you want to restore the selected revision?')  . "');
+                  return window.confirm('" . __s('Do you want to restore the selected revision?')  . "');
                });
 
                $('.show').on('click', function(e) {
@@ -243,11 +243,11 @@ class KnowbaseItem_Revision extends CommonDBTM {
                         if (_diffid == 0) {
                            _diffid = '" . __('current') . "';
                         }
-                        var title = '" . __('Compare revisions old and diff') . "'.replace(/old/, _oldid).replace(/diff/, _diffid);
+                        var title = '" . __s('Compare revisions old and diff') . "'.replace(/old/, _oldid).replace(/diff/, _diffid);
                         var html_compare = '<div title=\"' + title + '\" id=\"compare_view\"><table class=\"tab_cadre_fixehov\">';
-                        html_compare += '<tr><th></th><th>" . __('Original') . "</th><th>" . __('Changed') ."</th><th>" . __('Differences')  . "</th></tr>';
-                        html_compare += '<tr><th>" . __('Subject') . "</th><td class=\"original\">' + data['old']['name'] + '</td><td class=\"changed\">' + data['diff']['name'] + '</td><td class=\"diff\"></td></tr>';
-                        html_compare += '<tr><th>" . __('Content')  . "</th><td class=\"original\">' + data['old']['answer'] + '</td><td class=\"changed\">' + data['diff']['answer'] + '</td><td class=\"diff\"></td></tr>';
+                        html_compare += '<tr><th></th><th>" . __s('Original') . "</th><th>" . __s('Changed') ."</th><th>" . __('Differences')  . "</th></tr>';
+                        html_compare += '<tr><th>" . __s('Subject') . "</th><td class=\"original\">' + data['old']['name'] + '</td><td class=\"changed\">' + data['diff']['name'] + '</td><td class=\"diff\"></td></tr>';
+                        html_compare += '<tr><th>" . __s('Content')  . "</th><td class=\"original\">' + data['old']['answer'] + '</td><td class=\"changed\">' + data['diff']['answer'] + '</td><td class=\"diff\"></td></tr>';
                         html_compare += '</table></div>';
                         $(html_compare).appendTo('body').dialog({
                            height: 'auto',

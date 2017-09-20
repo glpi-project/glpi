@@ -3257,15 +3257,15 @@ abstract class CommonITILObject extends CommonDBTM {
             $icontitle = __('Group');
             switch ($type) {
                case CommonITILActor::REQUESTER :
-                  $icontitle = __('Requester group');
+                  $icontitle = __s('Requester group');
                   break;
 
                case CommonITILActor::OBSERVER :
-                  $icontitle = __('Watcher group');
+                  $icontitle = __s('Watcher group');
                   break;
 
                case CommonITILActor::ASSIGN :
-                  $icontitle = __('Group in charge of the ticket');
+                  $icontitle = __s('Group in charge of the ticket');
                   break;
             }
             return  "<img src='".$CFG_GLPI['root_doc']."/pics/group.png'

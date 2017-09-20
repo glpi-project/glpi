@@ -1047,7 +1047,7 @@ class Planning extends CommonGLPI {
       echo "<div id='planning_filter'>";
 
       echo "<div id='planning_filter_toggle'>";
-      echo "<a class='toggle pointer' title='".__("Toggle filters")."'></a>";
+      echo "<a class='toggle pointer' title='".__s("Toggle filters")."'></a>";
       echo "</div>";
 
       echo "<div id='planning_filter_content'>";

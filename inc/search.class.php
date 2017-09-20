@@ -4750,7 +4750,7 @@ class Search {
                   return "<a href='reservation.php?reservationitems_id=".
                                           $data["refID"]."' title=\"".__s('See planning')."\">".
                                           "<img src=\"".$CFG_GLPI["root_doc"].
-                                          "/pics/reservation-3.png\" alt='' title=''></a>";
+                                          "/pics/reservation-3.png\" alt=''></a>";
                } else {
                   return "&nbsp;";
                }

@@ -848,8 +848,8 @@ class SavedSearch extends CommonDBTM {
                   $count = $data['data']['totalcount'];
                } else {
                   $info_message = ($this->fields['do_count'] == self::COUNT_NO)
-                                   ? __('Count for this saved search has been disabled.')
-                                   : __('Counting this saved search would take too long, it has been skipped.');
+                                   ? __s('Count for this saved search has been disabled.')
+                                   : __s('Counting this saved search would take too long, it has been skipped.');
                   if ($count === null) {
                      //no count, just inform the user
                      $count = "<span class='fa fa-info-circle' title='$info_message'></span>";
@@ -882,8 +882,8 @@ class SavedSearch extends CommonDBTM {
             echo "<td>";
             $text = sprintf(__('%1$s on %2$s'), $this->fields['name'], $current_type_name);
 
-            $title = ($is_private ? __('Click to load or drag and drop to reorder')
-                                  : __('Click to load'));
+            $title = ($is_private ? __s('Click to load or drag and drop to reorder')
+                                  : __s('Click to load'));
             echo "<a class='savedsearchlink' href=\"".$this->getSearchURL()."?action=load&amp;id=".
                      $this->fields["id"]."\" title='".$title."'>".
                      $text;

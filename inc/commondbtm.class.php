@@ -4893,7 +4893,7 @@ class CommonDBTM extends CommonGLPI {
       $mark = '';
       $title = null;
       if (($this->isTemplate() || $this->isNewItem()) && $options['withtemplate'] == 1) {
-         $title = __('You can define an autofill template');
+         $title = __s('You can define an autofill template');
       } else if ($this->isTemplate()) {
          if ($value === null) {
             $value = $this->getField($field);
@@ -4904,7 +4904,7 @@ class CommonDBTM extends CommonGLPI {
             && Toolbox::substr($value, $len -4, 4) === '&gt;'
             && preg_match("/\\#{1,10}/", Toolbox::substr($value, 4, $len - 8))
          ) {
-            $title = __('Autofilled from template');
+            $title = __s('Autofilled from template');
          } else {
             return '';
          }
