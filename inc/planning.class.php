@@ -525,6 +525,8 @@ class Planning extends CommonGLPI {
          return false;
       }
 
+      Html::requireJs('tinymce');
+
       $fullview_str = $fullview?"true":"false";
 
       $pl_height = "function() {
