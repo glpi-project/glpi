@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-15 10:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Miguel López <miguel.lopezdiazfreijo@gmail.com>, 2017\n"
+"Last-Translator: Diego Sésar <tovirus@gmail.com>, 2017\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +43,7 @@ msgstr "Contraseña"
 
 #: index.php:138
 msgid "Remember me"
-msgstr ""
+msgstr "Recordarme"
 
 #: index.php:142 ajax/dropdownMassiveActionAuthMethods.php:69
 #: ajax/dropdownMassiveActionField.php:57 inc/authldap.class.php:1264
@@ -792,11 +792,11 @@ msgstr "Cada mes, el mismo día de la semana"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr ""
+msgstr "La búsqueda ha sido guardada"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "La búsqueda no ha sido guardada."
 
 #: ajax/searchmetarow.php:77
 msgid "Delete a global search criterion"
@@ -932,7 +932,7 @@ msgstr[1] "Entidades"
 #: ajax/switchdebug.php:50
 #, php-format
 msgid "Debug mode has been switched %1$s!"
-msgstr ""
+msgstr "Se ha cambiado el modo debug %1$s!"
 
 #: ajax/switchdebug.php:51 inc/html.class.php:5844
 msgid "on"
@@ -940,7 +940,7 @@ msgstr "Sobre"
 
 #: ajax/switchdebug.php:51 inc/html.class.php:5844
 msgid "off"
-msgstr ""
+msgstr "Desactivado"
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -948,6 +948,9 @@ msgid ""
 "responsiveness statistics about user interface features, memory, and "
 "hardware configuration."
 msgstr ""
+"Solo recolectamos los siguientes datos: uso de complementos, rendimiento y "
+"de forma responsable estadísticas sobre mejoras de la interfaz de usuario, "
+"memoria y configuración de hardware."
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:66 ajax/ticketassigninformation.php:67
@@ -3059,23 +3062,23 @@ msgstr[1] "Listas negras"
 #: front/savedsearch_alert.form.php:51
 #, php-format
 msgid "%s adds an alert"
-msgstr ""
+msgstr "%s añade una alerta"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:64
 #, php-format
 msgid "%s purges an alert"
-msgstr ""
+msgstr "%s purga un elemento"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:76
 #, php-format
 msgid "%s updates an alert"
-msgstr ""
+msgstr "%s actualiza una alerta"
 
 #: front/savedsearch.php:41 inc/html.class.php:5859 inc/html.class.php:5868
 msgid "Saved searches"
-msgstr ""
+msgstr "Búsquedas guardadas"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5895
 #: inc/html.class.php:6178 inc/html.class.php:6179
@@ -3722,11 +3725,12 @@ msgstr "Cargando..."
 
 #: inc/ajax.class.php:428
 msgid "An error occured loading contents!"
-msgstr ""
+msgstr "¡Ocurrió un error cargando el contenido!"
 
 #: inc/ajax.class.php:429
 msgid "Please check GLPI logs or contact your administrator."
 msgstr ""
+"Por favor, consulta los logs del GLPI o contacta con tu administrador."
 
 #: inc/ajax.class.php:430 inc/massiveaction.class.php:754
 #: inc/rule.class.php:801 inc/rule.class.php:958 inc/rule.class.php:2492
@@ -3735,7 +3739,7 @@ msgstr "o"
 
 #: inc/ajax.class.php:430
 msgid "try to reload"
-msgstr ""
+msgstr "prueba a actualizar"
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
 #: inc/contract.class.php:1591 inc/entity.class.php:678
@@ -3855,7 +3859,7 @@ msgstr ""
 
 #: inc/api.class.php:1378
 msgid "Malformed search criteria"
-msgstr ""
+msgstr "Criterio de búsqueda mal formado"
 
 #: inc/api.class.php:1383
 msgid "Bad field ID in search criteria"
@@ -3863,7 +3867,7 @@ msgstr "ID erróneo en el criterio de búsqueda"
 
 #: inc/api.class.php:1388
 msgid "Forbidden field ID in search criteria"
-msgstr ""
+msgstr "Campo ID olvidado en el criterio de búsqueda"
 
 #: inc/api.class.php:1405
 msgid "ID is forbidden along with 'forcedisplay' parameter."
@@ -3876,15 +3880,15 @@ msgstr "Elemento no encontrado"
 
 #: inc/api.class.php:1849
 msgid "Email notifications are disabled"
-msgstr ""
+msgstr "Las notificaciones por correo están desactivadas"
 
 #: inc/api.class.php:1853
 msgid "email parameter missing"
-msgstr ""
+msgstr "El parámetro correo no está relleno"
 
 #: inc/api.class.php:1857
 msgid "A session is active"
-msgstr ""
+msgstr "Una sesión está activa"
 
 #: inc/api.class.php:1869 inc/user.class.php:4253
 msgid ""
@@ -4104,7 +4108,7 @@ msgstr ""
 
 #: inc/auth.class.php:508
 msgid "Auto login disabled"
-msgstr ""
+msgstr "Inicio de sesión automático desactivado"
 
 #: inc/auth.class.php:662 inc/auth.class.php:670
 msgid "Empty login or password"
