@@ -199,9 +199,12 @@ class OlaLevel extends RuleTicket {
             echo "</a>";
          }
          echo "</td>";
-         echo "<td>".(($data["execution_time"] <> 0)
-                        ?Html::timestampToString($data["execution_time"], false)
-                        :__('Time to resolve'))."</td>";
+         echo "<td>".($data["execution_time"] != 0
+                        ? Html::timestampToString($data["execution_time"], false)
+                        : ($ola->fields['type'] == 1
+                              ? __('Time to own')
+                              : __('Time to resolve'))).
+              "</td>";
          echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
          echo "</tr>";
 
