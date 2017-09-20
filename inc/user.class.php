@@ -1907,7 +1907,7 @@ class User extends CommonDBTM {
 
       if ($ID > 0) {
          $formtitle .= "<a class='pointer fa fa-address-card-o' target='_blank' href='".$CFG_GLPI["root_doc"].
-                       "/front/user.form.php?getvcard=1&amp;id=$ID' title='".__('Download user VCard').
+                       "/front/user.form.php?getvcard=1&amp;id=$ID' title='".__s('Download user VCard').
                        "'><span class='sr-only'>". __('Vcard')."</span></a>";
       }
 
