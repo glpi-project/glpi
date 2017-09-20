@@ -425,9 +425,9 @@ class Ajax {
                      console.log(e);
                      ui.panel.html(
                         '<div class=\'error\'><h3>" .
-                        __('An error occured loading contents!')  . "</h3><p>" .
-                        __('Please check GLPI logs or contact your administrator.')  .
-                        "<br/>" . __('or') . " <a href=\'#\' onclick=\'return reloadTab()\'>" . __('try to reload')  . "</a></p></div>'
+                        __s('An error occured loading contents!')  . "</h3><p>" .
+                        __s('Please check GLPI logs or contact your administrator.')  .
+                        "<br/>" . __s('or') . " <a href=\'#\' onclick=\'return reloadTab()\'>" . __s('try to reload')  . "</a></p></div>'
                      );
                   });
                }
