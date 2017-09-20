@@ -1996,9 +1996,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
          echo "<td rowspan='2'>";
-         if ($CFG_GLPI["use_password_security"]) {
-            Config::displayPasswordSecurityChecks();
-         }
+         Config::displayPasswordSecurityChecks();
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -2365,9 +2363,8 @@ class User extends CommonDBTM {
             }
             echo "</td>";
             echo "<td rowspan='2'>";
-            if ($CFG_GLPI["use_password_security"]) {
-               Config::displayPasswordSecurityChecks();
-            }            echo "</td>";
+            Config::displayPasswordSecurityChecks();
+            echo "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
