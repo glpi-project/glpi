@@ -463,7 +463,7 @@ class Telemetry extends CommonGLPI {
       $out .= "<label for='send_stats'>" . __('Send "usage statistics"')  . "</label></h4>";
       $out .= "<p><strong>" . __("We need your help to improve GLPI and the plugins ecosystem!") ."</strong></p>";
       $out .= "<p>" . __("Since GLPI 9.2, we’ve introduced a new statistics feature called “Telemetry”, that anonymously with your permission, sends data to our telemetry website.") . " ";
-      $out .= _("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "</p>";
+      $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "</p>";
       $out .= "<p>" . __("Let us know your usage to improve future versions of GLPI and its plugins!") . "</p>";
 
       $out .= "<p>" . self::getViewLink() . "</p>";
@@ -477,7 +477,7 @@ class Telemetry extends CommonGLPI {
     */
    public static function showReference() {
       $out = "<hr/>";
-      $out .= "<h4>" . _('Reference your GLPI') . "</h4>";
+      $out .= "<h4>" . __('Reference your GLPI') . "</h4>";
       $out .= "<p>" . sprintf(
          __("Besides, if you appreciate GLPI and its community, ".
          "please take a minute to reference your organization by filling %1\$s."),
