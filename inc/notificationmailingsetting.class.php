@@ -89,7 +89,7 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='from_email'>" . __('From email') . " <i class='pointer fa fa-info' title='" .
-            __('Address to use in from for sent emails.') . "\n" . __('If not set, main or entity administrator email will be used.')  . "'></i></label></td>";
+            __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email will be used.')  . "'></i></label></td>";
          $out .= "<td><input type='text' name='from_email' id='from_email' size='40' value='".
                     $CFG_GLPI["from_email"]."'>";
          if (!empty($CFG_GLPI['from_email']) &&!NotificationMailing::isUserAddressValid($CFG_GLPI["from_email"])) {
@@ -97,7 +97,7 @@ class NotificationMailingSetting extends NotificationSetting {
          }
          $out .= "</td>";
          $out .= "<td><label for='from_email_name'>" . __('From name') . " <i class='pointer fa fa-info' title='" .
-            __('Name to use in from for sent emails.') . "\n" . __('If not set, main or entity administrator name will be used.')
+            __s('Name to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator name will be used.')
             ."'><i></label></td>";
          $out .= "<td><input type='text' name='from_email_name' id='from_email_name' size='40' value='" .
                     $CFG_GLPI["from_email_name"] . "'>";
@@ -105,7 +105,7 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='admin_reply'>" . __('Reply-to address') . " <i class='pointer fa fa-info' title='" .
-            __('Optionnal reply to address.') . "\n" . __('If not set, main administrator email will be used.') . "'></i></label></td>";
+            __s('Optionnal reply to address.') . "\n" . __s('If not set, main administrator email will be used.') . "'></i></label></td>";
          $out .= "<td><input type='text' name='admin_reply' id='admin_reply' size='40' value='" .
                     $CFG_GLPI["admin_reply"] . "'>";
          if (!empty($CFG_GLPI['admin_reply'])
@@ -114,7 +114,7 @@ class NotificationMailingSetting extends NotificationSetting {
          }
          $out .= " </td>";
          $out .= "<td><label for='admin_reply_name'>" . __('Reply-to name') . " <i class='pointer fa fa-info' title='" .
-            _('Optionnal reply to name.') . "\n" . __('If not set, main administrator name will be used.'). "'></i></label></td>";
+            __s('Optionnal reply to name.') . "\n" . __s('If not set, main administrator name will be used.'). "'></i></label></td>";
          $out .= "<td><input type='text' name='admin_reply_name' id='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          $out .= " </td></tr>";
@@ -222,7 +222,7 @@ class NotificationMailingSetting extends NotificationSetting {
 
          $out .= "<tr class='tab_bg_2'>";
          $out .= "<td><label for='smtp_sender'>" . __('Email sender') . " <i class='pointer fa fa-info' title='" .
-            __('May be required for some mails providers.') . "\n" . __('If not set, main administrator email will be used.') . "'></i></span></label></td>";
+            __s('May be required for some mails providers.') . "\n" . __s('If not set, main administrator email will be used.') . "'></i></span></label></td>";
          $out .= "<td colspan='3'</td><input type='text' name='smtp_sender' id='smtp_sender' value='{$CFG_GLPI['smtp_sender']}' /></tr>";
 
          $out .= "</tr>";

@@ -308,7 +308,7 @@ abstract class LevelAgreement extends CommonDBChild {
                }");
                echo "<a class='fa fa-times-circle pointer'
                         onclick='delete_date$type$rand(event)'
-                        title='"._x('button', 'Delete permanently')."'>";
+                        title='"._sx('button', 'Delete permanently')."'>";
                echo "<span class='sr-only'>"._x('button', 'Delete permanently')."</span>";
                echo "</a>";
             }
