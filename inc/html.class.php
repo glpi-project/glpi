@@ -560,15 +560,15 @@ class Html {
             //set title and css class
             switch ($msgtype) {
                case ERROR:
-                  $title = __('Error');
+                  $title = __s('Error');
                   $class = 'err_msg';
                   break;
                case WARNING:
-                  $title = __('Warning');
+                  $title = __s('Warning');
                   $class = 'warn_msg';
                   break;
                case INFO:
-                  $title = __('Information');
+                  $title = __s('Information');
                   $class = 'info_msg';
                   break;
             }
@@ -729,7 +729,7 @@ class Html {
          if (!$ajax) {
             echo "<span class='fa-stack fa-lg' id='see_debug'>
                      <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
-                     <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __('Display GLPI debug informations')  . "'>
+                     <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __s('Display GLPI debug informations')  . "'>
                         <span class='sr-only'>See GLPI DEBUG</span>
                      </a>
             </span>";
@@ -1470,7 +1470,7 @@ class Html {
       echo "<span class='fa-stack fa-lg' id='backtotop' style='display: none'>".
            "<i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>".
            "<a href='#' class='fa fa-arrow-up fa-stack-1x primary-fg' title='".
-              __('Back to top of the page')."'>".
+              __s('Back to top of the page')."'>".
            "<span class='sr-only'>Top of the page</span>".
            "</a></span>";
 
@@ -2530,7 +2530,7 @@ class Html {
       $output .= Html::hidden($name, ['value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand']]);
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
+         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
                       "' id='resetdate".$p['rand']."'>" .
                       "<span class='sr-only'>" . __('Clear') . "</span></span>";
       }
@@ -2728,7 +2728,7 @@ class Html {
       $output .= ">";
       $output .= Html::hidden($name, ['value' => $p['value'], 'id' => "hiddendate".$p['rand']]);
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<span class='fa fa-times-circle pointer' title='".__('Clear').
+         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
                       "' id='resetdate".$p['rand']."'>" .
                       "<span class='sr-only'>" . __('Clear') . "</span></span>";
       }
@@ -5854,7 +5854,7 @@ class Html {
          $current_mode = $_SESSION['glpi_use_mode'];
          $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
          $title = sprintf(
-            __('Debug mode %1$s'),
+            __s('Debug mode %1$s'),
             ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
          );
          echo "<li id='debug_mode'>";
@@ -5887,7 +5887,7 @@ class Html {
                          ? "http://glpi-project.org/help-central"
                          : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".
                             __s('Help')."\" class='fa fa-question'>".
-           "<span class='sr-only'>" . __s('Help') . "</span>";
+           "<span class='sr-only'>" . __('Help') . "</span>";
       echo "</a></li>";
 
       if (!GLPI_DEMO_MODE) {
@@ -6171,10 +6171,10 @@ class Html {
             echo "<span>";
             if (isset($links['add'])) {
                echo "<a href='{$CFG_GLPI['root_doc']}{$links['add']}' class='pointer'
-                                 title='" . __('Add') ."'><i class='fa fa-plus'></i>
+                                 title='" . __s('Add') ."'><i class='fa fa-plus'></i>
                                  <span class='sr-only'>" . __('Add') . "</span></a>";
             } else {
-               echo "<a href='#' class='pointer disabled' title='".__('Add is disabled')."'>".
+               echo "<a href='#' class='pointer disabled' title='".__s('Add is disabled')."'>".
                   "<i class='fa fa-plus'></i>".
                   "<span class='sr-only'>" . __('Add is disabled') . "</span></a>";
             }
@@ -6187,7 +6187,7 @@ class Html {
                                  title='" . __s('Search') ."'><i class='fa fa-search'></i>
                                  <span class='sr-only'>" . __s('Search') . "</span></a>";
             } else {
-               echo "<a href='#' class='pointer disabled' title='" . __('Search is disabled')."'>".
+               echo "<a href='#' class='pointer disabled' title='" . __s('Search is disabled')."'>".
                   "<i class='fa fa-search'></i>".
                   "<span class='sr-only'>" . __('Search is disabled') . "</span></a>";
             }

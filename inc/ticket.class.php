@@ -6971,7 +6971,7 @@ class Ticket extends CommonITILObject {
          }
          if (isset($item_i['requesttypes_id'])
              && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
-            echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' title='' class='h_requesttype' />";
+            echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' class='h_requesttype' />";
          }
 
          if (isset($item_i['content'])) {
@@ -7264,17 +7264,17 @@ class Ticket extends CommonITILObject {
       echo "<div class='filter_timeline'>";
       echo "<h3>".__("Timeline filter")." : </h3>";
       echo "<ul>";
-      echo "<li><a href='#' class='fa fa-comment-o pointer' data-type='TicketFollowup' title='".__("Followup").
+      echo "<li><a href='#' class='fa fa-comment-o pointer' data-type='TicketFollowup' title='".__s("Followup").
          "'><span class='sr-only'>" . __('Followup') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-check-square-o pointer' data-type='TicketTask' title='".__("Task").
+      echo "<li><a href='#' class='fa fa-check-square-o pointer' data-type='TicketTask' title='".__s("Task").
          "'><span class='sr-only'>" . __('Task') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__("Document").
+      echo "<li><a href='#' class='fa fa-paperclip pointer' data-type='Document_Item' title='".__s("Document").
          "'><span class='sr-only'>" . __('Document') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-thumbs-o-up pointer' data-type='TicketValidation' title='".__("Validation").
+      echo "<li><a href='#' class='fa fa-thumbs-o-up pointer' data-type='TicketValidation' title='".__s("Validation").
          "'><span class='sr-only'>" . __('Validation') . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__("Solution").
+      echo "<li><a href='#' class='fa fa-check pointer' data-type='Solution' title='".__s("Solution").
          "'><span class='sr-only'>" . __('Solution')  . "</span></a></li>";
-      echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__("Reset display options").
+      echo "<li><a href='#' class='fa fa-ban pointer' data-type='reset' title=\"".__s("Reset display options").
          "\"><span class='sr-only'>" . __('Reset display options')  . "</span></a></li>";
       echo "</ul>";
       echo "</div>";

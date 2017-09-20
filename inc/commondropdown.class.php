@@ -868,11 +868,11 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if ($this->isField('knowbaseitemcategories_id')
           && $this->fields['knowbaseitemcategories_id']) {
-         $title = __('FAQ');
+         $title = __s('FAQ');
 
          if (isset($_SESSION['glpiactiveprofile'])
              && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-            $title = __('Knowledge base');
+            $title = __s('Knowledge base');
          }
 
          $rand = mt_rand();
