@@ -1369,64 +1369,69 @@ class Config extends CommonDBTM {
    static function displayPasswordSecurityChecks($field = 'password') {
       global $CFG_GLPI;
 
-      printf(__('%1$s: %2$s'), __('Password minimum length'),
-                "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length'].
-                "</span>");
+      $needs = [];
+
+      if ($CFG_GLPI["use_password_security"]) {
+         printf(__('%1$s: %2$s'), __('Password minimum length'),
+                   "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length'].
+                   "</span>");
+      }
 
       echo "<script type='text/javascript' >\n";
       echo "function passwordCheck() {\n";
-      echo "var pwd = ".Html::jsGetElementbyID($field).";";
-      echo "if (pwd.val().length < ".$CFG_GLPI['password_min_length'].") {
-            ".Html::jsGetElementByID('password_min_length').".addClass('red');
-            ".Html::jsGetElementByID('password_min_length').".removeClass('green');
-      } else {
-            ".Html::jsGetElementByID('password_min_length').".addClass('green');
-            ".Html::jsGetElementByID('password_min_length').".removeClass('red');
-      }";
-      $needs = [];
-      if ($CFG_GLPI["password_need_number"]) {
-         $needs[] = "<span id='password_need_number' class='red'>".__('Digit')."</span>";
-         echo "var numberRegex = new RegExp('[0-9]', 'g');
-         if (false == numberRegex.test(pwd.val())) {
-               ".Html::jsGetElementByID('password_need_number').".addClass('red');
-               ".Html::jsGetElementByID('password_need_number').".removeClass('green');
+      if ($CFG_GLPI["use_password_security"]) {
+         echo "var pwd = ".Html::jsGetElementbyID($field).";";
+         echo "if (pwd.val().length < ".$CFG_GLPI['password_min_length'].") {
+               ".Html::jsGetElementByID('password_min_length').".addClass('red');
+               ".Html::jsGetElementByID('password_min_length').".removeClass('green');
          } else {
-               ".Html::jsGetElementByID('password_need_number').".addClass('green');
-               ".Html::jsGetElementByID('password_need_number').".removeClass('red');
+               ".Html::jsGetElementByID('password_min_length').".addClass('green');
+               ".Html::jsGetElementByID('password_min_length').".removeClass('red');
          }";
-      }
-      if ($CFG_GLPI["password_need_letter"]) {
-         $needs[] = "<span id='password_need_letter' class='red'>".__('Lowercase')."</span>";
-         echo "var letterRegex = new RegExp('[a-z]', 'g');
-         if (false == letterRegex.test(pwd.val())) {
-               ".Html::jsGetElementByID('password_need_letter').".addClass('red');
-               ".Html::jsGetElementByID('password_need_letter').".removeClass('green');
-         } else {
-               ".Html::jsGetElementByID('password_need_letter').".addClass('green');
-               ".Html::jsGetElementByID('password_need_letter').".removeClass('red');
-         }";
-      }
-      if ($CFG_GLPI["password_need_caps"]) {
-         $needs[] = "<span id='password_need_caps' class='red'>".__('Uppercase')."</span>";
-         echo "var capsRegex = new RegExp('[A-Z]', 'g');
-         if (false == capsRegex.test(pwd.val())) {
-               ".Html::jsGetElementByID('password_need_caps').".addClass('red');
-               ".Html::jsGetElementByID('password_need_caps').".removeClass('green');
-         } else {
-               ".Html::jsGetElementByID('password_need_caps').".addClass('green');
-               ".Html::jsGetElementByID('password_need_caps').".removeClass('red');
-         }";
-      }
-      if ($CFG_GLPI["password_need_symbol"]) {
-         $needs[] = "<span id='password_need_symbol' class='red'>".__('Symbol')."</span>";
-         echo "var capsRegex = new RegExp('[^a-zA-Z0-9_]', 'g');
-         if (false == capsRegex.test(pwd.val())) {
-               ".Html::jsGetElementByID('password_need_symbol').".addClass('red');
-               ".Html::jsGetElementByID('password_need_symbol').".removeClass('green');
-         } else {
-               ".Html::jsGetElementByID('password_need_symbol').".addClass('green');
-               ".Html::jsGetElementByID('password_need_symbol').".removeClass('red');
-         }";
+         if ($CFG_GLPI["password_need_number"]) {
+            $needs[] = "<span id='password_need_number' class='red'>".__('Digit')."</span>";
+            echo "var numberRegex = new RegExp('[0-9]', 'g');
+            if (false == numberRegex.test(pwd.val())) {
+                  ".Html::jsGetElementByID('password_need_number').".addClass('red');
+                  ".Html::jsGetElementByID('password_need_number').".removeClass('green');
+            } else {
+                  ".Html::jsGetElementByID('password_need_number').".addClass('green');
+                  ".Html::jsGetElementByID('password_need_number').".removeClass('red');
+            }";
+         }
+         if ($CFG_GLPI["password_need_letter"]) {
+            $needs[] = "<span id='password_need_letter' class='red'>".__('Lowercase')."</span>";
+            echo "var letterRegex = new RegExp('[a-z]', 'g');
+            if (false == letterRegex.test(pwd.val())) {
+                  ".Html::jsGetElementByID('password_need_letter').".addClass('red');
+                  ".Html::jsGetElementByID('password_need_letter').".removeClass('green');
+            } else {
+                  ".Html::jsGetElementByID('password_need_letter').".addClass('green');
+                  ".Html::jsGetElementByID('password_need_letter').".removeClass('red');
+            }";
+         }
+         if ($CFG_GLPI["password_need_caps"]) {
+            $needs[] = "<span id='password_need_caps' class='red'>".__('Uppercase')."</span>";
+            echo "var capsRegex = new RegExp('[A-Z]', 'g');
+            if (false == capsRegex.test(pwd.val())) {
+                  ".Html::jsGetElementByID('password_need_caps').".addClass('red');
+                  ".Html::jsGetElementByID('password_need_caps').".removeClass('green');
+            } else {
+                  ".Html::jsGetElementByID('password_need_caps').".addClass('green');
+                  ".Html::jsGetElementByID('password_need_caps').".removeClass('red');
+            }";
+         }
+         if ($CFG_GLPI["password_need_symbol"]) {
+            $needs[] = "<span id='password_need_symbol' class='red'>".__('Symbol')."</span>";
+            echo "var capsRegex = new RegExp('[^a-zA-Z0-9_]', 'g');
+            if (false == capsRegex.test(pwd.val())) {
+                  ".Html::jsGetElementByID('password_need_symbol').".addClass('red');
+                  ".Html::jsGetElementByID('password_need_symbol').".removeClass('green');
+            } else {
+                  ".Html::jsGetElementByID('password_need_symbol').".addClass('green');
+                  ".Html::jsGetElementByID('password_need_symbol').".removeClass('red');
+            }";
+         }
       }
       echo "}";
       echo '</script>';
