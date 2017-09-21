@@ -34,7 +34,7 @@ error_reporting(E_ALL);
 
 define('GLPI_CONFIG_DIR', __DIR__);
 define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
-define('GLPI_URI', 'http://localhost:8088');
+define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
