@@ -1657,6 +1657,9 @@ class Html {
 
       self::includeHeader($title);
 
+      // load tinymce lib
+      Html::requireJs('tinymce');
+
       // Body
       $body_class = "layout_".$_SESSION['glpilayout'];
       if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
