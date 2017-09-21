@@ -303,7 +303,7 @@ try {
    }
 } catch (Exception $e) {
    $GLPI_CACHE = false;
-   if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
+   if (isset($_SESSION['glpi_use_mode']) && Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
       Toolbox::logDebug($e->getMessage());
    }
 }
