@@ -3454,7 +3454,12 @@ class Html {
       }
 
       // init tinymce
-      $js = "$(function() {
+      $js = "
+         if (_truetest) {
+            tinyMCE.dom.Event.domLoaded = true;
+         }
+         tinyMCE.baseURL = '".$CFG_GLPI['root_doc']."/lib/tiny_mce';
+         tinyMCE.suffix = '.min';
          tinyMCE.init({
             language: '$language',
             browser_spellcheck: true,
@@ -3502,13 +3507,13 @@ class Html {
             ],
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
             $readonlyjs
-         });
-      });";
+         });";
 
+      $js = self::loadAjaxJavascript("typeof tinyMCE === 'undefined'", $js);
       if ($display) {
-         echo  Html::scriptBlock($js);
+         echo  $js;
       } else {
-         return  Html::scriptBlock($js);
+         return $js;
       }
    }
 
@@ -4639,6 +4644,22 @@ class Html {
     * @return String of script tags
    **/
    static function script($url, $options = [], $minify = true) {
+      return sprintf(
+         '<script type="text/javascript" src="%1$s"></script>',
+         self::getScriptUrl($url, $options, $minify)
+      );
+   }
+
+   /**
+    * Gets JS script URL
+    *
+    * @param string  $url     File to include (relative to GLPI_ROOT)
+    * @param array   $options Array of HTML attributes
+    * @param boolean $minify  Try to load minified file (defaults to true)
+    *
+    * @return string script URL
+    */
+   private static function getScriptUrl($url, $options = [], $minify = true) {
       $version = GLPI_VERSION;
       if (isset($options['version'])) {
          $version = $options['version'];
@@ -4654,8 +4675,7 @@ class Html {
       if ($version) {
          $url .= '?v=' . $version;
       }
-
-      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
+      return $url;
    }
 
 
@@ -5669,6 +5689,38 @@ class Html {
             }
          }
       }
+   }
+
+   /**
+    * Load javascripts for ajax calls
+    *
+    * @param string $test     Javascript test to call getScript or not
+    * @param string $callback Javascript to execute
+    *
+    * @return string
+    */
+   static private function loadAjaxJavascript($test, $callback) {
+      //load on demand scripts
+      $js = "$(function() {\n";
+      $js .= "var _callback = function() {\n$callback\n};";
+      if (isset($_SESSION['glpi_js_toload'])) {
+         $js .= "if ($test) {\n";
+         $js .= "var _truetest = true;\n";
+         foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
+            if (!is_array($script)) {
+               $script = [$script];
+            }
+            foreach ($script as $s) {
+               $js .= "\t$.getScript('" . self::getScriptUrl($s) . "', function() {_callback();});\n";
+            }
+            unset($_SESSION['glpi_js_toload'][$key]);
+         }
+         $js .= "} else {_callback();}\n";
+      } else {
+         $js .= $callback;
+      }
+      $js .= "});\n";
+      return Html::scriptBlock($js);
    }
 
    /**
