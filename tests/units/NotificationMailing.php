@@ -44,8 +44,10 @@ class NotificationMailing extends DbTestCase {
       $this->boolean($instance->check('user'))->isFalse();
       $this->boolean($instance->check('user@localhost'))->isTrue();
       $this->boolean($instance->check('user@localhost.dot'))->isTrue();
-      $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
-      $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
+      if (!getenv('GLPI_SKIP_ONLINE')) {
+          $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
+          $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
+      }
    }
 
    public function testSendNotification() {

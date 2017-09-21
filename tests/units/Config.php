@@ -247,10 +247,12 @@ class Config extends DbTestCase {
       $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
 
       $expected = realpath(__DIR__ . '/../../vendor/phpmailer/phpmailer');
-      $this->string(\Config::getLibraryDir('PHPMailer'))->isIdenticalTo($expected);
+      if (is_dir($expected)) { // skip when system library is used
+         $this->string(\Config::getLibraryDir('PHPMailer'))->isIdenticalTo($expected);
 
-      $mailer = new \PHPMailer();
-      $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
+         $mailer = new \PHPMailer();
+         $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
+      }
 
       $expected = realpath(__DIR__ . '/../');
       $this->string(\Config::getLibraryDir('getItemByTypeName'))->isIdenticalTo($expected);
