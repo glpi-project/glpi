@@ -78,20 +78,20 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
       $savedsearch_alert = $options['item'];
       $savedsearch = $options['savedsearch'];
 
-      $this->datas['##savedsearch.action##']    = $events[$event];
-      $this->datas['##savedsearch.name##']      = $savedsearch->getField('name');
-      $this->datas['##savedsearch.message##']   = $options['msg'];
-      $this->datas['##savedsearch.id##']        = $savedsearch->getID();
-      $this->datas['##savedsearch.count##']     = (int)$options['data']['totalcount'];
-      $this->datas['##savedsearch.type##']      = $savedsearch->getField('itemtype');
-      $this->datas['##savedsearch.url##']       = $CFG_GLPI['url_base']."/?redirect=" .
+      $this->data['##savedsearch.action##']    = $events[$event];
+      $this->data['##savedsearch.name##']      = $savedsearch->getField('name');
+      $this->data['##savedsearch.message##']   = $options['msg'];
+      $this->data['##savedsearch.id##']        = $savedsearch->getID();
+      $this->data['##savedsearch.count##']     = (int)$options['data']['totalcount'];
+      $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
+      $this->data['##savedsearch.url##']       = $CFG_GLPI['url_base']."/?redirect=" .
                                                    rawurlencode($savedsearch->getSearchURL(false) .
                                                    "?action=load&id=". $savedsearch->getID());
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag])) {
-            $this->datas[$tag] = $values['label'];
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
       }
    }
