@@ -1168,7 +1168,7 @@ Regards,',
 
    if ($DB->fieldExists('glpi_computers', 'operatingsystems_id')) {
       //migrate data from computers table, and drop old fields
-      $query = "INSERT INTO `glpi_items_operatingsystems`
+      $query = "REPLACE INTO `glpi_items_operatingsystems`
                        (`itemtype`, `items_id`, `operatingsystems_id`, `operatingsystemversions_id`,
                         `operatingsystemservicepacks_id`, `operatingsystemarchitectures_id`,
                         `license_number`, `license_id`)
