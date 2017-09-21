@@ -2205,7 +2205,7 @@ class Search {
       if (Session::isMultiEntitiesMode()
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
-              || (count($_SESSION["glpiactiveentities"]) > 1))) {
+              || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))) {
          array_push($toview, 80);
       }
       return $toview;
