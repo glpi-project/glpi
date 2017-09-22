@@ -1091,7 +1091,7 @@ class Item_Devices extends CommonDBRelation {
             try {
                document.execCommand("copy");
             } catch (e) {
-               alert("' . __s('Copy to clipboard failed') . '");
+               alert("' . addslashes(__('Copy to clipboard failed')) . '");
             }
             hideField(item);
          }');

@@ -763,7 +763,7 @@ class SavedSearch extends CommonDBTM {
                $.ajax({
                   url: _this.attr('href'),
                   beforeSend: function() {
-                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __s('Loading...') . "\'/></span>';
+                     var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . addslashes(__('Loading...')) . "\'/></span>';
                      _dest.append(_img);
                   },
                   success: function(res) {
@@ -790,7 +790,7 @@ class SavedSearch extends CommonDBTM {
                      $('#showSavedSearches .contents').html(res);
                   },
                   error: function() {
-                     alert('" . __s('Default bookmark has not been changed!')  . "');
+                     alert('" . addslashes(__('Default bookmark has not been changed!'))  . "');
                      _this.addClass(_currentclass);
                   },
                   complete: function() {
@@ -916,11 +916,11 @@ class SavedSearch extends CommonDBTM {
                            ids: _ids
                         },
                         beforeSend: function() {
-                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . __s('Loading...') . "\'/></span>';
+                           var _img = '<span id=\'loading\'><img src=\'{$CFG_GLPI["root_doc"]}/pics/spinner.gif\' alt=\'" . addslashes(__('Loading...')) . "\'/></span>';
                            $('.private_header').prepend(_img);
                         },
                         error: function() {
-                           alert('" . __s('Saved searches order cannot be saved!') . "');
+                           alert('" . addslashes(__('Saved searches order cannot be saved!')) . "');
                         },
                         complete: function() {
                            $('#loading').remove();
