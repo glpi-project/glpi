@@ -124,12 +124,12 @@ class Line extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Caller number', 'Value')."</td>";
+      echo "<td>".__('Caller number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "caller_num");
       echo "</td>";
 
-      echo "<td>".__('Caller name', 'Value')."</td>";
+      echo "<td>".__('Caller name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "caller_name");
       echo "</td></tr>";
