@@ -315,12 +315,14 @@ class SavedSearch_Alert extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['is_active' => true]
+         'WHERE'  => ['is_active' => true],
+         'ORDER'  => ['users_id']
       ]);
 
       if ($iterator->numrows()) {
          $savedsearch = new SavedSearch();
 
+         $cli_logged = null;
          if (!isset($_SESSION['glpiname'])) {
             //required from search class
             $_SESSION['glpiname'] = 'crontab';
@@ -330,6 +332,17 @@ class SavedSearch_Alert extends CommonDBChild {
             //execute saved search to get results
             try {
                $savedsearch->getFromDB($row['savedsearches_id']);
+               if (isCommandLine() && $cli_logged != $savedsearch->fields['users_id']) {
+                  //search requires a logged in user...
+                  $user = new User();
+                  $user->getFromDB($savedsearch->fields['users_id']);
+                  $auth = new Auth();
+                  $auth->user = $user;
+                  $auth->auth_succeded = true;
+                  Session::init($auth);
+                  $cli_logged = $savedsearch->fields['users_id'];
+               }
+
                $data = $savedsearch->execute(true);
                $count = (int)$data['data']['totalcount'];
                $value = (int)$row['value'];
