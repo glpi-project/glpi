@@ -414,7 +414,7 @@ class Ajax {
                   event.preventDefault();
                } else {
                   forceReload$rand = false;
-                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . __s('Loading...') . "</div></div>');
+                  var _loader = $('<div id=\'loadingtabs\'><div class=\'loadingindicator\'>" . addslashes(__('Loading...')) . "</div></div>');
                   ui.panel.html(_loader);
 
                   ui.jqXHR.complete(function() {
@@ -425,9 +425,9 @@ class Ajax {
                      console.log(e);
                      ui.panel.html(
                         '<div class=\'error\'><h3>" .
-                        __s('An error occured loading contents!')  . "</h3><p>" .
-                        __s('Please check GLPI logs or contact your administrator.')  .
-                        "<br/>" . __s('or') . " <a href=\'#\' onclick=\'return reloadTab()\'>" . __s('try to reload')  . "</a></p></div>'
+                        addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
+                        addslashes(__('Please check GLPI logs or contact your administrator.'))  .
+                        "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
                      );
                   });
                }

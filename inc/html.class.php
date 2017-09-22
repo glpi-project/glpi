@@ -5256,11 +5256,11 @@ class Html {
       window.old_alert = window.alert;
       window.alert = function(message, caption) {
          message = message.replace('\\n', '<br>');
-         caption = caption || '".__("Information")."';
+         caption = caption || '".addslashes(__("Information"))."';
          $('<div/>').html(message).dialog({
             title: caption,
             buttons: {
-               ".__('OK').": function() {
+               ".addslashes(__('OK')).": function() {
                   $(this).dialog('close');
                }
             },
@@ -5350,7 +5350,7 @@ class Html {
             title: caption,
             dialogClass: 'fixed glpi_modal',
             buttons: {
-               '"._sx('button', 'Confirm')."': function () {
+               '".addslashes(_x('button', 'Confirm'))."': function () {
                   $(this).dialog('close');
                   confirmed = true;
 
@@ -5361,7 +5361,7 @@ class Html {
                   // maybe timeout is not essential ...
                   setTimeout(function(){  confirmed = false; }, 100);
                },
-               '"._sx('button', 'Cancel')."': function () {
+               '".addslashes(_x('button', 'Cancel'))."': function () {
                   $(this).dialog('close');
                   confirmed = false;
                }

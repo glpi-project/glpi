@@ -298,7 +298,7 @@ abstract class LevelAgreement extends CommonDBChild {
                function delete_date$type$rand(e) {
                   e.preventDefault();
 
-                  if (nativeConfirm('".__s('Also delete date ?')."')) {
+                  if (nativeConfirm('".addslashes(__('Also delete date ?'))."')) {
                      submitGetLink('$ticket_url',
                                    ".json_encode(array_merge($fields, ['delete_date' => 1])).");
                   } else {
