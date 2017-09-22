@@ -495,8 +495,8 @@ class Certificate_Item extends CommonDBRelation {
          echo "<th>" . __('Entity') . "</th>";
       }
       echo "<th>" . __('Type') . "</th>";
-      echo "<th>" . __('DNS name', 'certificates') . "</th>";
-      echo "<th>" . __('DNS suffix', 'certificates') . "</th>";
+      echo "<th>" . __('DNS name') . "</th>";
+      echo "<th>" . __('DNS suffix') . "</th>";
       echo "<th>" . __('Creation date') . "</th>";
       echo "<th>" . __('Expiration date') . "</th>";
       echo "<th>" . __('Status') . "</th>";
@@ -546,7 +546,7 @@ class Certificate_Item extends CommonDBRelation {
                echo "<div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div>";
                echo "</td>";
             } else if (empty($data["date_expiration"])) {
-               echo "<td class='center'>" . __('Does not expire', 'certificates') . "</td>";
+               echo "<td class='center'>" . __('Does not expire') . "</td>";
             } else {
                echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";
             }
