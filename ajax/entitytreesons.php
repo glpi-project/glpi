@@ -58,7 +58,10 @@ if (isset($_GET['node'])) {
          $is_recursive                 = $entity['is_recursive'];
 
          $path = [
-            'id'   => $ID,
+            // append r for root nodes, id are uniques in jstree.
+            // so, in case of presence of this id in subtree of other nodes,
+            // it will be removed from root nodes
+            'id'   => 'r'.$ID,
             'text' => Dropdown::getDropdownName("glpi_entities", $ID)
          ];
 
