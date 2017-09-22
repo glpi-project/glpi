@@ -117,11 +117,11 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
    }
 
 
-   function getNotificationTargets($entity) {
+   function addNotificationTargets($entity) {
       if ($this->raiseevent == 'alert') {
          $this->addTarget(Notification::USER, __('User'));
       } else {
-         parent::getNotificationTargets($entity);
+         parent::addNotificationTargets($entity);
       }
    }
 
