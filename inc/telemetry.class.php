@@ -395,9 +395,9 @@ class Telemetry extends CommonGLPI {
                   $('body').append(_elt);
 
                   _elt.dialog({
-                     title: '" . __s('Telemetry data') . "',
+                     title: '" . addslashes(__('Telemetry data')) . "',
                      buttons: {
-                        ".__s('OK').": function() {
+                        ".addslashes(__('OK')).": function() {
                            $(this).dialog('close');
                         }
                      },
