@@ -269,7 +269,7 @@ class Phone extends CommonDBTM {
                                        'target'       => $target]);
       echo "</td></tr>\n";
 
-      $rowspan        = 6;
+      $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
