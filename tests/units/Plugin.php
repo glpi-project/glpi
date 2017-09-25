@@ -84,7 +84,7 @@ class Plugin extends DbTestCase {
       $infos = ['min' => '9.2', 'max' => '9.3'];
       $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
 
-      $this->calling($plugin)->getGlpiVersion = '9.2-dev';
+      $this->calling($plugin)->getGlpiVersion = '9.2';
       if (!defined('GLPI_PREVER')) {
          $this->mock->constant->GLPI_PREVER = '9.2';
       }
