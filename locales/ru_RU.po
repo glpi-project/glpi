@@ -2583,10 +2583,10 @@ msgstr "Перезайти"
 #: inc/notificationtargetmailcollector.class.php:100
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] "Получатель"
-msgstr[1] "Получатель"
-msgstr[2] "Получатели"
-msgstr[3] "Получатели"
+msgstr[0] "Приемник"
+msgstr[1] "Приемники"
+msgstr[2] "Приемники"
+msgstr[3] "Приемники"
 
 #: front/mailcollector.php:48 front/setup.auth.php:61
 #: inc/authmail.class.php:219
@@ -6028,7 +6028,7 @@ msgstr "Общая продолжительность"
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
 #: inc/ticket.class.php:4029 inc/ticket.class.php:5047 inc/user.class.php:2968
 msgid "Title"
-msgstr "Должность"
+msgstr "Заголовок"
 
 #: inc/change.class.php:794 inc/commonitilobject.class.php:2689
 #: inc/commonitilobject.class.php:4265 inc/commonitilobject.class.php:4328
@@ -15425,7 +15425,7 @@ msgstr "Плагин %1$s установлен!"
 
 #: inc/plugin.class.php:742
 msgid "Do you want to %activate_link it?"
-msgstr "Вы желаете %activate_link_it?"
+msgstr "Вы желаете %activate_link его?"
 
 #: inc/plugin.class.php:747
 #, php-format
