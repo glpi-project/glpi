@@ -200,6 +200,10 @@ class PlanningRecall extends CommonDBChild {
    static function managePlanningUpdates($itemtype, $items_id, $begin) {
       global $DB;
 
+      if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
+         unset($_SESSION['glpiplanningreminder_isavailable']);
+      }
+
       $query = "UPDATE `glpi_planningrecalls`
                 SET `when` = DATE_SUB('$begin', INTERVAL `before_time` SECOND)
                 WHERE `itemtype` = '$itemtype'
