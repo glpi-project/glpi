@@ -579,7 +579,7 @@ class MassiveAction {
             foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
                $plug_actions = Plugin::doOneHook($plugin, 'MassiveActions', $itemtype);
 
-               if (count($plug_actions)) {
+               if (is_array($plug_actions) && count($plug_actions)) {
                   $actions += $plug_actions;
                }
             }
