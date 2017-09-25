@@ -39,7 +39,7 @@ if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
 }
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.2-dev');
+define('GLPI_VERSION', '9.2');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
