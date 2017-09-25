@@ -692,7 +692,13 @@ class Reminder extends CommonDBVisible {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'><td  colspan='2'>".__('Calendar')."</td>";
-      echo "<td colspan='2'>";
+      $active_recall = ($ID && $this->fields["is_planned"] && PlanningRecall::isAvailable());
+
+      echo "<td";
+      if (!$active_recall) {
+         echo " colspan='2'";
+      }
+      echo ">";
       if (isset($options['from_planning_ajax'])
           && $options['from_planning_ajax']) {
          echo Html::hidden('plan[begin]', ['value' => $options['begin']]);
@@ -753,10 +759,8 @@ class Reminder extends CommonDBVisible {
          }
          echo "</td>";
 
-         if ($ID
-             && $this->fields["is_planned"]
-             && PlanningRecall::isAvailable()) {
-            echo "<td>"._x('Planning', 'Reminder')."</td>";
+         if ($active_recall) {
+            echo "<td><table><tr><td>"._x('Planning', 'Reminder')."</td>";
             echo "<td>";
             if ($canedit) {
                PlanningRecall::dropdown(['itemtype' => 'Reminder',
@@ -765,7 +769,7 @@ class Reminder extends CommonDBVisible {
                PlanningRecall::specificForm(['itemtype' => 'Reminder',
                                                   'items_id' => $ID]);
             }
-            echo "</td>";
+            echo "</td></tr></table></td>";
          }
       }
       echo "</tr>\n";
