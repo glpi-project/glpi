@@ -153,6 +153,38 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
+    * Does current user have right to solve the current item?
+    *
+    * @return boolean
+   **/
+   function canSolve() {
+
+      return ((Session::haveRight(static::$rightname, UPDATE)
+               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+               || (isset($_SESSION["glpigroups"])
+                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+              && self::isAllowedStatus($this->fields['status'], self::SOLVED)
+              // No edition on closed status
+              && !in_array($this->fields['status'], $this->getClosedStatusArray()));
+   }
+
+   /**
+    * Does current user have right to solve the current item; if it was not closed?
+    *
+    * @return boolean
+   **/
+   function maySolve() {
+
+      return ((Session::haveRight(static::$rightname, UPDATE)
+               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+               || (isset($_SESSION["glpigroups"])
+                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+              && self::isAllowedStatus($this->fields['status'], self::SOLVED));
+   }
+
+
+
+   /**
     * Is a user linked to the object ?
     *
     * @param $type               type to search (see constants)
@@ -581,6 +613,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $class = new $this->supplierlinkclass();
          $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
+
+      $solution = new ITILSolution();
+      $solution->removeForItem($this->getType(), $this->getID());
    }
 
 
@@ -823,52 +858,43 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['users_id_lastupdater'] = Session::getLoginUserID();
       }
 
+      $solvedclosed = array_merge(
+         $this->getSolvedStatusArray(),
+         $this->getClosedStatusArray()
+      );
+
       if (isset($input["status"])
-          && !in_array($input["status"], array_merge($this->getSolvedStatusArray(),
-                                                    $this->getClosedStatusArray()))) {
+          && !in_array($input["status"], $solvedclosed)) {
          $input['solvedate'] = 'NULL';
       }
 
       if (isset($input["status"]) && !in_array($input["status"], $this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
+
+      // Setting a solution type means the ticket is solved
+      if (isset($input["solutiontypes_id"])
+          && (!isset($input['status']) || !in_array($input["status"], $solvedclosed))) {
+         $solution = new ITILSolution();
+         $soltype = new SolutionType();
+         $soltype->getFromDB($input['solutiontypes_id']);
+         $solution->add([
+            'itemtype'           => $this->getType(),
+            'items_id'           => $this->getID(),
+            'solutiontypes_id'   => $input['solutiontypes_id'],
+            'content'            => 'Solved using type ' . $soltype->getName()
+         ]);
+      }
+
       return $input;
    }
 
 
    function pre_updateInDB() {
+      global $DB;
 
       // get again object to reload actors
       $this->loadActors();
-
-      // Setting a solution or solution type means the problem is solved
-      if ((in_array("solutiontypes_id", $this->updates) && ($this->input["solutiontypes_id"] > 0))
-          || (in_array("solution", $this->updates) && !empty($this->input["solution"]))) {
-
-         if (!in_array('status', $this->updates)) {
-            $this->oldvalues['status'] = $this->fields['status'];
-            $this->updates[]           = 'status';
-         }
-
-         // Special case for Ticket : use autoclose
-         if ($this->getType() == 'Ticket') {
-            $autoclosedelay =  Entity::getUsedConfig('autoclose_delay', $this->getEntityID(), '',
-                                                     Entity::CONFIG_NEVER);
-
-            // 0 = immediatly
-            if ($autoclosedelay == 0) {
-               $this->fields['status'] = self::CLOSED;
-               $this->input['status']  = self::CLOSED;
-            } else {
-               $this->fields['status'] = self::SOLVED;
-               $this->input['status']  = self::SOLVED;
-            }
-
-         } else {
-            $this->fields['status'] = self::SOLVED;
-            $this->input['status']  = self::SOLVED;
-         }
-      }
 
       // Check dates change interval due to the fact that second are not displayed in form
       if ((($key = array_search('date', $this->updates)) !== false)
@@ -1179,6 +1205,36 @@ abstract class CommonITILObject extends CommonDBTM {
       if (in_array("closedate", $this->updates)) {
          $this->updates[]                  = "close_delay_stat";
          $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
+      }
+
+      //Look for reopening
+      $statuses = array_merge(
+         $this->getSolvedStatusArray(),
+         $this->getClosedStatusArray()
+      );
+      if (($key = array_search('status', $this->updates)) !== false
+         && in_array($this->oldvalues['status'], $statuses)
+         && !in_array($this->fields['status'], $statuses)
+      ) {
+         //Mark existing solutions as refused
+         $query = "UPDATE `" . ITILSolution::getTable() . "`
+            SET `status`=".CommonITILValidation::REFUSED.", `users_id_approval`=" . Session::getLoginUserID() . ",
+            `date_approval`='". date('Y-m-d H:i:s') ."'
+               WHERE `itemtype`='" . static::getType() . "'
+               AND `items_id`=" . $this->getID() . "
+               ORDER BY date_creation DESC, id DESC LIMIT 1";
+         $DB->query($query);
+      }
+
+      if (isset($this->input['_accepted'])) {
+         //Mark last solution as approved
+         $query = "UPDATE `" . ITILSolution::getTable() . "`
+            SET `status`=".CommonITILValidation::ACCEPTED.", `users_id_approval`=" . Session::getLoginUserID() . ",
+            `date_approval`='". date('Y-m-d H:i:s') ."'
+               WHERE `itemtype`='" . static::getType() . "'
+               AND `items_id`=" . $this->getID() . "
+               ORDER BY date_creation DESC, id DESC LIMIT 1";
+         $DB->query($query);
       }
 
       // Do not take into account date_mod if no update is done
@@ -2916,17 +2972,30 @@ abstract class CommonITILObject extends CommonDBTM {
          'table'              => 'glpi_solutiontypes',
          'field'              => 'name',
          'name'               => __('Solution type'),
-         'datatype'           => 'dropdown'
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => ITILSolution::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item',
+               ]
+            ]
+         ]
       ];
 
       $tab[] = [
          'id'                 => '24',
-         'table'              => $this->getTable(),
-         'field'              => 'solution',
+         'table'              => ITILSolution::getTable(),
+         'field'              => 'content',
          'name'               => _n('Solution', 'Solutions', 1),
          'datatype'           => 'text',
          'htmltext'           => true,
-         'massiveaction'      => false
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
       ];
 
       return $tab;
@@ -4196,175 +4265,48 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $knowbase_id_toload integer  load a kb article as solution (0 = no load by default)
     *                                     (default 0)
    **/
-   function showSolutionForm($knowbase_id_toload = 0) {
+   function showSolutions($knowbase_id_toload = 0) {
       global $CFG_GLPI;
 
-      $this->check($this->getField('id'), READ);
-
-      $close_warning = false;
-      if ($this instanceof Ticket) {
-         $ti = new Ticket_Ticket();
-         $open_child = $ti->countOpenChildren($this->getID());
-         if ($open_child > 0) {
-            echo "<div class='tab_cadre_fixe warning'>" . __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?')  . "</div>";
-         }
-      }
-
-      $canedit = $this->canSolve();
-      $options = [];
-
-      if ($knowbase_id_toload > 0) {
-         $kb = new KnowbaseItem();
-         if ($kb->getFromDB($knowbase_id_toload)) {
-            $this->fields['solution'] = $kb->getField('answer');
-         }
-      }
-
-      // Alert if validation waiting
-      $validationtype = $this->getType().'Validation';
-      if (method_exists($validationtype, 'alertValidation')) {
-         $validationtype::alertValidation($this, 'solution');
-      }
-
-      $this->showFormHeader($options);
-
-      $show_template = $canedit;
-      $rand_template = mt_rand();
-      $rand_text     = $rand_type = 0;
-      if ($canedit) {
-         $rand_text = mt_rand();
-         $rand_type = mt_rand();
-      }
-      if ($show_template) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
-
-         SolutionTemplate::dropdown(['value'    => 0,
-                                          'entity'   => $this->getEntityID(),
-                                          'rand'     => $rand_template,
-                                          // Load type and solution from bookmark
-                                          'toupdate' => [
-                                              'value_fieldname' => 'value',
-                                              'to_update'       => 'solution'.$rand_text,
-                                              'url'             => $CFG_GLPI["root_doc"].
-                                                                   "/ajax/solution.php",
-                                              'moreparams' => [
-                                                  'type_id' => 'dropdown_solutiontypes_id'.
-                                                               $rand_type]]]);
-
-         echo "</td><td colspan='2'>";
-         if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
-            echo "<a class='vsubmit' title=\"".__s('Search a solution')."\"
-                   href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
-                   $this->getType()."&amp;item_items_id=".$this->getField('id').
-                   "&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
-         }
-         echo "</td></tr>";
-      }
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Solution type')."</td><td>";
-
-      $current = $this->fields['status'];
-      // Settings a solution will set status to solved
-      if ($canedit) {
-         SolutionType::dropdown(['value'  => $this->getField('solutiontypes_id'),
-                                      'rand'   => $rand_type,
-                                      'entity' => $this->getEntityID()]);
-      } else {
-         echo Dropdown::getDropdownName('glpi_solutiontypes',
-                                        $this->getField('solutiontypes_id'));
-      }
-      echo "</td><td colspan='2'>";
-
-      if (Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ]) && $knowbase_id_toload != 0) {
-         echo '<br/><input type="checkbox" name="kb_linked_id" id="kb_linked_id" value="' . $kb->getID() . '" checked="checked">';
-         echo ' <label for="kb_linked_id">' . str_replace('%id', $kb->getID(), __('Link to knowledge base entry #%id')) . '</label>';
-      } else {
-         echo '&nbsp;';
-      }
-      echo "</td></tr>";
-      if ($canedit && Session::haveRight('knowbase', UPDATE)) {
-         echo "<tr class='tab_bg_2'><td>".__('Save and add to the knowledge base')."</td><td>";
-         Dropdown::showYesNo('_sol_to_kb', false);
-         echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Description')."</td><td colspan='3'>";
-
-      if ($canedit) {
+      $solution = new ITILSolution();
+      $solution->showSummary($this);
+      if (ITILSolution::countFor($this->getType(), $this->getID()) > 0) {
          $rand = mt_rand();
-         Html::initEditorSystem("solution$rand");
-
-         echo "<div id='solution$rand_text'>";
-         echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>".
-                $this->getField('solution')."</textarea></div>";
          Html::file(['editor_id' => "solution$rand",
                      'showtitle' => false,
                      'multiple' => true]);
-
       } else {
-         echo Toolbox::unclean_cross_side_scripting_deep($this->getField('solution'));
+         $solution->showForm(null, ['item' => $this]);
       }
-      echo "</td></tr>";
-
-      $options['candel']  = false;
-      $options['canedit'] = $canedit;
-      $this->showFormButtons($options);
-
    }
 
    /**
     * Form to add a solution to an ITIL object
     *
-    * @since version 0.84
+    * @since 0.84
+    * @since 9.2 Signature has changed
+    *
+    * @param CommonITILObject $item item instance
     *
     * @param $entities_id
    **/
-   static function showMassiveSolutionForm($entities_id) {
-      global $CFG_GLPI;
-
+   static function showMassiveSolutionForm(CommonITILObject $item) {
       echo "<table class='tab_cadre_fixe'>";
       echo '<tr><th colspan=4>'.__('Solve tickets').'</th></tr>';
 
-      $rand_template = mt_rand();
-      $rand_text     = mt_rand();
-      $rand_type     = mt_rand();
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
+      $solution = new ITILSolution();
+      $solution->showForm(
+         null,
+         [
+            'item'   => $item,
+            'entity' => $item->getEntityID(),
+            'noform' => true,
+            'nokb'   => true
+         ]
+      );
 
-      SolutionTemplate::dropdown(['value'    => 0,
-                                       'entity'   => $entities_id,
-                                       'rand'     => $rand_template,
-                                       // Load type and solution from bookmark
-                                       'toupdate' => ['value_fieldname'
-                                                                        => 'value',
-                                                           'to_update'  => 'solution'.$rand_text,
-                                                           'url'        => $CFG_GLPI["root_doc"].
-                                                                            "/ajax/solution.php",
-                                                           'moreparams'
-                                                              => ['type_id'
-                                                                        => 'dropdown_solutiontypes_id'.
-                                                                            $rand_type]]]);
-
-      echo "</td><td colspan='2'>&nbsp;</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Solution type')."</td><td>";
-      SolutionType::dropdown(['value'  => 0,
-                                   'rand'   => $rand_type,
-                                   'entity' => $entities_id]);
-      echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Description')."</td><td colspan='3'>";
-      $rand = mt_rand();
-      Html::initEditorSystem("solution$rand");
-      echo "<div id='solution$rand_text'>";
-      echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'></textarea></div>";
       echo "</td></tr>";
-
       echo '</table>';
-
    }
 
 
@@ -4983,8 +4925,11 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $query = "SELECT DISTINCT `solutiontypes_id`
-                FROM `".$this->getTable()."`
-                WHERE NOT `".$this->getTable()."`.`is_deleted` ".
+                FROM `".ITILSolution::getTable()."`
+                INNER JOIN `".$this->getTable()."`
+                  ON `".$this->getTable().".`id` = `".ITILSolution::getTable()."`.`items_id`
+                WHERE `".ITILSolution::getTable()."`.`itemtype`='".$this->getType()."'
+                  AND NOT `".$this->getTable()."`.`is_deleted` ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {

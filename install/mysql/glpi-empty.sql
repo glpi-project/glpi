@@ -637,8 +637,6 @@ CREATE TABLE `glpi_changes` (
   `checklistcontent` longtext COLLATE utf8_unicode_ci,
   `global_validation` int(11) NOT NULL DEFAULT '1',
   `validation_percent` int(11) NOT NULL DEFAULT '0',
-  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
-  `solution` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `begin_waiting_date` datetime DEFAULT NULL,
   `waiting_duration` int(11) NOT NULL DEFAULT '0',
@@ -658,7 +656,6 @@ CREATE TABLE `glpi_changes` (
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
   KEY `solvedate` (`solvedate`),
-  KEY `solutiontypes_id` (`solutiontypes_id`),
   KEY `urgency` (`urgency`),
   KEY `impact` (`impact`),
   KEY `time_to_resolve` (`time_to_resolve`),
@@ -6247,8 +6244,6 @@ CREATE TABLE `glpi_problems` (
   `impactcontent` longtext COLLATE utf8_unicode_ci,
   `causecontent` longtext COLLATE utf8_unicode_ci,
   `symptomcontent` longtext COLLATE utf8_unicode_ci,
-  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
-  `solution` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `begin_waiting_date` datetime DEFAULT NULL,
   `waiting_duration` int(11) NOT NULL DEFAULT '0',
@@ -6268,7 +6263,6 @@ CREATE TABLE `glpi_problems` (
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
   KEY `solvedate` (`solvedate`),
-  KEY `solutiontypes_id` (`solutiontypes_id`),
   KEY `urgency` (`urgency`),
   KEY `impact` (`impact`),
   KEY `time_to_resolve` (`time_to_resolve`),
@@ -8097,6 +8091,38 @@ CREATE TABLE `glpi_solutiontypes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_itilsolutions
+DROP TABLE IF EXISTS `glpi_itilsolutions`;
+CREATE TABLE `glpi_itilsolutions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
+  `solutiontype_name` varchar(255) NULL DEFAULT NULL,
+  `content` longtext COLLATE utf8_unicode_ci,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `date_approval` datetime DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `user_name` varchar(255) NULL DEFAULT NULL,
+  `users_id_editor` int(11) NOT NULL DEFAULT '0',
+  `users_id_approval` int(11) NOT NULL DEFAULT '0',
+  `user_name_approval` varchar(255) NULL DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT '1',
+  `ticketfollowups_id` int(11) DEFAULT NULL  COMMENT 'Followup reference on reject or approve a ticket solution',
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `solutiontypes_id` (`solutiontypes_id`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_editor` (`users_id_editor`),
+  KEY `users_id_approval` (`users_id_approval`),
+  KEY `status` (`status`),
+  KEY `ticketfollowups_id` (`ticketfollowups_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_ssovariables
 
 DROP TABLE IF EXISTS `glpi_ssovariables`;
@@ -8389,8 +8415,6 @@ CREATE TABLE `glpi_tickets` (
   `priority` int(11) NOT NULL DEFAULT '1',
   `itilcategories_id` int(11) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '1',
-  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
-  `solution` longtext COLLATE utf8_unicode_ci,
   `global_validation` int(11) NOT NULL DEFAULT '1',
   `slas_ttr_id` int(11) NOT NULL DEFAULT '0',
   `slas_tto_id` int(11) NOT NULL DEFAULT '0',
@@ -8438,7 +8462,6 @@ CREATE TABLE `glpi_tickets` (
   KEY `internal_time_to_own` (`internal_time_to_own`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),
-  KEY `solutiontypes_id` (`solutiontypes_id`),
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `name` (`name`),

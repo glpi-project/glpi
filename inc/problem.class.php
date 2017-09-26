@@ -178,8 +178,7 @@ class Problem extends CommonITILObject {
          $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
-               $ong = [1 => __('Analysis'),
-                            2 => _n('Solution', 'Solutions', 1)];
+               $ong = [1 => __('Analysis')];
 
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
@@ -187,13 +186,6 @@ class Problem extends CommonITILObject {
 
                return $ong;
          }
-      }
-
-      switch ($item->getType()) {
-         case __CLASS__ :
-            return [1 => __('Analysis'),
-                         2 => _n('Solution', 'Solutions', 1),
-                         4 => __('Statistics')];
       }
       return '';
    }
@@ -212,7 +204,7 @@ class Problem extends CommonITILObject {
                   if (!isset($_GET['load_kb_sol'])) {
                      $_GET['load_kb_sol'] = 0;
                   }
-                  $item->showSolutionForm($_GET['load_kb_sol']);
+                  $item->showSolutions($_GET['load_kb_sol']);
                   break;
 
                case 4 :
@@ -229,6 +221,7 @@ class Problem extends CommonITILObject {
       // show related tickets and changes
       $ong = [];
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('ITILSolution', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);

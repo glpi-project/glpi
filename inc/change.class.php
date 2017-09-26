@@ -197,9 +197,7 @@ class Change extends CommonITILObject {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong = [1 => __('Analysis'),
-                            3 => __('Plans'),
-                            //Solution must be index 2
-                            2 => __('Solution')];
+                       3 => __('Plans')];
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
@@ -223,7 +221,7 @@ class Change extends CommonITILObject {
                   if (!isset($_GET['load_kb_sol'])) {
                      $_GET['load_kb_sol'] = 0;
                   }
-                  $item->showSolutionForm($_GET['load_kb_sol']);
+                  $item->showSolutions($_GET['load_kb_sol']);
                   break;
 
                case 3 :
@@ -245,6 +243,7 @@ class Change extends CommonITILObject {
       // show related tickets and changes
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('ITILSolution', $ong, $options);
       $this->addStandardTab('ChangeValidation', $ong, $options);
       $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('ChangeCost', $ong, $options);
