@@ -673,7 +673,15 @@ class KnowbaseItem extends CommonDBVisible {
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
                $this->fields['name']   = $item->getField('name');
-               $this->fields['answer'] = $item->getField('solution');
+               $solution = new ITILSolution();
+               $solution->getFromDBByCrit([
+                  'itemtype'     => $item->getType(),
+                  'items_id'     => $item->getID(),
+                  [
+                     'NOT' => ['status'       => CommonITILValidation::REFUSED]
+                  ]
+               ]);
+               $this->fields['answer'] = $solution->getField('content');
                if ($item->isField('itilcategories_id')) {
                   $ic = new ItilCategory();
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {

@@ -143,44 +143,6 @@ class Ticket extends DbTestCase {
       }
    }
 
-   public function testTicketSolution() {
-      session_unset();
-      $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-      $_SESSION['glpi_use_mode']       = \Session::NORMAL_MODE;
-      $_SESSION['glpi_currenttime']    = date("Y-m-d H:i:s");
-
-      $uid = getItemByTypeName('User', TU_USER, true);
-      $ticket = new \Ticket();
-      $this->integer((int)$ticket->add([
-         'name'               => 'ticket title',
-         'description'        => 'a description',
-         'content'            => '',
-         '_users_id_assign'   => $uid
-      ]))->isGreaterThan(0);
-
-      $this->boolean($ticket->isNewItem())->isFalse();
-      $this->variable($ticket->getField('status'))->isIdenticalTo($ticket::ASSIGNED);
-      $ticketId = $ticket->getID();
-
-      $this->_testTicketUser(
-         $ticket,
-         $uid,
-         \CommonITILActor::ASSIGN,
-         1,
-         ''
-      );
-
-      $ticket->update([
-         'id' => $ticket->getID(),
-         'solution'  => 'Current friendly ticket\r\nis solved!'
-      ]);
-      //reload from DB
-      $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
-
-      $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
-      $this->string($ticket->getField('solution'))->isIdenticalTo("Current friendly ticket\r\nis solved!");
-   }
-
    protected function _testTicketUser(\Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
       if ($actor > 0) {
          $user = new \User();

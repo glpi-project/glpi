@@ -417,6 +417,7 @@ class TicketFollowup  extends CommonDBTM {
          $update['id']        = $this->input["_job"]->fields['id'];
          $update['status']    = CommonITILObject::CLOSED;
          $update['closedate'] = $_SESSION["glpi_currenttime"];
+         $update['_accepted'] = true;
 
          // Use update method for history
          $this->input["_job"]->update($update);
@@ -886,9 +887,9 @@ class TicketFollowup  extends CommonDBTM {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand() {\n";
          $params = ['type'       => __CLASS__,
-                         'parenttype' => 'Ticket',
-                         'tickets_id' => $ticket->fields['id'],
-                         'id'         => -1];
+                    'parenttype' => 'Ticket',
+                    'tickets_id' => $ticket->fields['id'],
+                    'id'         => -1];
          Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo Html::jsHide('addbutton'.$ticket->fields['id'] . "$rand");
@@ -1135,11 +1136,11 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'>";
          echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
-         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
+         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
                 class='submit'>";
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' colspan='2'>\n";
-         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
+         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
                 class='submit'>";
          echo "</td></tr>\n";
          echo "</table>";

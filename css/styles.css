@@ -2218,6 +2218,11 @@ a.icon_nav_move:hover img {
    background: #e7e7e2;
 }
 
+.accepted {
+   background-color:#9FD6ED;
+   color:#425B64;
+}
+
 /* ################--------------- box (redirect and other)  ---------------#################### */
 .ui-widget-content.message_after_redirect {
    font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
@@ -3303,6 +3308,10 @@ a.copyright {
    pointer-events: none;
 }
 
+.timeline_history.standalone .h_content:after {
+   display: none;
+}
+
 .timeline_history .h_content:after {
    border-width: 8px;
    margin-top: -15px;
@@ -3405,10 +3414,20 @@ a.copyright {
 }
 
 .timeline_history .h_content.Solution {
+   border-left: 1em green solid;
    background-color: #9FD6ED;
    color: #425B64;
-   background-image: url(../pics/timeline/solution.png);
-   background-repeat: no-repeat;
+}
+
+.timeline_history .h_content.Solution.waiting {
+   border-left-color: orange;
+}
+.timeline_history .h_content.Solution.refused {
+   border-left: 1em red solid;
+}
+.timeline_history .h_content.Solution .solimg {
+   position: absolute;
+   color: rgba(66, 91, 100, .1);
 }
 
 .timeline_history .h_content.Document_Item,

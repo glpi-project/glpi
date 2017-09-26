@@ -135,8 +135,8 @@ class Change_Ticket extends CommonDBRelation{
             $change = new Change();
             $input = $ma->getInput();
             if (isset($input['changes_id']) && $change->getFromDB($input['changes_id'])) {
-               Ticket::showMassiveSolutionForm($change->getEntityID());
-               echo "<br><br>";
+               $change->showMassiveSolutionForm($change);
+               echo "<br>";
                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                return true;
             }
@@ -197,12 +197,15 @@ class Change_Ticket extends CommonDBRelation{
                if ($item->can($id, READ)) {
                   if ($ticket->getFromDB($item->fields['tickets_id'])
                       && $ticket->canSolve()) {
-                     $toupdate                     = [];
-                     $toupdate['id']               = $ticket->getID();
-                     $toupdate['solutiontypes_id'] = $input['solutiontypes_id'];
-                     $toupdate['solution']         = $input['solution'];
+                     $solution = new ITILSolution();
+                     $added = $solution->add([
+                        'itemtype'  => $ticket->getType(),
+                        'items_id'  => $ticket->getID(),
+                        'solutiontypes_id'   => $input['solutiontypes_id'],
+                        'content'            => $input['content']
+                     ]);
 
-                     if ($ticket->update($toupdate)) {
+                     if ($added) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

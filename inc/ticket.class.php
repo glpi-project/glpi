@@ -357,23 +357,6 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Is the current user have right to solve the current ticket ?
-    *
-    * @return boolean
-   **/
-   function canSolve() {
-
-      return ((Session::haveRight(self::$rightname, UPDATE)
-               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && self::isAllowedStatus($this->fields['status'], self::SOLVED)
-              // No edition on closed status
-              && !in_array($this->fields['status'], $this->getClosedStatusArray()));
-   }
-
-
-   /**
     * Is the current user have right to approve solution of the current ticket ?
     *
     * @return boolean
@@ -802,10 +785,6 @@ class Ticket extends CommonITILObject {
                $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
             }
 
-            if (!$_SESSION['glpiticket_timeline']
-                || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
-               $ong[2] = _n('Solution', 'Solutions', 1);
-            }
             // enquete si statut clos
             $satisfaction = new TicketSatisfaction();
             if ($satisfaction->getFromDB($item->getID())
@@ -897,6 +876,11 @@ class Ticket extends CommonITILObject {
          $this->addStandardTab('Document_Item', $ong, $options);
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
+      if (!$_SESSION['glpiticket_timeline']
+         || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+         $this->addStandardTab('ITILSolution', $ong, $options);
+      }
+
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
@@ -1089,11 +1073,6 @@ class Ticket extends CommonITILObject {
                 $allowed_fields[] = 'itilcategories_id';
                 $allowed_fields[] = 'name';
                 $allowed_fields[] = 'items_id';
-            }
-
-            if ($this->canSolve()) {
-                $allowed_fields[] = 'solutiontypes_id';
-                $allowed_fields[] = 'solution';
             }
          }
 
@@ -1642,15 +1621,6 @@ class Ticket extends CommonITILObject {
                   }
                }
             }
-         }
-
-         // Setting a solution type means the ticket is solved
-         if ((in_array("solutiontypes_id", $this->updates)
-              || in_array("solution", $this->updates))
-             && (isset($this->input["status"])
-                 && (in_array($this->input["status"], $this->getSolvedStatusArray())
-                     || in_array($this->input["status"], $this->getClosedStatusArray())))) { // auto close case
-            Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
          // Clean content to mail
@@ -5356,20 +5326,20 @@ class Ticket extends CommonITILObject {
          case "waiting" : // on affiche les tickets en attente
             $query .= "WHERE $is_deleted
                              AND ($search_assign)
-                             AND `status` = '".self::WAITING."' ".
+                             AND `glpi_tickets`.`status` = '".self::WAITING."' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "process" : // on affiche les tickets planifi??s ou assign??s au user
             $query .= "WHERE $is_deleted
                              AND ( $search_assign )
-                             AND (`status` IN ('".implode("','", self::getProcessStatusArray())."')) ".
+                             AND (`glpi_tickets`.`status` IN ('".implode("','", self::getProcessStatusArray())."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "toapprove" : // on affiche les tickets planifi??s ou assign??s au user
             $query .= "WHERE $is_deleted
-                             AND (`status` = '".self::SOLVED."')
+                             AND (`glpi_tickets`.`status` = '".self::SOLVED."')
                              AND ($search_users_id";
             if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
@@ -5391,20 +5361,22 @@ class Ticket extends CommonITILObject {
             break;
 
          case "rejected" : // on affiche les tickets rejet??s
-            $query .= "WHERE $is_deleted
+            $query .= " LEFT JOIN `glpi_itilsolutions`
+                           ON (`glpi_tickets`.`id` = `glpi_itilsolutions`.`items_id` AND `glpi_itilsolutions`.`itemtype` = 'Tciket')
+                        WHERE $is_deleted
                              AND ($search_assign)
-                             AND `status` <> '".self::CLOSED."'
-                             AND `global_validation` = '".CommonITILValidation::REFUSED."' ".
+                             AND `glpi_tickets`.`status` <> '".self::CLOSED."'
+                             AND `glpi_itilsolutions`.`status` = '".CommonITILValidation::REFUSED."' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "observed" :
             $query .= "WHERE $is_deleted
                              AND ($search_observer)
-                             AND (`status` IN ('".self::INCOMING."',
-                                               '".self::PLANNED."',
-                                               '".self::ASSIGNED."',
-                                               '".self::WAITING."'))
+                             AND (`glpi_tickets`.`status` IN ('".self::INCOMING."',
+                                                              '".self::PLANNED."',
+                                                              '".self::ASSIGNED."',
+                                                              '".self::WAITING."'))
                              AND NOT ( $search_assign )
                              AND NOT ( $search_users_id ) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
@@ -5437,10 +5409,10 @@ class Ticket extends CommonITILObject {
          default :
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
-                             AND (`status` IN ('".self::INCOMING."',
-                                               '".self::PLANNED."',
-                                               '".self::ASSIGNED."',
-                                               '".self::WAITING."'))
+                             AND (`glpi_tickets`.`status` IN ('".self::INCOMING."',
+                                                              '".self::PLANNED."',
+                                                              '".self::ASSIGNED."',
+                                                              '".self::WAITING."'))
                              AND NOT ( $search_assign ) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
       }
@@ -6793,45 +6765,33 @@ class Ticket extends CommonITILObject {
             = ['type' => 'Document_Item', 'item' => $item];
       }
 
-      //add existing solution
-      if (!empty($this->fields['solution'])
-         || !empty($this->fields['solutiontypes_id'])) {
-         $users_id      = 0;
-         $solution_date = $this->fields['solvedate'];
-
-         //search date and user of last solution in glpi_logs
-         if ($res_solution = $DB->query("SELECT `date_mod` AS solution_date, `user_name`, `id`
-                                         FROM `glpi_logs`
-                                         WHERE `itemtype` = 'Ticket'
-                                               AND `items_id` = ".$this->getID()."
-                                               AND `id_search_option` = 24
-                                         ORDER BY `id` DESC
-                                         LIMIT 1")) {
-            $data_solution = $DB->fetch_assoc($res_solution);
-            if (!empty($data_solution['solution_date'])) {
-                $solution_date = $data_solution['solution_date'];
-            }
-            // find user
-            if (!empty($data_solution['user_name'])) {
-               $users_id = addslashes(trim(preg_replace("/.*\(([0-9]+)\)/", "$1",
-                                                        $data_solution['user_name'])));
-            }
-         }
-
+      $solution_obj = new ITILSolution();
+      $solution_items = $solution_obj->find(
+         "`itemtype`='" . self::getType() . "' AND `items_id`='" . $this->getID() . "'"
+      );
+      foreach ($solution_items as $solution_item) {
          // fix trouble with html_entity_decode who skip accented characters (on windows browser)
          $solution_content = preg_replace_callback("/(&#[0-9]+;)/", function($m) {
             return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
-         }, $this->fields['solution']);
+         }, $solution_item['content']);
 
-         $timeline[$solution_date."_solution"]
-            = ['type' => 'Solution',
-               'item' => ['id'                => 0,
-                          'content'           => Toolbox::unclean_cross_side_scripting_deep($solution_content),
-                          'date'              => $solution_date,
-                          'users_id'          => $users_id,
-                          'solutiontypes_id'  => $this->fields['solutiontypes_id'],
-                          'can_edit'          => Ticket::canUpdate() && $this->canSolve(),
-                          'timeline_position' => self::TIMELINE_RIGHT]];
+         $timeline[$solution_item['date_creation']."_solution"] = [
+            'type' => 'Solution',
+            'item' => [
+               'id'                 => $solution_item['id'],
+               'content'            => Toolbox::unclean_cross_side_scripting_deep($solution_content),
+               'date'               => $solution_item['date_creation'],
+               'users_id'           => $solution_item['users_id'],
+               'solutiontypes_id'   => $solution_item['solutiontypes_id'],
+               'can_edit'           => Ticket::canUpdate() && $this->canSolve(),
+               'timeline_position'  => self::TIMELINE_RIGHT,
+               'users_id_editor'    => $solution_item['users_id_editor'],
+               'date_mod'           => $solution_item['date_mod'],
+               'users_id_approval'  => $solution_item['users_id_editor'],
+               'date_approval'      => $solution_item['date_approval'],
+               'status'             => $solution_item['status']
+            ]
+         ];
       }
 
       // add ticket validation to timeline
@@ -6955,7 +6915,7 @@ class Ticket extends CommonITILObject {
          }
 
          //display solution in middle
-         if (($item['type'] == "Solution")
+         if (($item['type'] == "Solution") && $item_i['status'] != CommonITILValidation::REFUSED
               && in_array($this->fields["status"], [CommonITILObject::SOLVED, CommonITILObject::CLOSED])) {
             $user_position.= ' middle';
          }
@@ -6987,7 +6947,7 @@ class Ticket extends CommonITILObject {
             echo "</div>"; // h_user
          }
 
-         echo "</div>"; //h_date
+         echo "</div>"; //h_info
 
          $domid = "viewitem{$item['type']}{$item_i['id']}";
          if ($item['type'] == 'TicketValidation' && isset($item_i['status'])) {
@@ -6995,9 +6955,31 @@ class Ticket extends CommonITILObject {
          }
          $domid .= $rand;
 
-         echo "<div class='h_content ".$item['type'].
-               ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
-               " id='$domid'>";
+         $fa = null;
+         $class = "h_content {$item['type']}";
+         if ($item['type'] == 'Solution') {
+            switch ($item_i['status']) {
+               case CommonITILValidation::WAITING:
+                  $fa = 'question';
+                  $class .= ' waiting';
+                  break;
+               case CommonITILValidation::ACCEPTED:
+                  $fa = 'thumbs-up';
+                  $class .= ' accepted';
+                  break;
+               case CommonITILValidation::REFUSED:
+                  $fa = 'thumbs-down';
+                  $class .= ' refused';
+                  break;
+            }
+         } else if (isset($item_i['status'])) {
+            $class .= " {$item_i['status']}";
+         }
+
+         echo "<div class='$class' id='$domid'>";
+         if ($fa !== null) {
+            echo "<i class='solimg fa fa-$fa fa-5x'></i>";
+         }
          if (isset($item_i['can_edit']) && $item_i['can_edit']) {
             echo "<div class='edit_item_content'></div>";
             echo "<span class='cancel_edit_item_content'></span>";
@@ -7103,6 +7085,24 @@ class Ticket extends CommonITILObject {
                Html::convDateTime($item_i['date_mod']),
                $user->getLink()
             );
+            echo Html::showToolTip($userdata["comment"],
+                                   ['link' => $userdata['link']]);
+            echo "</div>";
+         }
+         if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
+            echo "<div class='users_id_approval' id='users_id_approval_".$item_i['users_id_approval']."'>";
+            $user->getFromDB($item_i['users_id_approval']);
+            $userdata = getUserName($item_i['users_id_editor'], 2);
+            $message = __('%1$s on %2$s by %3$s');
+            $action = $item_i['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : __('Refused');
+            echo sprintf(
+               $message,
+               $action,
+               Html::convDateTime($item_i['date_approval']),
+               $user->getLink()
+            );
+            echo Html::showToolTip($userdata["comment"],
+                                   ['link' => $userdata['link']]);
             echo "</div>";
          }
 

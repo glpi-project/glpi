@@ -371,27 +371,28 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Affect the same solution for duplicates tickets
     *
-    * @param $ID ID of the ticket id
+    * @param integer  $ID       ID of the ticket id
+    * @param Solution $solution Ticket's solution
     *
     * @return nothing do the change
    **/
-   static function manageLinkedTicketsOnSolved($ID) {
-
+   static function manageLinkedTicketsOnSolved($ID, $solution) {
       $ticket = new Ticket();
 
       if ($ticket->getfromDB($ID)) {
-         $input['solution']         = addslashes($ticket->fields['solution']);
-         $input['solutiontypes_id'] = addslashes($ticket->fields['solutiontypes_id']);
+         $solution = new ITILSolution();
+         $solution_data =$solution->fields;
+         unset($solution_data['id']);
 
          $tickets = self::getLinkedTicketsTo($ID);
          if (count($tickets)) {
             foreach ($tickets as $data) {
-               $input['id'] = $data['tickets_id'];
-               if ($ticket->can($input['id'], UPDATE)
+               $solution_data['items_id'] = $data['tickets_id'];
+               if ($ticket->can($solution_data['items_id'], UPDATE)
                    && ($data['link'] == self::DUPLICATE_WITH)
                    && ($ticket->fields['status'] != CommonITILObject::SOLVED)
                    && ($ticket->fields['status'] != CommonITILObject::CLOSED)) {
-                  $ticket->update($input);
+                  $solution->add($solution_data);
                }
             }
          }

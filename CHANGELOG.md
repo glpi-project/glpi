@@ -3,6 +3,16 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.3] Unreleased
+
+### Changed
+- Rework solutions for Tickets, Problems and Changes to support history
+
+### API changes
+
+#### Changes
+- `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
+
 ## [9.2.1]
 
 ### Added
