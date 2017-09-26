@@ -233,10 +233,12 @@ class Ticket_Ticket extends CommonDBRelation {
          $tmp[self::LINK_TO]        = __('Linked to');
          $tmp[self::DUPLICATE_WITH] = __('Duplicates');
          $tmp[self::SON_OF]         = __('Son of');
+         $tmp[self::PARENT_OF]      = __('Parent of');
       } else {
          $tmp[self::LINK_TO]        = __('Linked to');
          $tmp[self::DUPLICATE_WITH] = __('Duplicated by');
          $tmp[self::SON_OF]         = __('Parent of');
+         $tmp[self::PARENT_OF]      = __('Son of');
       }
 
       if (isset($tmp[$value])) {
