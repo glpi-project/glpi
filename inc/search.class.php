@@ -378,7 +378,7 @@ class Search {
       if ($data['search']['all_search']) {
          foreach ($searchopt as $key => $val) {
             // Do not search on Group Name
-            if (is_array($val)) {
+            if (is_array($val) && isset($val['table'])) {
                if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
                   $FROM .= self::addLeftJoin($data['itemtype'], $itemtable, $already_link_tables,
                                              $searchopt[$key]["table"],
@@ -467,16 +467,24 @@ class Search {
                      }
                      // Find key
                      $item_num = array_search($criteria['field'], $data['tocompute']);
-                     $HAVING  .= self::addHaving($LINK, $NOT, $data['itemtype'],
-                                                 $criteria['field'], $criteria['searchtype'],
-                                                 $criteria['value'], 0, $item_num);
+                     $new_having = self::addHaving($LINK, $NOT, $data['itemtype'],
+                                                    $criteria['field'], $criteria['searchtype'],
+                                                    $criteria['value'], 0, $item_num);
+                     if ($new_having !== false) {
+                        $HAVING .= $new_having;
+                     }
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
                         $LINK = $tmplink;
                      }
-                     $WHERE .= self::addWhere($LINK, $NOT, $data['itemtype'], $criteria['field'],
-                                              $criteria['searchtype'], $criteria['value']);
+
+                     $new_where = self::addWhere($LINK, $NOT, $data['itemtype'], $criteria['field'],
+                                                 $criteria['searchtype'], $criteria['value']);
+
+                     if ($new_where !== false) {
+                        $WHERE .= $new_where;
+                     }
                   }
 
                } else { // view and all search
@@ -541,10 +549,13 @@ class Search {
                            $tmplink = $LINK;
                            if ($first2) {
                               $tmplink = " ";
-                              $first2  = false;
                            }
-                           $WHERE .= self::addWhere($tmplink, $NOT, $data['itemtype'], $key2,
-                                                    $criteria['searchtype'], $criteria['value']);
+                           $new_where = self::addWhere($tmplink, $NOT, $data['itemtype'], $key2,
+                                                       $criteria['searchtype'], $criteria['value']);
+                           if ($new_where !== false) {
+                              $first2  = false;
+                              $WHERE .=  $new_where;
+                           }
                         }
                      }
                   }
@@ -1968,6 +1979,9 @@ class Search {
    static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num) {
 
       $searchopt  = &self::getOptions($itemtype);
+      if (!isset($searchopt[$ID]['table'])) {
+         return false;
+      }
       $table      = $searchopt[$ID]["table"];
       $field      = $searchopt[$ID]["field"];
 
@@ -2829,6 +2843,9 @@ class Search {
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0) {
 
       $searchopt = &self::getOptions($itemtype);
+      if (!isset($searchopt[$ID]['table'])) {
+         return false;
+      }
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
 
