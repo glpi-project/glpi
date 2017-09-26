@@ -260,6 +260,14 @@ class State extends CommonTreeDropdown {
     * @see CommonTreeDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
+      if (!$this->isUnique($input)) {
+         Session::addMessageAfterRedirect(
+            sprintf(__('%1$s must be unique!'), $this->getType(1)),
+            false,
+            ERROR
+         );
+         return false;
+      }
 
       $input = parent::prepareInputForAdd($input);
 
@@ -356,5 +364,35 @@ class State extends CommonTreeDropdown {
       ];
 
       return $tab;
+   }
+
+   function prepareInputForUpdate($input) {
+      if (!$this->isUnique($input)) {
+         Session::addMessageAfterRedirect(
+            sprintf(__('%1$s must be unique per level!'), $this->getType(1)),
+            false,
+            ERROR
+         );
+         return false;
+      }
+      return parent::prepareInputForUpdate($input);
+   }
+
+   public function isUnique($input) {
+      global $DB;
+
+      $unicity_fields = ['states_id', 'name'];
+      $where = [];
+      foreach ($unicity_fields as $unicity_field) {
+         $where[$unicity_field] = $input[$unicity_field];
+      }
+
+      $query = [
+         'FROM'   => $this->getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => $where
+      ];
+      $row = $DB->request($query)->next();
+      return (int)$row['cpt'] == 0;
    }
 }
