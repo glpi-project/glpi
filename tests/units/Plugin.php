@@ -96,7 +96,7 @@ class Plugin extends DbTestCase {
       )->isIdenticalTo('This plugin requires GLPI > 9.2 and < 9.3');
 
       $infos['dev'] = true;
-      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();*/
+      $this->boolean($plugin->checkGlpiVersion($infos))->isTrue();
    }
 
    public function testcheckPhpVersion() {
