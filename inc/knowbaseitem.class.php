@@ -297,6 +297,16 @@ class KnowbaseItem extends CommonDBVisible {
                      sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
          }
       }
+
+      if (isset($this->input['_do_item_link']) && $this->input['_do_item_link'] == 1) {
+         $params = [
+            'knowbaseitems_id' => $this->getID(),
+            'itemtype'         => $this->input['_itemtype'],
+            'items_id'         => $this->input['_items_id']
+         ];
+         $kb_item_item = new KnowbaseItem_Item();
+         $kb_item_item->add($params);
+      }
    }
 
 
@@ -649,6 +659,7 @@ class KnowbaseItem extends CommonDBVisible {
       $this->initForm($ID, $options);
       $canedit = $this->can($ID, UPDATE);
 
+      $item = null;
       // Load ticket solution
       if (empty($ID)
           && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
@@ -723,6 +734,27 @@ class KnowbaseItem extends CommonDBVisible {
       }
       echo "</td>";
       echo "</tr>\n";
+
+      //Link with solution
+      if ($item != null) {
+
+         if ($item = getItemForItemtype($options['item_itemtype'])) {
+            if ($item->getFromDB($options['item_items_id'])) {
+               echo "<tr>";
+               echo "<td>".__('Add link')."</td>";
+               echo "<td colspan='3'>";
+               echo "<input type='checkbox' name='_do_item_link' value='1' checked='checked'/> ";
+               echo Html::hidden('_itemtype', ['value' => $item->getType()]);
+               echo Html::hidden('_items_id', ['value' => $item->getID()]);
+               echo sprintf(
+                  __('link with %1$s'),
+                  $item->getLink()
+               );
+               echo "</td>";
+               echo "</tr>\n";
+            }
+         }
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Visible since')."</td><td>";
