@@ -127,6 +127,16 @@ if (!defined('GLPI_HTMLAWED')) {
    // define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
 }
 
+// Install mode for telemetry
+if (!defined('GLPI_INSTALL_MODE')) {
+   if (is_dir(GLPI_ROOT . '/.git')) {
+      define('GLPI_INSTALL_MODE', 'GIT');
+   } else {
+      define('GLPI_INSTALL_MODE', 'TARBALL');
+   }
+   // For packager, you can use RPM, DEB, ...  (in config_path.php)
+}
+
 // Default path to FreeSans.ttf
 if (!defined("GLPI_FONT_FREESANS")) {
    define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/FreeSans.ttf');
