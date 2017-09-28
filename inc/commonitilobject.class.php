@@ -589,7 +589,11 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $input = $this->addFiles($input);
+         $options = [];
+         if (isset($input['solution'])) {
+            $options['content_field'] = 'solution';
+         }
+         $input = $this->addFiles($input, $options);
       }
 
       if (isset($input["document"]) && ($input["document"] > 0)) {
@@ -4271,6 +4275,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<div id='solution$rand_text'>";
          echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>".
                 $this->getField('solution')."</textarea></div>";
+         Html::file(['editor_id' => "solution$rand",
+                     'showtitle' => false,
+                     'multiple' => true]);
 
       } else {
          echo Toolbox::unclean_cross_side_scripting_deep($this->getField('solution'));
