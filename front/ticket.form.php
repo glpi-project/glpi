@@ -226,7 +226,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
                                      $_GET["id"],
                                     ['title'         => __('Save solution to the knowledge base'),
                                           'reloadonclose' => false]);
-      echo Html::scriptBlock(Html::jsGetElementbyID('savetokb').".dialog('open');");
+      echo Html::scriptBlock('$(function() {' .Html::jsGetElementbyID('savetokb').".dialog('open'); });");
    }
 
 } else {
