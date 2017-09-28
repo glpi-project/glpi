@@ -536,7 +536,9 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<h3><span class='migred'>".sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
-      echo Config::agreeDevMessage();
+      if (strlen(GLPI_SCHEMA_VERSION) > 40) {
+         echo Config::agreeDevMessage();
+      }
       echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
       Html::closeForm();
       echo "</div>";
