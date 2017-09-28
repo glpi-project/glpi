@@ -47,8 +47,10 @@ if (!empty($tz)) {
 }
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-if (file_exists(GLPI_ROOT ."/config/config_path.php")) {
-   include_once(GLPI_ROOT ."/config/config_path.php");
+if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
+   include_once (GLPI_ROOT . '/inc/downstream.php');
+} else if (file_exists(GLPI_ROOT . '/config/config_path.php')) { // For compatibility, deprecated
+   include_once (GLPI_ROOT . '/config/config_path.php');
 }
 
 // Default location for database configuration : config_db.php

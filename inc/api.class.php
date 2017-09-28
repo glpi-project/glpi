@@ -247,8 +247,10 @@ abstract class API extends CommonGLPI {
          $current = session_id();
          $session = trim($this->parameters['session_token']);
 
-         if (file_exists(GLPI_ROOT . "/config/config_path.php")) {
-            include_once (GLPI_ROOT . "/config/config_path.php");
+         if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
+            include_once (GLPI_ROOT . '/inc/downstream.php');
+         } else if (file_exists(GLPI_ROOT . '/config/config_path.php')) { // For compatibility, deprecated
+            include_once (GLPI_ROOT . '/config/config_path.php');
          }
          if (!defined("GLPI_SESSION_DIR")) {
             define("GLPI_SESSION_DIR", GLPI_ROOT . "/files/_sessions");
