@@ -3423,12 +3423,7 @@ a.copyright {
 
 .timeline_history .h_content.edited {
    max-width: inherit;
-   width: 69%;
    text-align: center;
-}
-
-.timeline_history .right .h_content.edited {
-   width: 100%;
 }
 
 .timeline_history .h_content.edited .tab_cadre_fixe {
