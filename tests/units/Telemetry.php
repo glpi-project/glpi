@@ -46,6 +46,7 @@ class Telemetry extends DbTestCase {
          'version'            => GLPI_VERSION,
          'plugins'            => [],
          'default_language'   => 'en_GB',
+         'install_mode'       => GLPI_INSTALL_MODE,
          'usage'              => [
             'avg_entities'          => '0-500',
             'avg_computers'         => '0-500',
@@ -206,6 +207,7 @@ class Telemetry extends DbTestCase {
          'version',
          'plugins',
          'default_language',
+         'install_mode',
          'usage'
       ]);
 

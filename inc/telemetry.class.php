@@ -68,6 +68,7 @@ class Telemetry extends CommonGLPI {
          'version'            => GLPI_VERSION,
          'plugins'            => [],
          'default_language'   => $CFG_GLPI['language'],
+         'install_mode'       => GLPI_INSTALL_MODE,
          'usage'              => [
             'avg_entities'          => self::getAverage('Entity'),
             'avg_computers'         => self::getAverage('Computer'),
