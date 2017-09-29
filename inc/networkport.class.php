@@ -976,7 +976,7 @@ class NetworkPort extends CommonDBChild {
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'massiveaction'      => false,
-         'joinparams'         => $netportjoin
+         'joinparams'         => ['beforejoin' => $netportjoin]
       ];
 
       return $tab;
