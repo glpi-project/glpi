@@ -256,7 +256,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                         $newer = true;
                      }
                   }
-               } else if (trim($CFG_GLPI["dbversion"]) < GLPI_SCHEMA_VERSION) {
+               } else if (!isset($CFG_GLPI['dbversion']) || trim($CFG_GLPI["dbversion"]) < GLPI_SCHEMA_VERSION) {
                   $older = true;
                } else if (trim($CFG_GLPI["dbversion"]) > GLPI_SCHEMA_VERSION) {
                   $newer = true;
