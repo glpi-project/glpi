@@ -1187,12 +1187,12 @@ class Ticket extends CommonITILObject {
          if (count($users)) {
             $field = 'users_id';
             foreach ($users as $user) {
-               if (!isset($input['_'.$field.'_'.$t]) || !in_array($user['id'], $input['_'.$field.'_'.$t])) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($user[$field], $input['_'.$field.'_'.$t])) {
                   if (!isset($input['_'.$field.'_'.$t])) {
                      $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
                   }
-                  $input['_'.$field.'_'.$t][]             = $user['id'];
-                  $tocleanafterrules['_'.$field.'_'.$t][] = $user['id'];
+                  $input['_'.$field.'_'.$t][]             = $user[$field];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $user[$field];
                }
             }
          }
@@ -1201,26 +1201,26 @@ class Ticket extends CommonITILObject {
          if (count($groups)) {
             $field = 'groups_id';
             foreach ($groups as $group) {
-               if (!isset($input['_'.$field.'_'.$t]) || !in_array($group['id'], $input['_'.$field.'_'.$t])) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($group[$field], $input['_'.$field.'_'.$t])) {
                   if (!isset($input['_'.$field.'_'.$t])) {
                      $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
                   }
-                  $input['_'.$field.'_'.$t][]             = $group['id'];
-                  $tocleanafterrules['_'.$field.'_'.$t][] = $group['id'];
+                  $input['_'.$field.'_'.$t][]             = $group[$field];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $group[$field];
                }
             }
          }
 
          $suppliers = $this->getSuppliers($k);
          if (count($suppliers)) {
-            $field = 'supliers_id';
+            $field = 'suppliers_id';
             foreach ($suppliers as $supplier) {
-               if (!isset($input['_'.$field.'_'.$t]) || !in_array($supplier['id'], $input['_'.$field.'_'.$t])) {
+               if (!isset($input['_'.$field.'_'.$t]) || !in_array($supplier[$field], $input['_'.$field.'_'.$t])) {
                   if (!isset($input['_'.$field.'_'.$t])) {
                      $post_added['_'.$field.'_'.$t] = '_'.$field.'_'.$t;
                   }
-                  $input['_'.$field.'_'.$t][]             = $supplier['id'];
-                  $tocleanafterrules['_'.$field.'_'.$t][] = $supplier['id'];
+                  $input['_'.$field.'_'.$t][]             = $supplier[$field];
+                  $tocleanafterrules['_'.$field.'_'.$t][] = $supplier[$field];
                }
             }
          }
