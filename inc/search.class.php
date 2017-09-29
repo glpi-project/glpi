@@ -427,7 +427,9 @@ class Search {
 
          if ($data['itemtype'] == 'Entity') {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
-
+            list($data['itemtype'], $COMMONWHERE) = Plugin::doHookFunction('add_default_where',
+                                                                           [$data['itemtype'],
+                                                                            $COMMONWHERE]);
          } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
@@ -2785,7 +2787,10 @@ class Search {
                }
             }
       }
-      list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
+      if (!isset($CFG_GLPI["union_search_type"][$itemtype])) {
+         list($itemtype, $condition) = Plugin::doHookFunction('add_default_where',
+                                                              [$itemtype, $condition]);
+      }
       return $condition;
    }
 
