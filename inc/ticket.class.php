@@ -1893,8 +1893,8 @@ class Ticket extends CommonITILObject {
 
       // Clean new lines before passing to rules
       if (isset($input["content"])) {
-         $input["content"] = preg_replace('/\\\\r\\\\n/', "\n", $input['content']);
-         $input["content"] = preg_replace('/\\\\n/', "\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\r\\\\n/', "\\n", $input['content']);
+         $input["content"] = preg_replace('/\\\\n/', "\\n", $input['content']);
          if (!$CFG_GLPI['use_rich_text']) {
             $input["content"] = Html::entity_decode_deep($input["content"]);
             $input["content"] = Html::entity_decode_deep($input["content"]);
