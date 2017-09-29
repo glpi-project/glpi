@@ -1265,12 +1265,13 @@ class Ticket extends CommonITILObject {
             $changes[] = '_groups_id_of_requester';
          }
 
-         $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
-                                          Toolbox::stripslashes_deep($input),
+         $input = $rules->processAllRules($input,
+                                          $input,
                                           ['recursive'   => true,
                                                 'entities_id' => $entid],
                                           ['condition'     => RuleTicket::ONUPDATE,
-                                                'only_criteria' => $changes]);
+                                          'only_criteria' => $changes]);
+         $input = Toolbox::stripslashes_deep($input);
       }
 
       //Action for send_validation rule : do validation before clean
@@ -1901,10 +1902,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
-                                       Toolbox::stripslashes_deep($input),
+      $input = $rules->processAllRules($input,
+                                       $input,
                                        ['recursive' => true],
                                        ['condition' => RuleTicket::ONADD]);
+      $input = Toolbox::stripslashes_deep($input);
 
       // Recompute default values based on values computed by rules
       $input = $this->computeDefaultValuesForAdd($input);
