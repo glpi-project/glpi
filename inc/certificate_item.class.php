@@ -434,9 +434,8 @@ class Certificate_Item extends CommonDBRelation {
 
          $nb = countElementsInTable('glpi_certificates',
                                     [
-                                     'is_deleted'  => 0,
-                                     'entities_id' => $entity_restrict
-                                    ]);
+                                     'is_deleted'  => 0
+                                    ] + $entity_restrict);
 
          echo "<div class='firstbloc'>";
 
