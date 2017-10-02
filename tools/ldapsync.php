@@ -156,7 +156,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
          foreach ($users as $id => $name) {
             if ($user->getFromDB($id)) {
                $logs = Log::getHistoryData($user, 0, $_SESSION['glpilist_limit'],
-                                           "`date_mod`='".$_SESSION['glpi_currenttime']."'");
+                                           ['date_mod' => $_SESSION['glpi_currenttime']]);
                if (count($logs)) {
                   $report .= "\n$name (". $user->getName() .")\n";
                   foreach ($logs as $log) {
