@@ -63,11 +63,15 @@ class KnowbaseItem_User extends CommonDBRelation {
       global $DB;
 
       $users = [];
-      $query = "SELECT `glpi_knowbaseitems_users`.*
-                FROM `glpi_knowbaseitems_users`
-                WHERE `knowbaseitems_id` = '$knowbaseitems_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'knowbaseitems_id' => $knowbaseitems_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $users[$data['users_id']][] = $data;
       }
       return $users;

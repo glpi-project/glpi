@@ -63,11 +63,15 @@ class Group_KnowbaseItem extends CommonDBRelation {
       global $DB;
 
       $groups = [];
-      $query  = "SELECT `glpi_groups_knowbaseitems`.*
-                 FROM `glpi_groups_knowbaseitems`
-                 WHERE knowbaseitems_id = '$knowbaseitems_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'knowbaseitems_id' => $knowbaseitems_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $groups[$data['groups_id']][] = $data;
       }
       return $groups;
