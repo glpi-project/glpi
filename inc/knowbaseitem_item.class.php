@@ -309,11 +309,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
             'glpi_knowbaseitems_items' => 'knowbaseitems_id',
             'glpi_knowbaseitems'       => 'id'
          ],
-         'ORDER'  => ['itemtype', 'items_id DESC'],
+         'ORDER'  => ['itemtype', 'items_id DESC']
       ];
       $where = [];
 
-      $items_id  = $item->getField('id');
+      $items_id  = (int)$item->getField('id');
 
       if ($item::getType() == KnowbaseItem::getType()) {
          $id_field = 'glpi_knowbaseitems_items.knowbaseitems_id';
@@ -335,7 +335,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
 
       if (count($where)) {
-         $options['AND'] = [$id_field => $items_id, 'AND' =>$where];
+         $options['AND'] = [$id_field => $items_id, 'AND' => $where];
       } else {
          $options['AND'] = [$id_field => $items_id];
       }
@@ -347,7 +347,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $linked_items = [];
       $results = $DB->request($options);
-      foreach ($results as $data) {
+      while ($data = $results->next()) {
          if ($used === false) {
             $linked_items[] = $data;
          } else {
