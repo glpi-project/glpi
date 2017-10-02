@@ -63,11 +63,15 @@ class KnowbaseItem_Profile extends CommonDBRelation {
       global $DB;
 
       $prof  = [];
-      $query = "SELECT `glpi_knowbaseitems_profiles`.*
-                FROM `glpi_knowbaseitems_profiles`
-                WHERE `knowbaseitems_id` = '$knowbaseitems_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'knowbaseitems_id' => $knowbaseitems_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $prof[$data['profiles_id']][] = $data;
       }
       return $prof;

@@ -311,14 +311,14 @@ class Log extends CommonDBTM {
    /**
     * Retrieve last history Data for an item
     *
-    * @param $item                     CommonDBTM object
-    * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param CommonDBTM $item      Object instance
+    * @param integer    $start     first line to retrieve (default 0)
+    * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
+    * @param array      $sqlfilter to add an SQL filter (default '')
     *
     * @return array of localized log entry (TEXT only, no HTML)
    **/
-   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, $sqlfilter = '') {
+   static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilter = []) {
       global $DB;
 
       $itemtype  = $item->getType();
@@ -327,21 +327,24 @@ class Log extends CommonDBTM {
 
       $SEARCHOPTION = Search::getOptions($itemtype);
 
-      $query = "SELECT *
-                FROM `glpi_logs`
-                WHERE `items_id` = '$items_id'
-                      AND `itemtype` = '$itemtype' ";
-      if ($sqlfilter) {
-         $query .= "AND ($sqlfilter) ";
-      }
-      $query .= "ORDER BY `id` DESC";
+      $query = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'items_id'  => $items_id,
+            'itemtype'  => $itemtype
+         ] + $sqlfilter,
+         'ORDER'  => 'id DESC'
+      ];
 
       if ($limit) {
-         $query .= " LIMIT ".intval($start)."," . intval($limit);
+         $query['START'] = (int)$start;
+         $query['LIMIT'] = (int)$limit;
       }
 
+      $iterator = $DB->request($query);
+
       $changes = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $tmp = [];
          $tmp['display_history'] = true;
          $tmp['id']              = $data["id"];
