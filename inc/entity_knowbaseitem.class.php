@@ -63,11 +63,15 @@ class Entity_KnowbaseItem extends CommonDBRelation {
       global $DB;
 
       $ent   = [];
-      $query = "SELECT `glpi_entities_knowbaseitems`.*
-                FROM `glpi_entities_knowbaseitems`
-                WHERE `knowbaseitems_id` = '$knowbaseitems_id'";
 
-      foreach ($DB->request($query) as $data) {
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'knowbaseitems_id' => $knowbaseitems_id
+         ]
+      ]);
+
+      while ($data = $iterator->next()) {
          $ent[$data['entities_id']][] = $data;
       }
       return $ent;

@@ -2547,18 +2547,20 @@ class Config extends CommonDBTM {
    static function getConfigurationValues($context, array $names = []) {
       global $DB;
 
-      if (count($names) == 0) {
-         $query = "SELECT *
-                   FROM `glpi_configs`
-                   WHERE `context` = '$context'";
-      } else {
-         $query = "SELECT *
-                   FROM `glpi_configs`
-                   WHERE `context` = '$context'
-                     AND `name` IN ('".implode("', '", $names)."')";
+      $query = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'context'   => $context
+         ]
+      ];
+
+      if (count($names) > 0) {
+         $query['WHERE']['name'] = $names;
       }
+
+      $iterator = $DB->request($query);
       $result = [];
-      foreach ($DB->request($query) as $line) {
+      while ($line = $iterator->next()) {
          $result[$line['name']] = $line['value'];
       }
       return $result;
@@ -2612,8 +2614,10 @@ class Config extends CommonDBTM {
 
       $config = new self();
       foreach ($values as $value) {
-         if ($config->getFromDBByQuery("WHERE `context` = '$context'
-                                              AND `name` = '$value'")) {
+         if ($config->getFromDBByCrit([
+            'context'   => $context,
+            'name'      => $value
+         ])) {
             $config->delete(['id' => $config->getID()]);
          }
       }

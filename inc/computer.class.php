@@ -548,11 +548,14 @@ class Computer extends CommonDBTM {
    function getLinkedItems() {
       global $DB;
 
-      $query = "SELECT `itemtype`, `items_id`
-                FROM `glpi_computers_items`
-                WHERE `computers_id` = '" . $this->fields['id']."'";
+      $iterator = $DB->request([
+         'SELECT' => ['itemtype', 'items_id'],
+         'FROM'   => 'glpi_computers_items',
+         'WHERE'  => ['computers_id' => $this->getID()]
+      ]);
+
       $tab = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $tab[$data['itemtype']][$data['items_id']] = $data['items_id'];
       }
       return $tab;

@@ -784,22 +784,26 @@ abstract class CommonDBChild extends CommonDBConnexity {
          $items_id = -99;
       }
 
-      $query = "SELECT *
-                FROM `" . static::getTable() . "`
-                WHERE `".static::$items_id."` = '".$item->getID()."'";
+      $query = [
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id => $item->getID()
+         ]
+      ];
 
       if (preg_match('/^itemtype/', static::$itemtype)) {
-         $query .= " AND `itemtype` = '".$item->getType()."'";
+         $query['WHERE']['itemtype'] = $item->getType();
       }
 
       $current_item = new static();
 
       if ($current_item->maybeDeleted()) {
-         $query .= " AND `is_deleted` = '0'";
+         $query['WHERE']['is_deleted'] = 0;
       }
 
+      $iterator = $DB->request($query);
       $count = 0;
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
 
          $current_item->fields = $data;
 

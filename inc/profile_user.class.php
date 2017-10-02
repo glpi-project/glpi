@@ -769,12 +769,14 @@ class Profile_User extends CommonDBRelation {
    static function getEntitiesForUser($users_id, $child = false) {
       global $DB;
 
-      $query = "SELECT `entities_id`, `is_recursive`
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$users_id'";
+      $iterator = $DB->request([
+         'SELECT' => ['entities_id', 'is_recursive'],
+         'FROM'   => 'glpi_profiles_users',
+         'WHERE'  => ['users_id' => $users_id]
+      ]);
 
       $entities = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          if ($child
              && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
