@@ -20,7 +20,7 @@ msgstr ""
 
 #: apirest.php:48 apixmlrpc.php:47 inc/api.class.php:102
 msgid "API disabled"
-msgstr ""
+msgstr "APIを無効化"
 
 #: index.php:79
 msgid "GLPI - Authentication"
@@ -788,11 +788,11 @@ msgstr "毎月同じ曜日"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
-msgstr ""
+msgstr "検索条件を保存しました"
 
 #: ajax/savedsearch.php:54
 msgid "Search has not been saved"
-msgstr ""
+msgstr "検索条件は保存されません"
 
 #: ajax/searchmetarow.php:77
 msgid "Delete a global search criterion"
@@ -1632,7 +1632,7 @@ msgstr "%s は仮想マシンを更新しました"
 
 #: front/config.form.php:54 front/config.form.php:61
 msgid "Cache reset successful"
-msgstr ""
+msgstr "キャッシュリセットが完了しました"
 
 #. TRANS: %s is the user login
 #: front/consumable.form.php:55
@@ -2366,7 +2366,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:64
 msgid "Your comment has been added"
-msgstr ""
+msgstr "コメントを追加しました"
 
 #: front/knowbaseitem_comment.form.php:83
 #, php-format
@@ -2375,7 +2375,7 @@ msgstr ""
 
 #: front/knowbaseitem_comment.form.php:85
 msgid "Your comment has been edited"
-msgstr ""
+msgstr "コメントは編集されました"
 
 #. TRANS: %s is the user login
 #: front/knowbaseitem.form.php:119 front/reminder.form.php:111
@@ -3638,7 +3638,7 @@ msgstr "%s はグループからユーザを削除しました"
 
 #: front/user.form.php:155
 msgid "Lang has been changed!"
-msgstr ""
+msgstr "言語は変更されました！"
 
 #: inc/ajax.class.php:157
 msgid "Close"
@@ -3651,11 +3651,11 @@ msgstr "ロードしています..."
 
 #: inc/ajax.class.php:428
 msgid "An error occured loading contents!"
-msgstr ""
+msgstr "コンテンツの読み込み中にエラーが発生しました！"
 
 #: inc/ajax.class.php:429
 msgid "Please check GLPI logs or contact your administrator."
-msgstr ""
+msgstr "GLPIのログを確認するか、管理者に連絡してください"
 
 #: inc/ajax.class.php:430 inc/massiveaction.class.php:754
 #: inc/rule.class.php:801 inc/rule.class.php:958 inc/rule.class.php:2492
@@ -3664,7 +3664,7 @@ msgstr "または"
 
 #: inc/ajax.class.php:430
 msgid "try to reload"
-msgstr ""
+msgstr "再読み込み中"
 
 #: inc/alert.class.php:108 inc/alert.class.php:141 inc/alert.class.php:169
 #: inc/contract.class.php:1591 inc/entity.class.php:678
@@ -9787,7 +9787,7 @@ msgstr "ヘルプ"
 #: inc/dropdown.class.php:204 inc/user.class.php:3564
 #, php-format
 msgid "Show %1$s"
-msgstr ""
+msgstr "%1$s"
 
 #. TRANS: %s is the store path
 #: inc/dropdown.class.php:611
