@@ -37,7 +37,8 @@
         "consolidation/robo": "^1.0",
         "natxet/CssMin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
-        "atoum/atoum": "^3.2"
+        "atoum/atoum": "^3.2",
+        "atoum/telemetry-extension": "^1.0"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",
