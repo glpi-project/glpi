@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f722d3fd9290b58d0136f882ef99aee",
+    "content-hash": "3584efa736159d819fa91b5447017048",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -1168,6 +1168,67 @@
                 "unit testing"
             ],
             "time": "2017-09-07T08:27:13+00:00"
+        },
+        {
+            "name": "atoum/telemetry-extension",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atoum/telemetry-extension.git",
+                "reference": "d804a1becc2f91f4b8b731fa559949733ce7eb76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atoum/telemetry-extension/zipball/d804a1becc2f91f4b8b731fa559949733ce7eb76",
+                "reference": "d804a1becc2f91f4b8b731fa559949733ce7eb76",
+                "shasum": ""
+            },
+            "require": {
+                "atoum/atoum": "^2.9 || ^3.0",
+                "php": ">=5.4.0"
+            },
+            "conflict": {
+                "atoum/reports-extension": "<3.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "mageekguy\\atoum\\telemetry\\": "classes"
+                },
+                "files": [
+                    "configuration.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "jubianchi",
+                    "email": "contact@jubianchi.fr"
+                }
+            ],
+            "description": "atoum telemetry reports extension",
+            "homepage": "http://www.atoum.org",
+            "keywords": [
+                "TDD",
+                "atoum",
+                "atoum-extension",
+                "reports",
+                "telemetry",
+                "test",
+                "unit testing"
+            ],
+            "time": "2017-10-02T22:09:26+00:00"
         },
         {
             "name": "consolidation/annotated-command",
