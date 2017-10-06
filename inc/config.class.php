@@ -492,7 +492,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" .__('Beginning of fiscal year') . "</td><td>";
+      echo "<td>" .__('End of fiscal year') . "</td><td>";
       Html::showDateField("date_tax", ['value'      => $CFG_GLPI["date_tax"],
                                             'maybeempty' => false,
                                             'canedit'    => true,

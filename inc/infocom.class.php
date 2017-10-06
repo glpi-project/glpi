@@ -726,6 +726,122 @@ class Infocom extends CommonDBChild {
 
 
    /**
+    * Calculate amortization values
+    *
+    * @param $value      Purchase value
+    * @param $duration   Amortise duration
+    * @param $fiscaldate Begin of fiscal excercise
+    * @param $buydate    Buy date
+    * @param $usedate    Date of use
+    *
+    * @return array|boolean
+    */
+   static public function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '') {
+      try {
+         if ($fiscaldate == '') {
+            throw new \RuntimeException('Empty date');
+         }
+         $fiscaldate = new \DateTime($fiscaldate);
+      } catch (\Exception $e) {
+         Session::addMessageAfterRedirect(
+            __('Please fill you fiscal year date in preferences.'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
+      //get begin date. Work on use date if provided.
+      try {
+         if ($buydate == '' && $usedate == '') {
+            throw new \RuntimeException('Empty date');
+         }
+         if ($usedate != '') {
+            $usedate = new \DateTime($usedate);
+         } else {
+            $usedate = new \DateTime($buydate);
+         }
+      } catch (\Exception $e) {
+         Session::addMessageAfterRedirect(
+            __('Please fill either buy or use date in preferences.'),
+            false,
+            ERROR
+         );
+         return false;
+      }
+
+      $now = new \DateTime();
+      $elapsed = $now->diff($usedate);
+
+      $annuity = $value * (1 / $duration);
+      $years = [];
+      for ($i = 0; $i <= $elapsed->format('%y'); ++$i) {
+         $begin_value      = $value;
+         $current_annuity  = $annuity;
+         $fiscal_end       = new \DateTime($fiscaldate->format('d-m-') . ($usedate->format('Y') + $i));
+
+         if ($i == 0) {
+            //first year, calculate prorata
+            if ($fiscal_end < $usedate) {
+               $fiscal_end->modify('+1 year');
+            }
+            $days = $fiscal_end->diff($usedate);
+            $days = $days->format('%m') * 30 + $days->format('%d');
+            $current_annuity = $annuity * $days / 360;
+         } else if ($i == $duration) {
+            $current_annuity = $value;
+         }
+         if ($i > $duration) {
+            $value = 0;
+            $current_annuity = 0;
+         } else {
+            //calculate annuity
+            //full year case
+            $value -= $current_annuity;
+         }
+
+         $years[$usedate->format('Y') + $i] = [
+            'start_value'  => (double)$begin_value,
+            'value'        => $value,
+            'annuity'      => $current_annuity
+         ];
+      }
+
+      return $years;
+   }
+
+   /**
+    * Maps new amortise format to old one...
+    * To not rewrite all the old method.
+    *
+    * @param array $values New format amortise values
+    * @param boolean $current True to get only current year, false to get the whole array
+    *
+    * @return array|doulbe
+    */
+   public static function mapOldAmortiseFormat($values, $current = true) {
+
+      if ($current === true) {
+         return $values[date('Y')]['value'];
+      }
+
+      $old = [
+         'annee'     => [],
+         'annuite'   => [],
+         'vcnetdeb'  => [],
+         'vcnetfin'  => []
+      ];
+      foreach ($values as $year => $value) {
+         $old['annee'][]      = $year;
+         $old['annuite'][]    = $value['annuity'];
+         $old['vcnetdeb'][]   = $value['start_value'];
+         $old['vcnetfin'][]   = $value['value'];
+      }
+
+      return $old;
+   }
+
+   /**
     * Calculate amortissement for an item
     *
     * @param $type_amort    type d'amortisssment "lineaire=2" ou "degressif=1"
@@ -748,9 +864,11 @@ class Infocom extends CommonDBChild {
       // Son point de depart est le 1er jour du mois d'acquisition et non date de mise en service
 
       if ($type_amort == "2") {
-         if (!empty($date_use)) {
-            $date_achat = $date_use;
+         $values = self::linearAmortise($va, $duree, $date_tax, $date_achat, $date_use);
+         if ($values == false) {
+            return '-';
          }
+         return self::mapOldAmortiseFormat($values, $view != 'all');
       }
 
       $prorata             = 0;
@@ -769,56 +887,6 @@ class Infocom extends CommonDBChild {
       $date_Y2 = date("Y");
 
       switch ($type_amort) {
-         case "2" :
-            //########################### Calcul amortissement lineaire ###########################
-            if (($va > 0)
-                && ($duree > 0)
-                && !empty($date_achat)) {
-               //## calcul du prorata temporis en jour ##
-               $ecartfinmoiscourant = (30-$date_d); // calcul ecart entre jour date acquis
-                                                    // ou mise en service et fin du mois courant
-               // en lineaire on calcule en jour
-               if ($date_d2 < 30) {
-                  $ecartmoisexercice = (30-$date_d2);
-               }
-               if ($date_m > $date_m2) {
-                  $date_m2 = $date_m2+12;
-               } // si l'annee fiscale debute au dela de l'annee courante
-               $ecartmois  = (($date_m2-$date_m)*30); // calcul ecart entre mois d'acquisition
-                                                      // et debut annee fiscale
-               $prorata    = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-               //## calcul tableau d'amortissement ##
-               $txlineaire = (100/$duree); // calcul du taux lineaire
-               $annuite    = ($va*$txlineaire)/100; // calcul de l'annuitee
-               $mrt        = $va; //
-               // si prorata temporis la derniere annnuite cours sur la duree n+1
-               if ($prorata > 0) {
-                  $duree = $duree+1;
-               }
-               for ($i=1; $i<=$duree; $i++) {
-                  $tab['annee'][$i]    = $date_Y+$i-1;
-                  $tab['annuite'][$i]  = $annuite;
-                  $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcul la valeur comptable nette
-                                               // de debut d'exercice
-                  $tab['vcnetfin'][$i] = abs(($mrt - $annuite)); // Pour chaque annee on calcule la valeur
-                                                               // comptable nette de fin d'exercice
-                  // calcul de la premiere annuite si prorata temporis
-                  if ($prorata  >0) {
-                     $tab['annuite'][1]  = $annuite*($prorata/360);
-                     $tab['vcnetfin'][1] = abs($va - $tab['annuite'][1]);
-                  }
-                  $mrt = $tab['vcnetfin'][$i];
-               }
-               // calcul de la derniere annuite si prorata temporis
-               if ($prorata > 0) {
-                  $tab['annuite'][$duree]  = $tab['vcnetdeb'][$duree];
-                  $tab['vcnetfin'][$duree] = $tab['vcnetfin'][$duree-1] - $tab['annuite'][$duree];
-               }
-            } else {
-               return "-";
-            }
-            break;
-
          case "1" :
             //########################### Calcul amortissement degressif ###########################
             if (($va > 0)
@@ -1081,7 +1149,7 @@ class Infocom extends CommonDBChild {
             echo "<td>".__('Account net value')."</td><td>";
             echo Html::formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
                                                 $ic->fields["sink_time"], $ic->fields["sink_coeff"],
-                                                $ic->fields["warranty_date"],
+                                                $ic->fields["buy_date"],
                                                 $ic->fields["use_date"], $date_tax, "n"));
             echo "</td>";
             echo "<td rowspan='4'>".__('Comments')."</td>";
