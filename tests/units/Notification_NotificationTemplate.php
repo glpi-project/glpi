@@ -213,4 +213,12 @@ class Notification_NotificationTemplate extends DbTestCase {
       $class = \Notification_NotificationTemplate::getModeClass('testmode', 'setting');
       $this->string($class)->isIdenticalTo('PluginAnypluginNotificationTestmodeSetting');
    }
+
+   public function testHasActiveMode() {
+      global $CFG_GLPI;
+      $this->boolean(\Notification_NotificationTemplate::hasActiveMode())->isFalse();
+      $CFG_GLPI['notifications_ajax'] = 1;
+      $this->boolean(\Notification_NotificationTemplate::hasActiveMode())->isTrue();
+      $CFG_GLPI['notifications_ajax'] = 0;
+   }
 }

@@ -93,7 +93,9 @@ class NotificationSettingConfig extends CommonDBTM {
 
          $out .= "<table class='tab_cadre'>";
          $out .= "<tr><th colspan='3'>" . __('Notifications configuration') . "</th></tr>";
-
+         if ($CFG_GLPI['use_notifications'] && !Notification_NotificationTemplate::hasActiveMode()) {
+            $out .= "<tr><td colspan='3'><div class='warning'><i class='fa fa-exclamation-triangle'></i>".__('You must enable at least one notification mode.')."</div></td></tr>";
+         }
          $out .= "<tr>";
          $out .= "<td>" . __('Enable followup') . "</td>";
          $out .= "<td>";

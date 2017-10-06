@@ -114,7 +114,7 @@ class NotificationEvent extends CommonDBTM {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
-      if ($CFG_GLPI["use_notifications"]) {
+      if ($CFG_GLPI["use_notifications"] && Notification_NotificationTemplate::hasActiveMode()) {
          $notificationtarget = NotificationTarget::getInstance($item, $event, $options);
          if (!$notificationtarget) {
             return false;
