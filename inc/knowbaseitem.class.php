@@ -350,7 +350,9 @@ class KnowbaseItem extends CommonDBVisible {
       $class = new KnowbaseItem_Item();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       $class = new KnowbaseItem_Revision();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class->deleteByCriteria(['knowbaseitems_id' => $this->getID()]);
+      $class = new KnowbaseItem_Comment();
+      $class->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
    }
 
    /**
