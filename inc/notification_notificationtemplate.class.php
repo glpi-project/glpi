@@ -391,4 +391,19 @@ class Notification_NotificationTemplate extends CommonDBChild {
       }
       return $classname;
    }
+
+   /**
+    * Check if at least one mode is currently enabled
+    *
+    * @return boolean
+    */
+   static public function hasActiveMode() {
+      global $CFG_GLPI;
+      foreach (array_keys(self::getModes()) as $mode) {
+         if ($CFG_GLPI['notifications_' . $mode]) {
+            return true;
+         }
+      }
+      return false;
+   }
 }
