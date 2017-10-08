@@ -101,6 +101,12 @@ class Item_DeviceSimcard extends Item_Devices {
                                   'size'       => 20,
                                   'id'         => 19,
                                   'datatype'   => 'dropdown'],
+             'msin'           => ['long name'  => __('Mobile Subscriber Identification Number'),
+                                  'short name' => __('MSIN'),
+                                  'size'       => 20,
+                                  'id'         => 20,
+                                  'datatype'   => 'string',
+                                  'tooltip'    => __('MSIN is the last 8 or 10 digits of IMSI')],
       ];
    }
 }
