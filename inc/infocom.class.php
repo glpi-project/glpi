@@ -1771,10 +1771,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canUpdateItem()
    **/
    function canUpdateItem() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, UPDATE);
-      }
+      return Session::haveRight(static::$rightname, UPDATE);
    }
 
 
@@ -1783,10 +1780,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canPurgeItem()
    **/
    function canPurgeItem() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, PURGE);
-      }
+      return Session::haveRight(static::$rightname, PURGE);
    }
 
 
@@ -1795,9 +1789,7 @@ class Infocom extends CommonDBChild {
     * @see CommonDBChild::canCreateItem()
    **/
    function canCreateItem() {
-
-      if (static::$rightname) {
-         return Session::haveRight(static::$rightname, CREATE);
-      }
+      return Session::haveRight(static::$rightname, CREATE);
    }
+
 }
