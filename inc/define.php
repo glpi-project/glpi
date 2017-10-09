@@ -34,10 +34,6 @@
 * @brief
 */
 
-if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
-   require_once GLPI_CONFIG_DIR . '/local_define.php';
-}
-
 // Current version of GLPI
 define('GLPI_VERSION', '9.3-dev');
 if (substr(GLPI_VERSION, -4) === '-dev') {

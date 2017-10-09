@@ -46,6 +46,11 @@ if (!empty($tz)) {
    date_default_timezone_set(@date_default_timezone_get());
 }
 
+// If this file exists, it is load
+if (file_exists(GLPI_ROOT. '/config/local_define.php')) {
+   require_once GLPI_ROOT. '/config/local_define.php';
+}
+
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
    include_once (GLPI_ROOT . '/inc/downstream.php');
