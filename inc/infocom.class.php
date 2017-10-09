@@ -1195,18 +1195,23 @@ class Infocom extends CommonDBChild {
             //The just have to look for the addPluginInfos method
             self::addPluginInfos($item);
 
-            if ($canedit) {
+            if ($canedit
+                && Session::haveRightsOr(self::$rightname, [UPDATE, PURGE])) {
                echo "<tr>";
-               echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='hidden' name='id' value='".$ic->fields['id']."'>";
-               echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
-                      class='submit'>";
-               echo "</td>";
-               echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' name='purge' value=\""._sx('button',
+               if (Session::haveRight(self::$rightname, UPDATE)) {
+                  echo "<td class='tab_bg_2 center' colspan='2'>";
+                  echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
+                         class='submit'>";
+                echo "</td>";
+               }
+               if (Session::haveRight(self::$rightname, PURGE)) {
+                  echo "<td class='tab_bg_2 center' colspan='2'>";
+                  echo "<input type='submit' name='purge' value=\""._sx('button',
                                                                       'Delete permanently')."\"
-                      class='submit'>";
-               echo "</td></tr>";
+                        class='submit'>";
+               echo "</td>";
+               }
+               echo "<td><input type='hidden' name='id' value='".$ic->fields['id']."'></td></tr>";
                echo "</table>";
                Html::closeForm();
             } else {
@@ -1759,5 +1764,40 @@ class Infocom extends CommonDBChild {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
+
+   /**
+    * @since 9.1.7
+    * @see CommonDBChild::canUpdateItem()
+   **/
+   function canUpdateItem() {
+
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, UPDATE);
+      }
+   }
+
+
+   /**
+    * @since 9.1.7
+    * @see CommonDBChild::canPurgeItem()
+   **/
+   function canPurgeItem() {
+
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, PURGE);
+      }
+   }
+
+
+   /**
+    * @since 9.1.7
+    * @see CommonDBChild::canCreateItem()
+   **/
+   function canCreateItem() {
+
+      if (static::$rightname) {
+         return Session::haveRight(static::$rightname, CREATE);
+      }
+   }
 }
-?>
