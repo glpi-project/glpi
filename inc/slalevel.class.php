@@ -204,8 +204,6 @@ class SlaLevel extends RuleTicket {
             echo "</a>";
          }
          echo "</td>";
-         toolbox::logdebug("data", $data, "this", $this, "slt", $slt);
-
          echo "<td>".(($data["execution_time"] <> 0)
                         ?Html::timestampToString($data["execution_time"], false)
                         : ($slt->fields['type'] == 1
