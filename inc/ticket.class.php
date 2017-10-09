@@ -5950,7 +5950,7 @@ class Ticket extends CommonITILObject {
           && Ticket::isPossibleToAssignType($item->getType())
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
-          && ($item->fields['is_template'] == 0)) {
+            && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))) {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               ['itemtype' => $item->getType(),
