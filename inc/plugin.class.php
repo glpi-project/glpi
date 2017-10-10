@@ -541,7 +541,7 @@ class Plugin extends CommonDBTM {
                      $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                      $do_install = $this->checkVersions($plug['directory']);
 
-                     if (function_exists($function)) {
+                     if ($do_install && function_exists($function)) {
                         ob_start();
                         $do_install = $function();
                         $msg = '';
