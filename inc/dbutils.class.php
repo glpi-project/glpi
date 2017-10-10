@@ -678,7 +678,7 @@ final class DbUtils {
       if (Toolbox::useCache()) {
          if ($GLPI_CACHE->hasItem($ckey)) {
             $sons = $GLPI_CACHE->getItem($ckey);
-            if ($sons) {
+            if ($sons !== null) {
                return $sons;
             }
          }
@@ -787,7 +787,7 @@ final class DbUtils {
       if (Toolbox::useCache()) {
          if ($GLPI_CACHE->hasItem($ckey)) {
             $ancestors = $GLPI_CACHE->getItem($ckey);
-            if ($ancestors) {
+            if ($ancestors !== null) {
                return $ancestors;
             }
          }
