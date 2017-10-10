@@ -142,7 +142,7 @@ class Plugin extends DbTestCase {
             $exts = ['myext' => ['required' => true]];
             $this->boolean($plugin->checkPhpExtensions($exts))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires PHP extension myext');
+      )->isIdenticalTo('This plugin requires PHP extension myext<br/>');
    }
 
    public function testCheckGlpiParameters() {
@@ -156,21 +156,21 @@ class Plugin extends DbTestCase {
          function () use ($plugin, $params) {
             $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
       $CFG_GLPI['my_param'] = '';
       $this->output(
          function () use ($plugin, $params) {
             $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
       $CFG_GLPI['my_param'] = '0';
       $this->output(
          function () use ($plugin, $params) {
             $this->boolean($plugin->checkGlpiParameters($params))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires GLPI parameter my_param');
+      )->isIdenticalTo('This plugin requires GLPI parameter my_param<br/>');
 
       $CFG_GLPI['my_param'] = 'abc';
       $this->output(
@@ -190,7 +190,7 @@ class Plugin extends DbTestCase {
          function () use ($plugin) {
             $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires myplugin plugin');
+      )->isIdenticalTo('This plugin requires myplugin plugin<br/>');
 
       $this->calling($plugin)->isInstalled = true;
 
@@ -198,7 +198,7 @@ class Plugin extends DbTestCase {
          function () use ($plugin) {
             $this->boolean($plugin->checkGlpiPlugins(['myplugin']))->isFalse();
          }
-      )->isIdenticalTo('This plugin requires myplugin plugin');
+      )->isIdenticalTo('This plugin requires myplugin plugin<br/>');
 
       $this->calling($plugin)->isInstalled = true;
       $this->calling($plugin)->isActivated = true;
