@@ -1070,7 +1070,7 @@ final class DbUtils {
       $name = "";
 
       if (count($iterator) > 0) {
-         $row      = $iterator->current();
+         $row      = $iterator->next();
          $parentID = $row[$parentIDfield];
 
          if ($wholename == "") {
