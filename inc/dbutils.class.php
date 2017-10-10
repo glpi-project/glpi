@@ -697,7 +697,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $db_sons = trim($iterator->current()['sons_cache']);
+            $db_sons = trim($iterator->next()['sons_cache']);
             if (!empty($db_sons)) {
                $sons = $this->importArrayFromDB($db_sons, true);
             }
@@ -854,7 +854,7 @@ final class DbUtils {
                ]);
 
                if (count($iterator) > 0) {
-                  $result = $iterator->current();
+                  $result = $iterator->next();
                   $IDf = $result[$parentIDfield];
                } else {
                   $IDf = 0;
@@ -1275,7 +1275,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $search = addslashes($iterator->current()[$nextprev_item]);
+            $search = addslashes($iterator->next()[$nextprev_item]);
          } else {
             $nextprev_item = "id";
          }
@@ -1364,7 +1364,7 @@ final class DbUtils {
          ]);
 
          if (count($iterator) > 0) {
-            $search = addslashes($iterator->current()[$nextprev_item]);
+            $search = addslashes($iterator->next()[$nextprev_item]);
          } else {
             $nextprev_item = "id";
          }
