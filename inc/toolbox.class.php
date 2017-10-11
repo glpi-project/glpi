@@ -2491,7 +2491,13 @@ class Toolbox {
       $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
       $string = self::removeHtmlSpecialChars($string);
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
-      return trim($string, '-');
+      $string = trim($string, '-');
+      if ($string == '') {
+         //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
+         //harcoded prefix string because html @id must begin with a letter
+         $string = 'nok_' . Toolbox::getRandomString(10);
+      }
+      return $string;
    }
 
    /**
