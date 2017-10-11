@@ -94,13 +94,15 @@ class DBmysqlIterator implements Iterator, Countable {
                   case 'SELECT' :
                   case 'FIELDS' :
                      $field = $val;
+                     if (!is_array($field)) {
+                        $field = [$field];
+                     }
                      unset($crit[$key]);
                      break;
 
                   case 'SELECT DISTINCT' :
                   case 'DISTINCT FIELDS' :
-                     $field = $val;
-                     $distinct = "DISTINCT";
+                     $distinct = "DISTINCT (" . self::quoteName($val) . ")";
                      unset($crit[$key]);
                      break;
 
@@ -157,7 +159,10 @@ class DBmysqlIterator implements Iterator, Countable {
          $this->sql = "";
          // SELECT field list
          if ($count) {
-            $this->sql = "SELECT COUNT(*) AS $count";
+            $count_field = empty($distinct) ? '*' : $distinct;
+            $this->sql = "SELECT COUNT($count_field) AS $count";
+         } else if (!empty($distinct)) {
+            $this->sql = "SELECT $distinct";
          }
 
          if (is_array($field)) {
@@ -174,14 +179,8 @@ class DBmysqlIterator implements Iterator, Countable {
                   $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
-         } else if (empty($field) && !$count) {
+         } else if (empty($this->sql)) {
             $this->sql = "SELECT *";
-         } else if (!empty($field)) {
-            if ($count) {
-               $this->sql = "SELECT COUNT($distinct " . self::quoteName($field) . ") AS $count";
-            } else {
-               $this->sql = "SELECT $distinct " . self::quoteName($field);
-            }
          }
 
          // FROM table list
