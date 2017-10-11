@@ -7195,7 +7195,10 @@ class Ticket extends CommonITILObject {
             User::getThumbnailURLForPicture($picture)."'>";
             echo "</div>";
 
-            echo $user->getLink();
+            echo $user->getLink()."&nbsp;";
+            $reqdata = getUserName($user->getID(), 2);
+            echo Html::showToolTip($reqdata["comment"],
+              array('link' => $reqdata['link']));
          }
 
          echo "</div>"; // h_user
