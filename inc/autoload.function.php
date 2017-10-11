@@ -168,6 +168,14 @@ function _e($str, $domain='glpi') {
 function _n($sing, $plural, $nb, $domain='glpi') {
    global $TRANSLATE;
 
+   if (is_null($TRANSLATE)) { // before login
+      if ($nb == 0 || $nb > 1) {
+         return $plural;
+      } else {
+         return $sing;
+      }
+   }
+
    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
 }
 
@@ -185,8 +193,6 @@ function _n($sing, $plural, $nb, $domain='glpi') {
  * @return protected string (with htmlentities)
 **/
 function _sn($sing, $plural, $nb, $domain='glpi') {
-   global $TRANSLATE;
-
    return htmlentities(_n($sing, $plural, $nb, $domain), ENT_QUOTES, 'UTF-8');
 }
 
