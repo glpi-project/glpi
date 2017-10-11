@@ -6818,26 +6818,26 @@ class Ticket extends CommonITILObject {
             $timeline[$validation['submission_date']."_validation_".$validations_id]
                = ['type' => 'TicketValidation',
                        'item' => ['id'        => $validations_id,
-                                       'date'      => $validation['submission_date'],
-                                       'content'   => __('Validation request')." => ".$user->getlink().
-                                                      "<br>".$validation['comment_submission'],
-                                       'users_id'  => $validation['users_id'],
-                                       'can_edit'  => $canedit,
-                                       'timeline_position' => $validation['timeline_position']]];
+                                  'date'      => $validation['submission_date'],
+                                  'content'   => __('Validation request')." => ".$user->getlink().
+                                                    "<br>".$validation['comment_submission'],
+                                  'users_id'  => $validation['users_id'],
+                                  'can_edit'  => $canedit,
+                                  'timeline_position' => $validation['timeline_position']]];
 
             if (!empty($validation['validation_date'])) {
                $timeline[$validation['validation_date']."_validation_".$validations_id]
                   = ['type' => 'TicketValidation',
                           'item' => ['id'        => $validations_id,
-                                          'date'      => $validation['validation_date'],
-                                          'content'   => __('Validation request answer')." : ".
-                                                         _sx('status',
-                                                             ucfirst(TicketValidation::getStatus($validation['status'])))
-                                                         ."<br>".$validation['comment_validation'],
-                                          'users_id'  => $validation['users_id_validate'],
-                                          'status'    => "status_".$validation['status'],
-                                          'can_edit'  => $canedit,
-                                          'timeline_position' => $validation['timeline_position']]];
+                                     'date'      => $validation['validation_date'],
+                                     'content'   => __('Validation request answer')." : ".
+                                                       _sx('status',
+                                                           ucfirst(TicketValidation::getStatus($validation['status'])))
+                                                       ."<br>".$validation['comment_validation'],
+                                     'users_id'  => $validation['users_id_validate'],
+                                     'status'    => "status_".$validation['status'],
+                                     'can_edit'  => $canedit,
+                                     'timeline_position' => $validation['timeline_position']]];
             }
          }
       }
@@ -6958,9 +6958,15 @@ class Ticket extends CommonITILObject {
 
          echo "</div>"; //h_date
 
+         $domid = "viewitem{$item['type']}{$item_i['id']}";
+         if ($item['type'] == 'TicketValidation' && isset($item_i['status'])) {
+            $domid .= $item_i['status'];
+         }
+         $domid .= $rand;
+
          echo "<div class='h_content ".$item['type'].
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
-               " id='viewitem".$item['type'].$item_i['id'].$rand."'>";
+               " id='$domid'>";
          if (isset($item_i['can_edit']) && $item_i['can_edit']) {
             echo "<div class='edit_item_content'></div>";
             echo "<span class='cancel_edit_item_content'></span>";
@@ -6969,7 +6975,7 @@ class Ticket extends CommonITILObject {
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
             echo "<span class='fa fa-pencil-square-o edit_item' ";
-            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"viewitem".$item['type'].$item_i['id'].$rand."\")'";
+            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
             echo "></span>";
          }
          if (isset($item_i['requesttypes_id'])
