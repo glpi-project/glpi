@@ -185,6 +185,14 @@ function _e($str, $domain = 'glpi') {
 function _n($sing, $plural, $nb, $domain = 'glpi') {
    global $TRANSLATE;
 
+   if (is_null($TRANSLATE)) { // before login
+      if ($nb == 0 || $nb > 1) {
+         return $plural;
+      } else {
+         return $sing;
+      }
+   }
+
    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
 }
 
