@@ -1325,7 +1325,7 @@ class NotificationTarget extends CommonDBChild {
                } else {
                   echo "&nbsp;";
                }
-               echo "</td><td>".Notification::getMode($notif->getField('mode'));
+               echo "</td><td>".Notification_NotificationTemplate::getMode($notif->getField('mode'));
                echo "</td><td>".NotificationEvent::getEventName($itemtype,
                                                                 $notif->getField('event'));
                echo "</td>".
