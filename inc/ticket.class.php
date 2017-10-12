@@ -4162,14 +4162,19 @@ class Ticket extends CommonITILObject {
 
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
+         $users_id_assign    = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
          if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
             $users_id_requester = 0;
+         }
+         if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
+            $users_id_assign = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
          $requesttype = $_SESSION['glpidefault_requesttypes_id'];
       } else {
          $users_id_requester = 0;
+         $users_id_assign    = 0;
          $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
@@ -4182,7 +4187,7 @@ class Ticket extends CommonITILObject {
                     '_users_id_requester_notif' => ['use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''],
                     '_groups_id_requester'      => 0,
-                    '_users_id_assign'          => 0,
+                    '_users_id_assign'          => $users_id_assign,
                     '_users_id_assign_notif'    => ['use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''],
                     '_groups_id_assign'         => 0,
