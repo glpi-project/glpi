@@ -42,7 +42,7 @@ class SavedSearch_Alert extends CommonDBChild {
    // From CommonDBChild
    static public $itemtype = 'SavedSearch';
    static public $items_id = 'savedsearches_id';
-   public $dohistory       = false;
+   public $dohistory       = true;
    protected $displaylist  = false;
 
    const OP_LESS     = 0;
@@ -382,5 +382,9 @@ class SavedSearch_Alert extends CommonDBChild {
             }
          }
       }
+   }
+
+   function getItemsForLog($itemtype, $items_id) {
+      return ['new' => $this];
    }
 }
