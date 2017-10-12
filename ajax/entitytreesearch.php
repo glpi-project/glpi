@@ -45,6 +45,8 @@ Html::header_nocache();
 Session::checkLoginUser();
 $res = [];
 
+$root_entities_for_profiles = array_column($_SESSION['glpiactiveprofile']['entities'], 'id');
+
 if (isset($_POST['str'])) {
    $query = "SELECT *
              FROM `glpi_entities`
@@ -55,6 +57,12 @@ if (isset($_POST['str'])) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {
          if (!in_array($val, $res)) {
+            // root nodes are suffixed by, id are uniques in jstree.
+            // so, in case of presence of this id in subtree of other nodes,
+            // it will be removed from root nodes
+            if (in_array($val, $root_entities_for_profiles)) {
+               $val.= 'r';
+            }
             $res[] = $val;
          }
       }
