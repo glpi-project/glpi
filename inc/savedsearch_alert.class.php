@@ -43,6 +43,7 @@ class SavedSearch_Alert extends CommonDBChild {
    static public $itemtype = 'SavedSearch';
    static public $items_id = 'savedsearches_id';
    public $dohistory       = false;
+   protected $displaylist  = false;
 
    const OP_LESS     = 0;
    const OP_LESSEQ   = 1;
@@ -254,12 +255,6 @@ class SavedSearch_Alert extends CommonDBChild {
          $header .= "<th>".__('Active')."</th>";
          $header .= "</tr>";
          echo $header;
-
-         Session::initNavigateListItems(__CLASS__,
-                           //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(__('%1$s = %2$s'),
-                                                SavedSearch::getTypeName(1), $search->getName()));
 
          $alert = new self();
          while ($data = $iterator->next()) {
