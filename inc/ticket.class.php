@@ -1838,7 +1838,6 @@ class Ticket extends CommonITILObject {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
-                  $input['items_groups'] = $item->fields['groups_id'];
                   if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                      $input['items_businesscriticities']
                         = Dropdown::getDropdownName('glpi_businesscriticities',
