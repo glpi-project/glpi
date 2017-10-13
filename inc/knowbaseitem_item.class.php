@@ -249,8 +249,8 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
          echo "<td>" . $type . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>".
-                 "<td class='tab_date'>".$linked_item->fields[$createdate]."</td>".
-                 "<td class='tab_date'>".$linked_item->fields['date_mod']."</td>";
+                 "<td class='tab_date'>".Html::convDateTime($linked_item->fields[$createdate])."</td>".
+                 "<td class='tab_date'>".Html::convDateTime($linked_item->fields['date_mod'])."</td>";
          echo "</tr>";
       }
       echo $header;
@@ -303,13 +303,14 @@ class KnowbaseItem_Item extends CommonDBRelation {
       global $DB;
 
       $options = [
-         'FROM'   => ['glpi_knowbaseitems_items', 'glpi_knowbaseitems'],
-         'FIELDS' => ['glpi_knowbaseitems_items' => '*'],
-         'FKEY'   => [
+         'FROM'            => ['glpi_knowbaseitems_items', 'glpi_knowbaseitems'],
+         'FIELDS'          => ['glpi_knowbaseitems_items' => '*'],
+         'DISTINCT FIELDS' => 'glpi_knowbaseitems_items.id',
+         'FKEY'            => [
             'glpi_knowbaseitems_items' => 'knowbaseitems_id',
             'glpi_knowbaseitems'       => 'id'
          ],
-         'ORDER'  => ['itemtype', 'items_id DESC']
+         'ORDER'           => ['itemtype', 'items_id DESC']
       ];
       $where = [];
 

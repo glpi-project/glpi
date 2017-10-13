@@ -135,7 +135,10 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testFields() {
       $it = new \DBmysqlIterator(null, 'foo', ['DISTINCT FIELDS' => 'bar']);
-      $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
+      $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT (`bar`) FROM `foo`');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['DISTINCT FIELDS' => 'bar', 'FIELDS' => ['baz', 'other']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT (`bar`), `baz`, `other` FROM `foo`');
 
       $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
@@ -183,10 +186,13 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
       $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
-      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT (`bar`)) AS cpt FROM `foo`');
 
       $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt, `name`, `version` FROM `foo`');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'DISTINCT FIELDS' => 'id', 'FIELDS' => ['name', 'version']]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT (`id`)) AS cpt, `name`, `version` FROM `foo`');
    }
 
 
