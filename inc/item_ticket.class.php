@@ -1342,9 +1342,16 @@ class Item_Ticket extends CommonDBRelation{
             return;
          }
          if (($name = $item->getName()) == NOT_AVAILABLE) {
-            //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $item->fields['name'] = sprintf(__('%1$s - ID %2$d'),
-                                            $item->getTypeName(1), $item->fields['id']);
+            //TRANS: %1$s is the itemtype, %2$s is the id of the item
+            $item->fields['name'] = sprintf(
+               __('%1$s - %2$s'),
+               $this->getTypeName(1),
+               sprintf(
+                  __('%1$s %2$s'),
+                  __('ID'),
+                  $item->getID()
+               )
+            );
          }
 
          $display = (isset($this->input['_no_message_link'])?$item->getNameID()

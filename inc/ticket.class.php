@@ -4576,7 +4576,15 @@ class Ticket extends CommonITILObject {
       echo "<th colspan='4'>";
 
       if ($ID) {
-         $text = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         $text = sprintf(
+            __('%1$s - %2$s'),
+            $this->getTypeName(1),
+            sprintf(
+               __('%1$s %2$s'),
+               __('ID'),
+               $ID
+            )
+         );
          if ($ismultientities) {
             $text = sprintf(__('%1$s (%2$s)'), $text,
                             Dropdown::getDropdownName('glpi_entities',

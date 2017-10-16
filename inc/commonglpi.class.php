@@ -856,7 +856,15 @@ class CommonGLPI {
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
             $name = sprintf(__('%1$s - %2$s'), $name, $this->getName());
             if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-               $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
+               $name = sprintf(
+                  __('%1$s - %2$s'),
+                  $this->getTypeName(1),
+                  sprintf(
+                     __('%1$s %2$s'),
+                     __('ID'),
+                     $this->getID()
+                  )
+               );
             }
          }
          if (isset($this->fields["entities_id"])

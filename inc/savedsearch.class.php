@@ -362,8 +362,17 @@ class SavedSearch extends CommonDBTM {
 
       echo "<tr><th colspan='4'>";
       if ($ID > 0) {
-         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         //TRANS: %1$s is the Itemtype name and $2$s the ID of the item
+         $text = sprintf(
+            __('%1$s - %2$s'),
+            $this->getTypeName(1),
+            sprintf(
+               __('%1$s %2$s'),
+               __('ID'),
+               $ID
+            )
+         );
+         echo $text;
       } else {
          echo __('New item');
       }
