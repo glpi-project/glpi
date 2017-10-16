@@ -679,7 +679,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final protected function addForGroup($manager, $group_id) {
+   final public function addForGroup($manager, $group_id) {
       global $DB;
 
       // members/managers of the group allowed on object entity
@@ -704,7 +704,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   final protected function getDistinctUserSql() {
+   final public function getDistinctUserSql() {
 
       return  "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                `glpi_users`.`language` AS language";
@@ -1131,7 +1131,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   protected function getProfileJoinSql() {
+   public function getProfileJoinSql() {
 
       return " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
