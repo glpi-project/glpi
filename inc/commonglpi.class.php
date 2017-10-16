@@ -872,6 +872,9 @@ class CommonGLPI {
          echo "<td class='b big'>";
          if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
             echo $name;
+            $statusName = $this->getStatus($this->fields['status']);
+            $ticketInfo = sprintf(__('%1$s, %2$s: %3$s'), $this->getID(), __('Status'), $statusName);
+            echo '<div class="ticket-status"><span class="status-'.$this->fields['status'].'">'.$ticketInfo.'</span></div>';
          }
          echo "</td>";
 
