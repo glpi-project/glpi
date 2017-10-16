@@ -3182,7 +3182,7 @@ a.copyright {
    width: 100%;
 }
 
-.timeline_history h2 {
+.timeline_history > h2 {
    float: left;
 }
 
