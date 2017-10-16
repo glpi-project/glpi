@@ -2590,7 +2590,7 @@ class Html {
       $js .= ",dateFormat: '".$format."'";
 
       $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-      $js .= ")};";
+      $js .= "});";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
