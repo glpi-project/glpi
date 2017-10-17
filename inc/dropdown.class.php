@@ -161,20 +161,20 @@ class Dropdown {
          $name = Toolbox::unclean_cross_side_scripting_deep($name);
       }
       $p = ['value'                => $params['value'],
-                 'valuename'            => $name,
-                 'width'                => $params['width'],
-                 'itemtype'             => $itemtype,
-                 'display_emptychoice'  => $params['display_emptychoice'],
-                 'displaywith'          => $params['displaywith'],
-                 'emptylabel'           => $params['emptylabel'],
-                 'condition'            => $params['condition'],
-                 'used'                 => $params['used'],
-                 'toadd'                => $params['toadd'],
-                 'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
-                 'on_change'            => $params['on_change'],
-                 'permit_select_parent' => $params['permit_select_parent'],
-                 'specific_tags'        => $params['specific_tags'],
-                ];
+            'valuename'            => $name,
+            'width'                => $params['width'],
+            'itemtype'             => $itemtype,
+            'display_emptychoice'  => $params['display_emptychoice'],
+            'displaywith'          => $params['displaywith'],
+            'emptylabel'           => $params['emptylabel'],
+            'condition'            => $params['condition'],
+            'used'                 => $params['used'],
+            'toadd'                => $params['toadd'],
+            'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
+            'on_change'            => $params['on_change'],
+            'permit_select_parent' => $params['permit_select_parent'],
+            'specific_tags'        => $params['specific_tags'],
+      ];
 
       $output = "<span class='no-wrap'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,

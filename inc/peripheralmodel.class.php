@@ -39,10 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class PeripheralModel
-class PeripheralModel extends CommonDropdown {
-
-   public $additional_fields_for_dictionnary = ['manufacturer'];
-
+class PeripheralModel extends CommonDCModelDropdown {
 
    static function getTypeName($nb = 0) {
       return _n('Peripheral model', 'Peripheral models', $nb);

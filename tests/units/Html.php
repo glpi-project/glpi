@@ -322,7 +322,9 @@ class Html extends atoum {
          'Printer',
          'CartridgeItem',
          'ConsumableItem',
-         'Phone'
+         'Phone',
+         'Rack',
+         'Enclosure'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
       $this->array($menu['assets']['types'])->isIdenticalTo($expected);
@@ -346,7 +348,9 @@ class Html extends atoum {
          'Contract',
          'Document',
          'Line',
-         'Certificate'
+         'Certificate',
+         'Datacenter',
+         'DCRoom',
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);
@@ -732,7 +736,7 @@ class Html extends atoum {
 
    public function testDisplayMessageAfterRedirect() {
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
-         ERROR    => ['Something wen really wrong :('],
+         ERROR    => ['Something went really wrong :('],
          WARNING  => ['Oooops, I did it again!']
       ];
 
@@ -741,7 +745,7 @@ class Html extends atoum {
             \Html::displayMessageAfterRedirect();
          }
       )
-         ->contains('<div id="message_after_redirect_1" title="Error">Something wen really wrong :(</div>')
+         ->contains('<div id="message_after_redirect_1" title="Error">Something went really wrong :(</div>')
          ->contains('<div id="message_after_redirect_2" title="Warning">Oooops, I did it again!</div>');
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();

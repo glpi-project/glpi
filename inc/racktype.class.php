@@ -38,10 +38,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class ComputerModel
-class ComputerModel extends CommonDCModelDropdown {
+/// Class RackType
+class RackType extends CommonDropdown {
 
    static function getTypeName($nb = 0) {
-      return _n('Computer model', 'Computer models', $nb);
+      return _n('Rack type', 'Rack types', $nb);
    }
 }

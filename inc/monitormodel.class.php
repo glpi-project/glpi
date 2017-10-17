@@ -39,10 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class MonitorModel
-class MonitorModel extends CommonDropdown {
-
-   public $additional_fields_for_dictionnary = ['manufacturer'];
-
+class MonitorModel extends CommonDCModelDropdown {
 
    static function getTypeName($nb = 0) {
       return _n('Monitor model', 'Monitor models', $nb);

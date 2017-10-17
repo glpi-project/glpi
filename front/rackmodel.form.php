@@ -34,14 +34,7 @@
 * @brief
 */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-/// Class ComputerModel
-class ComputerModel extends CommonDCModelDropdown {
-
-   static function getTypeName($nb = 0) {
-      return _n('Computer model', 'Computer models', $nb);
-   }
-}
+$dropdown = new RackModel();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

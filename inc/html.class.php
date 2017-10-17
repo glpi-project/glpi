@@ -1288,7 +1288,8 @@ class Html {
       $menu['assets']['title']       = __('Assets');
       $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
                                              'NetworkEquipment', 'Peripheral', 'Printer',
-                                             'CartridgeItem', 'ConsumableItem', 'Phone'];
+                                             'CartridgeItem', 'ConsumableItem', 'Phone',
+                                             'Rack', 'Enclosure'];
 
       $menu['helpdesk']['title']     = __('Assistance');
       $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
@@ -1296,7 +1297,7 @@ class Html {
 
       $menu['management']['title']   = __('Management');
       $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                        'Document', 'Line', 'Certificate'];
+                                        'Document', 'Line', 'Certificate', 'Datacenter', 'DCRoom'];
 
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',

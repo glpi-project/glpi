@@ -884,9 +884,13 @@ class Profile extends CommonDBTM {
                             'label'     => __('Line'),
                             'field'     => 'line'],
                       ['itemtype'  => 'Certificate',
-                            'label'     => _n('Certificate', 'Cerficates',
+                            'label'     => _n('Certificate', 'Certificates',
                                               Session::getPluralNumber()),
-                            'field'     => 'certificate']];
+                            'field'     => 'certificate'],
+                      ['itemtype'  => 'Datacenter',
+                            'label'     => Datacenter::getTypeName(Session::getPluralNumber()),
+                            'field'     => 'datacenter']
+                  ];
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

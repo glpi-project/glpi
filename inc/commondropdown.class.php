@@ -284,9 +284,9 @@ abstract class CommonDropdown extends CommonDBTM {
          switch ($field['type']) {
             case 'UserDropdown' :
                $param = ['name'   => $field['name'],
-                              'value'  => $this->fields[$field['name']],
-                              'right'  => 'interface',
-                              'entity' => $this->fields["entities_id"]];
+                         'value'  => $this->fields[$field['name']],
+                         'right'  => 'interface',
+                         'entity' => $this->fields["entities_id"]];
                if (isset($field['right'])) {
                   $params['right'] = $field['right'];
                }
@@ -296,8 +296,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
             case 'dropdownValue' :
                $params = ['value'  => $this->fields[$field['name']],
-                               'name'   => $field['name'],
-                               'entity' => $this->getEntityID()];
+                          'name'   => $field['name'],
+                          'entity' => $this->getEntityID()];
                if (isset($field['condition'])) {
                   $params['condition'] = $field['condition'];
                }
@@ -324,7 +324,17 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'integer' :
-               Dropdown::showNumber($field['name'], ['value' => $this->fields[$field['name']]]);
+               $params = ['value' => $this->fields[$field['name']]];
+               if (isset($field['min'])) {
+                  $params['min'] = $field['min'];
+               }
+               if (isset($field['step'])) {
+                  $params['step'] = $field['step'];
+               }
+               if (isset($field['max'])) {
+                  $params['max'] = $field['max'];
+               }
+               Dropdown::showNumber($field['name'], $params);
                break;
 
             case 'timestamp' :
@@ -349,9 +359,9 @@ abstract class CommonDropdown extends CommonDBTM {
                }
                Dropdown::show(getItemTypeForTable($this->getTable()),
                               ['value'  => $this->fields[$field['name']],
-                                    'name'   => $field['name'],
-                                    'entity' => $restrict,
-                                    'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID)
+                               'name'   => $field['name'],
+                               'entity' => $restrict,
+                               'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID)
                                                        : [])]);
                break;
 
