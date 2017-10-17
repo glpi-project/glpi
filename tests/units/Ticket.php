@@ -168,7 +168,7 @@ class Ticket extends DbTestCase {
       //reload from DB
       $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
 
-      $this->variable($ticket->getField('status'))->isEqualTo($ticket::CLOSED);
+      $this->variable($ticket->getField('status'))->isEqualTo($ticket::SOLVED);
       $this->string($ticket->getField('solution'))->isIdenticalTo("Current friendly ticket\r\nis solved!");
    }
 
