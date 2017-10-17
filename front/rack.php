@@ -30,18 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+include ('../inc/includes.php');
 
-/// Class ComputerModel
-class ComputerModel extends CommonDCModelDropdown {
+Session::checkRight("datacenter", READ);
 
-   static function getTypeName($nb = 0) {
-      return _n('Computer model', 'Computer models', $nb);
-   }
-}
+Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
+
+Search::show('rack');
+
+Html::footer();

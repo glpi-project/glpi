@@ -39,10 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class NetworkEquipmentModel
-class NetworkEquipmentModel extends CommonDropdown {
-
-   public $additional_fields_for_dictionnary = ['manufacturer'];
-
+class NetworkEquipmentModel extends CommonDCModelDropdown {
 
    static function getTypeName($nb = 0) {
       return _n('Networking equipment model', 'Networking equipment models', $nb);

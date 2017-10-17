@@ -228,7 +228,8 @@ $CFG_GLPI["itemdevices"]                  = ['Item_DevicePowerSupply', 'Item_Dev
 
 $CFG_GLPI["contract_types"]               = array_merge(['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-                                                  'Software', 'SoftwareLicense', 'Certificate'],
+                                                  'Software', 'SoftwareLicense', 'Certificate',
+                                                  'DCRoom', 'Rack', 'Enclosure'],
                                                   $CFG_GLPI['itemdevices']);
 
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
@@ -267,7 +268,7 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
 $CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
                                                   'SoftwareLicense', 'Certificate',
-                                                  'Line'];
+                                                  'Line', 'DCRoom', 'Rack', 'Enclosure'];
 
 $CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -426,6 +427,8 @@ $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'Phone', 'Printer',
                                       'SoftwareLicense', 'User'];
 
+$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure'];
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central'   => ['fullcalendar']
@@ -441,6 +444,9 @@ $CFG_GLPI['javascript'] = [
       'project'      => ['gantt'],
       'knowbaseitem' => ['tinymce'],
       'reminder'     => ['tinymce']
+   ],
+   'management' => [
+      'rack'         => ['colorpicker'],
    ],
    'config'    => [
       'config'    => ['colorpicker'],

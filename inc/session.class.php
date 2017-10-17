@@ -1036,19 +1036,20 @@ class Session {
             }
 
          } else {
+            $array = &$_SESSION['MESSAGE_AFTER_REDIRECT'];
 
             if ($reset) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+               $array = [];
             }
 
-            if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type])) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type] = [];
+            if (!isset($array[$message_type])) {
+               $array[$message_type] = [];
             }
 
             if (!$check_once
-                || !isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type])
-                || in_array($msg, $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) === false) {
-               array_push($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type], $msg);
+                || !isset($array[$message_type])
+                || in_array($msg, $array[$message_type]) === false) {
+               array_push($array[$message_type], $msg);
             }
          }
       }

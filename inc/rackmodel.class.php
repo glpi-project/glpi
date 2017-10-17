@@ -30,18 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class ComputerModel
-class ComputerModel extends CommonDCModelDropdown {
+/// Class RackModel
+class RackModel extends CommonDropdown {
+
+   public $additional_fields_for_dictionnary = ['manufacturer'];
 
    static function getTypeName($nb = 0) {
-      return _n('Computer model', 'Computer models', $nb);
+      return _n('Rack model', 'Rack models', $nb);
    }
 }

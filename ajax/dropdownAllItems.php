@@ -53,6 +53,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    }
 
    $rand     = mt_rand();
+   if (isset($_POST['rand'])) {
+      $rand = $_POST['rand'];
+   }
 
    $field_id = Html::cleanId("dropdown_".$_POST["name"].$rand);
 

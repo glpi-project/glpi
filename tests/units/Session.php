@@ -46,7 +46,7 @@ class Session extends atoum {
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
       //test add message in cron mode
-      $_SESSION['glpicronuserrunning'] = 'phpunit_cron';
+      $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
       \Session::addMessageAfterRedirect($err_msg, false, ERROR);
       //adding a message in "cron mode" does not add anything in the session
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
