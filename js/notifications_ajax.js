@@ -51,7 +51,7 @@
             });
          });
 
-      }
+      };
 
       this.playAudio = function (sound) {
          if (!sound || !('Audio' in window)) {
@@ -78,7 +78,7 @@
 
             audioElement.play();
          });
-      }
+      };
 
       this.checkNewNotifications = function () {
          if (!_this.isSupported()) {
@@ -98,13 +98,33 @@
                }
 
             }
-            setTimeout(_this.checkNewNotifications, _this.options.interval);
          });
       };
 
-      this.startMonitoring = function () {
-         _this.checkNewNotifications();
-      }
+      this.checkConcurrence = function() {
+         //simple concurrency check
+         //prevent multiple call to 'notifications_ajax.php' if GLPI is openned in multiple browser tabs
+
+         var lastcheck_key = 'glpi_ajaxnotification_lastcheck_' + this.options.user_id;
+         var lastCheck = localStorage.getItem(lastcheck_key);
+
+         if (!lastCheck) {
+            lastCheck = 0;
+         }
+
+         var timestamp = new Date().getTime();
+         //50ms tolerance
+         if (lastCheck <= timestamp - this.options.interval + 50) {
+            localStorage.setItem(lastcheck_key, timestamp);
+            this.checkNewNotifications();
+         }
+
+      };
+
+      this.startMonitoring = function() {
+         this.checkConcurrence();
+         _interval = setInterval(this.checkConcurrence.bind(this), this.options.interval);
+      };
 
       this.checkPermission = function () {
          // Let's check whether notification permissions have already been granted
@@ -119,7 +139,7 @@
                }
             });
          }
-      }
+      };
 
       this.start = function () {
          if (!this.isSupported()) {
@@ -137,7 +157,8 @@
    GLPINotificationsAjax.default = {
       interval : 10000,
       sound    : false,
-      icon     : false
+      icon     : false,
+      user_id  : 0
    };
 
    window.GLPINotificationsAjax = GLPINotificationsAjax;
