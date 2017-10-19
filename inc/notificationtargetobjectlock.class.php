@@ -160,4 +160,10 @@ class NotificationTargetObjectLock extends NotificationTarget {
       return $ret ;
    }
 
+
+   function getReplyTo($options = array()) {
+
+      return $this->getSender($options);
+   }
+
 }
