@@ -115,7 +115,8 @@ class NotificationAjax implements NotificationInterface {
             'FROM'   => 'glpi_queuednotifications',
             'WHERE'  => [
                'is_deleted'   => false,
-               'recipient'    => Session::getLoginUserID()
+               'recipient'    => Session::getLoginUserID(),
+               'mode'         => Notification_NotificationTemplate::MODE_AJAX
             ]
          ]);
 

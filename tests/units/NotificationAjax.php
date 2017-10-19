@@ -60,6 +60,22 @@ class NotificationAjax extends DbTestCase {
       //another one
       $this->boolean(\NotificationAjax::testNotification())->isTrue();
 
+      //also add a mailing notification to make sure we get only ajax ons back #2997
+      $instance = new \NotificationMailing();
+      $res = $instance->sendNotification([
+         '_itemtype'                   => 'NotificationMailing',
+         '_items_id'                   => 1,
+         '_notificationtemplates_id'   => 0,
+         '_entities_id'                => 0,
+         'fromname'                    => 'TEST',
+         'subject'                     => 'Test notification',
+         'content_text'                => "Hello, this is a test notification.",
+         'to'                          => \Session::getLoginUserID(),
+         'from'                        => 'glpi@tests',
+         'toname'                      => ''
+      ]);
+      $this->boolean($res)->isTrue();
+
       //ajax notifications disabled: gets nothing.
       $notifs = \NotificationAjax::getMyNotifications();
       $this->boolean($notifs)->isFalse();
