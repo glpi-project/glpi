@@ -4693,10 +4693,10 @@ tr.linked-template td:not(.top) {
    }
 }
 
-div.ticket-status{
+div.ticket-status, .change-status, .problem-status{
    padding: 5px;
 }
-.ticket-status span{
+.ticket-status, .change-status, .problem-status, span{
    font-size: 13px;
    padding: 3px 4px 3px 4px;
    border-radius: 6px;
@@ -4708,3 +4708,9 @@ div.ticket-status{
 .status-4 {background-color: #F9AD57;}
 .status-5 {background-color: #BBD4F2;}
 .status-6 {background-color: #C0C0C0;}
+.status-7 {background-color: #47c347;}
+.status-8 {background-color: #f4d4ca;}
+.status-9 {background-color: #38998d;}
+.status-10 {background-color: #e0d090;}
+.status-11 {background-color: #e68b8b;}
+.status-12 {background-color: #e3d214;}
