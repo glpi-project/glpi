@@ -63,7 +63,7 @@ Config::detectRootDoc();
 
 $DB = new DB();
 
-$update = new Update($DB);
+$update = new Update($DB, $args);
 $update->initSession();
 
 Session::loadLanguage();
