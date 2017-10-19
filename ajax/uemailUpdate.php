@@ -115,7 +115,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
                                                     'display' => false]);
    } else {
       $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email][]'
-                        value='".$default_email."'>";
+                        value='".htmlentities($default_email, ENT_QUOTES, 'utf-8')."'>";
    }
 
    echo '<br>';
