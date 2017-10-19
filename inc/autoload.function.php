@@ -380,7 +380,8 @@ if (!file_exists($autoload)) {
    }
 }
 if ($needrun) {
-   die('Run "composer install --no-dev" in the glpi tree');
+   die('Run "composer install --no-dev" in the glpi tree.<br>'
+       . 'To install composer please refer to <a href="https://getcomposer.org/">https://getcomposer.org/</a>');
 }
 require_once $autoload;
 
