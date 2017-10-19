@@ -65,6 +65,8 @@ class NotificationMailing implements NotificationInterface {
     * @return boolean
    **/
    static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
+      //drop sanitize...
+      $address = Toolbox::stripslashes_deep($address);
       $isValid = \PHPMailer::ValidateAddress($address);
 
       $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
@@ -142,7 +144,7 @@ class NotificationMailing implements NotificationInterface {
          $data['body_html'] = $options['content_html'];
       }
 
-      $data['recipient']                            = $options['to'];
+      $data['recipient']                            = Toolbox::stripslashes_deep($options['to']);
       $data['recipientname']                        = $options['toname'];
 
       if (!empty($options['messageid'])) {
