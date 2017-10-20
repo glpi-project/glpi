@@ -3113,6 +3113,7 @@ a.copyright {
 
 .timeline_box textarea {
    resize: vertical;
+   width: 97%;
 }
 
 /** FORM **/
