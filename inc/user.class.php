@@ -1470,6 +1470,7 @@ class User extends CommonDBTM {
                }
 
             } else {
+               $val = Toolbox::addslashes_deep($val);
                switch ($k) {
                   case "email1" :
                   case "email2" :
