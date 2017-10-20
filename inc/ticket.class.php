@@ -1607,6 +1607,18 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (!empty($this->input['items_id'])) {
+         $item_ticket = new Item_Ticket();
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               $item_ticket->add(['items_id'      => $items_id,
+                                       'itemtype'      => $itemtype,
+                                       'tickets_id'    => $this->fields['id'],
+                                       '_disablenotif' => true]);
+            }
+         }
+      }
+
       if (count($this->updates)) {
          // Update Ticket Tco
          if (in_array("actiontime", $this->updates)
@@ -1626,18 +1638,6 @@ class Ticket extends CommonITILObject {
                         }
                      }
                   }
-               }
-            }
-         }
-
-         if (!empty($this->input['items_id'])) {
-            $item_ticket = new Item_Ticket();
-            foreach ($this->input['items_id'] as $itemtype => $items) {
-               foreach ($items as $items_id) {
-                  $item_ticket->add(['items_id'      => $items_id,
-                                          'itemtype'      => $itemtype,
-                                          'tickets_id'    => $this->fields['id'],
-                                          '_disablenotif' => true]);
                }
             }
          }
@@ -1838,7 +1838,6 @@ class Ticket extends CommonITILObject {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
-                  $input['items_groups'] = $item->fields['groups_id'];
                   if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
                      $input['items_businesscriticities']
                         = Dropdown::getDropdownName('glpi_businesscriticities',
@@ -2679,6 +2678,7 @@ class Ticket extends CommonITILObject {
 
 
    function getSearchOptionsNew() {
+      global $CFG_GLPI;
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -3075,7 +3075,7 @@ class Ticket extends CommonITILObject {
                                      OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
-      $tab[] = [
+      $newtab = [
          'id'                 => '25',
          'table'              => 'glpi_ticketfollowups',
          'field'              => 'content',
@@ -3089,6 +3089,11 @@ class Ticket extends CommonITILObject {
          ],
          'datatype'           => 'text'
       ];
+      if ($this->getType() == 'Ticket'
+          && $CFG_GLPI["use_rich_text"]) {
+         $newtab['htmltext'] = true;
+      }
+      $tab[] = $newtab;
 
       $tab[] = [
          'id'                 => '36',
@@ -4162,14 +4167,19 @@ class Ticket extends CommonITILObject {
 
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
+         $users_id_assign    = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
          if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
             $users_id_requester = 0;
+         }
+         if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
+            $users_id_assign = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
          $requesttype = $_SESSION['glpidefault_requesttypes_id'];
       } else {
          $users_id_requester = 0;
+         $users_id_assign    = o;
          $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
@@ -4182,7 +4192,7 @@ class Ticket extends CommonITILObject {
                     '_users_id_requester_notif' => ['use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''],
                     '_groups_id_requester'      => 0,
-                    '_users_id_assign'          => 0,
+                    '_users_id_assign'          =>  $users_id_assign,
                     '_users_id_assign_notif'    => ['use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''],
                     '_groups_id_assign'         => 0,
@@ -6035,7 +6045,7 @@ class Ticket extends CommonITILObject {
           && Ticket::isPossibleToAssignType($item->getType())
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
-          && ($item->fields['is_template'] == 0)) {
+            && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))) {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               ['itemtype' => $item->getType(),
@@ -6818,26 +6828,26 @@ class Ticket extends CommonITILObject {
             $timeline[$validation['submission_date']."_validation_".$validations_id]
                = ['type' => 'TicketValidation',
                        'item' => ['id'        => $validations_id,
-                                       'date'      => $validation['submission_date'],
-                                       'content'   => __('Validation request')." => ".$user->getlink().
-                                                      "<br>".$validation['comment_submission'],
-                                       'users_id'  => $validation['users_id'],
-                                       'can_edit'  => $canedit,
-                                       'timeline_position' => $validation['timeline_position']]];
+                                  'date'      => $validation['submission_date'],
+                                  'content'   => __('Validation request')." => ".$user->getlink().
+                                                    "<br>".$validation['comment_submission'],
+                                  'users_id'  => $validation['users_id'],
+                                  'can_edit'  => $canedit,
+                                  'timeline_position' => $validation['timeline_position']]];
 
             if (!empty($validation['validation_date'])) {
                $timeline[$validation['validation_date']."_validation_".$validations_id]
                   = ['type' => 'TicketValidation',
                           'item' => ['id'        => $validations_id,
-                                          'date'      => $validation['validation_date'],
-                                          'content'   => __('Validation request answer')." : ".
-                                                         _sx('status',
-                                                             ucfirst(TicketValidation::getStatus($validation['status'])))
-                                                         ."<br>".$validation['comment_validation'],
-                                          'users_id'  => $validation['users_id_validate'],
-                                          'status'    => "status_".$validation['status'],
-                                          'can_edit'  => $canedit,
-                                          'timeline_position' => $validation['timeline_position']]];
+                                     'date'      => $validation['validation_date'],
+                                     'content'   => __('Validation request answer')." : ".
+                                                       _sx('status',
+                                                           ucfirst(TicketValidation::getStatus($validation['status'])))
+                                                       ."<br>".$validation['comment_validation'],
+                                     'users_id'  => $validation['users_id_validate'],
+                                     'status'    => "status_".$validation['status'],
+                                     'can_edit'  => $canedit,
+                                     'timeline_position' => $validation['timeline_position']]];
             }
          }
       }
@@ -6958,9 +6968,15 @@ class Ticket extends CommonITILObject {
 
          echo "</div>"; //h_date
 
+         $domid = "viewitem{$item['type']}{$item_i['id']}";
+         if ($item['type'] == 'TicketValidation' && isset($item_i['status'])) {
+            $domid .= $item_i['status'];
+         }
+         $domid .= $rand;
+
          echo "<div class='h_content ".$item['type'].
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
-               " id='viewitem".$item['type'].$item_i['id'].$rand."'>";
+               " id='$domid'>";
          if (isset($item_i['can_edit']) && $item_i['can_edit']) {
             echo "<div class='edit_item_content'></div>";
             echo "<span class='cancel_edit_item_content'></span>";
@@ -6969,7 +6985,7 @@ class Ticket extends CommonITILObject {
          if (!in_array($item['type'], ['Document_Item', 'Assign'])
              && $item_i['can_edit']) {
             echo "<span class='fa fa-pencil-square-o edit_item' ";
-            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"viewitem".$item['type'].$item_i['id'].$rand."\")'";
+            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
             echo "></span>";
          }
          if (isset($item_i['requesttypes_id'])

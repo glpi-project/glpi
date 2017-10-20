@@ -34,10 +34,6 @@
 * @brief
 */
 
-if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
-   require_once GLPI_CONFIG_DIR . '/local_define.php';
-}
-
 // Current version of GLPI
 define('GLPI_VERSION', '9.2');
 if (substr(GLPI_VERSION, -4) === '-dev') {
@@ -51,7 +47,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    //for stable version
    define("GLPI_SCHEMA_VERSION", '9.2');
 }
-define('GLPI_MIN_PHP', '5.6.0');
+define('GLPI_MIN_PHP', '5.6.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2017');
 if (!defined('GLPI_DEMO_MODE')) {
    define('GLPI_DEMO_MODE', '0');

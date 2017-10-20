@@ -185,6 +185,14 @@ function _e($str, $domain = 'glpi') {
 function _n($sing, $plural, $nb, $domain = 'glpi') {
    global $TRANSLATE;
 
+   if (is_null($TRANSLATE)) { // before login
+      if ($nb == 0 || $nb > 1) {
+         return $plural;
+      } else {
+         return $sing;
+      }
+   }
+
    return $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
 }
 
@@ -372,7 +380,14 @@ if (!file_exists($autoload)) {
    }
 }
 if ($needrun) {
-   die('Run "composer install --no-dev" in the glpi tree');
+   $getComposerUrl = 'https://getcomposer.org/';
+   if (isCommandLine()) {
+      die('Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
+          . 'To install composer please refer to ' . $getComposerUrl);
+   } else {
+      die('Run "composer install --no-dev" in the glpi tree.<br>'
+          . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>');
+   }
 }
 require_once $autoload;
 

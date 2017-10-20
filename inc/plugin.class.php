@@ -541,7 +541,7 @@ class Plugin extends CommonDBTM {
                      $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                      $do_install = $this->checkVersions($plug['directory']);
 
-                     if (function_exists($function)) {
+                     if ($do_install && function_exists($function)) {
                         ob_start();
                         $do_install = $function();
                         $msg = '';
@@ -1716,7 +1716,7 @@ class Plugin extends CommonDBTM {
       $report = Config::checkExtensions($exts);
       if (count($report['missing'])) {
          foreach (array_keys($report['missing']) as $ext) {
-            echo self::messageMissingRequirement('ext', $ext);
+            echo self::messageMissingRequirement('ext', $ext) . '<br/>';
          }
          return false;
       }
@@ -1739,7 +1739,7 @@ class Plugin extends CommonDBTM {
       $compat = true;
       foreach ($params as $param) {
          if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-            echo self::messageMissingRequirement('glpiparam', $param);
+            echo self::messageMissingRequirement('glpiparam', $param) . '<br/>';
             $compat = false;
          }
       }
@@ -1761,7 +1761,7 @@ class Plugin extends CommonDBTM {
       $compat = true;
       foreach ($params as $param) {
          if (!ini_get($param) || trim(ini_get($param)) == '') {
-            echo self::messageMissingRequirement('param', $param);
+            echo self::messageMissingRequirement('param', $param) . '<br/>';
             $compat = false;
          }
       }
@@ -1783,7 +1783,7 @@ class Plugin extends CommonDBTM {
       $compat = true;
       foreach ($plugins as $plugin) {
          if (!$this->isInstalled($plugin) || !$this->isActivated($plugin)) {
-            echo self::messageMissingRequirement('plugin', $plugin);
+            echo self::messageMissingRequirement('plugin', $plugin) . '<br/>';
             $compat = false;
          }
       }

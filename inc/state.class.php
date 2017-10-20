@@ -260,6 +260,9 @@ class State extends CommonTreeDropdown {
     * @see CommonTreeDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
+      if (!isset($input['states_id'])) {
+         $input['states_id'] = 0;
+      }
       if (!$this->isUnique($input)) {
          Session::addMessageAfterRedirect(
             sprintf(__('%1$s must be unique!'), $this->getType(1)),

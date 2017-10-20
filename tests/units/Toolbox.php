@@ -62,6 +62,11 @@ class Toolbox extends atoum {
 
       $this->string($result)->isIdenticalTo($expected);
 
+      //https://github.com/glpi-project/glpi/issues/2946
+      $original = 'Έρευνα ικανοποίησης - Αιτήματα'; //el_GR
+      $result = \Toolbox::slugify($original);
+      $this->string($result)->startWith('nok_')
+         ->length->isIdenticalTo(10 + strlen('nok_'));
    }
 
    public function dataGetSize() {

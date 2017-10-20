@@ -175,6 +175,12 @@ class DBmysqlIterator extends DbTestCase {
 
       $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar, baz ASC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
+
+      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar DESC, baz ASC']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
    }
 
 

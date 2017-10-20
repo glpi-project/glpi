@@ -314,7 +314,7 @@ class SavedSearch extends CommonDBTM {
 
       $this->fields["users_id"]     = Session::getLoginUserID();
       $this->fields["is_private"]   = 1;
-      $this->fields["is_recursive"] = 0;
+      $this->fields["is_recursive"] = 1;
       $this->fields["entities_id"]  = $_SESSION["glpiactive_entity"];
    }
 
@@ -346,6 +346,7 @@ class SavedSearch extends CommonDBTM {
       $ID = $this->getID();
 
       $this->initForm($ID, $options);
+      $options['formtitle'] = false;
       $this->showFormHeader($options);
 
       if (isset($options['itemtype'])) {
@@ -361,11 +362,15 @@ class SavedSearch extends CommonDBTM {
       }
 
       echo "<tr><th colspan='4'>";
-      if ($ID > 0) {
-         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+      if (!isset($options['ajax'])) {
+         if ($ID > 0) {
+            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+            printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         } else {
+            echo __('New item');
+         }
       } else {
-         echo __('New item');
+         echo __('New saved search');
       }
       echo "</th></tr>";
 
@@ -385,13 +390,21 @@ class SavedSearch extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Visibility')."</td>";
-      echo "<td colspan='3'>";
+      echo "<tr class='tab_bg_2'><td><label for='is_private'>".__('Set personal') . "</label></td>";
       if ($this->canCreate()) {
-         Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
-                                           $this->fields["entities_id"],
-                                           $this->fields["is_recursive"]);
+         echo "<td colspan='3'>";
+         echo "<input type='checkbox' name='is_private' id='is_private' value='1'";
+         if ($this->fields["is_private"] == 1) {
+            echo " checked='checked'";
+         }
+         echo "></td></tr>";
+         echo "<tr class='tab_bg_2'><td>".__('Entity')."</td>";
+         echo "</td><td>";
+         Entity::dropdown(['value' => $this->fields["entities_id"]]);
+         echo "</td><td>". __('Child entities')."</td><td>";
+         Dropdown::showYesNo('is_recursive', $this->fields["is_recursive"]);
       } else {
+         echo "<td colspan='3'>";
          if ($this->fields["is_private"]) {
             echo __('Private');
          } else {

@@ -2539,7 +2539,7 @@ class Html {
       }
       $output .= "</div>";
 
-      $js = '';
+      $js = '$(function(){';
       if ($p['maybeempty'] && $p['canedit']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#showdate".$p['rand']."').val('');
@@ -2590,6 +2590,7 @@ class Html {
       $js .= ",dateFormat: '".$format."'";
 
       $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
+      $js .= "});";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -2737,7 +2738,7 @@ class Html {
       }
       $output .= "</div>";
 
-      $js = "";
+      $js = "$(function(){";
       if ($p['maybeempty'] && $p['canedit']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#showdate".$p['rand']."').val('');
@@ -2793,7 +2794,7 @@ class Html {
       $js .= ",timeFormat: 'HH:mm'";
 
       $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
-
+      $js .= "});";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {

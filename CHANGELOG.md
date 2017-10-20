@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [9.2] Unreleased
+## [9.2] 2017-09-25
 
 ### Added
 - Link knowledge base entries with assets or tickets
