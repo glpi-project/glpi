@@ -35,17 +35,19 @@
 * @brief
 */
 
+// Check PHP version not to have trouble
+// Need to be the very fist step before any include
+if (version_compare(PHP_VERSION, '5.6') < 0) {
+   die('PHP >= 5.6 required');
+}
+
+
 use Glpi\Event;
 
 //Load GLPI constants
 define('GLPI_ROOT', __DIR__);
 include (GLPI_ROOT . "/inc/based_config.php");
 include_once (GLPI_ROOT . "/inc/define.php");
-
-// Check PHP version not to have trouble
-if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
-   die(sprintf("PHP >= %s required", GLPI_MIN_PHP));
-}
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
