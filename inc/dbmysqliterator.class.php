@@ -243,11 +243,21 @@ class DBmysqlIterator implements Iterator, Countable {
             $this->sql .= " ORDER BY ".implode(", ", $cleanorderby);
          } else if (!empty($orderby)) {
             $this->sql .= " ORDER BY ";
-            $tmp = explode(' ', $orderby);
-            $this->sql .= self::quoteName($tmp[0]);
-            // ASC OR DESC added
-            if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
-               $this->sql .= ' '.$tmp[1];
+            $fields = explode(',', $orderby);
+            $first = true;
+            foreach ($fields as $field) {
+               if ($first) {
+                  $first = false;
+               } else {
+                  $this->sql .= ', ';
+               }
+               $field = trim($field);
+               $tmp = explode(' ', $field);
+               $this->sql .= self::quoteName($tmp[0]);
+               // ASC OR DESC added
+               if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
+                  $this->sql .= ' '.$tmp[1];
+               }
             }
          }
 
