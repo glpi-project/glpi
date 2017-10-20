@@ -624,6 +624,7 @@ class Planning extends CommonGLPI {
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
             listDayAltFormat: false,
+            agendaEventMinHeight: 13,
             header: $header,
             views: {
                month: {
