@@ -5796,6 +5796,33 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
       echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
+      if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+           $query_waitapproval = "SELECT COUNT(DISTINCT `glpi_ticketvalidations`.`id`) AS COUNT
+             FROM `glpi_ticketvalidations`
+             WHERE `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
+
+           $result_waitapproval = $DB->fetch_assoc($DB->query($query_waitapproval));
+           $number_waitapproval = $result_waitapproval['COUNT'];
+
+           $opt = array();
+           $opt['reset']         = 'reset';
+           $opt['criteria'][0]['field']      = 55; // validation status
+           $opt['criteria'][0]['searchtype'] = 'equals';
+           $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
+           $opt['criteria'][0]['link']       = 'AND';
+
+           $opt['criteria'][1]['field']      = 59; // validation aprobator
+           $opt['criteria'][1]['searchtype'] = 'equals';
+           $opt['criteria'][1]['value']      = Session::getLoginUserID();
+           $opt['criteria'][1]['link']       = 'AND';
+
+           $link = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
+           echo "<tr class='tab_bg_2'>";
+           echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+               Toolbox::append_params($opt,'&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
+           echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
+       }
+       
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
          echo "<tr class='tab_bg_2'>";
