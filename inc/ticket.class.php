@@ -2678,6 +2678,7 @@ class Ticket extends CommonITILObject {
 
 
    function getSearchOptionsNew() {
+      global $CFG_GLPI;
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -3074,7 +3075,7 @@ class Ticket extends CommonITILObject {
                                      OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
-      $tab[] = [
+      $newtab = [
          'id'                 => '25',
          'table'              => 'glpi_ticketfollowups',
          'field'              => 'content',
@@ -3088,6 +3089,11 @@ class Ticket extends CommonITILObject {
          ],
          'datatype'           => 'text'
       ];
+      if ($this->getType() == 'Ticket'
+          && $CFG_GLPI["use_rich_text"]) {
+         $newtab['htmltext'] = true;
+      }
+      $tab[] = $newtab;
 
       $tab[] = [
          'id'                 => '36',
