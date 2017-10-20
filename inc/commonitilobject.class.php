@@ -2113,6 +2113,30 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Get the ITIL object all status list without solved and closed status
+    *
+    * @since version 9.2.1
+    *
+    * @return array
+   **/
+   static function getNotSolvedStatusArray() {
+      $all = static::getAllStatusArray();
+      foreach (static::getSolvedStatusArray() as $status) {
+         if (isset($all[$status])) {
+            unset($all[$status]);
+         }
+      }
+      foreach (static::getClosedStatusArray() as $status) {
+         if (isset($all[$status])) {
+            unset($all[$status]);
+         }
+      }
+      $nosolved = array_keys($all);
+
+      return $nosolved;
+   }
+
 
    /**
     * Get the ITIL object new status list
