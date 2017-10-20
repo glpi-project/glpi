@@ -3105,18 +3105,7 @@ class Search {
                      break;
 
                   case 'notold' :
-                     $tocheck = $item->getAllStatusArray();
-                     foreach ($item->getSolvedStatusArray() as $status) {
-                        if (isset($tocheck[$status])) {
-                           unset($tocheck[$status]);
-                        }
-                     }
-                     foreach ($item->getClosedStatusArray() as $status) {
-                        if (isset($tocheck[$status])) {
-                           unset($tocheck[$status]);
-                        }
-                     }
-                     $tocheck = array_keys($tocheck);
+                     $tocheck = $item::getNotSolvedStatusArray();
                      break;
                }
             }
