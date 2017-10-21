@@ -425,7 +425,7 @@ class CommonDBTM extends CommonGLPI {
                $query .= " = ".$this->fields[$field];
 
             } else {
-               $query .= " = '".$this->fields[$field]."'";
+               $query .= ' = \''.$DB->escape($this->fields[$field]).'\'';
             }
 
             $query .= " WHERE `id` ='".$this->fields["id"]."'";
@@ -491,7 +491,7 @@ class CommonDBTM extends CommonGLPI {
                if (($this->getType() == 'ProfileRight') && ($values[$i] == '')) {
                   $values[$i] = 0;
                }
-               $query .= "'".$values[$i]."'";
+               $query .= '\''.$DB->escape($values[$i]).'\'';
             }
 
             if ($i != ($nb_fields-1)) {

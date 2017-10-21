@@ -146,7 +146,7 @@ class NotificationEventAjax extends DbTestCase {
       unset($data['send_time']);
       unset($data['messageid']);
       $data['body_text'] = preg_replace(
-         '/(Opening date).+/m',
+         '/Opening date\s+:\s+[-0-9]+\s[:0-9]+/m',
          '$1 OPENING',
          $data['body_text']
       );
