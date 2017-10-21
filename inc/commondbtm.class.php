@@ -425,7 +425,7 @@ class CommonDBTM extends CommonGLPI {
                $query .= " = ".$this->fields[$field];
 
             } else {
-               $query .= " = '".$DB->escape($this->fields[$field])."'";
+               $query .= " = '". $DB->escape($this->fields[$field])."'";
             }
 
             $query .= " WHERE `id` ='".$this->fields["id"]."'";
