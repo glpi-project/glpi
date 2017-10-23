@@ -4555,10 +4555,8 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
-      echo "<div class='center'>";
       $this->showStatsDates();
       $this->showStatsTimes();
-      echo "</div>";
    }
 
    function showStatsDates() {
