@@ -833,7 +833,8 @@ input.submit[type=reset] {
 
    .layout_vsplit.form table.tab_cadre_pager,
    .layout_vsplit.form table.tab_cadre_fixe,
-   .layout_vsplit.form table.tab_cadre_fixehov {
+   .layout_vsplit.form table.tab_cadre_fixehov,
+   .layout_vsplit.form .dates_timelines {
       width: 100%;
       margin: 0;
    }
