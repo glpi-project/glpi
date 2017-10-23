@@ -4585,6 +4585,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function showStatsTimes() {
+      echo "<div class='dates_timelines'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Time', 'Times', Session::getPluralNumber())."</th></tr>";
 
@@ -4629,6 +4630,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table>";
+      echo "</div>";
    }
 
 
