@@ -392,6 +392,10 @@ class Update extends CommonGLPI {
          case "9.2-dev":
             include_once("{$updir}update_91_92.php");
             update91to92();
+
+         case "9.2":
+            include_once("{$updir}update_92_921.php");
+            update92to921();
             break;
 
          case GLPI_VERSION:
