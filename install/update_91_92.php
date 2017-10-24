@@ -852,14 +852,14 @@ function update91to92() {
       $migration->addKey("glpi_savedsearches", 'last_execution_time');
       $migration->addKey("glpi_savedsearches", 'do_count');
       $migration->addKey("glpi_savedsearches", 'last_execution_date');
-
-      //ensure do_count is set to AUTO
-      $migration->addPostQuery("UPDATE `glpi_savedsearches`
-                                SET `do_count` = " . SavedSearch::COUNT_AUTO);
-      $migration->addPostQuery("UPDATE `glpi_savedsearches`
-                                SET `entities_id` = 0
-                                WHERE `entities_id` = -1");
    }
+   //ensure do_count is set to AUTO
+   $migration->addPostQuery("UPDATE `glpi_savedsearches`
+                             SET `do_count` = " . SavedSearch::COUNT_AUTO);
+   $migration->addPostQuery("UPDATE `glpi_savedsearches`
+                             SET `entities_id` = 0
+                             WHERE `entities_id` = -1");
+
 
    if (!countElementsInTable('glpi_rules',
                              ['sub_type' => 'RuleSoftwareCategory',
