@@ -81,22 +81,18 @@ if ($_POST['page'] == 1) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
             array_push($data, ['id'   => $key,
-                                     'text' => strval(stripslashes($val))]);
+                               'text' => strval(stripslashes($val))]);
          }
       }
    }
 }
 
 $values = [];
-if (!empty($_POST['searchText'])) {
-   for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
-      if (strstr($i, $_POST['searchText'])) {
+for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
+   if (!empty($_POST['searchText']) && strstr($i, $_POST['searchText']) || empty($_POST['searchText'])) {
+      if (!in_array($i, $used)) {
          $values[$i] = $i;
       }
-   }
-} else {
-   for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
-      $values[$i] = $i;
    }
 }
 
@@ -109,7 +105,7 @@ if ($one_item < 0 && count($values)) {
          $txt = Dropdown::getValueWithUnit($i, $_POST['unit']);
       }
       array_push($data, ['id'   => $i,
-                               'text' => strval($txt)]);
+                         'text' => strval($txt)]);
       $count++;
    }
 
@@ -126,7 +122,7 @@ if ($one_item < 0 && count($values)) {
          $txt = Dropdown::getValueWithUnit($value, $_POST['unit']);
       }
       array_push($data, ['id'   => $value,
-                               'text' => strval(stripslashes($txt))]);
+                         'text' => strval(stripslashes($txt))]);
       $count++;
    }
 }
