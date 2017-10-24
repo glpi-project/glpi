@@ -561,7 +561,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addAdmin() {
+   final public function addAdmin() {
       $eventclass = $this->event;
       $admin_data = $eventclass::getAdminData();
 
@@ -581,7 +581,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   protected function addItemAuthor() {
+   public function addItemAuthor() {
       $user = new User();
       if ($this->obj->isField('users_id')
           && $user->getFromDB($this->obj->getField('users_id'))) {
@@ -600,7 +600,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addItemGroup() {
+   final public function addItemGroup() {
 
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
@@ -619,7 +619,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addItemGroupSupervisor() {
+   final public function addItemGroupSupervisor() {
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id'] > 0) {
@@ -637,7 +637,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addItemGroupWithoutSupervisor() {
+   final public function addItemGroupWithoutSupervisor() {
 
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
@@ -654,7 +654,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addEntityAdmin() {
+   final public function addEntityAdmin() {
       $eventclass = $this->event;
       $admins_data = $eventclass::getEntityAdminsData($this->entity);
 
@@ -765,7 +765,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $entity
    **/
-   final protected function addGroupsToTargets($entity) {
+   final public function addGroupsToTargets($entity) {
       global $DB;
 
       // Filter groups which can be notified and have members (as notifications are sent to members)
@@ -802,7 +802,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   protected function addNotificationTargets($entity) {
+   public function addNotificationTargets($entity) {
 
       if (Session::haveRight("config", UPDATE)) {
          $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
@@ -822,7 +822,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   protected function addAdditionalTargets($event = '') {
+   public function addAdditionalTargets($event = '') {
    }
 
 
@@ -860,7 +860,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final protected function addUserByField($field, $search_in_object = false) {
+   final public function addUserByField($field, $search_in_object = false) {
       global $DB;
 
       $id = [];
@@ -893,7 +893,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final protected function addItemTechnicianInCharge() {
+   final public function addItemTechnicianInCharge() {
       $this->addUserByField('users_id_tech', true);
    }
 
@@ -903,7 +903,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addItemGroupTechInCharge() {
+   final public function addItemGroupTechInCharge() {
       if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
             if ($val->fields['groups_id_tech'] > 0) {
@@ -919,7 +919,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   final protected function addItemOwner() {
+   final public function addItemOwner() {
       $this->addUserByField('users_id', true);
    }
 
@@ -931,7 +931,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
     */
-   final protected function addForProfile($profiles_id) {
+   final public function addForProfile($profiles_id) {
       global $DB;
 
       $query = $this->getDistinctUserSql().",
