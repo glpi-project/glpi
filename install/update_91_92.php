@@ -890,19 +890,19 @@ function update91to92() {
 
    if ($DB->tableExists('glpi_queuedmails')) {
       $migration->renameTable("glpi_queuedmails", "glpi_queuednotifications");
-      $migration->addPostQuery("UPDATE `glpi_crontasks`
-                                SET `itemtype` = 'QueuedNotification'
-                                WHERE `itemtype` = 'QueuedMail'");
-      $migration->addPostQuery("UPDATE `glpi_crontasks`
-                                SET `name` = 'queuednotification'
-                                WHERE `name` = 'queuedmail'");
-      $migration->addPostQuery("UPDATE `glpi_crontasks`
-                                SET `name` = 'queuednotificationclean'
-                                WHERE `name` = 'queuedmailclean'");
-      $migration->addPostQuery("UPDATE `glpi_profilerights`
-                                SET `name` = 'queuednotification'
-                                WHERE `name` = 'queuedmail'");
    }
+   $migration->addPostQuery("UPDATE `glpi_crontasks`
+                             SET `itemtype` = 'QueuedNotification'
+                             WHERE `itemtype` = 'QueuedMail'");
+   $migration->addPostQuery("UPDATE `glpi_crontasks`
+                             SET `name` = 'queuednotification'
+                             WHERE `name` = 'queuedmail'");
+   $migration->addPostQuery("UPDATE `glpi_crontasks`
+                             SET `name` = 'queuednotificationclean'
+                             WHERE `name` = 'queuedmailclean'");
+   $migration->addPostQuery("UPDATE `glpi_profilerights`
+                             SET `name` = 'queuednotification'
+                             WHERE `name` = 'queuedmail'");
 
    if (isset($current_config['use_mailing']) && !isset($current_config['use_notifications'])) {
       /** Notifications modes */
@@ -929,20 +929,20 @@ function update91to92() {
                   KEY `mode` (`mode`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.2 add table glpi_notifications_notificationtemplates");
+   }
 
-      if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-         $query = "INSERT INTO `glpi_notifications_notificationtemplates`
-                          (`notifications_id`, `mode`, `notificationtemplates_id`)
-                          SELECT `id`, `mode`, `notificationtemplates_id`
-                          FROM `glpi_notifications`";
-         $DB->queryOrDie($query, "9.2 migrate notifications templates");
+   if ($DB->fieldExists("glpi_notifications", "mode", false)) {
+      $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+                       (`notifications_id`, `mode`, `notificationtemplates_id`)
+                       SELECT `id`, `mode`, `notificationtemplates_id`
+                       FROM `glpi_notifications`";
+      $DB->queryOrDie($query, "9.2 migrate notifications templates");
 
-         //migrate any existing mode before removing the field
-         $migration->dropField('glpi_notifications', 'mode');
-         $migration->dropField('glpi_notifications', 'notificationtemplates_id');
+      //migrate any existing mode before removing the field
+      $migration->dropField('glpi_notifications', 'mode');
+      $migration->dropField('glpi_notifications', 'notificationtemplates_id');
 
-         $migration->migrationOneTable("glpi_notifications");
-      }
+      $migration->migrationOneTable("glpi_notifications");
    }
 
    $migration->addField('glpi_queuednotifications', 'mode',
