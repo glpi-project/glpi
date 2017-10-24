@@ -8436,7 +8436,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `is_deleted` (`is_deleted`),
   KEY `name` (`name`),
   KEY `locations_id` (`locations_id`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `ola_waiting_duration` (`ola_waiting_duration`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
