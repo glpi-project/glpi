@@ -144,6 +144,8 @@ function update92to921() {
                            ['after' => 'sla_waiting_duration']);
       $migration->migrationOneTable('glpi_tickets');
    }
+   //this one was missing
+   $migration->addKey('glpi_tickets', 'ola_waiting_duration');
 
    if (!$DB->fieldExists("glpi_tickets", "olas_tto_id", false)) {
       $migration->addField("glpi_tickets", "olas_tto_id", "integer", ['after' => 'ola_waiting_duration']);
