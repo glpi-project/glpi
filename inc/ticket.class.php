@@ -7198,7 +7198,7 @@ class Ticket extends CommonITILObject {
             echo $user->getLink()."&nbsp;";
             $reqdata = getUserName($user->getID(), 2);
             echo Html::showToolTip($reqdata["comment"],
-              array('link' => $reqdata['link']));
+              ['link' => $reqdata['link']]);
          }
 
          echo "</div>"; // h_user
