@@ -739,7 +739,7 @@ function update91to92() {
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
-      $query = "INSERT INTO `glpi_crontasks`
+      $query = "REPLACE INTO `glpi_crontasks`
                         (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                   VALUES ('OlaLevel_Ticket', 'olaticket', 604800, NULL, 0, 1, 3,
@@ -1088,7 +1088,7 @@ function update91to92() {
          Notification_NotificationTemplate::MODE_MAIL.
          "' AND `notificationtemplates_id`='$nottid'";
       if (countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
-         $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+         $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                    VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
          $DB->queryOrDie($query, "9.2 Add saved search alerts notification");
       }
