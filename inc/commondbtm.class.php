@@ -2372,9 +2372,6 @@ class CommonDBTM extends CommonGLPI {
       if (($params['withtemplate'] == 2)
           && $this->isEntityAssign()) {
          $this->fields['entities_id']  = $_SESSION['glpiactive_entity'];
-         if ($this->maybeRecursive()) {
-            $this->fields["is_recursive"] = 0;
-         }
       }
 
       $rand = mt_rand();
