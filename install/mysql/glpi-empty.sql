@@ -5119,7 +5119,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('20','Receiver errors','MailCol
 INSERT INTO `glpi_notificationtemplates` VALUES ('21','Projects','Project','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('22','Project Tasks','ProjectTask','2014-06-18 08:02:09',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('23','Unlock Item request','ObjectLock','2016-02-08 16:57:46',NULL,NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('24','Saved searches alerts','SavedSearch_Alert','2017-04-05 14:87:34',NULL,NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('24','Saved searches alerts','SavedSearch_Alert','2017-04-05 14:57:34',NULL,NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('25','Certificates','Certificate',NULL,'',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
@@ -6949,7 +6949,7 @@ INSERT INTO `glpi_profilerights` VALUES ('841','5','lineoperator','0');
 INSERT INTO `glpi_profilerights` VALUES ('842','6','lineoperator','0');
 INSERT INTO `glpi_profilerights` VALUES ('843','7','lineoperator','31');
 INSERT INTO `glpi_profilerights` VALUES ('844','8','lineoperator','1');
-INSERT INTO `glpi_profilerights` VALUES ('84(','1','devicesimcard_pinpuk','0');
+INSERT INTO `glpi_profilerights` VALUES ('845','1','devicesimcard_pinpuk','0');
 INSERT INTO `glpi_profilerights` VALUES ('846','2','devicesimcard_pinpuk','0');
 INSERT INTO `glpi_profilerights` VALUES ('847','3','devicesimcard_pinpuk','3');
 INSERT INTO `glpi_profilerights` VALUES ('848','4','devicesimcard_pinpuk','3');
