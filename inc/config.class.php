@@ -2666,7 +2666,9 @@ class Config extends CommonDBTM {
    public static function getCache($optname, $context = 'core') {
       global $DB;
 
-      if (defined('TU_USER') && !defined('CACHED_TESTS') || !$DB || !$DB->tableExists(self::getTable())) {
+      if (defined('TU_USER') && !defined('CACHED_TESTS')
+         || !$DB || !$DB->tableExists(self::getTable())
+         || !$DB->fieldExists(self::getTable(), 'context')) {
          return false;
       }
 
