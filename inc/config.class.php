@@ -2664,8 +2664,9 @@ class Config extends CommonDBTM {
     * @return Zend\Cache\Storage\StorageInterface object or false
     */
    public static function getCache($optname, $context = 'core') {
+      global $DB;
 
-      if (defined('TU_USER') && ! defined('CACHED_TESTS')) {
+      if (defined('TU_USER') && !defined('CACHED_TESTS') || !$DB || !$DB->tableExists(self::getTable())) {
          return false;
       }
 
