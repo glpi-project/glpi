@@ -3,6 +3,11 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [9.2.1]
+
+### Added
+- Search engine, added ``itemtype_item_revert`` jointype
+
 ## [9.2] 2017-09-25
 
 ### Added

@@ -608,6 +608,70 @@ class Search extends DbTestCase {
                    ]);
 
    }
+
+   public function addLeftJoinProvider() {
+      return [
+         'itemtype_item_revert' => [[
+            'itemtype'           => 'Project',
+            'table'              => \Contact::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'id',
+            'meta'               => false,
+            'meta_type'          => null,
+            'joinparams'         => [
+               'jointype'          => 'itemtype_item_revert',
+               'specific_itemtype' => 'Contact',
+               'beforejoin'        => [
+                  'table'      => \ProjectTeam::getTable(),
+                  'joinparams' => [
+                     'jointype' => 'child',
+                  ]
+               ]
+            ],
+            'sql' => "LEFT JOIN `glpi_projectteams`
+                        ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`
+                            )
+                      LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
+                        ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
+                        AND `glpi_projectteams`.`itemtype` = 'Contact'
+                         )"
+         ]],
+      ];
+   }
+
+   /**
+    * @dataProvider addLeftJoinProvider
+    */
+   public function testAddLeftJoin($lj_provider) {
+      $already_link_tables = [];
+
+      $sql_join = \Search::addLeftJoin(
+         $lj_provider['itemtype'],
+         getTableForItemType($lj_provider['itemtype']),
+         $already_link_tables,
+         $lj_provider['table'],
+         $lj_provider['linkfield'],
+         $lj_provider['meta'],
+         $lj_provider['meta_type'],
+         $lj_provider['joinparams'],
+         $lj_provider['field']
+      );
+
+      $this->string($this->cleanSQL($sql_join))
+           ->isEqualTo($this->cleanSQL($lj_provider['sql']));
+   }
+
+   private function cleanSQL($sql) {
+      $sql = str_replace("\r\n", ' ', $sql);
+      $sql = str_replace("\n", ' ', $sql);
+      while (strpos($sql, '  ') !== false) {
+         $sql = str_replace('  ', ' ', $sql);
+      }
+
+      $sql = trim($sql);
+
+      return $sql;
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
