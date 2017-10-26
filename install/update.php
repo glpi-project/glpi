@@ -44,6 +44,7 @@ include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
 
 $DB = new DB();
+$DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
 $update = new Update($DB);
 $update->initSession();

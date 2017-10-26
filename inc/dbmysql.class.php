@@ -68,6 +68,8 @@ class DBmysql {
    //to simulate transactions (for tests)
    public $objcreated = [];
 
+   private $cache_disabled = false;
+
    /**
     * Constructor / Connect to the MySQL Database
     *
@@ -393,7 +395,7 @@ class DBmysql {
    function list_fields($table, $usecache = true) {
       static $cache = [];
 
-      if ($usecache && isset($cache[$table])) {
+      if (!$this->cache_disabled && $usecache && isset($cache[$table])) {
          return $cache[$table];
       }
       $result = $this->query("SHOW COLUMNS FROM `$table`");
@@ -766,4 +768,12 @@ class DBmysql {
       return false;
    }
 
+   /**
+    * Disable table cache globally; usefull for migrations
+    *
+    * @return void
+    */
+   public function disableTableCaching() {
+      $this->cache_disabled = true;
+   }
 }
