@@ -2704,10 +2704,8 @@ class Config extends CommonDBTM {
       if (!isset($opt['adapter'])) {
          if (function_exists('apcu_fetch')) {
             $opt['adapter'] = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-            /*
-            } else if (function_exists('wincache_ucache_add')) {
-               $opt['adapter'] = 'wincache';
-            */
+         } else if (function_exists('wincache_ucache_add')) {
+            $opt['adapter'] = 'wincache';
          } else {
             return false;
          }
