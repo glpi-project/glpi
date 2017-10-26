@@ -3784,6 +3784,22 @@ class Search {
                                               $addcondition) ";
                   break;
 
+               case "itemtype_item_revert" :
+                  if (!isset($addmain)) {
+                     $addmain = '';
+                  }
+                  $used_itemtype = $itemtype;
+                  if (isset($joinparams['specific_itemtype'])
+                      && !empty($joinparams['specific_itemtype'])) {
+                     $used_itemtype = $joinparams['specific_itemtype'];
+                  }
+                  // Itemtype join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON (`$nt`.`id` = `$rt`.`".$addmain."items_id`
+                                              AND `$rt`.`".$addmain."itemtype` = '$used_itemtype'
+                                              $addcondition) ";
+                  break;
+
                case "itemtypeonly" :
                   $used_itemtype = $itemtype;
                   if (isset($joinparams['specific_itemtype'])
