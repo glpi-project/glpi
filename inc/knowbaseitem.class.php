@@ -137,8 +137,9 @@ class KnowbaseItem extends CommonDBVisible {
 
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || (($_SESSION["glpiactiveprofile"]["interface"] == "central")
-                  && ($this->fields['users_id'] == Session::getLoginUserID()))
+              || (isset($_SESSION["glpiactiveprofile"])
+                  && $_SESSION["glpiactiveprofile"]["interface"] == "central"
+                  && $this->fields['users_id'] == Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
                        && Session::haveRight(self::$rightname, UPDATE)))
