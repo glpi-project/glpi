@@ -704,8 +704,9 @@ class Document extends CommonDBTM {
                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
                    LEFT JOIN `glpi_entities_knowbaseitems`
                         ON (`glpi_knowbaseitems`.`id` = `glpi_entities_knowbaseitems`.`knowbaseitems_id`)
-                   WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
-                         AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                   WHERE (`glpi_documents_items`.`itemtype` = 'KnowbaseItem'
+                          AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                          OR `glpi_knowbaseitems`.`answer` LIKE '%document.send.php?docid=".$this->fields["id"]."%')
                          AND `glpi_knowbaseitems`.`is_faq` = '1'
                          AND `glpi_entities_knowbaseitems`.`entities_id` = '0'
                          AND `glpi_entities_knowbaseitems`.`is_recursive` = '1'";
