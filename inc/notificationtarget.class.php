@@ -834,7 +834,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   protected function addSpecificTargets($data, $options) {
+   public function addSpecificTargets($data, $options) {
    }
 
 
@@ -1112,7 +1112,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return void
    **/
-   protected function addDataForTemplate($event, $options = []) {
+   public function addDataForTemplate($event, $options = []) {
    }
 
 
