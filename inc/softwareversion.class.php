@@ -329,7 +329,7 @@ class SoftwareVersion extends CommonDBChild {
                echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
                                                                    $data['operatingsystems_id']);
                echo "</td>";
-               echo "<td class='numeric'>$nb</td>";               
+               echo "<td class='numeric'>$nb</td>";
                echo "<td>".nl2br($data['comment'])."</td></tr>\n";
             }
 
