@@ -951,7 +951,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return array [email => sender address, name => sender name]
    **/
-   function getSender() {
+   public function getSender() {
       global $CFG_GLPI;
 
       $sender = [
@@ -992,7 +992,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return the reply to address
    **/
-   final public function getReplyTo($options = []) {
+   public function getReplyTo($options = []) {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
@@ -1001,12 +1001,12 @@ class NotificationTarget extends CommonDBChild {
 
          if (NotificationMailing::isUserAddressValid($data['admin_reply'])) {
             return ['email' => $data['admin_reply'],
-                         'name'  => $data['admin_reply_name']];
+                    'name'  => $data['admin_reply_name']];
          }
       }
       //Entity admin is not defined, return the global admin's address
       return ['email' => $CFG_GLPI['admin_reply'],
-                   'name'  => $CFG_GLPI['admin_reply_name']];
+              'name'  => $CFG_GLPI['admin_reply_name']];
    }
 
 
