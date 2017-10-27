@@ -672,6 +672,37 @@ class Search extends DbTestCase {
 
       return $sql;
    }
+
+   public function testAllAssetsFields() {
+      global $CFG_GLPI, $DB;
+
+      $needed_fields = [
+         'id',
+         'name',
+         'states_id',
+         'locations_id',
+         'serial',
+         'otherserial',
+         'comment',
+         'users_id',
+         'contact',
+         'contact_num',
+         'groups_id',
+         'date_mod',
+         'manufacturers_id',
+         'groups_id_tech',
+         'entities_id',
+      ];
+
+      foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+         $table = getTableForItemtype($itemtype);
+
+         foreach ($needed_fields as $field) {
+            $this->boolean($DB->fieldExists($table, $field))
+                 ->isTrue("$table.$field is missing");
+         }
+      }
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
