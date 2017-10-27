@@ -478,7 +478,11 @@ class Item_OperatingSystem extends CommonDBRelation {
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'license_number',
          'name'               => __('Serial number'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item',
+            'specific_itemtype'  => $itemtype
+         ]
       ];
 
       $tab[] = [
@@ -486,7 +490,11 @@ class Item_OperatingSystem extends CommonDBRelation {
          'table'              => 'glpi_items_operatingsystems',
          'field'              => 'license_id',
          'name'               => __('Product ID'),
-         'datatype'           => 'string'
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item',
+            'specific_itemtype'  => $itemtype
+         ]
       ];
 
       $tab[] = [
