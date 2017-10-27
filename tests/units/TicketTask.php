@@ -81,7 +81,7 @@ class TicketTask extends DbTestCase {
 
       $iterator = $task::getTaskList('todo', false);
       $this->string($iterator->getSql())->isIdenticalTo(
-         'SELECT `glpi_tickettasks`.`id` FROM `glpi_tickettasks` INNER JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) WHERE `glpi_tickettasks`.`state` = 1 AND `glpi_tickettasks`.`users_id_tech` = ' . $uid . ' ORDER BY `glpi_tickettasks`.`date_mod` DESC'
+         'SELECT `glpi_tickettasks`.`id` FROM `glpi_tickettasks` INNER JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) WHERE `glpi_tickets`.`status` IN (1, 2, 3, 4) AND `glpi_tickettasks`.`state` = 1 AND `glpi_tickettasks`.`users_id_tech` = ' . $uid . ' ORDER BY `glpi_tickettasks`.`date_mod` DESC'
       );
       //we create two ones plus the one in bootstrap data
       $this->integer(count($iterator))->isIdenticalTo(3);
@@ -92,7 +92,7 @@ class TicketTask extends DbTestCase {
       $_SESSION['glpigroups'] = [42, 157];
       $iterator = $task::getTaskList('todo', true);
       $this->string($iterator->getSql())->isIdenticalTo(
-         'SELECT `glpi_tickettasks`.`id` FROM `glpi_tickettasks` INNER JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) WHERE `glpi_tickettasks`.`state` = 1 AND `glpi_tickettasks`.`groups_id_tech` IN (42, 157) ORDER BY `glpi_tickettasks`.`date_mod` DESC'
+         'SELECT `glpi_tickettasks`.`id` FROM `glpi_tickettasks` INNER JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) WHERE `glpi_tickets`.`status` IN (1, 2, 3, 4) AND `glpi_tickettasks`.`state` = 1 AND `glpi_tickettasks`.`groups_id_tech` IN (42, 157) ORDER BY `glpi_tickettasks`.`date_mod` DESC'
       );
       //no task for those groups
       $this->integer(count($iterator))->isIdenticalTo(0);

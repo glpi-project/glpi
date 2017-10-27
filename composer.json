@@ -27,6 +27,7 @@
         "tecnickcom/tcpdf": "~6.2",
         "zendframework/zend-cache": "^2.7",
         "zendframework/zend-i18n": "^2.7",
+        "zendframework/zend-serializer": "^2.7",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
         "paragonie/random_compat": "^2.0"

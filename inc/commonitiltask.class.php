@@ -1778,7 +1778,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          ]
       ];
 
-      $prep_req['WHERE'] = [];
+      $prep_req['WHERE'] = [$fk_table.".status" => $itemtype::getNotSolvedStatusArray()];
       switch ($status) {
          case "todo" : // we display the task with the status `todo`
             $prep_req['WHERE'][self::getTable() . '.state'] = Planning::TODO;

@@ -833,7 +833,8 @@ input.submit[type=reset] {
 
    .layout_vsplit.form table.tab_cadre_pager,
    .layout_vsplit.form table.tab_cadre_fixe,
-   .layout_vsplit.form table.tab_cadre_fixehov {
+   .layout_vsplit.form table.tab_cadre_fixehov,
+   .layout_vsplit.form .dates_timelines {
       width: 100%;
       margin: 0;
    }
@@ -3113,6 +3114,7 @@ a.copyright {
 
 .timeline_box textarea {
    resize: vertical;
+   width: 97%;
 }
 
 /** FORM **/
@@ -3423,12 +3425,7 @@ a.copyright {
 
 .timeline_history .h_content.edited {
    max-width: inherit;
-   width: 69%;
    text-align: center;
-}
-
-.timeline_history .right .h_content.edited {
-   width: 100%;
 }
 
 .timeline_history .h_content.edited .tab_cadre_fixe {
