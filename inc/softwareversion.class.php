@@ -330,7 +330,7 @@ class SoftwareVersion extends CommonDBChild {
                                                                    $data['operatingsystems_id']);
                echo "</td>";
                echo "<td class='numeric'>$nb</td>";
-               echo "<td>".$data['comment']."</td></tr>\n";
+               echo "<td>".nl2br($data['comment'])."</td></tr>\n";
             }
 
             echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";
