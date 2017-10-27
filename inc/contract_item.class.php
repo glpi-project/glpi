@@ -205,7 +205,9 @@ class Contract_Item extends CommonDBRelation{
                             ['DISTINCT FIELDS' => "itemtype",
                                   'WHERE'           => "`glpi_contracts_items`.`contracts_id`
                                                          = '".$item->getField('id')."'"]) as $data) {
-         $itemt = getItemForItemtype($data['itemtype']);
+         if (!$itemt = getItemForItemtype($data['itemtype'])) {
+            continue;
+         }
 
          $query = "SELECT COUNT(*) AS cpt
                    FROM `glpi_contracts_items`, `".$itemt->getTable()."`
