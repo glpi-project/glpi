@@ -511,6 +511,8 @@ CREATE TABLE `glpi_certificates` (
   `groups_id_tech` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_groups (id)',
   `locations_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_locations (id)',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `is_autosign` tinyint(1) NOT NULL DEFAULT '0',

@@ -445,6 +445,16 @@ class Certificate extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Alternate username number')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "contact_num");
+      echo "</td>";
+      echo "<td>".__('Alternate username')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "contact");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Self-signed') . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_autosign', $this->fields["is_autosign"]);

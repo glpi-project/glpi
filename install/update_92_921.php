@@ -275,6 +275,12 @@ function update92to921() {
 
       $migration->migrationOneTable("glpi_notifications");
    }
+
+   // add missing fields for certificates working in allassets.php
+   $migration->addField("glpi_certificates", "contact", "string", ['after' => 'manufacturers_id']);
+   $migration->addField("glpi_certificates", "contact_num", "string", ['after' => 'contact']);
+   $migration->migrationOneTable("glpi_certificates");
+
    // end fix 9.2 migration
 
    // ************ Keep it at the end **************
