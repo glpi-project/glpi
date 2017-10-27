@@ -217,8 +217,7 @@ class Report extends CommonGLPI{
 
       // 2. Get some more number data (operating systems per computer)
 
-      $where = "WHERE `is_deleted` = '0'
-                      AND `is_template` = '0' ";
+      $where = "WHERE `is_deleted` = '0' ";
 
       $query = "SELECT COUNT(*) AS count, `glpi_operatingsystems`.`name` AS name
                 FROM `glpi_items_operatingsystems`
