@@ -60,7 +60,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       $restrict = "`glpi_items_operatingsystems`.`operatingsystems_id` = `glpi_operatingsystems`.`id`
                    AND `glpi_items_operatingsystems`.`items_id` = '".$item->getField('id')."'
                    AND `glpi_items_operatingsystems`.`itemtype` = '".$item->getType()."'".
-                   getEntitiesRestrictRequest(" AND ", "glpi_operatingsystems", '', '', true);
+                   getEntitiesRestrictRequest(" AND ", self::getTable(), '', '', true);
 
       $nb = countElementsInTable(['glpi_items_operatingsystems', 'glpi_operatingsystems'], $restrict);
 

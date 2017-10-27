@@ -4644,6 +4644,9 @@ class Ticket extends CommonITILObject {
          }
 
          echo "</td>";
+      } else {
+         echo "<th width='$colsize1%'></th>";
+         echo "<td width='$colsize1%'></td>";
       }
       echo "</tr>";
 

@@ -3105,18 +3105,7 @@ class Search {
                      break;
 
                   case 'notold' :
-                     $tocheck = $item->getAllStatusArray();
-                     foreach ($item->getSolvedStatusArray() as $status) {
-                        if (isset($tocheck[$status])) {
-                           unset($tocheck[$status]);
-                        }
-                     }
-                     foreach ($item->getClosedStatusArray() as $status) {
-                        if (isset($tocheck[$status])) {
-                           unset($tocheck[$status]);
-                        }
-                     }
-                     $tocheck = array_keys($tocheck);
+                     $tocheck = $item::getNotSolvedStatusArray();
                      break;
                }
             }
@@ -3792,6 +3781,22 @@ class Search {
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`id` = `$nt`.`".$addmain."items_id`
                                               AND `$nt`.`".$addmain."itemtype` = '$used_itemtype'
+                                              $addcondition) ";
+                  break;
+
+               case "itemtype_item_revert" :
+                  if (!isset($addmain)) {
+                     $addmain = '';
+                  }
+                  $used_itemtype = $itemtype;
+                  if (isset($joinparams['specific_itemtype'])
+                      && !empty($joinparams['specific_itemtype'])) {
+                     $used_itemtype = $joinparams['specific_itemtype'];
+                  }
+                  // Itemtype join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON (`$nt`.`id` = `$rt`.`".$addmain."items_id`
+                                              AND `$rt`.`".$addmain."itemtype` = '$used_itemtype'
                                               $addcondition) ";
                   break;
 

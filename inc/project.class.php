@@ -625,6 +625,87 @@ class Project extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
+      $tab[] = [
+         'id'                 => 'project_team',
+         'name'               => ProjectTeam::getTypeName(),
+      ];
+
+      $tab[] = [
+         'id'                 => '87',
+         'table'              => User::getTable(),
+         'field'              => 'name',
+         'name'               => User::getTypeName(2),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'          => 'itemtype_item_revert',
+            'specific_itemtype' => 'User',
+            'beforejoin'        => [
+               'table'      => ProjectTeam::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '88',
+         'table'              => Group::getTable(),
+         'field'              => 'completename',
+         'name'               => Group::getTypeName(2),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'          => 'itemtype_item_revert',
+            'specific_itemtype' => 'Group',
+            'beforejoin'        => [
+               'table'      => ProjectTeam::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '89',
+         'table'              => Supplier::getTable(),
+         'field'              => 'name',
+         'name'               => Supplier::getTypeName(2),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'          => 'itemtype_item_revert',
+            'specific_itemtype' => 'Supplier',
+            'beforejoin'        => [
+               'table'      => ProjectTeam::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '90',
+         'table'              => Contact::getTable(),
+         'field'              => 'name',
+         'name'               => Contact::getTypeName(2),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'          => 'itemtype_item_revert',
+            'specific_itemtype' => 'Contact',
+            'beforejoin'        => [
+               'table'      => ProjectTeam::getTable(),
+               'joinparams' => [
+                  'jointype' => 'child',
+               ]
+            ]
+         ]
+      ];
+
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 

@@ -2113,6 +2113,30 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Get the ITIL object all status list without solved and closed status
+    *
+    * @since version 9.2.1
+    *
+    * @return array
+   **/
+   static function getNotSolvedStatusArray() {
+      $all = static::getAllStatusArray();
+      foreach (static::getSolvedStatusArray() as $status) {
+         if (isset($all[$status])) {
+            unset($all[$status]);
+         }
+      }
+      foreach (static::getClosedStatusArray() as $status) {
+         if (isset($all[$status])) {
+            unset($all[$status]);
+         }
+      }
+      $nosolved = array_keys($all);
+
+      return $nosolved;
+   }
+
 
    /**
     * Get the ITIL object new status list
@@ -4531,10 +4555,8 @@ abstract class CommonITILObject extends CommonDBTM {
          return false;
       }
 
-      echo "<div class='center'>";
       $this->showStatsDates();
       $this->showStatsTimes();
-      echo "</div>";
    }
 
    function showStatsDates() {
@@ -4561,6 +4583,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function showStatsTimes() {
+      echo "<div class='dates_timelines'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Time', 'Times', Session::getPluralNumber())."</th></tr>";
 
@@ -4605,6 +4628,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table>";
+      echo "</div>";
    }
 
 
