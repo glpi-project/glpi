@@ -4556,6 +4556,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       $this->showStatsDates();
+      Plugin::doHook('show_item_stats', $this);
       $this->showStatsTimes();
    }
 
