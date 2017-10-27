@@ -4076,6 +4076,11 @@ class Ticket extends CommonITILObject {
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'
                " . ($tt->isMandatoryField('content') ? " required='required'" : '') .">".
                 $content."</textarea></div>";
+
+         if (!$CFG_GLPI["use_rich_text"]) {
+            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         }
+
          Html::file(['editor_id' => $content_id,
                           'showtitle' => false,
                           'multiple' => true]);
