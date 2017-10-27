@@ -100,13 +100,7 @@ class Item_OperatingSystem extends CommonDBRelation {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      switch ($item->getType()) {
-         case 'OperatingSystem' :
-            self::showForOperatingSystem($item);
-            return true;
-         default :
-            self::showForItem($item, $withtemplate);
-      }
+      self::showForItem($item, $withtemplate);
    }
 
    /**
@@ -123,8 +117,6 @@ class Item_OperatingSystem extends CommonDBRelation {
 
       //default options
       $params = ['rand' => mt_rand()];
-
-      $canedit = $item->canAddItem('OperatingSystem') && OperatingSystem::canView();
 
       $columns = [
          __('Name'),
