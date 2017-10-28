@@ -1101,6 +1101,7 @@ class Item_Devices extends CommonDBRelation {
          }
          echo "<td>".$attributs['long name']."</td>";
          echo "<td>";
+         $out = '';
 
          // Can the user view the value of the field ?
          if (!isset($attributs['right'])) {
@@ -1112,6 +1113,7 @@ class Item_Devices extends CommonDBRelation {
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
+            $out.= '<span class="disclosablefield">';
          } else {
             $protected = false;
          }
@@ -1126,28 +1128,29 @@ class Item_Devices extends CommonDBRelation {
             switch ($attributs['datatype']) {
                case 'dropdown':
                   $dropdownType = getItemtypeForForeignKeyField($field);
-                  $out = $dropdownType::dropdown(['value'    => $value,
+                  $out.= $dropdownType::dropdown(['value'    => $value,
                                                   'rand'     => $rand,
                                                   'entity'   => $this->fields["entities_id"],
                                                   'display'  => false]);
                   break;
                default:
                   if (!$protected) {
-                     $out = Html::autocompletionTextField($this, $field, ['value'    => $value,
+                     $out.= Html::autocompletionTextField($this, $field, ['value'    => $value,
                                                                           'rand'     => $rand,
                                                                           'size'     => $attributs['size'],
                                                                           'display'  => false]);
                   } else {
-                     $out = '<input class="protected" type="password" autocomplete="off" name="' . $field . '" ';
+                     $out.= '<input class="protected" type="password" autocomplete="off" name="' . $field . '" ';
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }
             if ($protected) {
-               $out.= '<i class="fa fa-eye pointer disclose" ';
+               $out.= '<span><i class="fa fa-eye pointer" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
                $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-clipboard pointer disclose" ';
-               $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
+               $out.= '<i class="fa fa-clipboard pointer" ';
+               $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i></span>';
+               $out.= '</span>';
             }
             echo $out;
          } else {

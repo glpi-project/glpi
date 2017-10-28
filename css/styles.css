@@ -650,12 +650,23 @@ input.submit[type=reset] {
    padding-right: 50px;
 }
 
-#page .fa.disclose {
+/* #page .fa.disclose {
    position: relative;
    left: -40px;
    top: 2px
 }
-
+ */
+ 
+ #page .disclosablefield {
+ 	position: relative;
+ }
+ 
+ #page .disclosablefield span {
+ 	position: absolute;
+ 	right: 0;
+ 	top: 0;
+ }
+ 
 /* ################--------------- Layout  ---------------#################### */
 .layout_classic.form div.navigationheader,
 .layout_vsplit.form div.navigationheader {
