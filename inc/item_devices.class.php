@@ -1147,7 +1147,7 @@ class Item_Devices extends CommonDBRelation {
             if ($protected) {
                $out.= '<span><i class="fa fa-eye pointer" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
-               $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')"></i>';
+               $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
                $out.= '<i class="fa fa-clipboard pointer" ';
                $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i></span>';
                $out.= '</span>';
