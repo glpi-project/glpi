@@ -428,6 +428,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => __('Name'),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -445,6 +446,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => __('Version'),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -462,6 +464,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => __('Service pack'),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -479,6 +482,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'license_number',
          'name'               => __('Serial number'),
          'datatype'           => 'string',
+         'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'itemtype_item',
             'specific_itemtype'  => $itemtype
@@ -491,6 +495,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'license_id',
          'name'               => __('Product ID'),
          'datatype'           => 'string',
+         'massiveaction'      => false,
          'joinparams'         => [
             'jointype'           => 'itemtype_item',
             'specific_itemtype'  => $itemtype
@@ -503,6 +508,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => __('Architecture'),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -520,6 +526,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => _n('Kernel', 'Kernels', 1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_operatingsystemkernelversions',
@@ -542,6 +549,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => _n('Kernel version', 'Kernel versions', 1),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -559,6 +567,7 @@ class Item_OperatingSystem extends CommonDBRelation {
          'field'              => 'name',
          'name'               => __('Edition'),
          'datatype'           => 'dropdown',
+         'massiveaction'      => false,
          'joinparams'         => [
             'beforejoin'         => [
                'table'              => 'glpi_items_operatingsystems',
@@ -571,5 +580,107 @@ class Item_OperatingSystem extends CommonDBRelation {
       ];
 
       return $tab;
+   }
+
+
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities              = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['itemtypes'] = [
+         'Computer',
+         'Monitor',
+         'NetworkEquipment',
+         'Peripheral',
+         'Phone',
+         'Printer'
+      ];
+      return $specificities;
+   }
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'update':
+            static::showFormMassiveUpdate($ma);
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   static function showFormMassiveUpdate($ma) {
+      global $CFG_GLPI;
+
+      $rand = mt_rand();
+      Dropdown::showFromArray(
+         'os_field', [
+            'OperatingSystem'             => __('Name'),
+            'OperatingSystemVersion'      => __('Version'),
+            'OperatingSystemArchitecture' => __('Architecture'),
+            'OperatingSystemKernel'       => __('Kernel'),
+            'OperatingSystemKernelVersion'=> __('Kernel version'),
+            'OperatingSystemEdition'      => __('Edition')
+         ], [
+            'display_emptychoice'   => true,
+            'rand'                  => $rand
+         ]
+      );
+
+      Ajax::updateItemOnSelectEvent(
+         "dropdown_os_field$rand",
+         "results_os_field$rand",
+         $CFG_GLPI["root_doc"].
+         "/ajax/dropdownMassiveActionOs.php",
+         [
+            'itemtype'  => '__VALUE__',
+            'rand'      => $rand
+         ]
+      );
+      echo "<span id='results_os_field$rand'></span> \n";
+   }
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+
+      switch ($ma->getAction()) {
+         case 'update':
+            $input = $ma->getInput();
+            unset($input['update']);
+            unset($input['os_field']);
+            $ios = new Item_OperatingSystem();
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  if ($item->can($id, UPDATE, $input)) {
+                     $exists = $ios->getFromDBByCrit([
+                        'itemtype'  => $item->getType(),
+                        'items_id'  => $item->getID()
+                     ]);
+                     $ok = false;
+                     if ($exists) {
+                        $ok = $ios->update(['id'  => $ios->getID()] + $input);
+                     } else {
+                        $ok = $ios->add(['itemtype' => $item->getType(), 'items_id' => $item->getID()] + $input);
+                     }
+
+                     if ($ok != false) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                  }
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+               }
+            }
+            break;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
