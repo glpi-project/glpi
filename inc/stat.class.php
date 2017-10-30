@@ -1469,8 +1469,9 @@ class Stat extends CommonGLPI {
       $this->checkEmptyLabels($labels);
       $out = "<h2 class='center'>$title";
       if ($param['csv']) {
+         $options['title'] = $title;
          $csvfilename = $this->generateCsvFile($labels, $series, $options);
-         $out .= " <a href='".$CFG_GLPI['root_doc'];
+         $out .= " <a href='".$CFG_GLPI['root_doc'].
             "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
             "' class='pointer fa fa-file-text'><span class='sr-only'>".__('CSV').
             "</span></a>";
@@ -1634,10 +1635,10 @@ class Stat extends CommonGLPI {
          $headers = [];
          $row_num = 0;
          foreach ($series as $serie) {
-            $headers[$row_num] = $serie['name'];
             $data = $serie['data'];
             //$labels[$row_num] = $label;
             if (is_array($data) && count($data)) {
+               $headers[$row_num] = $serie['name'];
                foreach ($data as $key => $val) {
                   if (!isset($values[$key])) {
                      $values[$key] = [];
@@ -1647,10 +1648,16 @@ class Stat extends CommonGLPI {
                   }
                   $values[$key][$row_num] = $val;
                }
+            } else {
+               $values[$serie['name']][] = $data;
             }
             $row_num++;
          }
          ksort($values);
+
+         if (!count($headers) && $options['title']) {
+            $headers[] = $options['title'];
+         }
 
          // Print labels
          fwrite($fp, $_SESSION["glpicsv_delimiter"]);
