@@ -109,7 +109,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
 
    static public function send(array $data) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $processed = [];
 
@@ -144,24 +144,66 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $mmail->isHTML(true);
             $mmail->Body = '';
             $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
-            $documents = importArrayFromDB($current->fields['documents']);
-            if (is_array($documents) && count($documents)) {
-               if (!$doc = new Document()) {
-                  continue;
-               }
-               foreach ($documents as $docID) {
-                  $doc->getFromDB($docID);
+
+            // manage item attached documents
+            $document_items = $DB->request('glpi_documents_items', [
+               'items_id' => $current->fields['items_id'],
+               'itemtype' => $current->fields['itemtype'],
+            ]);
+            $docs_attached = [];
+            $doc = new Document();
+            if (count($document_items)) {
+               foreach ($document_items as $doc_i_data) {
+                  $doc->getFromDB($doc_i_data['documents_id']);
                   // Add embeded image if tag present in ticket content
                   if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
                                      $current->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
-                     $mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
-                                              Document::getImageTag($doc->fields['tag']),
-                                              $doc->fields['filename'],
-                                              'base64',
-                                              $doc->fields['mime']);
+                     $tag = Document::getImageTag($doc->fields['tag']);
+                     if ($mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                                                  $tag,
+                                                  $doc->fields['filename'],
+                                                  'base64',
+                                                  $doc->fields['mime'])) {
+                        $docs_attached[$doc_i_data['documents_id']] = $tag;
+                     }
                   }
                }
             }
+
+            // manage inline images (and not added as documents in object)
+            $matches = [];
+            if (preg_match_all("/document\.send\.php\?docid=([0-9]+)/",
+                               $current->fields['body_html'],
+                               $matches)) {
+               if (isset($matches[1])) {
+                  foreach ($matches[1] as $docID) {
+                     if (!in_array($docID, $docs_attached)) {
+                        $doc->getFromDB($docID);
+                        $tag = Document::getImageTag($doc->fields['tag']);
+                        if ($mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                                                     $tag,
+                                                     $doc->fields['filename'],
+                                                     'base64',
+                                                     $doc->fields['mime'])) {
+                           $docs_attached[$docID] = $tag;
+                        }
+                     }
+                  }
+               }
+            }
+
+            // replace img[src] and a[href] by cid:tag in html content
+            foreach ($docs_attached as $docID => $tag) {
+               $current->fields['body_html'] = preg_replace([
+                     '/src=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
+                     '/href=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
+                  ], [
+                     "src=\"cid:$tag\"",
+                     "href='".$CFG_GLPI['url_base']."/front/document.send.php?docid=$docID'",
+                  ],
+                  $current->fields['body_html']);
+            }
+
             $mmail->Body   .= $current->fields['body_html'];
             $mmail->AltBody = $current->fields['body_text'];
          }
