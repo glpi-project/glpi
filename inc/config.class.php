@@ -359,7 +359,11 @@ class Config extends CommonDBTM {
 //                                  'max'   => 5000,
 //                                  'step'  => 100,
 //                                  'unit'  => 'millisecond'));
-      echo "<td colspan='2'></td>";
+      echo "</td><td>" . __('Include inactive users in dropdowns') . "</td><td>";
+      if( !isset($CFG_GLPI['include_inactive_users']) ) {
+         $CFG_GLPI['include_inactive_users'] = 0 ;
+      }
+      Dropdown::showYesNo('include_inactive_users', $CFG_GLPI['include_inactive_users']);
       echo "</td></tr>";
 
 //      echo "<tr class='tab_bg_2'>";
