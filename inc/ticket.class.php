@@ -6619,10 +6619,14 @@ class Ticket extends CommonITILObject {
     * @param $content : html content of input
     * @param $item : item to store filenames and tags found for each image in $content
     *
+    * @deprecated 9.2.1, code copied into more generic function NotificationEventMailing::send
+    *
     * @return htlm content
    **/
    function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
+
+      Toolbox::deprecated();
 
       $html = str_replace(['&','&amp;nbsp;'], ['&amp;',' '],
                            html_entity_decode($content, ENT_QUOTES, "UTF-8"));
