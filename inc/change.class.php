@@ -777,6 +777,17 @@ class Change extends CommonITILObject {
                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo __('Approval');
+      echo "</th>";
+      echo "<td>";
+      echo ChangeValidation::getStatus($this->fields['global_validation']);
+      echo "</td>";
+      echo "<th></th>";
+      echo "<td></td>";
+      echo "</tr>";
       echo "</table>";
 
       $this->showActorsPartForm($ID, $options);
