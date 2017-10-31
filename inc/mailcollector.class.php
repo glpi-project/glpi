@@ -1299,9 +1299,9 @@ class MailCollector  extends CommonDBTM {
 
             $text = imap_fetchbody($stream, $uid, $part_number, FT_UID);
 
-            if ($structure->encoding == 3) {
+            if ($structure->encoding == ENCBASE64) {
                $text =  imap_base64($text);
-            } else if ($structure->encoding == 4) {
+            } else if ($structure->encoding == ENCQUOTEDPRINTABLE) {
                $text =  imap_qprint($text);
             }
 
@@ -1325,7 +1325,7 @@ class MailCollector  extends CommonDBTM {
             return $text;
          }
 
-         if ($structure->type == 1) { /* multipart */
+         if ($structure->type == TYPEMULTIPART) {
             $prefix = "";
 
             foreach ($structure->parts as $index => $sub_structure) {
@@ -1371,19 +1371,19 @@ class MailCollector  extends CommonDBTM {
 
       if ($message = imap_fetchbody($this->marubox, $uid, $part, FT_UID)) {
          switch ($structure->encoding) {
-            case 1 :
+            case ENC8BIT :
                $message = imap_8bit($message);
                break;
 
-            case 2 :
+            case ENCBINARY :
                $message = imap_binary($message);
                break;
 
-            case 3 :
+            case ENCBASE64 :
                $message = imap_base64($message);
                break;
 
-            case 4 :
+            case ENCQUOTEDPRINTABLE :
                $message = quoted_printable_decode($message);
                break;
          }
@@ -1407,7 +1407,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function getRecursiveAttached($uid, $path, $maxsize, $structure, $part = "") {
 
-      if ($structure->type == 1) { // multipart
+      if ($structure->type == TYPEMULTIPART) {
          foreach ($structure->parts as $index => $sub_structure) {
             $this->getRecursiveAttached($uid, $path, $maxsize, $sub_structure,
                                         ($part ? $part.".".($index+1) : ($index+1)));
@@ -1439,7 +1439,7 @@ class MailCollector  extends CommonDBTM {
              && $structure->ifparameters) {
 
             // if there are any parameters present in this part
-            if (count($structure->parameters)>0) {
+            if (count($structure->parameters) > 0) {
                foreach ($structure->parameters as $param) {
                   if ((Toolbox::strtoupper($param->attribute) == 'NAME')
                       || (Toolbox::strtoupper($param->attribute) == 'FILENAME')) {
@@ -1450,12 +1450,12 @@ class MailCollector  extends CommonDBTM {
          }
 
          if (empty($filename)
-             && ($structure->type == 5)
+             && ($structure->type == TYPEIMAGE)
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
          } else if (empty($filename)
-                    && ($structure->type == 2)
+                    && ($structure->type == TYPEMESSAGE)
                     && $structure->subtype) {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
@@ -1501,12 +1501,12 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if ((($structure->type == 2) && $structure->subtype)
+         if ((($structure->type == TYPEMESSAGE) && $structure->subtype)
              || ($message = $this->getDecodedFetchbody($structure, $uid, $part))) {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
                // If embeded image, we add a tag
-               if (($structure->type == 5)
+               if (($structure->type == TYPEIMAGE)
                    && $structure->subtype) {
                   end($this->files);
                   $tag = Rule::getUuid();
