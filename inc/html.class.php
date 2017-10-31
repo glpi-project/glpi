@@ -3497,6 +3497,9 @@ class Html {
                         $('.mce-edit-area').addClass('required');
                      }
                   });
+                  editor.on('SaveContent', function (contentEvent) {
+                     contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
+                  });
                }
             },
             plugins: [
