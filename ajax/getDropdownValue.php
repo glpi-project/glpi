@@ -72,7 +72,8 @@ $datas = [];
 
 $displaywith = false;
 if (isset($_POST['displaywith'])) {
-   if (is_array($_POST['displaywith']) && count($_POST['displaywith'])) {
+   if (is_array($_POST['displaywith']) && count($_POST['displaywith'])
+       && ($_POST['itemtype'] != 'Software')) {
       $displaywith = true;
    }
 }
