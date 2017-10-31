@@ -150,7 +150,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                'items_id' => $current->fields['items_id'],
                'itemtype' => $current->fields['itemtype'],
             ]);
-            $docs_attached = [];
+            $inline_docs = [];
             $doc = new Document();
             if (count($document_items)) {
                foreach ($document_items as $doc_i_data) {
@@ -159,33 +159,71 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                   if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
                                      $current->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
                      $tag = Document::getImageTag($doc->fields['tag']);
-                     if ($mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                     $image_path = Document::getImage(
+                        GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                        'mail'
+                     );
+                     if ($mmail->AddEmbeddedImage($image_path,
                                                   $tag,
                                                   $doc->fields['filename'],
                                                   'base64',
                                                   $doc->fields['mime'])) {
-                        $docs_attached[$doc_i_data['documents_id']] = $tag;
+                        $inline_docs[$doc_i_data['documents_id']] = $tag;
                      }
+                  } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
+                     // Add all other attachments, according to configuration
+                     $path = GLPI_DOC_DIR."/".$doc->fields['filepath'];
+                     if (Document::isImage($path)) {
+                        $path = Document::getImage(
+                           $path,
+                           'mail'
+                        );
+                     }
+                     $mmail->addAttachment(
+                        $path,
+                        $doc->fields['filename']
+                     );
                   }
                }
             }
 
             // manage inline images (and not added as documents in object)
             $matches = [];
-            if (preg_match_all("/document\.send\.php\?docid=([0-9]+)/",
+            if (preg_match_all("/<img[^>]*src=(\"|').*document\.send\.php\?docid=([0-9]+)(\"|')[^<]*>/U",
                                $current->fields['body_html'],
                                $matches)) {
-               if (isset($matches[1])) {
-                  foreach ($matches[1] as $docID) {
-                     if (!in_array($docID, $docs_attached)) {
+               if (isset($matches[2])) {
+                  foreach ($matches[2] as $pos=>$docID) {
+                     if (!in_array($docID, $inline_docs)) {
                         $doc->getFromDB($docID);
                         $tag = Document::getImageTag($doc->fields['tag']);
-                        if ($mmail->AddEmbeddedImage(GLPI_DOC_DIR."/".$doc->fields['filepath'],
+
+                        //find width
+                        $width = null;
+                        if (preg_match("/width=[\"|'](\d*(\.\d*)?)[\"|']/", $matches[0][$pos], $wmatches)) {
+                           if (isset($wmatches[1])) {
+                              $width = round($wmatches[1]);
+                           }
+                        }
+                        $height = null;
+                        if (preg_match("/height=[\"|'](\d*(\.\d*)?)[\"|']/", $matches[0][$pos], $hmatches)) {
+                           if (isset($wmatches[1])) {
+                              $height = round($hmatches[1]);
+                           }
+                        }
+
+                        $image_path = Document::getImage(
+                           GLPI_DOC_DIR."/".$doc->fields['filepath'],
+                           'mail',
+                           $width,
+                           $height
+                        );
+                        if ($mmail->AddEmbeddedImage($image_path,
                                                      $tag,
                                                      $doc->fields['filename'],
                                                      'base64',
                                                      $doc->fields['mime'])) {
-                           $docs_attached[$docID] = $tag;
+                           $inline_docs[$docID] = $tag;
                         }
                      }
                   }
@@ -193,7 +231,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             }
 
             // replace img[src] and a[href] by cid:tag in html content
-            foreach ($docs_attached as $docID => $tag) {
+            foreach ($inline_docs as $docID => $tag) {
                $current->fields['body_html'] = preg_replace([
                      '/src=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
                      '/href=["\'].*document\.send\.php\?docid='.$docID.'["\']/',

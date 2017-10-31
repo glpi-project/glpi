@@ -56,7 +56,8 @@ if (isset($_GET['docid'])) { // docid for document
 
          Html::displayErrorAndDie(__('File is altered (bad checksum)'), true); // Doc alterated
       } else {
-         $doc->send();
+         $context = isset($_GET['context']) ? $_GET['context'] : null;
+         $doc->send($context);
       }
    } else {
       Html::displayErrorAndDie(__('Unauthorized access to this file'), true); // No right
@@ -72,9 +73,7 @@ if (isset($_GET['docid'])) { // docid for document
       }
 
       if ($splitter[0] == "_pictures") {
-         $filename = explode(".", $splitter[1]);
-         //check extension
-         if (in_array($filename[1], ['jpg', 'jpeg', 'png', 'bmp', 'gif'])) {
+         if (Document::isImage($_GET['file'])) {
             $send = true;
          }
       }
