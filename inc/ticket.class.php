@@ -7123,11 +7123,10 @@ class Ticket extends CommonITILObject {
 
                echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
                       ."&tickets_id=".$this->getID()."' target='_blank'>$filename";
-               if (in_array($ext, ['jpg', 'jpeg', 'png', 'bmp'])) {
-
+               if (Document::isImage($filename)) {
                   echo "<div class='timeline_img_preview'>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                        ."&tickets_id=".$this->getID()."'/>";
+                        ."&tickets_id=".$this->getID()."&context=timeline'/>";
                   echo "</div>";
                }
                echo "</a>";

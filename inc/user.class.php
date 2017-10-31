@@ -711,7 +711,7 @@ class User extends CommonDBTM {
                   $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
                   self::dropPictureFiles($filename.".".$extension);
 
-                  if (in_array($extension, ['jpg', 'jpeg', 'png', 'bmp', 'gif'])
+                  if (Document::isImage($_FILES['picture']['name'])
                       && Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
                      Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                      // For display

@@ -1170,6 +1170,7 @@ class Toolbox {
 
    /**
     * Resize a picture to the new size
+    * Always produce a JPG file!
     *
     * @since version 0.85
     *
