@@ -460,11 +460,14 @@ class Document extends CommonDBTM {
 
    /**
     * Send a document to navigator
+    *
+    * @param string $context Context to resize image, if any
    **/
-   function send() {
-
+   function send($context = null) {
       $file = GLPI_DOC_DIR."/".$this->fields['filepath'];
-
+      if ($context !== null) {
+         $file = self::getImage($file, $context);
+      }
       Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
    }
 
@@ -1417,4 +1420,82 @@ class Document extends CommonDBTM {
       return self::$tag_prefix.$string.self::$tag_prefix;
    }
 
+   /**
+    * Is file an image
+    *
+    * @since 9.2.1
+    *
+    * @param string $file File name
+    *
+    * @return boolean
+    */
+   public static function isImage($file) {
+      $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+      return (in_array($ext, ['jpg', 'jpeg', 'png', 'bmp', 'gif']));
+   }
+
+   /**
+    * Get image path for a specified context.
+    * Will call image resize if needed.
+    *
+    * @since 9.2.1
+    *
+    * @param string  $path    Original path
+    * @param string  $context Context
+    * @param integer $mwidth  Maximal width
+    * @param integer $mheight Maximal height
+    *
+    * @return string Image path on disk
+    */
+   public static function getImage($path, $context, $mwidth = null, $mheight = null) {
+      if ($mwidth === null && $mheight === null) {
+         switch ($context) {
+            case 'mail':
+               $mwidth = 400;
+               $mheight = 300;
+               break;
+            case 'timeline':
+               $mwidth = 100;
+               $mheight = 100;
+               break;
+            default:
+               throw new \RuntimeException("Unknown context $context!");
+         }
+      }
+
+      //let's see if original image needs resize
+      $img_infos  = getimagesize($path);
+      if (!$img_infos[0] > $mwidth && !$img_infos[1] > $mheight) {
+         //no resize needed
+         return $path;
+      }
+
+      $infos = pathinfo($path);
+      $context_path = sprintf(
+         '%1$s_%2$s-%3$s.%4$s',
+         $infos['dirname'] . '/' . $infos['filename'],
+         $mwidth,
+         $mheight,
+         'jpg' //resizePicture always produces JPG files
+      );
+
+      //let's check if file already exists
+      if (file_exists($context_path)) {
+         return $context_path;
+      }
+
+      //do resize
+      $result = Toolbox::resizePicture(
+         $path,
+         $context_path,
+         $mwidth,
+         $mheight,
+         0,
+         0,
+         0,
+         0,
+         ($mwidth > $mheight ? $mwidth : $mheight)
+      );
+      return ($result ? $context_path : $path);
+   }
 }
