@@ -2322,6 +2322,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   `pin2` varchar(255) NOT NULL DEFAULT '',
   `puk` varchar(255) NOT NULL DEFAULT '',
   `puk2` varchar(255) NOT NULL DEFAULT '',
+  `msin` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `devicesimcards_id` (`devicesimcards_id`),
