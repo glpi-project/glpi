@@ -1421,9 +1421,9 @@ class MailCollector  extends CommonDBTM {
 
          $filename = '';
 
+         // get filename of attachment if present
+         // if there are any dparameters present in this part
          if ($structure->ifdparameters) {
-            // get filename of attachment if present
-            // if there are any dparameters present in this part
             if (count($structure->dparameters) > 0) {
                foreach ($structure->dparameters as $dparam) {
                   if ((Toolbox::strtoupper($dparam->attribute) == 'NAME')
@@ -1434,11 +1434,9 @@ class MailCollector  extends CommonDBTM {
             }
          }
 
-         //if no filename found
+         // if there are any parameters present in this part
          if (empty($filename)
              && $structure->ifparameters) {
-
-            // if there are any parameters present in this part
             if (count($structure->parameters) > 0) {
                foreach ($structure->parameters as $param) {
                   if ((Toolbox::strtoupper($param->attribute) == 'NAME')
@@ -1449,15 +1447,23 @@ class MailCollector  extends CommonDBTM {
             }
          }
 
-         if (empty($filename)
-             && ($structure->type == TYPEIMAGE)
+         // part come without correct filename in [d]parameters - generate trivial one
+         // (inline images case for example)
+         if ((empty($filename) || !Document::isValidDoc($filename))
+             && $structure->type != TYPETEXT
+             && $structure->type != TYPEMULTIPART
+             && $structure->type != TYPEMESSAGE
              && $structure->subtype) {
-            // Embeded image come without filename - generate trivial one
-            $filename = "image_$part.".$structure->subtype;
-         } else if (empty($filename)
-                    && ($structure->type == TYPEMESSAGE)
-                    && $structure->subtype) {
-            // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+            $tmp_filename = "doc_$part.".$structure->subtype;
+            if (Document::isValidDoc($tmp_filename)) {
+               $filename = $tmp_filename;
+            }
+         }
+
+         // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+         if (empty($filename)
+             && $structure->type == TYPEMESSAGE
+             && $structure->subtype) {
             $filename = "msg_$part.EML"; // default trivial one :)!
             if (($message = $this->getDecodedFetchbody($structure, $uid, $part))
                     && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
