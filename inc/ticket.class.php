@@ -5797,11 +5797,6 @@ class Ticket extends CommonITILObject {
       echo "<tr><th>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-           $query_waitapproval = "SELECT COUNT(DISTINCT `glpi_ticketvalidations`.`id`) AS COUNT
-             FROM `glpi_ticketvalidations`
-             WHERE `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
-
-           $result_waitapproval = $DB->fetch_assoc($DB->query($query_waitapproval));
            $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
 
            $opt = [];
@@ -5822,7 +5817,7 @@ class Ticket extends CommonITILObject {
                Toolbox::append_params($opt,'&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
            echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
        }
-       
+
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
          echo "<tr class='tab_bg_2'>";
