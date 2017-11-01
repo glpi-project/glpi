@@ -5802,10 +5802,10 @@ class Ticket extends CommonITILObject {
              WHERE `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
 
            $result_waitapproval = $DB->fetch_assoc($DB->query($query_waitapproval));
-           $number_waitapproval = $result_waitapproval['COUNT'];
+           $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
 
-           $opt = array();
-           $opt['reset']         = 'reset';
+           $opt = [];
+           $opt['reset']      = 'reset';
            $opt['criteria'][0]['field']      = 55; // validation status
            $opt['criteria'][0]['searchtype'] = 'equals';
            $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
