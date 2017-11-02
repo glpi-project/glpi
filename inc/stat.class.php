@@ -1323,19 +1323,21 @@ class Stat extends CommonGLPI {
     *                    ['name' => 'a name', 'data' => []],
     *                    ['name' => 'another name', 'data' => []]
     *                 ]
-    * @param integer  $witdh    Graph width. Defaults to 900
+    * @param array    $options  Options
     * @param boolean  $display  Whether to display directly; defauts to true
     *
     * @return void
     */
    public function displayLineGraph($title, $labels, $series, $options = null, $display = true) {
+      global $CFG_GLPI;
 
       $param = [
          'width'   => 900,
          'height'  => 300,
          'tooltip' => true,
          'legend'  => true,
-         'animate' => true
+         'animate' => true,
+         'csv'     => true
       ];
 
       if (is_array($options) && count($options)) {
@@ -1346,7 +1348,15 @@ class Stat extends CommonGLPI {
 
       $slug = str_replace('-', '_', Toolbox::slugify($title));
       $this->checkEmptyLabels($labels);
-      $out = "<h2 class='center'>$title</h2>";
+      $out = "<h2 class='center'>$title";
+      if ($param['csv']) {
+         $csvfilename = $this->generateCsvFile($labels, $series, $options);
+         $out .= " <a href='".$CFG_GLPI['root_doc'].
+            "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
+            "' class='pointer fa fa-file-text'><span class='sr-only'>".__('CSV').
+            "</span></a>";
+      }
+      $out .= "</h2>";
       $out .= "<div id='$slug' class='chart'></div>";
       Html::requireJs('charts');
       $out .= "<script type='text/javascript'>
@@ -1438,14 +1448,35 @@ class Stat extends CommonGLPI {
     *                    ['name' => 'a name', 'data' => []],
     *                    ['name' => 'another name', 'data' => []]
     *                 ]
+    * @param array    $options  Options
     * @param boolean  $display  Whether to display directly; defauts to true
     *
     * @return void
     */
-   public function displayPieGraph($title, $labels, $series, $display = true) {
+   public function displayPieGraph($title, $labels, $series, $options = [], $display = true) {
+      global $CFG_GLPI;
+      $param = [
+         'csv'     => true
+      ];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
       $slug = str_replace('-', '_', Toolbox::slugify($title));
       $this->checkEmptyLabels($labels);
-      $out = "<h2 class='center'>$title</h2>";
+      $out = "<h2 class='center'>$title";
+      if ($param['csv']) {
+         $options['title'] = $title;
+         $csvfilename = $this->generateCsvFile($labels, $series, $options);
+         $out .= " <a href='".$CFG_GLPI['root_doc'].
+            "/front/graph.send.php?file=$csvfilename' title='".__s('CSV').
+            "' class='pointer fa fa-file-text'><span class='sr-only'>".__('CSV').
+            "</span></a>";
+      }
+      $out .= "</h2>";
       $out .= "<div id='$slug' class='chart'></div>";
       $out .= "<script type='text/javascript'>
                   $(function() {
@@ -1582,6 +1613,72 @@ class Stat extends CommonGLPI {
             $label = '-';
          }
       }
+   }
+
+   /**
+    * Generates te CSV file
+    *
+    * @param array  $labels  Labels
+    * @param array  $series  Series
+    * @param array  $options Options
+    *
+    * @return string filename
+    */
+   private function generateCsvFile($labels, $series, $options = []) {
+      $uid = Session::getLoginUserID(false);
+      $csvfilename = $uid.'_'.mt_rand().'.csv';
+
+      // Render CSV
+      if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
+         // reformat datas
+         $values  = [];
+         $headers = [];
+         $row_num = 0;
+         foreach ($series as $serie) {
+            $data = $serie['data'];
+            //$labels[$row_num] = $label;
+            if (is_array($data) && count($data)) {
+               $headers[$row_num] = $serie['name'];
+               foreach ($data as $key => $val) {
+                  if (!isset($values[$key])) {
+                     $values[$key] = [];
+                  }
+                  if (isset($options['datatype']) && $options['datatype'] == 'average') {
+                     $val = round($val, 2);
+                  }
+                  $values[$key][$row_num] = $val;
+               }
+            } else {
+               $values[$serie['name']][] = $data;
+            }
+            $row_num++;
+         }
+         ksort($values);
+
+         if (!count($headers) && $options['title']) {
+            $headers[] = $options['title'];
+         }
+
+         // Print labels
+         fwrite($fp, $_SESSION["glpicsv_delimiter"]);
+         foreach ($headers as $val) {
+            fwrite($fp, $val.$_SESSION["glpicsv_delimiter"]);
+         }
+         fwrite($fp, "\n");
+
+         //print values
+         foreach ($values as $key => $data) {
+            fwrite($fp, $key.$_SESSION["glpicsv_delimiter"]);
+            foreach ($data as $value) {
+               fwrite($fp, $value.$_SESSION["glpicsv_delimiter"]);
+            }
+            fwrite($fp, "\n");
+         }
+
+         fclose($fp);
+         return $csvfilename;
+      }
+      return false;
    }
 }
 
