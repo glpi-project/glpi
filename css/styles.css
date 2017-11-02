@@ -650,10 +650,14 @@ input.submit[type=reset] {
    padding-right: 50px;
 }
 
-#page .fa.disclose {
+#page .disclosablefield {
    position: relative;
-   left: -40px;
-   top: 2px
+}
+
+#page .disclosablefield span {
+   position: absolute;
+   right: 0;
+   top: 0;
 }
 
 /* ################--------------- Layout  ---------------#################### */
