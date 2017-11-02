@@ -1195,6 +1195,11 @@ class Html {
          }
       }
 
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         echo Html::css('lib/jqueryplugins/rateit/rateit.css');
+         Html::requireJs('rateit');
+      }
+
       //file upload is required... almost everywhere.
       Html::requireJs('fileupload');
 
