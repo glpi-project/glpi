@@ -73,7 +73,10 @@ $datas = [];
 $displaywith = false;
 if (isset($_POST['displaywith'])) {
    if (is_array($_POST['displaywith']) && count($_POST['displaywith'])) {
-      $displaywith = true;
+      $table = getTableForItemType($_POST['itemtype']);
+      if ($DB->FieldExists($table, 'otherserial')) {
+         $displaywith = true;
+      }
    }
 }
 
