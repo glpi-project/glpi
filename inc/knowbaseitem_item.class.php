@@ -303,13 +303,21 @@ class KnowbaseItem_Item extends CommonDBRelation {
       global $DB;
 
       $options = [
-         'FROM'   => ['glpi_knowbaseitems_items', 'glpi_knowbaseitems'],
-         'FIELDS' => ['glpi_knowbaseitems_items' => '*'],
-         'FKEY'   => [
+         'FROM'      => ['glpi_knowbaseitems_items', 'glpi_knowbaseitems'],
+         'FIELDS'    => ['glpi_knowbaseitems_items' => '*'],
+         'FKEY'      => [
             'glpi_knowbaseitems_items' => 'knowbaseitems_id',
             'glpi_knowbaseitems'       => 'id'
          ],
-         'ORDER'  => ['itemtype', 'items_id DESC']
+         'ORDER'     => ['itemtype', 'items_id DESC'],
+         'GROUPBY'   => [
+            'glpi_knowbaseitems_items.id',
+            'glpi_knowbaseitems_items.knowbaseitems_id',
+             'glpi_knowbaseitems_items.itemtype',
+             'glpi_knowbaseitems_items.items_id',
+             'glpi_knowbaseitems_items.date_creation',
+             'glpi_knowbaseitems_items.date_mod'
+         ]
       ];
       $where = [];
 
