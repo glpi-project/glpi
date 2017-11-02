@@ -2497,6 +2497,9 @@ class Toolbox {
          //prevent empty slugs; see https://github.com/glpi-project/glpi/issues/2946
          //harcoded prefix string because html @id must begin with a letter
          $string = 'nok_' . Toolbox::getRandomString(10);
+      } else if (ctype_digit(substr($string, 0, 1))) {
+         //starts with a number; not ok to be used as an html id attribute
+         $string = 'slug_' . $string;
       }
       return $string;
    }
