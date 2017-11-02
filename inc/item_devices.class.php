@@ -1099,8 +1099,6 @@ class Item_Devices extends CommonDBRelation {
          if (($even % 2) == 0) {
             echo "<tr class='tab_bg_1'>";
          }
-         echo "<td>".$attributs['long name']."</td>";
-         echo "<td>";
          $out = '';
 
          // Can the user view the value of the field ?
@@ -1110,6 +1108,27 @@ class Item_Devices extends CommonDBRelation {
             $canRead = (Session::haveRightsOr($attributs['right'], [READ, UPDATE]));
          }
 
+         if (!isset($attributs['datatype'])) {
+            $attributs['datatype'] = 'text';
+         }
+
+         $rand = mt_rand();
+         echo "<td>";
+         if ($canRead) {
+            switch ($attributs['datatype']) {
+               case 'dropdown':
+                  $fieldType = 'dropdown';
+                  break;
+
+               default:
+                  $fieldType = 'textfield';
+            }
+            echo "<label for='${fieldType}_$field$rand'>".$attributs['long name']."</label>";
+         } else {
+            echo $attributs['long name'];
+         }
+         echo "</td><td>";
+
          // Do the field needs a user action to display ?
          if (isset($attributs['protected']) && $attributs['protected']) {
             $protected = true;
@@ -1118,13 +1137,14 @@ class Item_Devices extends CommonDBRelation {
             $protected = false;
          }
 
-         if (!isset($attributs['datatype'])) {
-            $attributs['datatype'] = 'text';
+         if (isset($attributs['tooltip']) && strlen($attributs['tooltip']) > 0) {
+            $tooltip = $attributs['tooltip'];
+         } else {
+            $tooltip = null;
          }
 
          if ($canRead) {
             $value = $this->fields[$field];
-            $rand = mt_rand();
             switch ($attributs['datatype']) {
                case 'dropdown':
                   $dropdownType = getItemtypeForForeignKeyField($field);
@@ -1144,12 +1164,21 @@ class Item_Devices extends CommonDBRelation {
                      $out.= 'id="' . $field . $rand . '" value="' . $value . '">';
                   }
             }
+            if ($tooltip !== null) {
+               $comment_id      = Html::cleanId("comment_".$field.$rand);
+               $link_id         = Html::cleanId("comment_link_".$field.$rand);
+               $options_tooltip = ['contentid' => $comment_id,
+                  'linkid'    => $link_id,
+                  'display'   => false];
+               $out.= '&nbsp;'.Html::showToolTip($tooltip, $options_tooltip);
+            }
             if ($protected) {
-               $out.= '<span><i class="fa fa-eye pointer" ';
+               $out.= '<span><i class="fa fa-eye pointer disclose" ';
                $out.= 'onmousedown="showField(\'' . $field . $rand . '\')" ';
-               $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
-               $out.= '<i class="fa fa-clipboard pointer" ';
-               $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i></span>';
+               $out.= 'onmouseup="hideField(\'' . $field . $rand . '\')" ';
+               $out.= 'onmouseout="hideField(\'' . $field . $rand . '\')"></i>';
+               $out.= '<i class="fa fa-clipboard pointer disclose" ';
+               $out.= 'onclick="copyToClipboard(\'' . $field . $rand . '\')"></i>';
                $out.= '</span>';
             }
             echo $out;

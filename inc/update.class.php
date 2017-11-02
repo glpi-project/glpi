@@ -403,6 +403,7 @@ class Update extends CommonGLPI {
             update92to93();
             break;
 
+         case "9.2.1":
          case GLPI_VERSION:
          case GLPI_SCHEMA_VERSION:
             break;
