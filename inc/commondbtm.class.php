@@ -4826,6 +4826,7 @@ class CommonDBTM extends CommonGLPI {
             $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'),
                                                 stripslashes($doc->fields["name"]),
                                                 stripslashes($doc->fields["filename"]));
+            $docadded[$docID]['filepath'] = $doc->fields["filepath"];
 
             // for sub item, attach to document to parent item
             $item_fordocitem = $this;
