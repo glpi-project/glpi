@@ -36,7 +36,7 @@ use \atoum;
 
 use \DbTestCase;
 
-/* Test for inc/telemetry.class.php */
+/* Test for inc/telemetry.class.php NOT requiring the Web server*/
 
 class Telemetry extends DbTestCase {
 
@@ -67,6 +67,9 @@ class Telemetry extends DbTestCase {
       $this->string($result['uuid'])
          ->hasLength(40);
       $expected['uuid'] = $result['uuid'];
+      $this->array($result['plugins'])
+         ->hasSize(count(glob(GLPI_ROOT . "/plugins/*", GLOB_ONLYDIR)));
+      $expected['plugins'] = $result['plugins'];
       $this->array($result)->isIdenticalTo($expected);
 
       $plugins = new \Plugin();
@@ -159,15 +162,6 @@ class Telemetry extends DbTestCase {
       $this->array($infos)->isIdenticalTo($expected);
    }
 
-   public function testGrabWebserverInfos() {
-      $infos = \Telemetry::grabWebserverInfos();
-      $this->array($infos)
-         ->hasSize(2)
-         ->hasKeys(['engine', 'version']);
-      $this->string($infos['engine'])->isNotNull();
-      $this->string($infos['version'])->isNotNull();
-   }
-
    public function testGrabPhpInfos() {
       $expected = [
          'version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
@@ -193,29 +187,5 @@ class Telemetry extends DbTestCase {
       ];
 
       $this->array(\Telemetry::grabOsInfos())->isIdenticalTo($expected);
-   }
-
-   public function testGetTelemetryInfos() {
-      $infos = \Telemetry::getTelemetryInfos();
-      $this->array($infos)->keys->isEqualTo([
-         'glpi',
-         'system'
-      ]);
-
-      $this->array($infos['glpi'])->keys->isEqualTo([
-         'uuid',
-         'version',
-         'plugins',
-         'default_language',
-         'install_mode',
-         'usage'
-      ]);
-
-      $this->array($infos['system'])->keys->isEqualTo([
-         'db',
-         'web_server',
-         'php',
-         'os'
-      ]);
    }
 }
