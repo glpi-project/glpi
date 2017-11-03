@@ -22,7 +22,7 @@ before_script:
   - php -S localhost:8088 tests/router.php &>/dev/null &
   # LDAP stuff
   - phpenv config-add tests/enable-ldap.ini
-  - ./tests/LDAP/ldap_fixtures.sh
+  - ./tests/LDAP/ldap_fixtures.sh > /dev/null
   #APCu
   - phpenv config-add tests/enable-apcu.ini
 script:
