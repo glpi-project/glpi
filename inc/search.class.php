@@ -4776,6 +4776,27 @@ class Search {
                } else {
                   return "&nbsp;";
                }
+               case 'glpi_ticketfollowups.content' :
+                     $line_delimiter = '<hr>';
+                     $value = '';
+                     $outdata = [];
+                     for($i=0;$i<$data[$num]['count'];$i++) {
+                         if(!empty($data[$num][$i]['name']))
+                             $outdata[] = $data[$num][$i]['name'];
+                     }
+                     $outdata = array_reverse($outdata);
+                     foreach($outdata as $v)
+                         $value .= $v.$line_delimiter;
+
+                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
+                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
+                     $value = '<div style="overflow-y: scroll; width: 350px; height: 200px; font-size: 11px;">' . $value . '</div>';
+                     $valTip = "&nbsp;&nbsp;" . Html::showToolTip($value, ['img' => $CFG_GLPI["root_doc"] . "/pics/list-small.png",
+                             'display' => false,
+                             'autoclose' => false,
+                             'onclick' => true]);
+                     $out = "</div>" . $valTip . " (".count($outdata).")\n";
+                     return $out;
          }
       }
 
