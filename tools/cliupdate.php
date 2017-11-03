@@ -44,6 +44,7 @@ if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
 }
 
+$args = [];
 if ($_SERVER['argc']>1) {
    for ($i=1; $i<count($_SERVER['argv']); $i++) {
       $it           = explode("=", $argv[$i], 2);
