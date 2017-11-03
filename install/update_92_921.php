@@ -325,6 +325,29 @@ function update92to921() {
    $migration->addField('glpi_items_devicesimcards', 'is_recursive', 'bool', ['after' => 'entities_id', 'value' => '0']);
    $migration->addKey('glpi_items_devicesimcards', 'is_recursive');
 
+   $migration->addField('glpi_items_operatingsystems', 'is_recursive', "tinyint(1) NOT NULL DEFAULT '0'",
+                        ['after' => 'entities_id']);
+   $migration->addKey('glpi_items_operatingsystems', 'is_recursive');
+   $migration->migrationOneTable('glpi_items_operatingsystems');
+
+   //fix OS entities_id and is_recursive
+   $items = [
+      'Computer'           => 'glpi_computers',
+      'Monitor'            => 'glpi_monitors',
+      'NetworkEquipment'   => 'glpi_networkequipments',
+      'Peripheral'         => 'glpi_peripherals',
+      'Phone'              => 'glpi_phones',
+      'Printer'            => 'glpi_printers'
+   ];
+   foreach ($items as $itemtype => $table) {
+      $migration->addPostQuery(
+         "UPDATE glpi_items_operatingsystems AS ios
+            LEFT JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
+            SET c.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
+         "
+      );
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
