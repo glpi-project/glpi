@@ -54,6 +54,7 @@
     "scripts": {
         "test": "vendor/bin/atoum --debug --force-terminal --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/units",
         "testapi": "vendor/bin/atoum --debug --force-terminal --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/api",
+        "cs": "vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./",
         "post-install-cmd": [
            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
         ],
