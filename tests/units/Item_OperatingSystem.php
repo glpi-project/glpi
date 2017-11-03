@@ -69,7 +69,7 @@ class Item_OperatingSystem extends DbTestCase {
    public function testAttachComputer() {
       $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      $objects = $this->createDdObjects();;
+      $objects = $this->createDdObjects();
       $ios = new \Item_OperatingSystem();
       $input = [
          'itemtype'                          => $computer->getType(),
@@ -105,7 +105,7 @@ class Item_OperatingSystem extends DbTestCase {
          (int)\Item_OperatingSystem::countForItem($computer)
       )->isIdenticalTo(1);
 
-      $objects = $this->createDdObjects();;
+      $objects = $this->createDdObjects();
       $ios = new \Item_OperatingSystem();
       $input = [
          'itemtype'                          => $computer->getType(),
@@ -141,7 +141,7 @@ class Item_OperatingSystem extends DbTestCase {
          )->contains('operatingsystems_id');
       }
 
-      $objects = $this->createDdObjects();;
+      $objects = $this->createDdObjects();
       $ios = new \Item_OperatingSystem();
       $input = [
          'itemtype'                          => $computer->getType(),
@@ -166,7 +166,7 @@ class Item_OperatingSystem extends DbTestCase {
          )->contains('operatingsystems_id');
       }
 
-      $objects = $this->createDdObjects();;
+      $objects = $this->createDdObjects();
       $ios = new \Item_OperatingSystem();
       $input = [
          'itemtype'                          => $computer->getType(),
@@ -191,5 +191,77 @@ class Item_OperatingSystem extends DbTestCase {
             }
          )->notContains('operatingsystems_id');
       }
+   }
+
+   public function testEntityAccess() {
+      $this->login();
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
+      $this->setEntity('_test_root_entity', true);
+
+      $computer = new \Computer();
+      $this->integer(
+         (int)$computer->add([
+            'name'         => 'Test Item/OS',
+            'entities_id'  => $eid,
+            'is_recursive' => 0
+         ])
+      )->isGreaterThan(0);
+
+      $os = new \OperatingSystem();
+      $this->integer(
+         (int)$os->add([
+            'name' => 'Test OS'
+         ])
+      )->isGreaterThan(0);
+
+      $ios = new \Item_OperatingSystem();
+      $this->integer(
+         (int)$ios->add([
+            'operatingsystems_id'   => $os->getID(),
+            'itemtype'              => 'Computer',
+            'items_id'              => $computer->getID()
+         ])
+      )->isGreaterThan(0);
+      $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
+
+      $this->array($ios->fields)
+         ->string['operatingsystems_id']->isIdenticalTo((string)$os->getID())
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['items_id']->isIdenticalTo((string)$computer->getID())
+         ->string['entities_id']->isIdenticalTo($eid)
+         ->string['is_recursive']->isIdenticalTo('0');
+
+      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+
+      //not recursive
+      $this->setEntity('Root Entity', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+      $this->setEntity('_test_child_1', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isFalse();
+      $this->setEntity('_test_child_2', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isFalse();
+
+      $this->setEntity('_test_root_entity', true);
+      $this->boolean(
+         (bool)$computer->update([
+            'id'           => $computer->getID(),
+            'is_recursive' => 1
+         ])
+      )->isTrue();
+      $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
+      $this->array($ios->fields)
+         ->string['operatingsystems_id']->isIdenticalTo((string)$os->getID())
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['items_id']->isIdenticalTo((string)$computer->getID())
+         ->string['entities_id']->isIdenticalTo($eid)
+         ->string['is_recursive']->isIdenticalTo('1');
+
+      //not recursive
+      $this->setEntity('Root Entity', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+      $this->setEntity('_test_child_1', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
+      $this->setEntity('_test_child_2', true);
+      $this->boolean($ios->can($ios->getID(), READ))->isTrue();
    }
 }
