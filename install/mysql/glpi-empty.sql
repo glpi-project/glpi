@@ -1105,6 +1105,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `items_id` (`items_id`),
   KEY `item` (`itemtype`,`items_id`),
@@ -1117,6 +1118,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`, `operatingsystems_id`, `operatingsystemarchitectures_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
