@@ -2552,13 +2552,20 @@ class Toolbox {
                                  Html::entity_decode_deep($content_text), $matches);
                   foreach ($matches[0] as $match_img) {
                      //retrieve dimensions
-                     $width = $height = 50;
+                     $width = $height = null;
                      preg_match_all('/(width|height)=\\\"([^"]*)\\\"/i', $match_img, $attributes);
                      if (isset($attributes[1][0])) {
                         ${$attributes[1][0]} = $attributes[2][0];
                      }
                      if (isset($attributes[1][0])) {
                         ${$attributes[1][1]} = $attributes[2][1];
+                     }
+
+                     if ($width == null || $height == null) {
+                        $path = GLPI_DOC_DIR."/".$image['filepath'];
+                        $img_infos  = getimagesize($path);
+                        $width = $img_infos[0];
+                        $height = $img_infos[1];
                      }
 
                      // replace image
