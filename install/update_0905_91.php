@@ -740,44 +740,56 @@ function update0905to91() {
                      'end_of_working_day'] as $field) {
          $migration->dropField('glpi_slas', $field);
       }
+   }
 
-      // Slalevels changes
+   // Slalevels changes
+   if ($DB->fieldExists('glpi_slalevels', 'slas_id')) {
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
       $migration->migrationOneTable('glpi_slalevels');
       $migration->dropKey('glpi_slalevels', 'slas_id');
       $migration->addKey('glpi_slalevels', 'slts_id');
+   }
 
-      // Ticket changes
+   // Ticket changes
+   if ($DB->fieldExists('glpi_tickets', 'slas_id')) {
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
-      $migration->migrationOneTable('glpi_slalevels');
+      $migration->migrationOneTable('glpi_tickets');
       $migration->dropKey('glpi_tickets', 'slas_id');
       $migration->addKey('glpi_tickets', 'slts_ttr_id');
+   }
 
+   if (!$DB->fieldExists('glpi_tickets', 'slts_tto_id')) {
       $migration->addField("glpi_tickets", "slts_tto_id", "integer", ['after' => 'slts_ttr_id']);
-      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => 'due_date']);
       $migration->addKey('glpi_tickets', 'slts_tto_id');
+   }
+
+   if (!$DB->fieldExists('glpi_tickets', 'time_to_own')) {
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => 'due_date']);
       $migration->addKey('glpi_tickets', 'time_to_own');
+   }
+
+   if ($DB->fieldExists('glpi_tickets', 'slalevels_id')) {
       $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
       $migration->migrationOneTable('glpi_tickets');
       $migration->dropKey('glpi_tickets', 'slalevels_id');
       $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
-
-      // Unique key for slalevel_ticket
-      $migration->addKey('glpi_slalevels_tickets', ['tickets_id', 'slalevels_id'],
-                         'unicity', 'UNIQUE');
-
-      // Sla rules criterias migration
-      $DB->queryOrDie("UPDATE `glpi_rulecriterias`
-                       SET `criteria` = 'slts_ttr_id'
-                       WHERE `criteria` = 'slas_id'",
-                      "SLA rulecriterias migration");
-
-      // Sla rules actions migration
-      $DB->queryOrDie("UPDATE `glpi_ruleactions`
-                       SET `field` = 'slts_ttr_id'
-                       WHERE `field` = 'slas_id'",
-                      "SLA ruleactions migration");
    }
+
+   // Unique key for slalevel_ticket
+   $migration->addKey('glpi_slalevels_tickets', ['tickets_id', 'slalevels_id'],
+                        'unicity', 'UNIQUE');
+
+   // Sla rules criterias migration
+   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
+                     SET `criteria` = 'slts_ttr_id'
+                     WHERE `criteria` = 'slas_id'",
+                     "SLA rulecriterias migration");
+
+   // Sla rules actions migration
+   $DB->queryOrDie("UPDATE `glpi_ruleactions`
+                     SET `field` = 'slts_ttr_id'
+                     WHERE `field` = 'slas_id'",
+                     "SLA ruleactions migration");
 
    // to delete in next version - fix change in update
    if (!$DB->fieldExists('glpi_slas', 'calendars_id')) {

@@ -46,6 +46,43 @@ function update92to921() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.1'));
    $migration->setVersion('9.2.1');
 
+   //fix migration parts that may not been ran from 9.1.x update
+   //see https://github.com/glpi-project/glpi/issues/2871
+   // Slalevels changes => changes in 9.2 migration, impossible to fix here.
+
+   // Ticket changes
+   if ($DB->fieldExists('glpi_tickets', 'slas_id')) {
+      $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
+      $migration->migrationOneTable('glpi_tickets');
+      $migration->dropKey('glpi_tickets', 'slas_id');
+      $migration->addKey('glpi_tickets', 'slts_ttr_id');
+   }
+
+   if (!$DB->fieldExists('glpi_tickets', 'time_to_own')) {
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", ['after' => 'due_date']);
+      $migration->addKey('glpi_tickets', 'time_to_own');
+   }
+
+   if ($DB->fieldExists('glpi_tickets', 'slalevels_id')) {
+      $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
+      $migration->migrationOneTable('glpi_tickets');
+      $migration->dropKey('glpi_tickets', 'slalevels_id');
+      $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
+   }
+
+   // Sla rules criterias migration
+   $DB->queryOrDie("UPDATE `glpi_rulecriterias`
+                     SET `criteria` = 'slts_ttr_id'
+                     WHERE `criteria` = 'slas_id'",
+                     "SLA rulecriterias migration");
+
+   // Sla rules actions migration
+   $DB->queryOrDie("UPDATE `glpi_ruleactions`
+                     SET `field` = 'slts_ttr_id'
+                     WHERE `field` = 'slas_id'",
+                     "SLA ruleactions migration");
+   // end fix 9.1.x migration
+
    //fix migration parts that may not been ran from previous update
    //see https://github.com/glpi-project/glpi/issues/2871
    if (!$DB->tableExists('glpi_olalevelactions')) {
