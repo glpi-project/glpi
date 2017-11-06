@@ -86,6 +86,11 @@ abstract class LevelAgreementLevel extends RuleTicket {
       $tab = [];
 
       $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
+
+      $tab[] = [
          'id'                 => '1',
          'table'              => static::getTable(),
          'field'              => 'name',
