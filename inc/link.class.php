@@ -152,6 +152,7 @@ class Link extends CommonDBTM {
             echo "<br>";
          }
       }
+      echo "<br>" . __('or') . "<br>[FIELD:<i>" . __('field name in DB') . "</i>] (" . __('Example:') . " [FIELD:name], [FIELD:content], ...)";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
@@ -270,6 +271,16 @@ class Link extends CommonDBTM {
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
+
+      // Replace [FIELD:<field name>]
+      $matches = [];
+      if (preg_match_all('/\[FIELD:(\w+)\]/', $link, $matches)) {
+         foreach ($matches[1] as $key => $field) {
+            if ($item->isField($field)) {
+               $link = str_replace($matches[0][$key], $item->getField($field), $link);
+            }
+         }
+      }
 
       if (strstr($link, "[ID]")) {
          $link = str_replace("[ID]", $item->fields['id'], $link);
