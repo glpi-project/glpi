@@ -1586,6 +1586,12 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($uid, $folder = '') {
+
+      // Disable move support, POP protocol only has the INBOX folder
+      if (strstr($this->fields['host'], "/pop")) {
+         $folder = '';
+      }
+
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $uid, $name, CP_UID)) {
