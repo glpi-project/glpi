@@ -1360,6 +1360,7 @@ INSERT INTO `glpi_configs` VALUES ('181','core','from_email', NULL);
 INSERT INTO `glpi_configs` VALUES ('182','core','from_email_name', NULL);
 INSERT INTO `glpi_configs` VALUES ('183','core','instance_uuid', NULL);
 INSERT INTO `glpi_configs` VALUES ('184','core','registration_uuid', NULL);
+INSERT INTO `glpi_configs` VALUES ('185','core','smtp_retry_time','5');
 
 
 ### Dump table glpi_consumableitems
