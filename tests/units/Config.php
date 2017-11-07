@@ -32,6 +32,7 @@
 
 namespace tests\units;
 
+use PHPMailer\PHPMailer\PHPMailer;
 use \DbTestCase;
 
 /* Test for inc/config.class.php */
@@ -246,11 +247,11 @@ class Config extends DbTestCase {
       $this->boolean(\Config::getLibraryDir(''))->isFalse();
       $this->boolean(\Config::getLibraryDir('abcde'))->isFalse();
 
-      $expected = realpath(__DIR__ . '/../../vendor/phpmailer/phpmailer');
+      $expected = realpath(__DIR__ . '/../../vendor/phpmailer/phpmailer/src');
       if (is_dir($expected)) { // skip when system library is used
-         $this->string(\Config::getLibraryDir('PHPMailer'))->isIdenticalTo($expected);
+         $this->string(\Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'))->isIdenticalTo($expected);
 
-         $mailer = new \PHPMailer();
+         $mailer = new PHPMailer();
          $this->string(\Config::getLibraryDir($mailer))->isIdenticalTo($expected);
       }
 

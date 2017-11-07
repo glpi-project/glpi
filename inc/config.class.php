@@ -38,6 +38,7 @@ use Glpi\Exception\PasswordTooWeakException;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\FlushableInterface;
+use PHPMailer\PHPMailer\PHPMailer;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
