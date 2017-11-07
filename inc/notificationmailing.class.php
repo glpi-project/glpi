@@ -70,6 +70,10 @@ class NotificationMailing implements NotificationInterface {
       //drop sanitize...
       $address = Toolbox::stripslashes_deep($address);
       $isValid = PHPMailer::ValidateAddress($address);
+      if (!$isValid && Toolbox::endsWith($address, '@localhost')) {
+         //since phpmailer6, @localhost address are no longer valid...
+         $isValid = PHPMailer::ValidateAddress($address . '.me');
+      }
 
       $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
       if ($checkdns) {
