@@ -285,8 +285,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             }
 
             $mmail->ClearAddresses();
-            $current->update(['id'        => $current->fields['id'],
-                                'sent_try' => $current->fields['sent_try']+1]);
+            $input = [
+                'id'        => $current->fields['id'],
+                'sent_try'  => $current->fields['sent_try'] + 1
+            ];
+
+            if ($CFG_GLPI["smtp_retry_time"] > 0) {
+               $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+            }
+            $current->update($input);
          } else {
             //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile("mail",

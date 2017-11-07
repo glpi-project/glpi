@@ -35,7 +35,7 @@
 */
 
 // Current version of GLPI
-define('GLPI_VERSION', '9.2.1');
+define('GLPI_VERSION', '9.2.2');
 if (substr(GLPI_VERSION, -4) === '-dev') {
    //for dev version
    define('GLPI_PREVER', str_replace('-dev', '', GLPI_VERSION));
@@ -45,7 +45,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    );
 } else {
    //for stable version
-   define("GLPI_SCHEMA_VERSION", '9.2.1');
+   define("GLPI_SCHEMA_VERSION", '9.2.2');
 }
 define('GLPI_MIN_PHP', '5.6.0'); // Must also be changed in top of index.php
 define('GLPI_YEAR', '2017');

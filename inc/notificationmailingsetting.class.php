@@ -178,6 +178,19 @@ class NotificationMailingSetting extends NotificationSetting {
          $out .= "<td><label for='smtp_max_retries'>" . __('Max. delivery retries') . "</label></td>";
          $out .= "<td><input type='text' name='smtp_max_retries' id='smtp_max_retries' size='5' value='" .
                        $CFG_GLPI["smtp_max_retries"] . "'></td>";
+         $out .= "</tr>";
+
+         $out .= "<tr class='tab_bg_2'>";
+         $out .= "<td><label for='smtp_max_retries'>" . __('Try to deliver again in (minutes)') . "</label></td>";
+         $out .= "<td>";
+         $out .= Dropdown::showNumber('smtp_retry_time', [
+                     'value'    => $CFG_GLPI["smtp_retry_time"],
+                     'min'      => 0,
+                     'max'      => 60,
+                     'step'     => 1,
+                     'display'  => false,
+                 ]);
+         $out .= "</td>";
 
          $out .= "</table>";
 
