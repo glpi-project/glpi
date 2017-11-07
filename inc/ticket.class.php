@@ -3708,11 +3708,10 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Get default values from posted values on reload form
-      if (!$ticket_template) {
-         if (isset($_POST)) {
-            $options = $_POST;
-         }
+      if (isset($options['name'])) {
+         $order           = ["\\'", '\\"', "\\\\"];
+         $replace         = ["'", '"', "\\"];
+         $options['name'] = str_replace($order, $replace, $options['name']);
       }
 
       // Restore saved value or override with page parameter
@@ -4035,12 +4034,16 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
          if (!$tt->isHiddenField('name')) {
-            echo "<input type='text' maxlength='250' size='80' name='name'
-                       value=\"".$options['name']."\"";
+            $opt = [
+                'value'     => $options['name'],
+                'maxlength' => 250,
+                'size'      => 80,
+            ];
+
             if ($tt->isMandatoryField('name')) {
-               echo " required='required'";
+                $opt['required'] = 'required';
             }
-            echo ">";
+            echo Html::input('name', $opt);
          } else {
             echo $options['name'];
             echo "<input type='hidden' name='name' value=\"".$options['name']."\">";
@@ -4396,7 +4399,9 @@ class Ticket extends CommonITILObject {
          $options['content'] = str_replace($order, $replace, $options['content']);
       }
       if (isset($options['name'])) {
-         $options['name'] = str_replace("\\\\", "\\", $options['name']);
+         $order           = ["\\'", '\\"', "\\\\"];
+         $replace         = ["'", '"', "\\"];
+         $options['name'] = str_replace($order, $replace, $options['name']);
       }
 
       if (!$ID) {
