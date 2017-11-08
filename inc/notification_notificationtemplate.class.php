@@ -46,6 +46,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
    static public $items_id             = 'notifications_id';
    //WHY? Can edit but not create without that one
    static public $mustBeAttached       = false;
+   protected $displaylist  = false;
 
    const MODE_MAIL      = 'mailing';
    const MODE_AJAX      = 'ajax';
