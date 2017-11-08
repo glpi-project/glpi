@@ -4560,6 +4560,12 @@ td.diff del {
    vertical-align: middle;
 }
 
+.slidepanel .toggle {
+   font-size: 1.5em;
+   position: absolute;
+   right: .2em;
+}
+
 /** end "slide panel" component */
 
 /** Badges */

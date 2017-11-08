@@ -760,15 +760,19 @@ class SavedSearch extends CommonDBTM {
 
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$colspan' class='private_header'>" .
+      echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
                   sprintf(__('Private %1$s'), $this->getTypeName(count($searches['private']))) .
-           "</th></tr>";
+                  "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
+           "</th></tr></thead><tbody>";
       echo $this->displaySavedSearchType($searches['private']);
+      echo "</tbody>";
       if ($this->canView()) {
-         echo "<tr><th colspan='$colspan'>" .
+         echo "<thead><tr><th colspan='$colspan'>" .
                      sprintf(__('Public %1$s'), $this->getTypeName(count($searches['public']))) .
-              "</th></tr>";
+                     "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
+              "</th></tr></thead><tbody>";
          echo $this->displaySavedSearchType($searches['public']);
+         echo "</tbody>";
       }
       echo "</table></div>";
       Html::closeForm();
@@ -817,6 +821,19 @@ class SavedSearch extends CommonDBTM {
                   }
                });
             });\n
+
+            $('.slidepanel .toggle').on('click', function() {
+               var _this = $(this);
+               var _elt = _this.parents('thead').next('tbody');
+               _elt.toggle();
+               if (_elt.is(':visible')) {
+                  _this.removeClass('fa-chevron-circle-down')
+                     .addClass('fa-chevron-circle-up');
+               } else {
+                  _this.removeClass('fa-chevron-circle-up')
+                     .addClass('fa-chevron-circle-down');
+               }
+            });
 
          });";
 
