@@ -4464,6 +4464,7 @@ td.diff del {
    min-height: 100vh;
    height: calc(100% - 28px); /* Without footer */
    border: none;
+   overflow: auto;
 }
 
 .slidepanel a.fa, .slidepanel a.fa:link {
