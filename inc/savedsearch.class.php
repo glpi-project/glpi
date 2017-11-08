@@ -390,14 +390,20 @@ class SavedSearch extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td><label for='is_private'>".__('Set personal') . "</label></td>";
+      $rand = mt_rand();
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_is_private$rand'>".__('Visibility') . "</label></td>";
       if ($this->canCreate()) {
          echo "<td colspan='3'>";
-         echo "<input type='checkbox' name='is_private' id='is_private' value='1'";
-         if ($this->fields["is_private"] == 1) {
-            echo " checked='checked'";
-         }
-         echo "></td></tr>";
+         Dropdown::showFromArray(
+            'is_private', [
+               1  => __('Private'),
+               0  => __('Public')
+            ], [
+               'value'  => $this->fields['is_private'],
+               'rand'   => $rand
+            ]
+         );
+         echo "</td></tr>";
          echo "<tr class='tab_bg_2'><td>".__('Entity')."</td>";
          echo "</td><td>";
          Entity::dropdown(['value' => $this->fields["entities_id"]]);
