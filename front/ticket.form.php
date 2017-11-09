@@ -234,7 +234,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    unset($_REQUEST['id']);
    unset($_GET['id']);
    unset($_POST['id']);
-   
+
    // alternative email must be empty for create ticket
    unset($_REQUEST['_users_id_requester_notif']['alternative_email']);
    unset($_REQUEST['_users_id_observer_notif']['alternative_email']);
