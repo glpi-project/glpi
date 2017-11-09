@@ -2225,7 +2225,7 @@ abstract class API extends CommonGLPI {
                     && !in_array($itemtype, $CFG_GLPI["itemdevicenetworkcard_types"]))) {
                continue;
             }
-            $hclasses[] = $device_type;
+            $hclasses[] = "Item_".$device_type;
          }
       }
 
