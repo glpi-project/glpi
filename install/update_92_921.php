@@ -343,7 +343,7 @@ function update92to921() {
       $migration->addPostQuery(
          "UPDATE glpi_items_operatingsystems AS ios
             LEFT JOIN `$table` as item ON ios.items_id = item.id AND ios.itemtype = '$itemtype'
-            SET c.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
+            SET ios.entities_id = item.entities_id, ios.is_recursive = item.is_recursive
          "
       );
    }
