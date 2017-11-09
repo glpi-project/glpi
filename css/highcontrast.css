@@ -150,7 +150,7 @@ textarea, input[type=text], input[type=password], input[type=number] {
 }
 
 .select2-choice,
-.select2-dropdown-open .select2-choice {
+.select2-container--default .select2-selection--single {
    border: 1px solid #5D5D5D !important;
 }
 

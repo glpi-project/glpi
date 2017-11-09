@@ -354,79 +354,13 @@ select {
   border: 1px solid #bbb;
 }
 
-.select2-choice  {
-   background: #FCFCFC !important;
-   border: 1px solid #D3D3D3 !important;
-}
-.select2-drop {
-   max-width: 500px;
-   word-break: break-all;
-}
-.select2-dropdown-open .select2-choice {
-   border: 1px solid #D3D3D3 !important;
-}
-.select2-arrow {
-   background: #FCFCFC !important;
-   border: 0 !important;
-}
-
-.select2-container .select2-choice {
-   position: relative;
-   text-overflow: clip;
-   background-color: #FFF;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   padding-left: 1em;
-   max-width: 270px;
-}
-
-.select2-container .select2-choice:before {
-   content: '\02026';
-   position: absolute;
-   z-index: 1;
-   left: -1em;
-   background-color: inherit;
-   padding-left: 1em;
-   margin-left: .5em;
-   background-color: inherit;
-   line-height: 26px;
-   margin-top: -2px;
-}
-
-.select2-container .select2-choice > .select2-chosen {
-   min-width: 100%;
-   position: relative;
-   display: inline-block;
-   float: right;
-   overflow: visible;
-   text-indent: .5em;
-   background-color: inherit;
-   margin-right: 0;
-   padding-right: 26px;
-   box-sizing: border-box;
-}
-
-.select2-container .select2-choice > .select2-chosen:before {
-  content: '';
-  position: absolute;
-  display: inline-block;
-  width: 1em;
-  background-color: inherit;
-  z-index: 2;
-  left: -.5em;
-  height: 26px;
-  margin-top: -2px;
-}
-
-
-textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-input) {
+textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field) {
    border: 1px solid #D3D3D3;
    font-size: 11px;
    border-radius: 3px;
    padding: 0 5px;
 }
-textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-input):not([disabled]) {
+textarea, input:not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not([disabled]) {
    background-color:#FCFCFC;
    color: black;
 }

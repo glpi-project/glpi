@@ -1122,12 +1122,16 @@ class Config extends CommonDBTM {
       }
       echo Html::scriptBlock("
          function formatThemes(theme) {
-             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
-                     + \"&nbsp;\" + theme.text;
+             if (!theme.id) {
+                return theme.text;
+             }
+
+             return $('<span></span>').html('<img src=\'../css/palettes/previews/' + theme.text.toLowerCase() + '.png\'/>'
+                      + '&nbsp;' + theme.text);
          }
          $(\"#theme-selector\").select2({
-             formatResult: formatThemes,
-             formatSelection: formatThemes,
+             templateResult: formatThemes,
+             templateSelection: formatThemes,
              width: '100%',
              escapeMarkup: function(m) { return m; }
          });
@@ -1150,13 +1154,16 @@ class Config extends CommonDBTM {
       }
       echo Html::scriptBlock("
          function formatLayout(layout) {
-             return \"&nbsp;<img src='../pics/layout_\" + layout.id.toLowerCase() + \".png'/>\"
-                     + \"&nbsp;\" + layout.text;
+             if (!layout.id) {
+                return layout.text;
+             }
+             return $('<span></span>').html('<img src=\'../pics/layout_' + layout.id.toLowerCase() + '.png\'/>'
+                      + '&nbsp;' + layout.text);
          }
          $(\"#layout-selector\").select2({
-             formatResult: formatLayout,
-             formatSelection: formatLayout,
-             escapeMarkup: function(m) { return m; }
+             dropdownAutoWidth: true,
+             templateResult: formatLayout,
+             templateSelection: formatLayout
          });
       ");
       echo "</select>";
