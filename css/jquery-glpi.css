@@ -142,6 +142,105 @@ html .ui-autocomplete {
    border-color: red;
 }
 
+/** Select2 v4 */
+.select2-container .select2-selection--single {
+   height: 22px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+   line-height: 22px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+   height: 18px;
+}
+
+.select2-container--default .select2-selection--single {
+   border: 1px solid #D3D3D3;
+   overflow: hidden;
+}
+
+.select2-results__option {
+   padding: 3px 6px;
+}
+
+.select2-rendered__match {
+   text-decoration: underline;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+   padding: 4px 8px;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+   border: 0!important;
+}
+
+.select2-selection__choice > * {
+   vertical-align: middle;
+}
+
+.select2-container {
+   max-width: 500px;
+   word-break: break-all;
+}
+
+.select2-search--dropdown .select2-search__field {
+   padding: 0 4px;
+}
+
+/** left-ellipsis stuff... */
+.select2-selection.select2-selection--single {
+   min-width: 72px;
+   position: relative;
+   text-overflow: clip;
+   background-color: #FFF;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   padding-left: 1em;
+   max-width: 270px;
+}
+.select2-selection.select2-selection--single:before {
+   content: '\02026';
+   position: absolute;
+   z-index: 1;
+   left: -1em;
+   background-color: inherit;
+   padding-left: 1em;
+   margin-left: .5em;
+   background-color: inherit;
+   line-height: 26px;
+   margin-top: -2px;
+   padding-right: .1em;
+}
+
+.select2-selection.select2-selection--single .select2-selection__rendered {
+   min-width: 100%;
+   position: relative;
+   display: inline-block;
+   float: right;
+   overflow: visible;
+   text-indent: .5em;
+   background-color: inherit;
+   margin-right: 0;
+   padding-right: 26px;
+   box-sizing: border-box;
+}
+.select2-selection.select2-selection--single .select2-selection__rendered:before {
+   content: '';
+   position: absolute;
+   display: inline-block;
+   width: 1em;
+   background-color: inherit;
+   z-index: 2;
+   left: -.5em;
+   height: 26px;
+   margin-top: -2px;
+}
+/** End left-ellipsis stuff */
+/** End Select2 v4 */
+
 /* SELECT2 */
 
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
@@ -159,7 +258,7 @@ html .ui-autocomplete {
 }
 
 .select2-container .select2-choice {
-    height: 20px;
+    height: 22px;
     padding: 0 0 0 8px;
     font-weight: normal;
     margin-top: 0px;

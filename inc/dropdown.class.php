@@ -1970,7 +1970,7 @@ class Dropdown {
          $deselect = __('None');
          $output  .= "<div class='invisible' id='selectallbuttons_$field_id'>";
          $output  .= "<div class='select2-actionable-menu'>";
-         $output  .= "<a class='vsubmit floatleft' ".
+         $output  .= "<a class='vsubmit' ".
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
                      "</a> ";
          $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
@@ -1979,9 +1979,9 @@ class Dropdown {
 
          $js = "
          var multichecksappend$field_id = false;
-         $('#$field_id').on('select2-open', function() {
+         $('#$field_id').on('select2:open', function(e) {
             if (!multichecksappend$field_id) {
-               $('#select2-drop').append($('#selectallbuttons_$field_id').html());
+               $('#select2-$field_id-results').parent().append($('#selectallbuttons_$field_id').html());
                multichecksappend$field_id = true;
             }
          });";

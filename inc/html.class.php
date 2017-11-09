@@ -1133,7 +1133,7 @@ class Html {
       echo Html::css('lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css');
       //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css('css/jstree-glpi.css');
-      echo Html::css('lib/jqueryplugins/select2/select2.css');
+      echo Html::css('lib/jqueryplugins/select2/css/select2.css');
       echo Html::css('lib/jqueryplugins/qtip2/jquery.qtip.css');
       echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
@@ -1258,7 +1258,9 @@ class Html {
       echo Html::script('lib/jquery/js/jquery-ui-1.10.4.custom.js');
 
       // PLugins jquery
-      echo Html::script('lib/jqueryplugins/select2/select2.js');
+      //echo Html::script('lib/jqueryplugins/select2/js/select2.js');
+      //use full for compat; see https://select2.org/upgrading/migrating-from-35
+      echo Html::script('lib/jqueryplugins/select2/js/select2.full.js');
       echo Html::script('lib/jqueryplugins/qtip2/jquery.qtip.js');
       echo Html::script('lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
       echo Html::script('lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js');
@@ -4200,7 +4202,6 @@ class Html {
       }
       $js = "$('#$id').select2({
                   width: '$width',
-                  closeOnSelect: false,
                   dropdownAutoWidth: true,
                   quietMillis: 100,
                   minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
@@ -4263,7 +4264,10 @@ class Html {
       unset($params['value']);
       unset($params['valuename']);
 
-      $options = ['value' => $value, 'id' => $field_id];
+      $options = [
+         'id'        => $field_id,
+         'selected'  => $value
+      ];
       if (!empty($params['specific_tags'])) {
          foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {
@@ -4273,21 +4277,75 @@ class Html {
          }
       }
 
-      $output = Html::hidden($name, $options);
+      $values = [$value => $valuename];
+      $output = self::select($name, $values, $options);
 
-      $js = "";
+      $js = "var query = {};";
+      $js .= "function markMatch (text, term) {
+         // Find where the match is
+         var match = text.toUpperCase().indexOf(term.toUpperCase());
+
+         var _result = $('<span></span>');
+
+         // If there is no match, move on
+         if (match < 0) {
+            return _result.text(text);
+         }
+
+         // Put in whatever text is before the match
+         _result.text(text.substring(0, match));
+
+         // Mark the match
+         var _match = $('<span class=\'select2-rendered__match\'></span>');
+         _match.text(text.substring(match, match + term.length));
+
+         // Append the matching text
+         _result.append(_match);
+
+         // Put in whatever is after the match
+         _result.append(text.substring(match + term.length));
+
+         return _result.html();
+      };";
+      $js .="var formatResult = function(result) {
+         if (!result.id) {
+            return result.text;
+         }
+
+         var _elt = $('<span></span>');
+         _elt.attr('title', result.title);
+
+         var markup=[result.text];
+
+         var _term = query.term || '';
+         var markup = markMatch(result.text, _term);
+
+         if (result.level) {
+            var a='';
+            var i=result.level;
+            while (i>1) {
+               a = a+'&nbsp;&nbsp;&nbsp;';
+               i=i-1;
+            }
+            _elt.html(a+'&raquo;'+markup);
+         } else {
+            _elt.html(markup);
+         }
+
+         return _elt;
+      };";
       $js .= " $('#$field_id').select2({
                         width: '$width',
                         minimumInputLength: 0,
                         quietMillis: 100,
                         dropdownAutoWidth: true,
                         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-                        closeOnSelect: false,
                         ajax: {
                            url: '$url',
                            dataType: 'json',
                            type: 'POST',
-                           data: function (term, page) {
+                           data: function (params) {
+                              query = params;
                               return { ";
       foreach ($params as $key => $val) {
          // Specific boolean case
@@ -4298,20 +4356,24 @@ class Html {
          }
       }
 
-      $js .= "               searchText: term,
+      $js .= "               searchText: params.term,
                                  page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
-                                 page: page, // page number
+                                 page: params.page || 1, // page number
                               };
                            },
-                           results: function (data, page) {
-//                               var more = (page * ".$CFG_GLPI['dropdown_max'].") < data.total;
-//                               alert(data.count+' '+".$CFG_GLPI['dropdown_max'].");
+                           processResults: function (data, params) {
+                              params.page = params.page || 1;
                               var more = (data.count >= ".$CFG_GLPI['dropdown_max'].");
-                              return {results: data.results, more: more};
-//                               return {results: data.results};
+
+                              return {
+                                 results: data.results,
+                                 pagination: {
+                                       more: more
+                                 }
+                              };
                            }
                         },
-                        initSelection: function (element, callback) {
+                        /*initSelection: function (element, callback) {
                            var id=$(element).val();
                            var defaultid = '$value';
                            if (id !== '') {
@@ -4334,23 +4396,8 @@ class Html {
                               }
                            }
 
-                        },
-                        formatResult: function(result, container, query, escapeMarkup) {
-                           container.attr('title', result.title);
-                           var markup=[];
-                           window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
-                           if (result.level) {
-                              var a='';
-                              var i=result.level;
-                              while (i>1) {
-                                 a = a+'&nbsp;&nbsp;&nbsp;';
-                                 i=i-1;
-                              }
-                              return a+'&raquo;'+markup.join('');
-                           }
-                           return markup.join('');
-                        }
-
+                        },*/
+                        templateResult: formatResult
                      });";
       if (!empty($on_change)) {
          $js .= " $('#$field_id').on('change', function(e) {".
@@ -4493,6 +4540,37 @@ class Html {
 
       return sprintf('<input type="text" name="%1$s" %2$s />',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
+   }
+
+   /**
+    * Creates a select tag
+    *
+    * @since 9.3
+    *
+    * @param string $ame      Name of the field
+    * @param array  $values   Array of the options
+    * @param mixed  $selected Current selected option
+    * @param array  $options  Array of HTML attributes
+    *
+    * @return string
+    */
+   static function select($name, array $values, $options = []) {
+      $selected = (isset($options['selected'])) ? $options['selected'] : false;
+      $select = sprintf(
+         '<select name="%1$s" %2$s>',
+         self::cleanInputText($name),
+         self::parseAttributes($options)
+      );
+      foreach ($values as $key => $value) {
+         $select .= sprintf(
+            '<option value="%1$s"%2$s>%3$s</option>',
+            self::cleanInputText($key),
+            ($selected != false && $key == $selected) ? ' selected="selected"' : '',
+            $value
+         );
+      }
+      $select .= '</select>';
+      return $select;
    }
 
    /**
@@ -5630,7 +5708,7 @@ class Html {
          }
 
          // select2
-         $filename = "lib/jqueryplugins/select2/select2_locale_".
+         $filename = "lib/jqueryplugins/select2/js/i18n/".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.'/'.$filename)) {
             echo Html::script($filename);

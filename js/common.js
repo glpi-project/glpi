@@ -716,7 +716,8 @@ function selectAll(id) {
    element.find('option').each(function(i,e){
       selected[selected.length]=$(e).attr('value');
    });
-   element.select2('val', selected);
+   element.val(selected);
+   element.trigger('change');
 }
 
 /**
