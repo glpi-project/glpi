@@ -256,7 +256,8 @@ class KnowbaseItem extends CommonDBVisible {
 
       // add documents (and replace inline pictures)
       $this->input = $this->addFiles($this->input, ['force_update'  => true,
-                                                    'content_field' => 'answer']);
+                                                    'content_field' => 'answer',
+                                                    'use_rich_text' => true]);
 
       if (isset($this->input["_visibility"])
           && isset($this->input["_visibility"]['_type'])
@@ -631,7 +632,8 @@ class KnowbaseItem extends CommonDBVisible {
    function prepareInputForUpdate($input) {
 
       // add documents (and replace inline pictures)
-      $input = $this->addFiles($input, ['content_field' => 'answer']);
+      $input = $this->addFiles($input, ['content_field' => 'answer',
+                                        'use_rich_text' => true]);
 
       // set title for question if empty
       if (isset($input["name"]) && empty($input["name"])) {
