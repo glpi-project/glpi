@@ -1498,6 +1498,7 @@ class Search {
             }
             // End Line
             echo self::showEndLine($data['display_type']);
+            Html::glpi_flush();
          }
 
          // Create title
