@@ -971,7 +971,7 @@ class Html {
       }
 
       if (!$params['create']) {
-         Html::glpi_flush();
+         self::glpi_flush();
       }
    }
 
@@ -1272,6 +1272,7 @@ class Html {
 
       // End of Head
       echo "</head>\n";
+      self::glpi_flush();
    }
 
 
@@ -1925,15 +1926,18 @@ class Html {
 
 
    /**
-    * Flush the current displayed items (do not works really fine)
+    * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
+    * This attempts to push current output all the way to the browser with a few caveats.
+    * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
    **/
    static function glpi_flush() {
 
-      flush();
       if (function_exists("ob_flush")
           && (ob_get_length() !== false)) {
          ob_flush();
       }
+
+      flush();
    }
 
 
