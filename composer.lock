@@ -561,16 +561,16 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.5",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab"
+                "reference": "db9fff27b6d49eed3d4047cd3211ec8dba2f5d6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/5de5551953f95feef12cf355a7a26a70f94aa3ab",
-                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/db9fff27b6d49eed3d4047cd3211ec8dba2f5d6e",
+                "reference": "db9fff27b6d49eed3d4047cd3211ec8dba2f5d6e",
                 "shasum": ""
             },
             "require": {
@@ -617,7 +617,7 @@
                 "feeds",
                 "rss"
             ],
-            "time": "2017-04-17T07:29:31+00:00"
+            "time": "2017-11-12T02:03:34+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
