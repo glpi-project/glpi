@@ -206,7 +206,7 @@ class Central extends CommonGLPI {
          echo "<div class='warning'>";
          echo "<i class='fa fa-exclamation-triangle fa-5x'></i>";
          echo "<ul><li>" . implode('</li><li>', $warnings) . "</li></ul>";
-         echo "<div class='sep'></div";
+         echo "<div class='sep'></div>";
          echo "</div>";
          echo "</th></tr>";
       }
