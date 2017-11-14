@@ -81,12 +81,6 @@ function update91to911() {
       }
    }
 
-    // rectify indexes in 9.1 update
-   $migration->addKey('glpi_tickets', 'slts_ttr_id');
-   $migration->dropKey('glpi_tickets', 'slalevels_id');
-   $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
-   $migration->migrationOneTable('glpi_tickets');
-
    //put you migration script here
 
    // ************ Keep it at the end **************
