@@ -82,13 +82,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2' class='b'>" .
-            __('Warning before running rename based on the dictionary rules') . "</th</tr>\n";
+            __('Warning before running rename based on the dictionary rules') . "</th></tr>\n";
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
       echo "<td class='tab_bg_2 center'>" .
             __('Warning! This operation can put merged software in the dustbin.<br>Sure to notify your users.').
            "</td></tr>\n";
-      echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
+      echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th></tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" .
             __('Replay dictionary rules for manufacturers (----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
