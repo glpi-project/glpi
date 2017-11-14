@@ -54,7 +54,11 @@ function update92to921() {
    if ($DB->fieldExists('glpi_tickets', 'slas_id')) {
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
       $migration->migrationOneTable('glpi_tickets');
+   }
+   if (isIndex('glpi_tickets', 'slas_id')) {
       $migration->dropKey('glpi_tickets', 'slas_id');
+   }
+   if ($DB->fieldExists('glpi_tickets', 'slts_ttr_id')) {
       $migration->addKey('glpi_tickets', 'slts_ttr_id');
    }
 
@@ -67,6 +71,8 @@ function update92to921() {
       $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
       $migration->migrationOneTable('glpi_tickets');
       $migration->dropKey('glpi_tickets', 'slalevels_id');
+   }
+   if ($DB->fieldExists('glpi_tickets', 'ttr_slalevels_id')) {
       $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
    }
 
