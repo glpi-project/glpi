@@ -348,6 +348,19 @@ function update92to921() {
       );
    }
 
+   //drop "empty" glpi_items_operatingsystems
+   $migration->addPostQuery(
+      "DELETE FROM `glpi_items_operatingsystems`
+         WHERE `operatingsystems_id` = 0
+         AND `operatingsystemversions_id` = 0
+         AND `operatingsystemservicepacks_id` = 0
+         AND `operatingsystemarchitectures_id` = 0
+         AND `operatingsystemkernelversions_id` = 0
+         AND `operatingsystemeditions_id` = 0
+         AND (`license_number` IS NULL OR `license_number` = '')
+         AND (`license_id` IS NULL OR `license_id` = '')"
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
