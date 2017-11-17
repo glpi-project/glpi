@@ -237,7 +237,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                      '/href=["\'].*document\.send\.php\?docid='.$docID.'["\']/',
                   ], [
                      "src=\"cid:$tag\"",
-                     "href='".$CFG_GLPI['url_base']."/front/document.send.php?docid=$docID'",
+                     "href='/front/document.send.php?docid=$docID'",
                   ],
                   $current->fields['body_html']);
             }
