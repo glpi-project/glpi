@@ -61,68 +61,74 @@ if (!defined("GLPI_CONFIG_DIR")) {
    define("GLPI_CONFIG_DIR", GLPI_ROOT . "/config");
 }
 
+// Default location for all files
+if (!defined("GLPI_VAR_DIR")) {
+   define("GLPI_VAR_DIR", GLPI_ROOT . "/files");
+}
+
+
 // Default location for backup dump
 if (!defined("GLPI_DUMP_DIR")) {
-   define("GLPI_DUMP_DIR", GLPI_ROOT . "/files/_dumps");
+   define("GLPI_DUMP_DIR", GLPI_VAR_DIR . "/_dumps");
 }
 
 // Path for documents storage
 if (!defined("GLPI_DOC_DIR")) {
-   define("GLPI_DOC_DIR", GLPI_ROOT . "/files");
+   define("GLPI_DOC_DIR", GLPI_VAR_DIR);
 }
 
 // Path for cron storage
 if (!defined("GLPI_CRON_DIR")) {
-   define("GLPI_CRON_DIR", GLPI_ROOT . "/files/_cron");
+   define("GLPI_CRON_DIR", GLPI_VAR_DIR . "/_cron");
 }
 
 // Path for sessions storage
 if (!defined("GLPI_SESSION_DIR")) {
-   define("GLPI_SESSION_DIR", GLPI_ROOT . "/files/_sessions");
+   define("GLPI_SESSION_DIR", GLPI_VAR_DIR . "/_sessions");
 }
 
 // Path for plugins documents storage
 if (!defined("GLPI_PLUGIN_DOC_DIR")) {
-   define("GLPI_PLUGIN_DOC_DIR", GLPI_ROOT . "/files/_plugins");
+   define("GLPI_PLUGIN_DOC_DIR", GLPI_VAR_DIR . "/_plugins");
 }
 // Path for cache storage
 if (!defined("GLPI_LOCK_DIR")) {
-   define("GLPI_LOCK_DIR", GLPI_ROOT . "/files/_lock");
+   define("GLPI_LOCK_DIR", GLPI_VAR_DIR . "/_lock");
 }
 
 // Path for log storage
 if (!defined("GLPI_LOG_DIR")) {
-   define("GLPI_LOG_DIR", GLPI_ROOT . "/files/_log");
+   define("GLPI_LOG_DIR", GLPI_VAR_DIR . "/_log");
 }
 
 // Path for graph storage
 if (!defined("GLPI_GRAPH_DIR")) {
-   define("GLPI_GRAPH_DIR", GLPI_ROOT . "/files/_graphs");
+   define("GLPI_GRAPH_DIR", GLPI_VAR_DIR . "/_graphs");
 }
 
 // Path for picture storage
 if (!defined("GLPI_PICTURE_DIR")) {
-   define("GLPI_PICTURE_DIR", GLPI_ROOT . "/files/_pictures");
+   define("GLPI_PICTURE_DIR", GLPI_VAR_DIR . "/_pictures");
 }
 
 // Path for temp storage
 if (!defined("GLPI_TMP_DIR")) {
-   define("GLPI_TMP_DIR", GLPI_ROOT . "/files/_tmp");
+   define("GLPI_TMP_DIR", GLPI_VAR_DIR . "/_tmp");
 }
 
 // Path for cache
 if (!defined("GLPI_CACHE_DIR")) {
-   define("GLPI_CACHE_DIR", GLPI_ROOT . "/files/_cache");
+   define("GLPI_CACHE_DIR", GLPI_VAR_DIR . "/_cache");
 }
 
 // Path for rss storage
 if (!defined("GLPI_RSS_DIR")) {
-   define("GLPI_RSS_DIR", GLPI_ROOT . "/files/_rss");
+   define("GLPI_RSS_DIR", GLPI_VAR_DIR . "/_rss");
 }
 
 // Path for upload storage
 if (!defined("GLPI_UPLOAD_DIR")) {
-   define("GLPI_UPLOAD_DIR", GLPI_ROOT . "/files/_uploads");
+   define("GLPI_UPLOAD_DIR", GLPI_VAR_DIR . "/_uploads");
 }
 
 // Default location scripts
