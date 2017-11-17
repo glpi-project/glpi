@@ -685,15 +685,13 @@ class User extends CommonDBTM {
          $input['picture'] = 'NULL';
       } else {
          $newPicture = false;
-         if (isAPI()) {
-            if (isset($input["_picture"]) && !empty($input["_picture"]) == 1) {
-               $newPicture = true;
-            }
-         } else {
+         if (!isAPI()) {
             if (isset($input["_picture"][0]) && !empty($input["_picture"][0]) == 1) {
                $input["_picture"] = $input["_picture"][0];
-               $newPicture = true;
             }
+         }
+         if (isset($input["_picture"]) && !empty($input["_picture"]) == 1) {
+            $newPicture = true;
          }
          if ($newPicture) {
             $fullpath = GLPI_TMP_DIR."/".$input["_picture"];
