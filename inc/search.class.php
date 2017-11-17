@@ -4851,7 +4851,7 @@ class Search {
                      if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
                         $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep(nl2br($data[$num][$k]['name'])));
                      } else {
-                        $text = nl2br($data[$num][$k]['name']);
+                        $text = nl2br(Html::Clean($data[$num][$k]['name']));
                      }
 
                      if (self::$output_type == self::HTML_OUTPUT
