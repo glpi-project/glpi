@@ -47,7 +47,9 @@ if (!empty($tz)) {
 }
 
 // If this file exists, it is load
-if (file_exists(GLPI_ROOT. '/config/local_define.php')) {
+if (!is_dir(GLPI_ROOT. '/config') && file_exists('/etc/glpi/local_define.php')) { // Relocated (Linux only)
+   require_once '/etc/glpi/local_define.php';
+} else if (file_exists(GLPI_ROOT. '/config/local_define.php')) {
    require_once GLPI_ROOT. '/config/local_define.php';
 }
 
