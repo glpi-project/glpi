@@ -970,7 +970,7 @@ function update91to92() {
    }
 
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+      $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
                        FROM `glpi_notifications`";
@@ -1427,7 +1427,7 @@ Regards,',
          Notification_NotificationTemplate::MODE_MAIL.
          "' AND `notificationtemplates_id`='$nottid'";
       if (!countElementsInTable('glpi_notifications_notificationtemplates', $where)) {
-         $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+         $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                    VALUES (null, $notid, '".Notification_NotificationTemplate::MODE_MAIL."', $nottid);";
          $DB->queryOrDie($query, "9.2 Add certificates alerts notification templates");
       }
