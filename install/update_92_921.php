@@ -306,7 +306,7 @@ function update92to921() {
                              WHERE `entities_id` = -1");
 
    if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-      $query = "INSERT INTO `glpi_notifications_notificationtemplates`
+      $query = "REPLACE INTO `glpi_notifications_notificationtemplates`
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
                        FROM `glpi_notifications`";
