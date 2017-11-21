@@ -486,42 +486,63 @@ class Log extends CommonDBTM {
                                            $data["new_value"]);
 
                   if ($data['itemtype'] == 'Ticket') {
-                     switch ($data['itemtype_link']) {
-                        case 'Group':
-                           $is = 'isGroup';
-                           break;
+                     if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                        switch ($data['id_search_option']) {
+                           case 4: // User
+                           case 71: // Group
+                              $as = __('Requester');
+                              break;
+                           case 66: // User
+                           case 65: // Group
+                              $as = __('Watcher');
+                              break;
+                           case 5: // User
+                           case 8: // Group
+                           case 6: // Supplier
+                              $as = __('Assigned to');
+                              break;
+                           default:
+                              $as = false;
+                        }
+                     } else { // Old record
+                        switch ($data['itemtype_link']) {
+                           case 'Group':
+                              $is = 'isGroup';
+                              break;
 
-                        case 'User':
-                           $is = 'isUser';
-                           break;
+                           case 'User':
+                              $is = 'isUser';
+                              break;
 
-                        case 'Supplier':
-                           $is = 'isSupplier';
-                           break;
+                           case 'Supplier':
+                              $is = 'isSupplier';
+                              break;
 
-                        default:
-                           $isr = $isa = $iso = false;
-                           break;
-                     }
-                     $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(')+1)); // This is terrible idea
-                     $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
-                     $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
-                     $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
-
-                     // Simple Heuristic, of course not enough
-                     if ($isr && !$isa && !$iso) {
-                        $as = __('Requester');
-                     } else if (!$isr && $isa && !$iso) {
-                        $as = __('Assigned to');
-                     } else if (!$isr && !$isa && $iso) {
-                        $as = __('Watcher');
-                     } else {
-                        // Deleted or Ambiguous
-                        $as = false;
+                           default:
+                              $is = $isr = $isa = $iso = false;
+                              break;
+                        }
+                        if ($is) {
+                           $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(')+1)); // This is terrible idea
+                           $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
+                           $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
+                           $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
+                        }
+                        // Simple Heuristic, of course not enough
+                        if ($isr && !$isa && !$iso) {
+                           $as = __('Requester');
+                        } else if (!$isr && $isa && !$iso) {
+                           $as = __('Assigned to');
+                        } else if (!$isr && !$isa && $iso) {
+                           $as = __('Watcher');
+                        } else {
+                           // Deleted or Ambiguous
+                           $as = false;
+                        }
                      }
                      if ($as) {
                         $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
-                              sprintf(__('%1$s (%2$s)'), $data["new_value"],  $as));
+                              sprintf(__('%1$s (%2$s)'), $data["new_value"], $as));
                      } else {
                         $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'), $data["new_value"]);
                      }

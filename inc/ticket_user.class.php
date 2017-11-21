@@ -60,4 +60,21 @@ class Ticket_User extends CommonITILActor {
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
+
+   function post_addItem() {
+
+      switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
+         case CommonITILActor::REQUESTER:
+            $this->_force_log_option = 4;
+            break;
+         case CommonITILActor::OBSERVER:
+            $this->_force_log_option = 66;
+            break;
+         case CommonITILActor::ASSIGN:
+            $this->_force_log_option = 5;
+            break;
+      }
+      parent::post_addItem();
+      unset($this->_force_log_option);
+   }
 }

@@ -2984,7 +2984,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $newtab = [
-         'id'                 => '4',
+         'id'                 => '4', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_users',
          'field'              => 'name',
          'datatype'           => 'dropdown',
@@ -3011,7 +3011,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[] = $newtab;
 
       $newtab = [
-         'id'                 => '71',
+         'id'                 => '71',  // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
@@ -3060,7 +3060,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '66',
+         'id'                 => '66', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_users',
          'field'              => 'name',
          'datatype'           => 'dropdown',
@@ -3080,7 +3080,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '65',
+         'id'                 => '65', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
@@ -3105,7 +3105,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '5',
+         'id'                 => '5', // Also in Ticket_User::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_users',
          'field'              => 'name',
          'datatype'           => 'dropdown',
@@ -3125,7 +3125,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '6',
+         'id'                 => '6', // Also in Supplier_Ticket::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_suppliers',
          'field'              => 'name',
          'datatype'           => 'dropdown',
@@ -3144,7 +3144,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       $tab[] = [
-         'id'                 => '8',
+         'id'                 => '8', // Also in Group_Ticket::post_addItem() and Log::getHistoryData()
          'table'              => 'glpi_groups',
          'field'              => 'completename',
          'datatype'           => 'dropdown',
