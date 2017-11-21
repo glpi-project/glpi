@@ -297,11 +297,11 @@ abstract class API extends CommonGLPI {
 
       if (!isset($params['is_recursive'])) {
          $params['is_recursive'] = false;
-      } elseif (!is_bool($params['is_recursive'])) {
+      } else if (!is_bool($params['is_recursive'])) {
          return $this->returnError();
       }
 
-      if(!Session::changeActiveEntities($entities_id, $params['is_recursive'])){
+      if (!Session::changeActiveEntities($entities_id, $params['is_recursive'])) {
          return $this->returnError();
       }
    }
