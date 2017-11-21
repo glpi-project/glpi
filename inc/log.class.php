@@ -488,42 +488,42 @@ class Log extends CommonDBTM {
                   if ($data['itemtype'] == 'Ticket') {
                      switch ($data['itemtype_link']) {
                         case 'Group':
-                           $itemtick = new Group_Ticket();
+                           $is = 'isGroup';
                            break;
 
                         case 'User':
-                           $itemtick = new Ticket_User();
+                           $is = 'isUser';
                            break;
 
                         case 'Supplier':
-                           $itemtick = new Supplier_Ticket();
+                           $is = 'isSupplier';
                            break;
 
                         default:
-                           $itemtick = false;
+                           $isr = $isa = $iso = false;
                            break;
                      }
+                     $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(')+1)); // This is terrible idea
+                     $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
+                     $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
+                     $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
 
-                     if ($itemtick !== false) {
-                        $table   = $itemtick->getTable();
-                        $key     = getForeignKeyFieldForItemType($data['itemtype']);
-                        $itemkey = getForeignKeyFieldForItemType($data['itemtype_link']);
-                        $iditem  = trim(substr($data['new_value'], strrpos($data['new_value'], '(')+1,
-                                       strrpos($data['new_value'], ')')), ')');
-
-                        foreach ($DB->request($table, [$key => $data['items_id'],
-                                                         $itemkey => $iditem]) as $datalink) {
-                           if ($datalink['type'] == CommonITILActor::REQUESTER) {
-                              $as = __('Requester');
-                           } else if ($datalink['type'] == CommonITILActor::ASSIGN) {
-                              $as = __('Assigned to');
-                           } else if ($datalink['type'] == CommonITILActor::OBSERVER) {
-                              $as = __('Watcher');
-                           }
-                           $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
-                                                   sprintf(__('%1$s (%2$s)'), $data["new_value"],
-                                                            $as));
-                        }
+                     // Simple Heuristic, of course not enough
+                     if ($isr && !$isa && !$iso) {
+                        $as = __('Requester');
+                     } else if (!$isr && $isa && !$iso) {
+                        $as = __('Assigned to');
+                     } else if (!$isr && !$isa && $iso) {
+                        $as = __('Watcher');
+                     } else {
+                        // Deleted or Ambiguous
+                        $as = false;
+                     }
+                     if ($as) {
+                        $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
+                              sprintf(__('%1$s (%2$s)'), $data["new_value"],  $as));
+                     } else {
+                        $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'), $data["new_value"]);
                      }
                   }
                   break;
