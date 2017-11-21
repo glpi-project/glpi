@@ -714,7 +714,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          if ($item1->dohistory
              && static::$logs_for_item_1) {
-            $changes[0] = '0';
+            $changes[0] = (isset($this->_force_log_option) ? $this->_force_log_option : 0);
             $changes[1] = "";
             $changes[2] = addslashes($this->getHistoryNameForItem1($item2, 'add'));
             Log::history($item1->getID(), $item1->getType(), $changes, $item2->getType(),

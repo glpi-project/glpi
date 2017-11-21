@@ -74,4 +74,14 @@ class Supplier_Ticket extends CommonITILActor {
       return false;
    }
 
+   function post_addItem() {
+
+      switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
+         case CommonITILActor::ASSIGN:
+            $this->_force_log_option = 6;
+            break;
+      }
+      parent::post_addItem();
+      unset($this->_force_log_option);
+   }
 }
