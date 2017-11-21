@@ -62,20 +62,11 @@ $limit = intval($_POST['page_limit']);
 
 $LIMIT = "LIMIT $start,$limit";
 
-$one_item = -1;
-if (isset($_POST['_one_id'])) {
-   $one_item = $_POST['_one_id'];
-}
-
-if ($one_item >= 0) {
-   $where .= " AND `glpi_netpoints`.`id` = '$one_item'";
+if (strlen($_POST['searchText']) > 0) {
+   $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_POST['searchText'])."
+                     OR `glpi_locations`.`completename` ".Search::makeTextSearch($_POST['searchText']).")";
 } else {
-   if (strlen($_POST['searchText']) > 0) {
-      $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_POST['searchText'])."
-                        OR `glpi_locations`.`completename` ".Search::makeTextSearch($_POST['searchText']).")";
-   } else {
-      $where = " WHERE 1 ";
-   }
+   $where = " WHERE 1 ";
 }
 
 if (!(isset($_POST["devtype"])
@@ -129,10 +120,10 @@ $query .= $where ."
 $result = $DB->query($query);
 
 // Display first if no search
-if (empty($_POST['searchText']) && ($one_item < 0) || ($one_item == 0)) {
+if (empty($_POST['searchText'])) {
    if ($_POST['page'] == 1) {
       array_push($datas, ['id'   => 0,
-                              'text' => Dropdown::EMPTY_VALUE]);
+                          'text' => Dropdown::EMPTY_VALUE]);
    }
 }
 
@@ -159,11 +150,6 @@ if ($DB->numrows($result)) {
    }
 }
 
-
-if (($one_item >= 0) && isset($datas[0])) {
-   echo json_encode($datas[0]);
-} else {
-   $ret['count']   = $count;
-   $ret['results'] = $datas;
-   echo json_encode($ret);
-}
+$ret['count']   = $count;
+$ret['results'] = $datas;
+echo json_encode($ret);
