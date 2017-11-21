@@ -56,11 +56,6 @@ if (!isset($_POST['value'])) {
    $_POST['value'] = 0;
 }
 
-$one_item = -1;
-if (isset($_POST['_one_id'])) {
-   $one_item = $_POST['_one_id'];
-}
-
 if (!isset($_POST['page'])) {
    $_POST['page']       = 1;
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
@@ -79,10 +74,8 @@ $count = 0;
 if ($_POST['page'] == 1) {
    if (count($toadd)) {
       foreach ($toadd as $key => $val) {
-         if (($one_item < 0) || ($one_item == $key)) {
-            array_push($data, ['id'   => $key,
-                               'text' => strval(stripslashes($val))]);
-         }
+         array_push($data, ['id'   => $key,
+                            'text' => strval(stripslashes($val))]);
       }
    }
 }
@@ -96,7 +89,7 @@ for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
    }
 }
 
-if ($one_item < 0 && count($values)) {
+if (count($values)) {
    $start  = ($_POST['page']-1)*$_POST['page_limit'];
    $tosend = array_splice($values, $start, $_POST['page_limit']);
    foreach ($tosend as $i) {
@@ -110,8 +103,8 @@ if ($one_item < 0 && count($values)) {
    }
 
 } else {
-   if (!isset($toadd[$one_item])) {
-      $value = $one_item;
+   if (!isset($toadd[-1])) {
+      $value = -1;
       if (isset($_POST['min']) && $value < $_POST['min']) {
          $value = $_POST['min'];
       } else if (isset($_POST['max']) && $value > $_POST['max']) {
@@ -127,12 +120,6 @@ if ($one_item < 0 && count($values)) {
    }
 }
 
-if (($one_item >= 0)
-    && isset($data[0])) {
-   echo json_encode($data[0]);
-} else {
-   $ret['results'] = $data;
-   $ret['count']   = $count;
-   echo json_encode($ret);
-}
-
+$ret['results'] = $data;
+$ret['count']   = $count;
+echo json_encode($ret);

@@ -66,11 +66,6 @@ if (!isset($_POST['value'])) {
    $_POST['value'] = 0;
 }
 
-$one_item = -1;
-if (isset($_POST['_one_id'])) {
-   $one_item = $_POST['_one_id'];
-}
-
 if (!isset($_POST['page'])) {
    $_POST['page']       = 1;
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
@@ -81,18 +76,12 @@ if (isset($_POST['entity_restrict'])) {
    $entity_restrict = Toolbox::jsonDecode($_POST['entity_restrict']);
 }
 
-if ($one_item < 0) {
-   $start  = intval(($_POST['page']-1)*$_POST['page_limit']);
-   $searchText = (isset($_POST['searchText']) ? $_POST['searchText'] : null);
-   $result = User::getSqlSearchResult(false, $_POST['right'], $entity_restrict,
-                                      $_POST['value'], $used, $searchText, $start,
-                                      intval($_POST['page_limit']));
-} else {
-   $query = "SELECT DISTINCT `glpi_users`.*
-             FROM `glpi_users`
-             WHERE `glpi_users`.`id` = '$one_item';";
-   $result = $DB->query($query);
-}
+$start  = intval(($_POST['page']-1)*$_POST['page_limit']);
+$searchText = (isset($_POST['searchText']) ? $_POST['searchText'] : null);
+$result = User::getSqlSearchResult(false, $_POST['right'], $entity_restrict,
+                                   $_POST['value'], $used, $searchText, $start,
+                                   intval($_POST['page_limit']));
+
 $users = [];
 
 // Count real items returned
@@ -120,14 +109,12 @@ $datas = [];
 
 // Display first if empty search
 if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
-   if (($one_item < 0) || ($one_item == 0)) {
-      if ($_POST['all'] == 0) {
-         array_push($datas, ['id'   => 0,
-                                  'text' => Dropdown::EMPTY_VALUE]);
-      } else if ($_POST['all'] == 1) {
-         array_push($datas, ['id'   => 0,
-                                  'text' => __('All')]);
-      }
+   if ($_POST['all'] == 0) {
+      array_push($datas, ['id'   => 0,
+                          'text' => Dropdown::EMPTY_VALUE]);
+   } else if ($_POST['all'] == 1) {
+      array_push($datas, ['id'   => 0,
+                          'text' => __('All')]);
    }
 }
 
@@ -136,18 +123,12 @@ if (count($users)) {
       $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
       array_push($datas, ['id'    => $ID,
-                               'text'  => $output,
-                               'title' => $title]);
+                          'text'  => $output,
+                          'title' => $title]);
       $count++;
    }
 }
 
-
-if (($one_item >= 0)
-    && isset($datas[0])) {
-   echo json_encode($datas[0]);
-} else {
-   $ret['results'] = $datas;
-   $ret['count']   = $count;
-   echo json_encode($ret);
-}
+$ret['results'] = $datas;
+$ret['count']   = $count;
+echo json_encode($ret);

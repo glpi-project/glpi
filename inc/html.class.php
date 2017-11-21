@@ -4373,30 +4373,6 @@ class Html {
                               };
                            }
                         },
-                        /*initSelection: function (element, callback) {
-                           var id=$(element).val();
-                           var defaultid = '$value';
-                           if (id !== '') {
-                              // No ajax call for first item
-                              if (id === defaultid) {
-                                var data = {id: ".json_encode($value).",
-                                          text: ".json_encode($valuename)."};
-                                 callback(data);
-                              } else {
-                                 $.ajax('$url', {
-                                 data: {";
-      foreach ($params as $key => $val) {
-         $js .= "$key: ".json_encode($val).",\n";
-      }
-
-      $js .= "            _one_id: id},
-                                 dataType: 'json',
-                                 type: 'POST',
-                                 }).done(function(data) { callback(data); });
-                              }
-                           }
-
-                        },*/
                         templateResult: formatResult
                      });";
       if (!empty($on_change)) {

@@ -144,11 +144,6 @@ if (isset($_POST['condition']) && ($_POST['condition'] != '')) {
    $where .= " AND ".$_POST['condition']." ";
 }
 
-$one_item = -1;
-if (isset($_POST['_one_id'])) {
-   $one_item = $_POST['_one_id'];
-}
-
 // Count real items returned
 $count = 0;
 
@@ -194,17 +189,13 @@ function buildSearchWhereClause(
 
 if ($item instanceof CommonTreeDropdown) {
 
-   if ($one_item >= 0) {
-      $where .= " AND `$table`.`id` = '$one_item'";
-   } else {
-      if (!empty($_POST['searchText'])) {
-         $where .= buildSearchWhereClause(
-            $table,
-            $_POST['itemtype'],
-            $_POST['searchText'],
-            ($displaywith ? $_POST['displaywith'] : [])
-         );
-      }
+   if (!empty($_POST['searchText'])) {
+      $where .= buildSearchWhereClause(
+         $table,
+         $_POST['itemtype'],
+         $_POST['searchText'],
+         ($displaywith ? $_POST['displaywith'] : [])
+      );
    }
 
    $multi = false;
@@ -213,8 +204,7 @@ if ($item instanceof CommonTreeDropdown) {
    $add_order = "";
 
    // No multi if get one item
-   if ($item->isEntityAssign()
-       && ($one_item < 0)) {
+   if ($item->isEntityAssign()) {
       $recur = $item->maybeRecursive();
 
        // Entities are not really recursive : do not display parents
@@ -296,28 +286,24 @@ if ($item instanceof CommonTreeDropdown) {
       // Empty search text : display first
       if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
          if ($_POST['display_emptychoice']) {
-            if (($one_item < 0) || ($one_item  == 0)) {
-               array_push($datas, ['id'   => 0,
-                                        'text' => $_POST['emptylabel']]);
-            }
+            array_push($datas, ['id'   => 0,
+                                'text' => $_POST['emptylabel']]);
          }
       }
 
       if ($_POST['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
-               if (($one_item < 0) || ($one_item == $key)) {
-                  array_push($datas, ['id'   => $key,
-                                           'text' => stripslashes($val)]);
-               }
+               array_push($datas, ['id'   => $key,
+                                   'text' => stripslashes($val)]);
             }
          }
       }
       $last_level_displayed = [];
       $datastoadd           = [];
 
-      // Ignore first item for all pages except first page or one_item
-      $firstitem = (($_POST['page'] > 1) && ($one_item < 0));
+      // Ignore first item for all pages except first page
+      $firstitem = (($_POST['page'] > 1));
       if ($DB->numrows($result)) {
          $prev             = -1;
          $firstitem_entity = -1;
@@ -363,8 +349,7 @@ if ($item instanceof CommonTreeDropdown) {
                $level = 0;
             } else { // Need to check if parent is the good one
                      // Do not do if only get one item
-               if (($level > 1)
-                   && ($one_item < 0)) {
+               if (($level > 1)) {
                   // Last parent is not the good one need to display arbo
                   if (!isset($last_level_displayed[$level-1])
                       || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
@@ -474,8 +459,7 @@ if ($item instanceof CommonTreeDropdown) {
 } else { // Not a dropdowntree
    $multi = false;
    // No multi if get one item
-   if ($item->isEntityAssign()
-       && ($one_item < 0)) {
+   if ($item->isEntityAssign()) {
       $multi = $item->maybeRecursive();
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
@@ -507,18 +491,14 @@ if ($item instanceof CommonTreeDropdown) {
       $field = "itemtype";
    }
 
-   if ($one_item >= 0) {
-      $where .=" AND `$table`.`id` = '$one_item'";
-   } else {
-      if (!empty($_POST['searchText'])) {
-         $where .= buildSearchWhereClause(
-            $table,
-            $_POST['itemtype'],
-            $_POST['searchText'],
-            ($displaywith ? $_POST['displaywith'] : []),
-            $field
-         );
-      }
+   if (!empty($_POST['searchText'])) {
+      $where .= buildSearchWhereClause(
+         $table,
+         $_POST['itemtype'],
+         $_POST['searchText'],
+         ($displaywith ? $_POST['displaywith'] : []),
+         $field
+      );
    }
    $addselect = '';
    $addjoin = '';
@@ -590,19 +570,15 @@ if ($item instanceof CommonTreeDropdown) {
       // Display first if no search
       if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
          if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
-            if (($one_item < 0) || ($one_item == 0)) {
-               array_push($datas, ['id'    => 0,
-                                        'text'  => $_POST["emptylabel"]]);
-            }
+            array_push($datas, ['id'    => 0,
+                                'text'  => $_POST["emptylabel"]]);
          }
       }
       if ($_POST['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
-               if (($one_item < 0) || ($one_item == $key)) {
-                  array_push($datas, ['id'    => $key,
-                                           'text'  => stripslashes($val)]);
-               }
+               array_push($datas, ['id'    => $key,
+                                   'text'  => stripslashes($val)]);
             }
          }
       }
@@ -694,12 +670,6 @@ if ($item instanceof CommonTreeDropdown) {
    }
 }
 
-if (($one_item >= 0) && isset($datas[0])) {
-   echo json_encode($datas[0]);
-} else {
-
-   $ret['results'] = $datas;
-   $ret['count']   = $count;
-   echo json_encode($ret);
-}
-
+$ret['results'] = $datas;
+$ret['count']   = $count;
+echo json_encode($ret);
