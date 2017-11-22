@@ -487,23 +487,7 @@ class Log extends CommonDBTM {
 
                   if ($data['itemtype'] == 'Ticket') {
                      if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                        switch ($data['id_search_option']) {
-                           case 4: // User
-                           case 71: // Group
-                              $as = __('Requester');
-                              break;
-                           case 66: // User
-                           case 65: // Group
-                              $as = __('Watcher');
-                              break;
-                           case 5: // User
-                           case 8: // Group
-                           case 6: // Supplier
-                              $as = __('Assigned to');
-                              break;
-                           default:
-                              $as = false;
-                        }
+                        $as = $SEARCHOPTION[$data['id_search_option']]['name'];
                      } else { // Old record
                         switch ($data['itemtype_link']) {
                            case 'Group':
