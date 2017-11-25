@@ -94,6 +94,7 @@ if (isset($_FILES)) {
       $file['name'] = Toolbox::clean_cross_side_scripting_deep($file['name']);
    }
 }
+unset($file);
 
 // Mark if Header is loaded or not :
 $HEADER_LOADED = false;
