@@ -2495,7 +2495,7 @@ class Search {
                         $ADDITONALFIELDS";
             }
             break;
-            
+
          default:
             break;
       }
