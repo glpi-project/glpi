@@ -2455,7 +2455,6 @@ class Search {
                               AS `".$NAME."_".$num."_mailname`,
                      $ADDITONALFIELDS";
 
-         case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
@@ -2466,9 +2465,6 @@ class Search {
             }
             break;
 
-         case "glpi_softwarelicenses.serial" :
-         case "glpi_softwarelicenses.otherserial" :
-         case "glpi_softwarelicenses.comment" :
          case "glpi_softwareversions.comment" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
@@ -2498,6 +2494,9 @@ class Search {
                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
+            break;
+            
+         default:
             break;
       }
 
