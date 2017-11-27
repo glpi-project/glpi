@@ -191,6 +191,46 @@ class Change extends CommonITILObject {
       return $actions;
    }
 
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuOptions() {
+      if (ChangeTemplate::canView()) {
+         $menu['ChangeTemplate']['title']           = ChangeTemplate::getTypeName(Session::getPluralNumber());
+         $menu['ChangeTemplate']['page']            = ChangeTemplate::getSearchURL(false);
+         $menu['ChangeTemplate']['links']['search'] = ChangeTemplate::getSearchURL(false);
+         if (ChangeTemplate::canCreate()) {
+            $menu['ChangeTemplate']['links']['add'] = ChangeTemplate::getFormURL(false);
+         }
+         return $menu;
+      }
+      return false;
+   }
+
+
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuLinks() {
+
+      $links = [];
+      if (ChangeTemplate::canView()) {
+         $links['template'] = ChangeTemplate::getSearchURL(false);
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (static::canView()) {
@@ -341,6 +381,87 @@ class Change extends CommonITILObject {
    function prepareInputForAdd($input) {
 
       $input =  parent::prepareInputForAdd($input);
+
+      // Do not check mandatory on auto import (mailgates)
+      if (!isset($input['_auto_import'])) {
+         if (isset($input['_changetemplates_id']) && $input['_changetemplates_id']) {
+            $ct = new ChangeTemplate();
+            if ($ct->getFromDBWithDatas($input['_changetemplates_id'])) {
+               if (count($ct->mandatory)) {
+                  $mandatory_missing = [];
+                  $fieldsname        = $ct->getAllowedFieldsNames(true);
+                  foreach ($ct->mandatory as $key => $val) {
+                     // for title if mandatory (restore initial value)
+                     if ($key == 'name') {
+                        $input['name']                     = $title;
+                     }
+                     // Check only defined values : Not defined not in form
+                     if (isset($input[$key])) {
+                        // If content is also predefined need to be different from predefined value
+                        if (($key == 'content')
+                            && isset($ct->predefined['content'])) {
+                           // Clean new lines to be fix encoding
+                           if (strcmp(preg_replace("/\r?\n/", "",
+                                                   Html::cleanPostForTextArea($input[$key])),
+                                      preg_replace("/\r?\n/", "",
+                                                   $ct->predefined['content'])) == 0) {
+                              $mandatory_missing[$key] = $fieldsname[$val];
+                           }
+                        }
+
+                        if (empty($input[$key]) || ($input[$key] == 'NULL')
+                            || (is_array($input[$key])
+                                && ($input[$key] === [0 => "0"]))) {
+                           $mandatory_missing[$key] = $fieldsname[$val];
+                        }
+                     }
+
+                     if (($key == '_add_validation')
+                         && !empty($input['users_id_validate'])
+                         && isset($input['users_id_validate'][0])
+                         && ($input['users_id_validate'][0] > 0)) {
+
+                        unset($mandatory_missing['_add_validation']);
+                     }
+
+                     // For time_to_resolve and time_to_own : check also slas
+                     // For internal_time_to_resolve and internal_time_to_own : check also olas
+                     foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+                        list($dateField, $slaField) = SLA::getFieldNames($slmType);
+                        if (($key == $dateField)
+                            && isset($input[$slaField]) && ($input[$slaField] > 0)
+                            && isset($mandatory_missing[$dateField])) {
+                           unset($mandatory_missing[$dateField]);
+                        }
+                        list($dateField, $olaField) = OLA::getFieldNames($slmType);
+                        if (($key == $dateField)
+                            && isset($input[$olaField]) && ($input[$olaField] > 0)
+                            && isset($mandatory_missing[$dateField])) {
+                           unset($mandatory_missing[$dateField]);
+                        }
+                     }
+
+                     // For document mandatory
+                     if (($key == '_documents_id')
+                           && !isset($input['_filename'])
+                           && !isset($input['_tag_filename'])
+                           && !isset($input['_stock_image'])
+                           && !isset($input['_tag_stock_image'])) {
+
+                        $mandatory_missing[$key] = $fieldsname[$val];
+                     }
+                  }
+                  if (count($mandatory_missing)) {
+                     //TRANS: %s are the fields concerned
+                     $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                                        implode(", ", $mandatory_missing));
+                     Session::addMessageAfterRedirect($message, false, ERROR);
+                     return false;
+                  }
+               }
+            }
+         }
+      }
       return $input;
    }
 
@@ -582,7 +703,7 @@ class Change extends CommonITILObject {
 
       // Set default options
       if (!$ID) {
-         $values = ['_users_id_requester'        => Session::getLoginUserID(),
+         $default_values = ['_users_id_requester'        => Session::getLoginUserID(),
                          '_users_id_requester_notif'  => ['use_notification'  => $default_use_notif,
                                                                'alternative_email' => ''],
                          '_groups_id_requester'       => 0,
@@ -604,9 +725,15 @@ class Change extends CommonITILObject {
                          'entities_id'                => $_SESSION['glpiactive_entity'],
                          'name'                       => '',
                          'itilcategories_id'          => 0];
-         foreach ($values as $key => $val) {
-            if (!isset($options[$key])) {
-               $options[$key] = $val;
+         // Restore saved value or override with page parameter
+         $saved = $this->restoreInput();
+         foreach ($default_values as $name => $value) {
+            if (!isset($options[$name])) {
+               if (isset($saved[$name])) {
+                  $options[$name] = $saved[$name];
+               } else {
+                  $options[$name] = $value;
+               }
             }
          }
 
@@ -658,10 +785,95 @@ class Change extends CommonITILObject {
          //set ID as already defined
          $options['noid'] = true;
       }
+
+      if (!isset($options['template_preview'])) {
+         $options['template_preview'] = 0;
+      }
+
+      // Load change template if available :
+      if ($ID) {
+         $ct = $this->getChangeTemplateToUse($options['template_preview'],
+                                             $this->fields['itilcategories_id'], $this->fields['entities_id']);
+      } else {
+         $ct = $this->getChangeTemplateToUse($options['template_preview'],
+                                             $options['itilcategories_id'], $options['entities_id']);
+      }
+
+      // Predefined fields from template : reset them
+      if (isset($options['_predefined_fields'])) {
+         $options['_predefined_fields']
+                        = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+      } else {
+         $options['_predefined_fields'] = [];
+      }
+
+      // Store predefined fields to be able not to take into account on change template
+      // Only manage predefined values on change creation
+      $predefined_fields = [];
+      if (!$ID) {
+
+         if (isset($ct->predefined) && count($ct->predefined)) {
+            foreach ($ct->predefined as $predeffield => $predefvalue) {
+               if (isset($default_values[$predeffield])) {
+                  // Is always default value : not set
+                  // Set if already predefined field
+                  // Set if change template change
+                  if (((count($options['_predefined_fields']) == 0)
+                       && ($options[$predeffield] == $default_values[$predeffield]))
+                      || (isset($options['_predefined_fields'][$predeffield])
+                          && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                      || (isset($options['_changetemplates_id'])
+                          && ($options['_changetemplates_id'] != $ct->getID()))
+                      // user pref for requestype can't overwrite requestype from template
+                      // when change category
+                      || (empty($saved))) {
+
+                     // Load template data
+                     $options[$predeffield]            = $predefvalue;
+                     $this->fields[$predeffield]      = $predefvalue;
+                     $predefined_fields[$predeffield] = $predefvalue;
+                  }
+               }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+               $predefined_fields['_all_predefined_override'] = 1;
+            }
+
+         } else { // No template load : reset predefined values
+            if (count($options['_predefined_fields'])) {
+               foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+                  if ($options[$predeffield] == $predefvalue) {
+                     $options[$predeffield] = $default_values[$predeffield];
+                  }
+               }
+            }
+         }
+      }
+      // Put change template on $options for actors
+      $options['_changetemplate'] = $ct;
+
+      if ($options['template_preview']) {
+         // Add all values to fields of changes for template preview
+         foreach ($options as $key => $val) {
+            if (!isset($this->fields[$key])) {
+               $this->fields[$key] = $val;
+            }
+         }
+      }
+
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<th class='left' width='$colsize1%'>";
+      echo $ct->getBeginHiddenFieldText('date');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Opening date'), $ct->getMandatoryMark('date'));
+      } else {
+         echo __('Opening date');
+      }
+      echo $ct->getEndHiddenFieldText('date');
+      echo "</th>";
       echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
@@ -670,23 +882,31 @@ class Change extends CommonITILObject {
       if (isset($options['problems_id'])) {
          echo "<input type='hidden' name='_problems_id' value='".$options['problems_id']."'>";
       }
+      echo $ct->getBeginHiddenFieldValue('date');
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
       Html::showDateTimeField("date", ['value'      => $date,
-                                            'timestep'   => 1,
-                                            'maybeempty' => false]);
+                                       'timestep'   => 1,
+                                       'maybeempty' => false,
+                                       'required'   => ($ct->isMandatoryField('date') && !$ID)]);
+      echo $ct->getEndHiddenFieldValue('date', $this);
       echo "</td>";
-      echo "<th width='$colsize1%'>".__('Time to resolve')."</th>";
+      echo "<th width='$colsize1%'>";
+      echo $ct->getBeginHiddenFieldText('time_to_resolve');
+      printf(__('%1$s%2$s'), __('Time to resolve'), $ct->getMandatoryMark('time_to_resolve'));
+      echo $ct->getEndHiddenFieldText('time_to_resolve');
+      echo "</th>";
       echo "<td width='$colsize2%' class='left'>";
-
+      echo $ct->getBeginHiddenFieldText('time_to_resolve');
       if ($this->fields["time_to_resolve"] == 'NULL') {
          $this->fields["time_to_resolve"] = '';
       }
       Html::showDateTimeField("time_to_resolve", ['value'    => $this->fields["time_to_resolve"],
-                                                  'timestep' => 1]);
-
+                                                  'timestep' => 1,
+                                                  'required' => $ct->isMandatoryField('time_to_resolve')]);
+      echo $ct->getEndHiddenFieldText('time_to_resolve');
       echo "</td></tr>";
 
       if ($ID) {
@@ -712,15 +932,15 @@ class Change extends CommonITILObject {
          echo "<th>".__('Date of solving')."</th>";
          echo "<td>";
          Html::showDateTimeField("solvedate", ['value'      => $this->fields["solvedate"],
-                                                    'timestep'   => 1,
-                                                    'maybeempty' => false]);
+                                               'timestep'   => 1,
+                                               'maybeempty' => false]);
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
             echo "<th>".__('Closing date')."</th>";
             echo "<td>";
             Html::showDateTimeField("closedate", ['value'      => $this->fields["closedate"],
-                                                       'timestep'   => 1,
-                                                       'maybeempty' => false]);
+                                                  'timestep'   => 1,
+                                                  'maybeempty' => false]);
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
@@ -731,40 +951,71 @@ class Change extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Status')."</th>";
+      echo "<th width='$colsize1%'>";
+      echo $ct->getBeginHiddenFieldText('status');
+      printf(__('%1$s%2$s'), __('Status'), $ct->getMandatoryMark('status'));
+      echo $ct->getEndHiddenFieldText('status');
+      echo "</th>";
       echo "<td width='$colsize2%'>";
       self::dropdownStatus(['value'    => $this->fields["status"],
-                                 'showtype' => 'allowed']);
+                            'showtype' => 'allowed']);
       ChangeValidation::alertValidation($this, 'status');
       echo "</td>";
-      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
+      echo "<th width='$colsize1%'>";
+      echo $ct->getBeginHiddenFieldText('urgency');
+      printf(__('%1$s%2$s'), __('Urgency'), $ct->getMandatoryMark('status'));
+      echo $ct->getEndHiddenFieldText('urgency');
+      echo "</th>";
       echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
+      echo $ct->getBeginHiddenFieldValue('urgency');
       $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
+      echo $ct->getEndHiddenFieldValue('urgency', $this);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Category')."</th>";
+      echo "<th>";
+      sprintf(__('%1$s%2$s'), __('Category'), $ct->getMandatoryMark('itilcategories_id'));
+      echo "</th>";
       echo "<td >";
       $opt = ['value'  => $this->fields["itilcategories_id"],
                    'entity' => $this->fields["entities_id"],
                    'condition' => "`is_change`='1'"];
+      /// Auto submit to load template
+      if (!$ID) {
+         $opt['on_change'] = 'this.form.submit()';
+      }
       ITILCategory::dropdown($opt);
       echo "</td>";
-      echo "<th>".__('Impact')."</th>";
+      echo "<th>";
+      echo $ct->getBeginHiddenFieldText('impact');
+      printf(__('%1$s%2$s'), __('Impact'), $ct->getMandatoryMark('status'));
+      echo $ct->getEndHiddenFieldText('impact', $this);
+      echo "</th>";
       echo "<td>";
+      echo $ct->getBeginHiddenFieldValue('impact');
       $idimpact = self::dropdownImpact(['value' => $this->fields["impact"]]);
+      echo $ct->getEndHiddenFieldValue('impact', $this);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Total duration')."</th>";
+      echo "<th>";
+      echo $ct->getBeginHiddenFieldText('actiontime');
+      printf(__('%1$s%2$s'), __('Total duration'), $ct->getMandatoryMark('actiontime'));
+      echo $ct->getEndHiddenFieldText('actiontime');
+      echo "</th>";
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
-      echo "<th class='left'>".__('Priority')."</th>";
+      echo "<th class='left'>";
+      echo $ct->getBeginHiddenFieldText('priority');
+      printf(__('%1$s%2$s'), __('Priority'), $ct->getMandatoryMark('status'));
+      echo $ct->getEndHiddenFieldText('priority', $this);
+      echo "</th>";
       echo "<td>";
+      echo $ct->getBeginHiddenFieldValue('priority');
       $idpriority = parent::dropdownPriority(['value'     => $this->fields["priority"],
-                                                   'withmajor' => true]);
+                                              'withmajor' => true]);
       $idajax     = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
       $params = ['urgency'  => '__VALUE0__',
@@ -774,15 +1025,20 @@ class Change extends CommonITILObject {
                                           'dropdown_impact'.$idimpact],
                                     $idajax,
                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+      echo $ct->getEndHiddenFieldValue('priority', $this);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
+      echo $ct->getBeginHiddenFieldText('global_validation');
       echo __('Approval');
+      echo $ct->getEndHiddenFieldText('global_validation');
       echo "</th>";
       echo "<td>";
+      echo $ct->getBeginHiddenFieldValue('global_validation');
       echo ChangeValidation::getStatus($this->fields['global_validation']);
+      echo $ct->getEndHiddenFieldValue('global_validation', $this);
       echo "</td>";
       echo "<th></th>";
       echo "<td></td>";
@@ -793,26 +1049,45 @@ class Change extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Title')."</th>";
+      echo "<th width='$colsize1%'>";
+      echo $ct->getBeginHiddenFieldText('name');
+      printf(__('%1$s%2$s'), __('Title'), $ct->getMandatoryMark('name'));
+      echo $ct->getEndHiddenFieldText('name');
+      echo "</th>";
       echo "<td colspan='3'>";
+      echo $ct->getBeginHiddenFieldValue('name');
       echo "<input type='text' size='90' maxlength=250 name='name' ".
+              ($ct->isMandatoryField('name') ? " required='required'" : '') .
              " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+      echo $ct->getEndHiddenFieldValue('name', $this);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Description')."</th>";
+      echo "<th>";
+      echo $ct->getBeginHiddenFieldText('content');
+      printf(__('%1$s%2$s'), __('Description'), $ct->getMandatoryMark('content'));
+      echo $ct->getEndHiddenFieldText('content');
+      echo "</th>";
       echo "<td colspan='3'>";
+      echo $ct->getBeginHiddenFieldValue('content');
       $rand = mt_rand();
       echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
             Html::clean(Html::entity_decode_deep($this->fields["content"]))."</textarea>";
+      echo $ct->getEndHiddenFieldValue('content', $this);
+
+      if ($ct->isField('id') && ($ct->fields['id'] > 0)) {
+         echo "<input type='hidden' name='_changetemplates_id' value='".$ct->fields['id']."'>";
+         echo "<input type='hidden' name='_predefined_fields'
+                value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
+      }
       echo "</td>";
       echo "</tr>";
       $options['colspan'] = 3;
+
       $this->showFormButtons($options);
 
       return true;
-
    }
 
 
@@ -1174,4 +1449,104 @@ class Change extends CommonITILObject {
    function showDebug() {
       NotificationEvent::debugEvent($this);
    }
+
+
+   /**
+    * Get change template to use
+    * Use force_template first, then try on template define for type and category
+    * then use default template of active profile of connected user and then use default entity one
+    *
+    * @param $force_template      integer changetemplate_id to used (case of preview for example)
+    *                             (default 0)
+    * @param $itilcategories_id   integer change category (default 0)
+    * @param $entities_id         integer (default -1)
+    *
+    * @since version 9.3
+    *
+    * @return change template object
+   **/
+   function getChangeTemplateToUse($force_template = 0, $itilcategories_id = 0,
+                                   $entities_id = -1) {
+
+      // Load change template if available :
+      $ct              = new ChangeTemplate();
+      $template_loaded = false;
+
+      if ($force_template) {
+         // with category
+         if ($ct->getFromDBWithDatas($force_template, true)) {
+            $template_loaded = true;
+         }
+      }
+
+      if (!$template_loaded
+          && $itilcategories_id) {
+
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($itilcategories_id)) {
+            $field = 'changetemplates_id';
+
+            if (!empty($field) && $categ->fields[$field]) {
+               // without category
+               if ($ct->getFromDBWithDatas($categ->fields[$field], false)) {
+                  $template_loaded = true;
+               }
+            }
+         }
+      }
+
+      // If template loaded from category do not check after
+      if ($template_loaded) {
+         return $ct;
+      }
+
+      if (!$template_loaded) {
+         // load default profile one if not already loaded
+         if (isset($_SESSION['glpiactiveprofile']['changetemplates_id'])
+             && $_SESSION['glpiactiveprofile']['changetemplates_id']) {
+            // with category
+            if ($ct->getFromDBWithDatas($_SESSION['glpiactiveprofile']['changetemplates_id'],
+                                        true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+
+      if (!$template_loaded
+          && ($entities_id >= 0)) {
+
+         // load default entity one if not already loaded
+         if ($template_id = Entity::getUsedConfig('changetemplates_id', $entities_id)) {
+            // with category
+            if ($ct->getFromDBWithDatas($template_id, true)) {
+               $template_loaded = true;
+            }
+         }
+      }
+
+      // Check if profile / entity set category and try to load template for these values
+      if ($template_loaded) { // template loaded for profile or entity
+         $newitilcategories_id = $itilcategories_id;
+         // Get predefined values for change template
+         if (isset($ct->predefined['itilcategories_id']) && $ct->predefined['itilcategories_id']) {
+            $newitilcategories_id = $ct->predefined['itilcategories_id'];
+         }
+         if ($newitilcategories_id) {
+
+            $categ = new ITILCategory();
+            if ($categ->getFromDB($newitilcategories_id)) {
+               $field = 'changetemplates_id';
+
+               if (!empty($field) && $categ->fields[$field]) {
+                  // without category
+                  if ($ct->getFromDBWithDatas($categ->fields[$field], false)) {
+                     $template_loaded = true;
+                  }
+               }
+            }
+         }
+      }
+      return $ct;
+   }
+
 }

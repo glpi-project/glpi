@@ -2414,6 +2414,14 @@ abstract class CommonITILObject extends CommonDBTM {
             $candelete = false;
          }
       }
+      if (($itemtype == 'Change')
+          && isset($options['_changetemplate'])) {
+         $mandatory = $options['_changetemplate']->getMandatoryMark("_groups_id_".$typename);
+         if ($options['_changetemplate']->isMandatoryField("_groups_id_".$typename)
+             && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
+            $candelete = false;
+         }
+      }
 
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
@@ -2467,6 +2475,14 @@ abstract class CommonITILObject extends CommonDBTM {
           && isset($options['_tickettemplate'])) {
          $mandatory = $options['_tickettemplate']->getMandatoryMark("_suppliers_id_".$typename);
          if ($options['_tickettemplate']->isMandatoryField("_suppliers_id_".$typename)
+             && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
+            $candelete = false;
+         }
+      }
+      if (($itemtype == 'Change')
+          && isset($options['_changetemplate'])) {
+         $mandatory = $options['_changetemplate']->getMandatoryMark("_suppliers_id_".$typename);
+         if ($options['_changetemplate']->isMandatoryField("_suppliers_id_".$typename)
              && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
             $candelete = false;
          }
@@ -3414,6 +3430,15 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      if (($itemtype == 'Change')
+          && isset($options['_changetemplate'])) {
+         $mandatory = $options['_changetemplate']->getMandatoryMark("_users_id_".$typename);
+         if ($options['_changetemplate']->isMandatoryField("_users_id_".$typename)
+             && isset($this->users[$type]) && (count($this->users[$type])==1)) {
+            $candelete = false;
+         }
+      }
+
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
             echo "<div class='actor_row'>";
@@ -3583,6 +3608,12 @@ abstract class CommonITILObject extends CommonDBTM {
           && isset($options['_tickettemplate'])) {
          echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
       }
+
+      if (($itemtype == 'Change')
+          && isset($options['_changetemplate'])) {
+         echo $options['_changetemplate']->getMandatoryMark("_users_id_".$typename);
+      }
+
       echo "&nbsp;";
 
       if (!isset($options["_right"])) {
@@ -3741,6 +3772,10 @@ abstract class CommonITILObject extends CommonDBTM {
             && isset($options['_tickettemplate'])) {
          echo $options['_tickettemplate']->getMandatoryMark("_suppliers_id_assign");
       }
+      if (($itemtype == 'Change')
+            && isset($options['_changetemplate'])) {
+         echo $options['_changetemplate']->getMandatoryMark("_suppliers_id_assign");
+      }
       echo "&nbsp;";
 
       $rand   = mt_rand();
@@ -3840,6 +3875,10 @@ abstract class CommonITILObject extends CommonDBTM {
          $is_hidden[$f] = false;
          if (isset($options['_tickettemplate'])
              && $options['_tickettemplate']->isHiddenField($f)) {
+            $is_hidden[$f] = true;
+         }
+         if (isset($options['_changetemplate'])
+             && $options['_changetemplate']->isHiddenField($f)) {
             $is_hidden[$f] = true;
          }
       }
@@ -3946,6 +3985,9 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($options['_tickettemplate'])) {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
             }
+            if (isset($options['_changetemplate'])) {
+               echo $options['_changetemplate']->getMandatoryMark('_groups_id_requester');
+            }
             echo "&nbsp;";
 
             Group::dropdown(['name'      => '_groups_id_requester',
@@ -4035,6 +4077,9 @@ abstract class CommonITILObject extends CommonDBTM {
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
+            }
+            if (isset($options['_changetemplate'])) {
+               echo $options['_changetemplate']->getMandatoryMark('_groups_id_observer');
             }
             echo "&nbsp;";
 
@@ -4145,6 +4190,9 @@ abstract class CommonITILObject extends CommonDBTM {
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_assign');
+            }
+            if (isset($options['_changetemplate'])) {
+               echo $options['_changetemplate']->getMandatoryMark('_groups_id_assign');
             }
             echo "&nbsp;";
             $rand   = mt_rand();

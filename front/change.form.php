@@ -108,8 +108,31 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
+} else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+   Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
+
+   $options           = [];
+   $options['id'] = $_GET["id"];
+   $change->display($options);
+   Html::footer();
 } else {
    Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
-   $change->display($_GET);
+
+   unset($_REQUEST['id']);
+   unset($_GET['id']);
+   unset($_POST['id']);
+
+   // alternative email must be empty for create ticket
+   unset($_REQUEST['_users_id_requester_notif']['alternative_email']);
+   unset($_REQUEST['_users_id_observer_notif']['alternative_email']);
+   unset($_REQUEST['_users_id_assign_notif']['alternative_email']);
+   unset($_REQUEST['_suppliers_id_assign_notif']['alternative_email']);
+   // Add a ticket from item : format data
+   if (isset($_REQUEST['_add_fromitem'])
+       && isset($_REQUEST['itemtype'])
+       && isset($_REQUEST['items_id'])) {
+      $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+   }
+   $change->display($_REQUEST);
    Html::footer();
 }

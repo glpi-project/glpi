@@ -107,7 +107,8 @@ class Entity extends CommonTreeDropdown {
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay',
                                                    'inquest_duration','inquest_URL',
-                                                   'max_closedate', 'tickettemplates_id']];
+                                                   'max_closedate', 'tickettemplates_id',
+                                                   'changetemplates_id']];
 
 
    function getForbiddenStandardMassiveAction() {
@@ -1070,6 +1071,16 @@ class Entity extends CommonTreeDropdown {
          'table'              => $this->getTable(),
          'field'              => 'autofill_decommission_date',
          'name'               => __('Decommission date'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'datatype'           => 'specific'
+      ];
+
+      $tab[] = [
+         'id'                 => '57',
+         'table'              => $this->getTable(),
+         'field'              => 'changetemplates_id', // not a dropdown because of special value
+         'name'               => _n('Change template', 'Change templates', 1),
          'massiveaction'      => false,
          'nosearch'           => true,
          'datatype'           => 'specific'
@@ -2149,6 +2160,35 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Change template', 'Change templates', 1).
+           "</td>";
+      echo "<td colspan='2'>";
+      $toadd = [];
+      if ($ID != 0) {
+         $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
+      }
+
+      $options = ['value'  => $entity->fields["changetemplates_id"],
+                  'entity' => $ID,
+                  'toadd'  => $toadd];
+
+      ChangeTemplate::dropdown($options);
+
+      if (($entity->fields["changetemplates_id"] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+
+         $ct  = new ChangeTemplate();
+         $tid = self::getUsedConfig('changetemplates_id', $ID, '', 0);
+         if (!$tid) {
+            echo Dropdown::EMPTY_VALUE;
+         } else if ($ct->getFromDB($tid)) {
+            echo $ct->getLink();
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."</td>";
       echo "<td colspan='2'>";
       $options = ['value'      => $entity->fields["calendars_id"],
@@ -2711,6 +2751,12 @@ class Entity extends CommonTreeDropdown {
                return __('Inheritance of the parent entity');
             }
             return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
+
+         case 'changetemplates_id' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Dropdown::getDropdownName('glpi_changetemplates', $values[$field]);
 
          case 'calendars_id' :
             switch ($values[$field]) {

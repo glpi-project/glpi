@@ -764,6 +764,62 @@ CREATE TABLE `glpi_changes_users` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_changetemplatehiddenfields
+
+DROP TABLE IF EXISTS `glpi_changetemplatehiddenfields`;
+CREATE TABLE `glpi_changetemplatehiddenfields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+  `num` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_changetemplatemandatoryfields
+
+DROP TABLE IF EXISTS `glpi_changetemplatemandatoryfields`;
+CREATE TABLE `glpi_changetemplatemandatoryfields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+  `num` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_changetemplatemandatoryfields` VALUES ('1','1','21');
+
+### Dump table glpi_changetemplatepredefinedfields
+
+DROP TABLE IF EXISTS `glpi_changetemplatepredefinedfields`;
+CREATE TABLE `glpi_changetemplatepredefinedfields` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+  `num` int(11) NOT NULL DEFAULT '0',
+  `value` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `changetemplates_id_id_num` (`changetemplates_id`,`num`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_changetemplates
+
+DROP TABLE IF EXISTS `glpi_changetemplates`;
+CREATE TABLE `glpi_changetemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_changetemplates` VALUES ('1','Default','0','1',NULL);
+
+
 ### Dump table glpi_changetasks
 
 DROP TABLE IF EXISTS `glpi_changetasks`;
@@ -2916,6 +2972,7 @@ CREATE TABLE `glpi_entities` (
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   `tickettemplates_id` int(11) NOT NULL DEFAULT '-2',
+  `changetemplates_id` int(11) NOT NULL DEFAULT '-2',
   `entities_id_software` int(11) NOT NULL DEFAULT '-2',
   `default_contract_alert` int(11) NOT NULL DEFAULT '-2',
   `default_infocom_alert` int(11) NOT NULL DEFAULT '-2',
@@ -3960,6 +4017,7 @@ CREATE TABLE `glpi_itilcategories` (
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
   `tickettemplates_id_incident` int(11) NOT NULL DEFAULT '0',
   `tickettemplates_id_demand` int(11) NOT NULL DEFAULT '0',
+  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
   `is_incident` int(11) NOT NULL DEFAULT '1',
   `is_request` int(11) NOT NULL DEFAULT '1',
   `is_problem` int(11) NOT NULL DEFAULT '1',
