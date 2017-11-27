@@ -2568,11 +2568,12 @@ a.icon_nav_move:hover img {
 }
 
 #c_recherche form #champRecherche button {
-   border:none;
-   height:22px;
-   vertical-align:bottom;
+   border: none;
+   height: 22px;
+   vertical-align: bottom;
    border-radius: 0px 3px 3px 0px;
-} 
+   cursor: pointer;
+}
 
 #c_recherche form #champRecherche input {
    border: none;
