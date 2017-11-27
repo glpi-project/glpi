@@ -2567,16 +2567,12 @@ a.icon_nav_move:hover img {
    position: relative;
 }
 
-#c_recherche :after {
-   width: 16px;
-   height: 16px;
-   content: '';
-   display: block;
-   background-image: url(../pics/search.png);
-   position: absolute;
-   top: 4px;
-   right: 4px;
-}
+#c_recherche form #champRecherche button {
+   border:none;
+   height:22px;
+   vertical-align:bottom;
+   border-radius: 0px 3px 3px 0px;
+} 
 
 #c_recherche form #champRecherche input {
    border: none;
@@ -2585,7 +2581,7 @@ a.icon_nav_move:hover img {
    padding: 0 3px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
-   border-radius: 3px;
+   border-radius: 3px 0px 0px 3px;
    position: relative;
 }
 
