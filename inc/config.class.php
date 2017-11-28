@@ -277,7 +277,10 @@ class Config extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
+
+      $rand = mt_rand();
       $canedit = Session::haveRight(self::$rightname, UPDATE);
+
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       }
@@ -286,156 +289,164 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('URL of the application') . "</td>";
-      echo "<td colspan='3'><input type='text' name='url_base' size='80' value='".$CFG_GLPI["url_base"]."'>";
+      echo "<td><label for='url_base'>" . __('URL of the application') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='url_base' id='url_base' size='80' value='".$CFG_GLPI["url_base"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Text in the login box') . "</td>";
+      echo "<td><label for='text_login'>" . __('Text in the login box') . "</label></td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='70' rows='4' name='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
+      echo "<textarea cols='70' rows='4' name='text_login' id='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='30%'> " . __('Allow FAQ anonymous access') . "</td><td  width='20%'>";
-      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo "</td><td width='30%'>" . __('Simplified interface help link') . "</td>";
-      echo "<td><input size='22' type='text' name='helpdesk_doc_url' value='" .
+      echo "<td width='30%'><label for='dropdown_use_public_faq$rand'>" . __('Allow FAQ anonymous access') . "</label></td><td  width='20%'>";
+      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"], -1, ['rand' => $rand]);
+      echo "</td><td width='30%'><label for='helpdesk_doc_url'>" . __('Simplified interface help link') . "</label></td>";
+      echo "<td><input size='22' type='text' name='helpdesk_doc_url' id='helpdesk_doc_url' value='" .
                  $CFG_GLPI["helpdesk_doc_url"] . "'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Default search results limit (page)')."</td><td>";
+      echo "<td><label for='dropdown_list_limit_max$rand'>" . __('Default search results limit (page)')."</td><td>";
       Dropdown::showNumber("list_limit_max", ['value' => $CFG_GLPI["list_limit_max"],
-                                                   'min'   => 5,
-                                                   'max'   => 200,
-                                                   'step'  => 5]);
-      echo "</td><td>" . __('Standard interface help link') . "</td>";
-      echo "<td><input size='22' type='text' name='central_doc_url' value='" .
+                                              'min'   => 5,
+                                              'max'   => 200,
+                                              'step'  => 5,
+                                              'rand'  => $rand]);
+      echo "</td><td><label for='central_doc_url'>" . __('Standard interface help link') . "</label></td>";
+      echo "<td><input size='22' type='text' name='central_doc_url' id='central_doc_url' value='" .
                  $CFG_GLPI["central_doc_url"] . "'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Default characters limit (summary text boxes)') . "</td><td>";
+      echo "<td><label for='dropdown_cut$rand'>" . __('Default characters limit (summary text boxes)') . "</label></td><td>";
       Dropdown::showNumber('cut', ['value' => $CFG_GLPI["cut"],
-                                        'min'   => 50,
-                                        'max'   => 500,
-                                        'step'  => 50]);
-      echo "</td><td>" . __('Default url length limit') . "</td><td>";
+                                   'min'   => 50,
+                                   'max'   => 500,
+                                   'step'  => 50,
+                                   'rand'  => $rand]);
+      echo "</td><td><label for='dropdown_url_maxlength$rand'>" . __('Default url length limit') . "</td><td>";
       Dropdown::showNumber('url_maxlength', ['value' => $CFG_GLPI["url_maxlength"],
-                                                  'min'   => 20,
-                                                  'max'   => 80,
-                                                  'step'  => 5]);
+                                             'min'   => 20,
+                                             'max'   => 80,
+                                             'step'  => 5,
+                                             'rand'  => $rand]);
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>" .__('Default decimals limit') . "</td><td>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_decimal_number$rand'>" .__('Default decimals limit') . "</label></td><td>";
       Dropdown::showNumber("decimal_number", ['value' => $CFG_GLPI["decimal_number"],
-                                                   'min'   => 1,
-                                                   'max'   => 4]);
-      echo "</td><td>" . __('Default chart format')."</td><td>";
-      Dropdown::showFromArray("default_graphtype", ['png' => 'PNG',
-                                                         'svg' => 'SVG'],
-                              ['value' => $CFG_GLPI["default_graphtype"]]);
+                                              'min'   => 1,
+                                              'max'   => 4,
+                                              'rand'  => $rand]);
+      echo "</td><td><label for='dropdown_default_graphtype$rand'>" . __('Default chart format')."</label></td><td>";
+      Dropdown::showFromArray("default_graphtype",
+                              ['png' => 'PNG', 'svg' => 'SVG',],
+                              ['value' => $CFG_GLPI["default_graphtype"], 'rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("Translation of dropdowns") . "</td><td>";
-      Dropdown::showYesNo("translate_dropdowns", $CFG_GLPI["translate_dropdowns"]);
+      echo "<td><label for='dropdown_translate_dropdowns$rand'>" . __("Translation of dropdowns") . "</label></td><td>";
+      Dropdown::showYesNo("translate_dropdowns", $CFG_GLPI["translate_dropdowns"], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td>" . __("Knowledge base translation") . "</td><td>";
-      Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"]);
+      echo "<td><label for='dropdown_translate_kb$rand'>" . __("Knowledge base translation") . "</label></td><td>";
+      Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
            "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".
+      echo "<td><label for='dropdown_dropdown_max$rand'>".
             __('Page size for dropdown (paging using scroll)').
-            "</td><td>";
+            "</label></td><td>";
       Dropdown::showNumber('dropdown_max', ['value' => $CFG_GLPI["dropdown_max"],
-                                                 'min'   => 1,
-                                                 'max'   => 200]);
+                                            'min'   => 1,
+                                            'max'   => 200,
+                                            'rand'  => $rand]);
       echo "</td>";
-      echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
-      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
+      echo "<td><label for='dropdown_use_ajax_autocompletion$rand'>" . __('Autocompletion of text fields') . "</label></td><td>";
+      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __("Don't show search engine in dropdowns if the number of items is less than").
-           "</td><td>";
+      echo "<td><label for='dropdown_ajax_limit_count$rand'>". __("Don't show search engine in dropdowns if the number of items is less than").
+           "</label></td><td>";
       Dropdown::showNumber('ajax_limit_count', ['value' => $CFG_GLPI["ajax_limit_count"],
-                                                     'min'   => 1,
-                                                     'max'   => 200,
-                                                     'step'  => 1,
-                                                     'toadd' => [0 => __('Never')]]);
+                                                'min'   => 1,
+                                                'max'   => 200,
+                                                'step'  => 1,
+                                                'toadd' => [0 => __('Never')],
+                                                'rand'  => $rand]);
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Items seen') . "</td><td>";
+      echo "<td><label for='dropdown_allow_search_view$rand'>" . __('Items seen') . "</label></td><td>";
       $values = [0 => __('No'),
-                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
-                      2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion'))];
+                 1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
+                 2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion'))];
       Dropdown::showFromArray('allow_search_view', $values,
-                              ['value' => $CFG_GLPI['allow_search_view']]);
-      echo "</td><td>". __('Global search')."</td><td>";
+                              ['value' => $CFG_GLPI['allow_search_view'], 'rand' => $rand]);
+      echo "</td><td><label for='dropdown_allow_search_global$rand'>". __('Global search')."</label></td><td>";
       if ($CFG_GLPI['allow_search_view']) {
-         Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
+         Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global'], -1, ['rand' => $rand]);
       } else {
          echo Dropdown::getYesNo(0);
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('All') . "</td><td>";
+      echo "<td><label for='dropdown_allow_search_all$rand'>" . __('All') . "</label></td><td>";
       $values = [0 => __('No'),
-                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion'))];
+                 1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion'))];
       Dropdown::showFromArray('allow_search_all', $values,
-                              ['value' => $CFG_GLPI['allow_search_all']]);
+                              ['value' => $CFG_GLPI['allow_search_all'], 'rand' => $rand]);
       echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Use locks') . "</td><td>";
-      Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"]);
-      echo "</td><td>". __('Profile to be used when locking items')."</td><td>";
+      echo "<td><label for='dropdown_lock_use_lock_item$rand'>" . __('Use locks') . "</label></td><td>";
+      Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"], -1, ['rand' => $rand]);
+      echo "</td><td><label for='dropdown_lock_lockprofile_id$rand'>". __('Profile to be used when locking items')."</label></td><td>";
       if ($CFG_GLPI["lock_use_lock_item"]) {
          Profile::dropdown(['name'                  => 'lock_lockprofile_id',
-                                 'display_emptychoice'   => true,
-                                 'value'                 => $CFG_GLPI['lock_lockprofile_id']]);
+                            'display_emptychoice'   => true,
+                            'value'                 => $CFG_GLPI['lock_lockprofile_id'],
+                            'rand'                  => $rand]);
       } else {
          echo dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('List of items to lock') . "</td>";
-      echo "<td  colspan=3>";
+      echo "<td><label for='dropdown_lock_item_list$rand'>" . __('List of items to lock') . "</label></td>";
+      echo "<td colspan=3>";
       Dropdown::showFromArray('lock_item_list', ObjectLock::getLockableObjects(),
                               ['values'   => $CFG_GLPI['lock_item_list'],
-                                    'width'    => '100%',
-                                    'multiple' => true,
-                                    'readonly' => !$CFG_GLPI["lock_use_lock_item"]]);
-      echo "</td></tr>";
+                               'width'    => '100%',
+                               'multiple' => true,
+                               'readonly' => !$CFG_GLPI["lock_use_lock_item"],
+                               'rand'     => $rand]);
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Auto Login').
            "</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __('Time to allow "Remember Me"').
-           "</td><td>";
+      echo "<td><label for='dropdown_login_remember_time$rand'>". __('Time to allow "Remember Me"').
+           "</label></td><td>";
       Dropdown::showTimeStamp('login_remember_time', ['value' => $CFG_GLPI["login_remember_time"],
                                                      'emptylabel'   => __('Disabled'),
                                                      'min'   => 0,
                                                      'max'   => MONTH_TIMESTAMP * 2,
                                                      'step'  => DAY_TIMESTAMP,
-                                                     'toadd' => [HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12]]);
-      echo "<td>" . __("Default state of checkbox") . "</td><td>";
-      Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"]);
+                                                     'toadd' => [HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12],
+                                                     'rand'  => $rand]);
+      echo "<td><label for='dropdown_login_remember_default$rand'>" . __("Default state of checkbox") . "</label></td><td>";
+      Dropdown::showYesNo("login_remember_default", $CFG_GLPI["login_remember_default"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "</td></tr>";
 
@@ -463,6 +474,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
+      $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -473,46 +485,52 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='30%'>". __('Enable the financial and administrative information by default')."</td>";
+      echo "<td width='30%'><label for='dropdown_auto_create_infocoms$rand'>". __('Enable the financial and administrative information by default')."</label></td>";
       echo "<td  width='20%'>";
-      Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
-      echo "</td><td width='20%'> " . __('Restrict monitor management') . "</td>";
+      Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"], -1, ['rand' => $rand]);
+      echo "</td><td width='20%'><label for='dropdown_monitors_management_restrict$rand'>" . __('Restrict monitor management') . "</label></td>";
       echo "<td width='30%'>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
-                                       $CFG_GLPI["monitors_management_restrict"]);
+                                       $CFG_GLPI["monitors_management_restrict"],
+                                       $rand);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
-           "</td><td>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_softwarecategories_id_ondelete$rand'>" . __('Software category deleted by the dictionary rules') .
+           "</label></td><td>";
       SoftwareCategory::dropdown(['value' => $CFG_GLPI["softwarecategories_id_ondelete"],
-                                       'name'  => "softwarecategories_id_ondelete"]);
-      echo "</td><td> " . __('Restrict device management') . "</td><td>";
+                                  'name'  => "softwarecategories_id_ondelete",
+                                  'rand'  => $rand]);
+      echo "</td><td><label for='dropdown_peripherals_management_restrict$rand'>" . __('Restrict device management') . "</label></td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
-                                       $CFG_GLPI["peripherals_management_restrict"]);
+                                       $CFG_GLPI["peripherals_management_restrict"],
+                                       $rand);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" .__('End of fiscal year') . "</td><td>";
+      echo "<td><label for='showdate$rand'>" .__('End of fiscal year') . "</label></td><td>";
       Html::showDateField("date_tax", ['value'      => $CFG_GLPI["date_tax"],
-                                            'maybeempty' => false,
-                                            'canedit'    => true,
-                                            'min'        => '',
-                                            'max'        => '',
-                                            'showyear'   => false]);
-      echo "</td><td> " . __('Restrict phone management') . "</td><td>";
+                                       'maybeempty' => false,
+                                       'canedit'    => true,
+                                       'min'        => '',
+                                       'max'        => '',
+                                       'showyear'   => false,
+                                       'rand'       => $rand]);
+      echo "</td><td><label for='dropdown_phones_management_restrict$rand'>" . __('Restrict phone management') . "</label></td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
-                                       $CFG_GLPI["phones_management_restrict"]);
+                                       $CFG_GLPI["phones_management_restrict"],
+                                       $rand);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Automatic fields (marked by *)') . "</td><td>";
+      echo "<td><label for='dropdown_use_autoname_by_entity$rand'>" . __('Automatic fields (marked by *)') . "</label></td><td>";
       $tab = [0 => __('Global'),
-                   1 => __('By entity')];
+              1 => __('By entity')];
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
-                              ['value' => $CFG_GLPI["use_autoname_by_entity"]]);
-      echo "</td><td> " . __('Restrict printer management') . "</td><td>";
+                              ['value' => $CFG_GLPI["use_autoname_by_entity"], 'rand' => $rand]);
+      echo "</td><td><label for='dropdown_printers_management_restrict$rand'>" . __('Restrict printer management') . "</label></td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
-                                      $CFG_GLPI["printers_management_restrict"]);
+                                      $CFG_GLPI["printers_management_restrict"],
+                                      $rand);
       echo "</td></tr>";
 
       echo "</table>";
@@ -522,11 +540,12 @@ class Config extends CommonDBTM {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Template for the automatic transfer of computers in another entity') .
-              "</td><td>";
+         echo "<td><label for='dropdown_transfers_id_auto$rand'>" . __('Template for the automatic transfer of computers in another entity') .
+              "</label></td><td>";
          Transfer::dropdown(['value'      => $CFG_GLPI["transfers_id_auto"],
-                                  'name'       => "transfers_id_auto",
-                                  'emptylabel' => __('No automatic transfer')]);
+                             'name'       => "transfers_id_auto",
+                             'emptylabel' => __('No automatic transfer'),
+                             'rand'       => $rand]);
          echo "</td></tr>";
          echo "</table>";
       }
@@ -711,7 +730,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormAPI() {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
          return false;
@@ -719,6 +738,7 @@ class Config extends CommonDBTM {
 
       echo "<div class='center spaced' id='tabsbody'>";
 
+      $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -728,13 +748,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('URL of the API') . "</td>";
-      echo "<td colspan='3'><input type='text' name='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
+      echo "<td><label for='url_base_api'>" . __('URL of the API') . "</label></td>";
+      echo "<td colspan='3'><input type='text' name='url_base_api' id='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("Enable Rest API") . "</td>";
+      echo "<td><label for='dropdown_enable_api$rand'>" . __("Enable Rest API") . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);
+      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"], -1, ['rand' => $rand]);
       echo "</td>";
       if ($CFG_GLPI["enable_api"]) {
          echo "<td colspan='2'>";
@@ -747,19 +767,19 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo __("Enable login with credentials")."&nbsp;";
+      echo "<td><label for='dropdown_enable_api_login_credentials$rand'>";
+      echo __("Enable login with credentials")."</label>&nbsp;";
       Html::showToolTip(__("Allow to login to api and get a session token with user credentials"));
       echo "</td>";
       echo "<td>";
-      Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"]);
+      Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td>";
-      echo __("Enable login with external token")."&nbsp;";
+      echo "<td><label for='dropdown_enable_api_login_external_token$rand'>";
+      echo __("Enable login with external token")."</label>&nbsp;";
       Html::showToolTip(__("Allow to login to api and get a session token with user external token. See Remote access key in user Settings tab "));
       echo "</td>";
       echo "<td>";
-      Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"]);
+      Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
@@ -798,6 +818,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
+      $rand = mt_rand();
       $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -808,64 +829,70 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assistance') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='30%'>" . __('Step for the hours (minutes)') . "</td>";
+      echo "<td width='30%'><label for='dropdown_time_step$rand'>" . __('Step for the hours (minutes)') . "</label></td>";
       echo "<td width='20%'>";
       Dropdown::showNumber('time_step', ['value' => $CFG_GLPI["time_step"],
-                                              'min'   => 30,
-                                              'max'   => 60,
-                                              'step'  => 30,
-                                              'toadd' => [1  => 1,
-                                                               5  => 5,
-                                                               10 => 10,
-                                                               15 => 15,
-                                                               20 => 20]]);
+                                         'min'   => 30,
+                                         'max'   => 60,
+                                         'step'  => 30,
+                                         'toadd' => [1  => 1,
+                                                     5  => 5,
+                                                     10 => 10,
+                                                     15 => 15,
+                                                     20 => 20],
+                                         'rand'  => $rand]);
       echo "</td>";
-      echo "<td width='30%'>" .__('Limit of the schedules for planning') . "</td>";
+      echo "<td width='30%'><label for='dropdown_planning_begin$rand'>" .__('Limit of the schedules for planning') . "</label></td>";
       echo "<td width='20%'>";
-      Dropdown::showHours('planning_begin', ['value' => $CFG_GLPI["planning_begin"]]);
-      echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', ['value' => $CFG_GLPI["planning_end"]]);
+      Dropdown::showHours('planning_begin', ['value' => $CFG_GLPI["planning_begin"], 'rand' => $rand]);
+      echo "&nbsp;<label for='dropdown_planning_end$rand'>-></label>&nbsp;";
+      Dropdown::showHours('planning_end', ['value' => $CFG_GLPI["planning_end"], 'rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default file size limit imported by the mails receiver')."</td><td>";
+      echo "<td><label for='dropdown_default_mailcollector_filesize_max$rand'>".__('Default file size limit imported by the mails receiver')."</label></td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
-                                     $CFG_GLPI["default_mailcollector_filesize_max"]);
+                                     $CFG_GLPI["default_mailcollector_filesize_max"],
+                                     $rand);
       echo "</td>";
 
-      echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
+      echo "<td><label for='dropdown_use_rich_text$rand'>" . __('Use rich text for helpdesk') . "</label></td><td>";
       $id                 = 'alert'.mt_rand();
       $param['on_change'] = '$("#'.$id.'").html("");
             if ($(this).val() == 0) {
                $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
             }';
+      $param['rand'] = $rand;
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
+      echo "<td><label for='dropdown_documentcategories_id_forticket$rand'>" . __('Default heading when adding a document to a ticket') . "</label></td><td>";
       DocumentCategory::dropdown(['value' => $CFG_GLPI["documentcategories_id_forticket"],
-                                       'name'  => "documentcategories_id_forticket"]);
+                                  'name'  => "documentcategories_id_forticket",
+                                  'rand'  => $rand]);
       echo "</td>";
-      echo "<td>" . __('By default, a software may be linked to a ticket') . "</td><td>";
+      echo "<td><label for='dropdown_default_software_helpdesk_visible$rand'>" . __('By default, a software may be linked to a ticket') . "</label></td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
-                          $CFG_GLPI["default_software_helpdesk_visible"]);
+                          $CFG_GLPI["default_software_helpdesk_visible"],
+                          -1,
+                          ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Keep tickets when purging hardware in the inventory') . "</td><td>";
-      Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td><td>".__('Show personnal information in new ticket form (simplified interface)');
-      echo "</td><td>";
-      Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref']);
+      echo "<td><label for='dropdown_keep_tickets_on_delete$rand'>" . __('Keep tickets when purging hardware in the inventory') . "</label></td><td>";
+      Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"], -1, ['rand' => $rand]);
+      echo "</td><td><label for='dropdown_use_check_pref$rand'>".__('Show personnal information in new ticket form (simplified interface)');
+      echo "</label></td><td>";
+      Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref'], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</td><td>";
-      Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
-      echo "</td><td>" . __('Allow anonymous followups (receiver)') . "</td><td>";
-      Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
+      echo "<td><label for='dropdown_use_anonymous_helpdesk$rand'>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</label></td><td>";
+      Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"], -1, ['rand' => $rand]);
+      echo "</td><td><label for='dropdown_use_anonymous_followups$rand'>" . __('Allow anonymous followups (receiver)') . "</label></td><td>";
+      Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"], -1, ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "</table>";
@@ -961,6 +988,7 @@ class Config extends CommonDBTM {
       $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
       $userpref  = false;
       $url       = Toolbox::getItemTypeFormURL(__CLASS__);
+      $rand      = mt_rand();
 
       $canedit = Config::canUpdate();
       if (array_key_exists('last_login', $data)) {
@@ -986,57 +1014,58 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='30%'>" . ($userpref?__('Language'):__('Default language')) . "</td>";
+      echo "<td width='30%'><label for='dropdown_language$rand'>" . ($userpref?__('Language'):__('Default language')) . "</label></td>";
       echo "<td width='20%'>";
       if (Config::canUpdate()
           || !GLPI_DEMO_MODE) {
-         Dropdown::showLanguages("language", ['value' => $data["language"]]);
+         Dropdown::showLanguages("language", ['value' => $data["language"], 'rand' => $rand]);
       } else {
          echo "&nbsp;";
       }
 
-      echo "<td width='30%'>" . __('Date format') ."</td>";
+      echo "<td width='30%'><label for='dropdown_date_format$rand'>" . __('Date format') ."</label></td>";
       echo "<td width='20%'>";
-      Dropdown::showFromArray('date_format', Toolbox::phpDateFormats(), ['value' => $data["date_format"]]);
+      Dropdown::showFromArray('date_format', Toolbox::phpDateFormats(), ['value' => $data["date_format"], 'rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
+      echo "<td><label for='dropdown_names_format$rand'>".__('Display order of surnames firstnames')."</label></td><td>";
       $values = [User::REALNAME_BEFORE  => __('Surname, First name'),
-                      User::FIRSTNAME_BEFORE => __('First name, Surname')];
-      Dropdown::showFromArray('names_format', $values, ['value' => $data["names_format"]]);
+                 User::FIRSTNAME_BEFORE => __('First name, Surname')];
+      Dropdown::showFromArray('names_format', $values, ['value' => $data["names_format"], 'rand' => $rand]);
       echo "</td>";
-      echo "<td>" .__('Number format') . "</td>";
+      echo "<td><label for='dropdown_number_format$rand'>" .__('Number format') . "</label></td>";
       $values = [0 => '1 234.56',
-                      1 => '1,234.56',
-                      2 => '1 234,56',
-                      3 => '1234.56',
-                      4 => '1234,56'];
+                 1 => '1,234.56',
+                 2 => '1 234,56',
+                 3 => '1234.56',
+                 4 => '1234,56'];
       echo "<td>";
-      Dropdown::showFromArray('number_format', $values, ['value' => $data["number_format"]]);
+      Dropdown::showFromArray('number_format', $values, ['value' => $data["number_format"], 'rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Results to display by page')."</td><td>";
+      echo "<td><label for='dropdown_list_limit$rand'>" . __('Results to display by page')."</label></td><td>";
       // Limit using global config
       $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
                 ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
       Dropdown::showNumber('list_limit', ['value' => $value,
-                                               'min'   => 5,
-                                               'max'   => $CFG_GLPI['list_limit_max'],
-                                               'step'  => 5]);
+                                          'min'   => 5,
+                                          'max'   => $CFG_GLPI['list_limit_max'],
+                                          'step'  => 5,
+                                          'rand'  => $rand]);
       echo "</td>";
-      echo "<td>".__('Go to created item after creation')."</td>";
+      echo "<td><label for='dropdown_backcreated$rand'>".__('Go to created item after creation')."</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("backcreated", $data["backcreated"]);
+      Dropdown::showYesNo("backcreated", $data["backcreated"], -1, ['rand' => $rand]);
       echo "</td>";
 
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
-         Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
+         echo "<td><label for='dropdown_use_flat_dropdowntree$rand'>" . __('Display the complete name in tree dropdowns') . "</label></td><td>";
+         Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"], -1, ['rand' => $rand]);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1044,16 +1073,16 @@ class Config extends CommonDBTM {
 
       if (!$userpref
           || ($CFG_GLPI['show_count_on_tabs'] != -1)) {
-         echo "<td>".__('Display counters')."</td><td>";
+         echo "<td><label for='dropdown_show_count_on_tabs$rand'>".__('Display counters')."</label></td><td>";
 
          $values = [0 => __('No'),
-                         1 => __('Yes')];
+                    1 => __('Yes')];
 
          if (!$userpref) {
             $values[-1] = __('Never');
          }
          Dropdown::showFromArray('show_count_on_tabs', $values,
-                                 ['value' => $data["show_count_on_tabs"]]);
+                                 ['value' => $data["show_count_on_tabs"], 'rand' => $rand]);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1062,29 +1091,32 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Show GLPI ID') . "</td><td>";
-         Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
+         echo "<td><label for='dropdown_is_ids_visible$rand'>" . __('Show GLPI ID') . "</label></td><td>";
+         Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"], -1, ['rand' => $rand]);
          echo "</td>";
       } else {
          echo "<td colspan='2'></td>";
       }
 
-      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
+      echo "<td><label for='dropdown_keep_devices_when_purging_item$rand'>" . __('Keep devices when purging an item') . "</label></td><td>";
       Dropdown::showYesNo('keep_devices_when_purging_item',
-                          $data['keep_devices_when_purging_item']);
+                          $data['keep_devices_when_purging_item'],
+                          -1,
+                          ['rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Notifications for my changes') . "</td><td>";
-      Dropdown::showYesNo("notification_to_myself", $data["notification_to_myself"]);
+      echo "<td><label for='dropdown_notification_to_myself$rand'>" . __('Notifications for my changes') . "</label></td><td>";
+      Dropdown::showYesNo("notification_to_myself", $data["notification_to_myself"], -1, ['rand' => $rand]);
       echo "</td>";
       if ($oncentral) {
-         echo "<td>".__('Results to display on home page')."</td><td>";
+         echo "<td><label for='dropdown_display_count_on_home$rand'>".__('Results to display on home page')."</label></td><td>";
          Dropdown::showNumber('display_count_on_home',
                               ['value' => $data['display_count_on_home'],
-                                    'min'   => 0,
-                                    'max'   => 30]);
+                               'min'   => 0,
+                               'max'   => 30,
+                               'rand'  => $rand]);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1092,22 +1124,23 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('PDF export font') . "</td><td>";
+      echo "<td><label for='dropdown_pdffont$rand'>" . __('PDF export font') . "</label></td><td>";
       Dropdown::showFromArray("pdffont", GLPIPDF::getFontList(),
                               ['value' => $data["pdffont"],
-                                    'width' => 200]);
+                               'width' => 200,
+                               'rand'  => $rand]);
       echo "</td>";
 
-      echo "<td>".__('CSV delimiter')."</td><td>";
+      echo "<td><label for='dropdown_csv_delimiter$rand'>".__('CSV delimiter')."</label></td><td>";
       $values = [';' => ';',
-                      ',' => ','];
-      Dropdown::showFromArray('csv_delimiter', $values, ['value' => $data["csv_delimiter"]]);
+                 ',' => ','];
+      Dropdown::showFromArray('csv_delimiter', $values, ['value' => $data["csv_delimiter"], 'rand' => $rand]);
 
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("Color palette") . "</td><td>";
+      echo "<td><label for='theme-selector'>" . __("Color palette") . "</label></td><td>";
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       echo "<select name='palette' id='theme-selector'>";
       foreach ($themes_files as $key => $file) {
@@ -1135,13 +1168,14 @@ class Config extends CommonDBTM {
              width: '100%',
              escapeMarkup: function(m) { return m; }
          });
+         $('label[for=theme-selector]').on('click', function(){ $('#theme-selector').select2('open'); });
       ");
       echo "</select>";
       echo "</td>";
-      echo "<td>" . __('Layout')."</td><td>";
+      echo "<td><label for='layout-selector'>" . __('Layout')."</label></td><td>";
       $layout_options = ['lefttab' => __("Tabs on left"),
-                              'classic' => __("Classic view"),
-                              'vsplit'  => __("Vertical split")];
+                         'classic' => __("Classic view"),
+                         'vsplit'  => __("Vertical split")];
 
       echo "<select name='layout' id='layout-selector'>";
       foreach ($layout_options as $key => $name) {
@@ -1165,14 +1199,15 @@ class Config extends CommonDBTM {
              templateResult: formatLayout,
              templateSelection: formatLayout
          });
+         $('label[for=layout-selector]').on('click', function(){ $('#layout-selector').select2('open'); });
       ");
       echo "</select>";
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Enable high contrast')."</td>";
+      echo "<tr class='tab_bg_2'><td><label for='dropdown_highcontrast_css$rand'>".__('Enable high contrast')."</label></td>";
       echo "<td>";
-      Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css']);
+      Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css'], -1, ['rand' => $rand]);
       echo "</td>";
       echo "<td colspan='2'>";
       echo "</td></tr>";
@@ -1181,45 +1216,47 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".__('Private followups by default')."</td><td>";
-         Dropdown::showYesNo("followup_private", $data["followup_private"]);
-         echo "</td><td>". __('Show new tickets on the home page') . "</td><td>";
+         echo "<td><label for='dropdown_followup_private$rand'>".__('Private followups by default')."</label></td><td>";
+         Dropdown::showYesNo("followup_private", $data["followup_private"], -1, ['rand' => $rand]);
+         echo "</td><td><label for='dropdown_show_jobs_at_login$rand'>". __('Show new tickets on the home page') . "</label></td><td>";
          if (Session::haveRightsOr("ticket",
-                                    [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN])) {
-            Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
+                                   [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN])) {
+            Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"], -1, ['rand' => $rand]);
          } else {
             echo Dropdown::getYesNo(0);
          }
          echo " </td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
-         Dropdown::showYesNo("task_private", $data["task_private"]);
-         echo "</td><td> " . __('Request sources by default') . "</td><td>";
-         RequestType::dropdown(['value' => $data["default_requesttypes_id"],
-                                     'name'  => "default_requesttypes_id",
-                                     'condition' => 'is_active = 1 AND is_ticketheader = 1']);
+         echo "<tr class='tab_bg_2'><td><label for='dropdown_task_private$rand'>" . __('Private tasks by default') . "</label></td><td>";
+         Dropdown::showYesNo("task_private", $data["task_private"], -1, ['rand' => $rand]);
+         echo "</td><td><label for='dropdown_default_requesttypes_id$rand'>" . __('Request sources by default') . "</label></td><td>";
+         RequestType::dropdown(['value'      => $data["default_requesttypes_id"],
+                                'name'       => "default_requesttypes_id",
+                                'condition'  => 'is_active = 1 AND is_ticketheader = 1',
+                                'rand'       => $rand]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";
-         Planning::dropdownState("task_state", $data["task_state"]);
-         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
+         echo "<tr class='tab_bg_2'><td><label for='dropdown_task_state$rand'>" . __('Tasks state by default') . "</label></td><td>";
+         Planning::dropdownState("task_state", $data["task_state"], true, ['rand' => $rand]);
+         echo "</td><td><label for='dropdown_refresh_ticket_list$rand'>" . __('Automatically refresh the list of tickets (minutes)') . "</label></td><td>";
          Dropdown::showNumber('refresh_ticket_list', ['value' => $data["refresh_ticket_list"],
-                                                           'min'   => 1,
-                                                           'max'   => 30,
-                                                           'step'  => 1,
-                                                           'toadd' => [0 => __('Never')]]);
+                                                      'min'   => 1,
+                                                      'max'   => 30,
+                                                      'step'  => 1,
+                                                      'toadd' => [0 => __('Never')],
+                                                      'rand'  => $rand]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
-              "</td><td>";
+         echo "<tr class='tab_bg_2'><td><label for='dropdown_set_default_tech$rand'>".__('Pre-select me as a technician when creating a ticket').
+              "</label></td><td>";
          if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
-            Dropdown::showYesNo("set_default_tech", $data["set_default_tech"]);
+            Dropdown::showYesNo("set_default_tech", $data["set_default_tech"], -1, ['rand' => $rand]);
          } else {
             echo Dropdown::getYesNo(0);
          }
-         echo "</td><td>" . __('Pre-select me as a requester when creating a ticket') . "</td><td>";
+         echo "</td><td><label for='dropdown_set_default_requester$rand'>" . __('Pre-select me as a requester when creating a ticket') . "</label></td><td>";
          if (!$userpref || Session::haveRight('ticket', CREATE)) {
-            Dropdown::showYesNo("set_default_requester", $data["set_default_requester"]);
+            Dropdown::showYesNo("set_default_requester", $data["set_default_requester"], -1, ['rand' => $rand]);
          } else {
             echo Dropdown::getYesNo(0);
          }
@@ -1230,35 +1267,35 @@ class Config extends CommonDBTM {
          echo "<td colspan='3'>";
 
          echo "<table><tr>";
-         echo "<td>1&nbsp;";
-         Html::showColorField('priority_1', ['value' => $data["priority_1"]]);
+         echo "<td><label for='dropdown_priority_1$rand'>1</label>&nbsp;";
+         Html::showColorField('priority_1', ['value' => $data["priority_1"], 'rand' => $rand]);
          echo "</td>";
-         echo "<td>2&nbsp;";
-         Html::showColorField('priority_2', ['value' => $data["priority_2"]]);
+         echo "<td><label for='dropdown_priority_2$rand'>2</label>&nbsp;";
+         Html::showColorField('priority_2', ['value' => $data["priority_2"], 'rand' => $rand]);
          echo "</td>";
-         echo "<td>3&nbsp;";
-         Html::showColorField('priority_3', ['value' => $data["priority_3"]]);
+         echo "<td><label for='dropdown_priority_3$rand'>3</label>&nbsp;";
+         Html::showColorField('priority_3', ['value' => $data["priority_3"], 'rand' => $rand]);
          echo "</td>";
-         echo "<td>4&nbsp;";
-         Html::showColorField('priority_4', ['value' => $data["priority_4"]]);
+         echo "<td><label for='dropdown_priority_4$rand'>4</label>&nbsp;";
+         Html::showColorField('priority_4', ['value' => $data["priority_4"], 'rand' => $rand]);
          echo "</td>";
-         echo "<td>5&nbsp;";
-         Html::showColorField('priority_5', ['value' => $data["priority_5"]]);
+         echo "<td><label for='dropdown_priority_5$rand'>5</label>&nbsp;";
+         Html::showColorField('priority_5', ['value' => $data["priority_5"], 'rand' => $rand]);
          echo "</td>";
-         echo "<td>6&nbsp;";
-         Html::showColorField('priority_6', ['value' => $data["priority_6"]]);
+         echo "<td><label for='dropdown_priority_6$rand'>6</label>&nbsp;";
+         Html::showColorField('priority_6', ['value' => $data["priority_6"], 'rand' => $rand]);
          echo "</td>";
          echo "</tr></table>";
 
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
+         echo "<tr class='tab_bg_2'><td><label for='dropdown_ticket_timeline$rand'>".__('Enable ticket timeline')."</label></td>";
          echo "<td>";
-         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
+         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline'], -1, ['rand' => $rand]);
          echo "</td>";
-         echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
+         echo "<td><label for='dropdown_ticket_timeline_keep_replaced_tabs$rand'>" . __('Keep tabs replaced by the ticket timeline')."</label></td><td>";
          Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                             $data['ticket_timeline_keep_replaced_tabs']);
+                             $data['ticket_timeline_keep_replaced_tabs'], -1, ['rand' => $rand]);
          echo "</td></tr>";
       }
 
@@ -1677,13 +1714,15 @@ class Config extends CommonDBTM {
          return false;
       }
 
+      $rand = mt_rand();
+
       echo "<div class='center' id='tabsbody'>";
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Log Level') . "</td><td>";
+      echo "<td><label for='dropdown_event_loglevel$rand'>" . __('Log Level') . "</label></td><td>";
       $values[1] = __('1- Critical (login error only)');
       $values[2] = __('2- Severe (not used)');
       $values[3] = __('3- Important (successful logins)');
@@ -1691,19 +1730,20 @@ class Config extends CommonDBTM {
       $values[5] = __('5- Complete (all)');
 
       Dropdown::showFromArray('event_loglevel', $values,
-                              ['value' => $CFG_GLPI["event_loglevel"]]);
-      echo "</td><td>".__('Maximal number of automatic actions (run by CLI)')."</td><td>";
+                              ['value' => $CFG_GLPI["event_loglevel"], 'rand' => $rand]);
+      echo "</td><td><label for='dropdown_cron_limit$rand'>".__('Maximal number of automatic actions (run by CLI)')."</label></td><td>";
       Dropdown::showNumber('cron_limit', ['value' => $CFG_GLPI["cron_limit"],
-                                               'min'   => 1,
-                                               'max'   => 30]);
+                                          'min'   => 1,
+                                          'max'   => 30,
+                                          'rand'  => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Logs in files (SQL, email, automatic action...)') . "</td><td>";
-      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td> " . _n('SQL replica', 'SQL replicas', 1) . "</td><td>";
+      echo "<td><label for='dropdown_use_log_in_files$rand'>" . __('Logs in files (SQL, email, automatic action...)') . "</label></td><td>";
+      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"], -1, ['rand' => $rand]);
+      echo "</td><td><label for='dropdown__dbslave_status$rand'>" . _n('SQL replica', 'SQL replicas', 1) . "</label></td><td>";
       $active = DBConnection::isDBSlaveActive();
-      Dropdown::showYesNo("_dbslave_status", $active);
+      Dropdown::showYesNo("_dbslave_status", $active, -1, ['rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1711,37 +1751,38 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Password security policy validation') . "</td>";
+      echo "<td><label for='dropdown_use_password_security$rand'>" . __('Password security policy validation') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("use_password_security", $CFG_GLPI["use_password_security"]);
+      Dropdown::showYesNo("use_password_security", $CFG_GLPI["use_password_security"], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td>" . __('Password minimum length') . "</td>";
+      echo "<td><label for='dropdown_password_min_length$rand'>" . __('Password minimum length') . "</label></td>";
       echo "<td>";
       Dropdown::showNumber('password_min_length', ['value' => $CFG_GLPI["password_min_length"],
-                                                        'min'   => 4,
-                                                        'max'   => 30]);
+                                                   'min'   => 4,
+                                                   'max'   => 30,
+                                                   'rand'  => $rand]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Password need digit') . "</td>";
+      echo "<td><label for='dropdown_password_need_number$rand'>" . __('Password need digit') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("password_need_number", $CFG_GLPI["password_need_number"]);
+      Dropdown::showYesNo("password_need_number", $CFG_GLPI["password_need_number"], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td>" . __('Password need lowercase character') . "</td>";
+      echo "<td><label for='dropdown_password_need_letter$rand'>" . __('Password need lowercase character') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("password_need_letter", $CFG_GLPI["password_need_letter"]);
+      Dropdown::showYesNo("password_need_letter", $CFG_GLPI["password_need_letter"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Password need uppercase character') . "</td>";
+      echo "<td><label for='dropdown_password_need_caps$rand'>" . __('Password need uppercase character') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("password_need_caps", $CFG_GLPI["password_need_caps"]);
+      Dropdown::showYesNo("password_need_caps", $CFG_GLPI["password_need_caps"], -1, ['rand' => $rand]);
       echo "</td>";
-      echo "<td>" . __('Password need symbol') . "</td>";
+      echo "<td><label for='dropdown_password_need_symbol$rand'>" . __('Password need symbol') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("password_need_symbol", $CFG_GLPI["password_need_symbol"]);
+      Dropdown::showYesNo("password_need_symbol", $CFG_GLPI["password_need_symbol"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "</tr>";
 
@@ -1750,14 +1791,14 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Maintenance mode') . "</td>";
+      echo "<td><label for='dropdown_maintenance_mode$rand'>" . __('Maintenance mode') . "</label></td>";
       echo "<td>";
-      Dropdown::showYesNo("maintenance_mode", $CFG_GLPI["maintenance_mode"]);
+      Dropdown::showYesNo("maintenance_mode", $CFG_GLPI["maintenance_mode"], -1, ['rand' => $rand]);
       echo "</td>";
       //TRANS: Proxy port
-      echo "<td>" . __('Maintenance text') . "</td>";
+      echo "<td><label for='maintenance_text'>" . __('Maintenance text') . "</label></td>";
       echo "<td>";
-      echo "<textarea cols='70' rows='4' name='maintenance_text'>".$CFG_GLPI["maintenance_text"];
+      echo "<textarea cols='70' rows='4' name='maintenance_text' id='maintenance_text'>".$CFG_GLPI["maintenance_text"];
       echo "</textarea>";
       echo "</td></tr>";
 
@@ -1766,19 +1807,19 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Server') . "</td>";
-      echo "<td><input type='text' name='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
+      echo "<td><label for='proxy_name'>" . __('Server') . "</label></td>";
+      echo "<td><input type='text' name='proxy_name' id='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
       //TRANS: Proxy port
-      echo "<td>" . __('Port') . "</td>";
-      echo "<td><input type='text' name='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
+      echo "<td><label for='proxy_port'>" . __('Port') . "</label></td>";
+      echo "<td><input type='text' name='proxy_port' id='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Login') . "</td>";
-      echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
-      echo "<td>" . __('Password') . "</td>";
-      echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'>";
-      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>".__('Clear');
+      echo "<td><label for='proxy_user'>" . __('Login') . "</label></td>";
+      echo "<td><input type='text' name='proxy_user' id='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
+      echo "<td><label for='proxy_passwd'>" . __('Password') . "</label></td>";
+      echo "<td><input type='password' name='proxy_passwd' id='proxy_passwd' value='' autocomplete='off'>";
+      echo "<br><input type='checkbox' name='_blank_proxy_passwd' id='_blank_proxy_passwd'><label for='_blank_proxy_passwd'>".__('Clear')."</label>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1977,13 +2018,14 @@ class Config extends CommonDBTM {
     *
     * @param $name   select name
     * @param $value  default value
+    * @param $rand   rand
    **/
-   static function dropdownGlobalManagement($name, $value) {
+   static function dropdownGlobalManagement($name, $value, $rand = null) {
 
       $choices[0] = __('Yes - Restrict to unit management for manual add');
       $choices[1] = __('Yes - Restrict to global management for manual add');
       $choices[2] = __('No');
-      Dropdown::showFromArray($name, $choices, ['value'=>$value]);
+      Dropdown::showFromArray($name, $choices, ['value'=>$value, 'rand' => $rand]);
    }
 
 

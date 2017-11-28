@@ -179,15 +179,16 @@ class Planning extends CommonGLPI {
     * @param $name   select name
     * @param $value  default value (default '')
     * @param $display  display of send string ? (true by default)
+    * @param $options  options
    **/
-   static function dropdownState($name, $value = '', $display = true) {
+   static function dropdownState($name, $value = '', $display = true, $options = []) {
 
       $values = [static::INFO => _n('Information', 'Information', 1),
                       static::TODO => __('To do'),
                       static::DONE => __('Done')];
 
-      return Dropdown::showFromArray($name, $values, ['value'   => $value,
-                                                           'display' => $display]);
+      return Dropdown::showFromArray($name, $values, array_merge(['value'   => $value,
+                                                                  'display' => $display], $options));
    }
 
 

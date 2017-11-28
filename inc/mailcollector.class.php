@@ -1843,14 +1843,20 @@ class MailCollector  extends CommonDBTM {
    /**
     * @param $name
     * @param $value  (default 0)
+    * @param $rand
    **/
-   static function showMaxFilesize($name, $value = 0) {
+   static function showMaxFilesize($name, $value = 0, $rand = null) {
 
       $sizes[0] = __('No import');
       for ($index=1; $index<100; $index++) {
          $sizes[$index*1048576] = sprintf(__('%s Mio'), $index);
       }
-      Dropdown::showFromArray($name, $sizes, ['value' => $value]);
+
+      if ($rand === null) {
+         $rand = mt_rand();
+      }
+
+      Dropdown::showFromArray($name, $sizes, ['value' => $value, 'rand' => $rand]);
    }
 
 
