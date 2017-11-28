@@ -1837,15 +1837,20 @@ class Config extends CommonDBTM {
       // No need to translate, this part always display in english (for copy/paste to forum)
 
       // Try to compute a better version for .git
+      $ver = $CFG_GLPI['version'];
       if (is_dir(GLPI_ROOT."/.git")) {
          $dir = getcwd();
          chdir(GLPI_ROOT);
          $returnCode = 1;
-         $result     = @exec('git describe --tags 2>&1', $output, $returnCode);
+         $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
+         $gitbranch = '';
+         if (!$returnCode) {
+            $gitbranch = @exec('git symbolic-ref --quiet --short HEAD || git rev-parse --short HEAD 2>&1', $output, $returnCode);
+         }
          chdir($dir);
-         $ver = ($returnCode ? $CFG_GLPI['version'].'-git' : $result);
-      } else {
-         $ver = $CFG_GLPI['version'];
+         if (!$returnCode) {
+            $ver .= '-git-' .$gitbranch . '-' . $gitrev;
+         }
       }
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
