@@ -188,7 +188,7 @@ class ComputerAntivirus extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer", UPDATE)) {
+      if (!Session::haveRight("computer", READ)) {
          return false;
       }
 
@@ -262,6 +262,7 @@ class ComputerAntivirus extends CommonDBChild {
       echo "<td colspan='2'></td>";
       echo "</tr>";
 
+      $options['canedit'] = Session::haveRight("computer", UPDATE);
       $this->showFormButtons($options);
 
       return true;
