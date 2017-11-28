@@ -2571,8 +2571,9 @@ a.icon_nav_move:hover img {
    border: none;
    height: 22px;
    vertical-align: bottom;
-   border-radius: 0px 3px 3px 0px;
+   border-radius: 0 3px 3px 0;
    cursor: pointer;
+   margin: 0;
 }
 
 #c_recherche form #champRecherche input {
