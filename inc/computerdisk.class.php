@@ -102,7 +102,7 @@ class ComputerDisk extends CommonDBChild {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
-      
+
       return $ong;
    }
 
@@ -144,7 +144,7 @@ class ComputerDisk extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer", UPDATE)) {
+      if (!Session::haveRight("computer", READ)) {
          return false;
       }
 
@@ -209,6 +209,7 @@ class ComputerDisk extends CommonDBChild {
       Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".__('Mio')."</td></tr>";
 
+      $options['canedit'] = Session::haveRight("computer", UPDATE);
       $this->showFormButtons($options);
 
       return true;
