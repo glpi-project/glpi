@@ -3485,7 +3485,7 @@ class Html {
                   $('#$name').closest('form').find('input[type=submit]').click(function() {
                      editor.save();
                      if ($('#$name').val() == '') {
-                        alert('".__('The description field is mandatory')."');
+                        alert('".__s('The description field is mandatory')."');
                      }
                   });
                   editor.on('keyup', function (e) {
