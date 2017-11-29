@@ -1463,7 +1463,12 @@ class Dropdown {
          }
       }
       if (($p['value'] < $p['min']) && !isset($p['toadd'][$p['value']])) {
-         $p['value'] = $p['min'];
+         $min = $p['min'];
+
+         while (isset($p['used'][$min])) {
+            ++$min;
+         }
+         $p['value'] = $min;
       }
 
       $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
