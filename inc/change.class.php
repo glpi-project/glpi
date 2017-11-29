@@ -1080,7 +1080,7 @@ class Change extends CommonITILObject {
       $number = $DB->numrows($result);
 
       // Ticket for the item
-      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+      echo "<div><table class='tab_cadre_fixe'>";
 
       $colspan = 11;
       if (count($_SESSION["glpiactiveentities"]) > 1) {
