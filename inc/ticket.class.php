@@ -6055,19 +6055,20 @@ class Ticket extends CommonITILObject {
       }
 
       // Ticket for the item
-      echo "<div class='firstbloc'>";
       // Link to open a new ticket
       if ($item->getID()
           && Ticket::isPossibleToAssignType($item->getType())
           && self::canCreate()
           && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))) {
+         echo "<div class='firstbloc'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               ['itemtype' => $item->getType(),
                                     'items_id' => $item->getID()]);
+         echo "</div>";
       }
-      echo "</div><div>";
+      echo "<div>";
 
       if ($number > 0) {
          echo "<table class='tab_cadre_fixehov'>";
