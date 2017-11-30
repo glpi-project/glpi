@@ -2657,6 +2657,8 @@ class Ticket extends CommonITILObject {
          }
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replace_actor']
+               = __('Replace actor');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor']
                = __('Add an actor');
             $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'enable_notif']
@@ -2679,6 +2681,148 @@ class Ticket extends CommonITILObject {
       return $actions;
    }
 
+static function showFormMassiveActionReplaceActor($tickets) {
+        global $CFG_GLPI;
+
+        $types            = array(CommonITILActor::ASSIGN  => __('Assigned to'),
+            CommonITILActor::REQUESTER => __('Requester'),
+            CommonITILActor::OBSERVER => __('Watcher')
+        );
+        $rand = Dropdown::showFromArray('actortype', $types, array('display_emptychoice' => true));
+
+        $paramsmassaction = array('"actortype"' => '__VALUE__',
+            'tickets'        => $tickets,
+            'right'         => array(UPDATE));
+
+        Ajax::updateItemOnSelectEvent("dropdown_actortype".$rand, "show_massiveaction_field",
+            $CFG_GLPI["root_doc"].
+            "/ajax/dropdownMassiveActionReplaceActor.php",
+            $paramsmassaction);
+        echo Html::scriptBlock(Html::jsSetDropdownValue("dropdown_actortype".$rand,CommonITILActor::ASSIGN));
+        echo "<br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+
+    }
+
+    static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+        switch ($ma->getAction()) {
+            case 'replace_actor' :
+                $items = $ma->getInput()['initial_items'];
+                $tickets = [];
+                if(!empty($items['Ticket']))
+                    $tickets = array_keys($items['Ticket']);
+                static::showFormMassiveActionReplaceActor($tickets);
+                return true;
+        }
+
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    function showActorReplaceForm($type, $rand_type, $tickets, $inobject=true) {
+        global $CFG_GLPI;
+
+        $types = array('user'  => __('User'), 'group' => __('Group'));
+
+        echo "<div ".($inobject?"style='display:none'":'')." id='actor$rand_type' class='actor-dropdown'>";
+        $rand   = Dropdown::showFromArray("actorobjecttype", $types,
+            array('display_emptychoice' => true, 'width'=>'200px'));
+        echo "<br />";
+        $params = array('type'            => '__VALUE__',
+            'actortype'       => $type,
+            'itemtype'        => $this->getType(),
+            'tickets'         => $tickets
+        );
+
+        Ajax::updateItemOnSelectEvent("dropdown_actorobjecttype$rand",
+            "from_actor$rand",
+            $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCurrentActors.php",
+            $params);
+        echo "<span id='from_actor$rand' class='actor-dropdown'>&nbsp;</span>";
+        if ($inobject) {
+            echo "<hr>";
+        }
+        echo "</div>";
+    }
+
+    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                        array $ids) {
+
+        switch ($ma->getAction()) {
+            case 'replace_actor' :
+                $input = $ma->getInput();
+                $actorObj = $input['actorobjecttype'];
+                switch($actorObj){
+                    case 'user':
+                        $actorLinkObj = new Ticket_User();
+                        break;
+                    case 'group':
+                        $actorLinkObj = new Group_Ticket();
+                        break;
+                    default:
+                        return;
+                }
+                $actorIdField = $actorObj.'s_id';
+                foreach ($ids as $id) {
+                    $actorLinkObj->getFromDB($id);
+                    $addData = ['id' => $id];
+
+                    switch($input['actortype']) {
+                        case CommonITILActor::REQUESTER:
+                            $addData['_itil_requester'] = [$actorIdField => $input['to_actor'], '_type' => $actorObj];
+                            break;
+                        case CommonITILActor::ASSIGN:
+                            $addData['_itil_assign'] = [$actorIdField => $input['to_actor'], '_type' => $actorObj];
+                            break;
+                        case CommonITILActor::OBSERVER:
+                            $addData['_itil_observer'] = [$actorIdField => $input['to_actor'], '_type' => $actorObj];
+                            break;
+                        default:
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            continue;
+                            break;
+                    }
+                    if(!$item->can($id, UPDATE)){
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    $find_from = $actorLinkObj->find("`tickets_id` = $id AND `type` = '".$input['actortype']
+                        ."' AND `".$actorIdField."` = ".$input['from_actor']);
+                    $find_all = $actorLinkObj->find("`tickets_id` = $id AND `type` = '".$input['actortype']."'");
+
+                    if(!empty($find_from)){
+                        $recId = array_keys($find_from)[0];
+                        if(!$actorLinkObj->delete(['id' => $recId])){
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            continue;
+                        }
+                    }
+                    else{
+                        $err = 0;
+                        foreach(array_keys($find_all) as $k => $recId){
+                            if(!$actorLinkObj->delete(['id' => $recId]))
+                                $err++;
+                        }
+                        if($err){
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            continue;
+                        }
+                    }
+                    if(!$item->update($addData)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
+                    }
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                }
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
 
    function getSearchOptionsNew() {
       global $CFG_GLPI;
@@ -7284,6 +7428,31 @@ class Ticket extends CommonITILObject {
       return $ticket_users_keys;
    }
 
+   function getTicketActorsByType($objtype = 'user') {
+        global $DB;
+
+        switch($objtype) {
+            case 'user':
+                $sql = "SELECT tu.`users_id` AS actor_id, tu.`type` AS type
+                            FROM `glpi_tickets_users` tu
+                            WHERE tu.`tickets_id` = ".$this->getId()." GROUP BY tu.`users_id`, tu.`type`";
+                break;
+
+            case 'group':
+                $sql = "SELECT gt.`groups_id` AS actor_id, gt.`type` AS type
+                            FROM `glpi_groups_tickets` gt
+                            WHERE gt.`tickets_id` = ".$this->getId()." GROUP BY gt.`groups_id`, gt.`type`";
+                break;
+        }
+        $res = $DB->query($sql);
+        $actors = [];
+        while($actor = $DB->fetch_assoc($res)) {
+            if(!isset($actors[$actor['actor_id']]))
+                $actors[$actor['actor_id']] = [];
+            $actors[$actor['actor_id']][] = $actor['type'];
+        }
+        return $actors;
+    }
 
    /**
     * @since version 0.90

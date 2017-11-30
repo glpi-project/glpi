@@ -19273,3 +19273,6 @@ msgid ""
 "config_db.php file"
 msgstr ""
 "Ошибка соединения с БД, проверьте параметры соединения в файле config_db.php"
+
+msgid "Replace actor"
+msgstr "Заменить участника"
