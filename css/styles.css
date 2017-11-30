@@ -4362,6 +4362,16 @@ input[type=checkbox].toggle_comments:checked ~ ul {
    #c_preference #debug_mode {
       display: none;
    }
+   
+   #c_recherche form #champRecherche input{
+      width:100px;
+   }
+   
+   #c_recherche {
+      position:relative;
+      top: 33px;
+      left:77px;
+   }
 }
 
 /* ################--------------- Documentation  ---------------#################### */
