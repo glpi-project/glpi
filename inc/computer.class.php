@@ -653,7 +653,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '47',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'uuid',
          'name'               => __('UUID'),
          'datatype'           => 'string'
@@ -661,7 +661,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '5',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'serial',
          'name'               => __('Serial number'),
          'datatype'           => 'string'
@@ -669,7 +669,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '6',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'otherserial',
          'name'               => __('Inventory number'),
          'datatype'           => 'string'
@@ -677,7 +677,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '16',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'comment',
          'name'               => __('Comments'),
          'datatype'           => 'text'
@@ -685,7 +685,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '7',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'contact',
          'name'               => __('Alternate username'),
          'datatype'           => 'string'
@@ -693,7 +693,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '8',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'contact_num',
          'name'               => __('Alternate username number'),
          'datatype'           => 'string'
@@ -719,7 +719,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '19',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'date_mod',
          'name'               => __('Last update'),
          'datatype'           => 'datetime',
@@ -728,7 +728,7 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '121',
-         'table'              => 'glpi_computers',
+         'table'              => $this->getTable(),
          'field'              => 'date_creation',
          'name'               => __('Creation date'),
          'datatype'           => 'datetime',
