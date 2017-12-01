@@ -5588,7 +5588,7 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/tiny_mce/tinymce.js';
             break;
          case 'fullcalendar':
-            $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/lib/moment.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/moment.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/fullcalendar/fullcalendar.js';
             if (isset($_SESSION['glpilanguage'])) {
                foreach ([2, 3] as $loc) {
