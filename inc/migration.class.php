@@ -652,6 +652,7 @@ class Migration {
       foreach ($this->queries[self::PRE_QUERY] as $query) {
          $DB->queryOrDie($query['query'], $query['message']);
       }
+      $this->queries[self::PRE_QUERY] = [];
 
       foreach (array_keys($this->change) as $table) {
          $this->migrationOneTable($table);
@@ -660,6 +661,7 @@ class Migration {
       foreach ($this->queries[self::POST_QUERY] as $query) {
          $DB->queryOrDie($query['query'], $query['message']);
       }
+      $this->queries[self::POST_QUERY] = [];
 
       $this->storeConfig();
 
