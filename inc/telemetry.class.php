@@ -201,7 +201,7 @@ class Telemetry extends CommonGLPI {
    static public function grabOsInfos() {
       $distro = false;
       if (file_exists('/etc/redhat-release')) {
-         $distro = file_get_contents('/etc/redhat-release');
+         $distro = preg_replace('/\s+$/S', '', file_get_contents('/etc/redhat-release'));
       }
       $os = [
          'family'       => php_uname('s'),
