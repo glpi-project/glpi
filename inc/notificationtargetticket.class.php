@@ -158,13 +158,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function addAdditionnalInfosForTarget() {
       global $DB;
 
-      $query = "SELECT `profiles_id` as id
-                FROM `glpi_profilerights`
-                WHERE `glpi_profilerights`.`name` = 'followup'
-                  AND `glpi_profilerights`.`rights` & ".TicketFollowup::SEEPRIVATE;
+      $iterator = $DB->request([
+         'SELECT' => ['profiles_id'],
+         'FROM'   => 'glpi_profilerights',
+         'WHERE'  => [
+            'name'   => 'followup',
+            'rights' => ['&', TicketFollowup::SEEPRIVATE]
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
-         $this->private_profiles[$data['id']] = $data['id'];
+      while ($data = $iterator->next()) {
+         $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
       }
    }
 
