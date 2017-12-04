@@ -413,7 +413,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyName($name) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'");
+      return $this->getFromDBByCrit(['name' => $name]);
    }
 
    /**
@@ -424,7 +424,7 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbySyncField($value) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sync_field` = '$value'");
+      return $this->getFromDBByCrit(['sync_field' => $value]);
    }
 
    /**
@@ -437,28 +437,56 @@ class User extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDn($user_dn) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`user_dn` = '$user_dn'");
+      return $this->getFromDBByCrit(['user_dn' => $user_dn]);
    }
 
 
    /**
     * Retrieve an item from the database using its email
     *
-    * @param $email       string   user email
-    * @param $condition   string   add condition
+    * @since 9.3 Can pass condition as a parameter
+    *
+    * @param string $email     user email
+    * @param array  $condition add condition
     *
     * @return true if succeed else false
    **/
-   function getFromDBbyEmail($email, $condition) {
+   function getFromDBbyEmail($email, $condition = []) {
+      global $DB;
 
-      $request = "LEFT JOIN `glpi_useremails`
+      if (is_array($condition)) {
+         $crit = [
+            'SELECT'    => 'id',
+            'FROM'      => $this->getTable(),
+            'LEF JOIN'  => [
+               'glpi_useremails' => [
+                  'FKEY' => [
+                     $this->getTable() => 'id',
+                     'glpi_useremails' => 'users_id'
+                  ]
+               ]
+            ],
+            'WHERE'     => ['glpi_useremails.email' => $email] + $condition
+         ];
+
+         $iter = $DB->request($crit);
+         if ($iter->numrows()==1) {
+            $row = $iter->next();
+            return $this->getFromDB($row['id']);
+         }
+         return false;
+      } else {
+         //TODO: cannot be deprecated since some existing conditions use not handle sql functions
+         //Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
+         $request = "LEFT JOIN `glpi_useremails`
                      ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                  WHERE `glpi_useremails`.`email` = '$email'";
+                     WHERE `glpi_useremails`.`email` = '$email'";
 
-      if (!empty($condition)) {
-         $request .= " AND $condition";
+         if (!empty($condition)) {
+            $request .= " AND $condition";
+         }
+         return $this->getFromDBByQuery($request);
       }
-      return $this->getFromDBByQuery($request);
    }
 
 

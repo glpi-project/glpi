@@ -326,7 +326,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    private function analyseCrit ($crit, $bool = "AND") {
-      static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
+      static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
 
       if (!is_array($crit)) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {

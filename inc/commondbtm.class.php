@@ -648,8 +648,8 @@ class CommonDBTM extends CommonGLPI {
                         // will be set to $newval ...
                         if ($idName != $f) {
                            $object->update([$idName          => $data[$idName],
-                                                 $f               => $newval,
-                                                 '_disablenotif'  => true]); // Disable notifs
+                                            $f               => $newval,
+                                            '_disablenotif'  => true]); // Disable notifs
                         }
                      }
                   }
@@ -665,25 +665,25 @@ class CommonDBTM extends CommonGLPI {
          $job         = new Ticket();
          $itemsticket = new Item_Ticket();
 
-         $query = "SELECT *
-                   FROM `glpi_items_tickets`
-                   WHERE `items_id` = '".$this->fields['id']."'
-                         AND `itemtype`='".$this->getType()."'";
-         $result = $DB->query($query);
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_items_tickets',
+            'WHERE'  => [
+               'items_id'  => $this->getID(),
+               'itemtype'  => $this->getType()
+            ]
+         ]);
 
-         if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
-               $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
-               $job->getFromDB($data['tickets_id']);
-               if ($cnt == 1) {
-                  if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
-                     $itemsticket->delete(["id" => $data["id"]]);
-                  } else {
-                     $job->delete(["id" => $data["tickets_id"]]);
-                  }
-               } else {
+         while ($data = $iterator->next()) {
+            $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
+            $job->getFromDB($data['tickets_id']);
+            if ($cnt == 1) {
+               if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
                   $itemsticket->delete(["id" => $data["id"]]);
+               } else {
+                  $job->delete(["id" => $data["tickets_id"]]);
                }
+            } else {
+               $itemsticket->delete(["id" => $data["id"]]);
             }
          }
 
@@ -722,7 +722,7 @@ class CommonDBTM extends CommonGLPI {
       if (DropdownTranslation::isDropdownTranslationActive()) {
          $translation = new DropdownTranslation();
          $translation->deleteByCriteria(['itemtype' => get_class($this),
-                                              'items_id' => $this->getID()]);
+                                         'items_id' => $this->getID()]);
       }
    }
 
@@ -944,7 +944,7 @@ class CommonDBTM extends CommonGLPI {
                   $ic = new Infocom();
                   if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
                      $ic->add(['itemtype' => $this->getType(),
-                                    'items_id' => $this->fields['id']]);
+                               'items_id' => $this->fields['id']]);
                   }
                }
 
@@ -1285,24 +1285,27 @@ class CommonDBTM extends CommonGLPI {
       if (count(static::$forward_entity_to)) {
          foreach (static::$forward_entity_to as $type) {
             $item  = new $type();
-            $query = "SELECT `id`
-                      FROM `".$item->getTable()."`
-                      WHERE ";
+            $query = [
+               'SELECT' => ['id'],
+               'FROM'   => $item->getTable()
+            ];
 
             if ($item->isField('itemtype')) {
-               $query .= " `itemtype` = '".$this->getType()."'
-                          AND `items_id` = '".$this->fields['id']."'";
+               $query['WHERE'] = [
+                  'itemtype'  => $this->getType(),
+                  'items_id'  => $this->getID()
+               ];
             } else {
-               $query .= " `".$this->getForeignKeyField()."` = '".$this->fields['id']."'";
+               $query['WHERE'] = [$this->getForeignKeyField() => $this->getID()];
             }
 
             $input = ['entities_id' => $this->getEntityID()];
-
             if ($this->maybeRecursive()) {
                $input['is_recursive'] = $this->isRecursive();
             }
 
-            foreach ($DB->request($query) as $data) {
+            $iterator = $DB->request($query);
+            while ($data = $iterator->next()) {
                $input['id'] = $data['id'];
                // No history for such update
                $item->update($input, 0);

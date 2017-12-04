@@ -611,38 +611,34 @@ class Profile_User extends CommonDBRelation {
    static function getUserEntities($user_ID, $is_recursive = true, $default_first = false) {
       global $DB;
 
-      $query = "SELECT DISTINCT `entities_id`, `is_recursive`
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => ['entities_id', 'is_recursive'],
+         'FROM'            => 'glpi_profiles_users',
+         'WHERE'           => ['users_id' => $user_ID]
+      ]);
+      $entities = [];
 
-      if ($DB->numrows($result) > 0) {
-         $entities = [];
-
-         while ($data = $DB->fetch_assoc($result)) {
-            if ($data['is_recursive'] && $is_recursive) {
-               $tab      = getSonsOf('glpi_entities', $data['entities_id']);
-               $entities = array_merge($tab, $entities);
-            } else {
-               $entities[] = $data['entities_id'];
-            }
+      while ($data = $iterator->next()) {
+         if ($data['is_recursive'] && $is_recursive) {
+            $tab      = getSonsOf('glpi_entities', $data['entities_id']);
+            $entities = array_merge($tab, $entities);
+         } else {
+            $entities[] = $data['entities_id'];
          }
-
-         // Set default user entity at the begin
-         if ($default_first) {
-            $user = new User();
-            if ($user->getFromDB($user_ID)) {
-               $ent = $user->getField('entities_id');
-               if (in_array($ent, $entities)) {
-                  array_unshift($entities, $ent);
-               }
-            }
-         }
-
-         return array_unique($entities);
       }
 
-      return [];
+      // Set default user entity at the begin
+      if ($default_first) {
+         $user = new User();
+         if ($user->getFromDB($user_ID)) {
+            $ent = $user->getField('entities_id');
+            if (in_array($ent, $entities)) {
+               array_unshift($entities, $ent);
+            }
+         }
+      }
+
+      return array_unique($entities);
    }
 
 
@@ -697,24 +693,45 @@ class Profile_User extends CommonDBRelation {
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)
     *
+    * @since 9.3 can pass sqlfilter as a parameter
+    *
     * @param $user_ID            user ID
-    * @param $sqlfilter  string  additional filter (must start with AND) (default '')
+    * @param $sqlfilter  string  additional filter (default [])
     *
     * @return array of the IDs of the profiles
    **/
-   static function getUserProfiles($user_ID, $sqlfilter = '') {
+   static function getUserProfiles($user_ID, $sqlfilter = []) {
       global $DB;
 
-      $query = "SELECT DISTINCT `profiles_id`
-                FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID'
-                      $sqlfilter";
-      $result = $DB->query($query);
-
       $profiles = [];
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+
+      if (is_array($sqlfilter)) {
+         $where = ['users_id' => $user_ID];
+         if (count($sqlfilter) > 0) {
+            $where = $where + $sqlfilter;
+         }
+
+         $iterator = $DB->request([
+            'SELECT DISTINCT' => ['profiles_id'],
+            'FROM'            => 'glpi_profiles_users',
+            'WHERE'           => $where
+         ]);
+
+         while ($data = $iterator->next()) {
             $profiles[$data['profiles_id']] = $data['profiles_id'];
+         }
+      } else {
+         Toolbox::deprecated('sqlfilter param for getUserProfiles must be an array');
+         $query = "SELECT DISTINCT `profiles_id`
+                  FROM `glpi_profiles_users`
+                  WHERE `users_id` = '$user_ID'
+                        $sqlfilter";
+         $result = $DB->query($query);
+
+         if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $profiles[$data['profiles_id']] = $data['profiles_id'];
+            }
          }
       }
 

@@ -12,6 +12,14 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
+- `Profileuser::getUserProfiles` filter parameter is now an array
+
+#### Deprecated
+
+The following methods have been deprecated:
+
+- `Search::constructDatas`
+- `Search::displayDatas`
 
 ## [9.2.1]
 

@@ -107,10 +107,12 @@ class ProfileRight extends CommonDBChild {
       $ok = true;
       $_SESSION['glpi_all_possible_rights'] = [];
 
-      $query = "SELECT `id`
-                FROM `glpi_profiles`";
+      $iterator = $DB->request([
+          'SELECT'   => ['id'],
+          'FROM'     => Profile::getTable()
+      ]);
 
-      foreach ($DB->request($query) as $profile) {
+      while ($profile = $iterator->next()) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
             $query = "INSERT INTO `glpi_profilerights`
