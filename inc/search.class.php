@@ -1114,11 +1114,11 @@ class Search {
                   }
 
                   // No Group_concat case
-                  if (strpos($val, self::LONGSEP) === false) {
+                  if ($fieldname == 'content' || strpos($val, self::LONGSEP) === false) {
                      $newrow[$j]['count'] = 1;
 
                      $handled = false;
-                     if (strpos($val, self::SHORTSEP) !== false) {
+                     if ($fieldname != 'content' && strpos($val, self::SHORTSEP) !== false) {
                         $split2                    = self::explodeWithID(self::SHORTSEP, $val);
                         if (is_numeric($split2[1])) {
                            $newrow[$j][0][$fieldname] = $split2[0];
