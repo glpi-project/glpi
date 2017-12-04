@@ -1117,16 +1117,22 @@ class Search {
                   if (strpos($val, self::LONGSEP) === false) {
                      $newrow[$j]['count'] = 1;
 
-                     if (strpos($val, self::SHORTSEP) === false) {
+                     $handled = false;
+                     if (strpos($val, self::SHORTSEP) !== false) {
+                        $split2                    = self::explodeWithID(self::SHORTSEP, $val);
+                        if (is_numeric($split2[1])) {
+                           $newrow[$j][0][$fieldname] = $split2[0];
+                           $newrow[$j][0]['id']       = $split2[1];
+                           $handled = true;
+                        }
+                     }
+
+                     if (!$handled) {
                         if ($val == self::NULLVALUE) {
                            $newrow[$j][0][$fieldname] = null;
                         } else {
                            $newrow[$j][0][$fieldname] = $val;
                         }
-                     } else {
-                        $split2                    = self::explodeWithID(self::SHORTSEP, $val);
-                        $newrow[$j][0][$fieldname] = $split2[0];
-                        $newrow[$j][0]['id']       = $split2[1];
                      }
                   } else {
                      if (!isset($newrow[$j])) {
@@ -1135,16 +1141,22 @@ class Search {
                      $split               = explode(self::LONGSEP, $val);
                      $newrow[$j]['count'] = count($split);
                      foreach ($split as $key2 => $val2) {
-                        if (strpos($val2, self::SHORTSEP) === false) {
-                           $newrow[$j][$key2][$fieldname] = $val2;
-                        } else {
+                        $handled = false;
+                        if (strpos($val2, self::SHORTSEP) !== false) {
                            $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
-                           $newrow[$j][$key2]['id'] = $split2[1];
-                           if ($split2[0] == self::NULLVALUE) {
-                              $newrow[$j][$key2][$fieldname] = null;
-                           } else {
-                              $newrow[$j][$key2][$fieldname] = $split2[0];
+                           if (is_numeric($split2[1])) {
+                              $newrow[$j][$key2]['id'] = $split2[1];
+                              if ($split2[0] == self::NULLVALUE) {
+                                 $newrow[$j][$key2][$fieldname] = null;
+                              } else {
+                                 $newrow[$j][$key2][$fieldname] = $split2[0];
+                              }
+                              $handled = true;
                            }
+                        }
+
+                        if (!$handled) {
+                           $newrow[$j][$key2][$fieldname] = $val2;
                         }
                      }
                   }
