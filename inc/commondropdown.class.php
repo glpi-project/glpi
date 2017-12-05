@@ -334,7 +334,16 @@ abstract class CommonDropdown extends CommonDBTM {
                if (isset($field['max'])) {
                   $params['max'] = $field['max'];
                }
-               Dropdown::showNumber($field['name'], $params);
+               if (!isset($field['html']) || $field['html'] == false) {
+                  Dropdown::showNumber($field['name'], $params);
+               } else {
+                  echo Html::input(
+                     $field['name'], [
+                     'attrs' => [
+                        'type'   => 'number'
+                     ] + $params]
+                  );
+               }
                break;
 
             case 'timestamp' :

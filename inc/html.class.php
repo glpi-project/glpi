@@ -4514,9 +4514,13 @@ class Html {
     * @return string A generated hidden input
    **/
    static function input($fieldName, $options = []) {
-
-      return sprintf('<input type="text" name="%1$s" %2$s />',
-                     Html::cleanInputText($fieldName), Html::parseAttributes($options));
+      $type = 'text';
+      if (isset($options['attrs']) && isset($options['attrs']['type'])) {
+         $type = $options['attrs']['type'];
+         unset($options['attrs']['type']);
+      }
+      return sprintf('<input type="%1$s" name="%2$s" %3$s />',
+                     $type, Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
    /**
