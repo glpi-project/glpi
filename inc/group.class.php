@@ -132,11 +132,14 @@ class Group extends CommonTreeDropdown {
       Rule::cleanForItemCriteria($this, 'GROUPS');
 
       // Set no group to consumables
-      $query = "UPDATE `glpi_consumables`
-                SET `items_id` = '0'
-                WHERE `items_id` = '".$this->fields['id']."'
-                      AND `itemtype` = 'Group'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_consumables', [
+            'items_id' => 0
+         ], [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => 'Group'
+         ]
+      );
    }
 
 

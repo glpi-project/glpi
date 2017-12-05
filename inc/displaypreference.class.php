@@ -236,15 +236,17 @@ class DisplayPreference extends CommonDBTM {
       $ID2    = $DB->result($result, 0, "id");
 
       // Update items
-      $query = "UPDATE `".$this->getTable()."`
-                SET `rank` = '$rank2'
-                WHERE `id` = '".$input['id']."'";
-      $DB->query($query);
+      $DB->update(
+         $this->getTable(),
+         ['rank' => $rank2],
+         ['id' => $input['id']]
+      );
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `rank` = '$rank1'
-                WHERE `id` = '$ID2'";
-      $DB->query($query);
+      $DB->update(
+         $this->getTable(),
+         ['rank' => $rank1],
+         ['id' => $ID2]
+      );
    }
 
 

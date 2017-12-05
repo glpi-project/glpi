@@ -2910,12 +2910,14 @@ class Rule extends CommonDBTM {
       }
 
       if (isset($item->input['_replace_by']) && ($item->input['_replace_by'] > 0)) {
-         $query = "UPDATE `$table`
-                   SET `$valfield` = '".$item->input['_replace_by']."'
-                   WHERE `$valfield` = '".$item->getField('id')."'
-                         AND `$fieldfield` LIKE '$field'";
-         $DB->query($query);
-
+         $DB->update(
+            $table, [
+               $valfield => $item->input['_replace_by']
+            ], [
+               $valfield   => $item->getField('id'),
+               $fieldfield => ['LIKE', $field]
+            ]
+         );
       } else {
          $iterator = $DB->request([
             'SELECT' => [$fieldid],

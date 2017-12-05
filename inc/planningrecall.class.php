@@ -204,6 +204,7 @@ class PlanningRecall extends CommonDBChild {
          unset($_SESSION['glpiplanningreminder_isavailable']);
       }
 
+      //nedds DB::update() to support SQL functions to get migrated
       $query = "UPDATE `glpi_planningrecalls`
                 SET `when` = DATE_SUB('$begin', INTERVAL `before_time` SECOND)
                 WHERE `itemtype` = '$itemtype'

@@ -236,10 +236,13 @@ class Printer  extends CommonDBTM {
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
-      $query = "UPDATE `glpi_cartridges`
-                SET `printers_id` = NULL
-                WHERE `printers_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $DB->update(
+         'glpi_cartridges', [
+            'printers_id' => 'NULL'
+         ], [
+            'printers_id' => $this->fields['id']
+         ]
+      );
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);

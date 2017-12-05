@@ -246,11 +246,14 @@ class UserEmail  extends CommonDBChild {
       // if default is set : unsed others for the users
       if (in_array('is_default', $this->updates)
           && ($this->input["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'
-                         AND `users_id` = '".$this->fields['users_id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default' => 0
+            ], [
+               'id'        => ['<>', $this->input['id']],
+               'users_id'  => $this->fields['users_id']
+            ]
+         );
       }
 
       parent::post_updateItem($history);
@@ -262,11 +265,14 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : unset others for the users
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'
-                         AND `users_id` = '".$this->fields['users_id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default' => 0
+            ], [
+               'id'        => ['<>', $this->fields['id']],
+               'users_id'  => $this->fields['users_id']
+            ]
+         );
       }
 
       parent::post_addItem();
@@ -279,6 +285,7 @@ class UserEmail  extends CommonDBChild {
 
       // if default is set : set default to another one
       if ($this->fields["is_default"] == 1) {
+         //needs DB::update() to support limit to get migrated
          $query = "UPDATE `". $this->getTable()."`
                    SET `is_default` = '1'
                    WHERE `id` <> '".$this->fields['id']."'

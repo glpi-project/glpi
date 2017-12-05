@@ -160,12 +160,13 @@ class CartridgeItem extends CommonDBTM {
 
       if (($cartridgeitems_id > 0)
           && ($printermodels_id > 0)) {
-         $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
-                          (`cartridgeitems_id`, `printermodels_id`)
-                   VALUES ('$cartridgeitems_id', '$printermodels_id');";
+         $params = [
+            'cartridgeitems_id' => $cartridgeitems_id,
+            'printermodels_id'  => $printermodels_id
+         ];
+         $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-         if ($result = $DB->query($query)
-             && ($DB->affected_rows() > 0)) {
+         if ($result && ($DB->affected_rows() > 0)) {
             return true;
          }
       }

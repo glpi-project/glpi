@@ -354,17 +354,23 @@ class User extends CommonDBTM {
       $DB->query($query);
 
       // Set no user to public bookmark
-      $query = "UPDATE `glpi_savedsearches`
-                SET `users_id` = '0'
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_savedsearches', [
+            'users_id' => 0
+         ], [
+            'users_id' => $this->fields['id']
+         ]
+      );
 
       // Set no user to consumables
-      $query = "UPDATE `glpi_consumables`
-                SET `items_id` = '0'
-                WHERE `items_id` = '".$this->fields['id']."'
-                      AND `itemtype` = 'User'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_consumables', [
+            'items_id' => 0
+         ], [
+            'items_id'  => $this->fields['id'],
+            'itemtype'  => 'User'
+         ]
+      );
 
       $gu = new Group_User();
       $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
@@ -1847,10 +1853,13 @@ class User extends CommonDBTM {
       global $DB;
 
       if (!empty($this->fields["name"])) {
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `password` = ''
-                   WHERE `name` = '" . $this->fields["name"] . "'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'password' => ''
+            ], [
+               'name' => $this->fields['name']
+            ]
+         );
       }
    }
 
@@ -3690,14 +3699,17 @@ class User extends CommonDBTM {
       if (!empty($IDs)
           && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])) {
 
-         $where = implode("','", $IDs);
-         $query = "UPDATE `glpi_users`
-                   SET `authtype` = '$authtype',
-                       `auths_id` = '$server',
-                       `password` = '',
-                       `is_deleted_ldap` = '0'
-                   WHERE `id` IN ('$where')";
-         if ($DB->query($query)) {
+         $result = $DB->update(
+            self::getTable(), [
+               'authtype'        => $authtype,
+               'auths_id'        => $server,
+               'password'        => '',
+               'is_deleted_ldap' => 0
+            ], [
+               'id' => $IDs
+            ]
+         );
+         if ($result) {
             foreach ($IDs as $ID) {
                $changes[0] = 0;
                $changes[1] = '';

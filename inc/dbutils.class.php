@@ -751,10 +751,13 @@ final class DbUtils {
          if ($use_cache
             && ($IDf > 0)) {
 
-            $query = "UPDATE `$table`
-                     SET `sons_cache`='".$this->exportArrayToDB($sons)."'
-                     WHERE `id` = '$IDf';";
-            $DB->query($query);
+            $DB->update(
+               $table, [
+                  'sons_cache' => $this->exportArrayToDB($sons)
+               ], [
+                  'id' => $IDf
+               ]
+            );
          }
       }
 
@@ -830,10 +833,13 @@ final class DbUtils {
                   }
 
                   // Store cache datas in DB
-                  $query = "UPDATE `$table`
-                        SET `ancestors_cache` = '".$this->exportArrayToDB($loc_id_found)."'
-                        WHERE `id` = '".$row['id']."'";
-                  $DB->query($query);
+                  $DB->update(
+                     $table, [
+                        'ancestors_cache' => $this->exportArrayToDB($loc_id_found)
+                     ], [
+                        'id' => $row['id']
+                     ]
+                  );
 
                   $ancestors = array_replace($ancestors, $loc_id_found);
                }
@@ -1040,7 +1046,7 @@ final class DbUtils {
 
       if ($withcomment) {
          return ["name"    => $name,
-                     "comment" => $comment];
+                 "comment" => $comment];
       }
       return $name;
    }
@@ -1237,11 +1243,14 @@ final class DbUtils {
 
       while ($data = $iterator->next()) {
          list($name, $level) = $this->getTreeValueName($table, $data['id']);
-         $query = "UPDATE `$table`
-                     SET `completename` = '".addslashes($name)."',
-                        `level` = '$level'
-                     WHERE `id` = '".$data['id']."'";
-         $DB->query($query);
+         $DB->update(
+            $table, [
+               'completename' => addslashes($name),
+               'level'        => $level
+            ], [
+               'id' => $data['id']
+            ]
+         );
       }
    }
 

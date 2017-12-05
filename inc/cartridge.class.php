@@ -231,13 +231,16 @@ class Cartridge extends CommonDBChild {
    function backToStock(array $input, $history = 1) {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `date_out` = NULL,
-                    `date_use` = NULL,
-                    `printers_id` = '0'
-                WHERE `id`='".$input["id"]."'";
-      if ($result = $DB->query($query)
-          && ($DB->affected_rows() > 0)) {
+      $result = $DB->update(
+         $this->getTable(), [
+            'date_out'     => 'NULL',
+            'date_use'     => 'NULL',
+            'printers_id'  => 0
+         ], [
+            'id' => $input['id']
+         ]
+      );
+      if ($result && ($DB->affected_rows() > 0)) {
          return true;
       }
       return false;
@@ -269,14 +272,16 @@ class Cartridge extends CommonDBChild {
       if ($DB->numrows($result)>0) {
          $cID = $DB->result($result, 0, 0);
          // Mise a jour cartouche en prenant garde aux insertion multiples
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `date_use` = '".date("Y-m-d")."',
-                       `printers_id` = '$pID'
-                   WHERE (`id`='$cID'
-                          AND `date_use` IS NULL)";
-
-         if ($result = $DB->query($query)
-             && ($DB->affected_rows() > 0)) {
+         $result = $DB->update(
+            $this->getTable(), [
+               'date_use'     => date('Y-m-d'),
+               'printers_id'  => $pID
+            ], [
+               'id'        => $cID,
+               'date_use'  => 'NULL'
+            ]
+         );
+         if ($result && ($DB->affected_rows() > 0)) {
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = __('Installing a cartridge');

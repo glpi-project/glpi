@@ -219,6 +219,7 @@ class CronTask extends CommonDBTM{
          pcntl_signal(SIGTERM, [$this, 'signal']);
       }
 
+      //needs DB::update() to support SQL functions to get migrated
       $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".self::STATE_RUNNING."',
                     `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
@@ -281,11 +282,15 @@ class CronTask extends CommonDBTM{
       if (!isset($this->fields['id'])) {
          return false;
       }
-      $query = "UPDATE `".$this->getTable()."`
-                SET `state` = '".$this->fields['state']."'
-                WHERE `id` = '".$this->fields['id']."'
-                      AND `state` = '".self::STATE_RUNNING."'";
-      $result = $DB->query($query);
+
+      $result = $DB->update(
+         $this->getTable(), [
+            'state'  => $this->fields['state']
+         ], [
+            'id'     => $this->fields['id'],
+            'state'  => self::STATE_RUNNING
+         ]
+      );
 
       if ($DB->affected_rows($result) > 0) {
          // No gettext for log but add gettext line to be parsed for pot generation

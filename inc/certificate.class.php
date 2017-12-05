@@ -689,9 +689,6 @@ class Certificate extends CommonDBTM {
       }
 
       $message      = [];
-      $items_notice = [];
-      $items_end    = [];
-
       foreach (Entity::getEntitiesToNotify('use_certificates_alert') as $entity => $value) {
          $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $entity);
          // Check licenses

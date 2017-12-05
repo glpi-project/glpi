@@ -411,10 +411,14 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
          //A version does not exist : update existing one
          if ($new_versionID == -1) {
             //Transfer versions from old software to new software for a specific version
-            $DB->query("UPDATE `glpi_softwareversions`
-                        SET `name` = '$new_version',
-                            `softwares_id` = '$new_software_id'
-                        WHERE `id` = '$version_id'");
+            $DB->update(
+               'glpi_softwareversions', [
+                  'name'         => $new_version,
+                  'softwares_id' => $new_software_id
+               ], [
+                  'id' => $version_id
+               ]
+            );
          } else {
             // Delete software can be in double after update
             $sql = "SELECT gcs_2.*
@@ -426,24 +430,40 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             $res = $DB->query($sql);
             if ($DB->numrows($res) > 0) {
                while ($result = $DB->fetch_assoc($res)) {
-                  $DB->query("DELETE FROM `glpi_computers_softwareversions`
-                              WHERE `id` = '".$result['id']."'");
+                  $DB->delete(
+                     'glpi_computers_softwareversions', [
+                        'id' => $result['id']
+                     ]
+                  );
                }
             }
 
             //Change ID of the version in glpi_computers_softwareversions
-            $DB->query("UPDATE `glpi_computers_softwareversions`
-                        SET `softwareversions_id` = '$new_versionID'
-                        WHERE `softwareversions_id` = '$version_id'");
+            $DB->update(
+               'glpi_computers_softwareversions', [
+                  'softwareversions_id' => $new_versionID
+               ], [
+                  'softwareversions_id' => $version_id
+               ]
+            );
 
             // Update licenses version link
-            $DB->query("UPDATE `glpi_softwarelicenses`
-                        SET `softwareversions_id_buy` = '$new_versionID'
-                        WHERE `softwareversions_id_buy` = '$version_id'");
+            $DB->update(
+               'glpi_softwarelicenses', [
+                  'softwareversions_id_buy' => $new_versionID
+               ], [
+                  'softwareversions_id_buy' => $version_id
+               ]
+            );
 
-            $DB->query("UPDATE `glpi_softwarelicenses`
-                        SET `softwareversions_id_use` = '$new_versionID'
-                        WHERE `softwareversions_id_use` = '$version_id'");
+            $DB->udpate(
+               'glpi_softwarelicenses', [
+                  'softwareversions_id_use' => $new_versionID
+               ], [
+                  'softwareversions_id_use' => $version_id
+               ]
+            );
+
             //Delete old version
             $old_version = new SoftwareVersion();
             $old_version->delete(["id" => $version_id]);
@@ -470,9 +490,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
 
       //Transfer licenses to new software if needed
       if ($old_software_id != $new_software_id) {
-         $DB->query("UPDATE `glpi_softwarelicenses`
-                     SET `softwares_id` = '$new_software_id'
-                     WHERE `softwares_id` = '$old_software_id'");
+         $DB->update(
+            'glpi_softwarelicenses', [
+               'softwares_id' => $new_software_id
+            ], [
+               'softwares_id' => $old_software_id
+            ]
+         );
       }
       return true;
    }

@@ -115,10 +115,13 @@ class ProfileRight extends CommonDBChild {
       while ($profile = $iterator->next()) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $query = "INSERT INTO `glpi_profilerights`
-                             (`profiles_id`, `name`)
-                      VALUES ('$profiles_id', '$name')";
-            if (!$DB->query($query)) {
+            $res = $DB->insert(
+               self::getTable(), [
+                  'profiles_id'  => $profiles_id,
+                  'name'         => $name
+               ]
+            );
+            if (!$res) {
                $ok = false;
             }
          }
@@ -138,9 +141,12 @@ class ProfileRight extends CommonDBChild {
       $_SESSION['glpi_all_possible_rights'] = [];
       $ok                                   = true;
       foreach ($rights as $name) {
-         $query = "DELETE FROM `glpi_profilerights`
-                   WHERE `name` = '$name'";
-         if (!$DB->query($query)) {
+         $result = $DB->delete(
+            self::getTable(), [
+               'name' => $name
+            ]
+         );
+         if (!$result) {
             $ok = false;
          }
       }
@@ -164,6 +170,7 @@ class ProfileRight extends CommonDBChild {
          $profiles[] = $data['profiles_id'];
       }
       if (count($profiles)) {
+         //needs DB::update() to support fields names to get migrated
          $query = "UPDATE `glpi_profilerights`
                    SET `rights` = `rights` | " . $value ."
                    WHERE `name` = '$right'
@@ -200,11 +207,15 @@ class ProfileRight extends CommonDBChild {
       }
       if (count($profiles)) {
          foreach ($profiles as $key => $val) {
-            $query = "UPDATE `glpi_profilerights`
-                      SET `rights` = '$val'
-                      WHERE `name` = '$newright'
-                           AND `profiles_id` = '$key'";
-            if (!$DB->query($query)) {
+            $res = $DB->update(
+               self::getTable(), [
+                  'rights' => $val
+               ], [
+                  'profiles_id'  => $key,
+                  'name'         => $newright
+               ]
+            );
+            if (!$res) {
                $ok = false;
             }
          }
@@ -226,10 +237,12 @@ class ProfileRight extends CommonDBChild {
                                         AND CURRENT.`NAME` = POSSIBLE.`NAME`)";
 
       foreach ($DB->request($query) as $right) {
-         $query = "INSERT INTO `glpi_profilerights`
-                          (`profiles_id`, `name`)
-                   VALUES ('$profiles_id', '".$right['NAME']."')";
-         $DB->query($query);
+         $DB->insert(
+            self::getTable(), [
+               'profiles_id'  => $profiles_id,
+               'name'         => $right['NAME']
+            ]
+         );
       }
    }
 

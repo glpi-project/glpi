@@ -228,15 +228,20 @@ class Log extends CommonDBTM {
          $new_value = Toolbox::substr($new_value, 0, 250);
       }
 
-      // Build query
-      $query = "INSERT INTO `glpi_logs`
-                       (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
-                        `date_mod`, `id_search_option`, `old_value`, `new_value`)
-                VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action',
-                        '".addslashes($username)."', '$date_mod', '$id_search_option',
-                        '$old_value', '$new_value')";
+      $params = [
+         'items_id'          => $items_id,
+         'itemtype'          => $itemtype,
+         'itemtype_link'     => $itemtype_link,
+         'linked_action'     => $linked_action,
+         'user_name'         => addslashes($username),
+         'date_mod'          => $date_mod,
+         'id_search_option'  => $id_search_option,
+         'old_value'         => $old_value,
+         'new_value'         => $new_value
+      ];
+      $result = $DB->insert(self::getTable(), $params);
 
-      if ($DB->query($query)) {
+      if ($result && $DB->affected_rows() > 0) {
          return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
       }
       return false;

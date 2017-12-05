@@ -1539,10 +1539,13 @@ class Transfer extends CommonDBTM {
 
             if (($newversID > 0)
                 && ($newversID != $data['softwareversions_id'])) {
-               $query = "UPDATE `glpi_computers_softwareversions`
-                         SET `softwareversions_id` = '$newversID'
-                         WHERE `id` = ".$data['id'];
-               $DB->query($query);
+               $DB->update(
+                  'glpi_computers_softwareversions', [
+                     'softwareversions_id' => $newversID
+                  ], [
+                     'id' => $data['id']
+                  ]
+               );
             }
 
          } else { // Do not keep
@@ -1830,25 +1833,32 @@ class Transfer extends CommonDBTM {
                   // Update links
                   if ($ID == $newID) {
                      if ($item_ID != $newcontractID) {
-                        $query = "UPDATE `glpi_contracts_items`
-                                  SET `contracts_id` = '$newcontractID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           'glpi_contracts_items', [
+                              'contracts_id' => $newcontractID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
-
                   } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontractID) {
-                        $query = "INSERT INTO `glpi_contracts_items`
-                                         (`contracts_id`, `items_id`, `itemtype`)
-                                  VALUES ('$newcontractID', '$newID', '$itemtype')";
-                        $DB->query($query);
-
+                        $DB->insert(
+                           'glpi_contracts_items', [
+                              'contracts_id' => $newcontractID,
+                              'items_id'     => $newID,
+                              'itemtype'     => $itemtype
+                           ]
+                        );
                      } else { // same contract for new item update link
-                        $query = "UPDATE `glpi_contracts_items`
-                                  SET `items_id` = '$newID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           'glpi_contracts_items', [
+                              'items_id' => $newID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
                   }
 
@@ -2000,25 +2010,33 @@ class Transfer extends CommonDBTM {
                   // Update links
                   if ($ID == $newID) {
                      if ($item_ID != $newdocID) {
-                        $query = "UPDATE `glpi_documents_items`
-                                  SET `documents_id` = '$newdocID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           'glpi_documents_items', [
+                              'documents_id' => $newdocID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
 
                   } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newdocID) {
-                        $query = "INSERT INTO `glpi_documents_items`
-                                         (`documents_id`, `items_id`, `itemtype`)
-                                  VALUES ('$newdocID','$newID','$itemtype')";
-                        $DB->query($query);
-
+                        $DB->insert(
+                           'glpi_documents_items', [
+                              'documents_id' => $newdocID,
+                              'items_id'     => $newID,
+                              'itemtype'     => $itemtype
+                           ]
+                        );
                      } else { // same doc for new item update link
-                        $query = "UPDATE `glpi_documents_items`
-                                  SET `items_id` = '$newID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           'glpi_documents_items', [
+                              'items_id' => $newID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
 
                   }
@@ -2182,10 +2200,13 @@ class Transfer extends CommonDBTM {
                         // Finish updated link if needed
                         if (($newID > 0)
                             && ($newID != $item_ID)) {
-                           $query = "UPDATE `glpi_computers_items`
-                                     SET `items_id` = '$newID'
-                                     WHERE `id` = '".$data['id']."' ";
-                           $DB->query($query);
+                           $DB->update(
+                              'glpi_computers_items', [
+                                 'items_id' => $newID
+                              ], [
+                                 'id' => $data['id']
+                              ]
+                           );
                         }
 
                      } else {
@@ -2900,25 +2921,32 @@ class Transfer extends CommonDBTM {
                   // Update links
                   if ($ID == $newID) {
                      if ($item_ID != $newcontactID) {
-                        $query = "UPDATE `glpi_contacts_suppliers`
-                                  SET `contacts_id` = '$newcontactID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           'glpi_contacts_suppliers', [
+                              'contacts_id' => $newcontactID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
 
                   } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontactID) {
-                        $query = "INSERT INTO `glpi_contacts_suppliers`
-                                         (`contacts_id`, `suppliers_id`)
-                                  VALUES ('$newcontactID','$newID')";
-                        $DB->query($query);
-
+                        $DB->insert(
+                           'glpi_contacts_suppliers', [
+                              'contacts_id'  => $newcontactID,
+                              'suppliers_id' => $newID
+                           ]
+                        );
                      } else { // transfer contact but copy enterprise : update link
-                        $query = "UPDATE `glpi_contacts_suppliers`
-                                  SET `suppliers_id` = '$newID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $Db->update(
+                           'glpi_contacts_suppliers', [
+                              'suppliers_id' => $newID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                      }
                   }
 
@@ -3127,11 +3155,14 @@ class Transfer extends CommonDBTM {
                         }
 
                         // Update links
-                        $query = "UPDATE `$itemdevicetable`
-                                  SET `$fk` = '$newdeviceID',
-                                      `items_id` = '$newID'
-                                  WHERE `id` = '".$data['id']."'";
-                        $DB->query($query);
+                        $DB->update(
+                           $itemdevicetable, [
+                              $fk         => $newdeviceID,
+                              'items_id'  => $newID
+                           ], [
+                              'id' => $data['id']
+                           ]
+                        );
                         $this->transferItem($itemdevicetype, $data['id'], $data['id']);
                      }
                   }

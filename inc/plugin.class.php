@@ -892,10 +892,13 @@ class Plugin extends CommonDBTM {
    function unactivateAll() {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `state` = ".self::NOTACTIVATED."
-                WHERE `state` = ".self::ACTIVATED;
-      $DB->query($query);
+      $DB->update(
+         $this->getTable(), [
+            'state' => self::NOTACTIVATED
+         ], [
+            'state' => self::ACTIVATED
+         ]
+      );
       $_SESSION['glpi_plugins'] = [];
       // reset menu
       if (isset($_SESSION['glpimenu'])) {
@@ -1029,10 +1032,14 @@ class Plugin extends CommonDBTM {
       foreach ($types as $num => $name) {
          $typetoname[$num] = $name;
          foreach ($glpitables as $table) {
-            $query = "UPDATE `$table`
-                      SET `itemtype` = '$name'
-                      WHERE `itemtype` = '$num'";
-            $DB->queryOrDie($query, "update itemtype of table $table for $name");
+            $DB->updateOrDie(
+               $table, [
+                  'itemtype'  => $name,
+               ], [
+                  'itemtype'  => $num
+               ],
+               "update itemtype of table $table for $name"
+            );
          }
       }
 
@@ -1091,10 +1098,14 @@ class Plugin extends CommonDBTM {
 
       foreach ($typetoname as $num => $name) {
          foreach ($plugtables as $table) {
-            $query = "UPDATE `$table`
-                      SET `itemtype` = '$name'
-                      WHERE `itemtype` = '$num'";
-            $DB->queryOrDie($query, "update itemtype of table $table for $name");
+            $DB->updateOrDie(
+               $table, [
+                  'itemtype' => $name
+               ], [
+                  'itemtype' => $num
+               ],
+               "update itemtype of table $table for $name"
+            );
          }
       }
    }

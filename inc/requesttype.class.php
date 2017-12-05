@@ -144,32 +144,31 @@ class RequestType extends CommonDropdown {
    function post_addItem() {
       global $DB;
 
+      $update = [];
+
       if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_helpdesk_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $update['is_helpdesk_default'] = 0;
       }
 
       if (isset($this->input["is_followup_default"]) && $this->input["is_followup_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_followup_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $update['is_followup_default'] = 0;
       }
 
       if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_mail_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $update['is_mail_default'] = 0;
       }
 
       if (isset($this->input["is_mailfollowup_default"]) && $this->input["is_mailfollowup_default"]) {
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_mailfollowup_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $update['is_mailfollowup_default'] = 0;
+      }
+
+      if (count($update)) {
+         $DB->update(
+            $this->getTable(),
+            $update, [
+               'id' => ['<>', $this->fields['id']]
+            ]
+         );
       }
    }
 
@@ -179,57 +178,47 @@ class RequestType extends CommonDropdown {
    **/
    function post_updateItem($history = 1) {
       global $DB;
+      $update =[];
 
       if (in_array('is_helpdesk_default', $this->updates)) {
-
          if ($this->input["is_helpdesk_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `is_helpdesk_default` = '0'
-                      WHERE `id` <> '".$this->input['id']."'";
-            $DB->query($query);
-
+            $update['is_helpdesk_default'] = 0;
          } else {
             Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
       }
 
       if (in_array('is_followup_default', $this->updates)) {
-
          if ($this->input["is_followup_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `is_followup_default` = '0'
-                      WHERE `id` <> '".$this->input['id']."'";
-            $DB->query($query);
-
+            $update['is_followup_default'] = 0;
          } else {
             Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
       }
 
       if (in_array('is_mail_default', $this->updates)) {
-
          if ($this->input["is_mail_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `is_mail_default` = '0'
-                      WHERE `id` <> '".$this->input['id']."'";
-            $DB->query($query);
-
+            $update['is_mail_default'] = 0;
          } else {
             Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
       }
 
       if (in_array('is_mailfollowup_default', $this->updates)) {
-
          if ($this->input["is_mailfollowup_default"]) {
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `is_mailfollowup_default` = '0'
-                      WHERE `id` <> '".$this->input['id']."'";
-            $DB->query($query);
-
+            $update['is_mailfollowup_default'] = 0;
          } else {
             Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
+      }
+
+      if (count($update)) {
+         $DB->update(
+            $this->getTable(),
+            $update, [
+               'id' => ['<>', $this->fields['id']]
+            ]
+         );
       }
    }
 

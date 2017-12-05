@@ -3338,10 +3338,11 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       if (in_array('is_default', $this->updates) && $this->input["is_default"]==1) {
-         $query = "UPDATE `". $this->getTable()."`
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(),
+            ['is_default' => 0],
+            ['id' => ['<>', $this->input['id']]]
+         );
       }
    }
 
@@ -3349,10 +3350,11 @@ class AuthLDAP extends CommonDBTM {
       global $DB;
 
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
-         $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(),
+            ['is_default' => 0],
+            ['id' => ['<>', $this->fields['id']]]
+         );
       }
    }
 
