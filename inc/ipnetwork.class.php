@@ -896,12 +896,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $DB->query($query);
 
       // Foreach IPNetwork ...
-      $query = "SELECT `id`
-                FROM `glpi_ipnetworks`";
+      $iterator = $DB->request([
+         'SELECT' => 'id',
+         'FROM'   => self::getTable()
+      ]);
 
       $network = new self();
 
-      foreach ($DB->request($query) as $network_entry) {
+      while ($network_entry = $iterator->next()) {
          if ($network->getFromDB($network_entry['id'])) {
             $input = $network->fields;
             // ... update it by its own entries

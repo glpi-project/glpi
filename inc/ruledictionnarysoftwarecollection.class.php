@@ -488,12 +488,18 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       global $DB;
 
       //Check if the version exists
-      $sql = "SELECT *
-              FROM `glpi_softwareversions`
-              WHERE `softwares_id` = '$software_id'
-                    AND `name` = '$version'";
-      $res_version = $DB->query($sql);
-      return (!$DB->numrows($res_version) ? -1 : $DB->result($res_version, 0, "id"));
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_softwareversions',
+         'WHERE'  => [
+            'softwares_id' => $software_id,
+            'name'         => $version
+         ]
+      ]);
+      if (count($iterator)) {
+         $current = $iterator->next();
+         return $current['id'];
+      }
+      return -1;
    }
 
 }

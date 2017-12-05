@@ -202,9 +202,14 @@ abstract class CommonDropdown extends CommonDBTM {
 
       // if item based on location, create item in the same entity as location
       if (isset($input['locations_id'])) {
-         foreach ($DB->request("SELECT `entities_id`
-                                FROM `glpi_locations`
-                                WHERE `id` = ".$input['locations_id']) as $data) {
+         $iterator = $DB->request([
+            'SELECT' => ['entities_id'],
+            'FROM'   => 'glpi_locations',
+            'WHERE'  => [
+               'id' => $input['locations_id']
+            ]
+         ]);
+         while ($data = $iterator->next()) {
             $input['entities_id'] = $data['entities_id'];
          }
       }
@@ -549,21 +554,23 @@ abstract class CommonDropdown extends CommonDBTM {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0] != '_') {
                if (!is_array($field)) {
-                  $query = "SELECT COUNT(*) AS cpt
-                            FROM `$tablename`
-                            WHERE `$field` = '$ID'";
-                  $result = $DB->query($query);
-                  if ($DB->result($result, 0, "cpt") > 0) {
+                  $row = $DB->request([
+                     'FROM'   => $tablename,
+                     'COUNT'  => 'cpt',
+                     'WHERE'  => [$field => $ID]
+                  ])->next();
+                  if ($row['cpt'] > 0) {
                      return true;
                   }
 
                } else {
                   foreach ($field as $f) {
-                     $query = "SELECT COUNT(*) AS cpt
-                               FROM `$tablename`
-                               WHERE `$f` = '$ID'";
-                     $result = $DB->query($query);
-                     if ($DB->result($result, 0, "cpt") > 0) {
+                     $row = $DB->request([
+                        'FROM'   => $tablename,
+                        'COUNT'  => 'cpt',
+                        'WHERE'  => [$f => $ID]
+                     ])->next();
+                     if ($row['cpt'] > 0) {
                         return true;
                      }
                   }

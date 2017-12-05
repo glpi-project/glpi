@@ -49,19 +49,16 @@ if (isset($_POST["rubdoc"])) {
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
-      $used_qry = '';
-      foreach ($_POST['used'] as $current_used) {
-         if ($used_qry !== '') {
-            $used_qry .= ', ';
-         }
-         $used_qry .= intval($current_used);
-      }
-      $query = "SELECT `id`
-                FROM `glpi_documents`
-                WHERE `id` IN (".$used_qry.")
-                      AND `documentcategories_id` = '".intval($_POST["rubdoc"])."'";
+      $iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => 'glpi_documents',
+         'WHERE'  => [
+            'id'                    => $current_used,
+            'documentcategories_id' => (int)$_POST['rubdoc']
+         ]
+      ]);
 
-      foreach ($DB->request($query) AS $data) {
+      while ($data = $iterator->next()) {
          $used[$data['id']] = $data['id'];
       }
    }

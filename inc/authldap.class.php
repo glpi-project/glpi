@@ -524,13 +524,15 @@ class AuthLDAP extends CommonDBTM {
 
       AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
-      $sql = "SELECT *
-              FROM `glpi_authldapreplicates`
-              WHERE `authldaps_id` = '$ID'
-              ORDER BY `name`";
-      $result = $DB->query($sql);
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_authldapreplicates',
+         'WHERE'  => [
+            'authldaps_id' => $ID
+         ],
+         'ORDER'  => ['name']
+      ]);
 
-      if (($nb = $DB->numrows($result)) > 0) {
+      if (($nb = count($iterator)) > 0) {
          echo "<br>";
 
          echo "<div class='center'>";
@@ -557,7 +559,7 @@ class AuthLDAP extends CommonDBTM {
               "<th class='center'></th></tr>";
          echo $header_begin.$header_top.$header_end;
 
-         while ($ldap_replicate = $DB->fetch_assoc($result)) {
+         while ($ldap_replicate = $iterator->next()) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
             Html::showMassiveActionCheckBox('AuthLdapReplicate', $ldap_replicate["id"]);
             echo "</td>";
@@ -1745,16 +1747,22 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $glpi_users = [];
-      $sql        = "SELECT *
-                     FROM `glpi_users`";
+
+      $select = [
+         'FROM'   => User::getTable(),
+         'ORDER'  => ['name ' . $values['order']]
+      ];
 
       if ($values['mode'] != self::ACTION_IMPORT) {
-         $sql .= " WHERE `authtype` IN (-1,".Auth::NOT_YET_AUTHENTIFIED.",".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.")
-                         AND `auths_id` = '".$options['authldaps_id']."'";
+         $select['WHERE'] = [
+            'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL, Auth::CAS],
+            'auths_id'  => $options['authldaps_id']
+         ];
       }
-      $sql .= " ORDER BY `name` ".$values['order'];
 
-      foreach ($DB->request($sql) as $user) {
+      $iterator = $DB->request($select);
+
+      while ($user = $iterator->next()) {
          $tmpuser = new User();
 
          //Ldap add : fill the array with the login of the user
@@ -2029,14 +2037,16 @@ class AuthLDAP extends CommonDBTM {
          }
          if (!empty($infos)) {
             $glpi_groups = [];
-            //Get all groups from GLPI DB for the current entity and the subentities
-            $sql = "SELECT `name`
-                    FROM `glpi_groups` ".
-                    getEntitiesRestrictRequest("WHERE", "glpi_groups");
 
-            $res = $DB->query($sql);
+            //Get all groups from GLPI DB for the current entity and the subentities
+            $iterator = $DB->request([
+               'SELECT' => ['name'],
+               'FROM'   => 'glpi_groups',
+               'WHERE'  => getEntitiesRestrictCriteria('glpi_groups')
+            ]);
+
             //If the group exists in DB -> unset it from the LDAP groups
-            while ($group = $DB->fetch_assoc($res)) {
+            while ($group = $iterator->next()) {
                $glpi_groups[$group["name"]] = 1;
             }
             $ligne = 0;
@@ -2176,13 +2186,15 @@ class AuthLDAP extends CommonDBTM {
                         /// Search in DB for group with ldap_group_dn
                         if (($config_ldap->fields["group_field"] == 'dn')
                             && (count($ou) > 0)) {
-                           $query = "SELECT `ldap_value`
-                                     FROM `glpi_groups`
-                                     WHERE `ldap_group_dn`
-                                             IN ('".implode("', '",
-                                                            Toolbox::addslashes_deep($ou))."')";
+                           $iterator = $DB->request([
+                              'SELECT' => ['ldap_value'],
+                              'FROM'   => 'glpi_groups',
+                              'WHERE'  => [
+                                 'ldap_group_dn' => Toolbox::addslashes_deep($ou)
+                              ]
+                           ]);
 
-                           foreach ($DB->request($query) as $group) {
+                           while ($group = $iterator->next()) {
                               $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
                                                                "search_type" => "users"];
                            }
@@ -2221,15 +2233,17 @@ class AuthLDAP extends CommonDBTM {
    static function ldapChooseDirectory($target) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_authldaps`
-                WHERE `is_active` = '1'
-                ORDER BY `name` ASC";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'is_active' => 1
+         ],
+         'ORDER'  => 'name ASC'
+      ]);
 
-      if ($DB->numrows($result) == 1) {
+      if (count($iterator) == 1) {
          //If only one server, do not show the choose ldap server window
-         $ldap                    = $DB->fetch_assoc($result);
+         $ldap                    = $iterator->next();
          $_SESSION["ldap_server"] = $ldap["id"];
          Html::redirect($_SERVER['PHP_SELF']);
       }
@@ -2241,13 +2255,13 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th colspan='2'>" . __('LDAP directory choice') . "</th></tr>";
 
       //If more than one ldap server
-      if ($DB->numrows($result) > 1) {
+      if (count($iterator) > 1) {
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
          echo "<td class='center'>";
          AuthLDAP::Dropdown(['name'                => 'ldap_server',
-                                  'display_emptychoice' => false,
-                                  'comment'             => true,
-                                  'condition'           => "`is_active`='1'"]);
+                             'display_emptychoice' => false,
+                             'comment'             => true,
+                             'condition'           => "`is_active`='1'"]);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
@@ -3386,15 +3400,22 @@ class AuthLDAP extends CommonDBTM {
 
       $ldaps = [];
       // Always get default first
-      $query = "SELECT `id`
-                FROM `glpi_authldaps`
-                WHERE `is_active` = 1
-                      AND (`email1_field` <> ''
-                           OR `email2_field` <> ''
-                           OR `email3_field` <> ''
-                           OR `email4_field` <> '')
-                ORDER BY `is_default` DESC";
-      foreach ($DB->request($query) as $data) {
+
+      $iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'  => 'glpi_authldaps',
+         'WHERE' => [
+            'is_active' => 1,
+            'OR'        => [
+               'email1_field' => ['<>', ''],
+               'email2_field' => ['<>', ''],
+               'email3_field' => ['<>', ''],
+               'email4_field' => ['<>', '']
+            ]
+         ],
+         'ORDER'  => ['is_default DESC']
+      ]);
+      while ($data = $iterator->next()) {
          $ldaps[] = $data['id'];
       }
       return $ldaps;

@@ -2917,22 +2917,24 @@ class Rule extends CommonDBTM {
          $DB->query($query);
 
       } else {
-         $query = "SELECT `$fieldid`
-                   FROM `$table`
-                   WHERE `$valfield` = '".$item->getField('id')."'
-                         AND `$fieldfield` LIKE '$field'";
+         $iterator = $DB->request([
+            'SELECT' => [$fieldid],
+            'FROM'   => $table,
+            'WHERE'  => [
+               $valfield   => $item->getField('id'),
+               $fieldfield => ['LIKE', $field]
+            ]
+         ]);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) > 0) {
-               $input['is_active'] = 0;
+         if (count($iterator) > 0) {
+            $input['is_active'] = 0;
 
-               while ($data = $DB->fetch_assoc($result)) {
-                  $input['id'] = $data[$fieldid];
-                  $ruleitem->update($input);
-               }
-               Session::addMessageAfterRedirect(__('Rules using the object have been disabled.'),
-                                                true);
+            while ($data = $iterator->next()) {
+               $input['id'] = $data[$fieldid];
+               $ruleitem->update($input);
             }
+            Session::addMessageAfterRedirect(__('Rules using the object have been disabled.'),
+                                             true);
          }
       }
    }
