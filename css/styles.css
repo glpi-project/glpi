@@ -2576,6 +2576,10 @@ a.icon_nav_move:hover img {
    margin: 0;
 }
 
+#c_recherche form #champRecherche button:hover {
+   background-color: #ccc;
+}
+
 #c_recherche form #champRecherche input {
    border: none;
    height: 22px;
