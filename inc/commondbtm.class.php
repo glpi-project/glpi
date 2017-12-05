@@ -418,24 +418,16 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
-            $query  = "UPDATE `".$this->getTable()."`
-                       SET `".$field."`";
-
-            if ($this->fields[$field]=="NULL") {
-               $query .= " = ".$this->fields[$field];
-
-            } else {
-               $query .= " = '".$this->fields[$field]."'";
-            }
-
-            $query .= " WHERE `id` ='".$this->fields["id"]."'";
-
-            if (!$DB->query($query)) {
+            $result = $DB->update(
+               $this->getTable(),
+               [$field => $this->fields[$field]],
+               ['id' => $this->getID()]
+            );
+            if ($DB->affected_rows() == 0) {
                if (isset($oldvalues[$field])) {
                   unset($oldvalues[$field]);
                }
             }
-
          } else {
             // Clean oldvalues
             if (isset($oldvalues[$field])) {
@@ -461,55 +453,26 @@ class CommonDBTM extends CommonGLPI {
    function addToDB() {
       global $DB;
 
-      //unset($this->fields["id"]);
       $nb_fields = count($this->fields);
       if ($nb_fields > 0) {
-         // Build query
-         $query = "INSERT
-                   INTO `".$this->getTable()."` (";
-
-         $i = 0;
-         foreach ($this->fields as $key => $val) {
-            $fields[$i] = $key;
-            $values[$i] = $val;
-            $i++;
+         $params = [];
+         foreach ($this->fields as $key => $value) {
+            //FIXME: why is that handled here?
+            if (($this->getType() == 'ProfileRight') && ($value == '')) {
+               $value = 0;
+            }
+            $params[$key] = $value;
          }
 
-         for ($i=0; $i<$nb_fields; $i++) {
-            $query .= "`".$fields[$i]."`";
-            if ($i != ($nb_fields-1)) {
-               $query .= ",";
-            }
+         $DB->insert($this->getTable(), $params);
+
+         if (!isset($this->fields['id'])
+               || is_null($this->fields['id'])
+               || ($this->fields['id'] == 0)) {
+            $this->fields['id'] = $DB->insert_id();
          }
 
-         $query .= ") VALUES (";
-         for ($i=0; $i<$nb_fields; $i++) {
-
-            if ($values[$i] == 'NULL') {
-               $query .= $values[$i];
-            } else {
-               if (($this->getType() == 'ProfileRight') && ($values[$i] == '')) {
-                  $values[$i] = 0;
-               }
-               $query .= "'".$values[$i]."'";
-            }
-
-            if ($i != ($nb_fields-1)) {
-               $query .= ",";
-            }
-
-         }
-         $query .= ")";
-
-         if ($result=$DB->query($query)) {
-            // Already define for entity / insert_id does not work
-            if (!isset($this->fields['id'])
-                || is_null($this->fields['id'])
-                || ($this->fields['id'] == 0)) {
-               $this->fields['id'] = $DB->insert_id();
-            }
-            return $this->fields['id'];
-         }
+         return $this->fields['id'];
 
       }
       return false;
@@ -525,17 +488,14 @@ class CommonDBTM extends CommonGLPI {
       global $DB,$CFG_GLPI;
 
       if ($this->maybeDeleted()) {
+         $params = [':is_deleted' => 0];
          // Auto set date_mod if exsist
          $toadd = '';
          if (isset($this->fields['date_mod'])) {
-            $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
+            $params['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_deleted`='0' $toadd
-                   WHERE `id` = '".$this->fields['id']."'";
-
-         if ($result = $DB->query($query)) {
+         if ($DB->update($this->getTable(), $params, ['id' => $this->fields['id']])) {
             return true;
          }
 
@@ -567,10 +527,12 @@ class CommonDBTM extends CommonGLPI {
          $this->cleanRelationData();
          $this->cleanRelationTable();
 
-         $query = "DELETE
-                   FROM `".$this->getTable()."`
-                   WHERE `id` = '".$this->fields['id']."'";
-         if ($result = $DB->query($query)) {
+         $result = $DB->delete(
+            $this->getTable(), [
+               'id' => $this->fields['id']
+            ]
+         );
+         if ($result) {
             $this->post_deleteFromDB();
             return true;
          }
