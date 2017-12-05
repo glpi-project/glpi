@@ -1428,7 +1428,7 @@ class Transfer extends CommonDBTM {
             }
             $query = "SELECT *
                       FROM `glpi_softwares`
-                      WHERE `entities_id` = ".$this->to."
+                      WHERE `entities_id` = '".$this->to."'
                             AND `name` = '".addslashes($soft->fields['name'])."'
                             $manufacturer";
 
