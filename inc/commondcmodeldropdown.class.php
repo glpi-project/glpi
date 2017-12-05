@@ -94,7 +94,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             'name'   => 'power_consumption',
             'type'   => 'integer',
             'label'  => __('Power consumption'),
-            'unit'   => __('watts')
+            'unit'   => __('watts'),
+            'html'   => true
          ];
       }
 
