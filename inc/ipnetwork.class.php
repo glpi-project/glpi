@@ -888,6 +888,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       global $DB;
 
       // Reset the tree
+      //needs DB::update() to support fields names to get migrated
       $query = "UPDATE `glpi_ipnetworks`
                 SET `ipnetworks_id` = 0,
                     `level` = 1,

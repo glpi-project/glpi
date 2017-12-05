@@ -841,9 +841,13 @@ class KnowbaseItem extends CommonDBVisible {
    function addToFaq() {
       global $DB;
 
-      $DB->query("UPDATE `".$this->getTable()."`
-                  SET `is_faq` = '1'
-                  WHERE `id` = '".$this->fields['id']."'");
+      $DB->update(
+         $this->getTable(), [
+            'is_faq' => 1
+         ], [
+            'id' => $this->fields['id']
+         ]
+      );
 
       if (isset($_SESSION['glpi_faqcategories'])) {
          unset($_SESSION['glpi_faqcategories']);
@@ -859,6 +863,7 @@ class KnowbaseItem extends CommonDBVisible {
       global $DB;
 
       //update counter view
+      //needs DB::update() to support fields names to get migrated
       $query = "UPDATE `glpi_knowbaseitems`
                 SET `view` = `view`+1
                 WHERE `id` = '".$this->getID()."'";

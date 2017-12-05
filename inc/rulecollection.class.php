@@ -691,7 +691,7 @@ class RuleCollection extends CommonDBTM {
    function deleteRuleOrder($ranking) {
       global $DB;
 
-      $rules = [];
+      //needs DB::update() to support fields names to get migrated
       $sql = "UPDATE `glpi_rules`
               SET `ranking` = `ranking`-1
               WHERE `sub_type` ='".$this->getRuleClassName()."'

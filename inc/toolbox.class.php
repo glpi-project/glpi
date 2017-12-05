@@ -2236,12 +2236,15 @@ class Toolbox {
                'dbversion' => GLPI_SCHEMA_VERSION
             ]
          );
-         $query = "UPDATE `glpi_users`
-                   SET `language` = NULL";
-         $DB->queryOrDie($query, "4203");
+         $DB->updateOrDie(
+            'glpi_users', [
+               'language' => 'NULL'
+            ], [0], "4203"
+         );
 
          if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
+            //needs DB::update() to support fields names to get migrated
             $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
             $DB->queryOrDie($query, "4203");
          }

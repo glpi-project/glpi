@@ -215,9 +215,12 @@ class Update extends CommonGLPI {
          case "0.68.3" :
             // Force update content
             if (showLocationUpdateForm()) {
-               $query = "UPDATE `glpi_config`
-                        SET `version` = ' 0.68.3x'";
-               $DB->queryOrDie($query, "0.68.3");
+               $DB->updateOrDie(
+                  'glpi_config',
+                  ['version' => ' 0.68.3x'],
+                  [0],
+                  '0.68.3'
+               );
 
                showContentUpdateForm();
                exit();
@@ -430,6 +433,7 @@ class Update extends CommonGLPI {
 
       if (defined('GLPI_SYSTEM_CRON')) {
          // Downstream packages may provide a good system cron
+         //needs DB::update() to support fields names to get migrated
          $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
          $DB->queryOrDie($query);
       }

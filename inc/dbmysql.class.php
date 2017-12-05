@@ -48,7 +48,7 @@ class DBmysql {
    //! Default Database
    public $dbdefault          = "";
    //! Database Handler
-   public $dbh;
+   private $dbh;
    //! Database Error
    public $error              = 0;
 

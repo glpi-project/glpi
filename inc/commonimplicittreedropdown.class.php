@@ -195,10 +195,13 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `".$this->getForeignKeyField()."` = '$oldParent'
-                      WHERE `id` IN ('".implode("', '", $oldSons)."')";
-            $DB->query($query);
+            $DB->update(
+               $this->getTable(), [
+                  $this->getForeignKeyField() => $oldParent
+               ], [
+                  'id' => $oldSons
+               ]
+            );
             // Then, regenerate the old sons to reflect there new ancestors
             $this->regenerateTreeUnderID($oldParent, true, true);
             $this->cleanParentsSons($oldParent);
@@ -217,10 +220,13 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
             $newSons[] = $newSon["id"];
          }
          if (count($newSons) > 0) { // Then make them pointing to me
-            $query = "UPDATE `".$this->getTable()."`
-                      SET `".$this->getForeignKeyField()."` = '".$this->getID()."'
-                      WHERE `id` IN ('".implode("', '", $newSons)."')";
-            $DB->query($query);
+            $DB->update(
+               $this->getTable(), [
+                  $this->getForeignKeyField() => $this->getID()
+               ], [
+                  'id' => $newSons
+               ]
+            );
             // Then, regenerate the new sons to reflect there new ancestors
             $this->regenerateTreeUnderID($this->getID(), true, true);
             $this->cleanParentsSons();

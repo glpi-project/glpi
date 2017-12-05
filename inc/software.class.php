@@ -1039,20 +1039,30 @@ class Software extends CommonDBTM {
                                   ["softwares_id" => $ID,
                                         "name"         => $from["name"]]) as $dest) {
                // Update version ID on License
-               $sql = "UPDATE `glpi_softwarelicenses`
-                       SET `softwareversions_id_buy` = '".$dest["id"]."'
-                       WHERE `softwareversions_id_buy` = '".$from["id"]."'";
-               $DB->query($sql);
+               $DB->update(
+                  'glpi_softwarelicenses', [
+                     'softwareversions_id_buy' => $dest['id']
+                  ], [
+                     'softwareversions_id_buy' => $from['id']
+                  ]
+               );
 
-               $sql = "UPDATE `glpi_softwarelicenses`
-                       SET `softwareversions_id_use` = '".$dest["id"]."'
-                       WHERE `softwareversions_id_use` = '".$from["id"]."'";
-               $DB->query($sql);
+               $DB->update(
+                  'glpi_computers_softwareversions', [
+                     'softwareversions_id_use' => $dest['id']
+                  ], [
+                     'softwareversions_id_use' => $from['id']
+                  ]
+               );
 
                // Move installation to existing version in destination software
-               $sql = "UPDATE `glpi_computers_softwareversions`
-                       SET `softwareversions_id` = '".$dest["id"]."'
-                       WHERE `softwareversions_id` = '".$from["id"]."'";
+               $DB->update(
+                  'glpi_computers_softwareversions', [
+                     'softwareversions_id' => $dest['id']
+                  ], [
+                     'softwareversions_id' => $from['id']
+                  ]
+               );
                $found = $DB->query($sql);
             }
 
@@ -1064,13 +1074,17 @@ class Software extends CommonDBTM {
 
             } else {
                // Move version to destination software
-               $sql = "UPDATE `glpi_softwareversions`
-                       SET `softwares_id` = '$ID',
-                           `entities_id` = '".$this->getField('entities_id')."'
-                       WHERE `id` = '".$from["id"]."'";
+               $result = $DB->update(
+                  'glpi_softwareversions', [
+                     'softwares_id' => $ID,
+                     'entities_id'  => $this->getField('entities_id')
+                  ], [
+                     'id' => $from['id']
+                  ]
+               );
             }
 
-            if ($DB->query($sql)) {
+            if ($result) {
                $i++;
             }
             if ($html) {
@@ -1080,11 +1094,15 @@ class Software extends CommonDBTM {
       }
 
       // Move software license
-      $sql = "UPDATE `glpi_softwarelicenses`
-              SET `softwares_id` = '$ID'
-              WHERE `softwares_id` IN (".implode(",", $item).")";
+      $result = $DB->update(
+         'glpi_softwarelicenses', [
+            'softwares_id' => $ID
+         ], [
+            'softwares_id' => $item
+         ]
+      );
 
-      if ($DB->query($sql)) {
+      if ($result) {
          $i++;
       }
 

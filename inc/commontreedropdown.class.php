@@ -241,28 +241,30 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
 
          foreach ($DB->request($query) as $data) {
-            $query = "UPDATE `".$this->getTable()."`
-                      SET ";
-            $fieldsToUpdate = [];
+            $update = [];
 
             if ($updateName || $changeParent) {
                if (isset($currentNodeCompleteName)) {
-                  $fieldsToUpdate[] = "`completename`='".
-                  self::getCompleteNameFromParents($currentNodeCompleteName,
-                                                   addslashes($data["name"]))."'";
+                  $update['completename'] = self::getCompleteNameFromParents(
+                     $currentNodeCompleteName,
+                     addslashes($data["name"])
+                  );
                } else {
-                  $fieldsToUpdate[] = "`completename`='".addslashes($data["name"])."'";
+                  $update['completename'] = addslashes($data["name"]);
                }
             }
 
             if ($changeParent) {
                // We have to reset the ancestors as only these changes (ie : not the children).
-               $fieldsToUpdate[] = "`ancestors_cache` = NULL";
+               $update['ancestors_cache'] = 'NULL';
                // And we must update the level of the current node ...
-               $fieldsToUpdate[] = "`level` = '$nextNodeLevel'";
+               $update['level'] = $nextNodeLevel;
             }
-            $query .= implode(', ', $fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
-            $DB->query($query);
+            $DB->update(
+               $this->getTable(),
+               $update,
+               ['id' => $data['id']]
+            );
             // Translations :
             if (Session::haveTranslations($this->getType(), 'completename')) {
                 DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
@@ -297,10 +299,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          return;
       }
 
-      $query = "UPDATE `".$this->getTable()."`
-                  SET `sons_cache` = NULL
-                  WHERE `id` IN ('" . implode("', '", $ancestors) . "')";
-      $DB->query($query);
+      $DB->update(
+         $this->getTable(), [
+            'sons_cache' => 'NULL'
+         ], [
+            'id' => $ancestors
+         ]
+      );
 
       //drop from sons cache when needed
       if ($cache && Toolbox::useCache()) {
@@ -353,10 +358,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       Toolbox::deprecated();
 
       if ($ID > 0) {
-         $query = "UPDATE `".$this->getTable()."`
-                    SET `sons_cache` = NULL
-                    WHERE `id` = '$ID'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'sons_cache' => 'NULL'
+            ], [
+               'id' => $ID
+            ]
+         );
 
          $currentNode = clone $this;
          if ($currentNode->getFromDB($ID)) {

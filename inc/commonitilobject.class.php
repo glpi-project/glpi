@@ -1217,6 +1217,7 @@ abstract class CommonITILObject extends CommonDBTM {
          && !in_array($this->fields['status'], $statuses)
       ) {
          //Mark existing solutions as refused
+         //needs DB::update() to support order and limit to get migrated
          $query = "UPDATE `" . ITILSolution::getTable() . "`
             SET `status`=".CommonITILValidation::REFUSED.", `users_id_approval`=" . Session::getLoginUserID() . ",
             `date_approval`='". date('Y-m-d H:i:s') ."'
@@ -1228,6 +1229,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->input['_accepted'])) {
          //Mark last solution as approved
+         //needs DB::update() to support order and limit to get migrated
          $query = "UPDATE `" . ITILSolution::getTable() . "`
             SET `status`=".CommonITILValidation::ACCEPTED.", `users_id_approval`=" . Session::getLoginUserID() . ",
             `date_approval`='". date('Y-m-d H:i:s') ."'
@@ -4322,18 +4324,20 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          // Force date mod and lastupdater
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
+         $update = ['date_mod' => $_SESSION['glpi_currenttime']];
 
          // set last updater if interactive user
          if (!Session::isCron()) {
-            $query .= ", `users_id_lastupdater` = '".Session::getLoginUserID()."' ";
+            $update['users_id_lastupdater'] = Session::getLoginUserID();
          } else if ($users_id_lastupdater > 0) {
-            $query .= ", `users_id_lastupdater` = '$users_id_lastupdater' ";
+            $update['users_id_lastupdater'] = $users_id_lastupdater;
          }
 
-         $query .= "WHERE `id` = '$ID'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(),
+            $update,
+            ['id' => $ID]
+         );
       }
    }
 
@@ -4361,11 +4365,15 @@ abstract class CommonITILObject extends CommonDBTM {
             $tot += $sum;
          }
       }
-      $query2 = "UPDATE `".$this->getTable()."`
-                 SET `actiontime` = '$tot'
-                 WHERE `id` = '$ID'";
 
-      return $DB->query($query2);
+      $result = $DB->update(
+         $this->getTable(), [
+            'actiontime' => $tot
+         ], [
+            'id' => $ID
+         ]
+      );
+      return $result;
    }
 
 

@@ -681,9 +681,13 @@ class TicketTemplate extends CommonDropdown {
       foreach ($source as $merge => $data) {
          foreach ($data as $key => $val) {
             if (!array_key_exists($key, $target[$merge])) {
-               $DB->query("UPDATE `glpi_tickettemplate".$merge."`
-                           SET `tickettemplates_id` = '".$target_id."'
-                           WHERE `id` = '".$val['id']."'");
+               $DB->update(
+                  'glpi_tickettemplate'.$merge, [
+                     'tickettemplates_id' => $target_id
+                  ], [
+                     'id' => $val['id']
+                  ]
+               );
             }
          }
       }
@@ -722,9 +726,13 @@ class TicketTemplate extends CommonDropdown {
             $temtplate->getFromDB($target_id);
             if (!array_key_exists($key, $target[$merge])
                 && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])) {
-               $DB->query("UPDATE `glpi_itilcategories`
-                           SET `$merge` = '".$target_id."'
-                           WHERE `id` = '".$val['id']."'");
+               $DB->update(
+                  'glpi_itilcategories', [
+                     $merge => $target_id
+                  ], [
+                     'id' => $val['id']
+                  ]
+               );
             }
          }
       }

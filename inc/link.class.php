@@ -106,9 +106,11 @@ class Link extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query2 = "DELETE FROM `glpi_links_itemtypes`
-                 WHERE `links_id` = '".$this->fields['id']."'";
-      $DB->query($query2);
+      $DB->delete(
+         'glpi_links_itemtypes', [
+            'links_id'  => $this->fields['id']
+         ]
+      );
    }
 
 

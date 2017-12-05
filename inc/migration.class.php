@@ -603,18 +603,14 @@ class Migration {
       if ($DB->tableExists("$table")
           && is_array($input) && (count($input) > 0)) {
 
-         $fields = [];
          $values = [];
          foreach ($input as $field => $value) {
             if ($DB->fieldExists($table, $field)) {
-               $fields[] = "`$field`";
-               $values[] = "'$value'";
+               $values[$field] = $value;
             }
          }
-         $query = "INSERT INTO `$table`
-                          (" . implode(', ', $fields) . ")
-                   VALUES (" .implode(', ', $values) . ")";
-         $DB->queryOrDie($query, $this->version." insert in $table");
+
+         $DB->insertOrDie($table, $values, $this->version." insert in $table");
 
          return $DB->insert_id();
       }
@@ -707,44 +703,29 @@ class Migration {
       }
 
       // The rule itself
-      $fields = "`ranking`";
-      $values = "'$ranking'";
+      $values = ['ranking' => $ranking];
       foreach ($rule as $field => $value) {
-         $fields .= ", `$field`";
-         $values .= ", '".$DB->escape($value)."'";
+         $values[$field] = $value;
       }
-      $sql = "INSERT INTO `glpi_rules`
-                     ($fields)
-              VALUES ($values)";
-      $DB->queryOrDie($sql);
+      $DB->insertOrDie('glpi_rules', $values);
       $rid = $DB->insert_id();
 
       // The rule criteria
       foreach ($criteria as $criterion) {
-         $fields = "`rules_id`";
-         $values = "'$rid'";
+         $values = ['rules_id' => $rid];
          foreach ($criterion as $field => $value) {
-            $fields .= ", `$field`";
-            $values .= ", '".$DB->escape($value)."'";
+            $values[$field] = $value;
          }
-         $sql = "INSERT INTO `glpi_rulecriterias`
-                        ($fields)
-                 VALUES ($values)";
-         $DB->queryOrDie($sql);
+         $DB->insertOrDie('glpi_rulecriterias', $values);
       }
 
       // The rule criteria actions
       foreach ($actions as $action) {
-         $fields = "`rules_id`";
-         $values = "'$rid'";
+         $values = ['rules_id' => $rid];
          foreach ($action as $field => $value) {
-            $fields .= ", `$field`";
-            $values .= ", '".$DB->escape($value)."'";
+            $values[$field] = $value;
          }
-         $sql = "INSERT INTO `glpi_ruleactions`
-                        ($fields)
-                 VALUES ($values)";
-         $DB->queryOrDie($sql);
+         $DB->insertOrDie('glpi_ruleactions', $values);
       }
    }
 
@@ -790,11 +771,14 @@ class Migration {
                                        AND `itemtype` = '$type'";
                      if ($result2 = $DB->query($query)) {
                         if ($DB->numrows($result2) == 0) {
-                           $query = "INSERT INTO `glpi_displaypreferences`
-                                             (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                       VALUES ('$type', '$newval', '".$rank++."',
-                                             '".$data['users_id']."')";
-                           $DB->query($query);
+                              $DB->insert(
+                                 'glpi_displaypreferences', [
+                                    'itemtype'  => $type,
+                                    'num'       => $newval,
+                                    'rank'      => $rank++,
+                                    'users_id'  => $data['users_id']
+                                 ]
+                              );
                         }
                      }
                   }
@@ -803,10 +787,14 @@ class Migration {
             } else { // Add for default user
                $rank = 1;
                foreach ($tab as $newval) {
-                  $query = "INSERT INTO `glpi_displaypreferences`
-                                    (`itemtype` ,`num` ,`rank` ,`users_id`)
-                              VALUES ('$type', '$newval', '".$rank++."', '0')";
-                  $DB->query($query);
+                     $DB->insert(
+                        'glpi_displaypreferences', [
+                           'itemtype'  => $type,
+                           'num'       => $newval,
+                           'rank'      => $rank++,
+                           'users_id'  => 0
+                        ]
+                     );
                }
             }
          }

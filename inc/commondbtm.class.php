@@ -464,16 +464,16 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $value;
          }
 
-         $DB->insert($this->getTable(), $params);
+         $result = $DB->insert($this->getTable(), $params);
+         if ($result) {
+            if (!isset($this->fields['id'])
+                  || is_null($this->fields['id'])
+                  || ($this->fields['id'] == 0)) {
+               $this->fields['id'] = $DB->insert_id();
+            }
 
-         if (!isset($this->fields['id'])
-               || is_null($this->fields['id'])
-               || ($this->fields['id'] == 0)) {
-            $this->fields['id'] = $DB->insert_id();
+            return $this->fields['id'];
          }
-
-         return $this->fields['id'];
-
       }
       return false;
    }
@@ -488,7 +488,7 @@ class CommonDBTM extends CommonGLPI {
       global $DB,$CFG_GLPI;
 
       if ($this->maybeDeleted()) {
-         $params = [':is_deleted' => 0];
+         $params = ['is_deleted' => 0];
          // Auto set date_mod if exsist
          $toadd = '';
          if (isset($this->fields['date_mod'])) {
@@ -539,17 +539,21 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          // Auto set date_mod if exsist
-         $toadd = '';
+         $toadd = [];
          if (isset($this->fields['date_mod'])) {
-            $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
+            $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         $query = "UPDATE `".$this->getTable()."`
-                   SET `is_deleted`='1' $toadd
-                   WHERE `id` = '".$this->fields['id']."'";
+         $result = $DB->update(
+            $this->getTable(), [
+               'is_deleted' => 1
+            ] + $toadd, [
+               'id' => $this->fields['id']
+            ]
+         );
          $this->cleanDBonMarkDeleted();
 
-         if ($result = $DB->query($query)) {
+         if ($result) {
             return true;
          }
 

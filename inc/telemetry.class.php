@@ -433,8 +433,11 @@ class Telemetry extends CommonGLPI {
     */
    public static function enable() {
       global $DB;
-      $query = 'UPDATE glpi_crontasks SET state = 1 WHERE name=\'telemetry\'';
-      $DB->query($query);
+      $DB->update(
+         'glpi_crontasks',
+         ['state' => 1],
+         ['name' => 'telemetry']
+      );
    }
 
    /**

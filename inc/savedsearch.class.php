@@ -1064,6 +1064,7 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if ($_SESSION['glpishow_count_on_tabs']) {
+         //needs DB::update() to support fields names to get migrated
          $query = "UPDATE `". static::getTable() . "`
                    SET `last_execution_time` = '$time',
                        `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
@@ -1155,10 +1156,14 @@ class SavedSearch extends CommonDBTM {
    public function setDoCount(array $ids, $do_count) {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `do_count` = $do_count
-                WHERE `id` IN ('" . implode("', '", $ids) . "')";
-      return $DB->query($query);
+      $result = $DB->update(
+         $this->getTable(), [
+            'do_count' => $do_count
+         ], [
+            'id' => $ids
+         ]
+      );
+      return $result;
    }
 
 
@@ -1174,12 +1179,16 @@ class SavedSearch extends CommonDBTM {
    public function setEntityRecur(array $ids, $eid, $recur) {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `entities_id`= ".$eid.",
-                    `is_recursive` = ".$recur."
-                WHERE `id` IN ('" . implode("', '", $ids) . "')
-                      AND `is_private` = 0";
-      return $DB->query($query);
+      $result = $DB->udpate(
+         $this->getTable(), [
+            'entities_id'  => $eid,
+            'is_recursive' => $recur
+         ], [
+            'id'           => $ids,
+            'is_private'   => 0
+         ]
+      );
+      return $result;
    }
 
 
