@@ -236,13 +236,17 @@ switch ($_GET["type"]) {
          $values       = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"],
                                         $_GET["champ"]);
 
-         $query  = "SELECT `designation`
-                    FROM `".$device_table."`
-                    WHERE `id` = '".$_GET['id']."'";
-         $result = $DB->query($query);
+         $iterator = $DB->request([
+            'SELECT' => ['designation'],
+            'FROM'   => $device_table,
+            'WHERE'  => [
+               'id' => $_GET['id']
+            ]
+         ]);
+         $current = $iterator->next();
 
          $title  = sprintf(__('%1$s: %2$s'),
-                           $item->getTypeName(), $DB->result($result, 0, "designation"));
+                           $item->getTypeName(), $current['designation']);
       }
       break;
 

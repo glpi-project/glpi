@@ -133,15 +133,18 @@ if (isset($_POST["send"])) {
       }
    }
 
-   $query = "SELECT `name`, `id`
-             FROM `glpi_softwares`
-             WHERE `is_template` = '0'
-                   AND `is_deleted` = '0'
-                   AND (`name` LIKE '%".$_POST["NomContact"]."%' )
-             ORDER BY `name`";
-   $result = $DB->query($query);
+   $iterator = $DB->request([
+      'SELECT' => ['name', 'id'],
+      'FROM'   => 'glpi_softwares',
+      'WHERE'  => [
+         'is_template'  => 0,
+         'is_deleted'   => 0,
+         'name'         => ['LIKE', "%{$_POST['NomContact']}%"]
+      ],
+      'ORDER'  => ['name']
+   ]);
 
-   while ($ligne = $DB->fetch_assoc($result)) {
+   while ($ligne = $iterator->next()) {
       $Comp_num = $ligne['id'];
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";

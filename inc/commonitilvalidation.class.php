@@ -169,13 +169,18 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function canValidate($items_id) {
       global $DB;
 
-      $query = "SELECT `users_id_validate`
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'
-                      AND `users_id_validate` = '".Session::getLoginUserID()."'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => ['users_id_validate'],
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id    => $items_id,
+            'users_id_validate'  => Session::getLoginUserID()
+         ],
+         'START'  => 0,
+         'LIMIT'  => 1
+      ]);
 
-      if ($DB->numrows($result)) {
+      if (count($iterator) > 0) {
          return true;
       }
       return false;
@@ -548,13 +553,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getNumberValidationForTicket($items_id) {
       global $DB;
 
-      $query = "SELECT COUNT(`id`) AS 'total'
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'";
+      $row = $DB->request([
+         'FROM'   => static::getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            static::$items_id => $items_id
+         ]
+      ])->next();
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total");
+      if ($row['cpt']) {
+         return $row['cpt'];
       }
       return false;
    }
@@ -568,14 +576,17 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getNumberToValidate($users_id) {
       global $DB;
 
-      $query = "SELECT COUNT(`id`) AS 'total'
-                FROM `".static::getTable()."`
-                WHERE `status` = '".self::WAITING."'
-                      AND `users_id_validate` = '$users_id'";
+      $row = $DB->request([
+         'FROM'   => static::getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'status'             => self::WAITING,
+            'users_id_validate'  => $users_id
+         ]
+      ])->next();
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total");
+      if ($row['cpt']) {
+         return $row['cpt'];
       }
       return false;
    }
@@ -590,14 +601,17 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
 
-      $query = "SELECT COUNT(`status`) AS 'total'
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'
-                      AND `status` = '".$status."'";
+      $row = $DB->request([
+         'FROM'   => static::getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            static::$items_id => $items_id,
+            'status'          => $status
+         ]
+      ])->next();
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total");
+      if ($row['cpt']) {
+         return $row['cpt'];
       }
       return false;
    }
@@ -616,13 +630,17 @@ abstract class CommonITILValidation  extends CommonDBChild {
    static function alreadyExists($items_id, $users_id) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'
-                      AND `users_id_validate` = '".$users_id."'";
+      $iterator = $DB->request([
+         'FROM'   => static::getTable(),
+         'WHERE'  => [
+            static::$items_id    => $items_id,
+            'users_id_validate'  => $users_id
+         ],
+         'START'  => 0,
+         'LLIMIT' => 1
+      ]);
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
+      if (count($iterator) > 0) {
          return true;
       }
       return false;

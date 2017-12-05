@@ -445,11 +445,12 @@ class Cartridge extends CommonDBChild {
    static function getTotalNumber($tID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`cartridgeitems_id` = '$tID')";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $row = $DB->request([
+         'FROM'   => self::getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => ['cartridgeitems_id' => $tID]
+      ])->next();
+      return $row['cpt'];
    }
 
 
@@ -465,11 +466,12 @@ class Cartridge extends CommonDBChild {
    static function getTotalNumberForPrinter($pID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`printers_id` = '$pID')";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $row = $DB->request([
+         'FROM'   => self::getTable(),
+         'COUNT'  => 'cpt',
+         'WHERE'  => ['printers_id' => $pID]
+      ])->next();
+      return $row['cpt'];
    }
 
 
@@ -1155,23 +1157,24 @@ class Cartridge extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //Look for parameters for this entity
-      $query = "SELECT `cartridges_alert_repeat`
-                FROM `glpi_entities`
-                WHERE `id` = '$entity'";
-      $iterator = $DB->request($query);
+      $iterator = $DB->request([
+         'SELECT' => ['cartridges_alert_repeat'],
+         'FROM'   => 'glpi_entities',
+         'WHERE'  => ['id' => $entity]
+      ]);
 
       if (!$iterator->numrows()) {
          //No specific parameters defined, taking global configuration params
          return $CFG_GLPI['cartridges_alert_repeat'];
 
       } else {
-         $datas = $iterator->next();
+         $data = $iterator->next();
          //This entity uses global parameters -> return global config
-         if ($datas['cartridges_alert_repeat'] == -1) {
+         if ($data['cartridges_alert_repeat'] == -1) {
             return $CFG_GLPI['cartridges_alert_repeat'];
          }
          // ELSE Special configuration for this entity
-         return $datas['cartridges_alert_repeat'];
+         return $data['cartridges_alert_repeat'];
       }
    }
 

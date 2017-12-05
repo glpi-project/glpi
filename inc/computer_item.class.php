@@ -325,15 +325,18 @@ class Computer_Item extends CommonDBRelation{
       global $DB;
 
       if ($item->getField('id')) {
-         $query = "SELECT `id`
-                   FROM `glpi_computers_items`
-                   WHERE `itemtype` = '".$item->getType()."'
-                         AND `items_id` = '".$item->getField('id')."'";
-         $result = $DB->query($query);
+         $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [
+               'itemtype'  => $item->getType(),
+               'items_id'  => $item->getID()
+            ]
+         ]);
 
-         if ($DB->numrows($result) > 0) {
+         if (count($iterator) > 0) {
             $ok = true;
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $iterator->next()) {
                if ($this->can($data["id"], UPDATE)) {
                   $ok &= $this->delete($data);
                }
@@ -654,24 +657,27 @@ class Computer_Item extends CommonDBRelation{
          $item->update($input);
 
          // Get connect_wire for this connection
-         $query = "SELECT `glpi_computers_items`.`id`
-                   FROM `glpi_computers_items`
-                   WHERE `glpi_computers_items`.`items_id` = '".$item->fields['id']."'
-                         AND `glpi_computers_items`.`itemtype` = '".$item->getType()."'";
-         $result = $DB->query($query);
+         $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+               'items_id'  => $item->getID(),
+               'itemtype'  => $item->getType()
+            ]
+         ]);
 
-         if ($data = $DB->fetch_assoc($result)) {
-            // First one, keep the existing one
-
-            // The others = clone the existing object
-            unset($input['id']);
-            $conn = new self();
-            while ($data = $DB->fetch_assoc($result)) {
+         $first = true;
+         while ($data = $iterator->next()) {
+            if ($first) {
+               $first = false;
+               unset($input['id']);
+               $conn = new self();
+            } else {
                $temp = clone $item;
                unset($temp->fields['id']);
                if ($newID=$temp->add($temp->fields)) {
                   $conn->update(['id'       => $data['id'],
-                                      'items_id' => $newID]);
+                                 'items_id' => $newID]);
                }
             }
          }
@@ -831,16 +837,16 @@ class Computer_Item extends CommonDBRelation{
    static function cloneComputer($oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_computers_items`
-                 WHERE `computers_id` = '".$oldid."';";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => ['computers_id' => $oldid]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $conn = new Computer_Item();
          $conn->add(['computers_id' => $newid,
-                          'itemtype'     => $data["itemtype"],
-                          'items_id'     => $data["items_id"]]);
+                     'itemtype'     => $data["itemtype"],
+                     'items_id'     => $data["items_id"]]);
       }
    }
 
@@ -857,17 +863,19 @@ class Computer_Item extends CommonDBRelation{
    static function cloneItem($itemtype, $oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_computers_items`
-                 WHERE `itemtype` = '$itemtype'
-                       AND `items_id` = '".$oldid."'";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $oldid
+         ]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $conn = new self();
          $conn->add(['computers_id' => $data["computers_id"],
-                          'itemtype'     => $data["itemtype"],
-                          'items_id'     => $newid]);
+                     'itemtype'     => $data["itemtype"],
+                     'items_id'     => $newid]);
       }
    }
 

@@ -310,23 +310,26 @@ class Budget extends CommonDropdown{
          return false;
       }
 
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_infocoms`
-                WHERE `budgets_id` = '$budgets_id'
-                      AND itemtype NOT IN ('ConsumableItem', 'CartridgeItem', 'Software')
-               ORDER BY `itemtype`";
+      $iterator = $DB->request([
+         'SELECT DISTINCT' => 'itemtype',
+         'FROM'            => 'glpi_infocoms',
+         'WHERE'           => [
+            'budgets_id'   => $budgets_id,
+            'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+         ],
+         'ORDER'           => 'itemtype'
+      ]);
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $number = count($iterator);
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='4'>";
-      if ($DB->numrows($result) == 0) {
+      if ($number == 0) {
          echo __('No associated item');
       } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
+         echo _n('Associated item', 'Associated items', $number);
       }
       echo "</th></tr>";
 
@@ -340,8 +343,8 @@ class Budget extends CommonDropdown{
 
       $num       = 0;
       $itemtypes = [];
-      for ($i = 0; $i < $number; $i++) {
-         $itemtypes[] = $DB->result($result, $i, "itemtype");
+      while ($row = $iterator->next()) {
+         $itemtypes[] = $row['itemtype'];
       }
       $itemtypes[] = 'Contract';
       $itemtypes[] = 'Ticket';

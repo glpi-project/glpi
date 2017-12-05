@@ -39,15 +39,19 @@ include ('../inc/includes.php');
 Session::checkRight("link", READ);
 
 if (isset($_GET["lID"])) {
-   $query = "SELECT `glpi_links`.`id`, `glpi_links`.`link`, `glpi_links`.`data`
-             FROM `glpi_links`
-             WHERE `glpi_links`.`id` = '".$_GET["lID"]."'";
-
+   $iterator = $DB->request([
+      'SELECT' => ['id', 'link', 'data']
+      'FROM'   => 'glpi_links',
+      'WHERE'  => [
+         'id' => $_GET['lID']
+      ]
+   ]);
    $result = $DB->query($query);
 
-   if ($DB->numrows($result) == 1) {
-      $file = $DB->result($result, 0, "data");
-      $link = $DB->result($result, 0, "link");
+   if (count($iterator) == 1) {
+      $current = $iterator->next();
+      $file = $current['data'];
+      $link = $current['link'];
 
       if ($item = getItemForItemtype($_GET["itemtype"])) {
          if ($item->getFromDB($_GET["id"])) {
