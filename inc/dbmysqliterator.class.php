@@ -53,16 +53,43 @@ class DBmysqlIterator implements Iterator, Countable {
    /**
     * Constructor
     *
-    * @param DBmysql      $dbconnexion Database Connnexion (must be a CommonDBTM object)
+    * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+    *
+    * @return void
+    */
+   function __construct ($dbconnexion) {
+      $this->conn = $dbconnexion;
+   }
+
+   /**
+    * Executes the query
+    *
+    * @param string|array $table       Table name (optional when $crit have FROM entry)
+    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
+    * @param boolean      $debug       To log the request (default false)
+    *
+    * @return DBmysqlIterator
+    */
+   function execute ($table, $crit = "", $debug = false) {
+      $this->buildQuery($table, $crit, $debug);
+      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+      return $this;
+   }
+
+   /**
+    * Builds the query
+    *
     * @param string|array $table       Table name (optional when $crit have FROM entry)
     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
     * @param boolean      $debug       To log the request (default false)
     *
     * @return void
     */
-   function __construct ($dbconnexion, $table, $crit = "", $debug = false) {
+   function buildQuery ($table, $crit = "", $debug = false) {
+      $this->sql = null;
+      $this->res = false;
+      $this->parameters = [];
 
-      $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
@@ -271,7 +298,6 @@ class DBmysqlIterator implements Iterator, Countable {
       if ($debug) {
          Toolbox::logDebug("Generated query:", $this->getSql());
       }
-      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
    }
 
 
@@ -285,13 +311,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    private static function quoteName($name) {
-      if (strpos($name, '.')) {
-         $n = explode('.', $name, 2);
-         $table = self::quoteName($n[0]);
-         $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
-         return "$table.$field";
-      }
-      return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
+      return DB::quoteName($name);
    }
 
 
@@ -325,7 +345,7 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @return string
     */
-   private function analyseCrit ($crit, $bool = "AND") {
+   public function analyseCrit ($crit, $bool = "AND") {
       static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
 
       if (!is_array($crit)) {

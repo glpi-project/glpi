@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Changes
+- Added `DB::insert()`, `DB::update()` and `DB::delete()` to replace raw SQL queries
 - `CommonITILObject::showMassiveSolutionForm()` now takes a `CommonITILObject` as argument
 - `Profileuser::getUserProfiles` filter parameter is now an array
 

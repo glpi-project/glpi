@@ -231,7 +231,7 @@ class DBmysql {
       $res = @$this->dbh->prepare($query);
       if (!$res) {
          // no translation for error logs
-         $error = "  *** MySQL prepare error:\n  SQL: ".addslashes($query)."\n  Error: ".
+         $error = "  *** MySQL prepare error:\n  SQL: ".$query."\n  Error: ".
                    $this->dbh->error."\n";
          $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
 
@@ -539,7 +539,9 @@ class DBmysql {
     * @return DBmysqlIterator
     */
    public function request ($tableorsql, $crit = "", $debug = false) {
-      return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
+      $iterator = new DBmysqlIterator($this);
+      $iterator->execute($tableorsql, $crit, $debug);
+      return $iterator;
    }
 
     /**
@@ -709,8 +711,8 @@ class DBmysql {
             $row = $DB->fetch_array($result);
             if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
                $crashed_tables[] = ['table'    => $row[0],
-                                         'Msg_type' => $row['Msg_type'],
-                                         'Msg_text' => $row['Msg_text']];
+                                    'Msg_type' => $row['Msg_type'],
+                                    'Msg_text' => $row['Msg_text']];
             }
          }
       }
@@ -775,5 +777,214 @@ class DBmysql {
     */
    public function disableTableCaching() {
       $this->cache_disabled = true;
+   }
+
+   /**
+    * Quote field name
+    *
+    * @since 9.3
+    *
+    * @param string $name of field to quote (or table.field)
+    *
+    * @return string
+    */
+   public static function quoteName($name) {
+      if (strpos($name, '.')) {
+         $n = explode('.', $name, 2);
+         $table = self::quoteName($n[0]);
+         $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
+         return "$table.$field";
+      }
+      return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
+   }
+
+   /**
+    * Quote value for insert/update
+    *
+    * @param mixed $value Value
+    *
+    * @return mixed
+    */
+   public static function quoteValue($value) {
+      if ($value === null || $value === 'NULL' || $value === 'null') {
+         $value = 'NULL';
+      } else {
+         //phone numbers may start with '+' and will be considered as numeric
+         $value = "'$value'";
+      }
+      return $value;
+   }
+
+   /**
+    * Builds an insert statement
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params Query parameters ([field name => field value)
+    *
+    * @return string
+    */
+   public function buildInsert($table, $params) {
+      $query = "INSERT INTO " . self::quoteName($table) . "(";
+
+      $fields = [];
+      foreach ($params as $key => &$value) {
+         $fields[] = $this->quoteName($key);
+         $value = $this->quoteValue($value);
+      }
+
+      $query .= implode(', ', $fields);
+      $query .= ") VALUES (";
+      $query .= implode(", ", $params);
+      $query .= ")";
+
+      return $query;
+   }
+
+   /**
+    * Insert a row in the database
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params Query parameters ([field name => field value)
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function insert($table, $params) {
+      $result = $this->query(
+         $this->buildInsert($table, $params)
+      );
+      return $result;
+   }
+
+   /**
+    * Insert a row in the database
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params  Query parameters ([field name => field value)
+    * @param string $message Explaination of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function insertOrDie($table, $params, $message = '') {
+      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+      $insert = $this->buildInsert($table, $params);
+      $res = $this->query($insert)
+             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
+                            $message, $insert, $this->error()));
+      return $res;
+   }
+
+   /**
+    * Builds an update statement
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params Query parameters ([field name => field value)
+    * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+    *
+    * @return string
+    */
+   public function buildUpdate($table, &$params, $where) {
+
+      if (!count($where)) {
+         throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
+      }
+
+      $query  = "UPDATE ". self::quoteName($table) ." SET ";
+
+      foreach ($params as $field => $value) {
+         $query .= self::quoteName($field) . " = ".$this->quoteValue($value).", ";
+      }
+      $query = rtrim($query, ', ');
+
+      $it = new DBmysqlIterator($this);
+      $query .= " WHERE " . $it->analyseCrit($where);
+
+      return $query;
+   }
+
+   /**
+    * Update a row in the database
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params Query parameters ([:field name => field value)
+    * @param array  $where  WHERE clause
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function update($table, $params, $where) {
+      $query = $this->buildUpdate($table, $params, $where);
+      $result = $this->query($query);
+      return $result;
+   }
+
+   /**
+    * Update a row in the database
+    *
+    * @since 9.3
+    *
+    * @param string $table   Table name
+    * @param array  $params  Query parameters ([:field name => field value)
+    * @param array  $where   WHERE clause
+    * @param string $message Explaination of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function updateOrDie($table, $params, $where, $message = '') {
+      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+      $update = $this->buildUpdate($table, $params, $where);
+      $res = $this->query($update)
+             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
+                            $message, $update, $this->error()));
+      return $res;
+   }
+
+   /**
+    * Builds a delete statement
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $params Query parameters ([field name => field value)
+    * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+    *
+    * @return string
+    */
+   public function buildDelete($table, $where) {
+
+      if (!count($where)) {
+         throw new \RuntimeException('Cannot run an DELETE query without WHERE clause!');
+      }
+
+      $query  = "DELETE FROM ". self::quoteName($table);
+
+      $it = new DBmysqlIterator($this);
+      $query .= " WHERE " . $it->analyseCrit($where);
+
+      return $query;
+   }
+
+   /**
+    * Delete rows in the database
+    *
+    * @since 9.3
+    *
+    * @param string $table  Table name
+    * @param array  $where  WHERE clause
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   public function delete($table, $where) {
+      $query = $this->buildDelete($table, $where);
+      $result = $this->query($query);
+      return $result;
    }
 }
