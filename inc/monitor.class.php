@@ -42,6 +42,7 @@ if (!defined('GLPI_ROOT')) {
  * Monitor Class
 **/
 class Monitor extends CommonDBTM {
+   use DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -196,6 +197,8 @@ class Monitor extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_monitor`"]);
       echo "</td></tr>";
+
+      $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";

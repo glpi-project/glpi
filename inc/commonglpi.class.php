@@ -856,9 +856,9 @@ class CommonGLPI {
          echo Toolbox::substr($glpilisttitle, 0, 100)."...";
          echo "</a></td>";
 
-         $name = $this->getTypeName(1);
+         $name = '';
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-            $name = sprintf(__('%1$s - %2$s'), $name, $this->getName());
+            $name = $this->getName();
             if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
             }
@@ -909,10 +909,8 @@ class CommonGLPI {
                 __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
-         // echo "</ul></div>";
          // End pager
          echo "</tr></table></div>";
-         // echo "<div class='sep'></div>";
       }
    }
 

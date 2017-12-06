@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
  * Peripheral Class
 **/
 class Peripheral extends CommonDBTM {
+   use DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -192,6 +193,8 @@ class Peripheral extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_peripheral`"]);
       echo "</td></tr>\n";
+
+      $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>\n";
