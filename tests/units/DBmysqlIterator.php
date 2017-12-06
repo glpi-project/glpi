@@ -38,10 +38,15 @@ use DbTestCase;
 
 class DBmysqlIterator extends DbTestCase {
 
+   private $it;
+
+   public function beforeTestMethod($method) {
+      $this->it = new \DBmysqlIterator(null);
+   }
 
    public function testQuery() {
       $req = 'SELECT Something FROM Somewhere';
-      $it = new \DBmysqlIterator(null, $req);
+      $it = $this->it->execute($req);
       $this->string($it->getSql())->isIdenticalTo($req);
    }
 
@@ -62,13 +67,13 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testOnlyTable() {
 
-      $it = new \DBmysqlIterator(null, 'foo');
+      $it = $this->it->execute('foo');
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, '`foo`');
+      $it = $this->it->execute('`foo`');
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, ['foo', '`bar`']);
+      $it = $this->it->execute(['foo', '`bar`']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar`');
    }
 
@@ -79,7 +84,7 @@ class DBmysqlIterator extends DbTestCase {
    public function testNoTableWithWhere() {
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, '', ['foo' => 1]);
+            $it = $this->it->execute('', ['foo' => 1]);
             $this->string($it->getSql())->isIdenticalTo('SELECT * WHERE `foo` = 1');
          }
       )->error()
@@ -95,7 +100,7 @@ class DBmysqlIterator extends DbTestCase {
    public function testNoTableWithoutWhere() {
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, '');
+            $it = $this->it->execute('');
             $this->string($it->getSql())->isIdenticalTo('SELECT *');
          }
       )->error()
@@ -111,7 +116,7 @@ class DBmysqlIterator extends DbTestCase {
    public function testNoTableWithoutWhereBis() {
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, ['FROM' => []]);
+            $it = $this->it->execute(['FROM' => []]);
             $this->string('SELECT *', $it->getSql(), 'No table');
          }
       )->error()
@@ -126,7 +131,7 @@ class DBmysqlIterator extends DbTestCase {
       $it = null;
       $this->exception(
          function () use (&$it) {
-            $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+            $it = $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
          }
       )->message
          ->contains('From DBmysqlIterator');
@@ -134,64 +139,64 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testFields() {
-      $it = new \DBmysqlIterator(null, 'foo', ['DISTINCT FIELDS' => 'bar']);
+      $it = $this->it->execute('foo', ['DISTINCT FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT DISTINCT `bar` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => 'bar']);
+      $it = $this->it->execute('foo', ['FIELDS' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => ['bar', '`baz`']]);
+      $it = $this->it->execute('foo', ['FIELDS' => ['bar', '`baz`']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `bar`, `baz` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => ['b' => 'bar']]);
+      $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`']]);
+      $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
+      $it = $this->it->execute('foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `a`.`bar`, `a`.`baz` FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, ['foo', 'bar'], ['FIELDS' => ['foo' => ['*']]]);
+      $it = $this->it->execute(['foo', 'bar'], ['FIELDS' => ['foo' => ['*']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.* FROM `foo`, `bar`');
 
-      $it = new \DBmysqlIterator(null, ['foo', 'bar'], ['FIELDS' => ['foo.*']]);
+      $it = $this->it->execute(['foo', 'bar'], ['FIELDS' => ['foo.*']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT `foo`.* FROM `foo`, `bar`');
    }
 
 
    public function testOrder() {
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar']);
+      $it = $this->it->execute('foo', ['ORDER' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => '`baz`']);
+      $it = $this->it->execute('foo', ['ORDER' => '`baz`']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `baz`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar ASC']);
+      $it = $this->it->execute('foo', ['ORDER' => 'bar ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` ASC');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar DESC']);
+      $it = $this->it->execute('foo', ['ORDER' => 'bar DESC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
+      $it = $this->it->execute('foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar, baz ASC']);
+      $it = $this->it->execute('foo', ['ORDER' => 'bar, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['ORDER' => 'bar DESC, baz ASC']);
+      $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
    }
 
 
    public function testCount() {
-      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt']);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'SELECT DISTINCT' => 'bar']);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(DISTINCT `bar`) AS cpt FROM `foo`');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
+      $it = $this->it->execute('foo', ['COUNT' => 'cpt', 'FIELDS' => ['name', 'version']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT COUNT(*) AS cpt, `name`, `version` FROM `foo`');
    }
 
@@ -199,34 +204,34 @@ class DBmysqlIterator extends DbTestCase {
    public function testJoins() {
       $this->exception(
          function () {
-            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+            $it = $this->it->execute('foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
             $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
          }
       )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
       $this->exception(
          function () {
-            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
+            $it = $this->it->execute('foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
             $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
          }
       )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
       $this->exception(
          function () {
-            $it = new \DBmysqlIterator(null, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
+            $it = $this->it->execute('foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
             $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)');
          }
       )->message->contains('"JOIN" is deprecated, please use "LEFT JOIN" instead');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $it = $this->it->execute('foo', ['LEFT JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` INNER JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)');
 
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, 'foo', ['LEFT JOIN' => 'bar']);
+            $it = $this->it->execute('foo', ['LEFT JOIN' => 'bar']);
          }
       )->error()
          ->withType(E_USER_ERROR)
@@ -235,7 +240,7 @@ class DBmysqlIterator extends DbTestCase {
 
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, 'foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
+            $it = $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
          }
       )->error()
          ->withType(E_USER_ERROR)
@@ -245,84 +250,90 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testOperators() {
-      $it = new \DBmysqlIterator(null, 'foo', ['a' => 1]);
+      $it = $this->it->execute('foo', ['a' => 1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = 1');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['a' => ['=', 1]]);
+      $it = $this->it->execute('foo', ['a' => ['=', 1]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = 1');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['a' => ['>', 1]]);
+      $it = $this->it->execute('foo', ['a' => ['>', 1]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` > 1');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['a' => ['LIKE', '%bar%']]);
+      $it = $this->it->execute('foo', ['a' => ['LIKE', '%bar%']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
+      $it = $this->it->execute('foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['a' => ['NOT LIKE', '%bar%']]);
+      $it = $this->it->execute('foo', ['a' => ['NOT LIKE', '%bar%']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'');
+
+      $it = $this->it->execute('foo', ['a' => ['<>', 1]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` <> 1');
+
+      $it = $this->it->execute('foo', ['a' => ['&', 1]]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & 1');
    }
 
 
    public function testWhere() {
-      $it = new \DBmysqlIterator(null, 'foo', 'id=1');
+      $it = $this->it->execute('foo', 'id=1');
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE id=1');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['WHERE' => ['bar' => null]]);
+      $it = $this->it->execute('foo', ['WHERE' => ['bar' => null]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => null]);
+      $it = $this->it->execute('foo', ['bar' => null]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['`bar`' => null]);
+      $it = $this->it->execute('foo', ['`bar`' => null]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => 1]);
+      $it = $this->it->execute('foo', ['bar' => 1]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = 1');
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => [1, 2, 4]]);
+      $it = $this->it->execute('foo', ['bar' => [1, 2, 4]]);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN (1, 2, 4)");
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => ['a', 'b', 'c']]);
+      $it = $this->it->execute('foo', ['bar' => ['a', 'b', 'c']]);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')");
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => 'val']);
+      $it = $this->it->execute('foo', ['bar' => 'val']);
       $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'val'");
 
-      $it = new \DBmysqlIterator(null, 'foo', ['bar' => '`field`']);
+      $it = $this->it->execute('foo', ['bar' => '`field`']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = `field`');
    }
 
 
    public function testFkey() {
 
-      $it = new \DBmysqlIterator(null, ['foo', 'bar'], ['FKEY' => ['id', 'fk']]);
+      $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['id', 'fk']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `id` = `fk`');
 
-      $it = new \DBmysqlIterator(null, ['foo', 'bar'], ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]);
+      $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`');
 
-      $it = new \DBmysqlIterator(null, ['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
+      $it = $this->it->execute(['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`');
    }
 
    public function testGroupBy() {
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => ['id']]);
+      $it = $this->it->execute(['foo'], ['GROUPBY' => ['id']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => 'id']);
+      $it = $this->it->execute(['foo'], ['GROUPBY' => 'id']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`');
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => ['id', 'name']]);
+      $it = $this->it->execute(['foo'], ['GROUPBY' => ['id', 'name']]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` GROUP BY `id`, `name`');
    }
 
    public function testNoFieldGroupBy() {
       $this->when(
          function () {
-            $it = new \DBmysqlIterator(null, ['foo'], ['GROUPBY' => []]);
+            $it = $this->it->execute(['foo'], ['GROUPBY' => []]);
             $this->string('SELECT * FROM `foo`', $it->getSql(), 'No group by field');
          }
       )->error()
@@ -333,40 +344,45 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testRange() {
 
-      $it = new \DBmysqlIterator(null, 'foo', ['START' => 5, 'LIMIT' => 10]);
+      $it = $this->it->execute('foo', ['START' => 5, 'LIMIT' => 10]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` LIMIT 10 OFFSET 5');
    }
 
 
    public function testLogical() {
-      $it = new \DBmysqlIterator(null, ['foo'], [['a' => 1, 'b' => 2]]);
+      $it = $this->it->execute(['foo'], [['a' => 1, 'b' => 2]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = 1 AND `b` = 2)');
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
+      $it = $this->it->execute(['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = 1 AND `b` = 2)');
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['OR' => ['a' => 1, 'b' => 2]]);
+      $it = $this->it->execute(['foo'], ['OR' => ['a' => 1, 'b' => 2]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = 1 OR `b` = 2)');
 
-      $it = new \DBmysqlIterator(null, ['foo'], ['NOT' => ['a' => 1, 'b' => 2]]);
+      $it = $this->it->execute(['foo'], ['NOT' => ['a' => 1, 'b' => 2]]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` = 1 AND `b` = 2)');
 
-      $crit = ['WHERE' => ['a'  => 1,
-                           'OR' => ['b'   => 2,
-                                    'NOT' => ['c'   => [2, 3],
-                                              'AND' => ['d' => 4,
-                                                        'e' => 5,
-                                                       ],
-                                             ],
-                                   ],
-                          ],
-              ];
+      $crit = [
+         'WHERE' => [
+            'a'  => 1,
+            'OR' => [
+               'b'   => 2,
+               'NOT' => [
+                  'c'   => [2, 3],
+                  'AND' => [
+                     'd' => 4,
+                     'e' => 5,
+                  ],
+               ],
+            ],
+         ],
+      ];
       $sql = "SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))";
-      $it = new \DBmysqlIterator(null, ['foo'], $crit);
+      $it = $this->it->execute(['foo'], $crit);
       $this->string($it->getSql())->isIdenticalTo($sql);
 
       $crit['FROM'] = 'foo';
-      $it = new \DBmysqlIterator(null, $crit);
+      $it = $this->it->execute($crit);
       $this->string($it->getSql())->isIdenticalTo($sql);
    }
 
@@ -378,7 +394,7 @@ class DBmysqlIterator extends DbTestCase {
          'WHERE'  => ['c' => 1],
       ];
       $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = 1";
-      $it = new \DBmysqlIterator(null, $req);
+      $it = $this->it->execute($req);
       $this->string($it->getSql())->isIdenticalTo($sql);
    }
 
@@ -386,7 +402,7 @@ class DBmysqlIterator extends DbTestCase {
    public function testRows() {
       global $DB;
 
-      $it = new \DBmysqlIterator(null, 'foo');
+      $it = $this->it->execute('foo');
       $this->integer($it->numrows())->isIdenticalTo(0);
       $this->integer(count($it))->isIdenticalTo(0);
       $this->boolean($it->next())->isFalse();
