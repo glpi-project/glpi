@@ -507,8 +507,12 @@ class Item_Rack extends CommonDBRelation {
       $typestable = 'glpi_' . strtolower($item->getType()).'types';
       $typesfield = strtolower($item->getType()) . 'types_id';
       $type = '';
-      if (isset($typestable, $item->fields[$typesfield])) {
-         $type = $item->fields[$typesfield];
+      if (isset($item->fields[$typesfield])) {
+         $itemtype = getItemTypeForTable($typestable);
+         $typeobj = new $itemtype;
+         if ($typeobj->getFromDB($item->fields[$typesfield])) {
+            $type = $typeobj->getName();
+         }
       }
       $name = sprintf(
          '%1$s %2$s %3$s',
