@@ -129,17 +129,14 @@ class Migration extends atoum {
                 FROM `glpi_configs`
                 WHERE `context` = \'core\'
                                               AND `name` = \'one\'',
-         2 => 'INSERT
-                   INTO `glpi_configs` (`context`,`name`,`value`) VALUES (\'core\',\'one\',\'key\')',
+         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
 
          3 => 'SELECT `glpi_configs`.*
                 FROM `glpi_configs`
                 WHERE `context` = \'core\'
                                               AND `name` = \'two\'',
 
-         4 => 'INSERT
-                   INTO `glpi_configs` (`context`,`name`,`value`) VALUES (\'core\',\'two\',\'value\')',
-
+         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
       ]);
 
       //test with context set => new keys should be inserted in correct context
@@ -158,17 +155,14 @@ class Migration extends atoum {
                 FROM `glpi_configs`
                 WHERE `context` = \'test-context\'
                                               AND `name` = \'one\'',
-         2 => 'INSERT
-                   INTO `glpi_configs` (`context`,`name`,`value`) VALUES (\'test-context\',\'one\',\'key\')',
+         2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
 
          3 => 'SELECT `glpi_configs`.*
                 FROM `glpi_configs`
                 WHERE `context` = \'test-context\'
                                               AND `name` = \'two\'',
 
-         4 => 'INSERT
-                   INTO `glpi_configs` (`context`,`name`,`value`) VALUES (\'test-context\',\'two\',\'value\')',
-
+         4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')'
       ]);
 
       $this->migration->setContext('core'); //reset
@@ -198,8 +192,7 @@ class Migration extends atoum {
                 FROM `glpi_configs`
                 WHERE `context` = \'core\'
                                               AND `name` = \'two\'',
-         1 => 'INSERT
-                   INTO `glpi_configs` (`context`,`name`,`value`) VALUES (\'core\',\'two\',\'value\')'
+         1 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
       ]);
    }
 
