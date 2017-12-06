@@ -347,6 +347,8 @@ switch ($current_version) {
    case "9.1.3":
    case "9.1.4":
    case "9.1.5":
+   case "9.1.6":
+   case "9.1.7":
    case GLPI_VERSION :
       break;
 
