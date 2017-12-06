@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
  * Network equipment Class
 **/
 class NetworkEquipment extends CommonDBTM {
+   use DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -284,6 +285,8 @@ class NetworkEquipment extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_networkequipment`"]);
       echo "</td></tr>";
+
+      $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";

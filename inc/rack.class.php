@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
  * Rack Class
 **/
 class Rack extends CommonDBTM {
+   use DCBreadcrumb;
+
    const FRONT    = 0;
    const REAR     = 1;
 

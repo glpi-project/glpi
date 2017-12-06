@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
  * Enclosure Class
 **/
 class Enclosure extends CommonDBTM {
+   use DCBreadcrumb;
+
    // From CommonDBTM
    public $dohistory                   = true;
    static $rightname                   = 'datacenter';
@@ -100,6 +102,8 @@ class Enclosure extends CommonDBTM {
          ]
       );
       echo "</td></tr>\n";
+
+      $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_locations_id$rand'>".__('Location')."</label></td>";

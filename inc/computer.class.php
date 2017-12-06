@@ -42,6 +42,7 @@ if (!defined('GLPI_ROOT')) {
  *  Computer class
 **/
 class Computer extends CommonDBTM {
+   use DCBreadcrumb;
 
    // From CommonDBTM
    public $dohistory                   = true;
@@ -384,6 +385,8 @@ class Computer extends CommonDBTM {
                             'condition' => "`is_visible_computer`",
                             'rand'      => $randDropdown]);
       echo "</td></tr>\n";
+
+      $this->showDcBreadcrumb();
 
       echo "<tr class='tab_bg_1'>";
       $randDropdown = mt_rand();
