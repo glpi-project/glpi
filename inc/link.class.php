@@ -270,6 +270,8 @@ class Link extends CommonDBTM {
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
+      // Call the plugin hook - for the custom tag
+      Plugin::doHook('link_contents', ['link' => &$link, 'item' => $item]);
 
       if (strstr($link, "[ID]")) {
          $link = str_replace("[ID]", $item->fields['id'], $link);
