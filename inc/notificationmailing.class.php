@@ -34,8 +34,6 @@
 * @brief
 */
 
-use PHPMailer\PHPMailer\PHPMailer;
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -69,11 +67,7 @@ class NotificationMailing implements NotificationInterface {
    static function isUserAddressValid($address, $options = ['checkdns'=>false]) {
       //drop sanitize...
       $address = Toolbox::stripslashes_deep($address);
-      $isValid = PHPMailer::ValidateAddress($address);
-      if (!$isValid && Toolbox::endsWith($address, '@localhost')) {
-         //since phpmailer6, @localhost address are no longer valid...
-         $isValid = PHPMailer::ValidateAddress($address . '.me');
-      }
+      $isValid = GLPIMailer::ValidateAddress($address);
 
       $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
       if ($checkdns) {

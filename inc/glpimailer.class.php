@@ -35,6 +35,7 @@
 */
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -98,6 +99,15 @@ class GLPIMailer extends PHPMailer {
             );
          };
       }
+   }
+
+   public static function validateAddress($address, $patternselect = null) {
+      $isValid = parent::validateAddress($address, $patternselect);
+      if (!$isValid && Toolbox::endsWith($address, '@localhost')) {
+         //since phpmailer6, @localhost address are no longer valid...
+         $isValid = parent::ValidateAddress($address . '.me');
+      }
+      return $isValid;
    }
 
    public function setLanguage($langcode = 'en', $lang_path = '') {
