@@ -100,4 +100,13 @@ class GLPIMailer extends PHPMailer {
       }
    }
 
+   public function setLanguage($langcode = 'en', $lang_path = '') {
+      if ($lang_path == '') {
+         $local_path = dirname(Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'))  . '/language/';
+         if (is_dir($local_path)) {
+            $lang_path = $local_path;
+         }
+      }
+      parent::setLanguage($langcode, $lang_path);
+   }
 }
