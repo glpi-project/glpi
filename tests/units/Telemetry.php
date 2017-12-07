@@ -180,9 +180,14 @@ class Telemetry extends DbTestCase {
    }
 
    public function testGrabOsInfos() {
+      $distro = '';
+      if (file_exists('/etc/redhat-release')) {
+         $distro = preg_replace('/\s+$/S', '', file_get_contents('/etc/redhat-release'));
+      }
+
       $expected = [
          'family'       => php_uname('s'),
-         'distribution' => '',
+         'distribution' => $distro,
          'version'      => php_uname('r')
       ];
 
