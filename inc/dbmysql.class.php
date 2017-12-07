@@ -826,7 +826,7 @@ class DBmysql {
     * @return string
     */
    public function buildInsert($table, $params) {
-      $query = "INSERT INTO " . self::quoteName($table) . "(";
+      $query = "INSERT INTO " . self::quoteName($table) . " (";
 
       $fields = [];
       foreach ($params as $key => &$value) {
@@ -890,7 +890,7 @@ class DBmysql {
     *
     * @return string
     */
-   public function buildUpdate($table, &$params, $where) {
+   public function buildUpdate($table, $params, $where) {
 
       if (!count($where)) {
          throw new \RuntimeException('Cannot run an UPDATE query without WHERE clause!');
