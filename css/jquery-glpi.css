@@ -186,6 +186,7 @@ html .ui-autocomplete {
    max-width: 500px;
    word-break: break-all;
    font-size: 11px;
+   margin-right: .5em;
 }
 
 .select2-search--dropdown .select2-search__field {
