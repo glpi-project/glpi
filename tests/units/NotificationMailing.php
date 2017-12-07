@@ -101,16 +101,4 @@ class NotificationMailing extends DbTestCase {
             'mode'                     => 'mailing'
          ]);
    }
-
-   public function testPhpMailerLang() {
-      $mailer = new \PHPMailer();
-
-      $mailer->setLanguage();
-      $tr = $mailer->getTranslations();
-      $this->string($tr['empty_message'])->isIdenticalTo('Message body empty');
-
-      $mailer->setLanguage('fr');
-      $tr = $mailer->getTranslations();
-      $this->string($tr['empty_message'])->isIdenticalTo('Corps du message vide.');
-   }
 }
