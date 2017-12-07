@@ -38,6 +38,14 @@ use \DbTestCase;
 
 class GLPIMailer extends DbTestCase {
 
+   public function testValidateAddress() {
+      $mailer = new \GLPIMailer;
+
+      $this->boolean($mailer->validateAddress('user'))->isFalse();
+      $this->boolean($mailer->validateAddress('user@localhost'))->isTrue();
+      $this->boolean($mailer->validateAddress('user@localhost.dot'))->isTrue();
+   }
+
    public function testPhpMailerLang() {
       $mailer = new \GLPIMailer;
 
