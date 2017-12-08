@@ -270,6 +270,8 @@ class Link extends CommonDBTM {
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
+      // Call the plugin hook - for the custom tag
+      Plugin::doHook('link_contents', ['link' => &$link, 'item' => $item]);
 
       if (strstr($link, "[ID]")) {
          $link = str_replace("[ID]", $item->fields['id'], $link);
@@ -541,11 +543,11 @@ class Link extends CommonDBTM {
             if ($params['open_window']) {
                $newlink .= " target='_blank'";
             }
-            if ($long){
+            if ($long) {
                $newlink       .= ">";
                $linkname       = sprintf(__('%1$s #%2$s'), $name, $i);
                $newlink       .= sprintf(__('%1$s: %2$s'), $linkname, $val);
-            }else{
+            } else {
                $newlink       .= " title='$val'>";
                $newlink       .= $name;
             }
@@ -570,11 +572,11 @@ class Link extends CommonDBTM {
             $url             = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$params['id'].
                                  "&amp;itemtype=".$item->getType().
                                  "&amp;id=".$item->getID()."&amp;rank=$key";
-            if ($long){
+            if ($long) {
                $newlink      = "<a href='$url' target='_blank'>";
                $linkname     = sprintf(__('%1$s #%2$s'), $name, $i);
                $newlink     .= sprintf(__('%1$s: %2$s'), $linkname, $val);
-            }else{
+            } else {
                $newlink      = "<a href='$url' target='_blank' title='$val'>";
                $newlink     .= $name;
             }
