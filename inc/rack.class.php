@@ -117,6 +117,8 @@ class Rack extends CommonDBTM {
       );
       echo "</td></tr>\n";
 
+      $this->showDcBreadcrumb();
+
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_locations_id$rand'>".__('Location')."</label></td>";
       echo "<td>";
