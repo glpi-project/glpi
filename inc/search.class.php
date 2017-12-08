@@ -4753,7 +4753,7 @@ class Search {
                      foreach ($data[$num] as$val) {
 
                         if (is_array($val)) {
-                           $links = Link::getAllLinksFor($item, $val);
+                           $links = Link::getAllLinksFor($item, $val, GLPI_DISPLAY_LONG_LINK_IN_SEARCH);
                            foreach ($links as $link) {
                               if ($count_display) {
                                  $out .=  self::LBBR;
