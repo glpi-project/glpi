@@ -1179,6 +1179,12 @@ class Html {
             Html::requireJs('colorpicker');
          }
 
+         if (in_array('gridstack', $jslibs)) {
+            echo Html::css('lib/gridstack/src/gridstack.css');
+            echo Html::css('lib/gridstack/src/gridstack-extra.css');
+            Html::requireJs('gridstack');
+         }
+
          if (in_array('tinymce', $jslibs)) {
             Html::requireJs('tinymce');
          }
@@ -5636,6 +5642,11 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery.hotkeys.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fuzzysearch.js';
             break;
+         case 'gridstack':
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/lodash.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.jQueryUI.js';
+            break;
          default:
             $found = false;
             if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
@@ -6359,5 +6370,56 @@ class Html {
       }
       echo "</ul>";
       echo "</div>";
+   }
+
+   /**
+    * Invert the input color (usefull for label bg on top of a background)
+    * inpiration: https://github.com/onury/invert-color
+    *
+    * @since  9.3
+    *
+    * @param  string  $hexcolor the color, you can pass hex color (prefixed or not by #)
+    *                           You can also pass a short css color (ex #FFF)
+    * @param  boolean $bw       default true, should we invert the color or return black/white function of the input color
+    * @param  boolean $sb       default true, should we soft the black/white to a dark/light grey
+    * @return string            the inverted color prefixed by #
+    */
+   static function getInvertedColor($hexcolor = "", $bw = true, $sbw = true) {
+      if (strpos($hexcolor, '#') !== false) {
+         $hexcolor = trim($hexcolor, '#');
+      }
+      // convert 3-digit hex to 6-digits.
+      if (strlen($hexcolor) == 3) {
+         $hexcolor = $hexcolor[0] + $hexcolor[0]
+                   + $hexcolor[1] + $hexcolor[1]
+                   + $hexcolor[2] + $hexcolor[2];
+      }
+      if (strlen($hexcolor) != 6) {
+         throw new Exception('Invalid HEX color.');
+      }
+
+      $r = hexdec(substr($hexcolor, 0, 2));
+      $g = hexdec(substr($hexcolor, 2, 2));
+      $b = hexdec(substr($hexcolor, 4, 2));
+
+      if ($bw) {
+         return ($r * 0.299 + $g * 0.587 + $b * 0.114) > 100
+            ? ($sbw
+               ? '#303030'
+               : '#000000')
+            : ($sbw
+               ? '#DFDFDF'
+               : '#FFFFFF');
+      }
+      // invert color components
+      $r = 255 - $r;
+      $g = 255 - $g;
+      $b = 255 - $b;
+
+      // pad each with zeros and return
+      return "#"
+         + str_pad($r, 2, '0', STR_PAD_LEFT)
+         + str_pad($g, 2, '0', STR_PAD_LEFT)
+         + str_pad($b, 2, '0', STR_PAD_LEFT);
    }
 }
