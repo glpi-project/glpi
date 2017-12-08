@@ -181,11 +181,11 @@ class Telemetry extends DbTestCase {
 
    public function testGrabOsInfos() {
       $expected = [
-         'family'       => php_uname('s'),
-         'distribution' => '',
-         'version'      => php_uname('r')
+         'family',
+         'distribution',
+         'version'
       ];
-
-      $this->array(\Telemetry::grabOsInfos())->isIdenticalTo($expected);
+      $osinfos = \Telemetry::grabOsInfos();
+      $this->array($osinfos)->hasKeys($expected);
    }
 }
