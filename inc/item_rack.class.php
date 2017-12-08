@@ -180,131 +180,141 @@ class Item_Rack extends CommonDBRelation {
       $data = [];
       //all rows; empty
       for ($i = (int)$rack->fields['number_units']; $i > 0; --$i) {
-         foreach ([Rack::FRONT, Rack::REAR] as $y) {
-            $obj[$y] = [
-               Rack::POS_LEFT    => "<div class='rack-add'><span class='tipcontent'>" . __('Insert an item here')  . "</span><i class='fa fa-plus-square'></i></div>",
-               Rack::POS_RIGHT   => "<div class='rack-add'><span class='tipcontent'>" . __('Insert an item here')  . "</span><i class='fa fa-plus-square'></i></div>"
-            ];
-         }
-         $data[$i] = $obj;
+         $data[Rack::FRONT][$i] = false;
+         $data[Rack::REAR][$i] = false;
       }
 
       //fill rows
       $outbound = [];
+      $full_items = [];
       foreach ($items as $row) {
+         $rel  = new self;
+         $rel->getFromDB($row['id']);
          $item = new $row['itemtype'];
          $item->getFromDB($row['items_id']);
+
+         $position = $row['position'];
+
+         $gs_item = [
+            'id'        => $row['id'],
+            'name'      => $item->getName(),
+            'x'         => $row['hpos'] >= 2 ? 1 : 0,
+            'y'         => $rack->fields['number_units'] - $row['position'],
+            'height'    => 1,
+            'width'     => 2,
+            'bgcolor'   => $row['bgcolor'],
+            'picture'   => null,
+            'url'       => $item->getLinkURL(),
+            'rel_url'   => $rel->getLinkURL(),
+            'rear'      => false,
+            'half_rack' => false,
+         ];
+
          $model_class = $item->getType() . 'Model';
          $modelsfield = strtolower($item->getType()) . 'models_id';
          $model = new $model_class;
          if ($model->getFromDB($item->fields[$modelsfield])) {
             $item->model = $model;
+
+            if ($item->model->fields['required_units'] > 1) {
+               $gs_item['height'] = $item->model->fields['required_units'];
+               $gs_item['y']      = $rack->fields['number_units'] + 1
+                                    - $row['position']
+                                    - $item->model->fields['required_units'];
+            }
+
+            if ($item->model->fields['is_half_rack'] == 1) {
+               $gs_item['half_rack'] = true;
+               $gs_item['width'] = 1;
+               $row['position'].= "_".$gs_item['x'];
+               if ($row['orientation'] == Rack::REAR) {
+                  $gs_item['x'] = $row['hpos'] == 2 ? 0 : 1;
+               }
+            }
          } else {
             $item->model = null;
          }
 
-         $in = false;
-         if (isset($data[$row['position']])) {
-            $in = true;
-            $required_units = 1;
-            if ($item->model != null && $item->model->fields['required_units'] > 1) {
-               $required_units = $item->model->fields['required_units'];
-            }
-            $first = true;
-            for ($i = 0; $i < $required_units; $i++) {
-               $current_position = $row['position'] + $i;
-               $hposis = [Rack::POS_LEFT, Rack::POS_RIGHT];
-               if ($item->model != null && $item->model->fields['is_half_rack'] == 1) {
-                  $hposis = [$row['hpos']];
-               }
-               if ($item->model != null && $item->model->fields['depth'] == 1) {
-                  foreach ($hposis as $hpos) {
-                     $data[$current_position][Rack::FRONT][$hpos] = self::getCell(
-                        $row,
-                        $item, [
-                           'hpos'         => $hpos,
-                           'orientation'  => Rack::FRONT,
-                           'position'     => $current_position,
-                        ]
-                     );
-                  }
-                  $chpos = 0;
-                  foreach ($hposis as $hpos) {
-                     ++$chpos;
-                     $data[$current_position][Rack::REAR][$hpos] = self::getCell(
-                        $row,
-                        $item, [
-                           'hpos'         => $hpos,
-                           'orientation'  => Rack::REAR,
-                           'position'     => $current_position,
-                        ],
-                        $first && count($hposis) === $chpos
-                     );
-                  }
-               } else {
-                  $chpos = 0;
-                  foreach ($hposis as $hpos) {
-                     ++$chpos;
-                     $data[$current_position][$row['orientation']][$hpos] = self::getCell(
-                        $row,
-                        $item, [
-                           'hpos'         => $hpos,
-                           'orientation'  => $row['orientation'],
-                           'position'     => $current_position,
-                        ],
-                        $first && count($hposis) === $chpos
-                     );
-                  }
-               }
-               $first = false;
-            }
-         }
+         if (isset($data[$row['orientation']][$position])) {
+            $data[$row['orientation']][$row['position']] = [
+               'row'     => $row,
+               'item'    => $item,
+               'gs_item' => $gs_item
+            ];
 
-         if ($in === false) {
-            $outbound[] = ['row' => $row, 'item' => $item];
+            //add to other side if needed
+            if ($item->model == null
+                || $item->model->fields['depth'] >= 1) {
+               $gs_item['rear'] = true;
+               $flip_orientation = (int) !((bool) $row['orientation']);
+               if ($gs_item['half_rack']) {
+                  $gs_item['x'] = (int) !((bool) $gs_item['x']);
+                  //$row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
+               }
+               $data[$flip_orientation][$row['position']] = [
+                  'row'     => $row,
+                  'item'    => $item,
+                  'gs_item' => $gs_item
+               ];
+            }
+         } else {
+            $outbound[] = ['row' => $row, 'item' => $item, 'gs_item' => $gs_item];
          }
-
       }
 
       if (count($outbound)) {
-         echo "<table><thead><th>";
+         echo "<table class='outbound'><thead><th>";
          echo __('Following elements are out of rack bounds');
          echo "</th></thead><tbody>";
-         echo "<tr>";
          $count = 0;
          foreach ($outbound as $out) {
-            if ($count % 10 == 0) {
-               echo "</tr><tr>";
-            }
-            echo "<td>".self::getCell($out['row'], $out['item'], true)."</td>";
+            echo "<tr><td>".self::getCell($out)."</td></tr>";
             ++$count;
          }
-         echo "</tr></tbody></table>";
+         echo "</tbody></table>";
       }
 
-      echo "<table><thead><tr>";
-      echo "<th colspan='2'>".__('Front')."</th>";
-      echo "<th colspan='2'>".__('Rear')."</th>";
-      echo "</tr></thead>";
-      $position = count($data);
-      foreach ($data as $row) {
-         echo "<tr>";
-         foreach ($row as $orientation => $items) {
-            foreach ([Rack::POS_LEFT, Rack::POS_RIGHT] as $pos) {
-               echo "<td data-hpos='$pos' data-orientation='$orientation' data-position='$position'>";
-               if (isset($items[$pos])) {
-                  echo $items[$pos];
-               }
-               echo "</td>";
-            }
-         }
-         echo "</tr>";
-         --$position;
+      echo '
+      <div class="racks_row">
+         <div class="racks_col">
+            <h2>'.__('Front').'</h2>
+            <ul class="indexes"></ul>
+            <div class="grid-stack grid-stack-2" id="grid-front">
+               <div class="racks_add"></div>';
+      foreach ($data[Rack::FRONT] as $current_item) {
+         echo self::getCell($current_item);
       }
-      echo "</table>";
+      echo '   <div class="grid-stack-item lock-bottom"
+                    data-gs-no-resize="true" data-gs-no-move="true"
+                    data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'"></div>
+            </div>
+            <ul class="indexes"></ul>
+         </div>
+         <div class="racks_col">
+            <h2>'.__('Rear').'</h2>
+            <ul class="indexes"></ul>
+            <div class="grid-stack grid-stack-2" id="grid2-rear">
+               <div class="racks_add"></div>';
+      foreach ($data[Rack::REAR] as $current_item) {
+         echo self::getCell($current_item);
+      }
+      echo '   <div class="grid-stack-item lock-bottom"
+                    data-gs-no-resize="true" data-gs-no-move="true"
+                    data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'">
+               </div>
+            </div>
+            <ul class="indexes"></ul>
+         </div>
+      </div>
+      <div class="sep"></div>';
+
       echo "</div>";
 
-      $js = "$(function(){
+      $rack_add_tip = __s('Insert an item here');
+      $ajax_url     = $CFG_GLPI['root_doc']."/ajax/item_rack.php";
+
+      $js = <<<JAVASCRIPT
+      $(function(){
          $('#sviewlist').on('click', function(){
             $('#viewlist').show();
             $('#viewgraph').hide();
@@ -318,28 +328,161 @@ class Item_Rack extends CommonDBRelation {
             $('#sviewlist').removeClass('selected');
          });
 
-         $('#viewgraph .rack-add').on('click', function(){
-            var _this = $(this);
-            if (_this.find('div').length == 0) {
-               var _orientation = _this.data('orientation');
-               var _position = _this.data('position');
-               window.location = '{$link->getFormURL()}?rack={$rack->getID()}&orientation=' + _orientation + '&unit='+_position;
+         $('.grid-stack').gridstack({
+            width: 2,
+            height: {$rack->fields['number_units']}+1,
+            cellHeight: 20,
+            verticalMargin: 1,
+            float: true,
+            disableOneColumnMode: true,
+            animate: true,
+            removeTimeout: 100,
+            disableResize: true,
+            draggable: {
+              handle: '.grid-stack-item-content',
+              appendTo: 'body',
+              containment: '.grid-stack',
+              cursor: 'move',
+              scroll: true,
             }
          });
 
-         $('#viewgraph table div').each(function() {
-            var _this = $(this);
-            _this.qtip({
-               position: { viewport: $(window) },
-               content: {
-                  text: _this.find('.tipcontent')
-               },
-               style: {
-                  classes: 'qtip-shadow qtip-bootstrap'
-               }
+         for (var i = {$rack->fields['number_units']}; i >= 1; i--) {
+            // add index number front of each rows
+            $('.indexes').append('<li>' + i + '</li>');
+
+            // append cells for adding new items
+            $('.racks_add').append('<div class=\"cell_add\"><span class="tipcontent">{$rack_add_tip}</span></div');
+         }
+
+         var lockAll = function() {
+            // lock all item (prevent pushing down elements)
+            $('.grid-stack').each(function (idx, gsEl) {
+               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
             });
+
+            // add containment to items, this avoid bad collisions on the start of the grid
+            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
+         };
+         lockAll(); // call it immediatly
+
+         // grid events
+         $('.cell_add').click(function() {
+            var index = {$rack->fields['number_units']} - $(this).index();
+            var parent_pos = $(this).parents('.racks_col').index()
+            var parent = (parent_pos == 0
+                           ? 0  // front
+                           : 1); // rear
+            var current_grid = $(this).parents('.grid-stack').data('gridstack');
+
+            window.location = '{$link->getFormURL()}?rack={$rack->getID()}&orientation=' + parent + '&unit=' + index;
          });
-      });";
+
+         var x_before_drag = 0;
+         var y_before_drag = 0;
+         var dirty = false;
+         var getHpos = function(x, is_half_rack, is_rack_rear) {
+            if (!is_half_rack) {
+               return 0;
+            } else if (x == 0 && !is_rack_rear) {
+               return 1;
+            } else if (x == 0 && is_rack_rear) {
+               return 2;
+            } else if (x == 1 && is_rack_rear) {
+               return 1;
+            } else if (x == 1 && !is_rack_rear) {
+               return 2;
+            }
+         };
+
+         // drag&drop scenario:
+         // - we start by storing position before drag
+         // - we send position to db by ajax after drag stop event
+         // - if ajax answer return a fail, we restore item to the old position
+         //   and we display a message explaning the failure
+         // - else we move the other side of asset (if exists)
+         $('.grid-stack')
+            .on('change', function(event, items) {
+               if (dirty) {
+                  return;
+               }
+               var grid = $(event.target).data('gridstack');
+               var is_rack_rear = $(grid.container).parents('.racks_col').index() != 0;
+               $.each(items, function(index, item) {
+                  var is_half_rack = item.el.hasClass('half_rack');
+                  var is_el_rear   = item.el.hasClass('rear');
+                  var new_pos      = {$rack->fields['number_units']}
+                                     - item.y
+                                     - item.height
+                                     + 1;
+                  $.post('{$ajax_url}', {
+                     id: item.id,
+                     action: 'move_item',
+                     position: new_pos,
+                     hpos: getHpos(item.x, is_half_rack, is_rack_rear),
+                  }, function(answer) {
+                     var answer = jQuery.parseJSON(answer);
+
+                     // revert to old position
+                     if (!answer.status) {
+                        dirty = true;
+                        grid.move(item.el, x_before_drag, y_before_drag);
+                        dirty = false;
+                        displayAjaxMessageAfterRedirect();
+                     } else {
+                        // move other side if needed
+                        var other_side_cls = $(item.el).hasClass('rear')
+                           ? "front"
+                           : "rear";
+                        var other_side_el = $('.grid-stack-item.'+other_side_cls+'[data-gs-id='+item.id+']')
+
+                        if (other_side_el.length) {
+                           var other_side_grid = $(other_side_el).parent().data('gridstack');
+                           new_x = item.x;
+                           new_y = item.y;
+                           if (item.width == 1) {
+                              new_x = (item.x == 0 ? 1 : 0);
+                           }
+                           dirty = true;
+                           other_side_grid.move(other_side_el, new_x, new_y);
+                           dirty = false;
+                        }
+                     }
+                  });
+               });
+            })
+            .on('dragstart', function(event, ui) {
+               var grid    = this;
+               var element = $(event.target);
+               var node    = element.data('_gridstack_node')
+
+               // store position before drag
+               x_before_drag = Number(node.x);
+               y_before_drag = Number(node.y);
+
+               // disable qtip
+               element.qtip('hide', true);
+            });
+
+         $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
+            var tipcontent = $(this).find('.tipcontent');
+            if (tipcontent.length) {
+               $(this).qtip({
+                  position: {
+                     my: 'left center',
+                     at: 'right center',
+                  },
+                  content: {
+                     text: tipcontent
+                  },
+                  style: {
+                     classes: 'qtip-shadow qtip-bootstrap rack_tipcontent'
+                  }
+               });
+            }
+         });
+      });
+JAVASCRIPT;
       echo Html::scriptBlock($js);
    }
 
@@ -441,7 +584,7 @@ class Item_Rack extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation')."</label></td>";
+      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation (front rack point of view)')."</label></td>";
       echo "<td >";
       Dropdown::showFromArray(
          'orientation', [
@@ -484,62 +627,76 @@ class Item_Rack extends CommonDBRelation {
       $this->showFormButtons($options);
    }
 
+   function post_getEmpty() {
+      $this->fields['bgcolor'] = '#69CEBA';
+   }
+
    /**
     * Get cell content
     *
-    * @param array      $row       Item/Rack row
-    * @param CommonDBTM $item      Item instance
-    * @param array      $positions Array of positions to populate data-* attributes
-    * @param boolean    $show_link Whether to show item link on cell
+    * @param mixed      cell       Rack cell (array or false)
     *
     * @return string
     */
-   private static function getCell(array $row, CommonDBTM $item, array $positions, $show_link = false) {
-      $style = '';
-      if ($row['bgcolor'] != '') {
-         $style = " style='background-color: {$row['bgcolor']};" .
-               "border-color: {$row['bgcolor']};'";
-      }
+   private static function getCell($cell) {
+      if ($cell) {
+         $item       = $cell['item'];
+         $gs_item    = $cell['gs_item'];
+         $rear       = $gs_item['rear'];
+         $back_class = $rear
+                         ? "rear"
+                         : "front";
+         $half_class = $gs_item['half_rack']
+                         ? "half_rack"
+                         : "";
+         $bg_color   = $gs_item['bgcolor'];
+         $fg_color   = Html::getInvertedColor($gs_item['bgcolor']);
+         $fg_color_s = "style='color: $fg_color'";
 
-      $itr = new self();
-      $itr->getFromDB($row['id']);
-
-      $typestable = 'glpi_' . strtolower($item->getType()).'types';
-      $typesfield = strtolower($item->getType()) . 'types_id';
-      $type = '';
-      if (isset($item->fields[$typesfield])) {
-         $itemtype = getItemTypeForTable($typestable);
-         $typeobj = new $itemtype;
-         if ($typeobj->getFromDB($item->fields[$typesfield])) {
-            $type = $typeobj->getName();
-         }
-      }
-      $name = sprintf(
-         '%1$s %2$s %3$s',
-         $type,
-         $item->getTypeName(1),
-         $item->getName()
-      );
-
-      $required_units = $item->model != null ? $item->model->fields['required_units'] : 1;
-
-      $cell = "<div
-         data-id='{$row['id']}'
-         data-hpos='{$positions['hpos']}'
-         data-position='{$positions['position']}'
-         data-orientation='{$positions['orientation']}'
-         data-u='$required_units'
-         $style>$name";
-      if ($show_link === true) {
-         $cell .= "<a href='{$item->getLinkURL()}' class='itemlink'><i class='fa fa-external-link'></i></a>";
-         $cell .= "<a href='{$itr->getLinkURL()}'><i class='fa fa-link'></i></a>";
-      }
-      $cell .= "<span class='tipcontent'>
-               <strong>".__('Name:')."</strong> {$item->getName()}<br/>
-               <strong>".__('Serial:')."</strong> {$item->getField('serial')}
-            </span>
+         return "
+         <div class='grid-stack-item $back_class $half_class'
+               data-gs-width='{$gs_item['width']}' data-gs-height='{$gs_item['height']}'
+               data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
+               data-gs-id='{$gs_item['id']}'
+               style='background-color: $bg_color; color: $fg_color'>
+            <div class='grid-stack-item-content' $fg_color_s>".
+               (!$rear
+                  ? "<a href='{$gs_item['url']}' $fg_color_s>{$gs_item['name']}</a>
+                     <a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' $fg_color_s></i></a>"
+                  : "{$gs_item['name']}")."
+               <span class='tipcontent'>
+                  <span>
+                     <label>".
+                     ($rear
+                        ? __("asset rear side")
+                        : __("asset front side"))."
+                     </label>
+                  </span>
+                  <span>
+                     <label>".__('name').":</label>".
+                     $item->fields['name']."
+                  </span>
+                  <span>
+                     <label>".__('serial').":</label>".
+                     $item->fields['serial']."
+                  </span>
+                  <span>
+                     <label>".__('Inventory number').":</label>".
+                     $item->fields['otherserial']."
+                  </span>
+                  <span>
+                     <label>".__('model').":</label>".
+                     (is_object($item->model)
+                      && isset($item->model->fields['name'])
+                        ? $item->model->fields['name']
+                        : '')."
+                  </span>
+               </span>
+            </div>
          </div>";
-      return $cell;
+      }
+
+      return false;
    }
 
    function prepareInputForAdd($input) {

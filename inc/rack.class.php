@@ -621,7 +621,7 @@ class Rack extends CommonDBTM {
       }
 
       if (count($outbound)) {
-         echo "<table><thead><th colspan='10' class='redips-mark'>";
+         echo "<table><thead><th colspan='10'>";
          echo __('Following elements are out of room bounds');
          echo "</th></thead><tbody>";
          echo "<tr>";
@@ -688,8 +688,8 @@ class Rack extends CommonDBTM {
          $('#viewgraph .rack-add').on('click', function(){
             var _this = $(this);
             if (_this.find('div').length == 0) {
-               var _x = _this.data('x');
-               var _y = _this.data('y');
+               var _x = _this.parent().data('x');
+               var _y = _this.parent().data('y');
                window.location = '{$rack->getFormURL()}?room={$room->getID()}&position=' + _x + ',' + _y;
             }
          });
