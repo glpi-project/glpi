@@ -508,7 +508,7 @@ class Link extends CommonDBTM {
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data
    **/
-   static function getAllLinksFor($item, $params = []) {
+   static function getAllLinksFor($item, $params = [], $long = true) {
       global $CFG_GLPI;
 
       $computedlinks = [];
@@ -527,7 +527,7 @@ class Link extends CommonDBTM {
          $params['name'] = $params['link'];
       }
 
-      $names = $item->generateLinkContents($params['name'], $item, $long = true);
+      $names = $item->generateLinkContents($params['name'], $item);
       $file  = trim($params['data']);
 
       if (empty($file)) {
