@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-17 14:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2017\n"
+"Last-Translator: Alexandre Delaunay <delaunay.alexandre@gmail.com>, 2017\n"
 "Language-Team: Danish (Denmark) (https://www.transifex.com/glpi/teams/1637/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2930,7 +2930,7 @@ msgstr ""
 
 #: front/report.infocom.conso.php:304 front/report.infocom.php:314
 msgid "Total value"
-msgstr ""
+msgstr "Total værdi"
 
 #: front/report.infocom.php:135 inc/budget.class.php:137
 #: inc/budget.class.php:260 inc/budget.class.php:338
@@ -3078,7 +3078,7 @@ msgstr ""
 
 #: front/savedsearch.php:41 inc/html.class.php:5886 inc/html.class.php:5895
 msgid "Saved searches"
-msgstr ""
+msgstr "Gemte søgninger"
 
 #: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5922
 #: inc/html.class.php:6200 inc/html.class.php:6201
@@ -5570,7 +5570,7 @@ msgstr "%1$s%2$s"
 
 #: inc/certificate.class.php:403
 msgid "Root CA"
-msgstr ""
+msgstr "Rod CA"
 
 #. TRANS: Number of the alternate username
 #: inc/certificate.class.php:448 inc/commondbtm.class.php:3119
@@ -5589,7 +5589,7 @@ msgstr "Alternativt brugernavns-nummer"
 
 #: inc/certificate.class.php:468 inc/certificate_item.class.php:497
 msgid "DNS name"
-msgstr ""
+msgstr "DNS navn"
 
 #: inc/certificate.class.php:482
 msgid "Empty for infinite"
@@ -5636,7 +5636,7 @@ msgstr "Tilknyt"
 
 #: inc/certificate_item.class.php:548
 msgid "Does not expire"
-msgstr ""
+msgstr "Udløber ikke"
 
 #: inc/certificatetype.class.php:49 inc/dropdown.class.php:858
 msgid "Certificate type"

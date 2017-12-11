@@ -6156,11 +6156,11 @@ msgstr "ドキュメントチケット %d"
 
 #: inc/commondbtm.class.php:4902
 msgid "You can define an autofill template"
-msgstr ""
+msgstr "自動補完テンプレートを定義できます"
 
 #: inc/commondbtm.class.php:4913
 msgid "Autofilled from template"
-msgstr ""
+msgstr "テンプレートから自動補完"
 
 #: inc/commondbvisible.class.php:154
 msgid "Add a target"
@@ -6216,11 +6216,11 @@ msgstr[0] "プロファイル"
 
 #: inc/commondropdown.class.php:147
 msgid "Product Number"
-msgstr ""
+msgstr "製品番号"
 
 #: inc/commondropdown.class.php:457
 msgid "Product number"
-msgstr ""
+msgstr "製品番号"
 
 #: inc/commondropdown.class.php:578
 msgid "You can't delete that item, because it has sub-items"
@@ -6880,11 +6880,11 @@ msgstr "完了"
 
 #: inc/commonitiltask.class.php:1270 inc/commonitiltask.class.php:1296
 msgid "By user"
-msgstr ""
+msgstr "ユーザ毎"
 
 #: inc/commonitiltask.class.php:1273 inc/commonitiltask.class.php:1299
 msgid "By group"
-msgstr ""
+msgstr "グループ毎"
 
 #: inc/commonitiltask.class.php:1290 inc/reminder.class.php:666
 msgid "Begin"
@@ -7220,7 +7220,7 @@ msgstr ""
 #: inc/computer.class.php:742 inc/networkequipment.class.php:591
 #: inc/printer.class.php:740
 msgid "Network Device"
-msgstr ""
+msgstr "ネットワーク機器"
 
 #: inc/computer.class.php:810 inc/deviceprocessor.class.php:47
 msgid "Processor"
@@ -7471,7 +7471,7 @@ msgstr "有効なライセンス"
 
 #: inc/computervirtualmachine.class.php:55
 msgid "Virtualization"
-msgstr ""
+msgstr "仮想化"
 
 #: inc/computervirtualmachine.class.php:195
 #: inc/computervirtualmachine.class.php:363
@@ -7617,7 +7617,7 @@ msgstr "ロックするアイテムの一覧"
 
 #: inc/config.class.php:426
 msgid "Auto Login"
-msgstr ""
+msgstr "自動ログイン"
 
 #: inc/config.class.php:429
 msgid "Time to allow \"Remember Me\""
@@ -7752,11 +7752,11 @@ msgstr "データベース"
 
 #: inc/config.class.php:673 install/install.php:220
 msgid "SQL user"
-msgstr ""
+msgstr "SQLユーザ"
 
 #: inc/config.class.php:675 install/install.php:222
 msgid "SQL password"
-msgstr ""
+msgstr "SQLパスワード"
 
 #: inc/config.class.php:681
 msgid "Use the slave for the search engine"
@@ -7780,7 +7780,7 @@ msgstr "常に"
 
 #: inc/config.class.php:731
 msgid "URL of the API"
-msgstr ""
+msgstr "APIのURL"
 
 #: inc/config.class.php:735
 msgid "Enable Rest API"
@@ -8007,11 +8007,11 @@ msgstr "チケットタイムラインにより置換されたタブを保持"
 
 #: inc/config.class.php:1260
 msgid "Remote access keys"
-msgstr ""
+msgstr "リモートアクセスキー"
 
 #: inc/config.class.php:1263
 msgid "Personal token"
-msgstr ""
+msgstr "パーソナルトークン"
 
 #: inc/config.class.php:1272 inc/config.class.php:1291
 #, php-format
@@ -8020,7 +8020,7 @@ msgstr "生成日 %s"
 
 #: inc/config.class.php:1282
 msgid "API token"
-msgstr ""
+msgstr "APIトークン"
 
 #: inc/config.class.php:1301
 msgid "Due date progression"
@@ -8154,7 +8154,7 @@ msgstr ""
 
 #: inc/config.class.php:1602 inc/config.class.php:1649
 msgid "Reset"
-msgstr ""
+msgstr "リセット"
 
 #: inc/config.class.php:1606 inc/config.class.php:1655
 #: inc/config.class.php:2342
@@ -8272,7 +8272,7 @@ msgstr "システム"
 
 #: inc/config.class.php:2097
 msgid "Performance"
-msgstr ""
+msgstr "パフォーマンス"
 
 #: inc/config.class.php:2188 inc/config.class.php:2201
 #: inc/config.class.php:2212
@@ -8595,7 +8595,7 @@ msgstr "サプライヤの追加"
 
 #: inc/contact.class.php:293 inc/user.class.php:2711
 msgid "Last name"
-msgstr ""
+msgstr "姓"
 
 #: inc/contact.class.php:414 inc/contract.class.php:900
 msgid "Associated supplier"
@@ -16039,7 +16039,7 @@ msgstr "アイテムのロケーション"
 
 #: inc/ruleticket.class.php:382
 msgid "Item group"
-msgstr ""
+msgstr "アイテムグループ"
 
 #: inc/ruleticket.class.php:388
 msgid "Ticket location"
@@ -16075,7 +16075,7 @@ msgstr[0] ""
 
 #: inc/savedsearch_alert.class.php:148 inc/savedsearch_alert.class.php:253
 msgid "Operator"
-msgstr ""
+msgstr "オペレータ"
 
 #: inc/savedsearch_alert.class.php:149
 msgid ""
@@ -16085,11 +16085,11 @@ msgstr ""
 
 #: inc/savedsearch_alert.class.php:207
 msgid "Notification does not exists!"
-msgstr ""
+msgstr "通知は存在しません！"
 
 #: inc/savedsearch_alert.class.php:210
 msgid "create it now"
-msgstr ""
+msgstr "すぐに作成"
 
 #: inc/savedsearch_alert.class.php:214
 msgid "Notification used:"
@@ -16098,7 +16098,7 @@ msgstr[0] ""
 
 #: inc/savedsearch_alert.class.php:236
 msgid "Add an alert"
-msgstr ""
+msgstr "アラートの追加"
 
 #: inc/savedsearch_alert.class.php:301
 msgid "Saved searches alerts"
@@ -16148,7 +16148,7 @@ msgstr ""
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:384
 #: inc/savedsearch.class.php:1139
 msgid "Auto"
-msgstr ""
+msgstr "自動"
 
 #: inc/savedsearch.class.php:225
 msgid "Last duration (ms)"
@@ -16156,19 +16156,19 @@ msgstr ""
 
 #: inc/savedsearch.class.php:233
 msgid "Count"
-msgstr ""
+msgstr "カウント"
 
 #: inc/savedsearch.class.php:242
 msgid "Default"
-msgstr ""
+msgstr "デフォルト"
 
 #: inc/savedsearch.class.php:253
 msgid "Counter"
-msgstr ""
+msgstr "カウンタ"
 
 #: inc/savedsearch.class.php:261
 msgid "Last execution date"
-msgstr ""
+msgstr "最終実行日"
 
 #: inc/savedsearch.class.php:373
 msgid "New saved search"
@@ -16176,7 +16176,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:382
 msgid "Do count"
-msgstr ""
+msgstr "カウント実行"
 
 #: inc/savedsearch.class.php:536
 msgid "Partial load of the saved search."
@@ -16189,7 +16189,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:765 inc/savedsearch.class.php:772
 msgid "Hide/Show elements"
-msgstr ""
+msgstr "エレメントの表示/非表示"
 
 #: inc/savedsearch.class.php:771
 #, php-format
@@ -16244,7 +16244,7 @@ msgstr ""
 
 #: inc/savedsearch.class.php:1337
 msgid "Notification has been created!"
-msgstr ""
+msgstr "通知が作成されました！"
 
 #: inc/search.class.php:1560 inc/search.class.php:1561
 msgid "Show the dustbin"
@@ -16336,11 +16336,11 @@ msgstr "マージ"
 
 #: inc/software.class.php:279 inc/software.class.php:532
 msgid "Technician in charge of the software"
-msgstr ""
+msgstr "ソフトウェア管理者"
 
 #: inc/software.class.php:290 inc/software.class.php:542
 msgid "Group in charge of the software"
-msgstr ""
+msgstr "ソフトウェア担当グループ"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:320 install/update.php:522
@@ -16379,15 +16379,15 @@ msgstr "マージ後に削除されたソフトウェア"
 
 #: inc/softwarelicense.class.php:82
 msgid "Please select a software for this license"
-msgstr ""
+msgstr "このライセンスのソフトウェアを選択してください"
 
 #: inc/softwarelicense.class.php:348 inc/softwarelicense.class.php:614
 msgid "Technician in charge of the license"
-msgstr ""
+msgstr "ライセンス担当者"
 
 #: inc/softwarelicense.class.php:361 inc/softwarelicense.class.php:633
 msgid "Group in charge of the license"
-msgstr ""
+msgstr "ライセンスを担当しているグループ"
 
 #: inc/softwarelicense.class.php:403 inc/softwarelicense.class.php:560
 #: inc/softwarelicense.class.php:996
@@ -16752,19 +16752,19 @@ msgstr "重複チケットの数"
 
 #: inc/ticket.class.php:3263
 msgid "Parent tickets"
-msgstr ""
+msgstr "親チケット"
 
 #: inc/ticket.class.php:3286
 msgid "Child tickets"
-msgstr ""
+msgstr "子チケット"
 
 #: inc/ticket.class.php:3308
 msgid "Number of sons tickets"
-msgstr ""
+msgstr "子チケット数"
 
 #: inc/ticket.class.php:3324
 msgid "Number of parent tickets"
-msgstr ""
+msgstr "親チケット数"
 
 #: inc/ticket.class.php:3346
 msgid "Problems"
@@ -17159,12 +17159,12 @@ msgstr "リンクする"
 #: inc/ticket_ticket.class.php:215 inc/ticket_ticket.class.php:235
 #: inc/ticket_ticket.class.php:241
 msgid "Son of"
-msgstr ""
+msgstr "次の子"
 
 #: inc/ticket_ticket.class.php:216 inc/ticket_ticket.class.php:236
 #: inc/ticket_ticket.class.php:240
 msgid "Parent of"
-msgstr ""
+msgstr "次の親"
 
 #: inc/ticket_ticket.class.php:239
 msgid "Duplicated by"
@@ -17214,12 +17214,12 @@ msgstr "GLPIは'zend.ze1_compatibility_mode = On'のオプションでは動作�
 #: inc/toolbox.class.php:888 inc/toolbox.class.php:889
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
-msgstr ""
+msgstr "PHPのバージョンは 1%s 以降です。OK!"
 
 #: inc/toolbox.class.php:896
 #, php-format
 msgid "You must install at least PHP %s."
-msgstr ""
+msgstr "PHP 1%s 以降をインストールしてください"
 
 #: inc/toolbox.class.php:901
 msgid "Sessions test"
@@ -17558,11 +17558,11 @@ msgstr ""
 
 #: inc/update.class.php:438
 msgid "Optimize done."
-msgstr ""
+msgstr "最適化終了"
 
 #: inc/user.class.php:123
 msgid "You must define a default profile to create a new user"
-msgstr ""
+msgstr "新しいユーザの作成には既定のプロファイルを定義しなければなりません"
 
 #: inc/user.class.php:536
 msgid "The login is not valid. Unable to add the user."

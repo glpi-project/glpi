@@ -8576,7 +8576,7 @@ msgstr "%1$s скорость просмотров в норме"
 
 #: inc/config.class.php:1588
 msgid "Out of memory restart"
-msgstr "Недостаточно памяти, перезагрузите"
+msgstr "Перезапуск заполненной памяти"
 
 #: inc/config.class.php:1592
 #, php-format
@@ -13185,7 +13185,7 @@ msgstr "Количество сообщений на страницу"
 
 #: inc/mailcollector.class.php:1628
 msgid "Send alarms on receiver errors"
-msgstr "Отправить уведомление о ошибка приемника"
+msgstr "Отправление уведомлений при ошибках приемника"
 
 #: inc/mailcollector.class.php:1783
 msgid ""
