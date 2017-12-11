@@ -298,7 +298,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enougth space available to place item']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -327,7 +327,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['An item already exists at this horizontal position']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -356,7 +356,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enougth space available to place item']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -393,7 +393,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enougth space available to place item']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -410,7 +410,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['Not enougth space available to place item']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -440,7 +440,7 @@ class Item_Rack extends DbTestCase {
       )->isIdenticalTo(0);
 
       $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
-         [ERROR => ['An item already exists for this orientation']]
+         [ERROR => ['Not enough space available to place item']]
       );
       $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
 
@@ -452,6 +452,72 @@ class Item_Rack extends DbTestCase {
             'itemtype'  => 'Computer',
             'items_id'  => $DEPNUX2,
             'orientation'  => $rack::REAR
+         ])
+      )->isGreaterThan(0);
+
+      //test hf full depth + 2x hf mid depth
+      $MADNUX1 = getItemByTypeName('Computer', 'MAD-NUX-1', true);
+      $MADNUX2 = getItemByTypeName('Computer', 'MAD-NUX-2', true);
+
+      //first element on unit2 (MID-NUX-1) is half racked on left; and is full depth
+      //drop second element on unit2
+      $ira->deleteByCriteria(['items_id' => $MIDNUX2], 1);
+
+      $ira->getEmpty();
+      $this->integer(
+         (int)$ira->add([
+            'racks_id'  => $rack->getID(),
+            'position'  => 2,
+            'itemtype'  => 'Computer',
+            'items_id'  => $MADNUX1,
+            'orientation'  => $rack::REAR,
+            'hpos'      => $rack::POS_LEFT
+         ])
+      )->isIdenticalTo(0);
+
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
+         [ERROR => ['Not enough space available to place item']]
+      );
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+
+      $ira->getEmpty();
+      $this->integer(
+         (int)$ira->add([
+            'racks_id'  => $rack->getID(),
+            'position'  => 2,
+            'itemtype'  => 'Computer',
+            'items_id'  => $MADNUX1,
+            'orientation'  => $rack::REAR,
+            'hpos'      => $rack::POS_RIGHT
+         ])
+      )->isGreaterThan(0);
+
+      $ira->getEmpty();
+      $this->integer(
+         (int)$ira->add([
+            'racks_id'  => $rack->getID(),
+            'position'  => 2,
+            'itemtype'  => 'Computer',
+            'items_id'  => $MADNUX2,
+            'orientation'  => $rack::REAR,
+            'hpos'      => $rack::POS_LEFT
+         ])
+      )->isIdenticalTo(0);
+
+      $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isIdenticalTo(
+         [ERROR => ['Not enough space available to place item']]
+      );
+      $_SESSION['MESSAGE_AFTER_REDIRECT'] = []; //reset
+
+      $ira->getEmpty();
+      $this->integer(
+         (int)$ira->add([
+            'racks_id'  => $rack->getID(),
+            'position'  => 2,
+            'itemtype'  => 'Computer',
+            'items_id'  => $MADNUX2,
+            'orientation'  => $rack::FRONT,
+            'hpos'      => $rack::POS_RIGHT
          ])
       )->isGreaterThan(0);
    }

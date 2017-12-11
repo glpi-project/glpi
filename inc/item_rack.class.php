@@ -653,25 +653,32 @@ class Item_Rack extends CommonDBRelation {
             while ($i < $required_units) {
                $current_position = $position + $i;
                if (isset($filled[$current_position])) {
-                  $width_overflow = false;
-                  $depth_overflow = false;
-                  if ($filled[$current_position]['width'] + $width > 1) {
-                     if ($depth > 0.5) {
-                        $width_overflow = true;
+                  $content_filled = $filled[$current_position];
+
+                  if ($hpos == Rack::POS_NONE || $hpos == Rack::POS_LEFT) {
+                     $d = 0;
+                     while ($d/4 < $depth) {
+                        $pos = ($orientation == Rack::REAR) ? 3 - $d : $d;
+                        $val = 1;
+                        if (isset($content_filled[Rack::POS_LEFT][$pos]) && $content_filled[Rack::POS_LEFT][$pos] != 0) {
+                           $error_detected[] = __('Not enough space available to place item');
+                           break 2;
+                        }
+                        ++$d;
                      }
-                  } else if ($filled[$current_position]['width'] <= 0.5 && $hpos == $filled[$current_position]['hpos']) {
-                     $error_detected[] = __('An item already exists at this horizontal position');
-                  }
-                  if ($filled[$current_position]['depth'] + $depth > 1) {
-                     if ($width > 0.5) {
-                        $depth_overflow = true;
-                     }
-                  } else if ($filled[$current_position]['depth'] <= 0.5 && $orientation == $filled[$current_position]['orientation']) {
-                     $error_detected[] = __('An item already exists for this orientation');
                   }
 
-                  if ($width_overflow || $depth_overflow) {
-                     $error_detected[] = __('Not enougth space available to place item');
+                  if ($hpos == Rack::POS_NONE || $hpos == Rack::POS_RIGHT) {
+                     $d = 0;
+                     while ($d/4 < $depth) {
+                        $pos = ($orientation == Rack::REAR) ? 3 - $d : $d;
+                        $val = 1;
+                        if (isset($content_filled[Rack::POS_RIGHT][$pos]) && $content_filled[Rack::POS_RIGHT][$pos] != 0) {
+                           $error_detected[] = __('Not enough space available to place item');
+                           break 2;
+                        }
+                        ++$d;
+                     }
                   }
                }
                ++$i;
