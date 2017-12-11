@@ -1,14 +1,14 @@
 /*
- * qTip2 - Pretty powerful tooltips - v2.0.1-105
+ * qTip2 - Pretty powerful tooltips - v3.0.3
  * http://qtip2.com
  *
- * Copyright (c) 2013 Craig Michael Thompson
- * Released under the MIT, GPL licenses
+ * Copyright (c) 2017 
+ * Released under the MIT licenses
  * http://jquery.org/license
  *
- * Date: Sun Jun 2 2013 02:19 UTC+0000
- * Plugins: tips modal viewport svg imagemap ie6
- * Styles: basic css3
+ * Date: Fri Sep 1 2017 07:07 EDT-0400
+ * Plugins: tips
+ * Styles: core css3
  */
 .qtip{
 	position: absolute;
@@ -18,7 +18,7 @@
 
 	max-width: 280px;
 	min-width: 50px;
-	
+
 	font-size: 10.5px;
 	line-height: 12px;
 
@@ -52,20 +52,19 @@
 	.qtip-close{
 		position: absolute;
 		right: -9px; top: -9px;
+		z-index: 11; /* Overlap .qtip-tip */
 
 		cursor: pointer;
 		outline: medium none;
 
-		border-width: 1px;
-		border-style: solid;
-		border-color: transparent;
+		border: 1px solid transparent;
 	}
 
 		.qtip-titlebar .qtip-close{
 			right: 4px; top: 50%;
 			margin-top: -9px;
 		}
-	
+
 		* html .qtip-titlebar .qtip-close{ top: 16px; } /* IE fix */
 
 		.qtip-titlebar .ui-icon,
@@ -103,9 +102,7 @@
 
 /* Default tooltip style */
 .qtip-default{
-	border-width: 1px;
-	border-style: solid;
-	border-color: #F1D031;
+	border: 1px solid #F1D031;
 
 	background-color: #FFFFA3;
 	color: #555;
@@ -120,117 +117,11 @@
 		background: #F1F1F1;
 		color: #777;
 	}
-	
+
 	.qtip-default .qtip-titlebar .qtip-close{
 		border-color: #AAA;
 		color: #111;
 	}
-
-
-
-/*! Light tooltip style */
-.qtip-light{
-	background-color: white;
-	border-color: #E2E2E2;
-	color: #454545;
-}
-
-	.qtip-light .qtip-titlebar{
-		background-color: #f1f1f1;
-	}
-
-
-/*! Dark tooltip style */
-.qtip-dark{
-	background-color: #505050;
-	border-color: #303030;
-	color: #f3f3f3;
-}
-
-	.qtip-dark .qtip-titlebar{
-		background-color: #404040;
-	}
-
-	.qtip-dark .qtip-icon{
-		border-color: #444;
-	}
-
-	.qtip-dark .qtip-titlebar .ui-state-hover{
-		border-color: #303030;
-	}
-
-
-/*! Cream tooltip style */
-.qtip-cream{
-	background-color: #FBF7AA;
-	border-color: #F9E98E;
-	color: #A27D35;
-}
-
-	.qtip-cream .qtip-titlebar{
-		background-color: #F0DE7D;
-	}
-
-	.qtip-cream .qtip-close .qtip-icon{
-		background-position: -82px 0;
-	}
-
-
-/*! Red tooltip style */
-.qtip-red{
-	background-color: #F78B83;
-	border-color: #D95252;
-	color: #912323;
-}
-
-	.qtip-red .qtip-titlebar{
-		background-color: #F06D65;
-	}
-
-	.qtip-red .qtip-close .qtip-icon{
-		background-position: -102px 0;
-	}
-
-	.qtip-red .qtip-icon{
-		border-color: #D95252;
-	}
-
-	.qtip-red .qtip-titlebar .ui-state-hover{
-		border-color: #D95252;
-	}
-
-
-/*! Green tooltip style */
-.qtip-green{
-	background-color: #CAED9E;
-	border-color: #90D93F;
-	color: #3F6219;
-}
-
-	.qtip-green .qtip-titlebar{
-		background-color: #B0DE78;
-	}
-
-	.qtip-green .qtip-close .qtip-icon{
-		background-position: -42px 0;
-	}
-
-
-/*! Blue tooltip style */
-.qtip-blue{
-	background-color: #E5F6FE;
-	border-color: #ADD9ED;
-	color: #5E99BD;
-}
-
-	.qtip-blue .qtip-titlebar{
-		background-color: #D0E9F5;
-	}
-
-	.qtip-blue .qtip-close .qtip-icon{
-		background-position: -2px 0;
-	}
-
 
 
 .qtip-shadow{
@@ -259,13 +150,13 @@
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	
+
 	-webkit-box-shadow: 0 0 3px #333;
 	-moz-box-shadow: 0 0 3px #333;
 	box-shadow: 0 0 3px #333;
 
 	color: white;
-	border-width: 0;
+	border: 0 solid transparent;
 
 	background: #4A4A4A;
 	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#4A4A4A),color-stop(100%,black));
@@ -279,11 +170,11 @@
 		background-color: #4A4A4A;
 		background-color: rgba(0,0,0,0);
 	}
-	
+
 	.qtip-youtube .qtip-content{
 		padding: .75em;
 		font: 12px arial,sans-serif;
-		
+
 		filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#4a4a4a,EndColorStr=#000000);
 		-ms-filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#4a4a4a,EndColorStr=#000000);";
 	}
@@ -362,11 +253,11 @@
 		color: white;
 		border: 0 dashed transparent;
 	}
-	
+
 	.qtip-cluetip .qtip-icon{
 		border-color: #808064;
 	}
-	
+
 	.qtip-cluetip .qtip-titlebar .ui-state-hover{
 		border-color: #696952;
 		color: #696952;
@@ -396,7 +287,7 @@
 	.qtip-tipsy .qtip-content{
 		padding: 6px 10px;
 	}
-	
+
 	.qtip-tipsy .qtip-icon{
 		border-color: #222;
 		text-shadow: none;
@@ -562,12 +453,11 @@
 }
 
 
-
 .qtip .qtip-tip{
 	margin: 0 auto;
 	overflow: hidden;
 	z-index: 10;
-	
+
 }
 
 	/* Opera bug #357 - Incorrect tip position
@@ -585,7 +475,7 @@
 		background: transparent;
 		border: 0 dashed transparent;
 	}
-	
+
 	.qtip .qtip-tip canvas{ top: 0; left: 0; }
 
 	.qtip .qtip-tip .qtip-vml{
@@ -593,31 +483,3 @@
 		display: inline-block;
 		visibility: visible;
 	}
-
-#qtip-overlay{
-	position: fixed;
-	left: -10000em;
-	top: -10000em;
-}
-
-	/* Applied to modals with show.modal.blur set to true */
-	#qtip-overlay.blurs{ cursor: pointer; }
-
-	/* Change opacity of overlay here */
-	#qtip-overlay div{
-		position: absolute;
-		left: 0; top: 0;
-		width: 100%; height: 100%;
-
-		background-color: black;
-
-		opacity: 0.7;
-		filter:alpha(opacity=70);
-		-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
-	}
-
-
-
-.qtipmodal-ie6fix{
-	position: absolute !important;
-}
