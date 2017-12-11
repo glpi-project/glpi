@@ -1163,7 +1163,7 @@ class Cartridge extends CommonDBChild {
          'WHERE'  => ['id' => $entity]
       ]);
 
-      if (!$iterator->numrows()) {
+      if (!count($iterator)) {
          //No specific parameters defined, taking global configuration params
          return $CFG_GLPI['cartridges_alert_repeat'];
 
