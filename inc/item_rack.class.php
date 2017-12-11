@@ -160,7 +160,8 @@ class Item_Rack extends CommonDBRelation {
             }
             echo "<td>" . $item->getLink() . "</td>";
             echo "<td>{$row['position']}</td>";
-            echo "<td>{$row['orientation']}</td>";
+            $txt_orientation = $row['orientation'] == Rack::FRONT ? __('Front') : __('Rear');
+            echo "<td>$txt_orientation</td>";
             echo "</tr>";
          }
          echo $header;
