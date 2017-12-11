@@ -94,8 +94,14 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
-   $options = ['id' => $_GET['id']];
+   $ajax = isset($_REQUEST['ajax']) ? true : false;
+   if (!$ajax) {
+      Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
+   }
+   $options = [
+      'id'           => $_GET['id'],
+      'withtemplate' => $_GET['withtemplate']
+   ];
    if (isset($_GET['position'])) {
       $options['position'] = $_GET['position'];
    }
@@ -103,5 +109,7 @@ if (isset($_POST["add"])) {
       $options['room'] = $_GET['room'];
    }
    $rack->display($options);
-   Html::footer();
+   if (!$ajax) {
+      Html::footer();
+   }
 }

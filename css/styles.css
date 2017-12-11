@@ -4641,6 +4641,11 @@ tr.linked-template td:not(.top) {
    display: none;
 }
 
+#viewgraph {
+   width: 98%;
+   overflow-x: auto;
+}
+
 #viewgraph table {
    width: 100%;
    table-layout: fixed
@@ -4720,66 +4725,6 @@ div#viewgraph table td div.rack-add:hover {
    cursor: pointer;
 }
 
-/*** Racks ***/
-.racks_row {
-   width: 100%;
-}
-
-.racks_col {
-   float: left;
-   margin-left: 2px;
-   text-align: center;
-   position: relative;
-   background: #4C4C4C;
-   margin-right: 40px;
-}
-
-.racks_col h2 {
-   font-size: .8em;
-   color: #959595;
-}
-
-.racks_add {
-   position: absolute;
-   display: block;
-   width: 100%;
-   z-index: 2;
-}
-
-.racks_add .cell_add {
-   box-sizing: border-box;
-   height: 20px;
-   margin-bottom: 1px;
-   width: 100%;
-   display: block;
-   opacity: 0;
-   z-index: 2;
-   position: relative;
-}
-
-.racks_add .cell_add:after {
-   content: "\f067";
-   left: 45%;
-   font-size: 1em;
-   color: grey;
-   top: 5px;
-   font-family: FontAwesome;
-   position: absolute;
-}
-
-.racks_add .cell_add:hover {
-   opacity: 1;
-   cursor: pointer;
-}
-
-.grid-stack {
-   width: 217px;
-   background: repeating-linear-gradient( #FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
-   z-index: 1;
-   border: 1px solid #D4D4D4;
-   float: left;
-}
-
 .grid-stack .grid-stack-item {
    z-index: 3;
    opacity: 1;
@@ -4787,31 +4732,18 @@ div#viewgraph table td div.rack-add:hover {
 }
 
 .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
-   color: #2c3e50;
    font-size: 11px;
    font-weight: bold;
    text-align: center;
-   border: 0 solid #44524f;
-   border-width: 0 4px;
    overflow: hidden;
-   box-shadow: 1px 1px 5px 0px #656565;
    cursor: move; /* fallback */
    cursor: -webkit-grab;
    cursor:    -moz-grab;
    cursor:         grab;
 }
 
-.grid-stack-item.rear {
-   background: repeating-linear-gradient(
-     45deg,
-     rgba(0, 0, 0, .15),
-     rgba(0, 0, 0, .15) 10px,
-     rgba(59, 59, 59, .15) 10px,
-     rgba(59, 59, 59, .15) 20px
-   );
-}
-
 .grid-stack-item:not(.lock-bottom) .grid-stack-item-content:active {
+   cursor: move; /* fallback */
    cursor: -webkit-grabbing;
    cursor:    -moz-grabbing;
    cursor:         grabbing;
@@ -4844,44 +4776,10 @@ div#viewgraph table td div.rack-add:hover {
    opacity: 1;
 }
 
-.rack_tipcontent span {
-   display: block;
-}
-
-.rack_tipcontent label {
-   font-weight: bold;
-   margin-right: 3px;
-}
-
-.grid-stack-item.lock-bottom {
-   background: #4C4C4C;
-   width: 101% !important;
-   margin: 0 -1px;
-}
-
 .grid-stack .grid-stack-item .grid-stack-item-content,
 .grid-stack .grid-stack-item .placeholder-content {
    left: 0;
    right: 0;
-}
-
-ul.indexes {
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
-   text-align: center;
-   font-size: .7em;
-   color: silver;
-   float: left;
-}
-
-ul.indexes li {
-   height: 20px;
-   width: 20px;
-   margin-bottom: 1px;
-   padding-top: 2px;
-   box-sizing: border-box;
-   line-height: 20px;
 }
 
 .grid-stack .grid-stack-placeholder > .placeholder-content {
@@ -4900,6 +4798,183 @@ div#viewgraph table.outbound td div {
 
 div#viewgraph table.outbound td div .grid-stack-item-content {
    box-shadow: none;
+}
+
+ul.indexes {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   text-align: center;
+   font-size: .7em;
+   color: silver;
+   float: left;
+}
+
+.racks_add .cell_add {
+   box-sizing: border-box;
+   display: block;
+   opacity: 0;
+   z-index: 2;
+   position: relative;
+}
+
+.racks_add .cell_add:after {
+   content: "\f067";
+   left: 45%;
+   font-size: 1em;
+   color: grey;
+   top: 5px;
+   font-family: FontAwesome;
+   position: absolute;
+}
+
+.racks_add .cell_add:hover {
+   opacity: 1;
+   cursor: pointer;
+}
+
+/*** Rack Rooms ***/
+
+.grid-room {
+   margin: 10px 0 10px 10px;
+   float: left;
+   padding: 15px 0 0 15px;
+   overflow-y: hidden;
+}
+
+.grid-room .grid-stack {
+   border: 1px solid #EEEEEE;
+   float: left;
+   border-width: 0 1px 1px 0;
+   background-size: 40px 39px;
+   background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px),
+                     linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+}
+
+.grid-room .grid-stack-item {
+}
+
+.grid-room .grid-stack-item.lock-bottom {
+   display: none;
+}
+
+.grid-room ul.indexes.indexes-x {
+   width: 100%;
+   float: none;
+   height: 15px;
+   padding-left: 15px;
+   box-sizing: border-box;
+}
+
+.grid-room ul.indexes.indexes-x li {
+   float: left;
+   width: 40px;
+}
+.grid-room ul.indexes.indexes-y {
+   width: 15px;
+}
+.grid-room ul.indexes.indexes-y li {
+   width: 10px;
+   height: 39px;
+   line-height: 40px;
+}
+
+.grid-room .racks_add {
+   margin-left: 15px;
+}
+
+.grid-room .racks_add .cell_add {
+   height: 39px;
+   width: 40px;
+   float: left;
+}
+
+.grid-room .racks_add .cell_add:after {
+   left: 15px;
+   top: 14px;
+}
+
+
+
+/*** Racks ***/
+.racks_row {
+   width: 100%;
+}
+
+.racks_col {
+   float: left;
+   margin-left: 2px;
+   text-align: center;
+   position: relative;
+   background: #4C4C4C;
+   margin-right: 40px;
+}
+
+.racks_col h2 {
+   font-size: .8em;
+   color: #959595;
+}
+
+.racks_add {
+   position: absolute;
+   display: block;
+   width: 100%;
+   z-index: 2;
+}
+
+.grid-rack .racks_add .cell_add {
+   height: 20px;
+   margin-bottom: 1px;
+   width: 100%;
+}
+
+.grid-rack {
+   width: 217px;
+   background: repeating-linear-gradient( #FFF, #FFF 21px, #F0F0F0 21px, #F0F0F0 42px);
+   z-index: 1;
+   border: 1px solid #D4D4D4;
+   float: left;
+}
+
+.grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   color: #2c3e50;
+   border: 0 solid #44524f;
+   border-width: 0 4px;
+   box-shadow: 1px 1px 5px 0px #656565;
+}
+
+.grid-rack .grid-stack-item.rear {
+   background: repeating-linear-gradient(
+     45deg,
+     rgba(0, 0, 0, .15),
+     rgba(0, 0, 0, .15) 10px,
+     rgba(59, 59, 59, .15) 10px,
+     rgba(59, 59, 59, .15) 20px
+   );
+}
+
+.rack_tipcontent span {
+   display: block;
+}
+
+.rack_tipcontent label {
+   font-weight: bold;
+   margin-right: 3px;
+}
+
+.grid-rack .grid-stack-item.lock-bottom {
+   background: #4C4C4C;
+   width: 101% !important;
+   margin: 0 -1px;
+}
+
+.racks_row ul.indexes li {
+   height: 20px;
+   width: 20px;
+   margin-bottom: 1px;
+   padding-top: 2px;
+   box-sizing: border-box;
+   line-height: 20px;
 }
 
 /** Responsive for documentation */
