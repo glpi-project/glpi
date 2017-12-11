@@ -755,9 +755,7 @@ class Rack extends CommonDBTM {
     *
     * @param string $current Current position to exclude; defaults to null
     *
-    * @return array [x => ['depth' => 1, 'orientation' => 0, 'width' => 1, 'hpos' =>0]]
-    *               orientation will not be available if depth is > 0.5; hpos will not be available
-    *               if width is = 1
+    * @return array [x => [left => [depth, depth, depth, depth]], [right => [depth, depth, depth, depth]]]
     */
    public function getFilled($itemtype = null, $items_id = null) {
       global $DB;
@@ -790,28 +788,44 @@ class Rack extends CommonDBTM {
             || $itemtype != $row['itemtype'] || $items_id != $row['items_id']
          ) {
             while (--$units >= 0) {
+               $content_filled = [
+                  self::POS_LEFT    => [0, 0, 0, 0],
+                  self::POS_RIGHT   => [0, 0, 0, 0]
+               ];
+
                if (isset($filled[$position + $units])) {
-                  $filled[$position + $units]['width'] += $width;
-                  $filled[$position + $units]['depth'] += $depth;
-                  if ($filled[$position + $units]['depth'] == 1) {
-                     unset($filled[$position + $units]['orientation']);
-                  }
-                  if ($filled[$position + $units]['width'] == 1) {
-                     unset($filled[$position + $units]['hpos']);
-                  }
-               } else {
-                  $values = [
-                     'width'  => $width,
-                     'depth'  => $depth
-                  ];
-                  if ($width <= 0.5) {
-                     $values['hpos'] = $row['hpos'];
-                  }
-                  if ($depth <= 0.5) {
-                     $values['orientation'] = $row['orientation'];
-                  }
-                  $filled[$position + $units] = $values;
+                  $content_filled = $filled[$position + $units];
                }
+
+               if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_LEFT) {
+                  $d = 0;
+                  while ($d/4 < $depth) {
+                     $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
+                     $val = 1;
+                     if (isset($content_filled[self::POS_LEFT][$pos]) && $content_filled[self::POS_LEFT][$pos] != 0) {
+                        Toolbox::logDebug('Several elements exists in rack at same place :(');
+                        $val += $content_filled[self::POS_LEFT][$pos];
+                     }
+                     $content_filled[self::POS_LEFT][$pos] = $val;
+                     ++$d;
+                  }
+               }
+
+               if ($row['hpos'] == self::POS_NONE || $row['hpos'] == self::POS_RIGHT) {
+                  $d = 0;
+                  while ($d/4 < $depth) {
+                     $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
+                     $val = 1;
+                     if (isset($content_filled[self::POS_RIGHT][$pos]) && $content_filled[self::POS_RIGHT][$pos] != 0) {
+                        Toolbox::logDebug('Several elements exists in rack at same place :(');
+                        $val += $content_filled[self::POS_RIGHT][$pos];
+                     }
+                     $content_filled[self::POS_RIGHT][$pos] = $val;
+                     ++$d;
+                  }
+               }
+
+               $filled[$position + $units] = $content_filled;
             }
          }
       }
