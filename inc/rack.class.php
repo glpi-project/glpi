@@ -498,14 +498,14 @@ class Rack extends CommonDBTM {
    static function showForRoom(DCRoom $room) {
       global $DB, $CFG_GLPI;
 
-      $ID = $room->getID();
+      $room_id = $room->getID();
       $rand = mt_rand();
 
-      if (!$room->getFromDB($ID)
-          || !$room->can($ID, READ)) {
+      if (!$room->getFromDB($room_id)
+          || !$room->can($room_id, READ)) {
          return false;
       }
-      $canedit = $room->canEdit($ID);
+      $canedit = $room->canEdit($room_id);
 
       $racks = $DB->request([
          'FROM'   => self::getTable(),
@@ -581,47 +581,41 @@ class Rack extends CommonDBTM {
          }
       }
       echo "</div>";
+
       echo "<div id='viewgraph'>";
 
       $data = [];
-      //all rows; empty
-      for ($i = 1; $i < (int)$room->fields['vis_rows'] + 1; ++$i) {
-         $obj = ['num' => $i];
-         for ($y = 1; $y < (int)$room->fields['vis_cols'] +1; ++$y) {
-            $obj["f$y"] = "<div class='rack-add'><span class='tipcontent'>" . __('Insert a rack here')  . "</span><i class='fa fa-plus-square'></i></div>";
-         }
-         $data[$i] = $obj;
-      }
+
+      $rows     = (int) $room->fields['vis_rows'];
+      $cols     = (int) $room->fields['vis_cols'];
+      $w_prct   = 100 / $cols;
+      $grid_w   = 40 * $cols;
+      $grid_h   = (39 * $rows) + 16;
+      $ajax_url = $CFG_GLPI['root_doc']."/ajax/rack.php";
 
       //fill rows
+      $cells    = [];
       $outbound = [];
-      foreach ($racks as $row) {
-         $rack->getFromResultSet($row);
+      foreach ($racks as &$item) {
+         $rack->getFromResultSet($item);
          $in = false;
-         if (preg_match('/(\d+),\s?(\d+)/', $row['position'], $position)) {
-            $x = $position[1];
-            $y = $position[2];
-            if (isset($data[$y]) && isset($data[$y]["f$x"])) {
-               $in = true;
-               $style = '';
-               if ($rack->getField('bgcolor') != '') {
-                  $style = " style='background-color:" . $rack->getField('bgcolor') . ";" .
-                     "border-color: " . $rack->getField('bgcolor') . "'";
-               }
-               $data[$y]["f$x"] = "<div data-id='{$rack->getID()}' $style>" . $rack->getName() .
-                  "<a href='{$rack->getLinkURL()}'><i class='fa fa-external-link'></i></a>".
-                  "<span class='tipcontent'><strong>".__('Name:')."</strong> {$rack->getName()}<br/>
-                  <strong>".__('Serial:')."</strong> {$rack->getField('serial')}</span></div>";
-            }
+
+         list($x, $y) = explode(',', $item['position']);
+         $item['_x'] = $x - 1;
+         $item['_y'] = $y - 1;
+
+         if ($x < $cols && $y < $rows) {
+            $in = true;
+            $cells[] = $item;
          }
 
          if ($in === false) {
-            $outbound[] = $row;
+            $outbound[] = $item;
          }
       }
 
       if (count($outbound)) {
-         echo "<table><thead><th colspan='10'>";
+         echo "<table class='outbound'><thead><th colspan='10'>";
          echo __('Following elements are out of room bounds');
          echo "</th></thead><tbody>";
          echo "<tr>";
@@ -647,31 +641,79 @@ class Rack extends CommonDBTM {
          echo "</tr></tbody></table>";
       }
 
-      echo "<table class='rooms'><thead><tr>";
-      for ($i = 0; $i < (int)$room->fields['vis_cols'] + 1; ++$i) {
-         if ($i === 0) {
-            echo "<th></th>";
-         } else {
-            echo "<th>$i</th>";
-         }
+      echo "<style>";
+      for ($i = 0; $i < $cols; $i++) {
+         $left  = $i * $w_prct;
+         $width = ($i+1) * $w_prct;
+         echo "
+         .grid-stack > .grid-stack-item[data-gs-x='$i'] { left: $left%;}
+         .grid-stack > .grid-stack-item[data-gs-width='".($i+1)."'] {
+            min-width: $width%;
+            width: $width%;
+         }";
       }
-      echo "</tr></thead>";
-      foreach ($data as $pos => $row) {
-         echo "<tr>";
-         foreach ($row as $col => $cell) {
-            $col = str_replace('f', '', $col);
-            if (is_int($cell)) {
-               echo "<th>$cell</th>";
-            } else {
-               echo "<td data-x='$col' data-y='$pos'>$cell</td>";
-            }
-         }
-         echo "</tr>";
-      }
-      echo "</table>";
-      echo "</div>";
+      echo "</style>";
 
-      $js = "$(function(){
+      echo "
+      <div class='grid-room' style='width: ".($grid_w + 16)."px; height: ".$grid_h."px'>
+      <ul class='indexes indexes-x'></ul>
+      <ul class='indexes indexes-y'></ul>
+      <div class='racks_add' style='width: ".$grid_w."px'></div>
+      <div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
+
+      foreach ($cells as $cell) {
+         if ($rack->getFromDB($cell['id'])) {
+            $bgcolor = $rack->getField('bgcolor');
+            $fgcolor = Html::getInvertedColor($bgcolor);
+            echo "<div class='grid-stack-item'
+                       data-gs-id='".$cell['id']."'
+                       data-gs-height='1'
+                       data-gs-width='1'
+                       data-gs-x='".$cell['_x']."'
+                       data-gs-y='".$cell['_y']."'>
+                  <div class='grid-stack-item-content'
+                       style='background-color: $bgcolor;
+                              color: $fgcolor;'>";
+            echo "<a href='".$rack->getLinkURL()."'
+                     style='color: $fgcolor'>".
+                     $cell['name']."</a>";
+            echo "<span class='tipcontent'>";
+            echo "<span>
+               <label>".__('name').":</label>".
+               $cell['name']."
+            </span>
+            <span>
+               <label>".__('serial').":</label>".
+               $cell['serial']."
+            </span>
+            <span>
+               <label>".__('Inventory number').":</label>".
+               $cell['otherserial']."
+            </span>";
+            echo "</span>";
+            echo "</div>"; // .grid-stack-item-content
+            echo "</div>"; // .grid-stack-item
+         }
+      }
+
+      // add a locked element to bottom to display a full grid
+      echo "<div class='grid-stack-item lock-bottom'
+                 data-gs-no-resize='true'
+                 data-gs-no-move='true'
+                 data-gs-height='1'
+                 data-gs-width='$cols'
+                 data-gs-x='0'
+                 data-gs-y='$rows'></div>";
+
+      echo "</div>"; //.grid-stack
+      echo "</div>"; //.grid-room
+      echo "<div class='sep'></div>";
+      echo "<div id='grid-dialog'></div>";
+      echo "</div>"; // #viewgraph
+
+      $rack_add_tip = __s('Insert a rack here');
+      $js = <<<JAVASCRIPT
+      $(function(){
          $('#sviewlist').on('click', function(){
             $('#viewlist').show();
             $('#viewgraph').hide();
@@ -685,28 +727,140 @@ class Rack extends CommonDBTM {
             $('#sviewlist').removeClass('selected');
          });
 
-         $('#viewgraph .rack-add').on('click', function(){
-            var _this = $(this);
-            if (_this.find('div').length == 0) {
-               var _x = _this.parent().data('x');
-               var _y = _this.parent().data('y');
-               window.location = '{$rack->getFormURL()}?room={$room->getID()}&position=' + _x + ',' + _y;
+         $('.grid-room .grid-stack').gridstack({
+            width: {$cols},
+            height: ({$rows} + 1),
+            cellHeight: 39,
+            verticalMargin: 0,
+            float: true,
+            disableOneColumnMode: true,
+            animate: true,
+            removeTimeout: 100,
+            disableResize: true,
+            draggable: {
+              handle: '.grid-stack-item-content',
+              appendTo: 'body',
+              containment: '.grid-stack',
+              cursor: 'move',
+              scroll: true,
             }
          });
 
-         $('#viewgraph table div').each(function() {
-            var _this = $(this);
-            _this.qtip({
-               position: { viewport: $(window) },
-               content: {
-                  text: _this.find('.tipcontent')
-               },
-               style: {
-                  classes: 'qtip-shadow qtip-bootstrap'
-               }
+         var lockAll = function() {
+            // lock all item (prevent pushing down elements)
+            $('.grid-stack').each(function (idx, gsEl) {
+               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
             });
+
+            // add containment to items, this avoid bad collisions on the start of the grid
+            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
+         };
+         lockAll(); // call it immediatly
+
+         // add indexes
+         for (var x = 1; x <= {$cols}; x++) {
+            $('.indexes-x').append('<li>' + x + '</li>');
+         }
+         for (var y = 1; y <= {$rows}; y++) {
+            $('.indexes-y').append('<li>' + y + '</li>');
+         }
+         // append cells for adding racks
+         for (var y = 1; y <= {$rows}; y++) {
+            for (var x = 1; x <= {$cols}; x++) {
+               $('.racks_add')
+                  .append('<div class=\"cell_add\" data-x='+x+' data-y='+y+'><span class="tipcontent">{$rack_add_tip}</span></div>');
+            }
+         }
+
+         var x_before_drag = 0;
+         var y_before_drag = 0;
+         var dirty = false;
+
+         $('.grid-stack')
+            .on('change', function(event, items) {
+               if (dirty) {
+                  return;
+               }
+               var grid = $(event.target).data('gridstack');
+
+               $.each(items, function(index, item) {
+                  $.post('{$ajax_url}', {
+                     id: item.id,
+                     dcrooms_id: {$room_id},
+                     action: 'move_rack',
+                     x: item.x + 1,
+                     y: item.y + 1,
+                  }, function(answer) {
+                     var answer = jQuery.parseJSON(answer);
+
+                     // revert to old position
+                     if (!answer.status) {
+                        dirty = true;
+                        grid.move(item.el, x_before_drag, y_before_drag);
+                        dirty = false;
+                        displayAjaxMessageAfterRedirect();
+                     }
+                  });
+               });
+            })
+            .on('dragstart', function(event, ui) {
+               var element = $(event.target);
+               var node    = element.data('_gridstack_node')
+
+               // store position before drag
+               x_before_drag = Number(node.x);
+               y_before_drag = Number(node.y);
+
+               // disable qtip
+               element.qtip('hide', true);
+            });
+
+
+         $('#viewgraph .cell_add').on('click', function(){
+            var _this = $(this);
+            if (_this.find('div').length == 0) {
+               var _x = _this.data('x');
+               var _y = _this.data('y');
+
+               $.ajax({
+                  url : "{$rack->getFormURL()}",
+                  data: {
+                     room: {$room->getID()},
+                     position: _x + ',' + _y,
+                     ajax: true
+                  },
+                  success: function(data) {
+                     $('#grid-dialog')
+                        .html(data)
+                        .dialog({
+                           modal: true,
+                           width: 'auto'
+                        });
+                  }
+               });
+            }
          });
-      });";
+
+         $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
+            var tipcontent = $(this).find('.tipcontent');
+            if (tipcontent.length) {
+               $(this).qtip({
+                  position: {
+                     my: 'left center',
+                     at: 'right center',
+                  },
+                  content: {
+                     text: tipcontent
+                  },
+                  style: {
+                     classes: 'qtip-shadow qtip-bootstrap rack_tipcontent'
+                  }
+               });
+            }
+         });
+      });
+JAVASCRIPT;
+
       echo Html::scriptBlock($js);
    }
 

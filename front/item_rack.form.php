@@ -67,13 +67,17 @@ if (isset($_GET['id'])) {
    $params['id'] = $_GET['id'];
 } else {
    $params = [
-      'racks_id'     => $_GET['rack'],
+      'racks_id'     => $_GET['racks_id'],
       'orientation'  => $_GET['orientation'],
       'position'     => $_GET['unit']
    ];
 }
+$ajax = isset($_REQUEST['ajax']) ? true : false;
 
-Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
-
+if (!$ajax) {
+   Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
+}
 $ira->display($params);
-Html::footer();
+if (!$ajax) {
+   Html::footer();
+}

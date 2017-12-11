@@ -279,7 +279,7 @@ class Item_Rack extends CommonDBRelation {
          <div class="racks_col">
             <h2>'.__('Front').'</h2>
             <ul class="indexes"></ul>
-            <div class="grid-stack grid-stack-2" id="grid-front">
+            <div class="grid-stack grid-stack-2 grid-rack" id="grid-front">
                <div class="racks_add"></div>';
       foreach ($data[Rack::FRONT] as $current_item) {
          echo self::getCell($current_item);
@@ -293,7 +293,7 @@ class Item_Rack extends CommonDBRelation {
          <div class="racks_col">
             <h2>'.__('Rear').'</h2>
             <ul class="indexes"></ul>
-            <div class="grid-stack grid-stack-2" id="grid2-rear">
+            <div class="grid-stack grid-stack-2 grid-rack" id="grid2-rear">
                <div class="racks_add"></div>';
       foreach ($data[Rack::REAR] as $current_item) {
          echo self::getCell($current_item);
@@ -307,11 +307,11 @@ class Item_Rack extends CommonDBRelation {
          </div>
       </div>
       <div class="sep"></div>';
-
+      echo "<div id='grid-dialog'></div>";
       echo "</div>";
 
       $rack_add_tip = __s('Insert an item here');
-      $ajax_url     = $CFG_GLPI['root_doc']."/ajax/item_rack.php";
+      $ajax_url     = $CFG_GLPI['root_doc']."/ajax/rack.php";
 
       $js = <<<JAVASCRIPT
       $(function(){
@@ -352,7 +352,7 @@ class Item_Rack extends CommonDBRelation {
             $('.indexes').append('<li>' + i + '</li>');
 
             // append cells for adding new items
-            $('.racks_add').append('<div class=\"cell_add\"><span class="tipcontent">{$rack_add_tip}</span></div');
+            $('.racks_add').append('<div class=\"cell_add\"><span class="tipcontent">{$rack_add_tip}</span></div>');
          }
 
          var lockAll = function() {
@@ -375,7 +375,23 @@ class Item_Rack extends CommonDBRelation {
                            : 1); // rear
             var current_grid = $(this).parents('.grid-stack').data('gridstack');
 
-            window.location = '{$link->getFormURL()}?rack={$rack->getID()}&orientation=' + parent + '&unit=' + index;
+            $.ajax({
+                  url : "{$link->getFormURL()}",
+                  data: {
+                     racks_id: {$rack->getID()},
+                     orientation: parent,
+                     unit: index,
+                     ajax: true,
+                  },
+                  success: function(data) {
+                     $('#grid-dialog')
+                        .html(data)
+                        .dialog({
+                           modal: true,
+                           width: 'auto'
+                        });
+                  }
+               });
          });
 
          var x_before_drag = 0;
@@ -608,7 +624,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_hpos$rand'>".__('Horizontal position')."</label></td>";
+      echo "<td><label for='dropdown_hpos$rand'>".__('Horizontal position (from rack point of view)')."</label></td>";
       echo "<td>";
       Dropdown::showFromArray(
          'hpos',
