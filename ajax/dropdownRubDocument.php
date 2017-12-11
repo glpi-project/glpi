@@ -53,7 +53,7 @@ if (isset($_POST["rubdoc"])) {
          'SELECT' => ['id'],
          'FROM'   => 'glpi_documents',
          'WHERE'  => [
-            'id'                    => $current_used,
+            'id'                    => $_POST['used'],
             'documentcategories_id' => (int)$_POST['rubdoc']
          ]
       ]);
