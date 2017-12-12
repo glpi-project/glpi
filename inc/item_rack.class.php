@@ -203,7 +203,8 @@ class Item_Rack extends CommonDBRelation {
             'height'    => 1,
             'width'     => 2,
             'bgcolor'   => $row['bgcolor'],
-            'picture'   => null,
+            'picture_f' => null,
+            'picture_r' => null,
             'url'       => $item->getLinkURL(),
             'rel_url'   => $rel->getLinkURL(),
             'rear'      => false,
@@ -230,6 +231,13 @@ class Item_Rack extends CommonDBRelation {
                if ($row['orientation'] == Rack::REAR) {
                   $gs_item['x'] = $row['hpos'] == 2 ? 0 : 1;
                }
+            }
+
+            if (!empty($item->model->fields['picture_front'])) {
+               $gs_item['picture_f'] = $item->model->fields['picture_front'];
+            }
+            if (!empty($item->model->fields['picture_rear'])) {
+               $gs_item['picture_r'] = $item->model->fields['picture_rear'];
             }
          } else {
             $item->model = null;
@@ -276,6 +284,11 @@ class Item_Rack extends CommonDBRelation {
 
       echo '
       <div class="racks_row">
+         <span class="mini_toggle active"
+               id="toggle_images">'.__('images').'</span>
+         <span class="mini_toggle active"
+               id="toggle_text">'.__('texts').'</span>
+         <div class="sep"></div>
          <div class="racks_col rack_side">
             <h2>'.__('Front').'</h2>
             <ul class="indexes"></ul>
@@ -329,6 +342,17 @@ class Item_Rack extends CommonDBRelation {
             $('#viewgraph').show();
             $(this).addClass('selected');
             $('#sviewlist').removeClass('selected');
+         });
+
+         $('#toggle_images').on('click', function(){
+            $('#toggle_text').toggle();
+            $(this).toggleClass('active');
+            $('#viewgraph').toggleClass('clear_picture');
+         });
+
+         $('#toggle_text').on('click', function(){
+            $(this).toggleClass('active');
+            $('#viewgraph').toggleClass('clear_text');
          });
 
          $('.grid-stack').gridstack({
@@ -756,19 +780,29 @@ JAVASCRIPT;
                          : "";
          $bg_color   = $gs_item['bgcolor'];
          $fg_color   = Html::getInvertedColor($gs_item['bgcolor']);
-         $fg_color_s = "style='color: $fg_color'";
+         $fg_color_s = "color: $fg_color;";
+         $img_class  = "";
+         $img_s      = "none";
+         if ($gs_item['picture_f'] && !$rear) {
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\") 0 0/contain;";
+            $img_class = 'with_picture';
+         }
+         if ($gs_item['picture_r'] && $rear) {
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\") 0 0/contain;";
+            $img_class = 'with_picture';
+         }
 
          return "
-         <div class='grid-stack-item $back_class $half_class'
+         <div class='grid-stack-item $back_class $half_class $img_class'
                data-gs-width='{$gs_item['width']}' data-gs-height='{$gs_item['height']}'
                data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
                data-gs-id='{$gs_item['id']}'
-               style='background-color: $bg_color; color: $fg_color'>
-            <div class='grid-stack-item-content' $fg_color_s>".
+               style='background-color: $bg_color; color: $fg_color;'>
+            <div class='grid-stack-item-content' style='$fg_color_s $img_s'>".
                (!$rear
-                  ? "<a href='{$gs_item['url']}' $fg_color_s>{$gs_item['name']}</a>
-                     <a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' $fg_color_s></i></a>"
-                  : "{$gs_item['name']}")."
+                  ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>
+                     <a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
+                  : "<span class='itemrack_name'>{$gs_item['name']}")."</span>
                <span class='tipcontent'>
                   <span>
                      <label>".

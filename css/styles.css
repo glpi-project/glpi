@@ -1401,6 +1401,10 @@ td.rotate {
    height:35px;
    border-radius: 5px;
 }
+
+img.picture_square {
+   box-shadow: 0px 1px 1px #999;
+}
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */
@@ -4642,7 +4646,7 @@ tr.linked-template td:not(.top) {
 }
 
 #viewgraph {
-   width: 98%;
+   width: calc(100% - 80px);
    overflow-x: auto;
 }
 
@@ -4725,10 +4729,40 @@ div#viewgraph table td div.rack-add:hover {
    cursor: pointer;
 }
 
+div#viewgraph .mini_toggle {
+   font-size: 11px;
+   opacity: .5;
+   cursor: pointer;
+   position: relative;
+   padding-left: 20px;
+   margin: 15px 5px;
+   float: left;
+}
+
+div#viewgraph .mini_toggle:before {
+   content: "\f204";
+   left: 0;
+   top: 0;
+   font-size: 15px;
+   font-family: FontAwesome;
+   position: absolute;
+}
+div#viewgraph .mini_toggle.active:before {
+   content: "\f205";
+}
+
+div#viewgraph .mini_toggle:hover {
+   opacity: 1
+}
+
 .grid-stack .grid-stack-item {
    z-index: 3;
    opacity: 1;
    filter: Alpha(Opacity=100)
+}
+
+.clear_picture .grid-stack .grid-stack-item .grid-stack-item-content {
+   background: none !important;
 }
 
 .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
@@ -4754,10 +4788,16 @@ div#viewgraph table td div.rack-add:hover {
    font-weight: bold;
 }
 
-.grid-stack-item-content img {
-   width: 100%;
-   height: 100%;
-   overflow: hidden;
+.clear_text:not(.clear_picture) .grid-stack .grid-stack-item .itemrack_name {
+   display: none;
+}
+
+#viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .itemrack_name {
+   background-color: rgba(255, 255, 255, .65);
+   color: #000 !important;
+}
+#viewgraph:not(.clear_picture) .with_picture .grid-stack-item-content .rel-link {
+   opacity: .6;
 }
 
 .grid-stack-item-content .rel-link {

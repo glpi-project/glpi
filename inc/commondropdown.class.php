@@ -405,6 +405,27 @@ abstract class CommonDropdown extends CommonDBTM {
                                        ['value' => $this->fields[$field['name']]]);
                break;
 
+            case 'picture' :
+               if (!empty($this->fields[$field['name']])) {
+                  echo Html::image($this->fields[$field['name']], [
+                     'style' => 'max-width: 300px; max-height: 150px;',
+                     'class' => 'picture_square'
+                  ]);
+                  echo "&nbsp;";
+                  echo Html::getCheckbox([
+                     'title' => __('Clear'),
+                     'name'  => "_blank_".$field['name']
+                  ]);
+                  echo "&nbsp;".__('Clear');
+
+               } else {
+                  echo Html::file([
+                     'name'       => $field['name'],
+                     'onlyimages' => true,
+                  ]);
+               }
+               break;
+
             case 'password':
                echo "<input type='password' name='password' value='' size='20' autocomplete='off'>";
                break;
