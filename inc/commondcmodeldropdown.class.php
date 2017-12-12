@@ -107,7 +107,72 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          ];
       }
 
+      if ($DB->fieldExists($this->getTable(), 'picture_front')) {
+         $fields[] = [
+            'name'   => 'picture_front',
+            'type'   => 'picture',
+            'label'  => __('Front picture')
+         ];
+      }
+
+      if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
+         $fields[] = [
+            'name'   => 'picture_rear',
+            'type'   => 'picture',
+            'label'  => __('Rear picture')
+         ];
+      }
+
       return $fields;
+   }
+
+   function prepareInputForAdd($input) {
+      return $this->managePictures($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      return $this->managePictures($input);
+   }
+
+   /**
+    * Add/remove front and rear pictures for models
+    * @param  array $input the form input
+    * @return array        the altered input
+    */
+   function managePictures($input) {
+      global $CFG_GLPI;
+
+      foreach (['picture_front', 'picture_rear'] as $name) {
+         if (isset($input["_blank_$name"])
+             && $input["_blank_$name"]) {
+            $input[$name] = '';
+         }
+
+         if (isset($input["_$name"])) {
+            $filename = array_shift($input["_$name"]);
+            $src      = GLPI_TMP_DIR."/".$filename;
+            $prefix   = '';
+            if (isset($input["_prefix_$name"])) {
+               $prefix = array_shift($input["_prefix_$name"]);
+            }
+            $filename = str_replace($prefix, '', $filename);
+            $dest     = GLPI_PICTURE_DIR."/".$filename;
+            $moved    = false;
+
+            if (is_file($dest)) {
+               $moved = @unlink($src);
+            } else {
+               $moved = rename($src, $dest);
+            }
+
+            if ($moved) {
+               $input[$name] = $CFG_GLPI["root_doc"].
+                               "/front/document.send.php?file=_pictures/$filename";
+            }
+         }
+      }
+
+      return $input;
    }
 
    function displaySpecificTypeField($ID, $field = []) {

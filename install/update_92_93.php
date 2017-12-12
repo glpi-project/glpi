@@ -397,6 +397,12 @@ function update92to93() {
       ], [
          'name'   => 'is_half_rack',
          'type'   => "tinyint(1) NOT NULL DEFAULT '0'"
+      ], [
+         'name'   => 'picture_front',
+         'type'   => "text"
+      ], [
+         'name'   => 'picture_rear',
+         'type'   => "text"
       ]
    ];
 
@@ -428,6 +434,8 @@ function update92to93() {
                   `power_connections` int(11) NOT NULL DEFAULT '0',
                   `power_consumption` int(11) NOT NULL DEFAULT '0',
                   `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
+                  `picture_front` text COLLATE utf8_unicode_ci,
+                  `picture_rear` text COLLATE utf8_unicode_ci,
                   `date_mod` datetime DEFAULT NULL,
                   `date_creation` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
