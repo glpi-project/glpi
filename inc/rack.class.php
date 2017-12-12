@@ -713,14 +713,14 @@ class Rack extends CommonDBTM {
 
       $rack_add_tip = __s('Insert a rack here');
       $js = <<<JAVASCRIPT
-      $(function(){
-         $('#sviewlist').on('click', function(){
+      $(function() {
+         $('#sviewlist').on('click', function() {
             $('#viewlist').show();
             $('#viewgraph').hide();
             $(this).addClass('selected');
             $('#sviewgraph').removeClass('selected');
          });
-         $('#sviewgraph').on('click', function(){
+         $('#sviewgraph').on('click', function() {
             $('#viewlist').hide();
             $('#viewgraph').show();
             $(this).addClass('selected');
@@ -728,8 +728,8 @@ class Rack extends CommonDBTM {
          });
 
          $('.grid-room .grid-stack').gridstack({
-            width: {$cols},
-            height: ({$rows} + 1),
+            width: $cols,
+            height: ($rows + 1),
             cellHeight: 39,
             verticalMargin: 0,
             float: true,
@@ -758,15 +758,15 @@ class Rack extends CommonDBTM {
          lockAll(); // call it immediatly
 
          // add indexes
-         for (var x = 1; x <= {$cols}; x++) {
+         for (var x = 1; x <= $cols; x++) {
             $('.indexes-x').append('<li>' + x + '</li>');
          }
-         for (var y = 1; y <= {$rows}; y++) {
+         for (var y = 1; y <= $rows; y++) {
             $('.indexes-y').append('<li>' + y + '</li>');
          }
          // append cells for adding racks
-         for (var y = 1; y <= {$rows}; y++) {
-            for (var x = 1; x <= {$cols}; x++) {
+         for (var y = 1; y <= $rows; y++) {
+            for (var x = 1; x <= $cols; x++) {
                $('.racks_add')
                   .append('<div class=\"cell_add\" data-x='+x+' data-y='+y+'><span class="tipcontent">{$rack_add_tip}</span></div>');
             }
@@ -786,7 +786,7 @@ class Rack extends CommonDBTM {
                $.each(items, function(index, item) {
                   $.post('{$ajax_url}', {
                      id: item.id,
-                     dcrooms_id: {$room_id},
+                     dcrooms_id: $room_id,
                      action: 'move_rack',
                      x: item.x + 1,
                      y: item.y + 1,
@@ -805,7 +805,7 @@ class Rack extends CommonDBTM {
             })
             .on('dragstart', function(event, ui) {
                var element = $(event.target);
-               var node    = element.data('_gridstack_node')
+               var node    = element.data('_gridstack_node');
 
                // store position before drag
                x_before_drag = Number(node.x);
@@ -825,7 +825,7 @@ class Rack extends CommonDBTM {
                $.ajax({
                   url : "{$rack->getFormURL()}",
                   data: {
-                     room: {$room->getID()},
+                     room: $room_id,
                      position: _x + ',' + _y,
                      ajax: true
                   },

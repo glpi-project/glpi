@@ -4902,15 +4902,18 @@ ul.indexes {
 }
 
 .racks_col {
-   float: left;
    margin-left: 2px;
-   text-align: center;
+   float: left;
    position: relative;
+}
+
+.rack_side {
+   text-align: center;
    background: #4C4C4C;
    margin-right: 40px;
 }
 
-.racks_col h2 {
+.rack_side h2 {
    font-size: .8em;
    color: #959595;
 }
@@ -4975,6 +4978,30 @@ ul.indexes {
    padding-top: 2px;
    box-sizing: border-box;
    line-height: 20px;
+}
+
+.rack_stats {
+   width: 200px;
+   border: 1px solid #E6E6E6;
+   background-color: #F3F3F3;
+   text-align: left;
+   padding: 10px 5px;
+   font-size: 11px;
+}
+
+.rack_stats h3 {
+   color: #6F6F6F;
+   margin: 0;
+   font-size: 11px;
+   font-weight: bold;
+}
+
+.rack_stats .ui-progressbar {
+   height: 13px;
+}
+.rack_stats .doaction_progress_text {
+   font-weight: normal;
+   padding: 0;
 }
 
 /** Responsive for documentation */

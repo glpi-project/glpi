@@ -81,9 +81,9 @@ class Item_Rack extends CommonDBRelation {
 
    /**
     * Print racks items
-    *
+    * @param  Rack   $rack the current rack instance
     * @return void
-   **/
+    */
    static function showItems(Rack $rack) {
       global $DB, $CFG_GLPI;
 
@@ -187,7 +187,6 @@ class Item_Rack extends CommonDBRelation {
 
       //fill rows
       $outbound = [];
-      $full_items = [];
       foreach ($items as $row) {
          $rel  = new self;
          $rel->getFromDB($row['id']);
@@ -277,7 +276,7 @@ class Item_Rack extends CommonDBRelation {
 
       echo '
       <div class="racks_row">
-         <div class="racks_col">
+         <div class="racks_col rack_side">
             <h2>'.__('Front').'</h2>
             <ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack" id="grid-front">
@@ -291,7 +290,7 @@ class Item_Rack extends CommonDBRelation {
             </div>
             <ul class="indexes"></ul>
          </div>
-         <div class="racks_col">
+         <div class="racks_col rack_side">
             <h2>'.__('Rear').'</h2>
             <ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack" id="grid2-rear">
@@ -306,23 +305,26 @@ class Item_Rack extends CommonDBRelation {
             </div>
             <ul class="indexes"></ul>
          </div>
-      </div>
-      <div class="sep"></div>';
+         <div class="racks_col">';
+      self::showStats($rack, $data);
+      echo '</div>'; // .racks_col
+      echo '</div>'; // .racks_row
+      echo '<div class="sep"></div>';
       echo "<div id='grid-dialog'></div>";
-      echo "</div>";
+      echo "</div>"; // #viewgraph
 
       $rack_add_tip = __s('Insert an item here');
       $ajax_url     = $CFG_GLPI['root_doc']."/ajax/rack.php";
 
       $js = <<<JAVASCRIPT
-      $(function(){
-         $('#sviewlist').on('click', function(){
+      $(function() {
+         $('#sviewlist').on('click', function() {
             $('#viewlist').show();
             $('#viewgraph').hide();
             $(this).addClass('selected');
             $('#sviewgraph').removeClass('selected');
          });
-         $('#sviewgraph').on('click', function(){
+         $('#sviewgraph').on('click', function() {
             $('#viewlist').hide();
             $('#viewgraph').show();
             $(this).addClass('selected');
@@ -370,7 +372,7 @@ class Item_Rack extends CommonDBRelation {
          // grid events
          $('.cell_add').click(function() {
             var index = {$rack->fields['number_units']} - $(this).index();
-            var parent_pos = $(this).parents('.racks_col').index()
+            var parent_pos = $(this).parents('.racks_col').index();
             var parent = (parent_pos == 0
                            ? 0  // front
                            : 1); // rear
@@ -379,7 +381,7 @@ class Item_Rack extends CommonDBRelation {
             $.ajax({
                   url : "{$link->getFormURL()}",
                   data: {
-                     racks_id: {$rack->getID()},
+                     racks_id: $ID,
                      orientation: parent,
                      unit: index,
                      ajax: true,
@@ -451,7 +453,7 @@ class Item_Rack extends CommonDBRelation {
                         var other_side_cls = $(item.el).hasClass('rear')
                            ? "front"
                            : "rear";
-                        var other_side_el = $('.grid-stack-item.'+other_side_cls+'[data-gs-id='+item.id+']')
+                        var other_side_el = $('.grid-stack-item.'+other_side_cls+'[data-gs-id='+item.id+']');
 
                         if (other_side_el.length) {
                            var other_side_grid = $(other_side_el).parent().data('gridstack');
@@ -471,7 +473,7 @@ class Item_Rack extends CommonDBRelation {
             .on('dragstart', function(event, ui) {
                var grid    = this;
                var element = $(event.target);
-               var node    = element.data('_gridstack_node')
+               var node    = element.data('_gridstack_node');
 
                // store position before drag
                x_before_drag = Number(node.x);
@@ -501,6 +503,92 @@ class Item_Rack extends CommonDBRelation {
       });
 JAVASCRIPT;
       echo Html::scriptBlock($js);
+   }
+
+   /**
+    * Display a mini stats block (wiehgt, power, etc) for the current rack instance
+    * @param  Rack   $rack the current rack instance
+    * @return void
+    */
+   static function showStats(Rack $rack) {
+      global $DB;
+
+      $items = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'racks_id' => $rack->getID()
+         ]
+      ]);
+
+      $weight = 0;
+      $power  = 0;
+      $units  = [
+         Rack::FRONT => array_fill(0, $rack->fields['number_units'], 0),
+         Rack::REAR  => array_fill(0, $rack->fields['number_units'], 0),
+      ];
+
+      $rel = new self;
+      while ($row = $items->next()) {
+         $rel->getFromDB($row['id']);
+
+         $item = new $row['itemtype'];
+         $item->getFromDB($row['items_id']);
+
+         $model_class = $item->getType() . 'Model';
+         $modelsfield = strtolower($item->getType()) . 'models_id';
+         $model = new $model_class;
+
+         if ($model->getFromDB($item->fields[$modelsfield])) {
+            $required_units = $model->fields['required_units'];
+
+            for ($i = 0; $i < $model->fields['required_units']; $i++) {
+               $units[$row['orientation']][$row['position'] + $i] = 1;
+               if ($model->fields['depth'] == 1) {
+                  $other_side = (int) !(bool) $row['orientation'];
+                  $units[$other_side][$row['position'] + $i] = 1;
+               }
+            }
+
+            $power += $model->fields['power_consumption'];
+            $weight += $model->fields['weight'];
+         } else {
+            $units[Rack::FRONT][$row['position']] = 1;
+            $units[Rack::REAR][$row['position']]  = 1;
+         }
+      }
+
+      $nb_units = max(
+         array_sum($units[Rack::FRONT]),
+         array_sum($units[Rack::REAR])
+      );
+
+      $space_prct  = round(100 * $nb_units / max($rack->fields['number_units'], 1));
+      $weight_prct = round(100 * $weight / max($rack->fields['max_weight'], 1));
+      $power_prct  = round(100 * $power / max($rack->fields['max_power'], 1));
+
+      echo "<div class='rack_stats'>";
+
+      echo "<h3>".__("Space")."</h3>";
+      Html::progressBar('rack_space', [
+         'create' => true,
+         'percent' => $space_prct,
+         'message' => $space_prct."%",
+      ]);
+
+      echo "<h3>".__("Weight")."</h3>";
+      Html::progressBar('rack_weight', [
+         'create' => true,
+         'percent' => $weight_prct,
+         'message' => $weight." / ".$rack->fields['max_weight']
+      ]);
+
+      echo "<h3>".__("Power")."</h3>";
+      Html::progressBar('rack_power', [
+         'create' => true,
+         'percent' => $power_prct,
+         'message' => $power." / ".$rack->fields['max_power']
+      ]);
+      echo "</div>";
    }
 
    function showForm($ID, $options = []) {
