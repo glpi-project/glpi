@@ -266,10 +266,8 @@ class Item_Rack extends CommonDBRelation {
          echo "<table class='outbound'><thead><th>";
          echo __('Following elements are out of rack bounds');
          echo "</th></thead><tbody>";
-         $count = 0;
          foreach ($outbound as $out) {
             echo "<tr><td>".self::getCell($out)."</td></tr>";
-            ++$count;
          }
          echo "</tbody></table>";
       }
@@ -739,7 +737,7 @@ JAVASCRIPT;
    /**
     * Get cell content
     *
-    * @param mixed      cell       Rack cell (array or false)
+    * @param mixed $cell Rack cell (array or false)
     *
     * @return string
     */

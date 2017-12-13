@@ -615,30 +615,14 @@ class Rack extends CommonDBTM {
       }
 
       if (count($outbound)) {
-         echo "<table class='outbound'><thead><th colspan='10'>";
+         echo "<table class='outbound'><thead><th>";
          echo __('Following elements are out of room bounds');
          echo "</th></thead><tbody>";
-         echo "<tr>";
-         $count = 0;
          foreach ($outbound as $out) {
-            if ($count % 10 == 0) {
-               echo "</tr><tr>";
-            }
             $rack->getFromResultSet($out);
-
-            $style = '';
-            if ($rack->getField('bgcolor') != '') {
-               $style = " style='background-color:" . $rack->getField('bgcolor') . ";" .
-                  "border-color: " . $rack->getField('bgcolor') . "'";
-            }
-
-            echo "<td><div data-id='{$rack->getID()}' $style>" . $rack->getName() .
-               "<a href='{$rack->getLinkURL()}'><i class='fa fa-link'></i></a>".
-               "<span class='tipcontent'><strong>".__('Name:')."</strong> {$rack->getName()}<br/>
-               <strong>".__('Serial:')."</strong> {$rack->getField('serial')}</span></div></td>";
-            ++$count;
+            echo "<tr><td>".self::getCell($rack, $out)."</td></tr>";
          }
-         echo "</tr></tbody></table>";
+         echo "</tbody></table>";
       }
 
       echo "<style>";
@@ -663,36 +647,7 @@ class Rack extends CommonDBTM {
 
       foreach ($cells as $cell) {
          if ($rack->getFromDB($cell['id'])) {
-            $bgcolor = $rack->getField('bgcolor');
-            $fgcolor = Html::getInvertedColor($bgcolor);
-            echo "<div class='grid-stack-item'
-                       data-gs-id='".$cell['id']."'
-                       data-gs-height='1'
-                       data-gs-width='1'
-                       data-gs-x='".$cell['_x']."'
-                       data-gs-y='".$cell['_y']."'>
-                  <div class='grid-stack-item-content'
-                       style='background-color: $bgcolor;
-                              color: $fgcolor;'>";
-            echo "<a href='".$rack->getLinkURL()."'
-                     style='color: $fgcolor'>".
-                     $cell['name']."</a>";
-            echo "<span class='tipcontent'>";
-            echo "<span>
-               <label>".__('name').":</label>".
-               $cell['name']."
-            </span>
-            <span>
-               <label>".__('serial').":</label>".
-               $cell['serial']."
-            </span>
-            <span>
-               <label>".__('Inventory number').":</label>".
-               $cell['otherserial']."
-            </span>";
-            echo "</span>";
-            echo "</div>"; // .grid-stack-item-content
-            echo "</div>"; // .grid-stack-item
+            echo self::getCell($rack, $cell);
          }
       }
 
@@ -993,5 +948,46 @@ JAVASCRIPT;
       }
       $this->fields['number_units'] = 42;
       return true;
+   }
+
+   /**
+    * Get cell content
+    *
+    * @param Rack  $rack Rack instance
+    * @param mixed $cell Rack cell (array or false)
+    *
+    * @return string
+    */
+   private static function getCell(Rack $rack, $cell) {
+      $bgcolor = $rack->getField('bgcolor');
+      $fgcolor = Html::getInvertedColor($bgcolor);
+      return "<div class='grid-stack-item'
+                  data-gs-id='".$cell['id']."'
+                  data-gs-height='1'
+                  data-gs-width='1'
+                  data-gs-x='".$cell['_x']."'
+                  data-gs-y='".$cell['_y']."'>
+            <div class='grid-stack-item-content'
+                  style='background-color: $bgcolor;
+                        color: $fgcolor;'>
+               <a href='".$rack->getLinkURL()."'
+                  style='color: $fgcolor'>".
+                  $cell['name']."</a>
+               <span class='tipcontent'>
+                  <span>
+                     <label>".__('name').":</label>".
+                     $cell['name']."
+                  </span>
+                  <span>
+                     <label>".__('serial').":</label>".
+                     $cell['serial']."
+                  </span>
+                  <span>
+                     <label>".__('Inventory number').":</label>".
+                     $cell['otherserial']."
+                  </span>
+               </span>
+            </div><!-- // .grid-stack-item-content -->
+         </div>"; // .grid-stack-item
    }
 }
