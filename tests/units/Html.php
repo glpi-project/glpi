@@ -324,7 +324,8 @@ class Html extends atoum {
          'ConsumableItem',
          'Phone',
          'Rack',
-         'Enclosure'
+         'Enclosure',
+         'PDU'
       ];
       $this->string($menu['assets']['title'])->isIdenticalTo('Assets');
       $this->array($menu['assets']['types'])->isIdenticalTo($expected);

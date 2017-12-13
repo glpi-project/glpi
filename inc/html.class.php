@@ -1295,7 +1295,7 @@ class Html {
       $menu['assets']['types']       = ['Computer', 'Monitor', 'Software',
                                              'NetworkEquipment', 'Peripheral', 'Printer',
                                              'CartridgeItem', 'ConsumableItem', 'Phone',
-                                             'Rack', 'Enclosure'];
+                                             'Rack', 'Enclosure', 'PDU'];
 
       $menu['helpdesk']['title']     = __('Assistance');
       $menu['helpdesk']['types']     = ['Ticket', 'Problem', 'Change',
