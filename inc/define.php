@@ -289,7 +289,7 @@ $CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'M
 $CFG_GLPI["helpdesk_visible_types"]       = ['Software'];
 
 $CFG_GLPI["networkport_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
-                                                  'Phone', 'Printer', 'Enclosure'];
+                                                  'Phone', 'Printer', 'Enclosure', 'PDU'];
 
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
 $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPortWifi' ,
@@ -427,7 +427,7 @@ $CFG_GLPI["certificate_types"]     = ['Computer',
                                       'Phone', 'Printer',
                                       'SoftwareLicense', 'User'];
 
-$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure'];
+$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU'];
 
 $CFG_GLPI['javascript'] = [
    'central'   => [

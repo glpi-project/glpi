@@ -876,7 +876,7 @@ JAVASCRIPT;
          case "Enclosure":
             $icon = "fa-th";
             break;
-         case "Pdu":
+         case "PDU":
             $icon = "fa-plug";
             break;
       }

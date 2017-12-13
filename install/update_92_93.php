@@ -499,6 +499,126 @@ function update92to93() {
       $DB->queryOrDie($query, "9.3 add table glpi_items_enclosures");
    }
 
+   if (!$DB->tableExists('glpi_pdumodels')) {
+      $query = "CREATE TABLE `glpi_pdumodels` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `weight` int(11) NOT NULL DEFAULT '0',
+                  `required_units` int(11) NOT NULL DEFAULT '0',
+                  `depth` float NOT NULL DEFAULT 0,
+                  `power_connections` int(11) NOT NULL DEFAULT '0',
+                  `power_consumption` int(11) NOT NULL DEFAULT '0',
+                  `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
+                  `picture_front` text COLLATE utf8_unicode_ci,
+                  `picture_rear` text COLLATE utf8_unicode_ci,
+                  `is_rackable` tinyint(1) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `is_rackable` (`is_rackable`),
+                  KEY `product_number` (`product_number`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 ad table glpi_pdumodels");
+   }
+
+   if (!$DB->tableExists('glpi_pdutypes')) {
+      $query = "CREATE TABLE `glpi_pdutypes` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_creation` datetime DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `name` (`name`),
+                  KEY `date_creation` (`date_creation`),
+                  KEY `date_mod` (`date_mod`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_pdutypes");
+   }
+
+   if (!$DB->tableExists('glpi_pdus')) {
+      $query = "CREATE TABLE `glpi_pdus` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `pdumodels_id` int(11) DEFAULT NULL,
+                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `pdutypes_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `pdumodels_id` (`pdumodels_id`),
+                  KEY `users_id_tech` (`users_id_tech`),
+                  KEY `group_id_tech` (`groups_id_tech`),
+                  KEY `is_template` (`is_template`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `states_id` (`states_id`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `pdutypes_id` (`pdutypes_id`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_pdus");
+   }
+
+   if (!$DB->tableExists('glpi_plugs')) {
+      $query = "CREATE TABLE `glpi_plugs` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, '9.3 add table glpi_plugs');
+   }
+
+   if (!$DB->tableExists('glpi_pdus_plugs')) {
+      $query = "CREATE TABLE `glpi_pdus_plugs` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `plugs_id` int(11) NOT NULL DEFAULT '0',
+                  `pdus_id` int(11) NOT NULL DEFAULT '0',
+                  `number_plugs` int(11) DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `plugs_id` (`plugs_id`),
+                  KEY `pdus_id` (`pdus_id`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, '9.3 add table glpi_pdus_plugs');
+   }
+
+   if (!countElementsInTable('glpi_plugs')) {
+      $plugs = ['C13', 'C15', 'C19'];
+      foreach ($plugs as $plug) {
+         $migration->addPostQuery(
+            $DB->buildInsert('glpi_plugs', ['name' => $plug])
+         );
+      }
+   }
+
    /** /Datacenters */
 
    // ************ Keep it at the end **************

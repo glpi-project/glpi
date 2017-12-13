@@ -916,6 +916,7 @@ class Dropdown {
                                                    'Device sensor models', Session::getPluralNumber()),
                   'RackModel'                => RackModel::getTypeName(Session::getPluralNumber()),
                   'EnclosureModel'           => EnclosureModel::getTypeName(Session::getPluralNumber()),
+                  'PDUModel'                 => PDUModel::getTypeName(Session::getPluralNumber()),
              ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
@@ -1039,6 +1040,9 @@ class Dropdown {
                  'SsoVariable' => _n('Field storage of the login in the HTTP request',
                                      'Fields storage of the login in the HTTP request',
                                      Session::getPluralNumber())
+             ],
+             __('Power management') => [
+               'Plug'=> Plug::getTypeName(Session::getPluralNumber())
              ]
 
          ]; //end $opt
