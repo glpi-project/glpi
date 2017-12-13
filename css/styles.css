@@ -5013,6 +5013,10 @@ ul#menu ul {
    column-gap:10px;
 }
 
+ul#menu ul li {
+   break-inside: avoid;
+}
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {
