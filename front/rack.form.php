@@ -96,7 +96,7 @@ if (isset($_POST["add"])) {
 } else {
    $ajax = isset($_REQUEST['ajax']) ? true : false;
    if (!$ajax) {
-      Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
+      Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
    }
    $options = [
       'id'           => $_GET['id'],
