@@ -1328,10 +1328,14 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
-      $rand_template = mt_rand();
-      $rand_text     = mt_rand();
-      $rand_type     = mt_rand();
-      $rand_time     = mt_rand();
+      $rand_template   = mt_rand();
+      $rand_text       = mt_rand();
+      $rand_type       = mt_rand();
+      $rand_time       = mt_rand();
+      $rand_user       = mt_rand();
+      $rand_is_private = mt_rand();
+      $rand_group      = mt_rand();
+      $rand_state      = mt_rand();
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
@@ -1409,6 +1413,12 @@ abstract class CommonITILTask  extends CommonDBTM {
                var actiontime = isNaN(parseInt(data.actiontime))
                   ? 0
                   : parseInt(data.actiontime);
+               var user_tech = isNaN(parseInt(data.users_id_tech))
+                  ? 0
+                  : parseInt(data.users_id_tech);
+               var group_tech = isNaN(parseInt(data.groups_id_tech))
+                  ? 0
+                  : parseInt(data.groups_id_tech);
 
                // set textarea content
                $("#content'.$rand_text.'").html(data.content);
@@ -1420,6 +1430,14 @@ abstract class CommonITILTask  extends CommonDBTM {
                $("#dropdown_taskcategories_id'.$rand_type.'").select2("val", taskcategories_id);
                // set action time
                $("#dropdown_actiontime'.$rand_time.'").select2("val", actiontime);
+               // set is_private
+               $("#dropdown_is_private'.$rand_is_private.'").select2("val", data.is_private);
+               // set users_tech
+               $("#dropdown_users_id_tech'.$rand_user.'").select2("val", user_tech);
+               // set group_tech
+               $("#dropdown_groups_id_tech'.$rand_group.'").select2("val", group_tech);
+               // set state
+               $("#dropdown_state'.$rand_state.'").select2("val", data.state);
             });
          }
       ');
@@ -1440,17 +1458,17 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
-      TaskCategory::dropdown(['value'  => $this->fields["taskcategories_id"],
-                                   'rand'   => $rand_type,
-                                   'entity' => $item->fields["entities_id"],
-                                   'condition' => "`is_active` = '1'"]);
+      TaskCategory::dropdown(['value'     => $this->fields["taskcategories_id"],
+                              'rand'      => $rand_type,
+                              'entity'    => $item->fields["entities_id"],
+                              'condition' => "`is_active` = '1'"]);
 
       echo "</td></tr>\n";
 
       if (isset($this->fields["state"])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Status')."</td><td>";
-         Planning::dropdownState("state", $this->fields["state"]);
+         Planning::dropdownState("state", $this->fields["state"], true, array('rand' => $rand_state));
          echo "</td></tr>\n";
       }
 
@@ -1458,7 +1476,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Private')."</td>";
          echo "<td>";
-         Dropdown::showYesNo('is_private', $this->fields["is_private"]);
+         Dropdown::showYesNo('is_private', $this->fields["is_private"], -1, array('rand' => $rand_is_private));
          echo "</td>";
          echo "</tr>";
       }
@@ -1486,7 +1504,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td colspan='2'>";
       echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
       echo _n('User', 'Users', 1);
-      $rand_user          = mt_rand();
       $params             = ['name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
                                                 ?$this->fields["users_id_tech"]
@@ -1516,7 +1533,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<br />";
       echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
       echo _n('Group', 'Groups', 1)."&nbsp;";
-      $rand_group = mt_rand();
       $params     = ['name'      => "groups_id_tech",
                           'value'     => (($ID > -1)
                                           ?$this->fields["groups_id_tech"]
