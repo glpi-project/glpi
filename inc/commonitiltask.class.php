@@ -1468,7 +1468,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (isset($this->fields["state"])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Status')."</td><td>";
-         Planning::dropdownState("state", $this->fields["state"], true, array('rand' => $rand_state));
+         Planning::dropdownState("state", $this->fields["state"], true, ['rand' => $rand_state]);
          echo "</td></tr>\n";
       }
 
@@ -1476,7 +1476,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Private')."</td>";
          echo "<td>";
-         Dropdown::showYesNo('is_private', $this->fields["is_private"], -1, array('rand' => $rand_is_private));
+         Dropdown::showYesNo('is_private', $this->fields["is_private"], -1, ['rand' => $rand_is_private]);
          echo "</td>";
          echo "</tr>";
       }
