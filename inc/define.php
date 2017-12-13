@@ -433,6 +433,9 @@ $CFG_GLPI['javascript'] = [
    'central'   => [
       'central'   => ['fullcalendar']
    ],
+   'assets'    => [
+      'rack'         => ['colorpicker', 'gridstack']
+   ],
    'helpdesk'  => [
       'planning'  => ['fullcalendar', 'colorpicker', 'tinymce'],
       'ticket'    => ['rateit', 'tinymce'],
@@ -446,8 +449,7 @@ $CFG_GLPI['javascript'] = [
       'reminder'     => ['tinymce']
    ],
    'management' => [
-      'dcroom'       => ['colorpicker', 'gridstack'],
-      'rack'         => ['colorpicker', 'gridstack'],
+      'dcroom'       => ['colorpicker', 'gridstack']
    ],
    'config'    => [
       'config'    => ['colorpicker'],
