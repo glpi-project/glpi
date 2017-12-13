@@ -6098,7 +6098,7 @@ class Html {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            echo "<a href='$link' class='itemP' title='{$data['title']}'>{$data['title']}</a>";
+            echo "<a href='$link' class='itemP'>{$data['title']}</a>";
             if (!isset($data['content'][0]) || $data['content'][0] !== true) {
                echo "<ul class='ssmenu'>";
 

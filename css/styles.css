@@ -5004,6 +5004,15 @@ ul.indexes {
    padding: 0;
 }
 
+ul#menu ul {
+   -webkit-column-count: 2;
+   -webkit-column-gap: 10px;
+   -moz-column-count: 2;
+   -moz-column-gap: 10px;
+   column-count:2;
+   column-gap:10px;
+}
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {
