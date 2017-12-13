@@ -2190,6 +2190,7 @@ class Rule extends CommonDBTM {
                case "dropdown_users" :
                   return getUserName($pattern);
 
+               case "dropdown_assets_itemtype" :
                case "dropdown_tracking_itemtype" :
                   if ($item = getItemForItemtype($pattern)) {
                      return $item->getTypeName(1);
@@ -2247,6 +2248,7 @@ class Rule extends CommonDBTM {
     * @param $test      Is to test rule ? (false by default)
    **/
    function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false) {
+      global $CFG_GLPI;
 
       $crit    = $this->getCriteria($ID);
       $display = false;
@@ -2265,7 +2267,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "yesno" :
-               Dropdown::showYesNo($name, $crit['table']);
+               Dropdown::showYesNo($name, $value);
                $display = true;
                break;
 
@@ -2289,6 +2291,16 @@ class Rule extends CommonDBTM {
 
             case "dropdown_tracking_itemtype" :
                Dropdown::showItemTypes($name, array_keys(Ticket::getAllTypesForHelpdesk()));
+               $display = true;
+               break;
+
+            case "dropdown_assets_itemtype" :
+               Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
+               $display = true;
+               break;
+
+            case "dropdown_import_type" :
+               RuleAsset::dropdownImportType($name, $value);
                $display = true;
                break;
 
@@ -2450,6 +2462,7 @@ class Rule extends CommonDBTM {
 
                case "dropdown_priority" :
                   return Ticket::getPriorityName($value);
+
             }
          }
       }

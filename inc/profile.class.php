@@ -1363,6 +1363,10 @@ class Profile extends CommonDBTM {
                             'label'     => __('Business rules for tickets (entity)'),
                             'field'     => 'rule_ticket',
                             'row_class' => 'tab_bg_2'],
+                      ['itemtype'  => 'RuleAsset',
+                            'label'     => __('Business rules for assets'),
+                            'field'     => 'rule_asset',
+                            'row_class' => 'tab_bg_2'],
                       ['itemtype'  => 'Transfer',
                             'label'     => __('Transfer'),
                             'field'     => 'transfer']];
