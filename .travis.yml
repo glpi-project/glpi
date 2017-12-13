@@ -1,4 +1,3 @@
-dist: precise
 language: php
 
 env:
@@ -21,7 +20,6 @@ before_script:
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
   - php -S localhost:8088 tests/router.php &>/dev/null &
   # LDAP stuff
-  - if [[ "$LDAP" == "true" ]]; then phpenv config-add tests/enable-ldap.ini; fi
   - if [[ "$LDAP" == "true" ]]; then ./tests/LDAP/ldap_fixtures.sh > /dev/null; fi
   #APCu
   - phpenv config-add tests/enable-apcu.ini
