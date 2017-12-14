@@ -368,6 +368,13 @@ class Toolbox {
 
       $value                       = htmLawed($value, $config);
 
+      // Special case : remove the 'denied:' for base64 img in case the base64 have characters
+      // combinaison introduce false positive
+      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+         $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
+                 'src="data:image/'.$imgtype.';base64,', $value);
+      }
+
       return $value;
    }
 
