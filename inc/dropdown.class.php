@@ -863,6 +863,7 @@ class Dropdown {
                                               Session::getPluralNumber()),
                  'LineType'             => _n('Line type', 'Line types',
                                              Session::getPluralNumber()),
+                 'RackType'             => RackType::getTypeName(Session::getPluralNumber())
              ],
 
              __('Model') => [
