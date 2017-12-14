@@ -880,5 +880,14 @@ class Html extends atoum {
       ];
       $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
       $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
+
+      $options = [
+         'type'      => 'number',
+         'min'       => '10',
+         'value'     => 'myval',
+      ];
+      $expected = '<input type="number" name="in_put" min="10" value="myval" />';
+      $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
+
    }
 }
