@@ -344,9 +344,8 @@ abstract class CommonDropdown extends CommonDBTM {
                } else {
                   echo Html::input(
                      $field['name'], [
-                     'attrs' => [
                         'type'   => 'number'
-                     ] + $params]
+                     ] + $params
                   );
                }
                break;

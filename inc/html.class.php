@@ -4521,9 +4521,9 @@ class Html {
    **/
    static function input($fieldName, $options = []) {
       $type = 'text';
-      if (isset($options['attrs']) && isset($options['attrs']['type'])) {
-         $type = $options['attrs']['type'];
-         unset($options['attrs']['type']);
+      if (isset($options['type'])) {
+         $type = $options['type'];
+         unset($options['type']);
       }
       return sprintf('<input type="%1$s" name="%2$s" %3$s />',
                      $type, Html::cleanInputText($fieldName), Html::parseAttributes($options));
