@@ -4996,6 +4996,17 @@ ul.indexes {
    );
 }
 
+.grid-rack .grid-stack-item .item_rack_icon {
+   float: left;
+   opacity: .6;
+   padding: 3px 0 0 2px;
+   font-size: 14px;
+}
+
+#viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .item_rack_icon {
+   display: none;
+}
+
 .rack_tipcontent span {
    display: block;
 }

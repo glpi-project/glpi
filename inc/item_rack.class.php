@@ -776,6 +776,7 @@ JAVASCRIPT;
    private static function getCell($cell) {
       if ($cell) {
          $item       = $cell['item'];
+         $icon       = self::getIcon(get_class($item));
          $gs_item    = $cell['gs_item'];
          $rear       = $gs_item['rear'];
          $back_class = $rear
@@ -804,7 +805,8 @@ JAVASCRIPT;
                data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
                data-gs-id='{$gs_item['id']}'
                style='background-color: $bg_color; color: $fg_color;'>
-            <div class='grid-stack-item-content' style='$fg_color_s $img_s'>".
+            <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
+               $icon".
                (!$rear
                   ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>
                      <a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
@@ -816,6 +818,10 @@ JAVASCRIPT;
                         ? __("asset rear side")
                         : __("asset front side"))."
                      </label>
+                  </span>
+                  <span>
+                     <label>".__('Type').":</label>".
+                     $item::getTypeName()."
                   </span>
                   <span>
                      <label>".__('name').":</label>".
@@ -842,6 +848,42 @@ JAVASCRIPT;
       }
 
       return false;
+   }
+
+
+   /**
+    * Return an i html tag with a dedicated icon for the itemtype
+    * @param  string $itemtype  A rackable itemtype
+    * @return string           The i html tag
+    */
+   private static function getIcon($itemtype = "") {
+      $icon = "";
+      switch ($itemtype) {
+         case "Computer":
+            $icon = "fa-server";
+            break;
+         case "Monitor":
+            $icon = "fa-television";
+            break;
+         case "NetworkEquipment":
+            $icon = "fa-sitemap";
+            break;
+         case "Peripheral":
+            $icon = "fa-usb";
+            break;
+         case "Enclosure":
+            $icon = "fa-th";
+            break;
+         case "Pdu":
+            $icon = "fa-plug";
+            break;
+      }
+
+      if (!empty($icon)) {
+         $icon = "<i class='item_rack_icon fa $icon'></i>";
+      }
+
+      return $icon;
    }
 
    function prepareInputForAdd($input) {
