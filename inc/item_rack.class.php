@@ -627,6 +627,14 @@ JAVASCRIPT;
          $used [$row['itemtype']][] = $row['items_id'];
       }
 
+      //items part of an enclosure should not be listed
+      $iterator = $DB->request([
+         'FROM'   => Item_Enclosure::getTable()
+      ]);
+      while ($row = $iterator->next()) {
+         $used[$row['itemtype']][] = $row['items_id'];
+      }
+
       Ajax::updateItemOnSelectEvent(
          "dropdown_itemtype$rand",
          "items_id",
