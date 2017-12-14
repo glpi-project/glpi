@@ -464,8 +464,6 @@ function update92to93() {
                   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   `orientation` tinyint(1),
                   `power_supplies` tinyint(1) NOT NULL DEFAULT '0',
-                  `management_ip` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `mac_address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
                   `comment` text COLLATE utf8_unicode_ci,
                   `manufacturers_id` int(11) NOT NULL DEFAULT '0',

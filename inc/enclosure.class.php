@@ -52,6 +52,8 @@ class Enclosure extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addStandardTab('Item_Enclosure', $ong, $options)
+         ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
