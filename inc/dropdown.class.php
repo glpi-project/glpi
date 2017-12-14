@@ -914,6 +914,8 @@ class Dropdown {
                                                    'Device sound card models', Session::getPluralNumber()),
                   'DeviceSensorModel'        => _n('Device sensor model',
                                                    'Device sensor models', Session::getPluralNumber()),
+                  'RackModel'                => RackModel::getTypeName(Session::getPluralNumber()),
+                  'EnclosureModel'           => EnclosureModel::getTypeName(Session::getPluralNumber()),
              ],
 
              _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
