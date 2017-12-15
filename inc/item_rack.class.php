@@ -282,11 +282,13 @@ class Item_Rack extends CommonDBRelation {
 
       echo '
       <div class="racks_row">
-         <span class="mini_toggle active"
-               id="toggle_images">'.__('images').'</span>
-         <span class="mini_toggle active"
-               id="toggle_text">'.__('texts').'</span>
-         <div class="sep"></div>
+         <span class="racks_view_controls">
+            <span class="mini_toggle active"
+                  id="toggle_images">'.__('images').'</span>
+            <span class="mini_toggle active"
+                  id="toggle_text">'.__('texts').'</span>
+            <div class="sep"></div>
+         </span>
          <div class="racks_col rack_side">
             <h2>'.__('Front').'</h2>
             <ul class="indexes"></ul>
@@ -395,7 +397,7 @@ class Item_Rack extends CommonDBRelation {
          $('.cell_add').click(function() {
             var index = {$rack->fields['number_units']} - $(this).index();
             var parent_pos = $(this).parents('.racks_col').index();
-            var parent = (parent_pos == 0
+            var parent = (parent_pos == 1
                            ? 0  // front
                            : 1); // rear
             var current_grid = $(this).parents('.grid-stack').data('gridstack');
