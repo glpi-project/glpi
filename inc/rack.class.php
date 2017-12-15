@@ -856,6 +856,10 @@ JAVASCRIPT;
       return $this->prepareInput($input);
    }
 
+   function post_getEmpty() {
+      $this->fields['bgcolor'] = '#FEC95C';
+   }
+
    /**
     * Prepares input (for update and add)
     *
