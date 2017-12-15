@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
 if (!$ajax) {
-   Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "rack");
+   Html::header(Rack::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "rack");
 }
 $ira->display($params);
 if (!$ajax) {
