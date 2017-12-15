@@ -1242,9 +1242,9 @@ class SavedSearch extends CommonDBTM {
             $self = new self();
             $now = date('Y-m-d H:i:s');
             $stmt = $DB->prepare("UPDATE `".self::getTable()."`
-                                  SET `last_execution_time` = '?',
-                                      `last_execution_date` = '?'
-                                  WHERE `id` = '?'");
+                                  SET `last_execution_time` = ?,
+                                      `last_execution_date` = ?
+                                  WHERE `id` = ?");
 
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {
