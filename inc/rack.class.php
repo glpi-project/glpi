@@ -47,6 +47,12 @@ class Rack extends CommonDBTM {
    const POS_LEFT = 1;
    const POS_RIGHT = 2;
 
+   // orientation in room
+   const ROOM_O_NORTH = 1;
+   const ROOM_O_EAST  = 2;
+   const ROOM_O_SOUTH = 3;
+   const ROOM_O_WEST  = 4;
+
    // From CommonDBTM
    public $dohistory                   = true;
    static $rightname                   = 'datacenter';
@@ -249,6 +255,25 @@ class Rack extends CommonDBTM {
       }
 
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td><label for='dropdown_room_orientation$rand'>".__('Door orientation in room')."</label></td>";
+      echo "<td>";
+      Dropdown::showFromArray(
+         "room_orientation",
+         [
+            self::ROOM_O_NORTH => __('North'),
+            self::ROOM_O_EAST  => __('East'),
+            self::ROOM_O_SOUTH => __('South'),
+            self::ROOM_O_WEST  => __('West'),
+         ], [
+            'value'                 => $this->fields["room_orientation"],
+            'rand'                  => $rand,
+            'display_emptychoice'   => true
+         ]
+      );
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_number_units$rand'>" . __('Number of units') . "</label></td><td>";
@@ -600,9 +625,13 @@ class Rack extends CommonDBTM {
          $rack->getFromResultSet($item);
          $in = false;
 
-         list($x, $y) = explode(',', $item['position']);
-         $item['_x'] = $x - 1;
-         $item['_y'] = $y - 1;
+         $x = $y = 0;
+         $coord = explode(',', $item['position']);
+         if (is_array($coord) && count($coord) == 2) {
+            list($x, $y) = $coord;
+            $item['_x'] = $x - 1;
+            $item['_y'] = $y - 1;
+         }
 
          if ($x < $cols && $y < $rows) {
             $in = true;
@@ -827,6 +856,10 @@ JAVASCRIPT;
       return $this->prepareInput($input);
    }
 
+   function post_getEmpty() {
+      $this->fields['bgcolor'] = '#FEC95C';
+   }
+
    /**
     * Prepares input (for update and add)
     *
@@ -838,6 +871,7 @@ JAVASCRIPT;
       $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
+         'is_deleted'   => false
       ];
 
       if (!$this->isNewItem()) {
@@ -961,7 +995,7 @@ JAVASCRIPT;
    private static function getCell(Rack $rack, $cell) {
       $bgcolor = $rack->getField('bgcolor');
       $fgcolor = Html::getInvertedColor($bgcolor);
-      return "<div class='grid-stack-item'
+      return "<div class='grid-stack-item room_orientation_".$cell['room_orientation']."'
                   data-gs-id='".$cell['id']."'
                   data-gs-height='1'
                   data-gs-width='1'
