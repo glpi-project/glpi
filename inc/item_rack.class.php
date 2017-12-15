@@ -793,11 +793,11 @@ JAVASCRIPT;
          $img_class  = "";
          $img_s      = "none";
          if ($gs_item['picture_f'] && !$rear) {
-            $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\") 0 0/contain;";
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\") 0 0/cover;";
             $img_class = 'with_picture';
          }
          if ($gs_item['picture_r'] && $rear) {
-            $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\") 0 0/contain;";
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\") 0 0/cover;";
             $img_class = 'with_picture';
          }
 
