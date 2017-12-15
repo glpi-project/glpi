@@ -9277,6 +9277,7 @@ CREATE TABLE `glpi_racks` (
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `dcrooms_id` int(11) NOT NULL DEFAULT '0',
+  `room_orientation` int(11) NOT NULL DEFAULT '0',
   `position` varchar(50),
   `bgcolor` varchar(7) DEFAULT NULL,
   `max_power` int(11) NOT NULL DEFAULT '0',
