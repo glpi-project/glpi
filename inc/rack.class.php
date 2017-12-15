@@ -867,6 +867,7 @@ JAVASCRIPT;
       $where = [
          'dcrooms_id'   => $input['dcrooms_id'],
          'position'     => $input['position'],
+         'is_deleted'   => false
       ];
 
       if (!$this->isNewItem()) {
