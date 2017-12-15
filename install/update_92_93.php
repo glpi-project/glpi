@@ -385,10 +385,10 @@ function update92to93() {
          'type'   => "int(11) NOT NULL DEFAULT '0'"
       ], [
          'name'   => 'required_units',
-         'type'   => "int(11) NOT NULL DEFAULT '0'"
+         'type'   => "int(11) NOT NULL DEFAULT '1'"
       ], [
          'name'   => 'depth',
-         'type'   => "float NOT NULL DEFAULT 0"
+         'type'   => "float NOT NULL DEFAULT 1"
       ], [
          'name'   => 'power_connections',
          'type'   => "int(11) NOT NULL DEFAULT '0'"
@@ -430,8 +430,8 @@ function update92to93() {
                   `comment` text COLLATE utf8_unicode_ci,
                   `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `weight` int(11) NOT NULL DEFAULT '0',
-                  `required_units` int(11) NOT NULL DEFAULT '0',
-                  `depth` float NOT NULL DEFAULT 0,
+                  `required_units` int(11) NOT NULL DEFAULT '1',
+                  `depth` float NOT NULL DEFAULT 1,
                   `power_connections` int(11) NOT NULL DEFAULT '0',
                   `power_consumption` int(11) NOT NULL DEFAULT '0',
                   `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
@@ -506,8 +506,8 @@ function update92to93() {
                   `comment` text COLLATE utf8_unicode_ci,
                   `product_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `weight` int(11) NOT NULL DEFAULT '0',
-                  `required_units` int(11) NOT NULL DEFAULT '0',
-                  `depth` float NOT NULL DEFAULT 0,
+                  `required_units` int(11) NOT NULL DEFAULT '1',
+                  `depth` float NOT NULL DEFAULT 1,
                   `power_connections` int(11) NOT NULL DEFAULT '0',
                   `power_consumption` int(11) NOT NULL DEFAULT '0',
                   `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
