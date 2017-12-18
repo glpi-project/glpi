@@ -4539,7 +4539,11 @@ class Html {
     * @return string
     */
    static function select($name, array $values, $options = []) {
-      $selected = (isset($options['selected'])) ? $options['selected'] : false;
+      $selected = false;
+      if (isset($options['selected'])) {
+         $selected = $options['selected'];
+         unset ($options['selected']);
+      }
       $select = sprintf(
          '<select name="%1$s" %2$s>',
          self::cleanInputText($name),
