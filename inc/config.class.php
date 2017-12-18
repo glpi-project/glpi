@@ -1143,14 +1143,22 @@ class Config extends CommonDBTM {
       echo "<td><label for='theme-selector'>" . __("Color palette") . "</label></td><td>";
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
       echo "<select name='palette' id='theme-selector'>";
+      $themes = [];
       foreach ($themes_files as $key => $file) {
          if (strpos($file, ".css") !== false) {
             $name     = substr($file, 0, -4);
+            if (strpos($name, '.min') !== false) {
+               $name     = substr($name, 0, -4);
+               if (isset($themes[$name])) {
+                  continue;
+               }
+            }
             $selected = "";
             if ($data["palette"] == $name) {
                $selected = "selected='selected'";
             }
             echo "<option value='$name' $selected>".ucfirst($name)."</option>";
+            $themes[$name] = true;
          }
       }
       echo Html::scriptBlock("
