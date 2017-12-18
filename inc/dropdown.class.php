@@ -1927,7 +1927,7 @@ class Dropdown {
                $output .= "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
-                  $output .= "<option value='".$key."'";
+                  $output .= "<option value='".Html::entities_deep($key)."'";
                   // Do not use in_array : trouble with 0 and empty value
                   foreach ($param['values'] as $value) {
                      if (strcmp($key, $value)===0) {
