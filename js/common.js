@@ -1106,4 +1106,105 @@ if ($('#backtotop').length) {
          scrollTop: 0
       }, 700);
    });
+};
+
+/**
+ * Returns element height, including margins
+*/
+function _eltRealSize(_elt) {
+   var _s = 0;
+   _s += _elt.outerHeight();
+   _s += parseFloat(_elt.css('margin-top').replace('px', ''));
+   _s += parseFloat(_elt.css('margin-bottom').replace('px', ''));
+   _s += parseFloat(_elt.css('padding-top').replace('px', ''));
+   _s += parseFloat(_elt.css('padding-bottom').replace('px', ''));
+   return _s;
+}
+
+var initMap = function(parent_elt, map_id = 'map', height = '200px') {
+
+   if (height == 'full') {
+      //full height map
+      var wheight = $(window).height();
+      var _oSize = 0;
+
+      $('#header_top, #c_menu, #c_ssmenu2, #footer, .search_page').each(function(){
+         _oSize += _eltRealSize($(this));
+      });
+      _oSize += parseFloat($('#page').css('padding-top').replace('px', ''));
+      _oSize += parseFloat($('#page').css('padding-bottom').replace('px', ''));
+      _oSize += parseFloat($('#page').css('margin-top').replace('px', ''));
+      _oSize += parseFloat($('#page').css('margin-bottom').replace('px', ''));
+
+      var newHeight = Math.floor(wheight - _oSize);
+      var minHeight = 300;
+      if ( newHeight < minHeight ) {
+         newHeight = minHeight;
+      }
+      height = newHeight + 'px';
+   }
+
+   //add map, set a default arbitrary location
+   parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
+   var map = L.map(map_id, {fullscreenControl: true}).setView([43.6112422, 3.8767337], 6);
+
+   //setup tiles and © messages
+   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors'
+   }).addTo(map);
+   return map;
+}
+
+var showMapForLocation = function(elt) {
+   var _id = $(elt).data('fid');
+   var _items_id = $('#' + _id).val();
+
+   if (_items_id == 0) {
+      return;
+   }
+
+   _dialog = $('<div id="location_map_dialog"/>');
+   _dialog.appendTo('body').dialog({
+      close: function(event, ui) {
+         $(this).dialog('destroy').remove();
+      }
+   });
+
+   //add map, set a default arbitrary location
+   var map_elt = initMap($('#location_map_dialog'), 'location_map');
+
+   map_elt.spin(true);
+   $.ajax({
+      dataType: 'json',
+      method: 'POST',
+      url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
+      data: {
+         itemtype: 'Location',
+         items_id: $('#' + _id).val()
+      }
+   }).done(function(data) {
+      if (data.success == false) {
+         _dialog.dialog('close');
+         $('<div>' + data.message + '</div>').dialog({
+            close: function(event, ui) {
+               $(this).dialog('destroy').remove();
+            }
+         });
+      } else {
+         var _markers = [];
+         _marker = L.marker([data.lat, data.lng]);
+         _markers.push(_marker);
+
+         var _group = L.featureGroup(_markers).addTo(map_elt);
+         map_elt.fitBounds(
+            _group.getBounds(), {
+               padding: [50, 50],
+               maxZoom: 10
+            }
+         );
+      }
+   }).always(function() {
+      //hide spinner
+      map_elt.spin(false);
+   });
 }

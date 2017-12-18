@@ -5119,6 +5119,45 @@ ul#menu ul li {
    break-inside: avoid;
 }
 
+.fail_info {
+   padding: 6px 8px;
+   box-shadow: 0 0 15px rgba(0,0,0,0.2);
+   border-radius: 5px;
+   font-weight: bold;
+   background: red;
+   background-color: rgba(255, 0, 0, .8);
+   color: white;
+}
+
+.fail_info #reload_data {
+    display: block;
+    text-align: center;
+    cursor: pointer;
+}
+
+input[name=as_map] {
+   visibility: hidden;
+}
+
+input[name=as_map] + label span.fa {
+   margin: .5em;
+}
+
+input[name=as_map]:checked + label {
+   color:blue;
+}
+
+.leaflet-control-geocoder-form {
+   margin: .2em!important;
+}
+
+.leaflet-control-geocoder-form input[type=text] {
+   width: 10em;
+}
+.leaflet-control-geocoder-form input[type=submit] {
+   border: 1px transparent solid;
+}
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {

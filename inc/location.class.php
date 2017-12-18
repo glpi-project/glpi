@@ -93,13 +93,17 @@ class Location extends CommonTreeDropdown {
             'type'  => 'text',
             'list'  => true
          ], [
-            'name'  => 'longitude',
-            'label' => __('Longitude'),
-            'type'  => 'text',
-            'list'  => true
+            'name'   => 'setlocation',
+            'type'   => 'setlocation',
+            'label'  => __('Location on map')
          ], [
             'name'  => 'latitude',
             'label' => __('Latitude'),
+            'type'  => 'text',
+            'list'  => true
+         ], [
+            'name'  => 'longitude',
+            'label' => __('Longitude'),
             'type'  => 'text',
             'list'  => true
          ], [
@@ -200,6 +204,24 @@ class Location extends CommonTreeDropdown {
          'datatype'           => 'text'
       ];
 
+      $tab[] = [
+         'id'                 => '998',
+         'table'              => 'glpi_locations',
+         'field'              => 'latitude',
+         'name'               => __('Latitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+         'id'                 => '999',
+         'table'              => 'glpi_locations',
+         'field'              => 'longitude',
+         'name'               => __('Longitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
+
       return $tab;
    }
 
@@ -223,19 +245,19 @@ class Location extends CommonTreeDropdown {
       ];
 
       $tab[] = [
-         'id'                 => '20',
+         'id'                 => '21',
          'table'              => 'glpi_locations',
-         'field'              => 'longitude',
-         'name'               => __('Longitude'),
+         'field'              => 'latitude',
+         'name'               => __('Latitude'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
 
       $tab[] = [
-         'id'                 => '21',
+         'id'                 => '20',
          'table'              => 'glpi_locations',
-         'field'              => 'latitude',
-         'name'               => __('Latitude'),
+         'field'              => 'longitude',
+         'name'               => __('Longitude'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -397,4 +419,106 @@ class Location extends CommonTreeDropdown {
 
    }
 
+   function displaySpecificTypeField($ID, $field = []) {
+      switch ($field['type']) {
+         case 'setlocation':
+            echo "<div id='setlocation_container'></div>";
+            $js = "var map_elt, _marker;
+            var _setLocation = function(lat, lng) {
+               if (_marker) {
+                  map_elt.removeLayer(_marker);
+               }
+               _marker = L.marker([lat, lng]).addTo(map_elt);
+               map_elt.fitBounds(
+                  L.latLngBounds([_marker.getLatLng()]), {
+                     padding: [50, 50],
+                     maxZoom: 10
+                  }
+               );
+            };
+
+            var _autoSearch = function() {
+               var _tosearch = '';
+               var _address = $('*[name=address]').val();
+               var _town = $('*[name=town]').val();
+               var _country = $('*[name=country]').val();
+               if (_address != '') {
+                  _tosearch += _address;
+               }
+               if (_town != '') {
+                  if (_address != '') {
+                     _tosearch += ' ';
+                  }
+                  _tosearch += _town;
+               }
+               if (_country != '') {
+                  if (_address != '' || _town != '') {
+                     _tosearch += ' ';
+                  }
+                  _tosearch += _country;
+               }
+
+               $('.leaflet-control-geocoder-form > input[type=text]').val(_tosearch);
+            }
+
+            $(function(){
+               map_elt = initMap($('#setlocation_container'), 'setlocation', '200px');
+
+               var osmGeocoder = new L.Control.OSMGeocoder({
+                  collapsed: false,
+                  placeholder: '".__s('Search')."',
+                  text: '".__s('Search')."'
+               });
+               map_elt.addControl(osmGeocoder);
+               _autoSearch();
+
+               function onMapClick(e) {
+                  var popup = L.popup();
+                  popup
+                     .setLatLng(e.latlng)
+                     .setContent('SELECTPOPUP')
+                     .openOn(map_elt);
+               }
+
+               map_elt.on('click', onMapClick);
+
+               map_elt.on('popupopen', function(e){
+                  var _popup = e.popup;
+                  var _container = $(_popup._container);
+
+                  var _clat = _popup._latlng.lat.toString();
+                  var _clng = _popup._latlng.lng.toString();
+
+                  _popup.setContent('<p><a href=\'#\'>".__s('Set location here')."</a></p>');
+
+                  $(_container).find('a').on('click', function(e){
+                     e.preventDefault();
+                     _popup.remove();
+                     $('*[name=latitude]').val(_clat);
+                     $('*[name=longitude]').val(_clng).trigger('change');
+                  });
+               });
+
+               var _curlat = $('*[name=latitude]').val();
+               var _curlng = $('*[name=longitude]').val();
+
+               if (_curlat && _curlng) {
+                  _setLocation(_curlat, _curlng);
+               }
+
+               $('*[name=latitude],*[name=longitude]').on('change', function(){
+                  var _curlat = $('*[name=latitude]').val();
+                  var _curlng = $('*[name=longitude]').val();
+
+                  if (_curlat && _curlng) {
+                     _setLocation(_curlat, _curlng);
+                  }
+               });
+            });";
+            echo Html::scriptBlock($js);
+            break;
+         default:
+            throw new \RuntimeException("Unknown {$field['type']}");
+      }
+   }
 }
