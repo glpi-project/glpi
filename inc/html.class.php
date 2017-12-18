@@ -1670,10 +1670,7 @@ class Html {
       }
       $HEADER_LOADED = true;
 
-      self::includeHeader($title);
-
-      // load tinymce lib
-      Html::requireJs('tinymce');
+      self::includeHeader($title, 'self-service');
 
       // Body
       $body_class = "layout_".$_SESSION['glpilayout'];

@@ -463,6 +463,7 @@ $CFG_GLPI['javascript'] = [
    ],
    'admin'     => ['colorpicker', 'clipboard'],
    'preference'=> ['colorpicker', 'clipboard'],
+   'self-service' => ['colorpicker', 'tinymce']
 ];
 
 //Maximum time, in miliseconds a saved search should not exeed
