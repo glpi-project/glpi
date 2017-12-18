@@ -504,6 +504,7 @@ class Search extends DbTestCase {
                                             ],
                                       ],
                     'metacriteria' => [],
+                    'as_map'       => 0
                    ]);
 
       // now add a bookmark on Ticket view
@@ -546,6 +547,7 @@ class Search extends DbTestCase {
                     'metacriteria' => [],
                     'itemtype' => 'Ticket',
                     'savedsearches_id' => $bk_id,
+                    'as_map'           => 0
                    ]);
 
       // let's test for Computers
@@ -563,6 +565,7 @@ class Search extends DbTestCase {
                                             ],
                                       ],
                     'metacriteria' => [],
+                    'as_map'       => 0
                    ]);
 
       // now add a bookmark on Computer view
@@ -605,6 +608,7 @@ class Search extends DbTestCase {
                     'metacriteria' => [],
                     'itemtype' => 'Computer',
                     'savedsearches_id' => $bk_id,
+                    'as_map'           => 0
                    ]);
 
    }

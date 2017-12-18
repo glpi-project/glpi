@@ -98,6 +98,7 @@ if (isset($_POST["itemtype"])
       if ($item && $item->maybeDeleted()) {
          echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
       }
+         echo "<input type='hidden' id='as_map' name='as_map' value='".$p['as_map']."'>";
    } else {
       echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
              __s('Delete a search criterion')."\" onclick=\"".

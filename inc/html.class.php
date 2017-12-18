@@ -1137,6 +1137,14 @@ class Html {
          Html::requireJs('notifications_ajax');
       }
 
+      echo Html::css('lib/leaflet/leaflet.css', ['media' => '']);
+      echo Html::css('lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.css', ['media' => '']);
+      echo Html::css('lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.Default.css', ['media' => '']);
+      echo Html::css('lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css', ['media' => '']);
+      echo Html::css('lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css');
+      echo Html::css('lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css');
+      Html::requireJs('leaflet');
+
       //on demand JS
       if ($sector != 'none' || $item != 'none' || $option != '') {
          $jslibs = [];
@@ -5643,6 +5651,15 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/lodash.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.jQueryUI.js';
+            break;
+         case 'leaflet':
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/leaflet.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/spin.js/spin.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet.spin/leaflet.spin.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.markercluster/leaflet.markercluster.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js';
             break;
          default:
             $found = false;

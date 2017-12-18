@@ -217,11 +217,16 @@ class Dropdown {
                                                         $item->getFormURL(),
                                                         ['display' => false]);
          }
+
          // Display specific Links
          if ($itemtype == "Supplier") {
             if ($item->getFromDB($params['value'])) {
                $output .= $item->getLinks();
             }
+         }
+
+         if ($itemtype == 'Location') {
+            $output .= "<span class='fa fa-globe pointer' title='".__s('Display on map')."' onclick='showMapForLocation(this)' data-fid='$field_id'></span>";
          }
 
          $paramscomment = ['value' => '__VALUE__',
