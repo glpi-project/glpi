@@ -23,6 +23,7 @@ before_script:
   - if [[ "$LDAP" == "true" ]]; then ./tests/LDAP/ldap_fixtures.sh > /dev/null; fi
   #APCu
   - phpenv config-add tests/enable-apcu.ini
+  - if [[ "$UPDATE" == "true" ]]; then ./vendor/bin/robo --load-from tools minify; fi
 script:
   - mysql -u root -e 'select version();'
   - if [[ "$UPDATE" == "true" ]]; then composer testdb; fi

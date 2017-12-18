@@ -393,4 +393,30 @@ class Config extends DbTestCase {
          UPDATE   => 'Update'
       ]);
    }
+
+   public function testGetPalettes() {
+      $expected = [
+         'aerialgreen'     => 'Aerialgreen',
+         'auror'           => 'Auror',
+         'automn'          => 'Automn',
+         'classic'         => 'Classic',
+         'clockworkorange' => 'Clockworkorange',
+         'dark'            => 'Dark',
+         'flood'           => 'Flood',
+         'greenflat'       => 'Greenflat',
+         'hipster'         => 'Hipster',
+         'icecream'        => 'Icecream',
+         'lightblue'       => 'Lightblue',
+         'premiumred'      => 'Premiumred',
+         'purplehaze'      => 'Purplehaze',
+         'teclib'          => 'Teclib',
+         'vintage'         => 'Vintage'
+      ];
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->array($this->testedInstance->getPalettes())
+            ->isIdenticalTo($expected);
+
+   }
 }

@@ -1142,18 +1142,14 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='theme-selector'>" . __("Color palette") . "</label></td><td>";
-      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
-      echo "<select name='palette' id='theme-selector'>";
-      foreach ($themes_files as $key => $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            $selected = "";
-            if ($data["palette"] == $name) {
-               $selected = "selected='selected'";
-            }
-            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
-         }
-      }
+      echo Html::select(
+         'palette',
+         $this->getPalettes(),
+         [
+            'id'        => 'theme-selector',
+            'selected'  => $data['palette']
+         ]
+      );
       echo Html::scriptBlock("
          function formatThemes(theme) {
              if (!theme.id) {
@@ -2809,5 +2805,28 @@ class Config extends CommonDBTM {
       }
       //Toolbox::logDebug("CACHE $optname", get_class($cache));
       return $cache;
+   }
+
+   /**
+    * Get available palettes
+    *
+    * @return array
+    */
+   public function getPalettes() {
+      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
+      $themes = [];
+      foreach ($themes_files as $file) {
+         if (strpos($file, ".css") !== false) {
+            $name     = substr($file, 0, -4);
+            if (strpos($name, '.min') !== false) {
+               $name     = substr($name, 0, -4);
+               if (isset($themes[$name])) {
+                  continue;
+               }
+            }
+            $themes[$name] = ucfirst($name);
+         }
+      }
+      return $themes;
    }
 }
