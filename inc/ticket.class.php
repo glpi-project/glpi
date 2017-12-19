@@ -519,6 +519,18 @@ class Ticket extends CommonITILObject {
    }
 
    /**
+    * is the current user could reopen the current ticket
+    * @since  9.1.8
+    * @return boolean
+    */
+   function canReopen() {
+      return Session::haveRight('followup', CREATE)
+             && in_array($this->fields["status"], $this->getClosedStatusArray())
+             && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
+                 || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
+   }
+
+   /**
     * @see CommonITILObject::getDefaultActor()
    **/
    function getDefaultActor($type) {
@@ -4169,8 +4181,7 @@ class Ticket extends CommonITILObject {
          TicketValidation::alertValidation($this, 'status');
       } else {
          echo self::getStatus($this->fields["status"]);
-         if (in_array($this->fields["status"], $this->getClosedStatusArray())
-             && $this->isAllowedStatus($this->fields['status'], Ticket::INCOMING)) {
+         if ($this->canReopen()) {
             $link = $this->getLinkURL(). "&amp;_openfollowup=1&amp;forcetab=";
             if (!$_SESSION['glpiticket_timeline']
                 || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
@@ -6946,7 +6957,7 @@ class Ticket extends CommonITILObject {
       $canadd_document = $canadd_fup || $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution && !$this->canReopen()) {
          return false;
       }
 
@@ -6999,7 +7010,8 @@ class Ticket extends CommonITILObject {
       if ($item instanceof Document_Item) {
          Document_Item::showAddFormForItem($params['parent'], '');
 
-      } else if (method_exists($item, "showForm")) {
+      } else if (method_exists($item, "showForm")
+                 && $item->can(-1, CREATE, $params)) {
          $item->showForm($id, $params);
       }
    }
