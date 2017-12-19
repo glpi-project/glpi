@@ -120,4 +120,18 @@ class Toolbox extends atoum {
       $this->string(\Toolbox::unclean_html_cross_side_scripting_deep($image_base_64))
          ->notContains('denied:');
    }
+
+   public function testgetBijectiveIndex() {
+      foreach ([
+         1   => 'A',
+         2   => 'B',
+         27  => 'AA',
+         28  => 'AB',
+         53  => 'BA',
+         702 => 'ZZ',
+         703 => 'AAA',
+      ] as $number => $bij_string) {
+         $this->string(\Toolbox::getBijectiveIndex($number))->isIdenticalTo($bij_string);
+      }
+   }
 }
