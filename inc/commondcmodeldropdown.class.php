@@ -160,10 +160,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
             $moved    = false;
 
             if (is_file($dest)) {
-               $moved = @unlink($src);
-            } else {
-               $moved = rename($src, $dest);
+               $moved = @unlink($dest);
             }
+            $moved = rename($src, $dest);
 
             if ($moved) {
                $input[$name] = $CFG_GLPI["root_doc"].
