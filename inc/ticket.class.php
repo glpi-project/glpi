@@ -295,8 +295,7 @@ class Ticket extends CommonITILObject {
    static function canUpdate() {
 
       // To allow update of urgency and category for post-only
-      if (isset($_SESSION["glpiactiveprofile"]["interface"])
-          && $_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
 
