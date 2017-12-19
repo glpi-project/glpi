@@ -299,7 +299,8 @@ class Ticket extends CommonITILObject {
    static function canUpdate() {
 
       // To allow update of urgency and category for post-only
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if (isset($_SESSION["glpiactiveprofile"]["interface"])
+          && $_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
 
@@ -4375,7 +4376,7 @@ class Ticket extends CommonITILObject {
 
 
    function showForm($ID, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $default_values = self::getDefaultValues();
 
@@ -4542,8 +4543,8 @@ class Ticket extends CommonITILObject {
 
       // check right used for this ticket
       $canupdate   = !$ID
-                     || Session::haveRight(self::$rightname, UPDATE)
-                     || $this->canRequesterUpdateItem();
+                     || Session::haveRight(self::$rightname, UPDATE);
+      $can_requester = $this->canRequesterUpdateItem();
       $canpriority = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
 
       if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
@@ -4785,7 +4786,7 @@ class Ticket extends CommonITILObject {
                                              $tt->getMandatoryMark('itilcategories_id'))."</th>";
       echo "<td width='$colsize4%'>";
       // Permit to set category when creating ticket without update right
-      if ($canupdate) {
+      if ($canupdate || $can_requester) {
 
          $opt = ['value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]];
@@ -4880,7 +4881,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
-      if ($canupdate) {
+      if ($canupdate || $can_requester) {
          echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency(['value' => $this->fields["urgency"]]);
          echo $tt->getEndHiddenFieldValue('urgency', $this);
@@ -5004,10 +5005,10 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('priority', $this);
       }
 
-      if ($canupdate) {
+      if ($canupdate || $can_requester) {
          $params = ['urgency'  => '__VALUE0__',
-                         'impact'   => '__VALUE1__',
-                         'priority' => $idpriority];
+                    'impact'   => '__VALUE1__',
+                    'priority' => $idpriority];
          Ajax::updateItemOnSelectEvent(['dropdown_urgency'.$idurgency,
                                              'dropdown_impact'.$idimpact],
                                        $idajax,
@@ -5037,7 +5038,7 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         $options['_canupdate'] = $canupdate;
+         $options['_canupdate'] = $canupdate || $can_requester;
          Item_Ticket::itemAddForm($this, $options);
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
@@ -5072,7 +5073,7 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td colspan='3'>";
-      if ($canupdate) {
+      if ($canupdate || $can_requester) {
          echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
                 ($tt->isMandatoryField('name') ? " required='required'" : '') .
@@ -5091,7 +5092,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      if ($canupdate) {
+      if ($canupdate || $can_requester) {
          $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
@@ -5120,7 +5121,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<div id='content$rand_text'>";
-      if ($CFG_GLPI['use_rich_text'] || $canupdate) {
+      if ($CFG_GLPI['use_rich_text'] || $canupdate || $can_requester) {
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'".
                ($tt->isMandatoryField('content') ? " required='required'" : '') . ">" .
                $content."</textarea></div>";
@@ -5220,6 +5221,7 @@ class Ticket extends CommonITILObject {
       echo "</table>";
 
       if (($canupdate
+           || $can_requester
            || $canpriority
            || $this->canAssign()
            || $this->canAssignTome())
@@ -5228,7 +5230,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             if (self::canPurge()
                 || $this->canDeleteItem()
-                || $canupdate) {
+                  || $canupdate || $can_requester) {
                echo "<div class='center'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
@@ -5236,7 +5238,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                } else {
-                  if ($canupdate || $canpriority) {
+                  if ($canupdate || $can_requester || $canpriority) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
