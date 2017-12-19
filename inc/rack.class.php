@@ -743,7 +743,7 @@ class Rack extends CommonDBTM {
 
          // add indexes
          for (var x = 1; x <= $cols; x++) {
-            $('.indexes-x').append('<li>' + x + '</li>');
+            $('.indexes-x').append('<li>' + getBijectiveIndex(x) + '</li>');
          }
          for (var y = 1; y <= $rows; y++) {
             $('.indexes-y').append('<li>' + y + '</li>');

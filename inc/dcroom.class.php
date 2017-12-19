@@ -358,7 +358,7 @@ class DCRoom extends CommonDBTM {
          for ($y = 1; $y < (int)$this->fields['vis_rows'] + 1; ++$y) {
             $positions["$x,$y"] = sprintf(
                __('col: %1$s, row: %2$s'),
-               $x,
+               Toolbox::getBijectiveIndex($x),
                $y
             );
          }

@@ -1044,6 +1044,22 @@ var replaceContent = function(editor, search, replace) {
 };
 
 /**
+ * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
+ * @since  9.3
+ * @param  integer index    the numeric index
+ * @return string           excel like string index
+ */
+var getBijectiveIndex = function (index) {
+   var bij_str = "";
+   while (parseInt(index) > 0) {
+      index--;
+      bij_str = String.fromCharCode("A".charCodeAt(0) + ( index % 26)) + bij_str
+      index /= 26;
+   }
+   return bij_str;
+};
+
+/**
  * Sets the cursor at the end in a tinymce editor.
  *
  * @param  {Object}  editor TinyMCE editor instance

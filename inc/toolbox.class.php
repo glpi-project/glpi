@@ -2859,4 +2859,20 @@ class Toolbox {
          && (!defined('TU_USER') || defined('CACHED_TESTS'));
    }
 
+   /**
+    * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
+    * @since 9.3
+    * @param  integer $index the numeric index
+    * @return string         excel like string index
+    */
+   public static function getBijectiveIndex($index = 0) {
+      $bij_str = "";
+      while ((int) $index > 0) {
+         $index--;
+         $bij_str = chr($index%26 + ord("A")) . $bij_str;
+         $index /= 26;
+      }
+      return $bij_str;
+   }
+
 }
