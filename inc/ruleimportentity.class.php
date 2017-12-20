@@ -55,7 +55,7 @@ class RuleImportEntity extends Rule {
    **/
    function maxActionsCount() {
       // Unlimited
-      return 2;
+      return 3;
    }
 
    /**
@@ -168,6 +168,10 @@ class RuleImportEntity extends Rule {
       $actions['locations_id']['name']     = __('Location');
       $actions['locations_id']['type']     = 'dropdown';
       $actions['locations_id']['table']    = 'glpi_locations';
+
+      $actions['groups_id']['name']     = __('Group');
+      $actions['groups_id']['type']     = 'dropdown';
+      $actions['groups_id']['table']    = 'glpi_groups';
 
       $actions['_ignore_import']['name']   = __('To be unaware of import');
       $actions['_ignore_import']['type']   = 'yesonly';
