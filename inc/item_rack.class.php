@@ -505,6 +505,15 @@ class Item_Rack extends CommonDBRelation {
 
                // disable qtip
                element.qtip('hide', true);
+            })
+            .on('click', function(event, ui) {
+               var grid    = this;
+               var element = $(event.target);
+               var el_url  = element.find('.itemrack_name').attr('href');
+
+               if (el_url) {
+                  window.location = el_url;
+               }
             });
 
          $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
