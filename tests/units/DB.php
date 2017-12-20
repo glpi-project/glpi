@@ -93,7 +93,9 @@ class DB extends atoum {
          ['+33', "'+33'"],
          [null, 'NULL'],
          ['null', 'NULL'],
-         ['NULL', 'NULL']
+         ['NULL', 'NULL'],
+         ['`field`', '`field`'],
+         ['`field', "'`field'"]
       ];
    }
 
@@ -119,6 +121,18 @@ class DB extends atoum {
                '`other`'  => 'doe'
             ],
             'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+         ], [
+            'table', [
+               'field'  => new \QueryParam(),
+               'other'  => new \QueryParam()
+            ],
+            'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+         ], [
+            'table', [
+               'field'  => new \QueryParam('field'),
+               'other'  => new \QueryParam('other')
+            ],
+            'INSERT INTO `table` (`field`, `other`) VALUES (:field, :other)'
          ]
       ];
    }
@@ -142,21 +156,35 @@ class DB extends atoum {
             ], [
                'id'  => 1
             ],
-            'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = 1'
+            'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
          ], [
             'table', [
                'field'  => 'value'
             ], [
                'id'  => [1, 2]
             ],
-            'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (1, 2)'
+            'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
                'field'  => 'value'
             ], [
                'NOT'  => ['id' => [1, 2]]
             ],
-            'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (1, 2))'
+            'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
+         ], [
+            'table', [
+               'field'  => new \QueryParam()
+            ], [
+               'NOT' => ['id' => [new \QueryParam(), new \QueryParam()]]
+            ],
+            'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
+         ], [
+            'table', [
+               'field'  => new \QueryParam('field')
+            ], [
+               'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
+            ],
+            'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
          ]
       ];
    }
@@ -188,17 +216,27 @@ class DB extends atoum {
             'table', [
                'id'  => 1
             ],
-            'DELETE FROM `table` WHERE `id` = 1'
+            'DELETE FROM `table` WHERE `id` = \'1\''
          ], [
             'table', [
                'id'  => [1, 2]
             ],
-            'DELETE FROM `table` WHERE `id` IN (1, 2)'
+            'DELETE FROM `table` WHERE `id` IN (\'1\', \'2\')'
          ], [
             'table', [
                'NOT'  => ['id' => [1, 2]]
             ],
-            'DELETE FROM `table` WHERE  NOT (`id` IN (1, 2))'
+            'DELETE FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
+         ], [
+            'table', [
+               'NOT'  => ['id' => [new \QueryParam(), new \QueryParam()]]
+            ],
+            'DELETE FROM `table` WHERE  NOT (`id` IN (?, ?))'
+         ], [
+            'table', [
+               'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
+            ],
+            'DELETE FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
          ]
       ];
    }
