@@ -289,7 +289,7 @@ class Item_Rack extends CommonDBRelation {
                   id="toggle_text">'.__('texts').'</span>
             <div class="sep"></div>
          </span>
-         <div class="racks_col rack_side">
+         <div class="racks_col rack_side rack_front">
             <h2>'.__('Front').'</h2>
             <ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack" id="grid-front">
@@ -303,7 +303,7 @@ class Item_Rack extends CommonDBRelation {
             </div>
             <ul class="indexes"></ul>
          </div>
-         <div class="racks_col rack_side">
+         <div class="racks_col rack_side rack_rear">
             <h2>'.__('Rear').'</h2>
             <ul class="indexes"></ul>
             <div class="grid-stack grid-stack-2 grid-rack" id="grid2-rear">
@@ -396,8 +396,7 @@ class Item_Rack extends CommonDBRelation {
          // grid events
          $('.cell_add').click(function() {
             var index = {$rack->fields['number_units']} - $(this).index();
-            var parent_pos = $(this).parents('.racks_col').index();
-            var parent = (parent_pos == 1
+            var side = ($(this).parents('.racks_col').hasClass('rack_front')
                            ? 0  // front
                            : 1); // rear
             var current_grid = $(this).parents('.grid-stack').data('gridstack');
@@ -406,7 +405,7 @@ class Item_Rack extends CommonDBRelation {
                   url : "{$link->getFormURL()}",
                   data: {
                      racks_id: $ID,
-                     orientation: parent,
+                     orientation: side,
                      position: index,
                      ajax: true,
                   },
@@ -450,7 +449,7 @@ class Item_Rack extends CommonDBRelation {
                   return;
                }
                var grid = $(event.target).data('gridstack');
-               var is_rack_rear = $(grid.container).parents('.racks_col').index() != 0;
+               var is_rack_rear = $(grid.container).parents('.racks_col').hasClass('rack_rear');
                $.each(items, function(index, item) {
                   var is_half_rack = item.el.hasClass('half_rack');
                   var is_el_rear   = item.el.hasClass('rear');
@@ -474,9 +473,9 @@ class Item_Rack extends CommonDBRelation {
                         displayAjaxMessageAfterRedirect();
                      } else {
                         // move other side if needed
-                        var other_side_cls = $(item.el).hasClass('rear')
-                           ? "front"
-                           : "rear";
+                        var other_side_cls = $(item.el).hasClass('item_rear')
+                           ? "item_front"
+                           : "item_rear";
                         var other_side_el = $('.grid-stack-item.'+other_side_cls+'[data-gs-id='+item.id+']');
 
                         if (other_side_el.length) {
@@ -796,8 +795,8 @@ JAVASCRIPT;
          $gs_item    = $cell['gs_item'];
          $rear       = $gs_item['rear'];
          $back_class = $rear
-                         ? "rear"
-                         : "front";
+                         ? "item_rear"
+                         : "item_front";
          $half_class = $gs_item['half_rack']
                          ? "half_rack"
                          : "";

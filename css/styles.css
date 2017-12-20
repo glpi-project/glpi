@@ -5026,7 +5026,7 @@ ul.indexes {
    border-width: 0 4px;
 }
 
-.grid-rack .grid-stack-item.rear {
+.grid-rack .grid-stack-item.item_rear {
    background: repeating-linear-gradient(
      45deg,
      rgba(0, 0, 0, .15),
