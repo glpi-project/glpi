@@ -106,7 +106,11 @@ if (isset($_POST["add"])) {
       $options['position'] = $_GET['position'];
    }
    if (isset($_GET['room'])) {
-      $options['room'] = $_GET['room'];
+      $room = new DCRoom;
+      if ($room->getFromDB((int) $_GET['room'])) {
+         $options['dcrooms_id']   = $room->getID();
+         $options['locations_id'] = $room->fields['locations_id'];
+      }
    }
    $rack->display($options);
    if (!$ajax) {
