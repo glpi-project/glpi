@@ -797,6 +797,15 @@ class Rack extends CommonDBTM {
 
                // disable qtip
                element.qtip('hide', true);
+            })
+            .on('click', function(event, ui) {
+               var grid    = this;
+               var element = $(event.target);
+               var el_url  = element.find('a').attr('href');
+
+               if (el_url) {
+                  window.location = el_url;
+               }
             });
 
 
