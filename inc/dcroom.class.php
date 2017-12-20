@@ -66,7 +66,7 @@ class DCRoom extends CommonDBTM {
    }
 
    function showForm($ID, $options = []) {
-      global $DB;
+      global $DB, $CFG_GLPI;
       $rand = mt_rand();
 
       $this->initForm($ID, $options);
@@ -106,6 +106,14 @@ class DCRoom extends CommonDBTM {
             'value'                 => $this->fields["datacenters_id"],
             'rand'                  => $rand,
             'display_emptychoice'   => true
+         ]
+      );
+      Ajax::updateItemOnSelectEvent(
+         "dropdown_datacenters_id$rand",
+         "dropdown_locations_id$rand",
+         $CFG_GLPI["root_doc"]."/ajax/dropdownLocation.php", [
+            'items_id' => '__VALUE__',
+            'itemtype' => 'Datacenter'
          ]
       );
       echo "</td></tr>";
@@ -256,6 +264,12 @@ class DCRoom extends CommonDBTM {
             'datacenters_id' => $datacenter->getID()
          ]
       ]);
+
+      echo "<div class='firstbloc'>";
+      Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/dcroom.form.php",
+                           '_add_fromitem', __('New room for this datacenter...'),
+                           ['datacenters_id' => $datacenter->getID()]);
+      echo "</div>";
 
       if ($canedit) {
          $massiveactionparams = [

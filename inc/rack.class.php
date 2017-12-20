@@ -85,15 +85,6 @@ class Rack extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
-      if ($this->isNewItem()) {
-         if (isset($_GET['position'])) {
-            $this->fields['position'] = $_GET['position'];
-         }
-         if (isset($_GET['room'])) {
-            $this->fields['dcrooms_id'] = $_GET['room'];
-         }
-      }
-
       echo "<tr class='tab_bg_1'>";
       echo "<td><label for='textfield_name$rand'>".__('Name')."</label></td>";
       echo "<td>";
@@ -229,6 +220,14 @@ class Rack extends CommonDBTM {
          "room_positions",
          $CFG_GLPI["root_doc"]."/ajax/dcroom_size.php",
          ['id' => '__VALUE__', 'current' => $current, 'rand' => $rand]
+      );
+      Ajax::updateItemOnSelectEvent(
+         "dropdown_dcrooms_id$rand",
+         "dropdown_locations_id$rand",
+         $CFG_GLPI["root_doc"]."/ajax/dropdownLocation.php", [
+            'items_id' => '__VALUE__',
+            'itemtype' => 'DCRoom'
+         ]
       );
 
       echo "</td>";

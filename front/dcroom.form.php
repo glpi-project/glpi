@@ -95,6 +95,16 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "dcroom");
-   $room->display(['id' => $_GET["id"]]);
+   $options = [
+      'id' => $_GET["id"],
+   ];
+   if (isset($_REQUEST['_add_fromitem'])
+       && isset($_REQUEST['datacenters_id'])) {
+      $options['datacenters_id'] = $_REQUEST['datacenters_id'];
+      $datacenter = new Datacenter;
+      $datacenter->getFromDB($options['datacenters_id']);
+      $options['locations_id'] = $datacenter->fields['locations_id'];
+   }
+   $room->display($options);
    Html::footer();
 }
