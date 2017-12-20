@@ -806,9 +806,12 @@ class DBmysql {
     * @return mixed
     */
    public static function quoteValue($value) {
-      if ($value === null || $value === 'NULL' || $value === 'null') {
+      if ($value instanceof QueryParam) {
+         //no quote for query parameters
+         $value = $value->getValue();
+      } else if ($value === null || $value === 'NULL' || $value === 'null') {
          $value = 'NULL';
-      } else {
+      } else if (!preg_match("/^`.*?`$/", $value)) { //`field` is valid only for mysql :/
          //phone numbers may start with '+' and will be considered as numeric
          $value = "'$value'";
       }

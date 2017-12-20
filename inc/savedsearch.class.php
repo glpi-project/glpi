@@ -1250,10 +1250,16 @@ class SavedSearch extends CommonDBTM {
             //prepare variables we'll use
             $self = new self();
             $now = date('Y-m-d H:i:s');
-            $stmt = $DB->prepare("UPDATE `".self::getTable()."`
-                                  SET `last_execution_time` = ?,
-                                      `last_execution_date` = ?
-                                  WHERE `id` = ?");
+
+            $query = $DB->buildUpdate(
+               self::getTable(), [
+                  'last_execution_time'   => new QueryParam(),
+                  'last_execution_date'   => new QueryParam()
+               ], [
+                  'id'                    => new QueryParam()
+               ]
+            );
+            $stmt = $DB->prepare($query);
 
             $DB->dbh->begin_transaction();
             while ($row = $iterator->next()) {

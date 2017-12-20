@@ -346,6 +346,8 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    public function analyseCrit ($crit, $bool = "AND") {
+      global $DB;
+
       static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
 
       if (!is_array($crit)) {
@@ -388,31 +390,20 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if (is_array($value)) {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
-               if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
-                  $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
-               } else {
-                  $ret .= self::quoteName($name) . " {$value[0]} '{$value[1]}'";
-               }
+
+               $ret .= self::quoteName($name) . " {$value[0]} " . $DB::quoteValue($value[1]);
             } else {
                // Array of Values
                foreach ($value as $k => $v) {
-                  if (!is_numeric($v)) {
-                     $value[$k] = "'$v'";
-                  }
+                  $value[$k] = $DB::quoteValue($v);
                }
                $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
             }
          } else if (is_null($value)) {
             // NULL condition
             $ret .= self::quoteName($name) . " IS NULL";
-
-         } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
-            // Integer or field name
-            $ret .= self::quoteName($name) . " = $value";
-
          } else {
-            // String
-            $ret .= self::quoteName($name) . " = '$value'";
+            $ret .= self::quoteName($name) . " = " . $DB::quoteValue($value);
          }
       }
       return $ret;
