@@ -1064,13 +1064,15 @@ class SavedSearch extends CommonDBTM {
       global $DB;
 
       if ($_SESSION['glpishow_count_on_tabs']) {
-         //needs DB::update() to support fields names to get migrated
-         $query = "UPDATE `". static::getTable() . "`
-                   SET `last_execution_time` = '$time',
-                       `last_execution_date` = '" . date('Y-m-d H:i:s') . "',
-                       `counter` = `counter` + 1
-                   WHERE `id` = '$id'";
-         $DB->query($query);
+         $DB->update(
+            static::getTable(), [
+               'last_execution_time'   => $time,
+               'last_execution_date'   => date('Y-m-d H:i:s'),
+               'counter'               => new \QueryExpression($DB->quoteName('counter') . ' + 1')
+            ], [
+               'id' => $id
+            ]
+         );
       }
    }
 

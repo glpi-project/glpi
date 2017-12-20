@@ -863,12 +863,13 @@ class KnowbaseItem extends CommonDBVisible {
       global $DB;
 
       //update counter view
-      //needs DB::update() to support fields names to get migrated
-      $query = "UPDATE `glpi_knowbaseitems`
-                SET `view` = `view`+1
-                WHERE `id` = '".$this->getID()."'";
-
-      $DB->query($query);
+      $DB->update(
+         'glpi_knowbaseitems', [
+            'view'   => new \QueryExpression($DB->quoteName('view') . ' + 1')
+         ], [
+            'id' => $this->getID()
+         ]
+      );
    }
 
 

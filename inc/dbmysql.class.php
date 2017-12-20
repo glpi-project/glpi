@@ -809,8 +809,8 @@ class DBmysql {
     * @return mixed
     */
    public static function quoteValue($value) {
-      if ($value instanceof QueryParam) {
-         //no quote for query parameters
+      if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+         //no quote for query parameters nor expressions
          $value = $value->getValue();
       } else if ($value === null || $value === 'NULL' || $value === 'null') {
          $value = 'NULL';

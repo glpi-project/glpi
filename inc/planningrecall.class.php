@@ -205,11 +205,17 @@ class PlanningRecall extends CommonDBChild {
       }
 
       //nedds DB::update() to support SQL functions to get migrated
-      $query = "UPDATE `glpi_planningrecalls`
-                SET `when` = DATE_SUB('$begin', INTERVAL `before_time` SECOND)
-                WHERE `itemtype` = '$itemtype'
-                      AND `items_id` = '$items_id';";
-      return $DB->query($query);
+      $result = $DB->update(
+         'glpi_planningrecalls', [
+            'when'   => new \QueryExpression(
+               "DATE_SUB('$begin', INTERVAL ".$DB->quoteName('before_time')." SECOND)"
+            ),
+         ], [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id
+         ]
+      );
+      return $result;
    }
 
 
