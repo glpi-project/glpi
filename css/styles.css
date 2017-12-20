@@ -5016,9 +5016,14 @@ ul.indexes {
 
 .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    color: #2c3e50;
-   border: 0 solid #44524f;
-   border-width: 0 4px;
+   border: 0 solid #0404046b;
+   border-width: 1px 4px;
    box-shadow: 1px 1px 5px 0px #656565;
+}
+
+#viewgraph:not(.clear_picture) .grid-rack .grid-stack-item.with_picture .grid-stack-item-content {
+   border-color: #04040440;
+   border-width: 0 4px;
 }
 
 .grid-rack .grid-stack-item.rear {
@@ -5061,7 +5066,6 @@ ul.indexes {
    height: 20px;
    width: 20px;
    margin-bottom: 1px;
-   padding-top: 2px;
    box-sizing: border-box;
    line-height: 20px;
 }

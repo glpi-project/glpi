@@ -798,11 +798,11 @@ JAVASCRIPT;
          $img_class  = "";
          $img_s      = "none";
          if ($gs_item['picture_f'] && !$rear) {
-            $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\") 0 0/cover;";
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\")  no-repeat top left/100% 100%;";
             $img_class = 'with_picture';
          }
          if ($gs_item['picture_r'] && $rear) {
-            $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\") 0 0/cover;";
+            $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\")  no-repeat top left/100% 100%;";
             $img_class = 'with_picture';
          }
 
@@ -813,11 +813,11 @@ JAVASCRIPT;
                data-gs-id='{$gs_item['id']}'
                style='background-color: $bg_color; color: $fg_color;'>
             <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
-               $icon".
+               $icon
+               <a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>".
                (!$rear
-                  ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>
-                     <a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
-                  : "<span class='itemrack_name'>{$gs_item['name']}")."</span>
+                  ? "<a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
+                  : "")."
                <span class='tipcontent'>
                   <span>
                      <label>".
