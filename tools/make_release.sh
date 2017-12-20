@@ -69,7 +69,7 @@ echo "Clean PHP vendor"
 \find vendor/ -type f -name "composer.json" -exec rm -rf {} \;
 \find vendor/ -type f -name "composer.lock" -exec rm -rf {} \;
 \find vendor/ -type f -name "changelog.md" -exec rm -rf {} \;
-\find vendor/ -type f -name "*phpunit.xml.dist" -exec rm -rf {} \;
+\find vendor/ -type f -name ".atoum.php" -exec rm -rf {} \;
 \find vendor/ -type f -name ".gitignore" -exec rm -rf {} \;
 \find vendor/ -type d -name "test*" -prune -exec rm -rf {} \;
 \find vendor/ -type d -name "doc*" -prune -exec rm -rf {} \;
