@@ -185,6 +185,13 @@ class DB extends atoum {
                'NOT' => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
             ],
             'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
+         ], [
+            'table', [
+               'field'  => new \QueryExpression(\DB::quoteName('field') . ' + 1')
+            ], [
+               'id'  => [1, 2]
+            ],
+            'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
          ]
       ];
    }

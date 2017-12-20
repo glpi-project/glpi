@@ -158,6 +158,14 @@ class NotificationAjax implements NotificationInterface {
       global $DB;
 
       $now = date('Y-m-d H:i:s');
-      $DB->query("UPDATE glpi_queuednotifications SET sent_time='$now', is_deleted=true WHERE id='$id' AND recipient = '" . Session::getLoginUserID() . "'");
+      $DB->update(
+         'glpi_queuednotifications', [
+            'sent_time'    => $now,
+            'is_deleted'   => 1
+         ], [
+            'id'        => $id,
+            'recipient' => Session::getLoginUserID()
+         ]
+      );
    }
 }

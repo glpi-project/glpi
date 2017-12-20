@@ -219,13 +219,15 @@ class CronTask extends CommonDBTM{
          pcntl_signal(SIGTERM, [$this, 'signal']);
       }
 
-      //needs DB::update() to support SQL functions to get migrated
-      $query = "UPDATE `".$this->getTable()."`
-                SET `state` = '".self::STATE_RUNNING."',
-                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
-                WHERE `id` = '".$this->fields['id']."'
-                      AND `state` != '".self::STATE_RUNNING."'";
-      $result = $DB->query($query);
+      $result = $DB->update(
+         $this->getTable(), [
+            'state'  => self::STATE_RUNNING,
+            'lastrun'   => new \QueryExpression('DATE_FORMAT(NOW(),\'%Y-%m-%d %H:%i:00\')')
+         ], [
+            'id'     => $this->fields['id'],
+            'state'  => ['NOT', self::STATE_RUNNING]
+         ]
+      );
 
       if ($DB->affected_rows($result)>0) {
          $this->timer  = microtime(true);

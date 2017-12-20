@@ -173,10 +173,13 @@ class Profile extends CommonDBTM {
       }
 
       if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default' => 0
+            ], [
+               'id' => ['<>', $this->input['id']]
+            ]
+         );
       }
 
       // To avoid log out and login when rights change (very useful in debug mode)
@@ -199,10 +202,13 @@ class Profile extends CommonDBTM {
       unset($this->profileRight);
 
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
-         $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
-         $DB->query($query);
+         $DB->update(
+            $this->getTable(), [
+               'is_default' => 0
+            ], [
+               'id' => ['<>', $this->fields['id']]
+            ]
+         );
       }
    }
 

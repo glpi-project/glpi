@@ -170,12 +170,15 @@ class ProfileRight extends CommonDBChild {
          $profiles[] = $data['profiles_id'];
       }
       if (count($profiles)) {
-         //needs DB::update() to support fields names to get migrated
-         $query = "UPDATE `glpi_profilerights`
-                   SET `rights` = `rights` | " . $value ."
-                   WHERE `name` = '$right'
-                         AND `profiles_id` IN ('".implode("', '", $profiles)."')";
-         if (!$DB->query($query)) {
+         $result = $DB->update(
+            'glpi_profilerights', [
+               'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
+            ], [
+               'name'         => $right,
+               'profiles_id'  => $profiles
+            ]
+         );
+         if (!$result) {
             $ok = false;
          }
       }
