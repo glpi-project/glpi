@@ -407,7 +407,7 @@ class Item_Rack extends CommonDBRelation {
                   data: {
                      racks_id: $ID,
                      orientation: parent,
-                     unit: index,
+                     position: index,
                      ajax: true,
                   },
                   success: function(data) {
@@ -622,7 +622,7 @@ JAVASCRIPT;
 
       echo "<div class='center'>";
 
-      $this->initForm($ID, $this->fields);
+      $this->initForm($ID, $options);
       $this->showFormHeader();
 
       $rack = new Rack();

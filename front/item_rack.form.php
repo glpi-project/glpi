@@ -69,7 +69,7 @@ if (isset($_GET['id'])) {
    $params = [
       'racks_id'     => $_GET['racks_id'],
       'orientation'  => $_GET['orientation'],
-      'position'     => $_GET['unit']
+      'position'     => $_GET['position']
    ];
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
