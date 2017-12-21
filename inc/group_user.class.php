@@ -49,6 +49,25 @@ class Group_User extends CommonDBRelation{
    static $items_id_2                 = 'groups_id';
 
    /**
+   * Check if a user belongs to a group
+   *
+   * @since 9.4
+   *
+   * @param integer $users_id  the user ID
+   * @param integer $groups_id the group ID
+   *
+   * @return boolean true if the user belongs to the group
+   */
+   static function isUserInGroup($users_id, $groups_id) {
+      return countElementsInTable(
+         'glpi_groups_users', [
+            'users_id' => $users_id,
+            'groups_id' => $groups_id
+         ]
+      ) > 0;
+   }
+
+   /**
     * @param $users_id
     * @param $condition    (default '')
    **/

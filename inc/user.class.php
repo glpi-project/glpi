@@ -848,6 +848,12 @@ class User extends CommonDBTM {
          }
       }
 
+      // Security on default group  update
+      if (isset($input['groups_id'])
+         && !Group_User::isUserInGroup($input['id'], $input['groups_id'])) {
+            unset($input['groups_id']);
+      }
+
       if (isset($input['_reset_personal_token'])
           && $input['_reset_personal_token']) {
          $input['personal_token']      = self::getUniqueToken('personal_token');
@@ -2209,6 +2215,23 @@ class User extends CommonDBTM {
                               'rand'   => $entrand,
                               'entity' => $entities]);
             echo "</td></tr>";
+
+            $grouprand = mt_rand();
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __('Default group') . "</label></td><td>";
+
+            $options = [];
+            foreach (Group_User::getUserGroups($this->fields['id']) as $group) {
+               $options[$group['id']] = $group['completename'];
+            }
+
+            Dropdown::showFromArray("groups_id", $options,
+                                    ['value'               => $this->fields["groups_id"],
+                                     'rand'                => $grouprand,
+                                     'display_emptychoice' => true]);
+
+            echo "</td><td colspan='2'></td></tr>";
+
          }
 
          echo "<tr class='tab_bg_1'>";

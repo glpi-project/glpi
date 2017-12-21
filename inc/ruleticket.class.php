@@ -441,6 +441,12 @@ class RuleTicket extends Rule {
       $criterias['entities_id']['linkfield']                = 'entities_id';
       $criterias['entities_id']['type']                     = 'dropdown';
 
+      $criterias['profiles_id']['table']                    = 'glpi_profiles';
+      $criterias['profiles_id']['field']                    = 'name';
+      $criterias['profiles_id']['name']                     = __('Default profile');
+      $criterias['profiles_id']['linkfield']                = 'profiles_id';
+      $criterias['profiles_id']['type']                     = 'dropdown';
+
       $criterias['urgency']['name']                         = __('Urgency');
       $criterias['urgency']['type']                         = 'dropdown_urgency';
 
