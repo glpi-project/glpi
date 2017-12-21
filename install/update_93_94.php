@@ -54,6 +54,12 @@ function update93to94() {
    }
    /** /Add otherserial field on ConsumableItem */
 
+   /** Add default group for a user */
+   if ($migration->addField('glpi_users', 'groups_id', 'integer')) {
+      $migration->addKey('glpi_users', 'groups_id');
+   }
+   /** /Add default group for a user */
+
    /** Add business rules on assets */
    $rule = ['name'         => 'Domain user assignation',
             'is_active'    => 1,
@@ -107,7 +113,7 @@ function update93to94() {
    if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
       $DB->query("INSERT INTO `glpi_profilerights` VALUES ('NULL','4','rule_asset','255')");
    }
-   /** Add business rules on assets */
+   /** /Add business rules on assets */
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
