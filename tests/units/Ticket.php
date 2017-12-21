@@ -748,7 +748,16 @@ class Ticket extends DbTestCase {
       $textarea = true,
       $priority = true,
       $save = true,
-      $assign = true
+      $assign = true,
+      $openDate = true,
+      $timeOwnResolve = true,
+      $type = true,
+      $status = true,
+      $urgency = true,
+      $impact = true,
+      $category = true,
+      $requestSource = true,
+      $location = true
    ) {
       ob_start();
       $ticket->showForm($ticket->getID());
@@ -762,6 +771,111 @@ class Ticket extends DbTestCase {
          $matches
       );
       $this->array($matches)->hasSize(1);
+
+      // Opening date, editable
+      preg_match(
+         '/.*<input[^>]*name=\'_date\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($openDate === true ? 1 : 0));
+
+      // Time to own, editable
+      preg_match(
+         '/.*<input[^>]*name=\'_time_to_own\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+
+      // Internal time to own, editable
+      preg_match(
+         '/.*<input[^>]*name=\'_internal_time_to_own\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+
+      // Time to resolve, editable
+      preg_match(
+         '/.*<input[^>]*name=\'_time_to_resolve\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+
+      // Internal time to resolve, editable
+      preg_match(
+         '/.*<input[^>]*name=\'_internal_time_to_resolve\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($timeOwnResolve === true ? 1 : 0));
+
+      //Type
+      preg_match(
+         '/.*<select[^>]*name=\'type\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($type === true ? 1 : 0));
+
+      //Status
+      preg_match(
+         '/.*<select[^>]*name=\'status\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($status === true ? 1 : 0));
+
+      //Urgency
+      preg_match(
+         '/.*<select[^>]*name=\'urgency\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($urgency === true ? 1 : 0));
+
+      //Impact
+      preg_match(
+         '/.*<select[^>]*name=\'impact\'[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($impact === true ? 1 : 0));
+
+      //Category
+      preg_match(
+         '/.*<input[^>]*name="itilcategories_id"[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($category === true ? 1 : 0));
+
+      //Request source
+      if ($requestSource === true) {
+         preg_match(
+            '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
+            $output,
+            $matches
+            );
+         $this->array($matches)->hasSize(1);
+      } else {
+         preg_match(
+            '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
+            $output,
+            $matches
+            );
+         $this->array($matches)->hasSize(1);
+      }
+
+      //Location
+      preg_match(
+         '/.*<input[^>]*name="locations_id"[^>]*>.*/',
+         $output,
+         $matches
+      );
+      $this->array($matches)->hasSize(($location === true ? 1 : 0));
 
       //Ticket name, editable
       preg_match(
@@ -833,7 +947,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = true,
+         $impact = false,
+         $category = true,
+         $requestSource = false,
+         $location = false
       );
 
       $uid = getItemByTypeName('User', TU_USER, true);
@@ -853,7 +976,16 @@ class Ticket extends DbTestCase {
          $textarea = false,
          $priority = false,
          $save = false,
-         $assign = false
+         $assign = false,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = false,
+         $impact = false,
+         $category = false,
+         $requestSource = false,
+         $location = false
       );
    }
 
@@ -879,7 +1011,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
 
       //drop update ticket right from tech profile
@@ -900,7 +1041,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = true,
+         $impact = false,
+         $category = true,
+         $requestSource = false,
+         $location = false
       );
 
       $uid = getItemByTypeName('User', TU_USER, true);
@@ -921,7 +1071,16 @@ class Ticket extends DbTestCase {
          $textarea = false,
          $priority = false,
          $save = false,
-         $assign = false
+         $assign = false,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = false,
+         $impact = false,
+         $category = false,
+         $requestSource = false,
+         $location = false
       );
    }
 
@@ -949,7 +1108,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
 
       //Add priority right from tech profile
@@ -971,7 +1139,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = true,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
    }
 
@@ -1000,7 +1177,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
 
       //Drop being in charge from tech profile
@@ -1023,7 +1209,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = false
+         $assign = false,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
 
       //Add assign in charge from tech profile
@@ -1045,7 +1240,16 @@ class Ticket extends DbTestCase {
          $textarea = true,
          $priority = false,
          $save = true,
-         $assign = true
+         $assign = true,
+         $openDate = true,
+         $timeOwnResolve = true,
+         $type = true,
+         $status = true,
+         $urgency = true,
+         $impact = true,
+         $category = true,
+         $requestSource = true,
+         $location = true
       );
    }
 
