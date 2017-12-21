@@ -228,6 +228,8 @@ class DBmysql {
     * @throws GlpitestSQLError
     */
    function prepare($query) {
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
+
       $res = @$this->dbh->prepare($query);
       if (!$res) {
          // no translation for error logs
@@ -242,6 +244,7 @@ class DBmysql {
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
+            $SQL_TOTAL_REQUEST++;
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
          }
       }
