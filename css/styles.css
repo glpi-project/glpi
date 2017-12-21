@@ -4965,6 +4965,15 @@ ul.indexes {
    border-width: 0 4px;
 }
 
+.grid-rack .grid-stack-item.reserved .grid-stack-item-content {
+   border: 1px solid #FF7C24;
+   box-shadow: none;
+}
+
+.grid-rack .grid-stack-item.reserved .grid-stack-item-content a.itemrack_name {
+   color: #7F4723 !important;
+}
+
 .grid-rack .grid-stack-item.item_rear {
    background: repeating-linear-gradient(
      45deg,
@@ -4972,6 +4981,16 @@ ul.indexes {
      rgba(0, 0, 0, .15) 10px,
      rgba(59, 59, 59, .15) 10px,
      rgba(59, 59, 59, .15) 20px
+   );
+}
+
+.grid-rack .grid-stack-item.reserved {
+   background: repeating-linear-gradient(
+     115deg,
+     #FF8A3C,
+     #FF8A3C 30px,
+     #FFD7BC 30px,
+     #FFD7BC 60px
    );
 }
 

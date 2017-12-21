@@ -209,6 +209,7 @@ class Item_Rack extends CommonDBRelation {
             'rel_url'   => $rel->getLinkURL(),
             'rear'      => false,
             'half_rack' => false,
+            'reserved'  => (bool) $row['is_reserved'],
          ];
 
          $model_class = $item->getType() . 'Model';
@@ -656,12 +657,21 @@ JAVASCRIPT;
       );
 
       //get all used items
-      $used = [];
+      $used = $used_reserved = [];
       $iterator = $DB->request([
-         'FROM'   => $this->getTable()
+         'FROM' => $this->getTable()
       ]);
       while ($row = $iterator->next()) {
-         $used [$row['itemtype']][] = $row['items_id'];
+         $used[$row['itemtype']][] = $row['items_id'];
+      }
+      $iterator = $DB->request([
+         'FROM'  => $this->getTable(),
+         'WHERE' => [
+            'is_reserved' => true
+         ]
+      ]);
+      while ($row = $iterator->next()) {
+         $used_reserved[$row['itemtype']][] = $row['items_id'];
       }
 
       //items part of an enclosure should not be listed
@@ -671,16 +681,11 @@ JAVASCRIPT;
       while ($row = $iterator->next()) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
-
-      Ajax::updateItemOnSelectEvent(
-         "dropdown_itemtype$rand",
-         "items_id",
-         $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", [
-            'idtable'   => '__VALUE__',
-            'name'      => 'items_id',
-            'value'     => $this->fields['items_id'],
-            'rand'      => $rand,
-            'used'      => $used
+      echo Html::hidden(
+         'used',
+         [
+            'id'    => "used_$rand",
+            'value' => json_encode($used)
          ]
       );
 
@@ -768,7 +773,44 @@ JAVASCRIPT;
             Rack::POS_RIGHT   => __('Right')
          ], [
             'value'  => $this->fields['hpos'],
-            'rand'   =>$rand
+            'rand'   => $rand
+         ]
+      );
+      echo "</td>";
+      echo "<td><label for='dropdown_is_reserved$rand'>".__('Reserved position ?')."</label></td>";
+      echo "<td>";
+
+      echo Html::scriptBlock("
+         var toggleUsed = function(reserved) {
+            if (reserved == 1) {
+               $('#used_$rand').val('".json_encode($used_reserved)."');
+            } else {
+               $('#used_$rand').val('".json_encode($used)."');
+            }
+            // force change of itemtype dropdown to have a correct (with empty/filled used input)
+            // filtered items list
+            $('#dropdown_itemtype$rand').trigger('change');
+         }
+      ");
+      Dropdown::showYesNo(
+         'is_reserved',
+         $this->fields['is_reserved'],
+         -1, [
+            'rand'      => $rand,
+            'on_change' => 'toggleUsed(this.value)'
+         ]
+      );
+
+      Ajax::updateItemOnSelectEvent(
+         ["dropdown_itemtype$rand", "dropdown_is_reserved$rand", "used_$rand"],
+         "items_id",
+         $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", [
+            'idtable'     => '__VALUE0__',
+            'name'        => 'items_id',
+            'value'       => $this->fields['items_id'],
+            'rand'        => $rand,
+            'is_reserved' => '__VALUE1__',
+            'used'        => '__VALUE2__'
          ]
       );
       echo "</td>";
@@ -790,74 +832,109 @@ JAVASCRIPT;
     */
    private static function getCell($cell) {
       if ($cell) {
-         $item       = $cell['item'];
-         $icon       = self::getIcon(get_class($item));
-         $gs_item    = $cell['gs_item'];
-         $rear       = $gs_item['rear'];
-         $back_class = $rear
+         $item        = $cell['item'];
+         $gs_item     = $cell['gs_item'];
+         $name        = $gs_item['name'];
+         $typename    = is_object($item)
+                         ? $item->getTypeName()
+                         : "";
+         $serial      = is_object($item)
+                         ? $item->fields['serial']
+                         : "";
+         $otherserial = is_object($item)
+                         ? $item->fields['otherserial']
+                         : "";
+         $model       = is_object($item)
+                        && is_object($item->model)
+                        && isset($item->model->fields['name'])
+                         ? $item->model->fields['name']
+                         : '';
+         $rear        = $gs_item['rear'];
+         $back_class  = $rear
                          ? "item_rear"
                          : "item_front";
-         $half_class = $gs_item['half_rack']
+         $half_class  = $gs_item['half_rack']
                          ? "half_rack"
                          : "";
-         $bg_color   = $gs_item['bgcolor'];
-         $fg_color   = Html::getInvertedColor($gs_item['bgcolor']);
-         $fg_color_s = "color: $fg_color;";
-         $img_class  = "";
-         $img_s      = "none";
-         if ($gs_item['picture_f'] && !$rear) {
+         $reserved    = $gs_item['reserved'];
+         $reserved_cl = $reserved
+                         ? "reserved"
+                         : "";
+         $icon        = $reserved
+                         ? self::getIcon("Reserved")
+                         : self::getIcon(get_class($item));
+         $bg_color    = $gs_item['bgcolor'];
+         $fg_color    = !empty($gs_item['bgcolor'])
+                         ? Html::getInvertedColor($gs_item['bgcolor'])
+                         : "";
+         $fg_color_s  = "color: $fg_color;";
+         $img_class   = "";
+         $img_s       = "";
+         if ($gs_item['picture_f'] && !$rear && !$reserved) {
             $img_s = "background: $bg_color url(\"".$gs_item['picture_f']."\")  no-repeat top left/100% 100%;";
             $img_class = 'with_picture';
          }
-         if ($gs_item['picture_r'] && $rear) {
+         if ($gs_item['picture_r'] && $rear && !$reserved) {
             $img_s = "background: $bg_color url(\"".$gs_item['picture_r']."\")  no-repeat top left/100% 100%;";
             $img_class = 'with_picture';
          }
 
+         $tip = "<span class='tipcontent'>";
+         $tip.= "<span>
+                  <label>".
+                  ($rear
+                     ? __("asset rear side")
+                     : __("asset front side"))."
+                  </label>
+               </span>";
+         if (!empty($typename)) {
+            $tip.= "<span>
+                     <label>".__('Type').":</label>
+                     $typename
+                  </span>";
+         }
+         if (!empty($name)) {
+            $tip.= "<span>
+                     <label>".__('name').":</label>
+                     $name
+                  </span>";
+         }
+         if (!empty($serial)) {
+            $tip.= "<span>
+                     <label>".__('serial').":</label>
+                     $serial
+                  </span>";
+         }
+         if (!empty($otherserial)) {
+            $tip.= "<span>
+                     <label>".__('Inventory number').":</label>
+                     $otherserial
+                  </span>";
+         }
+         if (!empty($model)) {
+            $tip.= "<span>
+                     <label>".__('model').":</label>
+                     $model
+                  </span>";
+         }
+
+         $tip.= "</span>";
+
          return "
-         <div class='grid-stack-item $back_class $half_class $img_class'
+         <div class='grid-stack-item $back_class $half_class $reserved_cl $img_class'
                data-gs-width='{$gs_item['width']}' data-gs-height='{$gs_item['height']}'
                data-gs-x='{$gs_item['x']}' data-gs-y='{$gs_item['y']}'
                data-gs-id='{$gs_item['id']}'
                style='background-color: $bg_color; color: $fg_color;'>
             <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
-               $icon
-               <a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>".
+               $icon".
+               (!empty($gs_item['url'])
+                  ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
+                  : "<span class='itemrack_name'>".$gs_item['name']."</span>").
                (!$rear
                   ? "<a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
                   : "")."
-               <span class='tipcontent'>
-                  <span>
-                     <label>".
-                     ($rear
-                        ? __("asset rear side")
-                        : __("asset front side"))."
-                     </label>
-                  </span>
-                  <span>
-                     <label>".__('Type').":</label>".
-                     $item::getTypeName()."
-                  </span>
-                  <span>
-                     <label>".__('name').":</label>".
-                     $item->fields['name']."
-                  </span>
-                  <span>
-                     <label>".__('serial').":</label>".
-                     $item->fields['serial']."
-                  </span>
-                  <span>
-                     <label>".__('Inventory number').":</label>".
-                     $item->fields['otherserial']."
-                  </span>
-                  <span>
-                     <label>".__('model').":</label>".
-                     (is_object($item->model)
-                      && isset($item->model->fields['name'])
-                        ? $item->model->fields['name']
-                        : '')."
-                  </span>
-               </span>
+               $tip
             </div>
          </div>";
       }
@@ -891,6 +968,9 @@ JAVASCRIPT;
             break;
          case "PDU":
             $icon = "fa-plug";
+            break;
+         case "Reserved":
+            $icon = "fa-lock";
             break;
       }
 

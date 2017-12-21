@@ -151,4 +151,36 @@ class Toolbox extends atoum {
    public function testCleanInteger($value, $expected) {
       $this->variable(\Toolbox::cleanInteger($value))->isIdenticalTo($expected);
    }
+
+   protected function jsonDecodeProvider() {
+      return [
+         [
+            '{"Monitor":[6],"Computer":[35]}',
+            ['Monitor' => [6], 'Computer' => [35]]
+         ], [
+            '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
+            ['Monitor' => ["6"], 'Computer' => ["35"]]
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider jsonDecodeProvider
+    */
+   public function testJsonDecode($json, $expected) {
+      $this
+         ->variable(\Toolbox::jsonDecode($json, true))
+         ->isIdenticalTo($expected);
+   }
+
+   public function testJsonDecodeWException() {
+      $this->exception(
+         function() {
+            $this
+               ->variable(\Toolbox::jsonDecode('"Monitor":"6","Computer":"35"', true));
+         }
+      )
+         ->isInstanceOf('RuntimeException')
+         ->message->contains('Unable to decode JSON string! Is this really JSON?');
+   }
 }

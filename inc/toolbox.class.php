@@ -2672,20 +2672,21 @@ class Toolbox {
     * Because json can have been modified from addslashes_deep
     *
     * @param string $encoded Encoded JSON
+    * @param boolean $assoc  assoc parameter of json_encode native function
     *
     * @return mixed
     */
-   static public function jsonDecode($encoded) {
+   static public function jsonDecode($encoded, $assoc = false) {
       if (!is_string($encoded)) {
          Toolbox::logDebug('Only strings can be json to decode!');
          return $encoded;
       }
 
-      $json = json_decode($encoded);
+      $json = json_decode($encoded, $assoc);
 
       if (json_last_error() != JSON_ERROR_NONE) {
          //something went wrong... Try to stripslashes before decoding.
-         $json = json_decode(self::stripslashes_deep($encoded));
+         $json = json_decode(self::stripslashes_deep($encoded), $assoc);
          if (json_last_error() != JSON_ERROR_NONE) {
             Toolbox::logDebug('Unable to decode JSON string! Is this really JSON?');
             return $encoded;

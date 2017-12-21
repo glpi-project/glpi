@@ -347,8 +347,9 @@ function update92to93() {
                   `orientation` tinyint(1),
                   `bgcolor` varchar(7) DEFAULT NULL,
                   `hpos` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_reserved` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  UNIQUE KEY `item` (`itemtype`,`items_id`),
+                  UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
                   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_items_racks");
