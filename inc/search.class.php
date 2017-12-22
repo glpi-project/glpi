@@ -5161,7 +5161,8 @@ class Search {
       } else {
          $options = self::getCleanedOptions($itemtype);
          foreach ($options as $key => $val) {
-            if (is_array($val)) {
+            if (is_array($val)
+                && isset($val['table'])) {
                $default_criteria = $key;
                break;
             }
