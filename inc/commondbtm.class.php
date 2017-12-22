@@ -4617,9 +4617,11 @@ class CommonDBTM extends CommonGLPI {
                   echo "<td class='tab_bg_1 center'>$entity</td>";
                }
                echo "<td class='tab_bg_2 center b'>";
-               Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
-                                    ['withtemplate' => 1,
-                                          'id'           => $data['id']]);
+               if ($item->can($data['id'], PURGE)) {
+                  Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
+                                       ['withtemplate' => 1,
+                                        'id'           => $data['id']]);
+               }
                echo "</td>";
             } else {
                $add_params =
