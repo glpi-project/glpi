@@ -113,58 +113,53 @@ class DeviceFirmware extends CommonDevice {
    static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
                                       HTMLTableSuperHeader $super = null,
                                       HTMLTableHeader $father = null, array $options = []) {
-
+      global $CFG_GLPI;
       $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
       if ($column == $father) {
          return $father;
       }
 
-      switch ($itemtype) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
-            $base->addHeader('version', __('Version'), $super, $father);
-            $base->addHeader('date', __('Installation date'), $super, $father);
-            break;
+      if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
+         Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+         $base->addHeader('devicefirmware_type', __('Type'), $super, $father);
+         $base->addHeader('version', __('Version'), $super, $father);
+         $base->addHeader('date', __('Installation date'), $super, $father);
       }
    }
 
    function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
                                     HTMLTableCell $father = null, array $options = []) {
-
+      global $CFG_GLPI;
       $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
       if ($column == $father) {
          return $father;
       }
 
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+      if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
+         Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
-            if ($this->fields["devicefirmwaretypes_id"]) {
-               $row->addCell(
-                  $row->getHeaderByName('devicefirmware_type'),
-                  Dropdown::getDropdownName("glpi_devicefirmwaretypes",
-                  $this->fields["devicefirmwaretypes_id"]),
-                  $father
-               );
-            }
+         if ($this->fields["devicefirmwaretypes_id"]) {
             $row->addCell(
-               $row->getHeaderByName('version'), $this->fields["version"],
+               $row->getHeaderByName('devicefirmware_type'),
+               Dropdown::getDropdownName("glpi_devicefirmwaretypes",
+               $this->fields["devicefirmwaretypes_id"]),
                $father
-               );
+            );
+         }
+         $row->addCell(
+            $row->getHeaderByName('version'), $this->fields["version"],
+            $father
+            );
 
-            if ($this->fields["date"]) {
-               $row->addCell(
-                  $row->getHeaderByName('date'),
-                  Html::convDate($this->fields["date"]),
-                  $father
-               );
-            }
-
-            break;
+         if ($this->fields["date"]) {
+            $row->addCell(
+               $row->getHeaderByName('date'),
+               Html::convDate($this->fields["date"]),
+               $father
+            );
+         }
       }
    }
 
