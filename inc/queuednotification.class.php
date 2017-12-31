@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /** QueuedNotification class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class QueuedNotification extends CommonDBTM {
 
@@ -768,7 +764,7 @@ class QueuedNotification extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $string
     **/

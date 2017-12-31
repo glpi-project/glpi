@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -65,7 +61,7 @@ class State extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonTreeDropdown::getAdditionalFields()
    **/
@@ -235,7 +231,7 @@ class State extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getEmpty()
    **/
@@ -255,7 +251,7 @@ class State extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonTreeDropdown::prepareInputForAdd()
    **/

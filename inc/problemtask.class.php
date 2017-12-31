@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -42,7 +38,7 @@ class ProblemTask extends CommonITILTask {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function getTypeName($nb = 0) {
       return _n('Problem task', 'Problem tasks', $nb);
@@ -65,7 +61,7 @@ class ProblemTask extends CommonITILTask {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @return boolean
    **/

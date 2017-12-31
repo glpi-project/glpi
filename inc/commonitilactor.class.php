@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -68,7 +64,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input  array of data to be added
     *
@@ -136,7 +132,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canDeleteItem() {
 
@@ -228,7 +224,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    /**
     * Print the object user form for notification
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $ID              integer ID of the item
     * @param $options   array
@@ -327,7 +323,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::prepareInputForAdd()
    **/

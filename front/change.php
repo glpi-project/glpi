@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 include ('../inc/includes.php');
 
 Session::checkRightsOr('change', [Change::READALL, Change::READMY]);

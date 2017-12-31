@@ -30,17 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 
 /**
- * @since version 0.85 (before migration_cleaner)
+ * @since 0.85 (before migration_cleaner)
 **/
 class MigrationCleaner extends CommonGLPI {
 

@@ -30,9 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
- * @brief
- * @since version 9.1
+/**
+ * @since 9.1
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
  * Item locks are used to lock items like Ticket, Computer, Reminder, ..., see list in $CFG_GLPI['lock_lockable_objects']
  *
  * @author Olivier Moron
- * @since version 9.1
+ * @since 9.1
  *
 **/
 class ObjectLock extends CommonDBTM {

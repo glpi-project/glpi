@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief   Retrieve the knowledgebase links associated to a category
-* @since   9.2
-* @author  Alexandre Delaunay
+/**
+ * Retrieve the knowledgebase links associated to a category
+ * @since   9.2
 */
 
 include ('../inc/includes.php');

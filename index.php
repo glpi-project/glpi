@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
-/** @file
-* @brief
-*/
-
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (version_compare(PHP_VERSION, '5.6') < 0) {

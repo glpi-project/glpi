@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 // This script generate and populate a complete glpi DB
 // A good way to test GLPI with a lot of data
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -57,7 +53,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -68,7 +64,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85.5
+    * @since 0.85.5
     * @see CommonDBRelation::canCreateItem()
    **/
    function canCreateItem() {
@@ -126,7 +122,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.90.2
+    * @since 0.90.2
     *
     * @see CommonDBTM::pre_deleteItem()
    **/
@@ -180,7 +176,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.83
+    * @since 0.83
     *
     * @see CommonDBTM::post_purgeItem()
    **/
@@ -313,7 +309,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * Duplicate documents from an item template to its clone
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
@@ -342,7 +338,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * Show items links to a document
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $doc Document object
     *
@@ -570,7 +566,7 @@ class Document_Item extends CommonDBRelation{
    /**
     * Show documents associated to an item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item            CommonDBTM object for which associated documents must be displayed
     * @param $withtemplate    (default 0)
@@ -598,7 +594,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $item
     * @param $withtemplate   (default 0)
@@ -631,7 +627,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $item
     * @param $withtemplate    (default 0)
@@ -760,7 +756,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $item
     * @param $withtemplate   (default 0)
@@ -985,7 +981,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
    **/
@@ -1005,7 +1001,7 @@ class Document_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/

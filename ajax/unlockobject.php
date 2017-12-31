@@ -30,9 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
- * @brief
- * @since version 9.1
+/**
+ * @since 9.1
  */
 
 // here we are going to try to unlock the given object

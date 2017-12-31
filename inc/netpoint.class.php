@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -84,7 +80,7 @@ class Netpoint extends CommonDropdown {
    /**
     * Handled Multi add item
     *
-    * @since version 0.83 (before addMulti)
+    * @since 0.83 (before addMulti)
     *
     * @param $input array of values
    **/
@@ -385,7 +381,7 @@ class Netpoint extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $base            HTMLTableBase object
@@ -409,7 +405,7 @@ class Netpoint extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $row             HTMLTableRow object (default NULL)
     * @param $item            CommonDBTM object (default NULL)

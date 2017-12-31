@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Notification_NotificationTemplate Class
  *
- * @since version 9.2
+ * @since 9.2
 **/
 class Notification_NotificationTemplate extends CommonDBChild {
    // From CommonDBChild
@@ -263,7 +263,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
    /**
     * Get notification method label
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return the mode's label
    **/

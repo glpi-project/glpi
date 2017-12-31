@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 include ('../inc/includes.php');
 
 Html::redirect ($CFG_GLPI['root_doc'] . "/front/fieldunicity.php");

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 if (strpos($_SERVER['HTTP_REFERER'], 'bookmark.php') === false) {

@@ -31,10 +31,6 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -51,7 +47,7 @@ class Item_DeviceBattery extends Item_Devices {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     **/
    static function getSpecificities($specif = '') {
       return [

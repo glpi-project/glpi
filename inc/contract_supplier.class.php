@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -51,7 +47,7 @@ class Contract_Supplier extends CommonDBRelation {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -136,7 +132,7 @@ class Contract_Supplier extends CommonDBRelation {
    /**
     * Print an HTML array with contracts associated to the enterprise
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $supplier   Supplier object
     *
@@ -275,7 +271,7 @@ class Contract_Supplier extends CommonDBRelation {
    /**
     * Print the HTML array of suppliers for this contract
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $contract Contract object
     *

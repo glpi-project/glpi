@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -58,7 +53,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -69,7 +64,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -90,7 +85,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getNameField()
    **/
@@ -142,7 +137,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getPreAdditionalInfosForName
    **/
@@ -157,7 +152,7 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -226,7 +221,7 @@ class Cartridge extends CommonDBChild {
    /**
     * send back to stock
     *
-    * @since version 0.85 (before name was restore)
+    * @since 0.85 (before name was restore)
     */
    function backToStock(array $input, $history = 1) {
       global $DB;
@@ -392,7 +387,7 @@ class Cartridge extends CommonDBChild {
    /**
     * Print the cartridge count HTML array for the printer $pID
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $pID              integer: printer identifier.
     * @param $nohtml           integer: Return value without HTML tags (default 0)
@@ -462,7 +457,7 @@ class Cartridge extends CommonDBChild {
    /**
     * count how many cartbridge for the printer $pID
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -503,7 +498,7 @@ class Cartridge extends CommonDBChild {
    /**
     * count how many cartridge used for the printer $pID
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -544,7 +539,7 @@ class Cartridge extends CommonDBChild {
    /**
     * count how many old cartbridge for theprinter $pID
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $pID integer: printer identifier.
     *
@@ -850,7 +845,7 @@ class Cartridge extends CommonDBChild {
    /**
     * Show installed cartridges
     *
-    * @since version 0.84 (before showInstalled)
+    * @since 0.84 (before showInstalled)
     *
     * @param $printer            Printer object
     * @param $old       boolean  old cartridges or not ? (default 0)
@@ -1081,7 +1076,7 @@ class Cartridge extends CommonDBChild {
 
    /** form for Cartridge
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $ID      integer  Id of the cartridge
     * @param $options array    of possible options:

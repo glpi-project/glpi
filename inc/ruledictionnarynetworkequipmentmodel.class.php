@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
 
 

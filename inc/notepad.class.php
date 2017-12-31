@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Notepad class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class Notepad extends CommonDBChild {
 
@@ -102,7 +98,7 @@ class Notepad extends CommonDBChild {
    /**
     * Duplicate all notepads from a item template to his clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string $itemtype      itemtype of the item
     * @param integer $oldid        ID of the item to clone

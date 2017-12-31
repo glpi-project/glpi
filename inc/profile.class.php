@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -339,7 +335,7 @@ class Profile extends CommonDBTM {
    /**
     * check right before delete
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return boolean
    **/
@@ -632,7 +628,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the helpdesk right form for the current profile
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function showFormTrackingHelpdesk() {
       global $CFG_GLPI;
@@ -724,7 +720,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the helpdesk right form for the current profile
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function showFormToolsHelpdesk() {
       global $CFG_GLPI;
@@ -772,7 +768,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the Asset rights form for the current profile
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
@@ -846,7 +842,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the Management rights form for the current profile
     *
-    * @since version 0.85 (before showFormInventory)
+    * @since 0.85 (before showFormInventory)
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
@@ -915,7 +911,7 @@ class Profile extends CommonDBTM {
    /**
     * Print the Tools rights form for the current profile
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
@@ -1129,7 +1125,7 @@ class Profile extends CommonDBTM {
    /**
     * Display the matrix of the elements lifecycle of the elements
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $title          the kind of lifecycle
     * @param $html_field     field that is sent to _POST
@@ -1212,7 +1208,7 @@ class Profile extends CommonDBTM {
    /**
     * Display the matrix of the elements lifecycle of the elements
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $title          the kind of lifecycle
     * @param $html_field     field that is sent to _POST
@@ -1271,7 +1267,7 @@ class Profile extends CommonDBTM {
    /**
    * Print the Life Cycles form for the current profile
    *
-   *  @since version 0.85
+   *  @since 0.85
    *
    * @param $openform   boolean  open the form (true by default)
    * @param $closeform  boolean  close the form (true by default)
@@ -2401,7 +2397,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -2434,7 +2430,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -2468,7 +2464,7 @@ class Profile extends CommonDBTM {
    /**
     * Make a select box for rights
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $values    array    of values to display
     * @param $name      integer  name of the dropdown
@@ -2514,7 +2510,7 @@ class Profile extends CommonDBTM {
    /**
     * Make a select box for a None Read Write choice
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name          select name
     * @param $options array of possible options:
@@ -2615,7 +2611,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function getInterfaces() {
 
@@ -2638,7 +2634,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $rights   boolean   (false by default)
    **/
@@ -2658,7 +2654,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value
    **/
@@ -2673,7 +2669,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getHelpdeskItemtypes() {
       global $CFG_GLPI;
@@ -2693,7 +2689,7 @@ class Profile extends CommonDBTM {
    /**
     * Dropdown profiles which have rights under the active one
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $options array of possible options:
     *    - name : string / name of the select (default is profiles_id)
@@ -2723,7 +2719,7 @@ class Profile extends CommonDBTM {
    /**
     * function to check one right of a user
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $user       integer                id of the user to check rights
     * @param $right      string                 right to check
@@ -2755,7 +2751,7 @@ class Profile extends CommonDBTM {
    /**
     * Get rights for an itemtype
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype   string   itemtype
     * @param $interface  string   (default 'central')
@@ -2775,7 +2771,7 @@ class Profile extends CommonDBTM {
    /**
     * Display rights choice matrix
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $rights array    possible:
     *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
@@ -2903,7 +2899,7 @@ class Profile extends CommonDBTM {
    /**
     * Get right linear right choice.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $elements  array   all pair identifier => label
     * @param $options   array   possible:

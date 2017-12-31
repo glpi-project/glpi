@@ -447,7 +447,7 @@ function toggleCheckboxes( container_id ) {
 /**
  * display "other" text input field in case of selecting "other" option
  *
- * @since version 0.84
+ * @since 0.84
  *
  * @param    select_object     DOM select object
  * @param    other_option_name the name of both the option and the text input field
@@ -642,7 +642,7 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
 
 
 /**
- * @since version 0.84
+ * @since 0.84
  *
  * @param tbl
  * @param img_name
@@ -684,7 +684,7 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 
 
 /**
- * @since version 0.84
+ * @since 0.84
  *
  * @param target
  * @param fields
@@ -707,7 +707,7 @@ function submitGetLink(target,fields) {
 
 
 /**
- * @since version 0.85
+ * @since 0.85
  *
  * @param id
 **/
@@ -721,7 +721,7 @@ function selectAll(id) {
 }
 
 /**
- * @since version 0.85
+ * @since 0.85
  *
  * @param id
 **/
@@ -733,7 +733,7 @@ function deselectAll(id) {
 /**
  * Set all the checkbox that refere to the criterion
  *
- * @since version 0.85
+ * @since 0.85
  *
  * @param criterion jquery criterion
  * @param reference the new reference object, boolean, id ... (default toggle)

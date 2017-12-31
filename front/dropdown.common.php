@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }

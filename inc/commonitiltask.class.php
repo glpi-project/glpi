@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -71,7 +67,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Get the item associated with the current object.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return object of the concerned item or false on error
    **/
@@ -105,7 +101,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * can update the parent ITIL Object ?
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return boolean
    **/
@@ -132,7 +128,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -153,7 +149,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name            (default '')
@@ -527,7 +523,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @see CommonDBTM::cleanDBonPurge()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function cleanDBonPurge() {
 
@@ -541,7 +537,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @see CommonDBTM::getRawName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRawName() {
 
@@ -639,7 +635,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getSearchOptionsToAddNew($itemtype = null) {
       $task = new static();

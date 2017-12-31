@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -47,7 +43,7 @@ class Ajax {
     * Create modal window
     * After display it using $name.dialog("open");
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string   $name    name of the js object
     * @param string   $url     URL to display in modal
@@ -219,7 +215,7 @@ class Ajax {
     * Create fixed modal window
     * After display it using $name.dialog("open");
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $name    name of the js object
     * @param array  $options Possible options:
@@ -279,7 +275,7 @@ class Ajax {
     * Create modal window in Iframe
     * After display it using Html::jsGetElementbyID($domid).dialog("open");
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param string $domid   DOM ID of the js object
     * @param string $url     URL to display in modal

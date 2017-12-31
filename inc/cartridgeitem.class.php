@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -62,7 +57,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuName() {
       return Cartridge::getTypeName(Session::getPluralNumber());
@@ -70,7 +65,7 @@ class CartridgeItem extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getPostAdditionalInfosForName
    **/

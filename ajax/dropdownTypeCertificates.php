@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
    $AJAX_INCLUDE = 1;
    include('../inc/includes.php');

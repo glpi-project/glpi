@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @since 9.2
-*/
+/**
+ * @since 9.2
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -514,7 +514,7 @@ class Certificate extends CommonDBTM {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getSpecificMassiveActions()
     * @param null $checkitem
@@ -536,7 +536,7 @@ class Certificate extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     * @param MassiveAction $ma
@@ -569,7 +569,7 @@ class Certificate extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
     * @param MassiveAction $ma

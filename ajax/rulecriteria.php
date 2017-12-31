@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
    include ('../inc/includes.php');

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -296,7 +292,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canCreate() {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
@@ -304,7 +300,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canUpdate() {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
@@ -312,7 +308,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canDelete() {
       return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
@@ -321,7 +317,7 @@ class Reservation extends CommonDBChild {
 
    /**
     * Overload canChildItem to make specific checks
-    * @since version 0.84
+    * @since 0.84
    **/
    function canChildItem($methodItem, $methodNotItem) {
 
@@ -785,7 +781,7 @@ class Reservation extends CommonDBChild {
    /**
     * compute periodicities for reservation
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $begin             begin of the initial reservation
     * @param $end               begin of the initial reservation

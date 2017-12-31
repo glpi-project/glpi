@@ -38,11 +38,6 @@ use \Html;
 use \Session;
 use \Toolbox;
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }

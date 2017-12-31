@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -61,7 +57,7 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * Get all the kind of devices available inside the system.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the types of CommonDevice available
    **/
@@ -77,7 +73,7 @@ abstract class CommonDevice extends CommonDropdown {
     * Get the assiociated item_device associated with this device
     * This method can be override, for instance by the plugin
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the types of CommonDevice available
    **/
@@ -94,7 +90,7 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuContent() {
 
@@ -126,7 +122,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field = []) {
@@ -152,7 +148,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * Overloaded from CommonDBTM
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return booleen
    **/
@@ -274,7 +270,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getNameField
     *
@@ -286,7 +282,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     * get the HTMLTable Header for the current device according to the type of the item that
     * is requesting
     *
@@ -332,7 +328,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
     *
@@ -434,7 +430,7 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * Criteria used for import function
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getImportCriteria() {
 
@@ -446,7 +442,7 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * @see CommonDropdown::defineTabs()
     *
-    * @since version 0.85
+    * @since 0.85
     */
    function defineTabs($options = []) {
 
@@ -461,7 +457,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function post_workOnItem() {
 
@@ -501,7 +497,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_addItem()
    **/
    function post_addItem() {
@@ -512,7 +508,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history = 1) {

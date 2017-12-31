@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -72,7 +68,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'b';
@@ -81,7 +77,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * @see CommonGLPI::getMenuName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuName() {
       if (!Session::haveRight('knowbase', READ)) {
@@ -99,7 +95,7 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canUpdate() {
       return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
@@ -158,7 +154,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Get the search page URL for the current classe
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $full path or relative one (true by default)
    **/
@@ -249,7 +245,7 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_addItem()
    **/
    function post_addItem() {
@@ -313,7 +309,7 @@ class KnowbaseItem extends CommonDBVisible {
 
 
    /**
-    * @since version 0.83
+    * @since 0.83
    **/
    function post_getFromDB() {
 
@@ -337,7 +333,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * @see CommonDBTM::cleanDBonPurge()
     *
-    * @since version 0.83.1
+    * @since 0.83.1
    **/
    function cleanDBonPurge() {
 
@@ -360,7 +356,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Check is this item if visible to everybody (anonymous users)
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return Boolean
    **/
@@ -398,7 +394,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
    * Return visibility joins to add to SQL
    *
-   * @since version 0.83
+   * @since 0.83
    *
    * @param $forceall force all joins (false by default)
    *
@@ -444,7 +440,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Return visibility SQL restriction to add
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return string restrict to add
    **/
@@ -493,7 +489,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Return visibility joins to add to DBIterator parameters
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param boolean $forceall force all joins (false by default)
     *
@@ -857,7 +853,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Increase the view counter of the current knowbaseitem
     *
-    * @since version 0.83
+    * @since 0.83
     */
    function updateCounter() {
       global $DB;
@@ -1027,7 +1023,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $options   $_GET
     *
@@ -1076,7 +1072,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Print out an HTML form for Search knowbase item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $options   $_GET
     *
@@ -1119,7 +1115,7 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Build request for showList
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $params array  (contains, knowbaseitemcategories_id, faq)
     * @param $type   string search type : browse / search (default search)
@@ -1768,7 +1764,7 @@ class KnowbaseItem extends CommonDBVisible {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

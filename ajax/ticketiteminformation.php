@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
    $AJAX_INCLUDE = 1;

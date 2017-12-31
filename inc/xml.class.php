@@ -30,18 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-// ----------------------------------------------------------------------
-// Based on the original file:
-//* Author  : Roberto B.               *
-//* E-Mail  : roberto.butti@libero.it  *
-//* Version : 1.0.3                    *
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }

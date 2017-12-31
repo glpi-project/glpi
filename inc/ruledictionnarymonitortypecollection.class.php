@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollection {
 
    // From RuleCollection

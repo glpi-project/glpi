@@ -30,16 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
- * @since version 0.85
+ * @since 0.85
  *
  * Change_Project Class
  *
@@ -72,7 +68,7 @@ class Change_Project extends CommonDBRelation{
    /**
     * Duplicate all changes from a project template to his clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param integer $oldid        ID of the item to clone
     * @param integer $newid        ID of the item cloned

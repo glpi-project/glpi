@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
- * @brief
- */
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -106,7 +102,7 @@ class DeviceSimcard extends CommonDevice {
     *
     * @see CommonDevice::getImportCriteria()
     *
-    * @since version 9.2
+    * @since 9.2
     **/
    function getImportCriteria() {
 

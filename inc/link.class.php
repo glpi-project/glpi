@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -115,7 +111,7 @@ class Link extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getEmpty()
    **/
@@ -505,7 +501,7 @@ class Link extends CommonDBTM {
    /**
     * Show Links for an item
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data

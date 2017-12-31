@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -99,7 +95,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
@@ -121,7 +117,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * @param $ID        ID of the licence
     * @param $number    licence count to check (default -1)
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return validity indicator
    **/
@@ -140,7 +136,7 @@ class SoftwareLicense extends CommonTreeDropdown {
     * Update validity indicator of a specific license
     * @param $ID ID of the licence
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing
    **/
@@ -158,7 +154,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function cleanDBonPurge() {
 
@@ -186,7 +182,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history = 1) {
@@ -198,7 +194,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_deleteFromDB()
    **/
    function post_deleteFromDB() {
@@ -207,7 +203,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getPreAdditionalInfosForName
    **/

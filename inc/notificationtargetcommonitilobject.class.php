@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -179,7 +175,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add linked group without supervisor to the notified user list
     *
-    * @since version 0.84.1
+    * @since 0.84.1
     *
     * @param integer $type type of linked groups
     *
@@ -477,7 +473,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add group assigned to the task
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param array $options Options
     *
@@ -1393,7 +1389,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add linked group without supervisor to the notified user list
     *
-    * @since version 0.84.1
+    * @since 0.84.1
     *
     * @param integer $type type of linked groups
     *
@@ -1528,7 +1524,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Add group assigned to the task
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param array $options Options
     *

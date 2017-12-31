@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class Supplier_Ticket
  *
- * @since version 0.84
+ * @since 0.84
 **/
 class Supplier_Ticket extends CommonITILActor {
 
@@ -56,7 +52,7 @@ class Supplier_Ticket extends CommonITILActor {
     * @param $items_id
     * @param $email
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function isSupplierEmail($items_id, $email) {
       global $DB;

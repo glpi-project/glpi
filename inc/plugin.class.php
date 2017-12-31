@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-// Based on cacti plugin system
-/** @file
-* @brief
-*/
+/**
+ * Based on cacti plugin system
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -55,7 +54,7 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $nb
    **/
@@ -67,7 +66,7 @@ class Plugin extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuName() {
       return static::getTypeName(Session::getPluralNumber());
@@ -76,7 +75,7 @@ class Plugin extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuContent()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -342,7 +341,7 @@ class Plugin extends CommonDBTM {
    /**
     * Check if all plugins are CSRF compliant
     *
-    * @since version 0.83.3
+    * @since 0.83.3
    **/
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
@@ -1368,7 +1367,7 @@ class Plugin extends CommonDBTM {
     * @param $plugin String name of the plugin
     * @param $info   String wanted info (name, version, ...), NULL for all
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return String or Array (when $info is NULL)
    **/

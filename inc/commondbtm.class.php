@@ -37,9 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/** @file
-* @brief
-*/
+
 
 /**
 *  Common DataBase Table Manager Class - Persistent Object
@@ -176,7 +174,7 @@ class CommonDBTM extends CommonGLPI {
     * we can replace "WHERE" to make complex SQL JOINED queries (for instance, see
     * User::getFromDBbyEmail()).
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $query the "WHERE" or "JOIN" part of the SQL query
     *
@@ -396,7 +394,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get type to register log on
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return array array of type + ID
    **/
@@ -678,7 +676,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Clean translations associated to a dropdown
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return void
    **/
@@ -766,7 +764,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Save the input data in the Session
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return void
    **/
@@ -778,7 +776,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Clear the saved data stored in the session
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return void
    **/
@@ -790,7 +788,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the data saved in the session
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param array $default Array of value used if session is empty
     *
@@ -1052,7 +1050,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param array $input datas used to add the item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return array the modified $input array
    **/
@@ -1671,7 +1669,7 @@ class CommonDBTM extends CommonGLPI {
     * Have I the global right to add an item for the Object
     * May be overloaded if needed (ex Ticket)
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string $type itemtype of object to add
     *
@@ -1804,7 +1802,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * Default is true and check entity if the objet is entity assign
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return booleen
    **/
@@ -1866,7 +1864,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param integer $ID ID to check
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return booleen
    **/
@@ -2045,7 +2043,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 9.1
+    * @since 9.1
     *
     * @param array $options Options
     *
@@ -2261,7 +2259,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Initialize item and check right before managing the edit form
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param integer $ID      ID of the item/template
     * @param array   $options Array of possible options:
@@ -2490,7 +2488,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * is the current object a new  one
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return boolean
    **/
@@ -2651,7 +2649,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param boolean $recursive set true to accept recursive items of ancestors
     *                           of active entities (View case for example) (default false)
-    * @since version 0.85
+    * @since 0.85
     *
     * @return booleen
    **/
@@ -2956,7 +2954,7 @@ class CommonDBTM extends CommonGLPI {
     * Return the linked items (in computers_items)
     *
     * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-    * @since version 0.84.4
+    * @since 0.84.4
    **/
    function getLinkedItems() {
       return [];
@@ -2967,7 +2965,7 @@ class CommonDBTM extends CommonGLPI {
     * Return the count of linked items (in computers_items)
     *
     * @return integer number of linked items
-    * @since version 0.84.4
+    * @since 0.84.4
    **/
    function getLinkedItemsCount() {
 
@@ -3122,7 +3120,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * Get field used for name
     *
@@ -3134,7 +3132,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * Get field used for completename
     *
@@ -3150,7 +3148,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @see CommonDBTM::getNameField
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string
    **/
@@ -3168,7 +3166,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @see CommonDBTM::getCompleteNameField
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string
    **/
@@ -3240,7 +3238,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get additionals information to add before name
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return string string to add
    **/
@@ -3251,7 +3249,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get additionals information to add after name
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return string string to add
    **/
@@ -3424,7 +3422,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get all the massive actions available for the current class regarding given itemtype
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array      $actions    array of the actions to update
     * @param string     $itemtype   the type of the item for which we want the actions
@@ -3441,7 +3439,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Class-specific method used to show the fields to specify the massive action
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param MassiveAction $ma the current massive action object
     *
@@ -3455,7 +3453,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Class specific execution of the massive action (new system) by itemtypes
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param MassiveAction $ma   the current massive action object
     * @param CommonDBTM    $item the item on which apply the massive action
@@ -3471,7 +3469,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the standard massive actions which are forbidden
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * This should be overloaded in Class
     *
@@ -3485,7 +3483,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the specific massive actions
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * This should be overloaded in Class
     *
@@ -3559,7 +3557,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get search options
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array the search option array
    **/
@@ -3576,7 +3574,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Return a search option ID by looking for a value of a specific field and maybe a specific table
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string $field the field in which looking for the value (for example : table, name, etc)
     * @param string $value the value to look for in the field
@@ -4028,7 +4026,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * display a specific field value
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string       $field   name of the field
     * @param string|array $values  with the value to display or a Single value
@@ -4044,7 +4042,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * display a field using standard system
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param integer|string|array $field_id_or_search_options id of the search option field
     *                                                             or field name
@@ -4251,7 +4249,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * display a specific field selection system
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string       $field   name of the field
     * @param string       $name    name of the select (if empty use linkfield) (default '')
@@ -4268,7 +4266,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Select a field using standard system
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param integer|string|array $field_id_or_search_options id of the search option field
     *                                                             or field name
@@ -4661,7 +4659,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get rights for an item _ may be overload by object
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param string $interface (defalt 'central')
     *
@@ -4694,7 +4692,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Generate link
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param string     $link original string content
     * @param CommonDBTM $item item used to make replacements
@@ -4711,7 +4709,7 @@ class CommonDBTM extends CommonGLPI {
     * create document if needed
     * create link from document to CommonDBTM object
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param array $input   Input data
     * @param array $options array with theses keys

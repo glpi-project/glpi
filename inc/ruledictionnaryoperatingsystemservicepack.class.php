@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown {
 
 

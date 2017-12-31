@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
  * Note : GLPI's core supports locks for objects. It's up to the external inventory tool to manage
  * locks for fields
  *
- * @since version 0.84
+ * @since 0.84
  **/
 class Lock {
 
@@ -455,7 +455,7 @@ class Lock {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -473,7 +473,7 @@ class Lock {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -508,7 +508,7 @@ class Lock {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

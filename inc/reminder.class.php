@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -104,7 +100,7 @@ class Reminder extends CommonDBVisible {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::canPurgeItem()
    **/
@@ -153,7 +149,7 @@ class Reminder extends CommonDBVisible {
    /**
     * @see CommonDBTM::cleanDBonPurge()
     *
-    * @since version 0.83.1
+    * @since 0.83.1
    **/
    function cleanDBonPurge() {
       global $DB;
@@ -416,7 +412,7 @@ class Reminder extends CommonDBVisible {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -436,7 +432,7 @@ class Reminder extends CommonDBVisible {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -1137,7 +1133,7 @@ class Reminder extends CommonDBVisible {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

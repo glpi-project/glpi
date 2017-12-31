@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 include ('../inc/includes.php');
 
 $dropdown = new EnclosureModel();

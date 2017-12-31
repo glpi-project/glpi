@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -82,7 +78,7 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $groups_id
     * @param $condition    (default '')
@@ -272,7 +268,7 @@ class Group_User extends CommonDBRelation{
    /**
     * Show form to add a user in current group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $group                    Group object
     * @param $used_ids        Array    of already add users
@@ -319,7 +315,7 @@ class Group_User extends CommonDBRelation{
    /**
     * Retrieve list of member of a Group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $group              Group object
     * @param $members   Array    filled on output of member (filtered)
@@ -392,7 +388,7 @@ class Group_User extends CommonDBRelation{
    /**
     * Show users of a group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $group  Group object: the group
    **/
@@ -551,7 +547,7 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
@@ -577,7 +573,7 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
    **/

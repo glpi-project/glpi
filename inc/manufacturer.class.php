@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -51,7 +47,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field = []) {
@@ -65,7 +61,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::getAdditionalFields()
    **/
    function getAdditionalFields() {
@@ -80,7 +76,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function post_workOnItem() {
 
@@ -120,7 +116,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_addItem()
    **/
    function post_addItem() {
@@ -131,7 +127,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history = 1) {
@@ -170,7 +166,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $base                  HTMLTableBase object
@@ -193,7 +189,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $row                HTMLTableRow object (default NULL)
     * @param $item               CommonDBTM object (default NULL)

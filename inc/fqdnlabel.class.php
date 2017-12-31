@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
 */
 
-/** @file
-* @brief Create an abstration layer for any kind of internet label
-*/
+/**
+ * Create an abstration layer for any kind of internet label
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

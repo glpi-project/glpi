@@ -28,11 +28,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
-*/
-
-/** @file
-* @brief
-*/
+* */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  NetworkAlias Class
  *
- * @since version 0.84
+ * @since 0.84
 **
  */
 class NetworkAlias extends FQDNLabel {
@@ -150,7 +146,7 @@ class NetworkAlias extends FQDNLabel {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $base                  HTMLTableBase object
@@ -181,7 +177,7 @@ class NetworkAlias extends FQDNLabel {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $row                HTMLTableRow object (default NULL)
     * @param $item               CommonDBTM object (default NULL)

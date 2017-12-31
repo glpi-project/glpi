@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -94,7 +90,7 @@ class ComputerDisk extends CommonDBChild {
    /**
     * @see CommonGLPI::defineTabs()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function defineTabs($options = []) {
 
@@ -109,7 +105,7 @@ class ComputerDisk extends CommonDBChild {
    /**
     * Duplicate all disks from a computer template to his clone
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $oldid
     * @param $newid

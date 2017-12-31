@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -42,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * NotificationTarget Class
  *
- * @since version 0.84
+ * @since 0.84
 **/
 class NotificationTarget extends CommonDBChild {
 
@@ -155,7 +151,7 @@ class NotificationTarget extends CommonDBChild {
     * @param string  $type             type of the target to retrive
     * @param integer $ID               ID of the target to retrieve
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return boolean
    **/
@@ -173,7 +169,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
-    * @since version 0.84 (new parameter)
+    * @since 0.84 (new parameter)
     *
     * @param string  $event     notification event
     * @param array   $infos     destination of the notification
@@ -226,7 +222,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @return message id for notification
    **/
@@ -522,7 +518,7 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getDefaultUserType() {
 
@@ -534,7 +530,7 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $usertype
     * @param $redirect
@@ -1246,7 +1242,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Count Notification for a group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $group Group object
     *
@@ -1271,7 +1267,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Display notification registered for a group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $group Group object
     *
@@ -1442,7 +1438,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get Group of the item
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @deprecated 9.2 Use NotificationTarget::addItemGroup()
     *
@@ -1456,7 +1452,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get Group supervisor of the item
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @deprecated 9.2 Use NotificationTarget::addItemGroupSupervisor()
     *
@@ -1471,7 +1467,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get Group without supervisor of the item
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @deprecated 9.2 Use NotificationTarget::addItemGroupWithoutSupervisor()
     *

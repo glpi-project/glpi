@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -102,7 +98,7 @@ class Search {
    /**
     * Get datas based on search parameters
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype            item type to manage
     * @param $params              search params passed to prepareDatasForSearch function
@@ -123,7 +119,7 @@ class Search {
    /**
     * Prepare search criteria to be used for a search
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype            item type
     * @param $params        array of parameters
@@ -305,7 +301,7 @@ class Search {
     *                    may be an array a request : need to add counts
     *                    maybe empty : use search one to count
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $data    array of search datas prepared to generate SQL
     *
@@ -894,7 +890,7 @@ class Search {
     *      cols : columns definition
     *      rows : rows data
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array   $data      array of search data prepared to get data
     * @param boolean $onlycount If we just want to count results
@@ -915,7 +911,7 @@ class Search {
     *      cols : columns definition
     *      rows : rows data
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array   $data      array of search data prepared to get data
     * @param boolean $onlycount If we just want to count results
@@ -1591,7 +1587,7 @@ class Search {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $is_deleted
     *
@@ -1848,7 +1844,7 @@ class Search {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype
    **/
@@ -1866,7 +1862,7 @@ class Search {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getLogicalOperators() {
 
@@ -6094,7 +6090,7 @@ class Search {
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string to display
    **/
@@ -6124,7 +6120,7 @@ class Search {
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string to display
    **/
@@ -6365,7 +6361,7 @@ class Search {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $pattern
     * @param $subject

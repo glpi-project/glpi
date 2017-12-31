@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (strpos($_SERVER['PHP_SELF'], "dropdownNotificationTemplate.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");

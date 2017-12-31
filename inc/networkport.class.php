@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -73,7 +69,7 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getPreAdditionalInfosForName
    **/
@@ -89,7 +85,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * \brief get the list of available network port type.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return array of available type of network ports
    **/
@@ -121,7 +117,7 @@ class NetworkPort extends CommonDBChild {
     * The instantiation rely on the instantiation_type field and the id of the NetworkPort. If the
     * network port exists, but not its instantiation, then, the instantiation will be empty.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return the instantiation object or false if the type of instantiation is not known
    **/
@@ -148,7 +144,7 @@ class NetworkPort extends CommonDBChild {
     * instantiation and that it is not equal to current ones. Update the NetworkPort and delete
     * the previous instantiation. It is up to the caller to create the new instantiation !
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $new_instantiation_type the name of the new instaniation type
     *
@@ -249,7 +245,7 @@ class NetworkPort extends CommonDBChild {
     * This method must be call before NetworkPort::add or NetworkPort::update in case of NetworkPort
     * form. Otherwise, the entry of the database may contain wrong values.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input
     *
@@ -299,7 +295,7 @@ class NetworkPort extends CommonDBChild {
     * after NetworkPort::add or NetworkPort::update otherwise, the networkport ID will not be known
     * and the dependencies won't have a valid items_id field.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $history   (default 1)
     *
@@ -465,7 +461,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * Get available display options array
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return all the options
    **/
@@ -1093,7 +1089,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * Clone the current NetworkPort when the item is clone
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype     the type of the item that was clone
     * @param $old_items_id the id of the item that was clone
@@ -1207,7 +1203,7 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
    **/

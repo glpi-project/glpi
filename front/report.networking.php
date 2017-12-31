@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief show choices for network reports
-*/
+/**
+ * Show choices for network reports
+ */
 
 include ('../inc/includes.php');
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -45,7 +41,7 @@ class TicketTask  extends CommonITILTask {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function getTypeName($nb = 0) {
       return _n('Ticket task', 'Ticket tasks', $nb);
@@ -231,7 +227,7 @@ class TicketTask  extends CommonITILTask {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/
@@ -257,7 +253,7 @@ class TicketTask  extends CommonITILTask {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::showFormButtons()
    **/

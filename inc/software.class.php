@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -61,7 +57,7 @@ class Software extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuShorcut() {
       return 's';
@@ -218,7 +214,7 @@ class Software extends CommonDBTM {
     *
     * @param $ID ID of the licence
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing
    **/
@@ -371,7 +367,7 @@ class Software extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

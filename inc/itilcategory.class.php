@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -261,7 +257,7 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item         CommonGLPI object
     * @param $withtemplate (default 0)

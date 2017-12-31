@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Backup class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 
 
@@ -54,7 +50,7 @@ class Backup extends CommonGLPI {
 
 
    /**
-    * @since version 0.85.3
+    * @since 0.85.3
     **/
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
@@ -67,7 +63,7 @@ class Backup extends CommonGLPI {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

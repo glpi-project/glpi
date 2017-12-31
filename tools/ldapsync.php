@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since versin 0.83
-*/
+/**
+ * @since 0.83
+ */
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);

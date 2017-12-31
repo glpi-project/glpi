@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -95,7 +91,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function loadActors() {
 
@@ -230,7 +226,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is a supplier linked to the object ?
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $type               type to search (see constants)
     * @param $suppliers_id  integer supplier ID
@@ -287,7 +283,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * get users linked to an object including groups ones
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $type type to search (see constants)
     *
@@ -314,7 +310,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * get suppliers linked to a object
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $type type to search (see constants)
     *
@@ -387,7 +383,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * count suppliers linked to object by type or global
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $type type to search (see constants) / 0 for all (default 0)
     *
@@ -476,7 +472,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Count active ITIL Objects requested by a user
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $users_id integer ID of the User
     *
@@ -507,7 +503,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Count active ITIL Objects assigned to a user
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $users_id integer ID of the User
     *
@@ -538,7 +534,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Count active ITIL Objects assigned to a group
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $groups_id integer ID of the User
     *
@@ -569,7 +565,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Count active ITIL Objects assigned to a supplier
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $suppliers_id integer ID of the Supplier
     *
@@ -1330,7 +1326,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * Compute default values for Add
     * (to be passed in prepareInputForAdd before and after rules if needed)
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input
     *
@@ -1636,8 +1632,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
-    * @since version 0.85 must have param $input
+    * @since 0.84
+    * @since 0.85 must have param $input
    **/
    private function addAdditionalActors($input) {
 
@@ -1790,7 +1786,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Compute Priority
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $urgency   integer from 1 to 5
     * @param $impact    integer from 1 to 5
@@ -1912,7 +1908,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Urgency
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $options array of options
     *       - name     : select name (default is urgency)
@@ -2023,7 +2019,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Impact
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $options   array of options
     *  - name     : select name (default is impact)
@@ -2149,7 +2145,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object closed status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -2164,7 +2160,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object solved status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -2178,7 +2174,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object all status list without solved and closed status
     *
-    * @since version 9.2.1
+    * @since 9.2.1
     *
     * @return array
    **/
@@ -2203,7 +2199,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object new status list
     *
-    * @since version 0.83.8
+    * @since 0.83.8
     *
     * @return an array
    **/
@@ -2218,7 +2214,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object process status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -2233,7 +2229,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * check is the user can change from / to a status
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $old       string value of old/current status
     * @param $new       string value of target status
@@ -2259,7 +2255,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object status allowed for a current status
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $current   status
     *
@@ -2284,7 +2280,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is the ITIL object status exists for the object
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $status   status
     *
@@ -2300,7 +2296,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of object status
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $options   array of options
     *  - name     : select name (default is status)
@@ -2347,7 +2343,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object status Name
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value     status ID
    **/
@@ -2364,7 +2360,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $type      integer : user type
     *
-    * @since version 0.84.6
+    * @since 0.84.6
     *
     * @return get typename
    **/
@@ -2439,7 +2435,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show suppliers associated
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
@@ -2519,7 +2515,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * display a value according to a field
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field     String         name of the field
     * @param $values    String / Array with the value to display
@@ -2554,7 +2550,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name            (default '')
@@ -2599,7 +2595,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -2644,7 +2640,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -2745,7 +2741,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function getSearchOptionsMain() {
       global $CFG_GLPI;
@@ -2961,7 +2957,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function getSearchOptionsSolution() {
       $tab[] = [
@@ -3272,7 +3268,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get status icon URL
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $status status to get icon URL
     *
@@ -5160,7 +5156,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Display a line for an object
     *
-    * @since version 0.85 (befor in each object with differents parameters)
+    * @since 0.85 (befor in each object with differents parameters)
     *
     * @param $id                 Integer  ID of the object
     * @param $options            array of options

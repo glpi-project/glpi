@@ -30,13 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 include ('../inc/includes.php');

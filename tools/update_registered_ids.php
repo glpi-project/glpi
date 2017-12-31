@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
- * @since version 0.85
-* @brief Purge history with some criteria
-*/
+/**
+ * @since 0.85
+ */
 
 include ('../inc/includes.php');
 

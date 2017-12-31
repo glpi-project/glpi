@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * LevelAgreement base Class for OLA & SLA
- * @since version 9.2
+ * @since 9.2
 **/
 
 abstract class LevelAgreement extends CommonDBChild {

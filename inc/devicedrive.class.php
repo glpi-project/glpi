@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -106,7 +102,7 @@ class DeviceDrive extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
    **/
@@ -133,7 +129,7 @@ class DeviceDrive extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
@@ -169,7 +165,7 @@ class DeviceDrive extends CommonDevice {
     *
     * @see CommonDevice::getImportCriteria()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getImportCriteria() {
 

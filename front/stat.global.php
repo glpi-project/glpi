@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");

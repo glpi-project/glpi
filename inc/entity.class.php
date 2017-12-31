@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -122,7 +118,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function pre_deleteItem() {
       global $GLPI_CACHE;
@@ -156,7 +152,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-   * @since version 0.84
+   * @since 0.84
    **/
    static function canUpdate() {
 
@@ -172,7 +168,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::canViewItem()
    **/
@@ -193,7 +189,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Check right on each field before add / update
     *
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $input array (form)
     *
@@ -239,7 +235,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
    **/
    function prepareInputForAdd($input) {
       global $DB;
@@ -270,7 +266,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
    **/
    function prepareInputForUpdate($input) {
 
@@ -322,7 +318,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -350,7 +346,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -1201,7 +1197,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.83 (before addRule)
+    * @since 0.83 (before addRule)
     *
     * @param $input array of values
    **/
@@ -1289,7 +1285,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $entity Entity object
    **/
@@ -1378,7 +1374,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
    **/
@@ -1464,7 +1460,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
    **/
@@ -1622,7 +1618,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
    **/
@@ -2012,7 +2008,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $field
     * @param $value must be addslashes
@@ -2033,7 +2029,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $value
    **/
@@ -2043,7 +2039,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value
    **/
@@ -2053,7 +2049,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $value
    **/
@@ -2063,7 +2059,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $value
    **/
@@ -2073,7 +2069,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $entities_id
    **/
@@ -2095,7 +2091,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
    **/
@@ -2332,7 +2328,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Retrieve data of current entity or parent entity
     *
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $fieldref        string   name of the referent field to know if we look at parent entity
     * @param $entities_id
@@ -2388,7 +2384,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * Generate link for ticket satisfaction
     *
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $ticket ticket object
     *
@@ -2506,7 +2502,7 @@ class Entity extends CommonTreeDropdown {
    /**
     * get value for auto_assign_mode
     *
-    * @since version 0.84 (created in version 0.83 in entitydata.class)
+    * @since 0.84 (created in version 0.83 in entitydata.class)
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -2529,7 +2525,7 @@ class Entity extends CommonTreeDropdown {
    }
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $options array
    **/
@@ -2551,7 +2547,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84 (before in entitydata.class)
+    * @since 0.84 (before in entitydata.class)
     *
     * @param $field
     * @param $values
@@ -2728,7 +2724,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -2847,7 +2843,7 @@ class Entity extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

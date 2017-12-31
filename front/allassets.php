@@ -30,10 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.84 (before states.php)
-*/
+/**
+ * Filename was previously states.php
+ * @since 0.84
+ */
 
 include ('../inc/includes.php');
 

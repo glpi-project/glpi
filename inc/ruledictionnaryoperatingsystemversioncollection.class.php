@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystemversions";
    public $menu_option = "os_version";

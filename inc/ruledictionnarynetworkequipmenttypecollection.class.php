@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_networkequipmenttypes";
    public $menu_option = "type.networking";

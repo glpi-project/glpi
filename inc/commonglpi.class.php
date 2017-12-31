@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -86,7 +82,7 @@ class CommonGLPI {
    /**
     * Register tab on an objet
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string $typeform object class name to add tab on form
     * @param string $typetab  object class name which manage the tab
@@ -107,7 +103,7 @@ class CommonGLPI {
     * Get the array of Tab managed by other types
     * Getter for plugin (ex PDF) to access protected property
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string $typeform object class name to add tab on form
     *
@@ -143,7 +139,7 @@ class CommonGLPI {
    /**
     * return all the tabs for current object
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param array $options Options
     *     - withtemplate is a template view ?
@@ -223,7 +219,7 @@ class CommonGLPI {
    /**
     * Add default tab for form
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array $ong Tabs
     *
@@ -244,7 +240,7 @@ class CommonGLPI {
    /**
     * get menu content
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array array for menu
    **/
@@ -316,7 +312,7 @@ class CommonGLPI {
    /**
     * get additional menu content
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array array for menu
    **/
@@ -328,7 +324,7 @@ class CommonGLPI {
    /**
     * Get forbidden actions for menu : may be add / template
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array array of forbidden actions
    **/
@@ -340,7 +336,7 @@ class CommonGLPI {
    /**
     * Get additional menu options
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array array of additional options
    **/
@@ -352,7 +348,7 @@ class CommonGLPI {
    /**
     * Get additional menu links
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array array of additional options
    **/
@@ -364,7 +360,7 @@ class CommonGLPI {
    /**
     * Get menu shortcut
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string character menu shortcut key
    **/
@@ -376,7 +372,7 @@ class CommonGLPI {
    /**
     * Get menu name
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string character menu shortcut key
    **/
@@ -391,7 +387,7 @@ class CommonGLPI {
     * NB : Only called for existing object
     *      Must check right on what will be displayed + template
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param CommonGLPI $item         Item on which the tab need to be displayed
     * @param boolean    $withtemplate is a template object ? (default 0)
@@ -406,7 +402,7 @@ class CommonGLPI {
    /**
     * show Tab content
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param CommonGLPI $item         Item on which the tab need to be displayed
     * @param integer    $tabnum       tab number (default 1)
@@ -535,7 +531,7 @@ class CommonGLPI {
    /**
     * is the current object a new  one - Always false here (virtual Objet)
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return boolean
    **/
@@ -547,7 +543,7 @@ class CommonGLPI {
     /**
     * is the current object a new one - Always true here (virtual Objet)
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param integer $ID Id to check
     *
@@ -597,7 +593,7 @@ class CommonGLPI {
    /**
     * Get the form page URL for the current class and point to a specific ID
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param integer $id   Id (default 0)
     * @param boolean $full Full path or relative one (true by default)
@@ -616,7 +612,7 @@ class CommonGLPI {
    /**
     * Show primary form
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param array $options Options
     *
@@ -652,7 +648,7 @@ class CommonGLPI {
    /**
     * Show tabs content
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array $options parameters to add to URLs and ajax
     *     - withtemplate is a template view ?
@@ -920,7 +916,7 @@ class CommonGLPI {
    /**
     * check if main is always display in current Layout
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @return boolean
     */
@@ -932,7 +928,7 @@ class CommonGLPI {
    /**
     * check if page is excluded for splitted layouts
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @return boolean
     */
@@ -953,7 +949,7 @@ class CommonGLPI {
    /**
     * Display item with tabs
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array $options Options
     *
@@ -1033,7 +1029,7 @@ class CommonGLPI {
    /**
     * Update $_SESSION to set the display options.
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param array  $input        data to update
     * @param string $sub_itemtype sub itemtype if needed (default '')
@@ -1083,7 +1079,7 @@ class CommonGLPI {
    /**
     * Load display options to $_SESSION
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $sub_itemtype sub itemtype if needed (default '')
     *
@@ -1133,7 +1129,7 @@ class CommonGLPI {
    /**
     * Show display options
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $sub_itemtype sub_itemtype if needed (default '')
     *
@@ -1189,7 +1185,7 @@ class CommonGLPI {
    /**
     * Get available display options array
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return array all the options
    **/
@@ -1201,7 +1197,7 @@ class CommonGLPI {
    /**
     * Get link for display options
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $sub_itemtype sub itemtype if needed for display options
     *
@@ -1232,7 +1228,7 @@ class CommonGLPI {
    /**
     * Get error message for item
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param integer $error  error type see define.php for ERROR_*
     * @param istring $object string to use instead of item link (default '')

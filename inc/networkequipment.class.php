@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -68,7 +64,7 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuOptions() {
 
@@ -85,7 +81,7 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    // bug in translation: https://github.com/glpi-project/glpi/issues/1970
    /*static function getMenuName() {
@@ -94,7 +90,7 @@ class NetworkEquipment extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::cleanDBonPurge()
    **/
@@ -120,7 +116,7 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function useDeletedToLockIfDynamic() {
       return false;

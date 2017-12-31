@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 ///update the database to the 0.31 version
 function updateDbTo031() {
    global $DB;

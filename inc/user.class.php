@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-// And Marco Gaiarin for ldap features
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -71,7 +66,7 @@ class User extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuShorcut() {
       return 'u';
@@ -80,7 +75,7 @@ class User extends CommonDBTM {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getAdditionalMenuOptions() {
 
@@ -182,7 +177,7 @@ class User extends CommonDBTM {
     * @param $entities_id : entity to use
     * @param $is_recursive : load recursive entity
     *
-    * @since version 0.83.7
+    * @since 0.83.7
    **/
    function loadMinimalSession($entities_id, $is_recursive) {
       global $CFG_GLPI;
@@ -436,7 +431,7 @@ class User extends CommonDBTM {
    /**
     * Retrieve an item from the database using it's dn
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $user_dn dn of the user
     *
@@ -1138,7 +1133,7 @@ class User extends CommonDBTM {
    /**
     * Synchronise picture (photo) of the user
     *
-    * ??@since version 0.85
+    * ??@since 0.85
     *
     * @return string : the filename to be stored in user picture field
    **/
@@ -1753,7 +1748,7 @@ class User extends CommonDBTM {
    /**
     * Function that try to load from the SSO server the user information...
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getFromSSO() {
       global $DB, $CFG_GLPI;
@@ -2221,7 +2216,7 @@ class User extends CommonDBTM {
     *
     * @param $userid Interger ID of the user
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function showPersonalInformation($userid) {
       global $CFG_GLPI;
@@ -2635,7 +2630,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -2659,7 +2654,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -3111,7 +3106,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -3140,7 +3135,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -3166,7 +3161,7 @@ class User extends CommonDBTM {
    /**
     * Get all groups where the current user have delegating
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $entities_id ID of the entity to restrict (default '')
     *
@@ -4086,7 +4081,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $login
@@ -4524,7 +4519,7 @@ class User extends CommonDBTM {
    /**
     * Get picture URL from picture field
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $picture picture field
     *
@@ -4543,7 +4538,7 @@ class User extends CommonDBTM {
    /**
     * Get picture URL from picture field
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $picture picture field
     *
@@ -4568,7 +4563,7 @@ class User extends CommonDBTM {
    /**
     * Drop existing files for user picture
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $picture picture field
     *
@@ -4593,7 +4588,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

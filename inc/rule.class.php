@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -110,7 +106,7 @@ class Rule extends CommonDBTM {
    /**
     *  Get correct Rule object for specific rule
     *
-    *  @since version 0.84
+    *  @since 0.84
     *
     *  @param $rules_id ID of the rule
    **/
@@ -131,7 +127,7 @@ class Rule extends CommonDBTM {
     *                 2 => Condition2,
     *                 3 => Condition1&Condition2)
     *
-    *  @since version 0.85
+    *  @since 0.85
     *
     *  @return array of conditions
    **/
@@ -150,7 +146,7 @@ class Rule extends CommonDBTM {
    /**
     * Display a dropdown with all the rule conditions
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options      array of parameters
    **/
@@ -193,7 +189,7 @@ class Rule extends CommonDBTM {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -535,7 +531,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @return string
    **/
@@ -566,7 +562,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -623,7 +619,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -933,7 +929,7 @@ class Rule extends CommonDBTM {
    /**
     * Display a dropdown with all the rule matching
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $options      array of parameters
    **/
@@ -1238,7 +1234,7 @@ class Rule extends CommonDBTM {
    /**
     * Display the dropdown of the criterias for the rule
     *
-    * @since version 0.84 new proto
+    * @since 0.84 new proto
     *
     * @param $options   array of options : may be readonly
     *
@@ -1496,7 +1492,7 @@ class Rule extends CommonDBTM {
    /**
     *  Are criterias valid to be processed
     *
-    *  @since version 0.85
+    *  @since 0.85
     *
     * @param $options
     *
@@ -2601,7 +2597,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getAllCriteria() {
 
@@ -2616,7 +2612,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    */
    function getAllActions() {
       return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
@@ -2631,7 +2627,7 @@ class Rule extends CommonDBTM {
    /**
     *  Execute a hook if necessary and merge results
     *
-    *  @since version 0.84
+    *  @since 0.84
     *
     * @param $hook            the hook to execute
     * @param $params   array  input parameters
@@ -3091,7 +3087,7 @@ class Rule extends CommonDBTM {
    /**
     * Generate unique id for rule based on server name, glpi directory and basetime
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return uuid
    **/
@@ -3109,7 +3105,7 @@ class Rule extends CommonDBTM {
    /**
     * Display debug information for current object
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function showDebug() {
 

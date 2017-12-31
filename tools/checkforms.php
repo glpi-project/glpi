@@ -30,11 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Check forms opened / closed
-*/
+/**
+ * Check forms opened / closed
+ * @since 0.83.3
+ */
 
-// since version 0.83.3
 define('GLPI_ROOT', realpath('..'));
 
 $dirs = [GLPI_ROOT,GLPI_ROOT.'/inc/',

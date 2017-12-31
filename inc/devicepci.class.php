@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -52,7 +48,7 @@ class DevicePci extends CommonDevice {
 
    /**
     * @see CommonDevice::getAdditionalFields()
-    * @since version 0.85
+    * @since 0.85
     */
    function getAdditionalFields() {
 

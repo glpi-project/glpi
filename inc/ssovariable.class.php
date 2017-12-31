@@ -30,15 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
- * @since version 0.84
+ * @since 0.84
 **/
 class SsoVariable extends CommonDropdown {
 
@@ -60,7 +57,7 @@ class SsoVariable extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canPurge() {
       return static::canUpdate();

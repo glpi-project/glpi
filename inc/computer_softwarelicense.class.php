@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -686,7 +682,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Count number of licenses for a software
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param integer $softwares_id Software ID
     *

@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * DropdownTranslation Class
  *
- *@since version 0.85
+ *@since 0.85
 **/
 class DropdownTranslation extends CommonDBChild {
 

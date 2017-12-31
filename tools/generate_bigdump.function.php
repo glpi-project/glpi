@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 // BIG DUMP GENERATION FOR THE 0.6 VERSION
 
 $IP       = [10, 0, 0, 0];
@@ -135,7 +130,7 @@ function getNextMAC() {
 
 /**  Generate bigdump : Create networkport ethernet
  *
- * @since version 0.84
+ * @since 0.84
  *
  * @param $itemtype        item type
  * @param $items_id        item ID

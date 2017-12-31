@@ -30,16 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /// Class Profile_RSSFeed
-/// @since version 0.84
+/// @since 0.84
 class Profile_RSSFeed extends CommonDBRelation {
 
    // From CommonDBRelation

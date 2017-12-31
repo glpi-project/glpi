@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -51,7 +47,7 @@ class Report extends CommonGLPI{
 
 
    /**
-    * @since version 0.85.3
+    * @since 0.85.3
    **/
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
@@ -66,7 +62,7 @@ class Report extends CommonGLPI{
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuShorcut() {
       return 'e';
@@ -173,7 +169,7 @@ class Report extends CommonGLPI{
    /**
     * Show Default Report
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function showDefaultReport() {
       global $DB;
@@ -283,7 +279,7 @@ class Report extends CommonGLPI{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $networkport_prefix
     * @param $networkport_crit
@@ -440,7 +436,7 @@ class Report extends CommonGLPI{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

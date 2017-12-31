@@ -30,17 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 
 /**
- * @since version 0.84
+ * @since 0.84
  *
  * The base entity for the table. The entity is the base of kind of cell (header or not). It
  * provides facilities to manage the cells such as attributs or specific content (mixing of strings

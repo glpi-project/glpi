@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -49,7 +45,7 @@ class Toolbox {
    /**
     * Wrapper for max_input_vars
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return integer
    **/
@@ -66,7 +62,7 @@ class Toolbox {
    /**
     * Convert first caracter in upper
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $str string to change
     *
@@ -85,7 +81,7 @@ class Toolbox {
    /**
     * to underline shortcut letter
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $str       string   from dico
     * @param $shortcut           letter of shortcut
@@ -333,7 +329,7 @@ class Toolbox {
    /**
     *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
     *
@@ -433,7 +429,7 @@ class Toolbox {
     * @param $hide   String    call to hide (but display script/line) (default '')
     * @param $skip   Array     of call to not display at all
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string if $log is false
    **/
@@ -611,7 +607,7 @@ class Toolbox {
     * @param $debug_vars   Boolean  (default NULL)
     * @param $log_in_files Boolean  (default NULL)
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null) {
       global $CFG_GLPI;
@@ -842,7 +838,7 @@ class Toolbox {
    /**
     * Check is current memory_limit is enough for GLPI
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return 0 if PHP not compiled with memory_limit support
     *         1 no memory limit (memory_limit = -1)
@@ -1012,7 +1008,7 @@ class Toolbox {
    /**
     * Check SELinux configuration
     *
-    * @since version 0.84
+    * @since 0.84
     * @param $fordebug    Boolean true is displayed in system information
     *
     *  @return integer 0: OK, 1:Warning, 2:Error
@@ -1179,7 +1175,7 @@ class Toolbox {
     * Resize a picture to the new size
     * Always produce a JPG file!
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $source_path   string   path of the picture to be resized
     * @param $dest_path     string   path of the new resized picture
@@ -1860,7 +1856,7 @@ class Toolbox {
    /**
     * Parse imap open connect string
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value string: connect string
     * @param $forceport boolean: force compute port if not set (false by default)
@@ -2150,7 +2146,7 @@ class Toolbox {
    /**
     * Do a in_array search comparing string using strcasecmp
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $string    string   to search
     * @param $datas     array    to search to search
@@ -2262,7 +2258,7 @@ class Toolbox {
    /**
     * Save a configuration file
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name      string   config file name
     * @param $content   string   config file content
@@ -2291,7 +2287,7 @@ class Toolbox {
     *
     * @param $value array   passed array
     *
-    * @since version 0.83.91
+    * @since 0.83.91
     *
     * @return string encoded array
    **/
@@ -2305,7 +2301,7 @@ class Toolbox {
     *
     * @param $value string   encoded value
     *
-    * @since version 0.83.91
+    * @since 0.83.91
     *
     * @return string decoded array
    **/
@@ -2323,7 +2319,7 @@ class Toolbox {
    /**
     * Check valid referer accessing GLPI
     *
-    * @since version 0.84.2
+    * @since 0.84.2
     *
     * @return nothing : display error if not permit
    **/
@@ -2380,7 +2376,7 @@ class Toolbox {
     *
     * @todo: remove when prerequisite > 5.3.9 !
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $object        can be an object or a string contining the class name
     * @param $class_name    the name of the class to compare
@@ -2406,7 +2402,7 @@ class Toolbox {
    /**
     * Retrieve the mime type of a file
     *
-    * @since version 0.85.5
+    * @since 0.85.5
     *
     * @param $file   string      path of the file
     * @param $type   string      check if $file is the correct type (false by default)
@@ -2433,7 +2429,7 @@ class Toolbox {
    /**
     * Summary of in_array_recursive
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param mixed $needle
     * @param array $haystack
@@ -2517,7 +2513,7 @@ class Toolbox {
    /**
     * Convert tag to image
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string $content_text   text content of input
     * @param CommonDBTM $item       Glpi item where to convert image tag to image document
@@ -2618,7 +2614,7 @@ class Toolbox {
    /**
     * Convert image to tag
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $content_html   html content of input
     * @param $force_update   force update of content in item (false by default)
@@ -2644,7 +2640,7 @@ class Toolbox {
    /**
     * Delete tag or image from ticket content
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string $content   html content of input
     * @param array $tags       list of tags to clen

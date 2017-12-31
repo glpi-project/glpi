@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -53,7 +49,7 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -95,7 +91,7 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -120,7 +116,7 @@ class Calendar extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -349,7 +345,7 @@ class Calendar extends CommonDropdown {
    /**
     * Is the time passed is in a working day
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $time    time  time to check
     *
@@ -367,7 +363,7 @@ class Calendar extends CommonDropdown {
    /**
     * Is the time passed is in a working hour
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $time    time  time to check
     *

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -71,7 +67,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Retrieve an item from the database with additional datas
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $ID                    integer  ID of the item to get
     * @param $withtypeandcategory   boolean  with type and category (true by default)
@@ -357,7 +353,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Get mandatory mark if field is mandatory
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field  string   field
     * @param $force  boolean  force display based on global config (false by default)
@@ -376,7 +372,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Get hidden field begin enclosure for text
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -394,7 +390,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Get hidden field end enclosure for text
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -412,7 +408,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Get hidden field begin enclosure for value
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -430,7 +426,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Get hidden field end enclosure with hidden value
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field  string   field
     * @param $ticket          ticket object (default NULL)
@@ -472,7 +468,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Is it an hidden field ?
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -490,7 +486,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Is it an predefined field ?
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -508,7 +504,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Is it an mandatory field ?
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $field string field
     *
@@ -526,7 +522,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Print preview for Ticket template
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $tt TicketTemplate object
     *
@@ -564,7 +560,7 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::getSpecificMassiveActions()
    **/
@@ -584,7 +580,7 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -602,7 +598,7 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -650,7 +646,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Merge fields linked to template
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $target_id
     * @param  $source_id
@@ -697,7 +693,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Merge Itilcategories linked to template
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $target_id
     * @param $source_id
@@ -742,7 +738,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Format template fields to merge
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $data
    **/
@@ -760,7 +756,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Import a dropdown - check if already exists
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $input  array of value to import (name, ...)
     *
@@ -801,7 +797,7 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Forbidden massive action
     *
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/

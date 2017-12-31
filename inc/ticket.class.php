@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -172,7 +168,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 't';
@@ -182,7 +178,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuOptions() {
 
@@ -202,7 +198,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getAdditionalMenuContent()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuContent() {
 
@@ -217,7 +213,7 @@ class Ticket extends CommonITILObject {
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
@@ -399,7 +395,7 @@ class Ticket extends CommonITILObject {
     * @param $date         begin date of the ticket
     * @param $type         type of SLA
     *
-    * @since version 9.1 (before getDatasToAddSla without type parameter)
+    * @since 9.1 (before getDatasToAddSla without type parameter)
     *
     * @return array of datas to add in ticket
    **/
@@ -437,7 +433,7 @@ class Ticket extends CommonITILObject {
     * @param $date         begin date of the ticket
     * @param $type         type of OLA
     *
-    * @since version 9.2 (before getDatasToAddOla without type parameter)
+    * @since 9.2 (before getDatasToAddOla without type parameter)
     *
     * @return array of datas to add in ticket
     **/
@@ -471,7 +467,7 @@ class Ticket extends CommonITILObject {
    /**
     * Delete Level Agreement for the ticket
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string  $laType (SLA | OLA)
     * @param integer $id the sla/ola id
@@ -574,7 +570,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canDelete() {
 
@@ -1327,7 +1323,7 @@ class Ticket extends CommonITILObject {
     *  Manual SLA defined : reset time_to_resolve and time_to_own
     *  No manual SLA and due date defined : reset auto SLA
     *
-    *  @since version 9.1
+    *  @since 9.1
     *
     * @param $type
     * @param $input
@@ -1404,7 +1400,7 @@ class Ticket extends CommonITILObject {
     *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
     *  No manual OLA and due date defined : reset auto OLA
     *
-    *  @since version 9.1
+    *  @since 9.1
     *
     * @param $type
     * @param $input
@@ -1478,7 +1474,7 @@ class Ticket extends CommonITILObject {
    /**
     * Manage SLA level escalation
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param $slas_id
    **/
@@ -1499,7 +1495,7 @@ class Ticket extends CommonITILObject {
    /**
     * Manage OLA level escalation
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param $slas_id
    **/
@@ -2179,7 +2175,7 @@ class Ticket extends CommonITILObject {
    /**
     * Manage Validation add from input
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $input array : input array
     *
@@ -2386,7 +2382,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get active or solved tickets for an hardware last X days
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $itemtype  string   Item type
     * @param $items_id  integer  ID of the Item
@@ -2424,7 +2420,7 @@ class Ticket extends CommonITILObject {
    /**
     * Count active tickets for an hardware
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $itemtype  string   Item type
     * @param $items_id  integer  ID of the Item
@@ -2456,7 +2452,7 @@ class Ticket extends CommonITILObject {
    /**
     * Count solved tickets for an hardware last X days
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $itemtype  string   Item type
     * @param $items_id  integer  ID of the Item
@@ -2492,7 +2488,7 @@ class Ticket extends CommonITILObject {
    /**
     * Update date mod of the ticket
     *
-    * @since version 0.83.3 new proto
+    * @since 0.83.3 new proto
     *
     * @param $ID                           ID of the ticket
     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
@@ -2529,7 +2525,7 @@ class Ticket extends CommonITILObject {
    /**
     * Overloaded from commonDBTM
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $type itemtype of object to add
     *
@@ -3359,7 +3355,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -3387,7 +3383,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name            (default '')
@@ -3516,7 +3512,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get the ITIL object closed status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -3528,7 +3524,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get the ITIL object solved status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -3539,7 +3535,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get the ITIL object new status list
     *
-    * @since version 0.83.8
+    * @since 0.83.8
     *
     * @return an array
    **/
@@ -3550,7 +3546,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get the ITIL object assign or plan status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -3561,7 +3557,7 @@ class Ticket extends CommonITILObject {
    /**
     * Get the ITIL object closed, solved or waiting status list
     *
-    * @since version 0.90.1
+    * @since 0.90.1
     *
     * @return an array
    **/
@@ -4139,7 +4135,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $entity  integer  entities_id usefull is function called by cron (default 0)
    **/
@@ -4232,7 +4228,7 @@ class Ticket extends CommonITILObject {
     * @param $itilcategories_id   integer ticket category (default 0)
     * @param $entities_id         integer (default -1)
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return ticket template object
    **/
@@ -6520,7 +6516,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/
@@ -6559,7 +6555,7 @@ class Ticket extends CommonITILObject {
    /**
     * Convert img of the collector for ticket
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $content_html         html content of input
     * @param $files         array  of filename
@@ -6593,7 +6589,7 @@ class Ticket extends CommonITILObject {
    /**
     * Convert img or tag of ticket for notification mails
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $content : html content of input
     * @param $item : item to store filenames and tags found for each image in $content
@@ -6692,7 +6688,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
    **/
    function getTimelineItems() {
@@ -6841,7 +6837,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $rand
    **/
@@ -7257,7 +7253,7 @@ class Ticket extends CommonITILObject {
     * Get the list of actors for the current ticket
     * will return an assoc array of users_id => array of roles.
     * @return array[] of array[] of users and roles
-    * @since version 0.90
+    * @since 0.90
    **/
    function getTicketActors() {
       global $DB;
@@ -7287,7 +7283,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
    **/
    function showTimelineHeader() {
 
@@ -7297,7 +7293,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     */
    function filterTimeline() {
       global $CFG_GLPI;
@@ -7325,7 +7321,7 @@ class Ticket extends CommonITILObject {
    }
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $rand
    **/
@@ -7461,7 +7457,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $item
     * @param $id
@@ -7480,7 +7476,7 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @param $tickets_id
     * @param $action         (default 'add')
@@ -7545,7 +7541,7 @@ class Ticket extends CommonITILObject {
    /**
     * Select a field using standard system
     *
-    * @since version 9.1
+    * @since 9.1
     */
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = []) {
       if (isset($field_id_or_search_options['linkfield'])) {

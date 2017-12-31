@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Check obsoleted function
-*/
+/**
+ * Check usage of obsolete functions
+ */
 
 if (isset($_SERVER['argv'][1])) {
    $rep = $_SERVER['argv'][1];

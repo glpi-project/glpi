@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @since version 9.1
-*/
+/**
+ * @since 9.1
+ */
 
 class APIClient extends CommonDBTM {
 

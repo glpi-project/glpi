@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -369,7 +365,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
    /**
     * Duplicate KB links from an item template to its clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -98,7 +94,7 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canPurge() {
       return static::canUpdate();
@@ -108,7 +104,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuOptions() {
 
@@ -968,7 +964,7 @@ class MailCollector  extends CommonDBTM {
 
    /** Clean mail content : HTML + XSS + blacklisted content
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $string text to clean
     * @param $striptags remove html tags
@@ -1360,7 +1356,7 @@ class MailCollector  extends CommonDBTM {
     * Summary of getDecodedFetchbody
     * used to get decoded part from email
     *
-    * @since version 0.90.2
+    * @since 0.90.2
     * @param $structure
     * @param $uid
     * @param $part
@@ -1680,7 +1676,7 @@ class MailCollector  extends CommonDBTM {
    /**
     * Send Alarms on mailgate errors
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $task for log
    **/
@@ -1826,7 +1822,7 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getNumberOfActiveMailCollectors() {
       global $DB;

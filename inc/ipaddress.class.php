@@ -30,12 +30,11 @@
  * ---------------------------------------------------------------------
 */
 
-/** @file
-* @brief
-* Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
-* and binary (ie. : used for request) are present
-* @since version 0.84
-*/
+/**
+ * Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
+ * and binary (ie. : used for request) are present
+ * @since 0.84
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -50,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
 * 2001:db8:0:85a3\::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
 * @warning All textual representation of IPv6 addresses conforms to RFC 5952 : they are
 * automatically converted by IPAddress::setAddressFromString().
-* @since version 0.84
+* @since 0.84
 **/
 class IPAddress extends CommonDBChild {
 

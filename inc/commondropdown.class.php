@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -62,7 +58,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $nb
    **/
@@ -74,7 +70,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * Is translation enabled for this itemtype
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return true if translation is available, false otherwise
    **/
@@ -86,7 +82,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'n';
@@ -96,7 +92,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -193,7 +189,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @see CommonDBTM::prepareInputForAdd()
    **/
@@ -223,7 +219,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @see CommonDBTM::prepareInputForUpdate()
    **/
@@ -823,7 +819,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -841,7 +837,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

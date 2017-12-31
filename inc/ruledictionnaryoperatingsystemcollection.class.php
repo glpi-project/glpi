@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystems";
    public $menu_option = "os";

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -58,7 +54,7 @@ class ReservationItem extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canView() {
       global $CFG_GLPI;
@@ -75,7 +71,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonGLPI::getMenuName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuName() {
       return Reservation::getTypeName(Session::getPluralNumber());
@@ -85,7 +81,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonGLPI::getForbiddenActionsForMenu()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getForbiddenActionsForMenu() {
       return ['add'];
@@ -95,7 +91,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuLinks() {
 
@@ -719,7 +715,7 @@ class ReservationItem extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/
@@ -737,7 +733,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonGLPI::defineTabs()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function defineTabs($options = []) {
 
@@ -751,7 +747,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonGLPI::getTabNameForItem()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
@@ -792,7 +788,7 @@ class ReservationItem extends CommonDBChild {
    /**
     * @see CommonDBTM::isNewItem()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function isNewItem() {
       return false;

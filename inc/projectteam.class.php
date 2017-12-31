@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -44,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * This class is used to manage the project team
  * @see Project
  * @author Julien Dombre
- * @since version 0.85
+ * @since 0.85
  **/
 class ProjectTeam extends CommonDBRelation {
 
@@ -126,7 +121,7 @@ class ProjectTeam extends CommonDBRelation {
    /**
     * Duplicate all teams from a project template to his clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param integer $oldid        ID of the item to clone
     * @param integer $newid        ID of the item cloned

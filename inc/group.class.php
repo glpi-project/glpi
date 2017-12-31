@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -58,7 +54,7 @@ class Group extends CommonTreeDropdown {
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getAdditionalMenuOptions() {
 
@@ -74,7 +70,7 @@ class Group extends CommonTreeDropdown {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'g';
@@ -369,7 +365,7 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -401,7 +397,7 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -615,7 +611,7 @@ class Group extends CommonTreeDropdown {
    /**
     * get list of Computers in a group
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $types  Array    of types
     * @param $field  String   field name

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -49,7 +45,7 @@ class Item_DeviceHardDrive extends Item_Devices {
    static protected $notable = false;
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getSpecificities($specif = '') {
 

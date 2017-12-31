@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -56,7 +52,7 @@ function getForeignKeyFieldForTable($table) {
 /**
  * Check if field is a foreign key field
  *
- * @since version 0.84
+ * @since 0.84
  *
  * @param $field string field name
  *
@@ -143,7 +139,7 @@ function getTableForItemType($itemtype) {
 /**
  * Get new item objet for an itemtype
  *
- * @since version 0.83
+ * @since 0.83
  *
  * @param $itemtype   string   itemtype
  *
@@ -365,7 +361,7 @@ function getSonsOf($table, $IDf) {
 /**
  * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
  *
- * @since version 0.84
+ * @since 0.84
  *
  * @param $table  string   table name
  * @param $IDf    integer  The ID of the father

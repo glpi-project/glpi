@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -63,7 +59,7 @@ class FieldUnicity extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canPurge() {
       return static::canUpdate();
@@ -260,7 +256,7 @@ class FieldUnicity extends CommonDropdown {
 
    /** Dropdown fields for a specific itemtype
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype          itemtype
     * @param $options   array    of options
@@ -402,7 +398,7 @@ class FieldUnicity extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -438,7 +434,7 @@ class FieldUnicity extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -90,7 +86,7 @@ class Auth extends CommonGLPI {
     *
     * @return boolean
     *
-    * @since version 0.85
+    * @since 0.85
     */
    static function canView() {
       return Session::haveRight('config', READ);
@@ -261,7 +257,7 @@ class Auth extends CommonGLPI {
    /**
     * Check is a password match the stored hash
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param string $pass Passowrd
     * @param string $hash Hash
@@ -292,7 +288,7 @@ class Auth extends CommonGLPI {
    /**
     * Is the hash stored need to be regenerated
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param string $hash Hash
     *
@@ -306,7 +302,7 @@ class Auth extends CommonGLPI {
    /**
     * Compute the hash for a password
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param string $pass Password
     *
@@ -1254,7 +1250,7 @@ class Auth extends CommonGLPI {
    /**
     * Show Tab content
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param CommonGLPI $item         Item instance
     * @param integer    $tabnum       Unused (default 0)

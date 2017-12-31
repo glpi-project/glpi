@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-
 include ('../inc/includes.php');
 
 Session::checkRight("datacenter", READ);

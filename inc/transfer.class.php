@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -65,7 +60,7 @@ class Transfer extends CommonDBTM {
    /**
     * @see CommonGLPI::defineTabs()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function defineTabs($options = []) {
 
@@ -2281,7 +2276,7 @@ class Transfer extends CommonDBTM {
     * @param $itemtype        itemtype to tranfer
     * @param $ID              ID of the item
     *
-    * @since version 0.84.4
+    * @since 0.84.4
     **/
    function manageConnectionComputer($itemtype, $ID) {
       global $DB;
@@ -2406,7 +2401,7 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer suppliers for specified tickets or problems
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype  itemtype : Problem / Ticket
     * @param $ID        original ticket ID
@@ -2487,7 +2482,7 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer task categories for specified tickets
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $itemtype  itemtype : Problem / Ticket
     * @param $ID        original ticket ID
@@ -2555,7 +2550,7 @@ class Transfer extends CommonDBTM {
     *
     * @param $data ticket data fields
     *
-    * @since version 0.85 (before transferTicketAdditionalInformations)
+    * @since 0.85 (before transferTicketAdditionalInformations)
    **/
    function transferHelpdeskAdditionalInformations($data) {
 

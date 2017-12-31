@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -56,7 +52,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -435,7 +431,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
     * Display debug information for current object
     * NotificationTemplateTranslation => translation preview
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function showDebug() {
 

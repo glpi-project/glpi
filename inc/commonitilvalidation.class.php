@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * CommonITILValidation Class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 abstract class CommonITILValidation  extends CommonDBChild {
 
@@ -623,7 +619,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $items_id   integer  item ID
     * @param $users_id   integer  user ID
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return boolean
    **/
@@ -675,7 +671,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -692,7 +688,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -1548,7 +1544,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the ITIL object can validation status list
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return an array
     **/
@@ -1560,7 +1556,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get the ITIL object all validation status list
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return an array
     **/
