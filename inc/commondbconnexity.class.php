@@ -30,17 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 
 /**
- * @since version 0.84
+ * @since 0.84
 **/
 class CommonDBConnexityItemNotFound extends Exception {
 
@@ -345,7 +341,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * Get the change values for history when only the fields of the CommonDBChild are updated
     * @warning can be call as many time as fields are updated
@@ -400,7 +396,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    /**
     * Get all specificities of the current itemtype concerning the massive actions
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the specificities:
     *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
@@ -420,7 +416,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -464,7 +460,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -585,7 +581,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * Set based array for static::add or static::update in case of massive actions are doing
     * something.
@@ -604,7 +600,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

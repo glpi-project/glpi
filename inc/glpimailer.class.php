@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -44,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 /** GLPIPhpMailer class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class GLPIMailer extends PHPMailer {
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -58,7 +54,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getConditionsArray() {
       // Override ruleticket one
@@ -67,7 +63,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -209,7 +205,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
    }
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see RuleTicket::getCriterias()
    **/

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -44,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  *
  *  Relation between Projects and Items
  *
- *  @since version 0.85
+ *  @since 0.85
 **/
 class Item_Project extends CommonDBRelation{
 

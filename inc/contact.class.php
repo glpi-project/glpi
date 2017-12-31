@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -264,7 +260,7 @@ class Contact extends CommonDBTM{
    /**
     * @see CommonDBTM::getRawName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRawName() {
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -514,7 +510,7 @@ class Change extends CommonITILObject {
     * Get the ITIL object closed status list
     * To be overridden by class
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -530,7 +526,7 @@ class Change extends CommonITILObject {
     * Get the ITIL object solved or observe status list
     * To be overridden by class
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -543,7 +539,7 @@ class Change extends CommonITILObject {
    /**
     * Get the ITIL object new status list
     *
-    * @since version 0.83.8
+    * @since 0.83.8
     *
     * @return an array
    **/
@@ -555,7 +551,7 @@ class Change extends CommonITILObject {
     * Get the ITIL object test, qualification or accepted status list
     * To be overridden by class
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -909,7 +905,7 @@ class Change extends CommonITILObject {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/
@@ -1169,7 +1165,7 @@ class Change extends CommonITILObject {
    /**
     * Display debug information for current object
     *
-    * @since version 0.90.2
+    * @since 0.90.2
     **/
    function showDebug() {
       NotificationEvent::debugEvent($this);

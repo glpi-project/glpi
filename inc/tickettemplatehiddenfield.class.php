@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -50,7 +46,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -68,7 +64,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    /**
     * @see CommonDBTM::getRawName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRawName() {
 
@@ -133,7 +129,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    /**
     * Get hidden fields for a template
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $ID                    integer  the template ID
     * @param $withtypeandcategory   boolean  with type and category (false by default)
@@ -179,7 +175,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    /**
     * Print the hidden fields
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $tt                       Ticket Template
     * @param $withtemplate    boolean  Template or basic item (default 0)

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -57,7 +53,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    static public $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $items_id
@@ -92,7 +88,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canCreate() {
 
@@ -104,7 +100,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canView() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
@@ -115,7 +111,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canUpdate() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -126,7 +122,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canDelete() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -137,7 +133,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     **/
    static function canPurge() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -148,7 +144,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canCreateItem() {
       return $this->canChildItem('canUpdateItem', 'canUpdate');
@@ -156,7 +152,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canViewItem() {
       return $this->canChildItem('canViewItem', 'canView');
@@ -164,7 +160,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canUpdateItem() {
       return $this->canChildItem('canUpdateItem', 'canUpdate');
@@ -172,7 +168,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canDeleteItem() {
       return $this->canChildItem('canUpdateItem', 'canUpdate');
@@ -180,7 +176,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $method
    **/
@@ -192,7 +188,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $methodItem
     * @param $methodNotItem
@@ -213,7 +209,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Get the item associated with the current object. Rely on CommonDBConnexity::getItemFromArray()
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $getFromDB   (true by default)
     * @param $getEmpty    (true by default)
@@ -265,7 +261,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Get all the items associated with the current object by recursive requests
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return an array containing all the items
    **/
@@ -366,7 +362,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function addNeededInfoToInput($input) {
 
@@ -395,7 +391,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function prepareInputForAdd($input) {
 
@@ -414,7 +410,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function prepareInputForUpdate($input) {
 
@@ -479,7 +475,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Actions done after the UPDATE of the item in the database
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $history store changes history ? (default 1)
     *
@@ -571,7 +567,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     *  Actions done when item flag deleted is set to an item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return nothing
    **/
@@ -601,7 +597,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * Actions done after the restore of the item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return nothing
    **/
@@ -631,7 +627,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * get the Javascript "code" to add to the form when clicking on "+"
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @see showAddChildButtonForItemForm()
     *
@@ -650,7 +646,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
    /**
     * display the field of a given child
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @see showChildsForItemForm()
     *
@@ -681,7 +677,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * button and the fields already entered
     * This method display the "+" button
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @todo study if we cannot use these methods for the user emails
     * @see showChildsForItemForm(CommonDBTM $item, $field_name)
@@ -745,7 +741,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * button and the fields already entered.
     * This method display the fields
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @todo study if we cannot use these methods for the user emails
     * @see showAddChildButtonForItemForm()

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -53,7 +49,7 @@ class DeviceNetworkCard extends CommonDevice {
    /**
     * Criteria used for import function
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getImportCriteria() {
 
@@ -147,7 +143,7 @@ class DeviceNetworkCard extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
    **/
@@ -175,7 +171,7 @@ class DeviceNetworkCard extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/

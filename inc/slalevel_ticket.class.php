@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -48,7 +44,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $ID        ID of the item to get
     * @param $slatype
     *
-    * @since version 9.1 2 mandatory parameters
+    * @since 9.1 2 mandatory parameters
     *
     * @return true if succeed else false
    **/
@@ -144,7 +140,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $data          array data of an entry of slalevels_tickets
     * @param $slaType             Type of sla
     *
-    * @since version 9.1   2 parameters mandatory
+    * @since 9.1   2 parameters mandatory
     *
     * @return nothing
    **/
@@ -243,7 +239,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $tickets_id Ticket ID
     * @param $slaType Type of sla
     *
-    * @since version 9.1    2 parameters mandatory
+    * @since 9.1    2 parameters mandatory
     *
     */
    static function replayForTicket($tickets_id, $slaType) {

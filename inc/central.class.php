@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -255,7 +251,7 @@ class Central extends CommonGLPI {
    /**
     * Show the central RSS view
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function showRSSView() {
 

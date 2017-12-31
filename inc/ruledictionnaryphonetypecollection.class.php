@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_phonetypes";
    public $menu_option = "type.phone";

@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -76,7 +73,7 @@ class RuleTicket extends Rule {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getConditionsArray() {
 
@@ -90,7 +87,7 @@ class RuleTicket extends Rule {
    /**
     * display title for action form
     *
-    * @since version 0.84.3
+    * @since 0.84.3
    **/
    function getTitleAction() {
 
@@ -661,7 +658,7 @@ class RuleTicket extends Rule {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

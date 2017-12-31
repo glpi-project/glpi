@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -46,8 +42,8 @@ abstract class CommonDBVisible extends CommonDBTM {
    /**
     * Is the login user have access to item based on visibility configuration
     *
-    * @since version 0.83
-    * @since version 9.2 moved from each class to parent class
+    * @since 0.83
+    * @since 9.2 moved from each class to parent class
     *
     * @return boolean
    **/
@@ -116,8 +112,8 @@ abstract class CommonDBVisible extends CommonDBTM {
    /**
     * Count visibilities
     *
-    * @since version 0.83
-    * @since version 9.2 moved from each class to parent class
+    * @since 0.83
+    * @since 9.2 moved from each class to parent class
     *
     * @return integer
     */
@@ -132,7 +128,7 @@ abstract class CommonDBVisible extends CommonDBTM {
    /**
     * Show visibility configuration
     *
-    * @since version 9.2 moved from each class to parent class
+    * @since 9.2 moved from each class to parent class
     *
     * @return void
    **/

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 // Ensure current directory when run from crontab

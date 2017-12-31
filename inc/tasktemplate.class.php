@@ -30,17 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
  * Template for task
- * @since version 9.1
+ * @since 9.1
 **/
 class TaskTemplate extends CommonDropdown {
 

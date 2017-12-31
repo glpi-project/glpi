@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_printertypes";
    public $menu_option = "type.printer";

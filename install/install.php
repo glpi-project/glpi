@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 define('GLPI_ROOT', realpath('..'));
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
@@ -542,7 +537,7 @@ if (isset($_POST["language"])) {
 Session::loadLanguage();
 
 /**
- * @since version 0.84.2
+ * @since 0.84.2
 **/
 function checkConfigFile() {
 

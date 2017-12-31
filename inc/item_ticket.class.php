@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -57,7 +53,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -68,7 +64,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85.5
+    * @since 0.85.5
     * @see CommonDBRelation::canCreateItem()
    **/
    function canCreateItem() {
@@ -1116,7 +1112,7 @@ class Item_Ticket extends CommonDBRelation{
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -1137,7 +1133,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -1251,7 +1247,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -1288,7 +1284,7 @@ class Item_Ticket extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name            (default '')

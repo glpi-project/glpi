@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 $rulecollection = new RuleTicketCollection($_SESSION['glpiactive_entity']);

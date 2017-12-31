@@ -30,10 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Get all po files not used in GLPI
-* @since version 0.84
-*/
+/**
+ * Get all po files not used in GLPI
+ * @since 0.84
+ */
 
 include ('../inc/includes.php');
 

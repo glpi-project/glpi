@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (strpos($_SERVER['PHP_SELF'], "dropdownInstallVersion.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');

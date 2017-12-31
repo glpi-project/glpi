@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -53,7 +49,7 @@ class Certificate_Item extends CommonDBRelation {
    static public $take_entity_2 = true;
 
    /**
-    * @since version 9.2
+    * @since 9.2
     *
    **/
    function getForbiddenStandardMassiveAction() {
@@ -204,7 +200,7 @@ class Certificate_Item extends CommonDBRelation {
    /**
     * Show items linked to a certificate
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $certificate Certificate object
     *
@@ -367,7 +363,7 @@ class Certificate_Item extends CommonDBRelation {
    /**
     * Show certificates associated to an item
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $item  CommonDBTM object for which associated certificates must be displayed
     * @param $withtemplate (default 0)

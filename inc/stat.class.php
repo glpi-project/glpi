@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -59,7 +55,7 @@ class Stat extends CommonGLPI {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'a';
@@ -342,7 +338,7 @@ class Stat extends CommonGLPI {
     * @param $value     array
     * @param $value2          (default '')
     *
-    * @since version 0.85 (before show with same parameters)
+    * @since 0.85 (before show with same parameters)
    **/
    static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
       global $CFG_GLPI;
@@ -1206,7 +1202,7 @@ class Stat extends CommonGLPI {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -1305,7 +1301,7 @@ class Stat extends CommonGLPI {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRights($interface = 'central') {
 

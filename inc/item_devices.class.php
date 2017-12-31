@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.84
-*/
+/**
+ * @since 0.84
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -70,7 +69,7 @@ class Item_Devices extends CommonDBRelation {
    static $undisclosedFields      = [];
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * No READ right for devices and extends CommonDBRelation not CommonDevice
    **/
    static function canView() {
@@ -78,7 +77,7 @@ class Item_Devices extends CommonDBRelation {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getTypeName($nb = 0) {
 
@@ -90,7 +89,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/
@@ -213,7 +212,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * Alternatively, it could be overloaded from subclasses
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the itemtype that can have this Item_Device
    **/
@@ -259,7 +258,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * @param $itemtype the type of the item that we want to know its devices
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of Item_Device*
    **/
@@ -286,7 +285,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get all kind of items that can be used by Item_Device*
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the available items
    **/
@@ -299,7 +298,7 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get associated device to the current item_device
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string containing the device
    **/
@@ -808,7 +807,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * @param $input array of input: should be $_POST
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function addDevicesFromPOST($input) {
       if (isset($input['devicetype']) && !$input['devicetype']) {
@@ -956,7 +955,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $item_devices_id
     * @param $items_id
@@ -1004,7 +1003,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/
@@ -1016,7 +1015,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
    **/
@@ -1033,7 +1032,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonGLPI::defineTabs()
    **/
@@ -1051,7 +1050,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function showForm($ID, $options = []) {
       if (!$this->isNewID($ID)) {

@@ -30,11 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-
-/** @file
-* @brief show network port by network equipment
-*/
-
+/**
+ * Show network port by network equipment
+ */
 
 include ('../inc/includes.php');
 

@@ -30,10 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85 (change name before migration_cleaner)
-*/
+/**
+ * Filename was previously migration_cleaner.php
+ * @since 0.85
+ */
 
 include ('../inc/includes.php');
 

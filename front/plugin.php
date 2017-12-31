@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
@@ -41,8 +37,8 @@ Session::checkRight("config", UPDATE);
 /**
  * Obsolete function provided to detect compatibility issue
  *
- * @since version 0.84
-**/
+ * @since 0.84
+ **/
 function handleObsoleteCall($func) {
 
    $name = NOT_AVAILABLE;

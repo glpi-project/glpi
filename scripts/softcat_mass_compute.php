@@ -32,10 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 // COMPUTER ONLY UNDEF CATEGORIES

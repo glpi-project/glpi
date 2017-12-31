@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -123,7 +119,7 @@ class UserEmail  extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field_name
     * @param $child_count_js_var
@@ -140,7 +136,7 @@ class UserEmail  extends CommonDBChild {
 
 
    /**
-    * @since version 0.85 (since 0.85 but param $id since 0.85)
+    * @since 0.85 (since 0.85 but param $id since 0.85)
     *
     * @param $canedit
     * @param $field_name
@@ -229,7 +225,7 @@ class UserEmail  extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getNameField
     *

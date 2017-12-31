@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -76,7 +72,7 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -640,7 +636,7 @@ class DisplayPreference extends CommonDBTM {
    /**
     * For tab management : force isNewItem
     *
-    * @since version 0.83
+    * @since 0.83
    **/
    function isNewItem() {
       return false;
@@ -701,7 +697,7 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

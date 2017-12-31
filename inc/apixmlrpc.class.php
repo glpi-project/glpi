@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class APIXmlrpc extends API {
    protected $request_uri;
    protected $url_elements;
@@ -56,7 +52,7 @@ class APIXmlrpc extends API {
     *
     *  And send to method corresponding identified resource
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @return mixed xmlrpc response
     */
@@ -233,7 +229,7 @@ class APIXmlrpc extends API {
    /**
     * Construct this->parameters from POST data
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @return string
     */
@@ -269,7 +265,7 @@ class APIXmlrpc extends API {
    /**
     * Generic function to send a message and an http code to client
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param mixed   $response          string message or array of data to send
     * @param integer $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
@@ -300,7 +296,7 @@ class APIXmlrpc extends API {
     * Add a space before all numeric keys to prevent their deletion by xmlrpc_encode_request function
     * see https://bugs.php.net/bug.php?id=21949
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param  array $response the response array to escape
     *

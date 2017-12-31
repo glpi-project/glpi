@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 9.2
-*/
+/**
+ * @since 9.2
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -52,7 +51,7 @@ class Item_DeviceSimcard extends Item_Devices {
    static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
    /**
-    * @since version 0.85
+    * @since 0.85
     **/
    static function getSpecificities($specif = '') {
       return [

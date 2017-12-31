@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -796,7 +792,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Print a title for backup rules
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing (display)
    **/
@@ -819,7 +815,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $ID        of the rule to duplicate
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return true if all ok
    **/
@@ -882,7 +878,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param items array the input data to transform to xml
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing, send attachment to browser
    **/
@@ -984,7 +980,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Print a form to select a xml file for import rules
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing (display)
    **/
@@ -1010,7 +1006,7 @@ class RuleCollection extends CommonDBTM {
     *
     * Check if a criterion is a dropdown or not
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $available_criteria    available criterai for this rule
     * @param $condition             the rulecriteria condition
@@ -1034,7 +1030,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Print a form to inform user when conflicts appear during the import of rules from a xml file
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return true if all ok
    **/
@@ -1299,7 +1295,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * import rules in glpi after user validation
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return true if all ok
    **/
@@ -1607,7 +1603,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Prepare input datas for the rules collection, also using plugins values
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input  the input data used to check criterias
     * @param $params parameters
@@ -1881,7 +1877,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * For tabs management : force isNewItem
     *
-    * @since version 0.83
+    * @since 0.83
    **/
    function isNewItem() {
       return false;

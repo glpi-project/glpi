@@ -29,6 +29,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 

@@ -886,7 +886,7 @@ final class DbUtils {
    /**
     * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string $table table name
     * @param string $IDf   The ID of the father

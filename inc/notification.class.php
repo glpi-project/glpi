@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -149,7 +145,7 @@ class Notification extends CommonDBTM {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *  @since version 0.85
+    *  @since 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -252,7 +248,7 @@ class Notification extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -275,7 +271,7 @@ class Notification extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -535,7 +531,7 @@ class Notification extends CommonDBTM {
 
 
    /**
-    * @since version 0.90.4
+    * @since 0.90.4
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
@@ -551,7 +547,7 @@ class Notification extends CommonDBTM {
 
 
    /**
-    * @since version 0.90.4
+    * @since 0.90.4
     * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {

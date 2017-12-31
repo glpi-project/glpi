@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -79,7 +75,7 @@ class NotificationEvent extends CommonDBTM {
    /**
     * retrieve the label for an event
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param string $itemtype name of the type
     * @param string $event    name of the event

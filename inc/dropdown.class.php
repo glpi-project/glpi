@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -1174,7 +1170,7 @@ class Dropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value
    **/
@@ -1278,7 +1274,7 @@ class Dropdown {
    /**
     * show a dropdown to selec a type
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $types           Types used (default "state_types") (default '')
     * @param $options   Array of optional options
@@ -1342,7 +1338,7 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options array:
     *   - itemtype_name        : the name of the field containing the itemtype (default 'itemtype')
@@ -1428,7 +1424,7 @@ class Dropdown {
    /**
     * Dropdown numbers
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $myname          select name
     * @param $options   array of additionnal options :
@@ -1505,7 +1501,7 @@ class Dropdown {
    /**
     * Get value with unit / Automatic management of standar unit (year, month, %, ...)
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $value   integer   number of item
     * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
@@ -1561,7 +1557,7 @@ class Dropdown {
    /**
     * Dropdown integers
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $myname        select name
     * @param $options array of options
@@ -2133,7 +2129,7 @@ class Dropdown {
    /**
     * show dropdown for output format
     *
-    * @since version 0.83
+    * @since 0.83
    **/
    static function showOutputFormat() {
       global $CFG_GLPI;
@@ -2157,7 +2153,7 @@ class Dropdown {
    /**
     * show dropdown to select list limit
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $onchange  String   optional, for ajax (default '')
    **/

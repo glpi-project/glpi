@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -44,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * This class is used to manage the project task team
  * @see ProjectTask
  * @author Julien Dombre
- * @since version 0.85
+ * @since 0.85
  **/
 class ProjectTaskTeam extends CommonDBRelation {
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -42,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * ProjectTask Class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class ProjectTask extends CommonDBChild {
 
@@ -150,7 +146,7 @@ class ProjectTask extends CommonDBChild {
    /**
     * Duplicate all tasks from a project template to his clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param integer $oldid        ID of the item to clone
     * @param integer $newid        ID of the item cloned
@@ -1372,7 +1368,7 @@ class ProjectTask extends CommonDBChild {
    /**
     * Populate the planning with planned project tasks
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options   array of possible options:
     *    - who ID of the user (0 = undefined)
@@ -1528,7 +1524,7 @@ class ProjectTask extends CommonDBChild {
    /**
     * Display a Planning Item
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)

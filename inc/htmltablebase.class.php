@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -43,7 +39,7 @@ class HTMLTableUnknownHeaders      extends Exception {}
 class HTMLTableUnknownHeadersOrder extends Exception {}
 
 /**
- * @since version 0.84
+ * @since 0.84
 **/
 abstract class HTMLTableBase  {
 

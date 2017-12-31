@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -105,7 +101,7 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @param  $input
     *
     * @return number
@@ -122,7 +118,7 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
@@ -131,7 +127,7 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
@@ -140,7 +136,7 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
    **/
@@ -165,7 +161,7 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
@@ -197,7 +193,7 @@ class DeviceGraphicCard extends CommonDevice {
     *
     * @see CommonDevice::getImportCriteria()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getImportCriteria() {
 

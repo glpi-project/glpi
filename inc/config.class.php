@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Exception\PasswordTooWeakException;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
@@ -70,7 +66,7 @@ class Config extends CommonDBTM {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *   @since version 0.85
+    *   @since 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -1408,7 +1404,7 @@ class Config extends CommonDBTM {
     *
     * @param $field string id of the field containing password to check (default 'password')
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function displayPasswordSecurityChecks($field = 'password') {
       global $CFG_GLPI;
@@ -1489,7 +1485,7 @@ class Config extends CommonDBTM {
    /**
     * Validate password based on security rules
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
@@ -1919,7 +1915,7 @@ class Config extends CommonDBTM {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @return string
    **/
@@ -1940,7 +1936,7 @@ class Config extends CommonDBTM {
     * @param  $libstring  object, class or function
     * @return string       the path or false
     *
-    * @since version 9.1
+    * @since 9.1
     */
    static function getLibraryDir($libstring) {
       if (is_object($libstring)) {
@@ -1962,7 +1958,7 @@ class Config extends CommonDBTM {
    /**
     * show Libraries information in system information
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function showLibrariesInformation() {
 
@@ -2551,7 +2547,7 @@ class Config extends CommonDBTM {
    /**
     * Get current DB version (compatible with all version of GLPI)
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return DB version
    **/
@@ -2582,7 +2578,7 @@ class Config extends CommonDBTM {
    /**
     * Get config values
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $context  string   context to get values (default for glpi is core)
     * @param $names    array    of config names to get
@@ -2615,7 +2611,7 @@ class Config extends CommonDBTM {
    /**
     * Set config values : create or update entry
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $context  string context to get values (default for glpi is core)
     * @param $values   array  of config names to set
@@ -2648,7 +2644,7 @@ class Config extends CommonDBTM {
    /**
     * Delete config entries
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $context string  context to get values (default for glpi is core)
     * @param $values  array   of config names to delete
@@ -2670,7 +2666,7 @@ class Config extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

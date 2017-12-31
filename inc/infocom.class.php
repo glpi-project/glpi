@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -63,7 +59,7 @@ class Infocom extends CommonDBChild {
    /**
     * Check if given object can have InfoCom
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $item  an object or a string
     *
@@ -94,7 +90,7 @@ class Infocom extends CommonDBChild {
    /**
     * Get all the types that can have an infocom
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the itemtypes
    **/
@@ -204,7 +200,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -429,7 +425,7 @@ class Infocom extends CommonDBChild {
    }
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function cleanDBonPurge() {
 
@@ -550,7 +546,7 @@ class Infocom extends CommonDBChild {
    /**
     * Get the possible value for infocom alert
     *
-    * @since version 0.84 (before in alert.class)
+    * @since 0.84 (before in alert.class)
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -1944,7 +1940,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -1961,7 +1957,7 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

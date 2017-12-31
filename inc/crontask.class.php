@@ -31,10 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 // Needed for signal handler
 declare(ticks = 1);
 
@@ -72,7 +68,7 @@ class CronTask extends CommonDBTM{
    /**
     * @see CommonGLPI::getForbiddenActionsForMenu()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getForbiddenActionsForMenu() {
       return ['add'];
@@ -1218,7 +1214,7 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -1278,7 +1274,7 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -1498,7 +1494,7 @@ class CronTask extends CommonDBTM{
    /**
     * Circular logs
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $task for log
    **/

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -42,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * NotificationTargetCartridgeItem Class
  *
- * @since version 0.84
+ * @since 0.84
 **/
 class NotificationTargetCartridgeItem extends NotificationTarget {
 

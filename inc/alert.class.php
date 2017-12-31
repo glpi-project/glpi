@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -78,7 +74,7 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts  for an item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string  $itemtype ID of the type to clear
     * @param integer $ID       ID of the item to clear
@@ -211,7 +207,7 @@ class Alert extends CommonDBTM {
    /**
     * Get date of alert
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param string  $itemtype (default '')
     * @param integer $items_id (default '')

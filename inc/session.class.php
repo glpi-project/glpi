@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -196,7 +192,7 @@ class Session {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getRootEntityName() {
 
@@ -625,7 +621,7 @@ class Session {
    /**
     * Detect cron mode or interactive
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return Boolean
    **/
@@ -663,7 +659,7 @@ class Session {
    /**
     * Redirect User to login if not logged in
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing, just redirect if not logged in
    **/
@@ -678,7 +674,7 @@ class Session {
    /**
     * Global check of session to prevent PHP vulnerability
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @see https://wiki.php.net/rfc/strict_sessions
    **/
@@ -1071,7 +1067,7 @@ class Session {
     * Get a saved option from request or session
     * if get from request, save it
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $itemtype  string   name of itemtype
     * @param $name      string   name of the option
@@ -1095,7 +1091,7 @@ class Session {
    /**
     * Is the current account read-only
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return Boolean
    **/
@@ -1116,7 +1112,7 @@ class Session {
    /**
     * Get new CSRF token
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @return      string  new generated token
    **/
@@ -1140,7 +1136,7 @@ class Session {
    /**
     * Clean expires CSRF tokens
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @return      nothing
    **/
@@ -1169,7 +1165,7 @@ class Session {
     * and that the token is legit/not expired.  If the token is valid
     * it will be removed from the list of valid tokens.
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @param $data array $_POST datas
     *
@@ -1198,7 +1194,7 @@ class Session {
    /**
     * Check CSRF data
     *
-    * @since version 0.84.2
+    * @since 0.84.2
     *
     * @param $data array $_POST datas
     *
@@ -1216,7 +1212,7 @@ class Session {
    /**
     * Is field having translations ?
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype   itemtype
     * @param $field      field

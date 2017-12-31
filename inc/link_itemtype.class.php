@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -45,7 +41,7 @@ class Link_Itemtype extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -187,7 +183,7 @@ class Link_Itemtype extends CommonDBChild {
     *
     * Remove all associations for an itemtype
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $itemtype itemtype for which all link associations must be removed
     */

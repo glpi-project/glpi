@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -108,7 +104,7 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @param $input
     *
     * @return number
@@ -125,7 +121,7 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
@@ -134,7 +130,7 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     * @see CommonDropdown::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
@@ -143,7 +139,7 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableHeader()
    **/
@@ -169,7 +165,7 @@ class DeviceMemory extends CommonDevice {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDevice::getHTMLTableCellForItem()
    **/
@@ -206,7 +202,7 @@ class DeviceMemory extends CommonDevice {
     *
     * @see CommonDevice::getImportCriteria()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function getImportCriteria() {
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -86,7 +82,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $items_id
@@ -148,7 +144,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item            CommonDBTM object
     * @param $relations_id    (default NULL)
@@ -159,7 +155,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype        Type of the item to search for its opposite
     * @param $items_id        ID of the item to search for its opposite
@@ -208,7 +204,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $number
     *
@@ -232,7 +228,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get link object between 2 items
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item1 object 1
     * @param $item2 object 2
@@ -318,7 +314,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Specific check for check attach for relation 2
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input Array of data to be added
     *
@@ -332,7 +328,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Specific check for check attach for relation 1
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input Array of data to be added
     *
@@ -344,7 +340,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $method
     * @param $forceCheckBoth boolean force check both items(false by default)
@@ -388,7 +384,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $method
     * @param $methodNotItem
@@ -484,7 +480,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canCreate() {
 
@@ -496,7 +492,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canView() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
@@ -508,7 +504,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canUpdate() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -519,7 +515,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function canDelete() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -530,7 +526,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     **/
    static function canPurge() {
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -541,7 +537,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canCreateItem() {
 
@@ -551,7 +547,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canViewItem() {
       return $this->canRelationItem('canViewItem', 'canView', false, true);
@@ -559,7 +555,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canUpdateItem() {
 
@@ -569,7 +565,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function canDeleteItem() {
 
@@ -579,7 +575,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function addNeededInfoToInput($input) {
 
@@ -616,7 +612,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $input
    **/
@@ -631,7 +627,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function prepareInputForUpdate($input) {
 
@@ -654,7 +650,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get the history name of first item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item    CommonDBTM object   the other item (ie. : $item2)
     * @param $case : can be overwrite by object
@@ -675,7 +671,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get the history name of second item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item the other item (ie. : $item1)
     * @param $case : can be overwrite by object
@@ -735,7 +731,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     /**
     * Actions done after the UPDATE of the item in the database
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $history store changes history ? (default 1)
     *
@@ -840,7 +836,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     *  Actions done when item flag deleted is set to an item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return nothing
    **/
@@ -886,7 +882,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Actions done after the restore of the item
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @return nothing
    **/
@@ -932,7 +928,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Actions done after the DELETE of the item in the database
     *
-    * @since version 0.84
+    * @since 0.84
     *
     *@return nothing
    **/
@@ -974,7 +970,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype
     * @param $base                  HTMLTableBase object
@@ -1008,7 +1004,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $row                HTMLTableRow object (default NULL)
     * @param $item               CommonDBTM object (default NULL)
@@ -1088,7 +1084,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Get all specificities of the current itemtype concerning the massive actions
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the specificities:
     *        'select_items_options_1' Base options for item_1 select
@@ -1140,7 +1136,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * get the type of the item with the name of the action or the types of the input
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $ma current massive action
     *
@@ -1171,7 +1167,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -1252,7 +1248,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * Set based array for static::add or static::update in case of massive actions are doing
     * something.
@@ -1273,7 +1269,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * @warning this is not valid if $itemtype_1 == $itemtype_2 !
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/

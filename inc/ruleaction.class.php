@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -45,7 +42,7 @@ class RuleAction extends CommonDBChild {
    public $auto_message_on_action = false;
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -64,7 +61,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84.3
+    * @since 0.84.3
     *
     * @see CommonDBTM::post_getFromDB()
     */
@@ -105,7 +102,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBChild::post_addItem()
    **/
@@ -121,7 +118,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::post_purgeItem()
    **/
@@ -137,7 +134,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function prepareInputForAdd($input) {
 
@@ -186,7 +183,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -232,7 +229,7 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -639,7 +636,7 @@ class RuleAction extends CommonDBChild {
 
    /** form for rule action
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $ID      integer : Id of the action
     * @param $options array of possible options:

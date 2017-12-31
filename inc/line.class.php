@@ -31,7 +31,7 @@
  */
 
 /**
- * @since version 9.2
+ * @since 9.2
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -54,7 +54,7 @@ class Line extends CommonDropdown {
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
     *
-    * @since version 0.84
+    * @since 0.84
     **/
    function useDeletedToLockIfDynamic() {
       return false;

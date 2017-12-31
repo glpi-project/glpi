@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -43,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Relation between Changes and Suppliers
  *
- * @since version 0.84
+ * @since 0.84
 **/
 class Change_Supplier extends CommonITILActor {
 

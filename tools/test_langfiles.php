@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 include ('../inc/includes.php');
 
 Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);

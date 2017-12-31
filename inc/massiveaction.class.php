@@ -34,17 +34,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-
-/** @file
-* @brief
-*/
-
 /**
  * Class that manages all the massive actions
  *
  * @todo all documentation !
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class MassiveAction {
 

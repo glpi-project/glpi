@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -50,7 +46,7 @@ class Item_DeviceMotherboard extends Item_Devices {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getSpecificities($specif = '') {
       return ['serial' => parent::getSpecificities('serial'),

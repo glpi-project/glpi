@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
 **/
+
 class Pdu_Plug extends CommonDBRelation {
 
    static public $itemtype_1 = 'Pdu';

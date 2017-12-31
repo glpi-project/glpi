@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -65,7 +61,7 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/
@@ -779,7 +775,7 @@ class Profile_User extends CommonDBRelation {
     * @param $child        Boolean  when true, include child entity when recursive right
     *                               (false by default)
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return Array of entity ID
    **/
@@ -1030,7 +1026,7 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
@@ -1047,7 +1043,7 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
    **/
@@ -1064,7 +1060,7 @@ class Profile_User extends CommonDBRelation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
    **/

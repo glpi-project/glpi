@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownCollection {
 
    // From RuleCollection

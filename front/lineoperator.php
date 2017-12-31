@@ -31,7 +31,7 @@
  */
 
 /**
- * @since version 9.2
+ * @since 9.2
  */
 
 include ('../inc/includes.php');

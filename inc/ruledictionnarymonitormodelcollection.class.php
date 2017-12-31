@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 class RuleDictionnaryMonitorModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_monitormodels";
    public $menu_option = "model.monitor";

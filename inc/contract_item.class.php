@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -55,7 +51,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -71,7 +67,7 @@ class Contract_Item extends CommonDBRelation{
     *
     * @see CommonDBRelation::canCreateItem()
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    function canCreateItem() {
 
@@ -120,7 +116,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -228,7 +224,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $contract_id   contract ID
     * @param $entities_id   entity ID
@@ -339,7 +335,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Duplicate contracts from an item template to its clone
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
@@ -368,7 +364,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Print an HTML array of contract associated to an object
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $item            CommonDBTM object wanted
     * @param $withtemplate    not used (to be deleted) (default 0)
@@ -530,7 +526,7 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Print the HTML array for Items linked to current contract
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param Contract $contract     Contract object
     * @param boolean  $withtemplate (default 0)
@@ -778,7 +774,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/

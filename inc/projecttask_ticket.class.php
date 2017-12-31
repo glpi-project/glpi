@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -43,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Relation between ProjectTasks and Tickets
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class ProjectTask_Ticket extends CommonDBRelation{
 

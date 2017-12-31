@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Saved searches class
  *
- * @since version 9.2
+ * @since 9.2
 **/
 class SavedSearch extends CommonDBTM {
 

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Profile class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class ProfileRight extends CommonDBChild {
 
@@ -187,7 +183,7 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $newright      string   new right name
     * @param $initialright  string   right name to check
@@ -302,7 +298,7 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
-    * @since version 085
+    * @since 085
     *
     * @param $field
     * @param $values
@@ -333,7 +329,7 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getLogTypeID()
    **/

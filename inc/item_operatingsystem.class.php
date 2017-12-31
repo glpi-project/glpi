@@ -108,7 +108,7 @@ class Item_OperatingSystem extends CommonDBRelation {
     *
     * @param CommonDBTM $item Item instance
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @return Nothing (call to classes members)
    **/

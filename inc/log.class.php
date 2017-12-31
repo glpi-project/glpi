@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -712,7 +708,7 @@ class Log extends CommonDBTM {
    /**
     * Actions done after the ADD of the item in the database
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @see CommonDBTM::post_addItem()
    **/
@@ -722,7 +718,7 @@ class Log extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

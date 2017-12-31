@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -484,7 +480,7 @@ class TicketFollowup  extends CommonDBTM {
    /**
     * @see CommonDBTM::getRawName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRawName() {
 
@@ -563,7 +559,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -580,7 +576,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
@@ -762,7 +758,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @see CommonDBTM::showFormButtons()
    **/
@@ -1205,7 +1201,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/

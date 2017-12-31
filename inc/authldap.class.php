@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 /**
  *  Class used to manage Auth LDAP config
  */
@@ -587,7 +583,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Build a dropdown
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param array $options Options
     *
@@ -612,7 +608,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get the possible value for contract alert
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param integer $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -1407,7 +1403,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Display a warnign about size limit
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param boolean $limitexceeded (false by default)
     *
@@ -1848,7 +1844,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Check if a user DN exists in a ldap user search result
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param array  $ldap_infos ldap user search result
     * @param string $user_dn    user dn to look for
@@ -1995,7 +1991,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get all LDAP groups from a ldap server which are not already in an entity
     *
-    * @since version 0.84 new parameter $limitexceeded
+    * @since 0.84 new parameter $limitexceeded
     *
     * @param integer $auths_id      ID of the server to use
     * @param string  $filter        ldap filter to use
@@ -2104,7 +2100,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Set groups from ldap
     *
-    * @since version 0.84 new parameter $limitexceeded
+    * @since 0.84 new parameter $limitexceeded
     *
     * @param resource $ldap_connection  LDAP connection
     * @param object   $config_ldap      LDAP configuration

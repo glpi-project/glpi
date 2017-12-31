@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 if (!defined('GLPI_ROOT')) {
@@ -63,7 +59,7 @@ class Document extends CommonDBTM {
    /**
     * Check if given object can have Document
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $item  an object or a string
     *
@@ -94,7 +90,7 @@ class Document extends CommonDBTM {
    /**
     * Get all the types that can have a document
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return array of the itemtypes
    **/
@@ -110,7 +106,7 @@ class Document extends CommonDBTM {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'd';
@@ -1385,7 +1381,7 @@ class Document extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -1410,7 +1406,7 @@ class Document extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $string
     *

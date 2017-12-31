@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -564,7 +560,7 @@ class Problem extends CommonITILObject {
    /**
     * Get the ITIL object closed status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -580,7 +576,7 @@ class Problem extends CommonITILObject {
    /**
     * Get the ITIL object solved or observe status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -595,7 +591,7 @@ class Problem extends CommonITILObject {
    /**
     * Get the ITIL object new status list
     *
-    * @since version 0.83.8
+    * @since 0.83.8
     *
     * @return an array
    **/
@@ -606,7 +602,7 @@ class Problem extends CommonITILObject {
    /**
     * Get the ITIL object assign, plan or accepted status list
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @return an array
    **/
@@ -620,7 +616,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $start
     * @param $status             (default 'proces)
@@ -829,7 +825,7 @@ class Problem extends CommonITILObject {
    /**
     * Get problems count
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
    **/
@@ -934,7 +930,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $ID
     * @param $forcetab  string   name of the tab to force at the display (default '')
@@ -1538,7 +1534,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
    **/

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -56,7 +52,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
    **/
    function getForbiddenStandardMassiveAction() {
@@ -101,7 +97,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Count connection for a Computer and an itemtype
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $comp   Computer object
     * @param $item   CommonDBTM object
@@ -271,7 +267,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -290,7 +286,7 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
@@ -688,7 +684,7 @@ class Computer_Item extends CommonDBRelation{
    /**
    * Make a select box for connections
    *
-   * @since version 0.84
+   * @since 0.84
    *
    * @param $fromtype               from where the connection is
    * @param $myname                 select name
@@ -829,7 +825,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Duplicate connected items to computer from an item template to its clone
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
@@ -854,7 +850,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Duplicate connected items to item from an item template to its clone
     *
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @param $itemtype     type of the item to clone
     * @param $oldid        ID of the item to clone

@@ -30,10 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 9.2
-*/
+/**
+ * @since 9.2
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -49,7 +48,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     * @param $ID        ID of the item to get
     * @param $olatype
     *
-    * @since version 9.1 2 mandatory parameters
+    * @since 9.1 2 mandatory parameters
     *
     * @return true if succeed else false
    **/
@@ -145,7 +144,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     * @param $data          array data of an entry of olalevels_tickets
     * @param $olaType             Type of ola
     *
-    * @since version 9.1   2 parameters mandatory
+    * @since 9.1   2 parameters mandatory
     *
     * @return nothing
    **/
@@ -244,7 +243,7 @@ class OlaLevel_Ticket extends CommonDBTM {
     * @param $tickets_id Ticket ID
     * @param $olaType Type of ola
     *
-    * @since version 9.1    2 parameters mandatory
+    * @since 9.1    2 parameters mandatory
     *
     */
    static function replayForTicket($tickets_id, $olaType) {

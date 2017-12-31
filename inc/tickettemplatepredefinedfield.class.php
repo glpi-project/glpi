@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -44,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Predefined fields for ticket template class
  *
- * @since version 0.83
+ * @since 0.83
 **/
 class TicketTemplatePredefinedField extends CommonDBChild {
 
@@ -55,7 +51,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function getForbiddenStandardMassiveAction() {
 
@@ -73,7 +69,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    /**
     * @see CommonDBTM::getRawName()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRawName() {
 
@@ -154,7 +150,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    /**
     * Get predefined fields for a template
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $ID                    integer  the template ID
     * @param $withtypeandcategory   boolean   with type and category (false by default)
@@ -193,7 +189,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMultiplePredefinedValues() {
 
@@ -223,7 +219,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    /**
     * Print the predefined fields
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $tt                       Ticket Template
     * @param $withtemplate    boolean  Template or basic item (default 0)

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Project Class
  *
- * @since version 0.85
+ * @since 0.85
 **/
 class Project extends CommonDBTM {
 
@@ -107,7 +103,7 @@ class Project extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/
@@ -756,7 +752,7 @@ class Project extends CommonDBTM {
    /**
     * Display a line for an object
     *
-    * @since version 0.85 (befor in each object with differents parameters)
+    * @since 0.85 (befor in each object with differents parameters)
     *
     * @param $id                 Integer  ID of the object
     * @param $options            array    of options
@@ -1185,7 +1181,7 @@ class Project extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $field
     * @param $name            (default '')

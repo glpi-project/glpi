@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -41,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  GLPIPDF class extends TCPDF
  *
- *  @since version 0.85
+ *  @since 0.85
 **/
 class GLPIPDF extends TCPDF {
    private $total_count;

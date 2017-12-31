@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -76,7 +72,7 @@ class SlaLevel extends LevelAgreementLevel {
    /**
     * @param $sla SLA object
     *
-    * @since version 9.1 (before showForSLA)
+    * @since 9.1 (before showForSLA)
    **/
    function showForSLA(SLA $sla) {
       global $DB;
@@ -274,7 +270,7 @@ class SlaLevel extends LevelAgreementLevel {
     *
     * @param $slas_id   integer  id of the SLA
     *
-    * @since version 9.1 (before getFirst SlaLevel)
+    * @since 9.1 (before getFirst SlaLevel)
     *
     * @return id of the sla level : 0 if not exists
    **/

@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief Virtual machine management
-*/
+/**
+ * Virtual machine management
+ */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -78,7 +78,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * @see CommonGLPI::defineTabs()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    function defineTabs($options = []) {
 

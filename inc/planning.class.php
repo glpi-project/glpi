@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -70,7 +66,7 @@ class Planning extends CommonGLPI {
    const DONE = 2;
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $nb
    **/
@@ -81,7 +77,7 @@ class Planning extends CommonGLPI {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *   @since version 9.1
+    *   @since 9.1
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -101,7 +97,7 @@ class Planning extends CommonGLPI {
    /**
     * @see CommonGLPI::getMenuShorcut()
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function getMenuShorcut() {
       return 'p';
@@ -109,7 +105,7 @@ class Planning extends CommonGLPI {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    static function canView() {
 
@@ -247,7 +243,7 @@ class Planning extends CommonGLPI {
    /**
     * Show the availability of a user
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $params   array of params
     *    must contain :
@@ -2212,7 +2208,7 @@ class Planning extends CommonGLPI {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function getRights($interface = 'central') {
 

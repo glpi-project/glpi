@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -101,7 +97,7 @@ class Contract extends CommonDBTM {
    /**
     * Duplicate all contracts from a item template to his clone
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string $itemtype      itemtype of the item
     * @param integer $oldid        ID of the item to clone
@@ -123,7 +119,7 @@ class Contract extends CommonDBTM {
    }
 
    /**
-    * @since version 0.83.3
+    * @since 0.83.3
     *
     * @see CommonDBTM::prepareInputForAdd()
     */
@@ -140,7 +136,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    function post_addItem() {
       global $DB;
@@ -599,7 +595,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name            (default '')
@@ -627,7 +623,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $values
@@ -1600,7 +1596,7 @@ class Contract extends CommonDBTM {
    /**
     * Get the possible value for contract alert
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -1655,7 +1651,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/

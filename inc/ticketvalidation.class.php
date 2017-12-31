@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -67,7 +63,7 @@ class TicketValidation  extends CommonITILValidation {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
    **/
    function canCreateItem() {
 
@@ -90,7 +86,7 @@ class TicketValidation  extends CommonITILValidation {
    }
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @see commonDBTM::getRights()
     **/

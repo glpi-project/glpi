@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
 */
 
-/** @file
-* @brief
-*/
-
 // Current version of GLPI
 define('GLPI_VERSION', '9.3-dev');
 if (substr(GLPI_VERSION, -4) === '-dev') {

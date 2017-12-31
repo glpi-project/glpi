@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -115,7 +111,7 @@ class DocumentType  extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
    **/
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
       global $CFG_GLPI;
@@ -136,7 +132,7 @@ class DocumentType  extends CommonDropdown {
 
 
    /**
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $field
     * @param $name               (default '')
@@ -159,7 +155,7 @@ class DocumentType  extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @param array $options list of options with theses possible keys:
     *                        - bool 'display', echo the generated html or return it

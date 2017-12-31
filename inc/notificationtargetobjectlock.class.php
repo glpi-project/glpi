@@ -30,10 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-
-/** @file
- * @brief
- * @since version 9.1
+/**
+ * @since 9.1
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Notifications for ObjectLock
  *
- * @since version 9.1
+ * @since 9.1
 **/
 class NotificationTargetObjectLock extends NotificationTarget {
 

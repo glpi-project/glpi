@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
@@ -484,7 +480,7 @@ class Html {
     * Redirection to Login page
     *
     * @param $params       param to add to URL (default '')
-    * @since version 0.85
+    * @since 0.85
     *
     * @return nothing
    **/
@@ -692,7 +688,7 @@ class Html {
    /**
    * Clean Display of Request
    *
-   * @since version 0.83.1
+   * @since 0.83.1
    *
    * @param $request SQL request
    **/
@@ -883,7 +879,7 @@ class Html {
    /**
     * Get confirmation on button or link before action
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $string             string   to display or array of string for using multilines
     * @param $additionalactions  string   additional actions to do on success confirmation
@@ -926,7 +922,7 @@ class Html {
    /**
     * Manage progresse bars
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $id                 HTML ID of the progress bar
     * @param $options    array   progress status
@@ -1285,7 +1281,7 @@ class Html {
 
 
    /**
-    * @since version 0.90
+    * @since 0.90
     *
     * @return string
    **/
@@ -2036,7 +2032,7 @@ class Html {
    /**
     * Display "check All as" checkbox
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
     * @param $rand          string rand value to use (default is auto generated) (default ''))
@@ -2051,7 +2047,7 @@ class Html {
    /**
     * Get "check All as" checkbox
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
     * @param $rand          string rand value to use (default is auto generated)(default '')
@@ -2087,7 +2083,7 @@ class Html {
     * We can filter checkboxes by a container or by a tag. We can also select checkboxes that have
     * a given tag and that are contained inside a container
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options array of parameters:
     *                - tag_for_massive tag of the checkboxes to update
@@ -2137,7 +2133,7 @@ class Html {
    /**
     * Get a checkbox.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options array of parameters:
     *                - title         its title
@@ -2236,7 +2232,7 @@ class Html {
     * @brief display a checkbox that $_POST 0 or 1 depending on if it is checked or not.
     * @see Html::getCheckbox()
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options   array
     *
@@ -2250,7 +2246,7 @@ class Html {
    /**
     * Get the massive action checkbox
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype             Massive action itemtype
     * @param $id                   ID of the item
@@ -2274,7 +2270,7 @@ class Html {
    /**
     * Show the massive action checkbox
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $itemtype             Massive action itemtype
     * @param $id                   ID of the item
@@ -2290,7 +2286,7 @@ class Html {
    /**
     * Display open form for massive action
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name given name/id to the form   (default '')
     *
@@ -2304,7 +2300,7 @@ class Html {
    /**
     * Get open form for massive action string
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name given name/id to the form   (default '')
     *
@@ -2325,7 +2321,7 @@ class Html {
     * Display massive actions
     *
     * @since 0.84 (before Search::displayMassiveActions)
-    * @since version 0.85 only 1 parameter (in 0.84 $itemtype required)
+    * @since 0.85 only 1 parameter (in 0.84 $itemtype required)
     *
     * @todo replace 'hidden' by data-glpicore-ma-tags ?
     *
@@ -2508,7 +2504,7 @@ class Html {
    /**
     * Display Date form with calendar
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name      name of the element
     * @param $options  array of possible options:
@@ -2619,7 +2615,7 @@ class Html {
    /**
     * Display Color field
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $name            name of the element
     * @param $options  array  of possible options:
@@ -2657,7 +2653,7 @@ class Html {
    /**
     * Display DateTime form with calendar
     *
-    * @since version 0.84
+    * @since 0.84
     *
     * @param $name            name of the element
     * @param $options  array  of possible options:
@@ -2907,7 +2903,7 @@ class Html {
    /**
     * Get items to display for showGenericDateTimeSearch
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $options   array of possible options:
     *      - with_time display with time selection ? (default false)
@@ -3015,7 +3011,7 @@ class Html {
     /**
     * Compute date / datetime value resulting of showGenericDateTimeSearch
     *
-    * @since version 0.83
+    * @since 0.83
     *
     * @param $val          date / datetime   value passed
     * @param $force_day    boolean           force computation in days (false by default)
@@ -3124,7 +3120,7 @@ class Html {
    /**
     * Display or return a list of dates in a vertical way
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $options   array of possible options:
     *      - title, do we need to append an H2 title tag
@@ -3537,7 +3533,7 @@ class Html {
    /**
     * Convert rich text content to simple text content
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $content : content to convert in html
     *
@@ -3559,7 +3555,7 @@ class Html {
    /**
     * Convert simple text content to rich text content and init html editor
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string  $name     name of textarea
     * @param string  $content  content to convert in html
@@ -3916,7 +3912,7 @@ class Html {
     * @param $num    Integer number of item displayed
     * @param $tot    Integer number of item existing
     *
-    * @since version 0.83.1
+    * @since 0.83.1
     *
     * @return String
     **/
@@ -3948,7 +3944,7 @@ class Html {
     * @param $btoption String   optional button option        (default '')
     * @param $confirm  String   optional confirm message      (default '')
     *
-    * @since version 0.84
+    * @since 0.84
    **/
    static function getSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
                                  $btoption = '', $confirm = '') {
@@ -4022,7 +4018,7 @@ class Html {
     * @param $btoption String   optional button option (default '')
     * @param $confirm  String   optional confirm message (default '')
     *
-    * @since version 0.83.3
+    * @since 0.83.3
    **/
    static function showSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
                                   $btoption = '', $confirm = '') {
@@ -4036,7 +4032,7 @@ class Html {
     *
     * @param $display boolean Display or return string (default true)
     *
-    * @since version 0.83.
+    * @since 0.83.
     *
     * @return String
    **/
@@ -4079,7 +4075,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4093,7 +4089,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4107,7 +4103,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4121,7 +4117,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4135,7 +4131,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4149,7 +4145,7 @@ class Html {
     *
     * @param $id string id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4164,7 +4160,7 @@ class Html {
     * @param $id      string   id of the dom element
     * @param $value   string   value to set
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return string
    **/
@@ -4177,7 +4173,7 @@ class Html {
     *
     * @param $id      string   id of the dom element
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return string
    **/
@@ -4192,7 +4188,7 @@ class Html {
     * @param $id       string   id of the dom element
     * @param $params   array    of parameters
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4238,7 +4234,7 @@ class Html {
     *                   - 'value'     : default value selected
     *                   - 'valuename' : default name of selected value
     *
-    * @since version 0.85.
+    * @since 0.85.
     *
     * @return String
    **/
@@ -4396,7 +4392,7 @@ class Html {
     *
     * This method will set an empty alt attribute if no alt and no title is not supplied
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $path             Path to the image file
     * @param $options   Array  of HTML attributes
@@ -4441,7 +4437,7 @@ class Html {
    /**
     * Creates an HTML link.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $text               The content to be wrapped by a tags.
     * @param $url                URL parameter
@@ -4483,7 +4479,7 @@ class Html {
     * If value of options is an array then recursively parse it
     * to generate as many hidden input as necessary
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $fieldName          Name of a field
     * @param $options    Array   of HTML attributes.
@@ -4509,7 +4505,7 @@ class Html {
    /**
     * Creates a text input field.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $fieldName          Name of a field
     * @param $options    Array   of HTML attributes.
@@ -4566,7 +4562,7 @@ class Html {
     * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
     * image option
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $caption          caption of the input
     * @param $options    Array of options.
@@ -4620,7 +4616,7 @@ class Html {
    /**
     * Returns a space-delimited string with items of the $options array.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $options Array of options.
     *
@@ -4645,7 +4641,7 @@ class Html {
    /**
     * Formats an individual attribute, and returns the string value of the composed attribute.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $key       The name of the attribute to create
     * @param $value     The value of the attribute to create.
@@ -4665,7 +4661,7 @@ class Html {
    /**
     * Wrap $script in a script tag.
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @param $script The script to wrap
     *
@@ -4684,7 +4680,7 @@ class Html {
     * is called. This capturing block will capture all output between the methods
     * and create a scriptBlock from it.
     *
-    * @since version 0.85
+    * @since 0.85
    **/
    static function scriptStart() {
       ob_start();
@@ -4696,7 +4692,7 @@ class Html {
     * End a Buffered section of Javascript capturing.
     * Generates a script tag inline
     *
-    * @since version 0.85
+    * @since 0.85
     *
     * @return mixed depending on the settings of scriptStart() either a script tag or null
    **/
@@ -4711,7 +4707,7 @@ class Html {
    /**
     * Returns one or many script tags depending on the number of scripts given.
     *
-    * @since version 0.85
+    * @since 0.85
     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
     * @param string  $url     File to include (relative to GLPI_ROOT)
@@ -4744,7 +4740,7 @@ class Html {
    /**
     * Creates a link element for CSS stylesheets.
     *
-    * @since version 0.85
+    * @since 0.85
     * @since 9.2 Path is now relative to GLPI_ROOT. Add $minify parameter.
     *
     * @param sring   $url     File to include (raltive to GLPI_ROOT)
@@ -4842,7 +4838,7 @@ class Html {
     * Creates an input file field. Send file names in _$name field as array.
     * Files are uploaded in files/_tmp/ directory
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param $options       array of options
     *    - name                string   field name (default filename)
@@ -5054,7 +5050,7 @@ class Html {
 
 
    /**
-    * @since version 0.85
+    * @since 0.85
     *
     * @return string
    **/
@@ -5066,7 +5062,7 @@ class Html {
    /**
     * Display choice matrix
     *
-    * @since version 0.85
+    * @since 0.85
     * @param $columns   array   of column field name => column label
     * @param $rows      array    of field name => array(
     *      'label' the label of the row
@@ -5289,7 +5285,7 @@ class Html {
    /**
     * This function provides a mecanism to send html form by ajax
     *
-    * @since version 9.1
+    * @since 9.1
    **/
    static function ajaxForm($selector, $success = "console.log(html);") {
       echo Html::scriptBlock("
@@ -5327,7 +5323,7 @@ class Html {
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
     *
-    * @since version 9.1
+    * @since 9.1
    **/
    static function redefineAlert() {
 
@@ -5366,7 +5362,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the confirm behaviour
     * by using callbacks functions when user presses 'Yes' or 'No' buttons.
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param $msg            string      message to be shown
     * @param $title          string      title for dialog box
@@ -5407,7 +5403,7 @@ class Html {
     * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
     * In this case, we trigger a new click on element to return the value (and without display dialog)
     *
-    * @since version 9.1
+    * @since 9.1
    */
    static function redefineConfirm() {
 
@@ -5481,7 +5477,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the alert behaviour
     * by using a callback function when user presses 'Ok' button.
     *
-    * @since version 9.1
+    * @since 9.1
     *
     * @param $msg          string   message to be shown
     * @param $title        string   title for dialog box
@@ -5511,7 +5507,7 @@ class Html {
    /**
     * Convert tag to image
     *
-    * @since version 9.2
+    * @since 9.2
     *
     * @param string $tag      the tag identifier of the document
     * @param int $width       witdh of the final image
