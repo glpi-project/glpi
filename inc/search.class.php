@@ -1510,7 +1510,10 @@ class Search {
             }
             // End Line
             echo self::showEndLine($data['display_type']);
-            Html::glpi_flush();
+            // Flush ONLY for an HTML display (issue #3348)
+            if ($data['display_type'] == self::HTML_OUTPUT) {
+                Html::glpi_flush();
+            }
          }
 
          // Create title
