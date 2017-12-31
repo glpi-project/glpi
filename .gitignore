@@ -14,7 +14,6 @@
 /tools/api/
 /tools/htmlcov/
 /vendor/
-/nbproject/private/
 phpunit.xml
 /tests/code-coverage/
 /config/based_config.php
