@@ -2146,6 +2146,7 @@ class CommonDBTM extends CommonGLPI {
       Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
 
       if ($params['formfooter'] === null) {
+          $this->showInventoryForm();
           $this->showDates($params);
       }
 
@@ -4904,5 +4905,132 @@ class CommonDBTM extends CommonGLPI {
          $mark = "<i class='fa fa-magic' title='$title'></i>";
       }
       return $mark;
+   }
+
+   /**
+   * Show form related to automatic inventory
+   * @since 9.3
+   */
+   public function showInventoryForm() {
+
+      if ($this->isInventoryItemtype()
+         && !$this->isNewItem($this->getID())
+         && $this->fields['is_dynamic']) {
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='4'>".__('Inventory informations')."</td>";
+         echo "<td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Last inventory')."</td>";
+         echo "<td>";
+         //Last inventory date
+         echo Html::convDateTime($this->fields['date_last_inventory']);
+         echo "</td>";
+
+         echo "<td>".__('Last seen')."</td>";
+         echo "<td>";
+         //Last contact date. Might be :
+         //- the last time an agent has contacted the server
+         //- the last time a network discovery has discovered the device
+         //- the last time the device has been seen as attached to a network port
+         echo Html::convDateTime($this->fields['date_last_seen']);
+         echo "</td>";
+
+         echo "</tr>\n";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Type of inventory')."</td>";
+         echo "<td>";
+         //Last inventory date
+         echo Dropdown::getDropdownName('glpi_inventorytypes',
+                                        $this->fields['inventorytypes_id']);
+         echo "</td>";
+
+         echo "<td>".__('Inventory source')."</td>";
+         echo "<td>";
+         //Last inventory date
+         echo $this->fields['inventory_source'];
+         echo "</td>";
+
+         echo "</tr>\n";
+
+      }
+
+      // Display auto inventory informations
+      if (!$this->isNewItem($this->getID())
+          && Plugin::haveImport()
+          && $this->fields["is_dynamic"]) {
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td></tr>";
+      }
+
+   }
+
+   /**
+   * Search options related to inventory informations
+   * @since 9.3
+   *
+   * @return array an array of search options
+   */
+   function getInventoryInfosSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+         'id'                 => 'inventory',
+         'name'               => __('Inventory informations')
+      ];
+
+      $tab[] = [
+         'id'                 => '300',
+         'table'              => $this->getTable(),
+         'field'              => 'date_last_inventory',
+         'name'               => __('Last inventory'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
+
+      $tab[] = [
+         'id'                 => '301',
+         'table'              => $this->getTable(),
+         'field'              => 'date_last_seen',
+         'name'               => __('Last seen'),
+         'massiveaction'      => false,
+         'datatype'           => 'date'
+      ];
+
+      $tab[] = [
+         'id'                 => '302',
+         'table'              => 'glpi_inventorytypes',
+         'field'              => 'name',
+         'name'               => __('Inventory type'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '303',
+         'table'              => $this->getTable(),
+         'field'              => 'inventory_source',
+         'name'               => __('Inventory source'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      return $tab;
+   }
+
+   /**
+   * Is the object an asset
+   * (ie defined in $CFG_GLPI['asset_types'])
+   * @since 9.3
+   *
+   * @return true if it's an asset, false otherwise
+   */
+   function isInventoryItemtype() {
+      global $CFG_GLPI;
+      return (in_array(get_class($this), $CFG_GLPI['asset_types']));
    }
 }

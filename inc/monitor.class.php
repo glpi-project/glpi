@@ -630,6 +630,8 @@ class Monitor extends CommonDBTM {
 
       $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
+      $tab = array_merge($tab, $this->getInventoryInfosSearchOptions());
+
       return $tab;
    }
 

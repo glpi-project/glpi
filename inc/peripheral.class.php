@@ -292,14 +292,6 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-      // Display auto inventory informations
-      if (!empty($ID)
-         && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
-
       $this->showFormButtons($options);
 
       return true;
@@ -536,6 +528,8 @@ class Peripheral extends CommonDBTM {
       $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+
+      $tab = array_merge($tab, $this->getInventoryInfosSearchOptions());
 
       return $tab;
    }

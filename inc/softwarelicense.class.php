@@ -683,7 +683,10 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       // add objectlock search options
       $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+
       $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+
+      $tab = array_merge($tab, $this->getInventoryInfosSearchOptions());
 
       return $tab;
    }
