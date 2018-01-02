@@ -421,7 +421,7 @@ class CommonDBTM extends CommonGLPI {
             $result = $DB->update(
                $this->getTable(),
                [$field => $this->fields[$field]],
-               [static::getIndexName() => $this->getID()]
+               ['id' => $this->fields['id']]
             );
             if ($DB->affected_rows() == 0) {
                if (isset($oldvalues[$field])) {
