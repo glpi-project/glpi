@@ -336,4 +336,37 @@ class APIRest extends APIBaseClass {
             400,
             'ERROR_JSON_PAYLOAD_INVALID');
    }
+
+   /**
+    * @tags    api
+    * @covers  API::getItems
+    */
+   public function testGetItems() {
+      // test the case have DBChild not have entities_id
+      $ticketTemplate = new \TicketTemplate();
+      $ticketTMF = new \TicketTemplateMandatoryField();
+
+      $tt_id = $ticketTemplate->add([
+         'entities_id' => 0,
+         'name'        => 'test'
+      ]);
+      $this->boolean((bool)$tt_id)->isTrue();
+
+      $ttmf_id = $ticketTMF->add([
+         'tickettemplates_id' => $tt_id,
+         'num'                => 7
+      ]);
+      $this->boolean((bool)$ttmf_id)->isTrue();
+
+      $data = $this->query('getItems',
+                           ['query'     => [
+                               'searchText' => ['tickettemplates_id' => "^".$tt_id."$"]],
+                            'itemtype'   => 'TicketTemplateMandatoryField',
+                            'headers'    => ['Session-Token' => $this->session_token]],
+                           200);
+      if (isset($data['headers'])) {
+         unset($data['headers']);
+      }
+      $this->integer(count($data))->isEqualTo(1);
+   }
 }
