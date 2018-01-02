@@ -171,7 +171,7 @@ class SLM extends CommonDBTM {
    static function getMenuContent() {
 
       $menu = [];
-      if (Config::canUpdate()) {
+      if (static::canView()) {
          $menu['title']           = self::getTypeName(2);
          $menu['page']            = '/front/slm.php';
          $menu['links']['search'] = '/front/slm.php';
