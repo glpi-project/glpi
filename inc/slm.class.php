@@ -175,7 +175,9 @@ class SLM extends CommonDBTM {
          $menu['title']           = self::getTypeName(2);
          $menu['page']            = '/front/slm.php';
          $menu['links']['search'] = '/front/slm.php';
-         $menu['links']['add']    = '/front/slm.form.php';
+         if(static::canCreate()) {
+            $menu['links']['add'] = '/front/slm.form.php';
+         }
 
          $menu['options']['sla']['title']           = SLA::getTypeName(1);
          $menu['options']['sla']['page']            = '/front/sla.php';
