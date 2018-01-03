@@ -54,6 +54,11 @@ function update921to922() {
       'smtp_retry_time' => 5,
    ]);
 
+   $migration->addPostQuery(
+      "DELETE FROM `glpi_configs` WHERE `context` = 'core'
+      AND `name` = 'default_graphtype'"
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
