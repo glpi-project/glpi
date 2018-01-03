@@ -524,7 +524,7 @@ abstract class LevelAgreement extends CommonDBChild {
          'FROM'            => 'glpi_ruleactions',
          'WHERE'           => [
             'field' => $fk,
-            'value' => $this->getID()]]));
+            'value' => $this->getID()]]), false);
       $nb = count($rules_id_list);
 
       echo "<div class='spaced'>";
