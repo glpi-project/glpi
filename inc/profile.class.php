@@ -1110,7 +1110,10 @@ class Profile extends CommonDBTM {
                             'field'      => 'change'],
                       ['itemtype'  => 'ChangeValidation',
                             'label'     => _n('Validation', 'Validations', Session::getPluralNumber()),
-                            'field'     => 'changevalidation']];
+                            'field'     => 'changevalidation'],
+                      ['itemtype'  => 'ChangeTemplate',
+                            'label'     => _n('Change template', 'Change templates', Session::getPluralNumber()),
+                            'field'     => 'changetemplate']];
       $matrix_options['title'] = _n('Change', 'Changes', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 

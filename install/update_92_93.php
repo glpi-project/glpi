@@ -621,6 +621,86 @@ function update92to93() {
 
    /** /Datacenters */
 
+
+   /* Changes templates */
+   if (!$DB->tableExists('glpi_changetemplatehiddenfields')) {
+      $query = "CREATE TABLE `glpi_changetemplatehiddenfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_changetemplatehiddenfields");
+   }
+
+   if (!$DB->tableExists('glpi_changetemplatemandatoryfields')) {
+      $query = "CREATE TABLE `glpi_changetemplatemandatoryfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_changetemplatemandatoryfields");
+   }
+
+   if (countElementsInTable("glpi_changetemplatemandatoryfields", "") == 0) {
+      $query = "INSERT INTO `glpi_changetemplatemandatoryfields`
+                       (`id`, `changetemplates_id`, `num`)
+                VALUES (NULL, 1, 21)";
+      $DB->queryOrDie($query, "9.1 add default value for madatory field");
+   }
+
+   if (!$DB->tableExists('glpi_changetemplatepredefinedfields')) {
+      $query = "CREATE TABLE `glpi_changetemplatepredefinedfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changetemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  `value` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `changetemplates_id_id_num` (`changetemplates_id`,`num`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_changetemplatepredefinedfields");
+   }
+
+   if (!$DB->tableExists('glpi_changetemplates')) {
+      $query = "CREATE TABLE `glpi_changetemplates` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.3 add table glpi_changetemplates");
+   }
+
+   if (countElementsInTable("glpi_changetemplates", "") == 0) {
+      $query = "INSERT INTO `glpi_changetemplates`
+                       (`id`, `name`, `entities_id`, `is_recursive`, `comment`)
+                VALUES (NULL, 'Default', 0, 1, NULL)";
+      $DB->queryOrDie($query, "9.1 add default change template");
+   }
+
+   $migration->addField(
+      'glpi_entities',
+      'changetemplates_id',
+      'integer',
+      ['after' => 'tickettemplates_id']
+   );
+
+   $migration->addField(
+      'glpi_entities',
+      'changetemplates_id',
+      'integer',
+      ['after' => 'tickettemplates_id_demand']
+   );
+
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

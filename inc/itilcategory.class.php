@@ -99,6 +99,10 @@ class ITILCategory extends CommonTreeDropdown {
                          'label'     => __('Template for an incident'),
                          'type'      => 'dropdownValue',
                          'list'      => true],
+                   ['name'      => 'changetemplates_id',
+                         'label'     => __('Template for a change'),
+                         'type'      => 'dropdownValue',
+                         'list'      => true],
                   ];
 
       if (!Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE,

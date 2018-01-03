@@ -687,7 +687,7 @@ class CommonGLPI {
          if (isset($cleaned_options['stock_image'])) {
             unset($cleaned_options['stock_image']);
          }
-         if ($this->getType() == 'Ticket') {
+         if ($this->getType() == 'Ticket' || $this->getType() == 'Change') {
             $this->input = $cleaned_options;
             $this->saveInput();
             // $extraparamhtml can be tool long in case of ticket with content
