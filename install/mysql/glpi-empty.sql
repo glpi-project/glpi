@@ -1272,7 +1272,6 @@ INSERT INTO `glpi_configs` VALUES ('90','core','followup_private','0');
 INSERT INTO `glpi_configs` VALUES ('91','core','task_private','0');
 INSERT INTO `glpi_configs` VALUES ('92','core','default_software_helpdesk_visible','1');
 INSERT INTO `glpi_configs` VALUES ('93','core','names_format','0');
-INSERT INTO `glpi_configs` VALUES ('94','core','default_graphtype','svg');
 INSERT INTO `glpi_configs` VALUES ('95','core','default_requesttypes_id','1');
 INSERT INTO `glpi_configs` VALUES ('96','core','use_noright_users_add','1');
 INSERT INTO `glpi_configs` VALUES ('97','core','cron_limit','5');

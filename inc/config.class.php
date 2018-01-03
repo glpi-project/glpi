@@ -337,10 +337,6 @@ class Config extends CommonDBTM {
                                               'min'   => 1,
                                               'max'   => 4,
                                               'rand'  => $rand]);
-      echo "</td><td><label for='dropdown_default_graphtype$rand'>" . __('Default chart format')."</label></td><td>";
-      Dropdown::showFromArray("default_graphtype",
-                              ['png' => 'PNG', 'svg' => 'SVG',],
-                              ['value' => $CFG_GLPI["default_graphtype"], 'rand' => $rand]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
