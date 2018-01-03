@@ -5995,6 +5995,7 @@ class Html {
             echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
             echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
                                           placeholder='". __s('Search')."'>";
+            echo "<button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>";
             echo "</span>";
             Html::closeForm();
          }

@@ -2510,15 +2510,17 @@ a.icon_nav_move:hover img {
    position: relative;
 }
 
-#c_recherche :after {
-   width: 16px;
-   height: 16px;
-   content: '';
-   display: block;
-   background-image: url(../pics/search.png);
-   position: absolute;
-   top: 4px;
-   right: 4px;
+#c_recherche form #champRecherche button {
+   border: none;
+   height: 22px;
+   vertical-align: bottom;
+   border-radius: 0 3px 3px 0;
+   cursor: pointer;
+   margin: 0;
+}
+
+#c_recherche form #champRecherche button:hover {
+   background-color: #ccc;
 }
 
 #c_recherche form #champRecherche input {
@@ -2528,7 +2530,7 @@ a.icon_nav_move:hover img {
    padding: 0 3px;
    font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
-   border-radius: 3px;
+   border-radius: 3px 0px 0px 3px;
    position: relative;
 }
 
@@ -4320,6 +4322,16 @@ input[type=checkbox].toggle_comments:checked ~ ul {
 
    #c_preference #debug_mode {
       display: none;
+   }
+
+   #c_recherche form #champRecherche input{
+      width:100px;
+   }
+
+   #c_recherche {
+      position:relative;
+      top: 33px;
+      left:77px;
    }
 }
 
