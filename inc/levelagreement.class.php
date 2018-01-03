@@ -573,7 +573,7 @@ abstract class LevelAgreement extends CommonDBChild {
                echo "<td width='10'>";
                Html::showMassiveActionCheckBox("RuleTicket", $rule->fields["id"]);
                echo "</td>";
-               echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($this))."?id=" .
+               echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($rule))."?id=" .
                       $rule->fields["id"] . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
 
             } else {
