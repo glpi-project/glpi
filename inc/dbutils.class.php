@@ -1012,6 +1012,10 @@ final class DbUtils {
 
       }
 
+      if ($table == Location::getTable()) {
+         $SELECTNAME .= ", `$table`.`address`, `$table`.`town`, `$table`.`country`";
+      }
+
       $query = "SELECT $SELECTNAME, $SELECTCOMMENT
                FROM `$table`
                $JOIN
@@ -1029,6 +1033,32 @@ final class DbUtils {
                $comment  = sprintf(__('%1$s: %2$s')."<br>",
                                  "<span class='b'>".__('Complete name')."</span>",
                                  $name);
+               if ($table == Location::getTable()) {
+                  $acomment = '';
+                  $address = $DB->result($result, 0, 'address');
+                  $town    = $DB->result($result, 0, 'town');
+                  $country = $DB->result($result, 0, 'country');
+                  if (!empty($address)) {
+                     $acomment .= $address;
+                  }
+                  if (!empty($address) &&
+                     (!empty($town) || !empty($country))
+                  ) {
+                     $acomment .= '<br/>';
+                  }
+                  if (!empty($town)) {
+                     $acomment .= $town;
+                  }
+                  if (!empty($country)) {
+                     if (!empty($town)) {
+                        $acomment .= ' - ';
+                     }
+                     $acomment .= $country;
+                  }
+                  if (trim($acomment != '')) {
+                     $comment .= "<span class='b'>&nbsp;".__('Address:')."</span> " . $acomment . "<br/>";
+                  }
+               }
                $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
             }
             $transcomment = $DB->result($result, 0, "transcomment");
