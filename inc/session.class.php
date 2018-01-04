@@ -1048,7 +1048,8 @@ class Session {
             if (!$check_once
                 || !isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type])
                 || in_array($msg, $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) === false) {
-               array_push($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type], $msg);
+               $session_mar = $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type];
+               array_push($session_mar, $msg);
             }
          }
       }
