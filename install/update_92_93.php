@@ -621,6 +621,53 @@ function update92to93() {
 
    /** /Datacenters */
 
+   /** Add address to locations */
+   if (!$DB->fieldExists('glpi_locations', 'address')) {
+      $migration->addField(
+         'glpi_locations',
+         'address',
+         'text',
+         ['after' => 'sons_cache']
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_locations', 'postcode')) {
+      $migration->addField(
+         'glpi_locations',
+         'postcode',
+         'string',
+         ['after' => 'address']
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_locations', 'town')) {
+      $migration->addField(
+         'glpi_locations',
+         'town',
+         'string',
+         ['after' => 'postcode']
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_locations', 'state')) {
+      $migration->addField(
+         'glpi_locations',
+         'state',
+         'string',
+         ['after' => 'town']
+      );
+   }
+
+   if (!$DB->fieldExists('glpi_locations', 'country')) {
+      $migration->addField(
+         'glpi_locations',
+         'country',
+         'string',
+         ['after' => 'state']
+      );
+   }
+   /** /Add address to locations */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

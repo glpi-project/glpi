@@ -51,31 +51,64 @@ class Location extends CommonTreeDropdown {
 
    function getAdditionalFields() {
 
-      return [['name'  => $this->getForeignKeyField(),
-                         'label' => __('As child of'),
-                         'type'  => 'parent',
-                         'list'  => false],
-                   ['name'  => 'building',
-                         'label' => __('Building number'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'room',
-                         'label' => __('Room number'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'longitude',
-                         'label' => __('Longitude'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'latitude',
-                         'label' => __('Latitude'),
-                         'type'  => 'text',
-                         'list'  => true],
-                   ['name'  => 'altitude',
-                         'label' => __('Altitude'),
-                         'type'  => 'text',
-                         'list'  => true],
-                         ];
+      return [
+         [
+            'name'  => $this->getForeignKeyField(),
+            'label' => __('As child of'),
+            'type'  => 'parent',
+            'list'  => false
+         ], [
+            'name'   => 'address',
+            'label'  => __('Address'),
+            'type'   => 'text',
+            'list'   => true
+         ], [
+            'name'   => 'postcode',
+            'label'  => __('Postal code'),
+            'type'   => 'text',
+            'list'   => true
+         ], [
+            'name'   => 'town',
+            'label'  => __('Town'),
+            'type'   => 'text',
+            'list'   => true
+         ], [
+            'name'   => 'state',
+            'label'  => __('State'),
+            'type'   => 'text',
+            'list'   => true
+         ], [
+            'name'   => 'country',
+            'label'  => __('Country'),
+            'type'   => 'text',
+            'list'   => true
+         ], [
+            'name'  => 'building',
+            'label' => __('Building number'),
+            'type'  => 'text',
+            'list'  => true
+         ], [
+            'name'  => 'room',
+            'label' => __('Room number'),
+            'type'  => 'text',
+            'list'  => true
+         ], [
+            'name'  => 'longitude',
+            'label' => __('Longitude'),
+            'type'  => 'text',
+            'list'  => true
+         ], [
+            'name'  => 'latitude',
+            'label' => __('Latitude'),
+            'type'  => 'text',
+            'list'  => true
+         ], [
+            'name'  => 'altitude',
+            'label' => __('Altitude'),
+            'type'  => 'text',
+            'list'  => true
+         ]
+      ];
    }
 
 
@@ -93,6 +126,51 @@ class Location extends CommonTreeDropdown {
          'field'              => 'completename',
          'name'               => __('Location'),
          'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '101',
+         'table'              => 'glpi_locations',
+         'field'              => 'address',
+         'name'               => __('Address'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '102',
+         'table'              => 'glpi_locations',
+         'field'              => 'postcode',
+         'name'               => __('Postal code'),
+         'massiveaction'      => true,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '103',
+         'table'              => 'glpi_locations',
+         'field'              => 'town',
+         'name'               => __('Town'),
+         'massiveaction'      => true,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '104',
+         'table'              => 'glpi_locations',
+         'field'              => 'state',
+         'name'               => __('State'),
+         'massiveaction'      => true,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '105',
+         'table'              => 'glpi_locations',
+         'field'              => 'country',
+         'name'               => __('Country'),
+         'massiveaction'      => true,
+         'datatype'           => 'string'
       ];
 
       $tab[] = [
