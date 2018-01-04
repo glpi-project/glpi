@@ -440,15 +440,10 @@ class Dropdown {
       if (empty($name)) {
          $name = "&nbsp;";
       }
-      /*
-      if (!$item instanceof CommonTreeDropdown) {
-         $search  = array("/\&lt;/","/\&gt;/");
-         $replace = array("<",">");
-         $name    = preg_replace($search, $replace, $name);
-      }*/
+
       if ($withcomment) {
          return ['name'     => $name,
-                      'comment'  => $comment];
+                 'comment'  => $comment];
       }
 
       return $name;
