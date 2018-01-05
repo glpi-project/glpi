@@ -120,4 +120,21 @@ class Toolbox extends atoum {
       $this->string(\Toolbox::unclean_html_cross_side_scripting_deep($image_base_64))
          ->notContains('denied:');
    }
+
+   protected function cleanIntegerProvider() {
+      return [
+         [1, '1'],
+         ['1', '1'],
+         ['a1', '1'],
+         ['-1', '-1'],
+         ['-a1', '-1'],
+      ];
+   }
+
+   /**
+    * @dataProvider cleanIntegerProvider
+    */
+   public function testCleanInteger($value, $expected) {
+      $this->variable(\Toolbox::cleanInteger($value))->isIdenticalTo($expected);
+   }
 }
