@@ -201,18 +201,19 @@ class DBmysql {
    }
 
    /**
-    * Execute a MySQL query
+    * Execute a MySQL query and die
+    * (optionnaly with a message) if it fails
     *
     * @since 0.84
     *
     * @param string $query   Query to execute
-    * @param string $message Explaination of query (default '')
+    * @param string $message Explanation of query (default '')
     *
     * @return mysqli_result Query result handler
     */
    function queryOrDie($query, $message = '') {
-      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $res = $this->query($query)
+             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
                             $message, $query, $this->error()));
       return $res;
@@ -866,20 +867,21 @@ class DBmysql {
    }
 
    /**
-    * Insert a row in the database
+    * Insert a row in the database and die
+    * (optionnaly with a message) if it fails
     *
     * @since 9.3
     *
     * @param string $table  Table name
     * @param array  $params  Query parameters ([field name => field value)
-    * @param string $message Explaination of query (default '')
+    * @param string $message Explanation of query (default '')
     *
     * @return mysqli_result|boolean Query result handler
     */
    function insertOrDie($table, $params, $message = '') {
-      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $insert = $this->buildInsert($table, $params);
       $res = $this->query($insert)
+             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
                             $message, $insert, $this->error()));
       return $res;
@@ -933,21 +935,22 @@ class DBmysql {
    }
 
    /**
-    * Update a row in the database
+    * Update a row in the database or die
+    * (optionnaly with a message) if it fails
     *
     * @since 9.3
     *
     * @param string $table   Table name
     * @param array  $params  Query parameters ([:field name => field value)
     * @param array  $where   WHERE clause
-    * @param string $message Explaination of query (default '')
+    * @param string $message Explanation of query (default '')
     *
     * @return mysqli_result|boolean Query result handler
     */
    function updateOrDie($table, $params, $where, $message = '') {
-      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $update = $this->buildUpdate($table, $params, $where);
       $res = $this->query($update)
+             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
                             $message, $update, $this->error()));
       return $res;
@@ -993,4 +996,26 @@ class DBmysql {
       $result = $this->query($query);
       return $result;
    }
+
+   /**
+    * Delete a row in the database and die
+    * (optionnaly with a message) if it fails
+    *
+    * @since 9.3
+    *
+    * @param string $table   Table name
+    * @param array  $where   WHERE clause
+    * @param string $message Explanation of query (default '')
+    *
+    * @return mysqli_result|boolean Query result handler
+    */
+   function deleteOrDie($table, $where, $message = '') {
+      $update = $this->buildDelete($table, $where);
+      $res = $this->query($update)
+             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
+                            $message, $update, $this->error()));
+      return $res;
+   }
+
 }
