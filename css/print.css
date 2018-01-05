@@ -1121,11 +1121,6 @@ ul#menu ul li a {
    height: 100%;
 }
 
-ul#menu ul li a:hover {
-   // File not found...
-   background: url("../pics/fd_nav2.png") 0 0 repeat;
-}
-
 ul#menu li#menu1 {
    float: left;
    width: 110px;
@@ -1214,8 +1209,6 @@ div#header div#c_logo a {
 
 
 div#c_ssmenu1 {
-   // File not found...
-   background: url("../pics/fd_nav2.png") 0 0 repeat-x;
    height: 24px;
    clear: both;
    font-size: 0.8em;
