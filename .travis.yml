@@ -38,7 +38,7 @@ matrix:
     - php: 7.0
       env: UPDATE=true
       addons:
-        mariadb: 10.0
+        mariadb: 10.2
     - php: 7.1
       env: CS=true
       addons:
