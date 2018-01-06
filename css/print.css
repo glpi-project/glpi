@@ -980,8 +980,8 @@ ul#onglet span.fake {
     /*css hack for IE*/
    position: absolute;
    bottom: auto;
-   top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
-   width: expression(parseInt(document.documentElement.clientWidth)+'px');
+   /*top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
+   width: expression(parseInt(document.documentElement.clientWidth)+'px');*/
 }
 
 
