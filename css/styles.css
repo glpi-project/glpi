@@ -1152,12 +1152,12 @@ td.rotate {
   -ms-transform:rotate(-70deg); /* IE 9 */
   width: 10%;
   height: 80px;
-  <!--[if lte IE 7]>
-   filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
-  <![endif]-->
-  <!--[if lte IE 8]>
-   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
-  <![endif]-->
+  /*<!--[if lte IE 7]>*/
+   /*filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
+  /*<![endif]-->*/
+  /*<!--[if lte IE 8]>*/
+   /*-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
+  /*<![endif]-->*/
 
 }
 
