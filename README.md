@@ -32,7 +32,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB (or MySQL < 5.7)
 * PHP 5.6 or higher
-* Mandatory PHP extensions:
+* Mandatory PHP extensions :
     - json
     - mbstring
     - mysqli
@@ -46,6 +46,12 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - ldap (users authentication)
     - openssl (encrypted communication)
 
+ * Supported browsers :
+    - IE 11+
+    - Edge
+    - Firefox (including ESR)
+    - Chrome
+Please, consider using browsers on editors' supported version
 
 ## Download
 
