@@ -104,6 +104,10 @@ ul#menu ul li a {
    color: #8B4D34;
 }
 
+#c_recherche form #champRecherche button {
+   background-color: #F2B265;
+}
+
 /* ====== BUTTONS ====== */
 
 input.submit,
