@@ -104,6 +104,15 @@ ul#menu ul li a {
    color: #659900;
 }
 
+#c_recherche form #champRecherche button {
+   background-color: #000;
+   color: #FFF;
+}
+
+#c_recherche form #champRecherche button:hover {
+   background-color: #999;
+}
+
 /* ====== BUTTONS ====== */
 a.vsubmit,
 .vsubmit a {
