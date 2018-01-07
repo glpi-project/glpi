@@ -5502,7 +5502,7 @@ class Html {
    static function getCopyrightMessage($withVersion = true) {
       $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
       $message .= "GLPI ";
-      // If required, add GLPI version (eg not for login page)
+      // if required, add GLPI version (eg not for login page)
       if ($withVersion) {
           $message .= GLPI_VERSION . " ";
       }
