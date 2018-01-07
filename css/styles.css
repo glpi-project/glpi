@@ -329,11 +329,6 @@ hr {
    max-width: 1400px;
 }
 
-/*#page {
-   margin-top:15px;
-}
-* */
-
 
 /* ################--------------- form ---------------#################### */
 
@@ -555,7 +550,6 @@ input.submit[type=reset] {
    width:100%;
    background: url("../pics/treeroot.png") 0 2px no-repeat;
    border:0;
-   /*margin-top:5px;*/
    font-weight:bold;
 }
 
@@ -827,7 +821,6 @@ input.submit[type=reset] {
       width: 52%;
       margin: 0;
       right: 0;
-      /*height: inherit !important;*/
    }
 
    .layout_vsplit > #page > div > .ui-tabs > .ui-tabs-panel {
@@ -905,21 +898,15 @@ td { }
 
 .tab_cadre_central {
    margin: 0 auto;
-   /*border: 1px solid #bbbbbb;*/
    z-index:1;
    text-align: left;
    font-size: 11px;
    width:90%;
-   /* background-color: #FFF4DF; */
-  /* background : url("../pics/fond-central.png") repeat-x top right ;
-   border-radius: 5px;
-   box-shadow: 0px 2px 5px #666;*/
 }
 
 
 .tab_cadre_postonly {
    margin: 0 auto;
-   /*border: 1px solid #bbbbbb;*/
    z-index:1;
    text-align: left;
    font-size: 11px;
@@ -939,7 +926,6 @@ td { }
 
 .tab_cadre_fixe, .tab_cadre_fixehov {
    margin: 0px auto 5px auto;
-   /*border: 1px solid #cccccc;*/
    background: #FFF;
    z-index:1;
    text-align: left;
@@ -954,12 +940,6 @@ td { }
 .ui-tabs .tab_cadre_fixehov {
    box-shadow: inherit;
 }
-
-
-/*.tab_cadre_fixe tr, .tab_cadre_fixe td { */
-/*	background-color: transparent; */
-/*}*/
-
 
 .tab_cadre_fixe img {
    vertical-align: middle;
@@ -1001,11 +981,7 @@ td { }
    font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
-/* to view link color must be the color of the palette
-.tab_cadre_fixehov th a, .tab_cadrehov th a {
-   color: #2E2E2E;
-}
-*/
+
 .tab_cadre_fixehov td, .tab_cadrehov td {
    padding: 8px 5px;
 }
@@ -1015,11 +991,6 @@ td { }
 .tab_cadre td, .tab_cadre_fixehov td, .tab_cadrehov td {
    border-bottom:1px solid #EEE;
 }
-
-/* .tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover { */
-/*    background-color: #FFF4DF; */
-/*  } */
-
 
 /* Table Hover Effects */
 .tab_cadrehov th.headHover,
@@ -1079,7 +1050,6 @@ td { }
 }
 
 .tab_bg_3 {
-   /*background-color: #eeeeee;*/
    background-color: #e7e7e2;
 }
 
@@ -1126,8 +1096,6 @@ div.rss {
 
 td.numeric {
    text-align:right;
-/*   width:10%;*/
-/*   padding-right:4%;*/
 }
 
 td.htmltable_upper_separation_cell {
@@ -1152,13 +1120,6 @@ td.rotate {
   -ms-transform:rotate(-70deg); /* IE 9 */
   width: 10%;
   height: 80px;
-  /*<!--[if lte IE 7]>*/
-   /*filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
-  /*<![endif]-->*/
-  /*<!--[if lte IE 8]>*/
-   /*-ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
-  /*<![endif]-->*/
-
 }
 
 .order_DESC:before {
@@ -1194,7 +1155,6 @@ td.rotate {
 
 .actor-bloc {
    width: 29%;
-   /*float: left;*/
 }
 
 .actor_title, .actor-bloc {
@@ -1465,14 +1425,9 @@ img.picture_square {
 
 .calendrier {
    vertical-align:middle;
-   /*border: 1px solid #888888;
-   background-color:#eeeeee;
-   background:  url("../pics/fond_form.png") repeat-x; */
 }
 
 .calendrier:hover {
-   /*border: 1px inset #888888;
-   background-color:#ffffff;*/
    cursor:pointer;
 }
 
@@ -2190,9 +2145,6 @@ a.icon_nav_move:hover img {
    padding: 1px;
    padding: 5px 0 5px 0;
    width: 75%;
-/*   top:  -60px;
-   left: 110px;*/
-/*    width: 300px; */
 }
 .boxnoteright {
    float: right;
@@ -2426,26 +2378,6 @@ a.icon_nav_move:hover img {
 /* ################--------------- Header / menu  ---------------#################### */
 
 #header {
-   /*background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;*/
-   /* According to http://caniuse.com/#search=linear-gradient, we need prefix only for android*/
-  /* background: -webkit-linear-gradient(top,
-                  #E1D39E 0%,
-                  #E1D39E 20%,
-                  #c0cc7b 21%,
-                  #c0cc7b 43%,
-                  #d0d99d 43%,
-                  #d0d99d 63%,
-                  #f1f4e3 65%,
-                  #f1f4e3 99%);*/ /* Chrome10+,Safari5.1+ */
-   /*background: linear-gradient(to bottom,
-                  #E1D39E 0%,
-                  #E1D39E 20%,
-                  #c0cc7b 21%,
-                  #c0cc7b 43%,
-                  #d0d99d 43%,
-                  #d0d99d 63%,
-                  #f1f4e3 65%,
-                  #f1f4e3 99%);*/ /* W3C */
    height: 96px;
 }
 
@@ -2944,7 +2876,6 @@ a.copyright {
 .debug h1, #debugajax h1 {
    font-size:18px;
    text-align:center;
-   /*background-color:#efefe7;*/
    padding: 5px;
 }
 
@@ -3543,7 +3474,6 @@ a.copyright {
    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* Opera 11.10+ */
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(241,244,227,1) 100%); /* W3C */
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#f1f4e3',GradientType=0 ); /* IE6-9 */
 }
 .timeline_history .h_content.TicketTask .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(240,228,181,1) 100%); /* FF3.6+ */
@@ -3552,7 +3482,6 @@ a.copyright {
    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* Opera 11.10+ */
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(240,228,181,1) 100%); /* W3C */
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#f0e4b5',GradientType=0 ); /* IE6-9 */
 }
 .timeline_history .h_content.Solution .read_more {
    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(233,241,255,1) 100%); /* FF3.6+ */
@@ -3561,7 +3490,6 @@ a.copyright {
    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* Opera 11.10+ */
    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* IE10+ */
    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(233,241,255,1) 100%); /* W3C */
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#e9f1ff',GradientType=0 ); /* IE6-9 */
 }
 
 .timeline_history .b_right {
@@ -3992,7 +3920,6 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    width: 16px;
    height: 16px;
    display: block;
-   /*float: right;*/
    position: absolute;
    right: 5px;
    bottom: 5px;

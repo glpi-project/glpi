@@ -84,15 +84,12 @@
 
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
    padding-bottom: 0;
-/*    padding-right: .1em; */
    border-right-width: 1px;
 }
 .ui-tabs-vertical .ui-tabs-panel {
    padding: 1em;
    margin-left: 180px;
-/*   position: relative;*/
    float: center;
-   /*width: 40em;*/
 }
 
 /* css styles for progress bar */
@@ -119,11 +116,8 @@
    color : black;
 }
 
-/* IE 6 doesn't support max-height
-* we use height instead, but this forces the menu to always be this tall
-*/
 html .ui-autocomplete {
-   height: 100px;
+   max-height: 100px;
 }
 
 .ui-widget-content .error {
