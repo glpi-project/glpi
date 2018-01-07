@@ -98,6 +98,9 @@ ul#menu ul li a {
    color: #004A33;
 }
 
+#c_recherche form #champRecherche button {
+   background-color: white;
+}
 
 /* ====== BUTTONS ====== */
 a.vsubmit,
