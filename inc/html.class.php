@@ -5494,16 +5494,19 @@ class Html {
    }
 
    /**
-    * Get copyright message as HTML (used in footers)
-    *
+    * Get copyright message in HTML (used in footers)
     * @since 9.1
-    *
-    * @return text
+    * @param boolean $withVersion include GLPI version ?
+    * @return string HTML copyright
     */
-   static function getCopyrightMessage() {
+   static function getCopyrightMessage($withVersion = true) {
       $message = "<a href=\"http://glpi-project.org/\" title=\"Powered By Teclib\" class=\"copyright\">";
-      $message .= "GLPI " . GLPI_VERSION .
-         " Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
+      $message .= "GLPI ";
+      // If required, add GLPI version (eg not for login page)
+      if($withVersion) {
+          $message .= GLPI_VERSION;
+      }
+      $message .= " Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
          " - Copyright (C) 2003-2015 INDEPNET Development Team".
          "</a>";
       return $message;
