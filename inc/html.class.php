@@ -5503,7 +5503,7 @@ class Html {
       $message = "<a href=\"http://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
       $message .= "GLPI ";
       // If required, add GLPI version (eg not for login page)
-      if($withVersion) {
+      if ($withVersion) {
           $message .= GLPI_VERSION . " ";
       }
       $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
