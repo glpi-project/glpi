@@ -146,7 +146,7 @@ class Telemetry extends CommonGLPI {
           FILTER_VALIDATE_IP)) {
           
           // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
-          stream_context_set_default( [
+          stream_context_set_default([
             'ssl' => [
                 'verify_peer' => false,
                 'verify_peer_name' => false,
