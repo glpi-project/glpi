@@ -105,6 +105,10 @@ ul#menu ul li a:hover {
    color: #fff;
 }
 
+#c_recherche form #champRecherche button {
+   background-color: white;
+}
+
 /* ====== BUTTONS ====== */
 
 input.submit {
