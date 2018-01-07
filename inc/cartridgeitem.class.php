@@ -30,11 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-
 /**
  * CartridgeItem Class
  * This class is used to manage the various types of cartridges.

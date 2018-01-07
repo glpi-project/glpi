@@ -34,8 +34,4 @@ namespace Glpi\Exception;
 
 use Exception;
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
-class ForgetPasswordException extends Exception {};
+class ForgetPasswordException extends Exception {}

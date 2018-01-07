@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 // Notice problem  for date function :
 $tz = ini_get('date.timezone');
 if (!empty($tz)) {

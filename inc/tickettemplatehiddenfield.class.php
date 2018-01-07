@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Hidden fields for ticket template class
 /// since version 0.83
 class TicketTemplateHiddenField extends CommonDBChild {

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
 */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class WifiNetwork
 /// since version 0.84
 class WifiNetwork extends CommonDropdown {

@@ -34,10 +34,6 @@
  * Create an abstration layer for any kind of internet label
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class FQDNLabel - any kind of internet label (computer name as well as alias)
 /// Since version 0.84
 abstract class FQDNLabel extends CommonDBChild {

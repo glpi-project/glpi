@@ -34,10 +34,6 @@
  * @since 9.2
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Line extends CommonDropdown {
    // From CommonDBTM
    public $dohistory                   = true;

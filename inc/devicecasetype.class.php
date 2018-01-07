@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class DeviceCaseType (Interface is a reserved keyword)
 class DeviceCaseType extends CommonDeviceType {
 

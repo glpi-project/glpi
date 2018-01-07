@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
 * */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class FQDN : Fully Qualified Domain Name
 /// since version 0.84
 class FQDN extends CommonDropdown {

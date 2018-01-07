@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
 * */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class IPNetwork : Represent an IPv4 or an IPv6 network.
 /// It fully use IPAddress and IPNetmask to check validity and change representation from binary
 /// to textual values.
