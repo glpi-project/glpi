@@ -879,7 +879,6 @@ ul#onglet span.fake {
    background-color: transparent;
    padding-left: 15px;
    padding-top: 76px;
-   text-align: left;  /* Bug IE Grrr */
    height: 190px;
    width: 300px;
 }
@@ -977,11 +976,6 @@ ul#onglet span.fake {
    font-weight: bold;
    margin-top:10px;
    margin:auto;
-    /*css hack for IE*/
-   position: absolute;
-   bottom: auto;
-   /*top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
-   width: expression(parseInt(document.documentElement.clientWidth)+'px');*/
 }
 
 

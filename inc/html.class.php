@@ -1236,10 +1236,6 @@ class Html {
          echo Html::css("css/palettes/{$_SESSION["glpipalette"]}.css");
       }
 
-      // surcharge CSS hack for IE
-      echo "<!--[if lte IE 8]>";
-      echo Html::css('css/styles_ie.css');
-      echo "<![endif]-->";
       echo Html::css('css/print.css', ['media' => 'print']);
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
