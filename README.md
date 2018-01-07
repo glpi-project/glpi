@@ -53,6 +53,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - Chrome
 Please, consider using browsers on editors' supported version
 
+
 ## Download
 
 See :
