@@ -244,6 +244,8 @@ abstract class LevelAgreement extends CommonDBChild {
     * @param  bool           $canupdate update right
     */
    function showForTicket(Ticket $ticket, $type, $tt, $canupdate) {
+      global $CFG_GLPI;
+
       list($dateField, $laField) = static::getFieldNames($type);
       $rand = mt_rand();
       $pre  = static::$prefix;
