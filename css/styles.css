@@ -2641,7 +2641,7 @@ ul#menu > li {
 ul#menu ul.ssmenu {
    position: absolute;
    min-width: 135px;
-   z-index: 200;
+   z-index: 500;
 }
 
 #header #c_logo {
