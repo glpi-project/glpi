@@ -46,6 +46,13 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
     - ldap (users authentication)
     - openssl (encrypted communication)
 
+ * Supported browsers:
+    - IE 11+
+    - Edge
+    - Firefox (including 2 latests ESR version)
+    - Chrome
+Please, consider using browsers on editors' supported version
+
 
 ## Download
 
