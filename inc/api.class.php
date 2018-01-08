@@ -281,22 +281,29 @@ abstract class API extends CommonGLPI {
     *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optionnal
     *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optionnal
     *
-    * @return boolean
+    * @return array|bool
     */
    protected function changeActiveEntities($params = []) {
 
       $this->initEndpoint();
 
       if (!isset($params['entities_id'])) {
-         $params['entities_id'] = 'all';
+         $entities_id = 'all';
+      } else {
+         $entities_id = intval($params['entities_id']);
       }
 
       if (!isset($params['is_recursive'])) {
          $params['is_recursive'] = false;
+      } else if (!is_bool($params['is_recursive'])) {
+         return $this->returnError();
       }
 
-      return Session::changeActiveEntities(intval($params['entities_id']),
-                                           $params['is_recursive']);
+      if (!Session::changeActiveEntities($entities_id, $params['is_recursive'])) {
+         return $this->returnError();
+      }
+
+      return true;
    }
 
 
