@@ -144,6 +144,15 @@ class Telemetry extends CommonGLPI {
       // check if host is present (do no throw php warning in contrary of get_headers)
       if (filter_var(gethostbyname(parse_url($CFG_GLPI['url_base'], PHP_URL_HOST)),
           FILTER_VALIDATE_IP)) {
+
+          // Issue #3180 - disable SSL certificate validation (wildcard, self-signed)
+          stream_context_set_default([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                ]
+            ]);
+
          $headers = get_headers($CFG_GLPI['url_base']);
       }
 
