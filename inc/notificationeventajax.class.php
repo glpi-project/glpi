@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface {
 
    static public function getTargetFieldName() {

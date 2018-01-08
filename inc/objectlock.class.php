@@ -34,10 +34,6 @@
  * @since 9.1
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /**
  * Itemlock is dedicated to manage real-time lock of items in GLPI.
  *

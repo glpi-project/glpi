@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 class Calendar_Holiday extends CommonDBRelation {
 
    public $auto_message_on_action = false;

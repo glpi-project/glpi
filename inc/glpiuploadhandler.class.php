@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 include_once(GLPI_JQUERY_UPLOADHANDLER);
 
 /** GLPIUploadHandler class

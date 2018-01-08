@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class Entity_Reminder
 /// @since 0.83
 class Entity_Reminder extends CommonDBRelation {

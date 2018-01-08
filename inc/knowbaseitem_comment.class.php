@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// Class KnowbaseItem_Comment
 /// since version 9.2
 class KnowbaseItem_Comment extends CommonDBTM {

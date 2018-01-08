@@ -33,11 +33,6 @@
 /**
  * @since 9.1
  */
-
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class ComputerAntivirus extends CommonDBChild {
 
    // From CommonDBChild

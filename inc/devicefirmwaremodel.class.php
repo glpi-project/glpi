@@ -26,10 +26,6 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
 class DeviceFirmwareModel extends CommonDeviceModel {
 
    var $additional_fields_for_dictionnary = ['manufacturer'];

@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
 

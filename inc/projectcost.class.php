@@ -30,10 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
-
 /// ProjectCost class
 /// since version 0.85
 class ProjectCost extends CommonDBChild {
