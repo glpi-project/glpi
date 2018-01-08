@@ -852,13 +852,22 @@ class Ticket extends DbTestCase {
       );
       $this->array($matches)->hasSize(($category === true ? 1 : 0));
 
-      //Request source file_put_contents('/tmp/out.html', $output)
-      preg_match(
-         '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
-         $output,
-         $matches
-      );
-      $this->array($matches)->hasSize(($requestSource === true ? 1 : 0));
+      //Request source
+      if ($requestSource === true) {
+         preg_match(
+            '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
+            $output,
+            $matches
+            );
+         $this->array($matches)->hasSize(1);
+      } else {
+         preg_match(
+            '/.*<input[^>]*name="requesttypes_id"[^>]*>.*/',
+            $output,
+            $matches
+            );
+         $this->array($matches)->hasSize(1);
+      }
 
       //Location
       preg_match(
@@ -946,7 +955,7 @@ class Ticket extends DbTestCase {
          $urgency = true,
          $impact = false,
          $category = true,
-         $requestSource = true,
+         $requestSource = false,
          $location = false
       );
 
@@ -975,7 +984,7 @@ class Ticket extends DbTestCase {
          $urgency = false,
          $impact = false,
          $category = false,
-         $requestSource = true,
+         $requestSource = false,
          $location = false
       );
    }
@@ -1040,7 +1049,7 @@ class Ticket extends DbTestCase {
          $urgency = true,
          $impact = false,
          $category = true,
-         $requestSource = true,
+         $requestSource = false,
          $location = false
       );
 
@@ -1070,7 +1079,7 @@ class Ticket extends DbTestCase {
          $urgency = false,
          $impact = false,
          $category = false,
-         $requestSource = true,
+         $requestSource = false,
          $location = false
       );
    }
