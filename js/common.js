@@ -796,7 +796,10 @@ function _eltRealSize(_elt) {
    return _s;
 }
 
-var initMap = function(parent_elt, map_id = 'map', height = '200px') {
+var initMap = function(parent_elt, map_id, height) {
+   // default parameters
+   map_id = (typeof map_id !== 'undefined') ? map_id : 'map';
+   height = (typeof height !== 'undefined') ? height : '200px';
 
    if (height == 'full') {
       //full height map
