@@ -110,6 +110,9 @@ ul#menu ul li a {
    color: #459436;
 }
 
+#c_recherche form #champRecherche button {
+   background-color: white;
+}
 
 /* ====== PANEL COMPONENTS ====== */
 
