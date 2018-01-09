@@ -3489,7 +3489,7 @@ class Html {
             paste_data_images: $('.fileupload').length,
             menubar: false,
             statusbar: false,
-            skin: 'light',
+            skin_url: '".$CFG_GLPI['root_doc']."/css/tiny_mce/skins/light',
             setup: function(editor) {
                if ($('#$name').attr('required') == 'required') {
                   $('#$name').closest('form').find('input[type=submit]').click(function() {
