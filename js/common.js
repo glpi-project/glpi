@@ -28,8 +28,6 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-var marked_row = new Array;
-
 var timeoutglobalvar;
 
 
@@ -88,27 +86,32 @@ function afterView(idMenu) {
  * @param id
  * @param idMenu
 **/
-function menuAff(id,idMenu){
+function menuAff(id, idMenu) {
 
-   var m    = document.getElementById(idMenu);
-   var item = m.getElementsByTagName('li');
+   var m      = document.getElementById(idMenu);
+   var item   = m.getElementsByTagName('li');
+   var ssmenu = null;
    for (var i=0; i<item.length; i++) {
       if (item[i].id == id) {
-         var ssmenu = item[i];
+         ssmenu = item[i];
       }
    }
-   var m = m.getElementsByTagName('ul');
+   m = m.getElementsByTagName('ul');
 
    if (ssmenu) {
       var smenu = ssmenu.getElementsByTagName('ul');
       if (smenu) {
          //masquer tous les menus ouverts
-         for (var i=0; i<m.length; i++) {
+         for (i=0; i<m.length; i++) {
             setdisplay(m[i],'none');
          }
          setdisplay(smenu[0],'block');
          clearTimeout(timeoutglobalvar);
-         ssmenu.onmouseout = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
+         ssmenu.onmouseout = function() {
+            timeoutglobalvar = setTimeout(function() {
+               afterView(smenu[0]);
+            },300);
+         };
       }
    }
 }
@@ -118,10 +121,9 @@ function menuAff(id,idMenu){
  * @param Type
  * @param Id
 **/
-function fillidfield(Type,Id) {
-
-   window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;
-   window.opener.document.forms["helpdeskform"].elements["itemtype"].value = Type;
+function fillidfield(Type, Id) {
+   window.opener.document.forms.helpdeskform.elements.items_id.value = Id;
+   window.opener.document.forms.helpdeskform.elements.itemtype.value = Type;
    window.close();
 }
 
@@ -134,10 +136,10 @@ function fillidfield(Type,Id) {
 function markCheckboxes(container_id) {
 
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-   for (var j=0; j<checkboxes.length; j++ ) {
-      checkbox = checkboxes[j];
-      if (checkbox && (checkbox.type == 'checkbox')) {
-         if (checkbox.disabled == false ) {
+   for (var j = 0; j < checkboxes.length; j++) {
+      var checkbox = checkboxes[j];
+      if (checkbox && checkbox.type == 'checkbox') {
+         if (checkbox.disabled === false ) {
             checkbox.checked = true;
          }
       }
@@ -155,9 +157,9 @@ function markCheckboxes(container_id) {
 function unMarkCheckboxes(container_id) {
 
    var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-   for (var j=0; j<checkboxes.length; j++ ) {
-      checkbox = checkboxes[j];
-      if (checkbox && (checkbox.type == 'checkbox')) {
+   for (var j = 0; j < checkboxes.length; j++) {
+      var checkbox = checkboxes[j];
+      if (checkbox && checkbox.type == 'checkbox') {
          checkbox.checked = false;
       }
    }
@@ -174,8 +176,6 @@ function unMarkCheckboxes(container_id) {
  * @param    other_option_name the name of both the option and the text input field
 **/
 function displayOtherSelectOptions(select_object, other_option_name) {
-
-   var SelIndex = select_object.selectedIndex;
    if (select_object.options[select_object.selectedIndex].value == other_option_name) {
       document.getElementById(other_option_name).style.display = "inline";
    } else {
@@ -195,7 +195,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    reference_id    DOM element
  * @param    container_id    DOM element
 **/
-function checkAsCheckboxes( reference_id, container_id ) {
+function checkAsCheckboxes(reference_id, container_id) {
    $('#' + container_id + ' input[type="checkbox"]:enabled')
       .prop('checked', $('#' + reference_id).is(':checked'));
 
@@ -257,7 +257,7 @@ $.fn.shiftSelectable = function() {
 function showHideDiv(id, img_name, img_src_close, img_src_open) {
    var _elt = $('#' + id);
 
-   if (img_name != '') {
+   if (img_name !== '') {
       var _awesome = img_src_close.match(/^fa-/);
       var _deco,
           _img;
@@ -303,12 +303,12 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
    if (document.getElementById) { // DOM3 = IE5, NS6
       if (document.getElementById(id).value == '0') {
          document.getElementById(id).value = '1';
-         if (img_name != '') {
+         if (img_name !== '') {
             document[img_name].src=img_src_yes;
          }
       } else {
          document.getElementById(id).value = '0';
-         if (img_name != '') {
+         if (img_name !== '') {
             document[img_name].src=img_src_no;
          }
       }
@@ -324,20 +324,20 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
  * @param img_src_close
  * @param img_src_open
  */
-function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
+function toggleTableDisplay(tbl, img_name, img_src_close, img_src_open) {
 
    var tblRows = document.getElementById(tbl).rows;
-   for (i=0; i < tblRows.length; i++) {
+   for (var i=0; i < tblRows.length; i++) {
       if (tblRows[i].className.indexOf("headerRow") == -1) {
          if (tblRows[i].style.display == 'none') {
             tblRows[i].style.display = "table-row";
-            if (img_name != '') {
+            if (img_name !== '') {
                document[img_name].src = img_src_open;
             }
 
          } else {
             tblRows[i].style.display = "none";
-            if (img_name != '') {
+            if (img_name !== '') {
                document[img_name].src = img_src_close;
             }
          }
@@ -364,11 +364,11 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
  * @param target
  * @param fields
 **/
-function submitGetLink(target,fields) {
+function submitGetLink(target, fields) {
 
-    var myForm    = document.createElement("form");
-    myForm.method = "post";
-    myForm.action = target;
+   var myForm    = document.createElement("form");
+   myForm.method = "post";
+   myForm.action = target;
    for (var name in fields) {
       var myInput = document.createElement("input");
       myInput.setAttribute("name", name);
@@ -415,14 +415,13 @@ function deselectAll(id) {
  *
 **/
 function massiveUpdateCheckbox(criterion, reference) {
-   if (typeof(reference) == 'undefined') {
-      var value = null;
-   } else if (typeof(reference) == 'boolean') {
-      var value = reference;
+   var value = null;
+   if (typeof(reference) == 'boolean') {
+      value = reference;
    } else if (typeof(reference) == 'string') {
-      var value = $('#' + reference).prop('checked');
+      value = $('#' + reference).prop('checked');
    } else if (typeof(reference) == 'object') {
-      var value = $(reference).prop('checked');
+      value = $(reference).prop('checked');
    }
    if (typeof(value) == 'undefined') {
       return false;
@@ -439,7 +438,7 @@ function massiveUpdateCheckbox(criterion, reference) {
 
 //Hack for Jquery Ui Date picker
 var _gotoToday = jQuery.datepicker._gotoToday;
-jQuery.datepicker._gotoToday = function(a){
+jQuery.datepicker._gotoToday = function(a) {
    var target = jQuery(a);
    var inst = this._getInst(target[0]);
    _gotoToday.call(this, a);
@@ -450,7 +449,7 @@ jQuery.datepicker._gotoToday = function(a){
 
 /* TImeline for itiobjects */
 
-filter_timeline = function() {
+var filter_timeline = function() {
    $(document).on("click", '.filter_timeline li a', function(event) {
       event.preventDefault();
       var _this = $(this);
@@ -468,41 +467,41 @@ filter_timeline = function() {
       _this.toggleClass('h_active');
 
       //find active classname
-      active_classnames = [];
-      $('.filter_timeline .h_active').each(function(index) {
+      var active_classnames = [];
+      $('.filter_timeline .h_active').each(function() {
          active_classnames.push(".h_content."+$(this).data('type'));
-      })
+      });
 
-      $(active_classnames.join(', ')).each(function(index){
+      $(active_classnames.join(', ')).each(function(){
          $(this).parent().removeClass('h_hidden');
-      })
+      });
 
       //show all items when no active filter
-      if (active_classnames.length == 0) {
+      if (active_classnames.length === 0) {
          $('.h_item').removeClass('h_hidden');
       }
    });
-}
+};
 
 
-read_more = function() {
-   $(document).on("click", ".long_text .read_more a", function(event) {
+var read_more = function() {
+   $(document).on("click", ".long_text .read_more a", function() {
       $(this).parents('.long_text').removeClass('long_text');
       $(this).parent('.read_more').remove();
       return false;
    });
-}
+};
 
 
 var split_button_fct_called = false;
-split_button = function() {
+var split_button = function() {
    if (split_button_fct_called) {
       return true;
    }
-   split_button_fct_called = true
+   split_button_fct_called = true;
 
    // unfold status list
-   $(document).on("click", '.x-button-drop', function(event) {
+   $(document).on("click", '.x-button-drop', function() {
       $(this).parents(".x-split-button").toggleClass('open');
    });
 
@@ -518,8 +517,8 @@ split_button = function() {
          xBtnDrop.attr('class','x-button x-button-drop');
 
          //find status
-         match = event.target.children[0].src.match(/.*\/(.*)\.png/);
-         cstatus = match[1];
+         var match = event.target.children[0].src.match(/.*\/(.*)\.png/);
+         var cstatus = match[1];
 
          //add status to dropdown button
          xBtnDrop.addClass(cstatus);
@@ -530,12 +529,12 @@ split_button = function() {
    });
 
    //fold status list on click on document
-   $(document).on("click", function(event) {
+   $(document).on("click", function() {
       if ($('.x-split-button').hasClass('open')) {
          $('.x-split-button').removeClass('open');
       }
    });
-}
+};
 
 // Responsive header
 if ($(window).width() <= 700) {
@@ -544,7 +543,7 @@ if ($(window).width() <= 700) {
    var delta = 5;
    var navbarHeight = $('header').outerHeight();
 
-   $(window).scroll(function(event){
+   $(window).scroll(function() {
       didScroll = true;
    });
 
@@ -573,10 +572,10 @@ if ($(window).width() <= 700) {
          }
       }
       lastScrollTop = st;
-   }
+   };
 }
 
-langSwitch = function(elt) {
+var langSwitch = function(elt) {
    var _url = elt.attr('href').replace(/front\/preference.+/, 'ajax/switchlang.php');
    $.ajax({
       url: _url,
@@ -587,9 +586,9 @@ langSwitch = function(elt) {
          $('#debugajax').remove();
       }
    });
-}
+};
 
-$(function(){
+$(function() {
    $('#menu.fullmenu li').on('mouseover', function() {
       var _id = $(this).data('id');
       menuAff('menu' + _id, 'menu');
@@ -602,7 +601,7 @@ $(function(){
          if (e.type == 'mouseover') {
             tr.addClass("rowHover");
             // If rowspan
-            if (tr.has('td[rowspan]').length == 0) {
+            if (tr.has('td[rowspan]').length === 0) {
 
                tr.prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').addClass("rowHover");
             }
@@ -618,7 +617,7 @@ $(function(){
    });
 
    // prevent jquery ui dialog to keep focus
-   $.ui.dialog.prototype._focusTabbable = function(){};
+   $.ui.dialog.prototype._focusTabbable = function() {};
 
    //quick lang switch
    $('#language_link > a').on('click', function(event) {
@@ -636,7 +635,7 @@ $(function(){
 var isImage = function(file) {
    var validimagetypes = ["image/gif", "image/jpeg","image/jpg", "image/png"];
 
-   if ($.inArray(file["type"], validimagetypes) < 0) {
+   if ($.inArray(file.type, validimagetypes) < 0) {
       return false;
    } else {
       return true;
@@ -713,7 +712,7 @@ var replaceContent = function(editor, search, replace) {
    }
 
    var re =/\[\*\*(.*?)\*\*\]/;
-   body = editor.getContent();
+   var body = editor.getContent();
    body = body.replace(re,replace);
    editor.setContent(body);
 };
@@ -724,11 +723,11 @@ var replaceContent = function(editor, search, replace) {
  * @param  integer index    the numeric index
  * @return string           excel like string index
  */
-var getBijectiveIndex = function (index) {
+var getBijectiveIndex = function(index) {
    var bij_str = "";
    while (parseInt(index) > 0) {
       index--;
-      bij_str = String.fromCharCode("A".charCodeAt(0) + ( index % 26)) + bij_str
+      bij_str = String.fromCharCode("A".charCodeAt(0) + ( index % 26)) + bij_str;
       index /= 26;
    }
    return bij_str;
@@ -781,7 +780,7 @@ if ($('#backtotop').length) {
          scrollTop: 0
       }, 700);
    });
-};
+}
 
 /**
  * Returns element height, including margins
@@ -831,7 +830,7 @@ var initMap = function(parent_elt, map_id, height) {
       attribution: '&copy; <a href=\'http://osm.org/copyright\'>OpenStreetMap</a> contributors'
    }).addTo(map);
    return map;
-}
+};
 
 var showMapForLocation = function(elt) {
    var _id = $(elt).data('fid');
@@ -843,7 +842,7 @@ var showMapForLocation = function(elt) {
 
    _dialog = $('<div id="location_map_dialog"/>');
    _dialog.appendTo('body').dialog({
-      close: function(event, ui) {
+      close: function() {
          $(this).dialog('destroy').remove();
       }
    });
@@ -861,10 +860,10 @@ var showMapForLocation = function(elt) {
          items_id: $('#' + _id).val()
       }
    }).done(function(data) {
-      if (data.success == false) {
+      if (data.success === false) {
          _dialog.dialog('close');
          $('<div>' + data.message + '</div>').dialog({
-            close: function(event, ui) {
+            close: function() {
                $(this).dialog('destroy').remove();
             }
          });
