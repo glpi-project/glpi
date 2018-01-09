@@ -428,4 +428,22 @@ class DBmysqlIterator extends DbTestCase {
       $this->integer(count($it))->isGreaterThan(100);
       $this->boolean($it->numrows() == count($it))->isTrue();
    }
+
+   public function testKey() {
+      global $DB;
+
+      // test keys with absence of 'id' in select
+      // we should use a incremented position in the first case
+      // see https://github.com/glpi-project/glpi/pull/3401
+      // previously, the first query returned only one result
+      $users_list = iterator_to_array($DB->request([
+         'SELECT' => 'name',
+         'FROM'   => 'glpi_users']));
+      $users_list2 = iterator_to_array($DB->request([
+         'SELECT' =>  ['id', 'name'],
+         'FROM'   => 'glpi_users']));
+      $nb  = count($users_list);
+      $nb2 = count($users_list2);
+      $this->integer($nb)->isEqualTo($nb2);
+   }
 }
