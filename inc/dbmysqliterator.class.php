@@ -50,6 +50,9 @@ class DBmysqlIterator implements Iterator, Countable {
    // Current row
    private $row;
 
+   // Current position
+   private $position = 0;
+
    /**
     * Constructor
     *
@@ -73,6 +76,7 @@ class DBmysqlIterator implements Iterator, Countable {
    function execute ($table, $crit = "", $debug = false) {
       $this->buildQuery($table, $crit, $debug);
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+      $this->position = 0;
       return $this;
    }
 
@@ -418,6 +422,7 @@ class DBmysqlIterator implements Iterator, Countable {
       if ($this->res && $this->conn->numrows($this->res)) {
          $this->conn->data_seek($this->res, 0);
       }
+      $this->position = 0;
       return $this->next();
    }
 
@@ -436,7 +441,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return mixed
     */
    public function key() {
-      return (isset($this->row["id"]) ? $this->row["id"] : 0);
+      return (isset($this->row["id"]) ? $this->row["id"] : $this->position - 1);
    }
 
    /**
@@ -449,6 +454,7 @@ class DBmysqlIterator implements Iterator, Countable {
          return false;
       }
       $this->row = $this->conn->fetch_assoc($this->res);
+      ++$this->position;
       return $this->row;
    }
 
