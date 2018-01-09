@@ -47,7 +47,7 @@ function uploadFile(file, editor, input_name) {
       async: false,
       success: function(data) {
          $.each(data, function(index, element) {
-            if (element[0].error == undefined) {
+            if (element[0].error === undefined) {
                returnTag = '';
                var tag = getFileTag(element);
                //if is an image add tag
@@ -63,7 +63,7 @@ function uploadFile(file, editor, input_name) {
          });
       },
 
-      error: function (request, status, error) {
+      error: function (request) {
          alert(request.responseText);
       }
    });
@@ -89,7 +89,7 @@ var getFileTag = function(data) {
       success: function(data) {
          returnString = data[0];
       },
-      error: function (request, status, error) {
+      error: function (request) {
          console.log(request.responseText);
          returnString=false;
       }
@@ -117,26 +117,20 @@ var displayUploadedFile = function(file, tag, editor, input_name) {
    var iteration = 0;
    do {
       current_dom_point = current_dom_point.parent();
-      filecontainer = current_dom_point.find('.fileupload_info')
+      filecontainer = current_dom_point.find('.fileupload_info');
       iteration++;
    } while (filecontainer.length <= 0 && iteration < 30);
 
    if (filecontainer.length) {
-      var rand = Math.random();
       var ext  = file.name.split('.').pop();
 
       var p    = $('<p/>')
                   .attr('id',file.id)
                   .html(getExtIcon(ext)+'&nbsp;'+
                         '<b>'+file.display+'</b>'+
-                        '&nbsp;('
-                        +getSize(file.size)+')&nbsp;')
+                        '&nbsp;('+
+                        getSize(file.size)+')&nbsp;')
                   .appendTo(filecontainer);
-
-      var p2   = $('<p/>')
-                 .attr('id',file.id+'2')
-                 .css({'display':'none'})
-                 .appendTo(filecontainer);
 
       // File
       $('<input/>')
@@ -291,7 +285,7 @@ var isImageBlobFromPaste = function(content) {
 * @param      {string}  content  The img tag
 */
 var extractSrcFromImgTag = function(content) {
-   var match = content.match(/<img[^>]*?src=['"](.*)['"]/)
+   var match = content.match(/<img[^>]*?src=['"](.*)['"]/);
    if (match !== null) {
       return match[1];
    }
@@ -305,11 +299,11 @@ var extractSrcFromImgTag = function(content) {
 */
 var extractSrcFromBlobImgTag = function(content) {
    var match = content.match(/\<img[^>]+src="(blob:http%3A\/\/[^">]+)/);
-   if (match == null) {
-      var match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
+   if (match === null) {
+      match = content.match(/\<img[^>]+src="(blob:http:\/\/[^">]+)/);
 
-      if (match == null) {
-         var match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
+      if (match === null) {
+         match = content.match(/\<img[^>]+src="(blob:[^">]+)/);
       }
    }
 
@@ -380,7 +374,7 @@ if (typeof tinymce != 'undefined') {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
             xhr.responseType = 'blob';
-            xhr.onload = function(event) {
+            xhr.onload = function() {
                if (this.status == 200) {
                   // fill missing file properties
                   var file  = new Blob([this.response], {type: 'image/png'});
@@ -424,7 +418,7 @@ $(function() {
          }
 
          node = node.parentNode;
-      } while (node != null);
+      } while (node !== null);
 
       dropZone.removeClass('dragin draghover');
 
@@ -441,7 +435,7 @@ $(function() {
       // if file present, insert it in filelist
       if (typeof event.originalEvent.dataTransfer.files) {
          $.each(event.originalEvent.dataTransfer.files, function(index, element) {
-            var input_name = undefined;
+            var input_name = null;
             var input_file = $(event.target).find('input[type=file][name]');
             if (input_file.length) {
                input_name = input_file.attr('name').replace('[]', '');
