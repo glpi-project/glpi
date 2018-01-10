@@ -682,12 +682,14 @@ class Reservation extends CommonDBChild {
          echo "<td>";
          if (empty($ID)) {
             User::dropdown(['value'  => Session::getLoginUserID(),
-                                 'entity' => $item->getEntityID(),
-                                 'right'  => 'all']);
+                            'entity' => $item->getEntityID(),
+                            'entity_sons' => $item->isRecursive(),
+                            'right'  => 'all']);
          } else {
             User::dropdown(['value'  => $resa->fields["users_id"],
-                                 'entity' => $item->getEntityID(),
-                                 'right'  => 'all']);
+                            'entity' => $item->getEntityID(),
+                            'entity_sons' => $item->isRecursive(),
+                            'right'  => 'all']);
          }
          echo "</td></tr>\n";
       }
