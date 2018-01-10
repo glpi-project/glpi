@@ -805,7 +805,7 @@ class MailCollector  extends CommonDBTM {
       }
       $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
 
-      if ($is_html && !isset($tkt['tickets_id'])) {
+      if ($is_html && !isset($tkt['tickets_id']) && $CFG_GLPI["use_rich_text"]) {
          $tkt['content'] = nl2br($tkt['content']);
       }
 
