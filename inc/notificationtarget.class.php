@@ -654,7 +654,7 @@ class NotificationTarget extends CommonDBChild {
       $eventclass = $this->event;
       $admins_data = $eventclass::getEntityAdminsData($this->entity);
 
-      if ($admin_data) {
+      if ($admins_data) {
          foreach ($admins_data as $admin_data) {
             if (!isset($admin_data['usertype'])) {
                $admin_data['usertype'] = self::getDefaultUserType();
