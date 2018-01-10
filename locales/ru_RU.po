@@ -9121,9 +9121,9 @@ msgstr[3] "Типы контактов"
 #: inc/profile.class.php:1743 inc/transfer.class.php:3460
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] "Контакт"
-msgstr[1] "Контакт"
-msgstr[2] "Контакты"
+msgstr[0] "Контракт"
+msgstr[1] "Контракт"
+msgstr[2] "Контракты"
 msgstr[3] "Договора"
 
 #: inc/contract.class.php:209 inc/contract.class.php:682
