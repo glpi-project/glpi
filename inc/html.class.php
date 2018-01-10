@@ -1303,7 +1303,7 @@ class Html {
 
       $menu['management']['title']   = __('Management');
       $menu['management']['types']   = ['SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
-                                        'Document', 'Line', 'Certificate', 'Datacenter', 'DCRoom'];
+                                        'Document', 'Line', 'Certificate', 'Datacenter'];
 
       $menu['tools']['title']        = __('Tools');
       $menu['tools']['types']        = ['Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
@@ -4455,7 +4455,6 @@ class Html {
 
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
-            $confirmMessage = $options['confirm'];
             $confirmAction  = '';
             if (isset($options['confirmaction'])) {
                if (!empty($options['confirmaction'])) {
@@ -4468,8 +4467,8 @@ class Html {
          }
          unset($options['confirm']);
       }
-      // Do not escape title if it is an image
-      if (!preg_match('/^<img.*/', $text)) {
+      // Do not escape title if it is an image or a i tag (fontawesome)
+      if (!preg_match('/^<i(mg)?.*/', $text)) {
          $text = Html::cleanInputText($text);
       }
 
@@ -4593,7 +4592,6 @@ class Html {
       }
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
-            $confirmMessage = $options['confirm'];
             $confirmAction  = '';
             if (isset($options['confirmaction'])) {
                if (!empty($options['confirmaction'])) {

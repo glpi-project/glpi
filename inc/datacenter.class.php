@@ -139,4 +139,31 @@ class Datacenter extends CommonDBTM {
 
       return $tab;
    }
+
+   static function getAdditionalMenuLinks() {
+      global $CFG_GLPI;
+
+      $links = [];
+      if (static::canView()) {
+         $rooms = "<i class=\"fa fa-building pointer\" title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) .
+            "\"></i><span class=\"sr-only\">" . DCRoom::getTypeName(Session::getPluralNumber()). "</span>";
+         $links[$rooms] = DCRoom::getSearchURL(false);
+
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
+   static function getAdditionalMenuOptions() {
+
+      return [
+         'dcroom' => [
+            'title' => DCRoom::getTypeName(Session::getPluralNumber()),
+            'page'  => DCRoom::getSearchURL(false)
+         ]
+      ];
+   }
+
 }

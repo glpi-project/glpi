@@ -351,7 +351,6 @@ class Html extends atoum {
          'Line',
          'Certificate',
          'Datacenter',
-         'DCRoom',
       ];
       $this->string($menu['management']['title'])->isIdenticalTo('Management');
       $this->array($menu['management']['types'])->isIdenticalTo($expected);
