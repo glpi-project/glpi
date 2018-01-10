@@ -55,7 +55,7 @@ class SingletonRuleList {
    public static function &getInstance($type, $entity) {
       static $instances = [];
 
-      if (!isset($instances[$type][$entity])) {
+      if (defined('TU_USER') || !isset($instances[$type][$entity])) {
          $instances[$type][$entity] = new self();
       }
       return $instances[$type][$entity];
