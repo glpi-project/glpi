@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "dcroom");
+   Html::header(DCRoom::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "datacenter", "dcroom");
    $options = [
       'id' => $_GET["id"],
    ];
