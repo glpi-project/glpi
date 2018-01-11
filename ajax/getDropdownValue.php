@@ -125,6 +125,9 @@ $LIMIT = "LIMIT $start,$limit";
 
 if (isset($_POST['used'])) {
    $used = $_POST['used'];
+   if (isset($used[$_POST['itemtype']])) {
+      $used = $used[$_POST['itemtype']];
+   }
 
    if (count($used)) {
       $where .=" AND `$table`.`id` NOT IN ('".implode("','", $used)."' ) ";

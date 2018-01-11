@@ -47,6 +47,10 @@ class Rack extends CommonDBTM {
    const POS_LEFT = 1;
    const POS_RIGHT = 2;
 
+   const OUT_BOTTOM  = 0;
+   const OUT_LEFT    = -1;
+   const OUT_RIGHT   = -2;
+
    // orientation in room
    const ROOM_O_NORTH = 1;
    const ROOM_O_EAST  = 2;
@@ -66,6 +70,7 @@ class Rack extends CommonDBTM {
       $ong = [];
       $this->addDefaultFormTab($ong)
          ->addStandardTab('Item_Rack', $ong, $options)
+         ->addStandardTab('RackPower', $ong, $options)
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
