@@ -3404,6 +3404,11 @@ class CommonDBTM extends CommonGLPI {
          return $options;
       }
 
+      if ($itemtype != null) {
+         $item = new $itemtype;
+         $all_options = $item->getSearchOptions();
+      }
+
       foreach ($classname::getSearchOptionsToAddNew($itemtype) as $opt) {
          if (!isset($opt['id'])) {
             throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
@@ -3411,8 +3416,25 @@ class CommonDBTM extends CommonGLPI {
          $optid = $opt['id'];
          unset($opt['id']);
 
+         if ($itemtype != null) {
+            if (isset($all_options[$optid])) {
+               $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in ".
+                  self::class . " searchOptionsToAdd for $itemtype!";
+
+               if (defined('TU_USER')) {
+                  //will break tests
+                  throw new \RuntimeException($message);
+               } else {
+                  Toolbox::logDebug($message);
+               }
+            }
+         }
+
          foreach ($opt as $k => $v) {
             $options[$optid][$k] = $v;
+            if ($itemtype != null) {
+               $all_options[$optid][$k] = $v;
+            }
          }
       }
 

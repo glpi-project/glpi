@@ -252,6 +252,9 @@ class Search extends DbTestCase {
          }
          $item = getItemForItemtype($itemtype);
 
+         //load all options; so getSearchOptionsToAdd to be tested
+         $options = \Search::getCleanedOptions($itemtype);
+         //but reload only items one because of mysql join limit
          $options = $item->getSearchOptions();
          $compare_options = [];
          foreach ($options as $key => $value) {
