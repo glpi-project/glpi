@@ -116,9 +116,13 @@ class Enclosure extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='textfield_mac_address$rand'>".__('MAC address')."</label></td>";
+      echo "</td>";
+      echo "<td><label for='dropdown_enclosuremodels_id$rand'>".__('Model')."</label></td>";
       echo "<td>";
-      Html::autocompletionTextField($this, 'mac_address', ['rand' => $rand]);
+      EnclosureModel::dropdown([
+         'value'  => $this->fields["enclosuremodels_id"],
+         'rand'   => $rand
+      ]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -132,12 +136,6 @@ class Enclosure extends CommonDBTM {
          'rand'   => $rand
       ]);
       echo "</td>";
-      echo "<td><label for='textfield_management_ip$rand'>".__('Management IP')."</label></td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, 'management_ip', ['rand' => $rand]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td><label for='dropdown_groups_id_tech$rand'>".__('Group in charge of the hardware')."</label></td>";
       echo "<td>";
       Group::dropdown([
@@ -146,14 +144,6 @@ class Enclosure extends CommonDBTM {
          'entity'    => $this->fields['entities_id'],
          'condition' => '`is_assign`',
          'rand'      => $rand
-      ]);
-
-      echo "</td>";
-      echo "<td><label for='dropdown_enclosuremodels_id$rand'>".__('Model')."</label></td>";
-      echo "<td>";
-      EnclosureModel::dropdown([
-         'value'  => $this->fields["enclosuremodels_id"],
-         'rand'   => $rand
       ]);
       echo "</td></tr>\n";
 
