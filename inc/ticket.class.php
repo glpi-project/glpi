@@ -7017,7 +7017,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($item_i['content'])) {
             $content = $item_i['content'];
-            $content = autolink($content, 40);
+            $content = autolink($content, false);
             //$content = nl2br($content);
 
             $long_text = "";
