@@ -5813,15 +5813,6 @@ class Search {
                   self::$search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                }
             }
-            // Set default datatype
-            // if (!isset($val['datatype']) || empty($val['datatype'])) {
-            //    if ((strcmp($itemtable,$val['table']) != 0)
-            //        && ($val['field'] == 'name' || $val['field'] == 'completename')) {
-            //       self::$search[$itemtype][$key]['datatype'] = 'dropdown';
-            //    } else {
-            //       self::$search[$itemtype][$key]['datatype'] = 'string';
-            //    }
-            // }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
                self::$search[$itemtype][$key]['joinparams'] = [];

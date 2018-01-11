@@ -1588,7 +1588,7 @@ class Infocom extends CommonDBChild {
       ];
 
       $tab[] = [
-         'id'                 => '123',
+         'id'                 => '173',
          'table'              => 'glpi_businesscriticities',
          'field'              => 'completename',
          'name'               => __('Business criticity'),
