@@ -58,7 +58,7 @@ if (isset($_POST['update'])) {
    Html::redirect($url);
 }
 
-if (!isset($_GET['unit']) && !isset($_GET['orientation']) && !isset($_GET['rack']) && !isset($_GET['id'])) {
+if (!isset($_GET['unit']) && !isset($_GET['orientation']) && !isset($_GET['racks_id']) && !isset($_GET['id'])) {
    Html::displayErrorAndDie('Lost');
 }
 
@@ -66,11 +66,24 @@ $params = [];
 if (isset($_GET['id'])) {
    $params['id'] = $_GET['id'];
 } else {
+   if (!isset($_GET['orientation'])) {
+      $_GET['orientation'] = null;
+   }
+   if (!isset($_GET['unit'])) {
+      $_GET['unit'] = null;
+   }
+   if (!isset($_GET['position'])) {
+      $_GET['position'] = null;
+   }
    $params = [
       'racks_id'     => $_GET['racks_id'],
       'orientation'  => $_GET['orientation'],
       'position'     => $_GET['position']
    ];
+   if (isset($_GET['power'])) {
+      $params['power_only'] = true;
+   }
+
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 

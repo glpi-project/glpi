@@ -99,7 +99,8 @@ class Item_Rack extends CommonDBRelation {
       $items = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'racks_id' => $rack->getID()
+            'racks_id' => $rack->getID(),
+            'Position' => ['>', 0]
          ]
       ]);
       $link = new self();
@@ -644,9 +645,15 @@ JAVASCRIPT;
       echo "<td>";
 
       $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
+      if (isset($options['power_only'])) {
+         $types = ['PDU' => 'PDU'];
+         $this->fields['itemtype'] = 'PDU';
+      }
+
       foreach ($types as $type => &$text) {
          $text = $type::getTypeName(1);
       }
+
       Dropdown::showFromArray(
          'itemtype',
          $types, [
@@ -703,7 +710,8 @@ JAVASCRIPT;
          $itemtype::dropdown([
             'name'   => "items_id",
             'value'  => $this->fields['items_id'],
-            'rand'   => $rand
+            'rand'   => $rand,
+            'used'   => $used
          ]);
       } else {
          Dropdown::showFromArray(
@@ -725,6 +733,14 @@ JAVASCRIPT;
       echo "</td>";
       echo "<td><label for='dropdown_position$rand'>".__('Position')."</label></td>";
       echo "<td >";
+      $toadd = null;
+      if (isset($options['power_only'])) {
+         $toadd = [
+            Rack::OUT_BOTTOM  => __('Out bottom'),
+            Rack::OUT_LEFT    => __('Out left'),
+            Rack::OUT_RIGHT   => __('Out right')
+         ];
+      }
       Dropdown::showNumber(
          'position', [
             'value'  => $this->fields["position"],
@@ -732,7 +748,8 @@ JAVASCRIPT;
             'max'    => $rack->fields['number_units'],
             'step'   => 1,
             'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-            'rand'   => $rand
+            'rand'   => $rand,
+            'toadd'  => $toadd
          ]
       );
       echo "</td>";
