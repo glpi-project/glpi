@@ -445,7 +445,9 @@ $CFG_GLPI['javascript'] = [
       'reminder'     => ['tinymce']
    ],
    'management' => [
-      'dcroom'       => ['colorpicker', 'gridstack']
+      'datacenter'       => [
+         'dcroom' => ['colorpicker', 'gridstack']
+      ]
    ],
    'config'    => [
       'config'    => ['colorpicker'],
