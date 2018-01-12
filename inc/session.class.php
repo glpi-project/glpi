@@ -587,6 +587,7 @@ class Session {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
+      $cache = Config::getCache('cache_trans');
       if ($GLPI_CACHE !== false) {
          $TRANSLATE->setCache($GLPI_CACHE);
       }
