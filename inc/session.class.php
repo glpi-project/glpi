@@ -588,8 +588,8 @@ class Session {
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       $cache = Config::getCache('cache_trans');
-      if ($GLPI_CACHE !== false) {
-         $TRANSLATE->setCache($GLPI_CACHE);
+      if ($cache !== false) {
+         $TRANSLATE->setCache($cache);
       }
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
 
