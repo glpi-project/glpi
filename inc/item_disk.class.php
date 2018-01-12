@@ -37,11 +37,11 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Disk Class
 **/
-class ComputerDisk extends CommonDBChild {
+class Item_Disk extends CommonDBChild {
 
    // From CommonDBChild
-   static public $itemtype = 'Computer';
-   static public $items_id = 'computers_id';
+   static public $itemtype = 'itemtype';
+   static public $items_id = 'items_id';
    public $dohistory       = true;
 
 
@@ -62,12 +62,15 @@ class ComputerDisk extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       // can exists for template
-      if (($item->getType() == 'Computer')
-          && Computer::canView()) {
+      if ($item::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_computerdisks',
-                                       ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
+            $nb = countElementsInTable(
+               self::getTable(), [
+                  'items_id'     => $item->getID(),
+                  'itemtype'     => $item->getType(),
+                  'is_deleted'   => 0
+               ]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -82,7 +85,7 @@ class ComputerDisk extends CommonDBChild {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      self::showForComputer($item, $withtemplate);
+      self::showForItem($item, $withtemplate);
       return true;
    }
 
@@ -103,24 +106,31 @@ class ComputerDisk extends CommonDBChild {
 
 
    /**
-    * Duplicate all disks from a computer template to his clone
+    * Duplicate all disks from an item template to his clone
     *
     * @since 0.84
     *
-    * @param $oldid
-    * @param $newid
+    * @param string  $type  Item type
+    * @param integer $oldid Old ID
+    * @param integer $newid New id
+    *
+    * @return void
    **/
-   static function cloneComputer ($oldid, $newid) {
+   static function cloneItem($type, $oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_computerdisks`
-                 WHERE `computers_id` = '$oldid'";
-      foreach ($DB->request($query) as $data) {
-         $cd                   = new self();
+      $iterator = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'itemtype'  => $itemtype,
+            'items_id'  => $oldid
+         ]
+      ]);
+      while ($data = $iterator->next()) {
+         $cd                  = new self();
          unset($data['id']);
-         $data['computers_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
+         $data['items_id']    = $newid;
+         $data                = Toolbox::addslashes_deep($data);
          $cd->add($data);
       }
    }
@@ -132,35 +142,46 @@ class ComputerDisk extends CommonDBChild {
     * @param $ID        integer ID of the item
     * @param $options   array
     *     - target for the Form
-    *     - computers_id ID of the computer for add process
+    *     - itemtype type of the item for add process
+    *     - items_id ID of the item for add process
     *
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer", READ)) {
+      $itemtype = null;
+      if (isset($options['itemtype']) && !empty($options['itemtype'])) {
+         $itemtype = $options['itemtype'];
+      } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+         $itemtype = $this->fields['itemtype'];
+      } else {
+         throw new \RuntimeException('Unable to retrieve itemtype');
+      }
+
+      if (!Session::haveRight($itemtype::$rightname, READ)) {
          return false;
       }
 
-      $comp = new Computer();
+      $item = new $itemtype();
       if ($ID > 0) {
          $this->check($ID, READ);
-         $comp->getFromDB($this->fields['computers_id']);
+         $item->getFromDB($this->fields['items_id']);
       } else {
          $this->check(-1, CREATE, $options);
-         $comp->getFromDB($options['computers_id']);
+         $item->getFromDB($options['items_id']);
       }
 
       $this->showFormHeader($options);
 
       if ($this->isNewID($ID)) {
-         echo "<input type='hidden' name='computers_id' value='".$options['computers_id']."'>";
+         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Computer')."</td>";
-      echo "<td>".$comp->getLink()."</td>";
+      echo "<td>".__('Item')."</td>";
+      echo "<td>".$item->getLink()."</td>";
       if (Plugin::haveImport()) {
          echo "<td>".__('Automatic inventory')."</td>";
          echo "<td>";
@@ -204,7 +225,8 @@ class ComputerDisk extends CommonDBChild {
       Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".__('Mio')."</td></tr>";
 
-      $options['canedit'] = Session::haveRight("computer", UPDATE);
+      $itemtype = $this->fields['itemtype'];
+      $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
       $this->showFormButtons($options);
 
       return true;
@@ -213,28 +235,29 @@ class ComputerDisk extends CommonDBChild {
 
 
    /**
-    * Print the computers disks
+    * Print the disks
     *
-    * @param $comp                  Computer object
+    * @param $item                  Item object
     * @param $withtemplate boolean  Template or basic item (default 0)
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate = 0) {
+   static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB;
 
-      $ID = $comp->fields['id'];
+      $ID = $item->fields['id'];
+      $itemtype = $item->getType();
 
-      if (!$comp->getFromDB($ID)
-          || !$comp->can($ID, READ)) {
+      if (!$item->getFromDB($ID)
+          || !$item->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->canEdit($ID);
+      $canedit = $item->canEdit($ID);
 
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {
          echo "<div class='center firstbloc'>".
-               "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+               "<a class='vsubmit' href='item_disk.form.php?itemtype=$itemtype&items_id=$ID&amp;withtemplate=".
                   $withtemplate."'>";
          echo __('Add a volume');
          echo "</a></div>\n";
@@ -243,11 +266,12 @@ class ComputerDisk extends CommonDBChild {
       echo "<div class='center'>";
 
       $query = "SELECT `glpi_filesystems`.`name` AS fsname,
-                       `glpi_computerdisks`.*
-                FROM `glpi_computerdisks`
+                       `glpi_items_disks`.*
+                FROM `glpi_items_disks`
                 LEFT JOIN `glpi_filesystems`
-                          ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
-                WHERE `computers_id` = '$ID'
+                          ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '$itemtype'
                       AND `is_deleted` = '0'";
 
       if ($result = $DB->query($query)) {
@@ -278,7 +302,7 @@ class ComputerDisk extends CommonDBChild {
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'),
-                                                   Computer::getTypeName(1), $comp->getName()));
+                                                   $item::getTypeName(1), $item->getName()));
 
             $disk = new self();
             while ($data = $DB->fetch_assoc($result)) {

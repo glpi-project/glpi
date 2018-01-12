@@ -860,13 +860,14 @@ CREATE TABLE `glpi_computerantiviruses` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_computerdisks
+### Dump table glpi_items_disks
 
-DROP TABLE IF EXISTS `glpi_computerdisks`;
-CREATE TABLE `glpi_computerdisks` (
+DROP TABLE IF EXISTS `glpi_items_disks`;
+CREATE TABLE `glpi_items_disks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entities_id` int(11) NOT NULL DEFAULT '0',
-  `computers_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `device` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `mountpoint` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -883,7 +884,9 @@ CREATE TABLE `glpi_computerdisks` (
   KEY `mountpoint` (`mountpoint`),
   KEY `totalsize` (`totalsize`),
   KEY `freesize` (`freesize`),
-  KEY `computers_id` (`computers_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `items_id` (`items_id`),
+  KEY `item` (`itemtype`, `items_id`),
   KEY `filesystems_id` (`filesystems_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_deleted` (`is_deleted`),

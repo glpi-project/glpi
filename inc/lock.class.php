@@ -112,7 +112,29 @@ class Lock {
 
          }
 
-         $types = ['ComputerDisk', 'ComputerVirtualMachine'];
+         //items disks
+         $params = [
+            'is_dynamic'   => 1,
+            'is_deleted'   => 1,
+            'items_id'     => $ID,
+            'itemtype'     => $itemtype
+         ];
+         $params['FIELDS'] = ['id', 'name'];
+         $first  = true;
+         foreach ($DB->request(getTableForItemType('Item_Disk'), $params) as $line) {
+            $header = true;
+            if ($first) {
+               echo "<tr><th colspan='2'>".Item_Disk::getTypeName(Session::getPluralNumber())."</th></tr>\n";
+               $first = false;
+            }
+
+            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
+            echo "<input type='checkbox' name='Item_Disk[" . $line['id'] . "]'></td>";
+            echo "<td class='left' width='95%'>" . $line['name'] . "</td>";
+            echo "</tr>\n";
+         }
+
+         $types = ['ComputerVirtualMachine'];
          foreach ($types as $type) {
             $params = ['is_dynamic'    => 1,
                             'is_deleted'    => 1,
@@ -413,11 +435,14 @@ class Lock {
             $field     = '`glpi_networkports`.`items_id`';
             break;
 
-         case 'ComputerDisk' :
-            $condition = ['is_dynamic' => 1,
-                               'is_deleted' => 1];
-            $table     = 'glpi_computerdisks';
-            $field     = 'computers_id';
+         case 'Item_Disk' :
+            $condition = [
+               'is_dynamic' => 1,
+               'is_deleted' => 1,
+               'itemtype'   => $itemtype
+            ];
+            $table     = Item_Disk::getTable();
+            $field     = 'items_id';
             break;
 
          case 'ComputerVirtualMachine' :
@@ -488,7 +513,7 @@ class Lock {
                            'NetworkPort'            => _n('Network port', 'Network ports', Session::getPluralNumber()),
                            'NetworkName'            => _n('Network name', 'Network names', Session::getPluralNumber()),
                            'IPAddress'              => _n('IP address', 'IP addresses', Session::getPluralNumber()),
-                           'ComputerDisk'           => _n('Volume', 'Volumes', Session::getPluralNumber()),
+                           'Item_Disk'              => _n('Volume', 'Volumes', Session::getPluralNumber()),
                            'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
                            'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', Session::getPluralNumber())];
 

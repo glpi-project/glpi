@@ -693,6 +693,35 @@ function update92to93() {
    }
    /** /Add address to locations */
 
+   /** Migrate computerdisks to items_disks */
+   if (!$DB->tableExists('glpi_items_disks') && $DB->tableExists('glpi_computerdisks')) {
+      $migration->renameTable('glpi_computerdisks', 'glpi_items_disks');
+   }
+   if ($DB->fieldExists('glpi_items_disks', 'computers_id')) {
+      $migration->dropField('glpi_items_disks', 'items_id');
+      $migration->dropKey('glpi_items_disks', 'computers_id');
+      $migration->changeField(
+         'glpi_items_disks',
+         'computers_id',
+         'items_id',
+         'integer'
+      );
+      $migration->addKey('glpi_items_disks', 'items_id');
+   }
+   if (!$DB->fieldExists('glpi_items_disks', 'itemtype')) {
+      $migration->addField('glpi_items_disks', 'itemtype', 'string', ['after' => 'entities_id']);
+   }
+   $migration->addKey('glpi_items_disks', 'itemtype');
+   $migration->addKey('glpi_items_disks', ['itemtype', 'items_id'], 'item');
+   $migration->addPostQuery(
+      $DB->buildUpdate(
+         'glpi_items_disks',
+         ['itemtype' => 'Computer'],
+         ['itemtype' => null]
+      )
+   );
+   /** /Migrate computerdisks to items_disks */
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

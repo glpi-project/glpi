@@ -44,7 +44,7 @@ class NetworkEquipment extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
    static protected $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-                                          'Item_OperatingSystem'];
+                                          'Item_OperatingSystem', 'Item_Disk'];
 
    static $rightname                   = 'networking';
    protected $usenotepad               = true;
@@ -126,23 +126,24 @@ class NetworkEquipment extends CommonDBTM {
    function defineTabs($options = []) {
 
       $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Item_OperatingSystem', $ong, $options);
-      $this->addStandardTab('Item_Devices', $ong, $options);
-      $this->addStandardTab('NetworkPort', $ong, $options);
-      $this->addStandardTab('NetworkName', $ong, $options);
-      $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
-      $this->addStandardTab('Notepad', $ong, $options);
-      $this->addStandardTab('Reservation', $ong, $options);
-      $this->addStandardTab('Certificate_Item', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('Item_OperatingSystem', $ong, $options)
+         ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('Item_Disk', $ong, $options)
+         ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('NetworkName', $ong, $options)
+         ->addStandardTab('Infocom', $ong, $options)
+         ->addStandardTab('Contract_Item', $ong, $options)
+         ->addStandardTab('Document_Item', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
+         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Problem', $ong, $options)
+         ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
+         ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('Certificate_Item', $ong, $options)
+         ->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

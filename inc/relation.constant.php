@@ -83,7 +83,6 @@ $RELATION = ["glpi_authldaps"
                         => ['glpi_computers_items'                => 'computers_id',
                                  'glpi_computers_softwarelicenses'     => 'computers_id',
                                  'glpi_computers_softwareversions'     => 'computers_id',
-                                 'glpi_computerdisks'                  => 'computers_id',
                                  'glpi_computervirtualmachines'        => 'computers_id'],
 
                         "glpi_computertypes"
@@ -190,7 +189,6 @@ $RELATION = ["glpi_authldaps"
                                  '_glpi_cartridges'                     => 'entities_id',
                                  'glpi_changes'                         => 'entities_id',
                                  'glpi_computers'                       => 'entities_id',
-                                 '_glpi_computerdisks'                  => 'entities_id',
                                  '_glpi_computervirtualmachines'        => 'entities_id',
                                  'glpi_consumableitems'                 => 'entities_id',
                                  '_glpi_consumables'                    => 'entities_id',
@@ -254,7 +252,7 @@ $RELATION = ["glpi_authldaps"
                                  'glpi_certificates'                    => 'entities_id'],
 
                         "glpi_filesystems"
-                        => ['glpi_computerdisks' => 'filesystems_id'],
+                        => ['glpi_items_disks' => 'filesystems_id'],
 
                         "glpi_fqdns"
                         => ['glpi_networkaliases'   => 'fqdns_id',

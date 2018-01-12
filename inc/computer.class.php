@@ -43,7 +43,7 @@ class Computer extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
-   static protected $forward_entity_to = ['ComputerDisk','ComputerVirtualMachine',
+   static protected $forward_entity_to = ['Item_Disk','ComputerVirtualMachine',
                                           'Computer_SoftwareVersion', 'Infocom',
                                           'NetworkPort', 'ReservationItem',
                                           'Item_OperatingSystem'];
@@ -95,7 +95,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab(__CLASS__, $ong, $options)
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
-         ->addStandardTab('ComputerDisk', $ong, $options)
+         ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('Computer_SoftwareVersion', $ong, $options)
          ->addStandardTab('Computer_Item', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
@@ -274,7 +274,7 @@ class Computer extends CommonDBTM {
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD volumes
-         ComputerDisk::cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Item_Disk::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD software
          Computer_SoftwareVersion::cloneComputer($this->input["_oldID"], $this->fields['id']);
@@ -322,7 +322,7 @@ class Computer extends CommonDBTM {
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
 
-      $disk = new ComputerDisk();
+      $disk = new Item_Disk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
 
       $vm = new ComputerVirtualMachine();
@@ -1016,20 +1016,20 @@ class Computer extends CommonDBTM {
 
       $tab[] = [
          'id'                 => '156',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'name',
          'name'               => __('Volume'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'dropdown',
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
       $tab[] = [
          'id'                 => '150',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'totalsize',
          'unit'               => 'auto',
          'name'               => __('Global size'),
@@ -1039,13 +1039,13 @@ class Computer extends CommonDBTM {
          'width'              => 1000,
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
       $tab[] = [
          'id'                 => '151',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'freesize',
          'unit'               => 'auto',
          'name'               => __('Free size'),
@@ -1054,13 +1054,13 @@ class Computer extends CommonDBTM {
          'width'              => 1000,
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
       $tab[] = [
          'id'                 => '152',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'freepercent',
          'name'               => __('Free percentage'),
          'forcegroupby'       => true,
@@ -1071,33 +1071,33 @@ class Computer extends CommonDBTM {
          'unit'               => '%',
          'massiveaction'      => false,
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
       $tab[] = [
          'id'                 => '153',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'mountpoint',
          'name'               => __('Mount point'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
       $tab[] = [
          'id'                 => '154',
-         'table'              => 'glpi_computerdisks',
+         'table'              => Item_Disk::getTable(),
          'field'              => 'device',
          'name'               => __('Partition'),
          'forcegroupby'       => true,
          'massiveaction'      => false,
          'datatype'           => 'string',
          'joinparams'         => [
-            'jointype'           => 'child'
+            'jointype'           => 'itemtype_item'
          ]
       ];
 
@@ -1111,9 +1111,9 @@ class Computer extends CommonDBTM {
          'datatype'           => 'dropdown',
          'joinparams'         => [
             'beforejoin'         => [
-               'table'              => 'glpi_computerdisks',
+               'table'              => Item_Disk::getTable(),
                'joinparams'         => [
-                  'jointype'           => 'child'
+                  'jointype'           => 'itemtype_item'
                ]
             ]
          ]
