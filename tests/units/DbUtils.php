@@ -205,16 +205,19 @@ class DbUtils extends DbTestCase {
 
    public function dataPlural() {
 
-      return [['model', 'models'],
-                   ['address', 'addresses'],
-                   ['computer', 'computers'],
-                   ['thing', 'things'],
-                   ['criteria', 'criterias'],
-                   ['version', 'versions'],
-                   ['config', 'configs'],
-                   ['machine', 'machines'],
-                   ['memory', 'memories'],
-                   ['licence', 'licences']];
+      return [
+         ['model', 'models'],
+         ['address', 'addresses'],
+         ['computer', 'computers'],
+         ['thing', 'things'],
+         ['criteria', 'criterias'],
+         ['version', 'versions'],
+         ['config', 'configs'],
+         ['machine', 'machines'],
+         ['memory', 'memories'],
+         ['licence', 'licences'],
+         ['pdu', 'pdus']
+      ];
    }
 
    /**

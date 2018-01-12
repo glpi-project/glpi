@@ -37,10 +37,10 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['action'])) {
+if (isset($_REQUEST['action'])) {
    $answer = [];
 
-   switch ($_POST['action']) {
+   switch ($_REQUEST['action']) {
       case 'move_item':
          $item_rack = new Item_Rack;
          $item_rack->getFromDB((int) $_POST['id']);
@@ -48,6 +48,15 @@ if (isset($_POST['action'])) {
             'id'       => (int) $_POST['id'],
             'position' => (int) $_POST['position'],
             'hpos'     => (int) $_POST['hpos'],
+         ]);
+         break;
+
+      case 'move_pdu':
+         $pdu_rack = new PDU_Rack;
+         $pdu_rack->getFromDB((int) $_POST['id']);
+         $answer['status'] = $pdu_rack->update([
+            'id'       => (int) $_POST['id'],
+            'position' => (int) $_POST['position']
          ]);
          break;
 
@@ -60,6 +69,10 @@ if (isset($_POST['action'])) {
             'position'   => (int) $_POST['x'].",".(int) $_POST['y'],
          ]);
          break;
+
+      case 'show_pdu_form':
+         PDU_Rack::showFirstForm((int) $_REQUEST['racks_id']);
+         exit;
    }
 
    echo json_encode($answer);

@@ -5652,6 +5652,7 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/lodash.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack/src/gridstack.jQueryUI.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
             break;
          case 'leaflet':
             $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet/leaflet.js';

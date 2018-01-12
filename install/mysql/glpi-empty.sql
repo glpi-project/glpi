@@ -9402,7 +9402,7 @@ CREATE TABLE `glpi_pdumodels` (
   `required_units` int(11) NOT NULL DEFAULT '1',
   `depth` float NOT NULL DEFAULT 1,
   `power_connections` int(11) NOT NULL DEFAULT '0',
-  `power_consumption` int(11) NOT NULL DEFAULT '0',
+  `max_power` int(11) NOT NULL DEFAULT '0',
   `is_half_rack` tinyint(1) NOT NULL DEFAULT '0',
   `picture_front` text COLLATE utf8_unicode_ci,
   `picture_rear` text COLLATE utf8_unicode_ci,
@@ -9491,6 +9491,20 @@ CREATE TABLE `glpi_pdus_plugs` (
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `plugs_id` (`plugs_id`),
+  KEY `pdus_id` (`pdus_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `glpi_pdus_racks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `racks_id` int(11) NOT NULL DEFAULT '0',
+  `pdus_id` int(11) NOT NULL DEFAULT '0',
+  `side` int(11) DEFAULT '0',
+  `position` int(11) NOT NULL,
+  `bgcolor` varchar(7) DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `racks_id` (`racks_id`),
   KEY `pdus_id` (`pdus_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- /Datacenters
