@@ -1525,15 +1525,19 @@ class Html {
       echo "</div>"; // fin de la div id ='page' initi??e dans la fonction header
 
       echo "<div id='footer' >";
-      echo "<table><tr><td class='left'><span class='copyright'>";
-      $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
-                           $TIMER_DEBUG->getTime());
+      echo "<table><tr>";
 
-      if (function_exists("memory_get_usage")) {
-         $timedebug = sprintf(__('%1$s - %2$s'), $timedebug, Toolbox::getSize(memory_get_usage()));
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
+         echo "<td class='left'><span class='copyright'>";
+         $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
+                              $TIMER_DEBUG->getTime());
+
+         if (function_exists("memory_get_usage")) {
+            $timedebug = sprintf(__('%1$s - %2$s'), $timedebug, Toolbox::getSize(memory_get_usage()));
+         }
+         echo $timedebug;
+         echo "</span></td>";
       }
-      echo $timedebug;
-      echo "</span></td>";
 
       if (!empty($CFG_GLPI["founded_new_version"])) {
          echo "<td class='copyright'>";
@@ -5575,7 +5579,6 @@ class Html {
           $message .= GLPI_VERSION . " ";
       }
       $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
-         " - Copyright (C) 2003-2015 INDEPNET Development Team".
          "</a>";
       return $message;
    }
