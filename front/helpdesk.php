@@ -33,19 +33,17 @@
 /** @file
 * @brief
 */
-echo "<!DOCTYPE html>\n";
+
+include ('../inc/includes.php');
+
+echo "<!DOCTYPE html>";
 echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
-?>
 ?>
 
 <head>
     <meta charset="utf-8" />
     <title>Helpdesk</title>
-    <!-- Sample Helpdesk Frontend -->
 <style type="text/css">
-<!--
-/*  ... ici sont d&eacute;finis les formats ... */
-
 body {
    font-size : 12px;
    background-color : #FFFFFF;
@@ -54,11 +52,8 @@ body {
 }
 
 #contenuform {
-   height: 100%;
-   position: relative;
-   left: 35%;
    width: 600px;
-   margin-left: -150px;
+   margin: 0 auto;
 }
 
 #contenuform legend {
@@ -67,55 +62,63 @@ body {
 
 #contenuform fieldset {
    background-color: #eeeeee;
-   border: 2px solid #FFC65D;
+   border: 2px solid #898989;
    -moz-border-radius: 8px;
    padding-bottom:10px;
    width: 600px;
 }
 
-#contenuform textarea {
-   width:550px;
+#contenuform label {
+   display: block;
 }
 
--->
+#contenuform textarea {
+   width:100%;
+}
+
 </style>
 </head>
 <body>
-    <!-- Edit the next line to fit your installation -->
 
 <div id="contenuform">
 
 <form method="post" name="helpdeskform" action="tracking.injector.php">
    <input type="hidden" name="_type" value="Helpdesk" />
    <input type="hidden" name="_auto_import" value="1" />
-      <h2 align='center'>Formulaire de signalement au support technique</h2>
+      <h2 align='center'><?php echo __("Helpdesk reporting form"); ?></h2>
 
    <fieldset>
-      <legend> Le probl&egrave;me doit &ecirc;tre r&eacute;solu</legend>
+      <legend><?php echo __("The issue must be solved");?></legend>
 
-      S&eacute;lectionnez un niveau d'urgence :
-      <select name="urgency">
-         <option value="5">Tr&egrave;s haute</option>
-         <option value="4">Haute</option>
-         <option value="3" selected='selected'>Moyenne</option>
-         <option value="2">Basse</option>
-         <option value="1">Tr&egrave;s Basse</option>
+      <label for="urgency">
+         <?php echo __("Select an urgency level"); ?>
+      </label>
+      <select name="urgency" id="urgency">
+         <option value="5"><?php echo _x('urgency', 'Very high');?></option>
+         <option value="4"><?php echo _x('urgency', 'High');?></option>
+         <option value="3" selected="selected"><?php echo _x('urgency', 'Medium');?></option>
+         <option value="2"><?php echo _x('urgency', 'Low');?></option>
+         <option value="1"><?php echo _x('urgency', 'Very low');?></option>
       </select>
    </fieldset>
 
    <fieldset>
-      <legend>D&eacute;crivez votre probl&egrave;me</legend>
-      Titre : <input type='text' name="name" size='60' /><br />
-      <textarea name="content" cols="60" rows="20"></textarea>
+      <legend><?php echo __("Describe your issue"); ?></legend>
+      <label for="name">
+         <?php echo __("Title"); ?>
+      </label>
+      <input type='text' name="name" id="name" size='60' /><br />
+      <label for="content">
+         <?php echo __("Content"); ?>
+      </label>
+      <textarea name="content" id="content" cols="60" rows="20"></textarea>
    </fieldset>
 
-<p align='center'><input type="submit" name= 'add' value="Envoyer" /></p>
+<p align='center'><input type="submit" name= 'add' value="<?php echo _sx("button", "post") ?>" /></p>
 
 <?php
 // Close form for CSRF
-include ('../inc/includes.php');
 Html::closeForm();
-
 ?>
 </div>
 </body>
