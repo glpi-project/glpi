@@ -62,11 +62,13 @@ if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
 
 if (isset($args['lang']) && !isset($CFG_GLPI['languages'][$args['lang']])) {
    $kl = implode(', ', array_keys($CFG_GLPI['languages']));
-   die("Unkown locale (use one of: $kl)\n");
+   echo "Unkown locale (use one of: $kl)\n";
+   die(1);
 }
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !isset($args['force'])) {
-   die("Already installed (see --force option)\n");
+   echo "Already installed (see --force option)\n";
+   die(1);
 }
 
 $_SESSION = ['glpilanguage' => (isset($args['lang']) ? $args['lang'] : 'en_GB')];
@@ -83,23 +85,27 @@ if (count($hostport) < 2) {
 }
 
 if (!$link || mysqli_connect_error()) {
-   die("DB connection failed\n");
+   echo "DB connection failed\n";
+   die(1);
 }
 
 $args['db'] = $link->real_escape_string($args['db']);
 
 echo "Create the DB...\n";
 if (!$link->query("CREATE DATABASE IF NOT EXISTS `" . $args['db'] ."`")) {
-   die("Can't create the DB\n");
+   echo "Can't create the DB\n";
+   die(1);
 }
 
 if (!$link->select_db($args['db'])) {
-   die("Can't select the DB\n");
+   echo "Can't select the DB\n";
+   die(1);
 }
 
 echo "Save configuration file...\n";
 if (!DBConnection::createMainConfig($args['host'], $args['user'], $args['pass'], $args['db'])) {
-   die("Can't write configuration file\n");
+   echo "Can't write configuration file\n";
+   die(1);
 }
 
 echo "Load default schema...\n";
