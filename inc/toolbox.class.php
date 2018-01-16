@@ -668,11 +668,13 @@ class Toolbox {
       if (strstr($tmpfile, "../") || strstr($tmpfile, "..\\")) {
          Event::log($file, "sendFile", 1, "security",
                     $_SESSION["glpiname"]." try to get a non standard file.");
-         die("Security attack!!!");
+         echo "Security attack!!!";
+         die(1);
       }
 
       if (!file_exists($file)) {
-         die("Error file $file does not exist");
+         echo "Error file $file does not exist";
+         die(1);
       }
 
       // if $mime is defined, ignore mime type by extension

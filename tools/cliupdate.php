@@ -66,7 +66,8 @@ $update->initSession();
 
 Session::loadLanguage();
 if (!$DB->connected) {
-   die("No DB connection\n");
+   echo "No DB connection\n";
+   die(1);
 }
 
 //initialize entities
@@ -134,7 +135,8 @@ $migration->displayWarning("Default GLPI Language        : $glpilanguage");
 if (defined('GLPI_PREVER')) {
    $migration->displayWarning("Development version          : Yes");
    if ($current_db_version != GLPI_SCHEMA_VERSION && !isset($args['dev'])) {
-      die(GLPI_SCHEMA_VERSION . " is not a stable release. Please upgrade manually - or add --dev.\n");
+      echo GLPI_SCHEMA_VERSION . " is not a stable release. Please upgrade manually - or add --dev.\n";
+      die(1);
    }
 }
 

@@ -363,7 +363,7 @@ class DBConnection extends CommonDBTM {
          echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
       }
 
-      die();
+      die(1);
    }
 
 

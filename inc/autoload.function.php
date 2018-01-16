@@ -308,7 +308,8 @@ function glpi_autoload($classname) {
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      die("Security die. trying to load a forbidden class name");
+      echo "Security die. trying to load a forbidden class name";
+      die(1);
    }
 
    //hack for \Zend\Loader\SplAutoloader :(
@@ -378,12 +379,13 @@ if (!file_exists($autoload)) {
 if ($needrun) {
    $getComposerUrl = 'https://getcomposer.org/';
    if (isCommandLine()) {
-      die('Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
-          . 'To install composer please refer to ' . $getComposerUrl);
+      echo 'Run "composer install --no-dev" in the glpi tree.' . PHP_EOL
+          . 'To install composer please refer to ' . $getComposerUrl;
    } else {
-      die('Run "composer install --no-dev" in the glpi tree.<br>'
-          . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>');
+      echo 'Run "composer install --no-dev" in the glpi tree.<br>'
+          . 'To install composer please refer to <a href="'.$getComposerUrl.'">'.$getComposerUrl.'</a>';
    }
+   die(1);
 }
 require_once $autoload;
 
