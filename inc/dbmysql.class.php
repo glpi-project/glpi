@@ -212,10 +212,17 @@ class DBmysql {
     * @return mysqli_result Query result handler
     */
    function queryOrDie($query, $message = '') {
-      $res = $this->query($query)
-             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                            $message, $query, $this->error()));
+      $res = $this->query($query);
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            $query,
+            $this->error()
+         );
+         throw new \RuntimeException($message);
+      }
       return $res;
    }
 
@@ -880,10 +887,17 @@ class DBmysql {
     */
    function insertOrDie($table, $params, $message = '') {
       $insert = $this->buildInsert($table, $params);
-      $res = $this->query($insert)
-             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                            $message, $insert, $this->error()));
+      $res = $this->query($insert);
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            $insert,
+            $this->error()
+         );
+         throw new \RuntimeException($message);
+      }
       return $res;
    }
 
@@ -949,10 +963,17 @@ class DBmysql {
     */
    function updateOrDie($table, $params, $where, $message = '') {
       $update = $this->buildUpdate($table, $params, $where);
-      $res = $this->query($update)
-             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                            $message, $update, $this->error()));
+      $res = $this->query($update);
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            $update,
+            $this->error()
+         );
+         throw new \RuntimeException($message);
+      }
       return $res;
    }
 
@@ -1011,10 +1032,17 @@ class DBmysql {
     */
    function deleteOrDie($table, $where, $message = '') {
       $update = $this->buildDelete($table, $where);
-      $res = $this->query($update)
-             //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                            $message, $update, $this->error()));
+      $res = $this->query($update);
+      if (!$res) {
+         //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+         $message = sprintf(
+            __('%1$s - Error during the database query: %2$s - Error is %3$s'),
+            $message,
+            $update,
+            $this->error()
+         );
+         throw new \RuntimeException($message);
+      }
       return $res;
    }
 
