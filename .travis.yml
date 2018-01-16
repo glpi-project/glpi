@@ -18,6 +18,7 @@ before_script:
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - php tools/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "tools/cliupdate.php FAILED" && exit 1)
+  - ./tests/test_fail_update.sh
   - php -S localhost:8088 tests/router.php &>/dev/null &
   # LDAP stuff
   - if [[ "$LDAP" == "true" ]]; then ./tests/LDAP/ldap_fixtures.sh > /dev/null; fi
