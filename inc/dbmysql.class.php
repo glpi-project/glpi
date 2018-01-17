@@ -221,7 +221,12 @@ class DBmysql {
             $query,
             $this->error()
          );
-         throw new \RuntimeException($message);
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
       }
       return $res;
    }
@@ -896,7 +901,12 @@ class DBmysql {
             $insert,
             $this->error()
          );
-         throw new \RuntimeException($message);
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
       }
       return $res;
    }
@@ -972,7 +982,12 @@ class DBmysql {
             $update,
             $this->error()
          );
-         throw new \RuntimeException($message);
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
       }
       return $res;
    }
@@ -1041,7 +1056,13 @@ class DBmysql {
             $update,
             $this->error()
          );
-         throw new \RuntimeException($message);
+         if (isCommandLine()) {
+            throw new \RuntimeException($message);
+         } else {
+            echo $message . "\n";
+            die(1);
+         }
+
       }
       return $res;
    }
