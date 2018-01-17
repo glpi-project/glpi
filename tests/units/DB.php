@@ -268,4 +268,20 @@ class DB extends atoum {
          }
       )->hasMessage('Cannot run an DELETE query without WHERE clause!');
    }
+
+   public function testListTables() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->given($tables = $this->testedInstance->listTables())
+            ->object($tables)
+               ->isInstanceOf(\DBMysqlIterator::class)
+            ->integer(count($tables))
+               ->isGreaterThan(100)
+            ->given($tables = $this->testedInstance->listTables('glpi_configs'))
+            ->object($tables)
+               ->isInstanceOf(\DBMysqlIterator::class)
+               ->hasSize(1);
+
+   }
 }

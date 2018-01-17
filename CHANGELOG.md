@@ -21,6 +21,7 @@ The following methods have been deprecated:
 
 - `Search::constructDatas`
 - `Search::displayDatas`
+- `DBMysql::list_tables`
 
 ## [9.2.1]
 
