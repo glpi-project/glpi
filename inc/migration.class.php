@@ -41,7 +41,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Migration {
 
-   private   $change     = [];
+   private   $change    = [];
+   private   $fulltexts = [];
    protected $version;
    private   $deb;
    private   $lastMessage;
@@ -517,7 +518,11 @@ class Migration {
             $fields = "`$fields`";
          }
 
-         $this->change[$table][] = "ADD $type `$indexname` ($fields)";
+         if ($type == 'FULLTEXT') {
+            $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
+         } else {
+            $this->change[$table][] = "ADD $type `$indexname` ($fields)";
+         }
       }
    }
 
@@ -631,9 +636,18 @@ class Migration {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
          $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
          $DB->queryOrDie($query, $this->version." multiple alter in $table");
-
          unset($this->change[$table]);
       }
+
+      if (isset($this->fulltexts[$table])) {
+         $this->displayMessage( sprintf(__('Adding fulltext index - %s'), $table));
+         foreach ($this->fulltexts[$table] as $idx) {
+            $query = "ALTER TABLE `$table` ".$idx;
+            $DB->queryOrDie($query, $this->version." $idx");
+         }
+         unset($this->fulltexts[$table]);
+      }
+
    }
 
 
@@ -650,7 +664,11 @@ class Migration {
       }
       $this->queries[self::PRE_QUERY] = [];
 
-      foreach (array_keys($this->change) as $table) {
+      $tables = array_merge(
+         array_keys($this->change),
+         array_keys($this->fulltexts)
+      );
+      foreach ($tables as $table) {
          $this->migrationOneTable($table);
       }
 
