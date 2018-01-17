@@ -57,8 +57,8 @@ class DBmysql extends atoum {
    public function testUpdatedDatabase() {
       global $DB;
 
-      $fresh_tables = $DB->list_tables();
-      foreach ($fresh_tables as $fresh_table) {
+      $fresh_tables = $DB->listTables();
+      while ($fresh_table = $fresh_tables->next()) {
          $table = $fresh_table['TABLE_NAME'];
          $this->boolean($this->olddb->tableExists($table, false))->isTrue("Table $table does not exists from migration!");
 

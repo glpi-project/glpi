@@ -390,8 +390,11 @@ class DBmysql {
     * @param string $table table name condition (glpi_% as default to retrieve only glpi tables)
     *
     * @return mysqli_result list of tables
+    *
+    * @deprecated 9.3
     */
    function list_tables($table = "glpi_%") {
+      Toolbox::deprecated('list_tables is deprecated, use listTables');
       return $this->query(
          "SELECT TABLE_NAME FROM information_schema.`TABLES`
              WHERE TABLE_SCHEMA = '{$this->dbdefault}'
@@ -399,6 +402,33 @@ class DBmysql {
                 AND TABLE_NAME LIKE '$table'"
       );
    }
+
+   /**
+    * List tables in database
+    *
+    * @param string $table Table name condition (glpi_% as default to retrieve only glpi tables)
+    * @param array  $where Where clause to append
+    *
+    * @return DBmysqlIterator
+    */
+   function listTables($table = 'glpi_%', array $where = []) {
+      $iterator = $this->request([
+         'SELECT' => 'TABLE_NAME',
+         'FROM'   => 'information_schema.TABLES',
+         'WHERE'  => [
+            'TABLE_SCHEMA' => $this->dbdefault,
+            'TABLE_TYPE'   => 'BASE TABLE',
+            'TABLE_NAME'   => ['LIKE', $table]
+         ] + $where
+      ]);
+      return $iterator;
+   }
+
+   public function getMyIsamTables() {
+      $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
+      return $iterator;
+   }
+
 
    /**
     * List fields of a table
@@ -584,10 +614,10 @@ class DBmysql {
          $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
       }
-      $result = $DB->list_tables();
+      $result = $DB->listTables();
       $nb     = 0;
 
-      while ($line = $DB->fetch_row($result)) {
+      while ($line = $result->next()) {
          $table = $line[0];
 
          // For big database to reduce delay of migration
@@ -603,7 +633,6 @@ class DBmysql {
             $nb++;
          }
       }
-      $DB->free_result($result);
 
       if (!is_null($migration)
           && method_exists($migration, 'displayMessage') ) {
@@ -718,10 +747,10 @@ class DBmysql {
       global $DB;
       $crashed_tables = [];
 
-      $result_tables = $DB->list_tables();
+      $result_tables = $DB->listTables();
 
-      while ($line = $DB->fetch_row($result_tables)) {
-         $query  = "CHECK TABLE `".$line[0]."` FAST";
+      while ($line = $result_tables->next()) {
+         $query  = "CHECK TABLE `".$line['TABLE_NAME']."` FAST";
          $result  = $DB->query($query);
          if ($DB->numrows($result) > 0) {
             $row = $DB->fetch_array($result);
@@ -746,17 +775,16 @@ class DBmysql {
     **/
    public function tableExists($tablename) {
       // Get a list of tables contained within the database.
-      $result = $this->list_tables("%".$tablename."%");
+      $result = $this->listTables("%$tablename%");
 
-      if ($this->numrows($result)) {
-         while ($data = $this->fetch_row($result)) {
-            if ($data[0] === $tablename) {
+      if (count($result)) {
+         while ($data = $result->next()) {
+            if ($data['TABLE_NAME'] === $tablename) {
                return true;
             }
          }
       }
 
-      $this->free_result($result);
       return false;
    }
 
@@ -1066,5 +1094,4 @@ class DBmysql {
       }
       return $res;
    }
-
 }

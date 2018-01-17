@@ -210,14 +210,12 @@ class Migration extends atoum {
       )->isIdenticalTo("Task completed.");
 
       $this->array($this->queries)->isIdenticalTo([
-         0 => 'SELECT TABLE_NAME FROM information_schema.`TABLES`
-             WHERE TABLE_SCHEMA = \'' . $DB->dbdefault . '\'
-                AND TABLE_TYPE = \'BASE TABLE\'
-                AND TABLE_NAME LIKE \'%table1%\'',
-         1 => 'SELECT TABLE_NAME FROM information_schema.`TABLES`
-             WHERE TABLE_SCHEMA = \'' . $DB->dbdefault  . '\'
-                AND TABLE_TYPE = \'BASE TABLE\'
-                AND TABLE_NAME LIKE \'%table2%\''
+         0 => 'SELECT  `TABLE_NAME` FROM `information_schema`.`TABLES`' .
+               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault .
+               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table1%\'',
+         1 => 'SELECT  `TABLE_NAME` FROM `information_schema`.`TABLES`' .
+               ' WHERE `TABLE_SCHEMA` = \'' . $DB->dbdefault  .
+               '\' AND `TABLE_TYPE` = \'BASE TABLE\' AND `TABLE_NAME` LIKE \'%table2%\''
              ]);
 
       //try to backup existant tables
