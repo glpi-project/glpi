@@ -43,7 +43,7 @@ CREATE TABLE `glpi_alerts` (
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`type`),
   KEY `type` (`type`),
   KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_authldapreplicates
@@ -57,7 +57,7 @@ CREATE TABLE `glpi_authldapreplicates` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `authldaps_id` (`authldaps_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_authldaps
@@ -114,7 +114,7 @@ CREATE TABLE `glpi_authldaps` (
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `sync_field` (`sync_field`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_authmails
@@ -131,7 +131,7 @@ CREATE TABLE `glpi_authmails` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_active` (`is_active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_apiclients
 
@@ -153,7 +153,7 @@ CREATE TABLE `glpi_apiclients` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_active` (`is_active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 INSERT INTO `glpi_apiclients` VALUES (1, 0, 1, 'full access from localhost', NULL, 1, INET_ATON('127.0.0.1'), INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);
 
 
@@ -166,7 +166,7 @@ CREATE TABLE `glpi_autoupdatesystems` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_blacklistedmailcontents
@@ -182,7 +182,7 @@ CREATE TABLE `glpi_blacklistedmailcontents` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_blacklists
@@ -201,7 +201,7 @@ CREATE TABLE `glpi_blacklists` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_blacklists` VALUES ('1','1','empty IP','',NULL,NULL,NULL);
 INSERT INTO `glpi_blacklists` VALUES ('2','1','localhost','127.0.0.1',NULL,NULL,NULL);
@@ -236,7 +236,7 @@ CREATE TABLE `glpi_savedsearches` (
   KEY `last_execution_time` (`last_execution_time`),
   KEY `last_execution_date` (`last_execution_date`),
   KEY `do_count` (`do_count`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_savedsearches_users
@@ -250,7 +250,7 @@ CREATE TABLE `glpi_savedsearches_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`),
   KEY `savedsearches_id` (`savedsearches_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_savedsearches_alerts
@@ -271,7 +271,7 @@ CREATE TABLE `glpi_savedsearches_alerts` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   UNIQUE KEY `unicity` (`savedsearches_id`,`operator`, `value`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_budgets
@@ -305,7 +305,7 @@ CREATE TABLE `glpi_budgets` (
   KEY `date_creation` (`date_creation`),
   KEY `locations_id` (`locations_id`),
   KEY `budgettypes_id` (`budgettypes_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_budgettypes
@@ -321,7 +321,7 @@ CREATE TABLE `glpi_budgettypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_businesscriticities
 
@@ -344,7 +344,7 @@ CREATE TABLE `glpi_businesscriticities` (
   UNIQUE KEY `unicity` (`businesscriticities_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_calendars
@@ -365,7 +365,7 @@ CREATE TABLE `glpi_calendars` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_calendars` VALUES ('1','Default','0','1','Default calendar',NULL,'[0,43200,43200,43200,43200,43200,0]',NULL);
 
@@ -379,7 +379,7 @@ CREATE TABLE `glpi_calendars_holidays` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`calendars_id`,`holidays_id`),
   KEY `holidays_id` (`holidays_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_calendarsegments
@@ -396,7 +396,7 @@ CREATE TABLE `glpi_calendarsegments` (
   PRIMARY KEY (`id`),
   KEY `calendars_id` (`calendars_id`),
   KEY `day` (`day`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_calendarsegments` VALUES ('1','1','0','0','1','08:00:00','20:00:00');
 INSERT INTO `glpi_calendarsegments` VALUES ('2','1','0','0','2','08:00:00','20:00:00');
@@ -435,7 +435,7 @@ CREATE TABLE `glpi_cartridgeitems` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_cartridgeitems_printermodels
@@ -448,7 +448,7 @@ CREATE TABLE `glpi_cartridgeitems_printermodels` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`printermodels_id`,`cartridgeitems_id`),
   KEY `cartridgeitems_id` (`cartridgeitems_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_cartridgeitemtypes
@@ -464,7 +464,7 @@ CREATE TABLE `glpi_cartridgeitemtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_cartridges
@@ -487,7 +487,7 @@ CREATE TABLE `glpi_cartridges` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_certificates
@@ -538,7 +538,7 @@ CREATE TABLE `glpi_certificates` (
   KEY `states_id` (`states_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_certificates_items
@@ -557,7 +557,7 @@ CREATE TABLE `glpi_certificates_items` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_certificatetypes
@@ -577,7 +577,7 @@ CREATE TABLE `glpi_certificatetypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changecosts
@@ -605,7 +605,7 @@ CREATE TABLE `glpi_changecosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes
@@ -662,7 +662,7 @@ CREATE TABLE `glpi_changes` (
   KEY `global_validation` (`global_validation`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_groups
@@ -676,7 +676,7 @@ CREATE TABLE `glpi_changes_groups` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_items
@@ -690,7 +690,7 @@ CREATE TABLE `glpi_changes_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_problems
@@ -703,7 +703,7 @@ CREATE TABLE `glpi_changes_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
   KEY `problems_id` (`problems_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_projects
@@ -716,7 +716,7 @@ CREATE TABLE `glpi_changes_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`projects_id`),
   KEY `projects_id` (`projects_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_suppliers
@@ -732,7 +732,7 @@ CREATE TABLE `glpi_changes_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_tickets
@@ -745,7 +745,7 @@ CREATE TABLE `glpi_changes_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changes_users
@@ -761,7 +761,7 @@ CREATE TABLE `glpi_changes_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changetasks
@@ -798,7 +798,7 @@ CREATE TABLE `glpi_changetasks` (
   KEY `end` (`end`),
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `tasktemplates_id` (`tasktemplates_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_changevalidations
@@ -825,7 +825,7 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computerantiviruses
@@ -857,7 +857,7 @@ CREATE TABLE `glpi_computerantiviruses` (
    KEY `date_expiration` (`date_expiration`),
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_disks
@@ -893,7 +893,7 @@ CREATE TABLE `glpi_items_disks` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computermodels
@@ -919,7 +919,7 @@ CREATE TABLE `glpi_computermodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computers
@@ -979,7 +979,7 @@ CREATE TABLE `glpi_computers` (
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computers_items
@@ -997,7 +997,7 @@ CREATE TABLE `glpi_computers_items` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computers_softwarelicenses
@@ -1015,7 +1015,7 @@ CREATE TABLE `glpi_computers_softwarelicenses` (
   KEY `softwarelicenses_id` (`softwarelicenses_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computers_softwareversions
@@ -1039,7 +1039,7 @@ CREATE TABLE `glpi_computers_softwareversions` (
   KEY `is_deleted` (`is_deleted_computer`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_install` (`date_install`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computertypes
@@ -1055,7 +1055,7 @@ CREATE TABLE `glpi_computertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computervirtualmachines
@@ -1090,7 +1090,7 @@ CREATE TABLE `glpi_computervirtualmachines` (
   KEY `uuid` (`uuid`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_operatingsystems
@@ -1128,7 +1128,7 @@ CREATE TABLE `glpi_items_operatingsystems` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`, `operatingsystems_id`, `operatingsystemarchitectures_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemkernels
@@ -1142,7 +1142,7 @@ CREATE TABLE `glpi_operatingsystemkernels` (
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemkernelversions
@@ -1158,7 +1158,7 @@ CREATE TABLE `glpi_operatingsystemkernelversions` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `operatingsystemkernels_id` (`operatingsystemkernels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_operatingsystemeditions
 
@@ -1171,7 +1171,7 @@ CREATE TABLE `glpi_operatingsystemeditions` (
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_configs
 
@@ -1183,7 +1183,7 @@ CREATE TABLE `glpi_configs` (
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`context`,`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_configs` VALUES ('1','core','version','9.2');
 INSERT INTO `glpi_configs` VALUES ('2','core','show_jobs_at_login','0');
@@ -1397,7 +1397,7 @@ CREATE TABLE `glpi_consumableitems` (
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_consumableitemtypes
@@ -1413,7 +1413,7 @@ CREATE TABLE `glpi_consumableitemtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_consumables
@@ -1437,7 +1437,7 @@ CREATE TABLE `glpi_consumables` (
   KEY `item` (`itemtype`,`items_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contacts
@@ -1473,7 +1473,7 @@ CREATE TABLE `glpi_contacts` (
   KEY `usertitles_id` (`usertitles_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contacts_suppliers
@@ -1486,7 +1486,7 @@ CREATE TABLE `glpi_contacts_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contacts_id`),
   KEY `contacts_id` (`contacts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contacttypes
@@ -1502,7 +1502,7 @@ CREATE TABLE `glpi_contacttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contractcosts
@@ -1527,7 +1527,7 @@ CREATE TABLE `glpi_contractcosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contracts
@@ -1574,7 +1574,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `alert` (`alert`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contracts_items
@@ -1589,7 +1589,7 @@ CREATE TABLE `glpi_contracts_items` (
   UNIQUE KEY `unicity` (`contracts_id`,`itemtype`,`items_id`),
   KEY `FK_device` (`items_id`,`itemtype`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contracts_suppliers
@@ -1602,7 +1602,7 @@ CREATE TABLE `glpi_contracts_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`suppliers_id`,`contracts_id`),
   KEY `contracts_id` (`contracts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_contracttypes
@@ -1618,7 +1618,7 @@ CREATE TABLE `glpi_contracttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_crontasklogs
@@ -1637,7 +1637,7 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `date` (`date`),
   KEY `crontasks_id` (`crontasks_id`),
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_crontasks
@@ -1665,7 +1665,7 @@ CREATE TABLE `glpi_crontasks` (
   KEY `mode` (`mode`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL,NULL,NULL);
@@ -1710,7 +1710,7 @@ CREATE TABLE `glpi_devicecasemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicecases
 
@@ -1735,7 +1735,7 @@ CREATE TABLE `glpi_devicecases` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicecasemodels_id` (`devicecasemodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicecasetypes
@@ -1751,7 +1751,7 @@ CREATE TABLE `glpi_devicecasetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicecontrolmodels
@@ -1765,7 +1765,7 @@ CREATE TABLE `glpi_devicecontrolmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicecontrols
 
@@ -1791,7 +1791,7 @@ CREATE TABLE `glpi_devicecontrols` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicecontrolmodels_id` (`devicecontrolmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicedrivemodels
@@ -1805,7 +1805,7 @@ CREATE TABLE `glpi_devicedrivemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicedrives
 
@@ -1832,7 +1832,7 @@ CREATE TABLE `glpi_devicedrives` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicedrivemodels_id` (`devicedrivemodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicegenericmodels
@@ -1846,7 +1846,7 @@ CREATE TABLE `glpi_devicegenericmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicegenerics
@@ -1876,7 +1876,7 @@ CREATE TABLE `glpi_devicegenerics` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicegenericmodels_id` (`devicegenericmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicegenerictypes
@@ -1888,7 +1888,7 @@ CREATE TABLE `glpi_devicegenerictypes` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicegraphiccardmodels
@@ -1902,7 +1902,7 @@ CREATE TABLE `glpi_devicegraphiccardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicegraphiccards
 
@@ -1930,7 +1930,7 @@ CREATE TABLE `glpi_devicegraphiccards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicegraphiccardmodels_id` (`devicegraphiccardmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_deviceharddrivemodels
@@ -1944,7 +1944,7 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_deviceharddrives
 
@@ -1972,7 +1972,7 @@ CREATE TABLE `glpi_deviceharddrives` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `deviceharddrivemodels_id` (`deviceharddrivemodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicememorymodels
@@ -1986,7 +1986,7 @@ CREATE TABLE `glpi_devicememorymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicememories
@@ -2014,7 +2014,7 @@ CREATE TABLE `glpi_devicememories` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicememorymodels_id` (`devicememorymodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicememorytypes
@@ -2030,7 +2030,7 @@ CREATE TABLE `glpi_devicememorytypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_devicememorytypes` VALUES ('1','EDO',NULL,NULL,NULL);
 INSERT INTO `glpi_devicememorytypes` VALUES ('2','DDR',NULL,NULL,NULL);
@@ -2048,7 +2048,7 @@ CREATE TABLE `glpi_devicemotherboardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicemotherboards
 
@@ -2072,7 +2072,7 @@ CREATE TABLE `glpi_devicemotherboards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicemotherboardmodels_id` (`devicemotherboardmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicenetworkcardmodels
@@ -2086,7 +2086,7 @@ CREATE TABLE `glpi_devicenetworkcardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicenetworkcards
 
@@ -2111,7 +2111,7 @@ CREATE TABLE `glpi_devicenetworkcards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicenetworkcardmodels_id` (`devicenetworkcardmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicepcimodels
@@ -2125,7 +2125,7 @@ CREATE TABLE `glpi_devicepcimodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicepcis
 
@@ -2148,7 +2148,7 @@ CREATE TABLE `glpi_devicepcis` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicepcimodels_id` (`devicepcimodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicepowersupplymodels
@@ -2162,7 +2162,7 @@ CREATE TABLE `glpi_devicepowersupplymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicepowersupplies
@@ -2188,7 +2188,7 @@ CREATE TABLE `glpi_devicepowersupplies` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicepowersupplymodels_id` (`devicepowersupplymodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_deviceprocessormodels
@@ -2202,7 +2202,7 @@ CREATE TABLE `glpi_deviceprocessormodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_deviceprocessors
 
@@ -2229,7 +2229,7 @@ CREATE TABLE `glpi_deviceprocessors` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `deviceprocessormodels_id` (`deviceprocessormodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesensors
@@ -2258,7 +2258,7 @@ CREATE TABLE `glpi_devicesensors` (
   KEY `states_id` (`states_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesensormodels
@@ -2272,7 +2272,7 @@ CREATE TABLE `glpi_devicesensormodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesensortypes
@@ -2284,7 +2284,7 @@ CREATE TABLE `glpi_devicesensortypes` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesimcards
@@ -2310,7 +2310,7 @@ CREATE TABLE IF NOT EXISTS `glpi_devicesimcards` (
    KEY `date_mod` (`date_mod`),
    KEY `date_creation` (`date_creation`),
    KEY `manufacturers_id` (`manufacturers_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicesimcards
@@ -2347,7 +2347,7 @@ CREATE TABLE IF NOT EXISTS `glpi_items_devicesimcards` (
   KEY `states_id` (`states_id`),
   KEY `locations_id` (`locations_id`),
   KEY `lines_id` (`lines_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesimcardtypes
@@ -2363,7 +2363,7 @@ CREATE TABLE IF NOT EXISTS `glpi_devicesimcardtypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_devicesimcardtypes` VALUES ('1','Full SIM',NULL,NULL,NULL);
 INSERT INTO `glpi_devicesimcardtypes` VALUES ('2','Mini SIM',NULL,NULL,NULL);
@@ -2381,7 +2381,7 @@ CREATE TABLE `glpi_devicesoundcardmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_devicesoundcards
@@ -2406,7 +2406,7 @@ CREATE TABLE `glpi_devicesoundcards` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `devicesoundcardmodels_id` (`devicesoundcardmodels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_displaypreferences
@@ -2423,7 +2423,7 @@ CREATE TABLE `glpi_displaypreferences` (
   KEY `rank` (`rank`),
   KEY `num` (`num`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_displaypreferences` VALUES ('32','Computer','4','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('34','Computer','45','6','0');
@@ -2674,7 +2674,7 @@ CREATE TABLE `glpi_documentcategories` (
   UNIQUE KEY `unicity` (`documentcategories_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_documents
@@ -2710,7 +2710,7 @@ CREATE TABLE `glpi_documents` (
   KEY `sha1sum` (`sha1sum`),
   KEY `tag` (`tag`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_documents_items
@@ -2730,7 +2730,7 @@ CREATE TABLE `glpi_documents_items` (
   UNIQUE KEY `unicity` (`documents_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`,`entities_id`,`is_recursive`),
   KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_documenttypes
@@ -2752,7 +2752,7 @@ CREATE TABLE `glpi_documenttypes` (
   KEY `is_uploadable` (`is_uploadable`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_documenttypes` VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21',NULL,NULL);
 INSERT INTO `glpi_documenttypes` VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21',NULL,NULL);
@@ -2842,7 +2842,7 @@ CREATE TABLE `glpi_domains` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_dropdowntranslations
@@ -2860,7 +2860,7 @@ CREATE TABLE `glpi_dropdowntranslations` (
   KEY `typeid` (`itemtype`,`items_id`),
   KEY `language` (`language`),
   KEY `field` (`field`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_entities
@@ -2938,7 +2938,7 @@ CREATE TABLE `glpi_entities` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_entities` VALUES ('0','Root entity','-1','Root entity',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'0','0','0','0','0','0','0','0','0','0','0','-10','0','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','-10','0','0','10','10','0','1','0',NULL,NULL,0);
 
@@ -2954,7 +2954,7 @@ CREATE TABLE `glpi_entities_knowbaseitems` (
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_entities_reminders
@@ -2969,7 +2969,7 @@ CREATE TABLE `glpi_entities_reminders` (
   KEY `reminders_id` (`reminders_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_entities_rssfeeds
@@ -2984,7 +2984,7 @@ CREATE TABLE `glpi_entities_rssfeeds` (
   KEY `rssfeeds_id` (`rssfeeds_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_events
@@ -3002,7 +3002,7 @@ CREATE TABLE `glpi_events` (
   KEY `date` (`date`),
   KEY `level` (`level`),
   KEY `item` (`type`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_fieldblacklists
@@ -3023,7 +3023,7 @@ CREATE TABLE `glpi_fieldblacklists` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_fieldunicities
@@ -3045,7 +3045,7 @@ CREATE TABLE `glpi_fieldunicities` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores field unicity criterias';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores field unicity criterias';
 
 
 ### Dump table glpi_filesystems
@@ -3061,7 +3061,7 @@ CREATE TABLE `glpi_filesystems` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_filesystems` VALUES ('1','ext',NULL,NULL,NULL);
 INSERT INTO `glpi_filesystems` VALUES ('2','ext2',NULL,NULL,NULL);
@@ -3103,7 +3103,7 @@ CREATE TABLE `glpi_fqdns` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups
@@ -3147,7 +3147,7 @@ CREATE TABLE `glpi_groups` (
   KEY `is_usergroup` (`is_usergroup`),
   KEY `is_manager` (`is_manager`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_knowbaseitems
@@ -3164,7 +3164,7 @@ CREATE TABLE `glpi_groups_knowbaseitems` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_problems
@@ -3178,7 +3178,7 @@ CREATE TABLE `glpi_groups_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_reminders
@@ -3195,7 +3195,7 @@ CREATE TABLE `glpi_groups_reminders` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_rssfeeds
@@ -3212,7 +3212,7 @@ CREATE TABLE `glpi_groups_rssfeeds` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_tickets
@@ -3226,7 +3226,7 @@ CREATE TABLE `glpi_groups_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`groups_id`),
   KEY `group` (`groups_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_groups_users
@@ -3244,7 +3244,7 @@ CREATE TABLE `glpi_groups_users` (
   KEY `groups_id` (`groups_id`),
   KEY `is_manager` (`is_manager`),
   KEY `is_userdelegate` (`is_userdelegate`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_holidays
@@ -3268,7 +3268,7 @@ CREATE TABLE `glpi_holidays` (
   KEY `is_perpetual` (`is_perpetual`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_infocoms
@@ -3316,7 +3316,7 @@ CREATE TABLE `glpi_infocoms` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `businesscriticities_id` (`businesscriticities_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_interfacetypes
@@ -3332,7 +3332,7 @@ CREATE TABLE `glpi_interfacetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_interfacetypes` VALUES ('1','IDE',NULL,NULL,NULL);
 INSERT INTO `glpi_interfacetypes` VALUES ('2','SATA',NULL,NULL,NULL);
@@ -3369,7 +3369,7 @@ CREATE TABLE `glpi_ipaddresses` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `item` (`itemtype`,`items_id`,`is_deleted`),
   KEY `mainitem` (`mainitemtype`,`mainitems_id`,`is_deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ipaddresses_ipnetworks
@@ -3383,7 +3383,7 @@ CREATE TABLE `glpi_ipaddresses_ipnetworks` (
   UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
   KEY `ipnetworks_id` (`ipnetworks_id`),
   KEY `ipaddresses_id` (`ipaddresses_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ipnetworks
@@ -3427,7 +3427,7 @@ CREATE TABLE `glpi_ipnetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ipnetworks_vlans
@@ -3439,7 +3439,7 @@ CREATE TABLE `glpi_ipnetworks_vlans` (
   `vlans_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `link` (`ipnetworks_id`,`vlans_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicecases
@@ -3470,7 +3470,7 @@ CREATE TABLE `glpi_items_devicecases` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicecontrols
@@ -3503,7 +3503,7 @@ CREATE TABLE `glpi_items_devicecontrols` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicedrives
@@ -3536,7 +3536,7 @@ CREATE TABLE `glpi_items_devicedrives` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicegenerics
@@ -3565,7 +3565,7 @@ CREATE TABLE `glpi_items_devicegenerics` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicegraphiccards
@@ -3600,7 +3600,7 @@ CREATE TABLE `glpi_items_devicegraphiccards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_deviceharddrives
@@ -3635,7 +3635,7 @@ CREATE TABLE `glpi_items_deviceharddrives` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicememories
@@ -3670,7 +3670,7 @@ CREATE TABLE `glpi_items_devicememories` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicemotherboards
@@ -3701,7 +3701,7 @@ CREATE TABLE `glpi_items_devicemotherboards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicenetworkcards
@@ -3736,7 +3736,7 @@ CREATE TABLE `glpi_items_devicenetworkcards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicepcis
@@ -3769,7 +3769,7 @@ CREATE TABLE `glpi_items_devicepcis` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicepowersupplies
@@ -3800,7 +3800,7 @@ CREATE TABLE `glpi_items_devicepowersupplies` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_deviceprocessors
@@ -3839,7 +3839,7 @@ CREATE TABLE `glpi_items_deviceprocessors` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicesensors
@@ -3868,7 +3868,7 @@ CREATE TABLE `glpi_items_devicesensors` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_devicesoundcards
@@ -3901,7 +3901,7 @@ CREATE TABLE `glpi_items_devicesoundcards` (
   KEY `otherserial` (`otherserial`),
   KEY `locations_id` (`locations_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_problems
@@ -3915,7 +3915,7 @@ CREATE TABLE `glpi_items_problems` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_projects
@@ -3929,7 +3929,7 @@ CREATE TABLE `glpi_items_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_items_tickets
@@ -3943,7 +3943,7 @@ CREATE TABLE `glpi_items_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_itilcategories
@@ -3989,7 +3989,7 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_change` (`is_change`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitemcategories
@@ -4015,7 +4015,7 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems
@@ -4040,8 +4040,10 @@ CREATE TABLE `glpi_knowbaseitems` (
   KEY `date_mod` (`date_mod`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
-  FULLTEXT KEY `fulltext` (`name`,`answer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  FULLTEXT KEY `fulltext` (`name`,`answer`),
+  FULLTEXT KEY `name` (`name`),
+  FULLTEXT KEY `answer` (`answer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems_profiles
@@ -4058,7 +4060,7 @@ CREATE TABLE `glpi_knowbaseitems_profiles` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems_users
@@ -4071,7 +4073,7 @@ CREATE TABLE `glpi_knowbaseitems_users` (
   PRIMARY KEY (`id`),
   KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitemtranslations
@@ -4089,8 +4091,10 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   PRIMARY KEY (`id`),
   KEY `item` (`knowbaseitems_id`,`language`),
   KEY `users_id` (`users_id`),
-  FULLTEXT KEY `fulltext` (`name`,`answer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  FULLTEXT KEY `fulltext` (`name`,`answer`),
+  FULLTEXT KEY `name` (`name`),
+  FULLTEXT KEY `answer` (`answer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_lines
@@ -4118,7 +4122,7 @@ CREATE TABLE `glpi_lines` (
   KEY `is_recursive`     (`is_recursive`),
   KEY `users_id`         (`users_id`),
   KEY `lineoperators_id` (`lineoperators_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_lineoperators
@@ -4141,7 +4145,7 @@ CREATE TABLE IF NOT EXISTS `glpi_lineoperators` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   UNIQUE KEY `unicity` (`mcc`,`mnc`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_linetypes`;
@@ -4155,7 +4159,7 @@ CREATE TABLE IF NOT EXISTS `glpi_linetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_links
 
@@ -4174,7 +4178,7 @@ CREATE TABLE `glpi_links` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_links_itemtypes
@@ -4187,7 +4191,7 @@ CREATE TABLE `glpi_links_itemtypes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`links_id`),
   KEY `links_id` (`links_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_locations
@@ -4223,7 +4227,7 @@ CREATE TABLE `glpi_locations` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_logs
@@ -4245,7 +4249,7 @@ CREATE TABLE `glpi_logs` (
   KEY `itemtype_link` (`itemtype_link`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `id_search_option` (`id_search_option`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_mailcollectors
@@ -4271,7 +4275,7 @@ CREATE TABLE `glpi_mailcollectors` (
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_manufacturers
@@ -4287,7 +4291,7 @@ CREATE TABLE `glpi_manufacturers` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_monitormodels
@@ -4313,7 +4317,7 @@ CREATE TABLE `glpi_monitormodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_monitors
@@ -4375,7 +4379,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_monitortypes
@@ -4391,7 +4395,7 @@ CREATE TABLE `glpi_monitortypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_netpoints
@@ -4411,7 +4415,7 @@ CREATE TABLE `glpi_netpoints` (
   KEY `location_name` (`locations_id`,`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkaliases
@@ -4428,7 +4432,7 @@ CREATE TABLE `glpi_networkaliases` (
   KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `networknames_id` (`networknames_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkequipmentmodels
@@ -4454,7 +4458,7 @@ CREATE TABLE `glpi_networkequipmentmodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkequipments
@@ -4510,7 +4514,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkequipmenttypes
@@ -4526,7 +4530,7 @@ CREATE TABLE `glpi_networkequipmenttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkinterfaces
@@ -4538,7 +4542,7 @@ CREATE TABLE `glpi_networkinterfaces` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networknames
@@ -4566,7 +4570,7 @@ CREATE TABLE `glpi_networknames` (
   KEY `item` (`itemtype`,`items_id`,`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkportaggregates
@@ -4582,7 +4586,7 @@ CREATE TABLE `glpi_networkportaggregates` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkportaliases
@@ -4599,7 +4603,7 @@ CREATE TABLE `glpi_networkportaliases` (
   KEY `networkports_id_alias` (`networkports_id_alias`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkportdialups
@@ -4614,7 +4618,7 @@ CREATE TABLE `glpi_networkportdialups` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkportethernets
@@ -4637,7 +4641,7 @@ CREATE TABLE `glpi_networkportethernets` (
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_networkportfiberchannels
 
@@ -4659,7 +4663,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   KEY `speed` (`speed`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_networkportlocals
 
@@ -4673,7 +4677,7 @@ CREATE TABLE `glpi_networkportlocals` (
   UNIQUE KEY `networkports_id` (`networkports_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkports
@@ -4704,7 +4708,7 @@ CREATE TABLE `glpi_networkports` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkports_networkports
@@ -4717,7 +4721,7 @@ CREATE TABLE `glpi_networkports_networkports` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id_1`,`networkports_id_2`),
   KEY `networkports_id_2` (`networkports_id_2`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkports_vlans
@@ -4731,7 +4735,7 @@ CREATE TABLE `glpi_networkports_vlans` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id`,`vlans_id`),
   KEY `vlans_id` (`vlans_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networkportwifis
@@ -4755,7 +4759,7 @@ CREATE TABLE `glpi_networkportwifis` (
   KEY `mode` (`mode`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_networks
@@ -4771,7 +4775,7 @@ CREATE TABLE `glpi_networks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_notepads
@@ -4792,7 +4796,7 @@ CREATE TABLE `glpi_notepads` (
   KEY `date` (`date`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_notifications
@@ -4817,7 +4821,7 @@ CREATE TABLE `glpi_notifications` (
   KEY `date_mod` (`date_mod`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notifications` VALUES(1, 'Alert Tickets not closed', 0, 'Ticket', 'alertnotclosed', '', 1, 1, '2010-02-16 16:41:39', NULL);
 INSERT INTO `glpi_notifications` VALUES(2, 'New Ticket', 0, 'Ticket', 'new', '', 1, 1, '2010-02-16 16:41:39', NULL);
@@ -4901,7 +4905,7 @@ CREATE TABLE `glpi_notifications_notificationtemplates` (
   KEY `notifications_id` (`notifications_id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`),
   KEY `mode` (`mode`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(1, '1', 'mailing', 6);
 INSERT INTO `glpi_notifications_notificationtemplates` VALUES(2, '2', 'mailing', 4);
@@ -4983,7 +4987,7 @@ CREATE TABLE `glpi_notificationtargets` (
   PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`),
   KEY `notifications_id` (`notifications_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','13');
 INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','13');
@@ -5131,7 +5135,7 @@ CREATE TABLE `glpi_notificationtemplates` (
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2010-02-01 15:51:46','',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('2','Reservations','Reservation','2010-02-03 14:03:45','',NULL,NULL);
@@ -5171,7 +5175,7 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
   `content_html` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('1','1','','##lang.dbconnection.title##','##lang.dbconnection.delay## : ##dbconnection.delay##
 ','&lt;p&gt;##lang.dbconnection.delay## : ##dbconnection.delay##&lt;/p&gt;');
@@ -5810,7 +5814,7 @@ CREATE TABLE `glpi_notimportedemails` (
   PRIMARY KEY (`id`),
   KEY `users_id` (`users_id`),
   KEY `mailcollectors_id` (`mailcollectors_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 ### Dump table glpi_objectlocks
@@ -5824,7 +5828,7 @@ CREATE TABLE `glpi_objectlocks` (
   `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemarchitectures
@@ -5840,7 +5844,7 @@ CREATE TABLE `glpi_operatingsystemarchitectures` (
  KEY `name` (`name`),
  KEY `date_mod` (`date_mod`),
  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystems
@@ -5856,7 +5860,7 @@ CREATE TABLE `glpi_operatingsystems` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemservicepacks
@@ -5872,7 +5876,7 @@ CREATE TABLE `glpi_operatingsystemservicepacks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_operatingsystemversions
@@ -5888,7 +5892,7 @@ CREATE TABLE `glpi_operatingsystemversions` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_peripheralmodels
@@ -5914,7 +5918,7 @@ CREATE TABLE `glpi_peripheralmodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_peripherals
@@ -5969,7 +5973,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_peripheraltypes
@@ -5985,7 +5989,7 @@ CREATE TABLE `glpi_peripheraltypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_phonemodels
@@ -6003,7 +6007,7 @@ CREATE TABLE `glpi_phonemodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_phonepowersupplies
@@ -6019,7 +6023,7 @@ CREATE TABLE `glpi_phonepowersupplies` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_phones
@@ -6079,7 +6083,7 @@ CREATE TABLE `glpi_phones` (
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_phonetypes
@@ -6095,7 +6099,7 @@ CREATE TABLE `glpi_phonetypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_planningrecalls
@@ -6113,7 +6117,7 @@ CREATE TABLE `glpi_planningrecalls` (
   KEY `users_id` (`users_id`),
   KEY `before_time` (`before_time`),
   KEY `when` (`when`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_plugins
@@ -6131,7 +6135,7 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_printermodels
@@ -6149,7 +6153,7 @@ CREATE TABLE `glpi_printermodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_printers
@@ -6215,7 +6219,7 @@ CREATE TABLE `glpi_printers` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_printertypes
@@ -6231,7 +6235,7 @@ CREATE TABLE `glpi_printertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problemcosts
@@ -6257,7 +6261,7 @@ CREATE TABLE `glpi_problemcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problems
@@ -6309,7 +6313,7 @@ CREATE TABLE `glpi_problems` (
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problems_suppliers
@@ -6325,7 +6329,7 @@ CREATE TABLE `glpi_problems_suppliers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problems_tickets
@@ -6338,7 +6342,7 @@ CREATE TABLE `glpi_problems_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
   KEY `tickets_id` (`tickets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problems_users
@@ -6354,7 +6358,7 @@ CREATE TABLE `glpi_problems_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_problemtasks
@@ -6391,7 +6395,7 @@ CREATE TABLE `glpi_problemtasks` (
   KEY `state` (`state`),
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `tasktemplates_id` (`tasktemplates_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_profilerights
@@ -6404,7 +6408,7 @@ CREATE TABLE `glpi_profilerights` (
   `rights` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`profiles_id`,`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_profilerights` VALUES ('1','1','computer','0');
 INSERT INTO `glpi_profilerights` VALUES ('2','1','monitor','0');
@@ -7040,7 +7044,7 @@ CREATE TABLE `glpi_profiles` (
   KEY `is_default` (`is_default`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_profiles` VALUES ('1','Self-Service','helpdesk','1','1','[\"Computer\",\"Monitor\",\"NetworkEquipment\",\"Peripheral\",\"Phone\",\"Printer\",\"Software\", \"DCRoom\", \"Rack\", \"Enclosure\"]','{\"1\":{\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"2\":{\"1\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"3\":{\"1\":0,\"2\":0,\"4\":0,\"5\":0,\"6\":0},\"4\":{\"1\":0,\"2\":0,\"3\":0,\"5\":0,\"6\":0},\"5\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0},\"6\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0}}',NULL,NULL,'[]','0','0',NULL,NULL);
 INSERT INTO `glpi_profiles` VALUES ('2','Observer','central','0','1','[\"Computer\",\"Monitor\",\"NetworkEquipment\",\"Peripheral\",\"Phone\",\"Printer\",\"Software\", \"DCRoom\", \"Rack\", \"Enclosure\"]','[]',NULL,NULL,'[]','0','0',NULL,NULL);
@@ -7086,7 +7090,7 @@ CREATE TABLE `glpi_profiles_reminders` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_profiles_rssfeeds
@@ -7103,7 +7107,7 @@ CREATE TABLE `glpi_profiles_rssfeeds` (
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_profiles_users
@@ -7122,7 +7126,7 @@ CREATE TABLE `glpi_profiles_users` (
   KEY `users_id` (`users_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_profiles_users` VALUES ('2','2','4','0','1','0');
 INSERT INTO `glpi_profiles_users` VALUES ('3','3','1','0','1','0');
@@ -7151,7 +7155,7 @@ CREATE TABLE `glpi_projectcosts` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projects
@@ -7206,7 +7210,7 @@ CREATE TABLE `glpi_projects` (
   KEY `date_creation` (`date_creation`),
   KEY `projecttemplates_id` (`projecttemplates_id`),
   KEY `is_template` (`is_template`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projectstates
@@ -7225,7 +7229,7 @@ CREATE TABLE `glpi_projectstates` (
   KEY `is_finished` (`is_finished`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_projectstates` VALUES ('1','New',NULL,'#06ff00','0',NULL,NULL);
 INSERT INTO `glpi_projectstates` VALUES ('2','Processing',NULL,'#ffb800','0',NULL,NULL);
@@ -7278,7 +7282,7 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `projecttasktemplates_id` (`projecttasktemplates_id`),
   KEY `is_template` (`is_template`),
   KEY `is_milestone` (`is_milestone`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_projecttasktemplates
 
@@ -7323,7 +7327,7 @@ CREATE TABLE `glpi_projecttasktemplates` (
   KEY `projectstates_id` (`projectstates_id`),
   KEY `projecttasktypes_id` (`projecttasktypes_id`),
   KEY `is_milestone` (`is_milestone`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projecttasks_tickets
@@ -7336,7 +7340,7 @@ CREATE TABLE `glpi_projecttasks_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`projecttasks_id`),
   KEY `projects_id` (`projecttasks_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projecttaskteams
@@ -7350,7 +7354,7 @@ CREATE TABLE `glpi_projecttaskteams` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projecttasks_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projecttasktypes
@@ -7366,7 +7370,7 @@ CREATE TABLE `glpi_projecttasktypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projectteams
@@ -7380,7 +7384,7 @@ CREATE TABLE `glpi_projectteams` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`projects_id`,`itemtype`,`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_projecttypes
@@ -7396,7 +7400,7 @@ CREATE TABLE `glpi_projecttypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_queuednotifications
@@ -7435,7 +7439,7 @@ CREATE TABLE `glpi_queuednotifications` (
   KEY `send_time` (`send_time`),
   KEY `sent_time` (`sent_time`),
   KEY `mode` (`mode`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_registeredids
@@ -7451,7 +7455,7 @@ CREATE TABLE `glpi_registeredids` (
   KEY `name` (`name`),
   KEY `item` (`items_id`,`itemtype`),
   KEY `device_type` (`device_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_reminders
@@ -7480,7 +7484,7 @@ CREATE TABLE `glpi_reminders` (
   KEY `state` (`state`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_reminders_users
@@ -7493,7 +7497,7 @@ CREATE TABLE `glpi_reminders_users` (
   PRIMARY KEY (`id`),
   KEY `reminders_id` (`reminders_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_requesttypes
@@ -7523,7 +7527,7 @@ CREATE TABLE `glpi_requesttypes` (
   KEY `is_active` (`is_active`),
   KEY `is_ticketheader` (`is_ticketheader`),
   KEY `is_ticketfollowup` (`is_ticketfollowup`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','1','1','1',NULL,NULL,NULL);
 INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','0','1','1','1','1','1',NULL,NULL,NULL);
@@ -7550,7 +7554,7 @@ CREATE TABLE `glpi_reservationitems` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_reservations
@@ -7570,7 +7574,7 @@ CREATE TABLE `glpi_reservations` (
   KEY `reservationitems_id` (`reservationitems_id`),
   KEY `users_id` (`users_id`),
   KEY `resagroup` (`reservationitems_id`,`group`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_rssfeeds
@@ -7595,7 +7599,7 @@ CREATE TABLE `glpi_rssfeeds` (
   KEY `have_error` (`have_error`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_rssfeeds_users
@@ -7608,7 +7612,7 @@ CREATE TABLE `glpi_rssfeeds_users` (
   PRIMARY KEY (`id`),
   KEY `rssfeeds_id` (`rssfeeds_id`),
   KEY `users_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ruleactions
@@ -7623,7 +7627,7 @@ CREATE TABLE `glpi_ruleactions` (
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
   KEY `field_value` (`field`(50),`value`(50))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_ruleactions` VALUES ('6','6','fromitem','locations_id','1');
 INSERT INTO `glpi_ruleactions` VALUES ('2','2','assign','entities_id','0');
@@ -7645,7 +7649,7 @@ CREATE TABLE `glpi_rulecriterias` (
   PRIMARY KEY (`id`),
   KEY `rules_id` (`rules_id`),
   KEY `condition` (`condition`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_rulecriterias` VALUES ('9','6','locations_id','9','1');
 INSERT INTO `glpi_rulecriterias` VALUES ('2','2','uid','0','*');
@@ -7673,7 +7677,7 @@ CREATE TABLE `glpi_rulerightparameters` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_rulerightparameters` VALUES ('1','(LDAP)Organization','o','',NULL,NULL);
 INSERT INTO `glpi_rulerightparameters` VALUES ('2','(LDAP)Common Name','cn','',NULL,NULL);
@@ -7715,7 +7719,7 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`),
   KEY `condition` (`condition`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','500717c8-2bd6e957-53a12b5fd35745.02608131','0',NULL);
 INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','500717c8-2bd6e957-53a12b5fd36404.54713349','0',NULL);
@@ -7736,7 +7740,7 @@ CREATE TABLE `glpi_slalevelactions` (
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_slalevelcriterias
@@ -7751,7 +7755,7 @@ CREATE TABLE `glpi_slalevelcriterias` (
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`),
   KEY `condition` (`condition`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_slalevels
@@ -7771,7 +7775,7 @@ CREATE TABLE `glpi_slalevels` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `slas_id` (`slas_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_slalevels_tickets
@@ -7786,7 +7790,7 @@ CREATE TABLE `glpi_slalevels_tickets` (
   KEY `tickets_id` (`tickets_id`),
   KEY `slalevels_id` (`slalevels_id`),
   UNIQUE KEY `unicity` (`tickets_id`,`slalevels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_olalevelactions
 
@@ -7799,7 +7803,7 @@ CREATE TABLE `glpi_olalevelactions` (
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `olalevels_id` (`olalevels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_olalevelcriterias
@@ -7814,7 +7818,7 @@ CREATE TABLE `glpi_olalevelcriterias` (
   PRIMARY KEY (`id`),
   KEY `olalevels_id` (`olalevels_id`),
   KEY `condition` (`condition`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_olalevels
@@ -7834,7 +7838,7 @@ CREATE TABLE `glpi_olalevels` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `olas_id` (`olas_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_olalevels_tickets
@@ -7849,7 +7853,7 @@ CREATE TABLE `glpi_olalevels_tickets` (
   KEY `tickets_id` (`tickets_id`),
   KEY `olalevels_id` (`olalevels_id`),
   UNIQUE KEY `unicity` (`tickets_id`,`olalevels_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_slms
 
@@ -7870,7 +7874,7 @@ CREATE TABLE `glpi_slms` (
   KEY `calendars_id` (`calendars_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_slas
 
@@ -7895,7 +7899,7 @@ CREATE TABLE `glpi_slas` (
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
   KEY `slms_id` (`slms_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_olas
 
@@ -7920,7 +7924,7 @@ CREATE TABLE `glpi_olas` (
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
   KEY `slms_id` (`slms_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_softwarecategories
 
@@ -7936,7 +7940,7 @@ CREATE TABLE `glpi_softwarecategories` (
   `sons_cache` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `softwarecategories_id` (`softwarecategories_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_softwarecategories` VALUES ('1','FUSION',NULL,'0','FUSION','1',NULL,NULL);
 
@@ -7998,7 +8002,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `date_creation` (`date_creation`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `states_id` (`states_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_softwarelicensetypes
@@ -8022,7 +8026,7 @@ CREATE TABLE `glpi_softwarelicensetypes` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_softwarelicensetypes` VALUES ('1', 'OEM', '', NULL, NULL, '0', '0', NULL, NULL, '0', '1', 'OEM');
 
@@ -8069,7 +8073,7 @@ CREATE TABLE `glpi_softwares` (
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_softwareversions
@@ -8095,7 +8099,7 @@ CREATE TABLE `glpi_softwareversions` (
   KEY `operatingsystems_id` (`operatingsystems_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_solutiontemplates
@@ -8118,7 +8122,7 @@ CREATE TABLE `glpi_solutiontemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_solutiontypes
@@ -8138,7 +8142,7 @@ CREATE TABLE `glpi_solutiontypes` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_itilsolutions
@@ -8170,7 +8174,7 @@ CREATE TABLE `glpi_itilsolutions` (
   KEY `users_id_approval` (`users_id_approval`),
   KEY `status` (`status`),
   KEY `ticketfollowups_id` (`ticketfollowups_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ssovariables
@@ -8185,7 +8189,7 @@ CREATE TABLE `glpi_ssovariables` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_ssovariables` VALUES ('1','HTTP_AUTH_USER','',NULL,NULL);
 INSERT INTO `glpi_ssovariables` VALUES ('2','REMOTE_USER','',NULL,NULL);
@@ -8235,7 +8239,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_certificate` (`is_visible_certificate`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_suppliers
@@ -8267,7 +8271,7 @@ CREATE TABLE `glpi_suppliers` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_suppliers_tickets
@@ -8283,7 +8287,7 @@ CREATE TABLE `glpi_suppliers_tickets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`suppliers_id`),
   KEY `group` (`suppliers_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_suppliertypes
@@ -8299,7 +8303,7 @@ CREATE TABLE `glpi_suppliertypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_taskcategories
@@ -8331,7 +8335,7 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tasktemplates
@@ -8362,7 +8366,7 @@ CREATE TABLE `glpi_tasktemplates` (
   KEY `is_private` (`is_private`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ticketcosts
@@ -8388,7 +8392,7 @@ CREATE TABLE `glpi_ticketcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `budgets_id` (`budgets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ticketfollowups
@@ -8415,7 +8419,7 @@ CREATE TABLE `glpi_ticketfollowups` (
   KEY `tickets_id` (`tickets_id`),
   KEY `is_private` (`is_private`),
   KEY `requesttypes_id` (`requesttypes_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ticketrecurrents
@@ -8441,7 +8445,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickets
@@ -8518,7 +8522,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `locations_id` (`locations_id`),
   KEY `date_creation` (`date_creation`),
   KEY `ola_waiting_duration` (`ola_waiting_duration`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickets_tickets
@@ -8531,7 +8535,7 @@ CREATE TABLE `glpi_tickets_tickets` (
   `link` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id_1`,`tickets_id_2`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickets_users
@@ -8547,7 +8551,7 @@ CREATE TABLE `glpi_tickets_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`users_id`,`alternative_email`),
   KEY `user` (`users_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_ticketsatisfactions
@@ -8563,7 +8567,7 @@ CREATE TABLE `glpi_ticketsatisfactions` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tickets_id` (`tickets_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickettasks
@@ -8603,7 +8607,7 @@ CREATE TABLE `glpi_tickettasks` (
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `tasktemplates_id` (`tasktemplates_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickettemplatehiddenfields
@@ -8615,7 +8619,7 @@ CREATE TABLE `glpi_tickettemplatehiddenfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickettemplatemandatoryfields
@@ -8627,7 +8631,7 @@ CREATE TABLE `glpi_tickettemplatemandatoryfields` (
   `num` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_tickettemplatemandatoryfields` VALUES ('1','1','21');
 
@@ -8641,7 +8645,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `tickettemplates_id_id_num` (`tickettemplates_id`,`num`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_tickettemplates
@@ -8657,7 +8661,7 @@ CREATE TABLE `glpi_tickettemplates` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_tickettemplates` VALUES ('1','Default','0','1',NULL);
 
@@ -8684,7 +8688,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_transfers
@@ -8726,7 +8730,7 @@ CREATE TABLE `glpi_transfers` (
   `keep_disk` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_transfers` VALUES ('1','complete','2','2','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1',NULL,NULL,'1');
 
@@ -8743,7 +8747,7 @@ CREATE TABLE `glpi_usercategories` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_useremails
@@ -8760,7 +8764,7 @@ CREATE TABLE `glpi_useremails` (
   KEY `email` (`email`),
   KEY `is_default` (`is_default`),
   KEY `is_dynamic` (`is_dynamic`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_users
@@ -8866,7 +8870,7 @@ CREATE TABLE `glpi_users` (
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `sync_field` (`sync_field`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2014-06-18 08:02:24','2014-06-18 08:02:24',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'',NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,'',NULL);
@@ -8886,7 +8890,7 @@ CREATE TABLE `glpi_usertitles` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinestates
@@ -8901,7 +8905,7 @@ CREATE TABLE `glpi_virtualmachinestates` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinesystems
@@ -8916,7 +8920,7 @@ CREATE TABLE `glpi_virtualmachinesystems` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_virtualmachinetypes
@@ -8931,7 +8935,7 @@ CREATE TABLE `glpi_virtualmachinetypes` (
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_vlans
@@ -8952,7 +8956,7 @@ CREATE TABLE `glpi_vlans` (
   KEY `tag` (`tag`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_wifinetworks
@@ -8974,7 +8978,7 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_items
 
@@ -8991,7 +8995,7 @@ CREATE TABLE `glpi_knowbaseitems_items` (
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
   KEY `item` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_revisions
 
@@ -9008,7 +9012,7 @@ CREATE TABLE `glpi_knowbaseitems_revisions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
   KEY `revision` (`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_knowbaseitems_comments
 
@@ -9023,7 +9027,7 @@ CREATE TABLE `glpi_knowbaseitems_comments` (
   `date_creation` datetime DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicebatterymodels
 
@@ -9036,7 +9040,7 @@ CREATE TABLE `glpi_devicebatterymodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicebatteries
 
@@ -9063,7 +9067,7 @@ CREATE TABLE `glpi_devicebatteries` (
   KEY `date_creation` (`date_creation`),
   KEY `devicebatterymodels_id` (`devicebatterymodels_id`),
   KEY `devicebatterytypes_id` (`devicebatterytypes_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_items_devicebatteries
 
@@ -9092,7 +9096,7 @@ CREATE TABLE `glpi_items_devicebatteries` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_devicebatterytypes`;
 CREATE TABLE `glpi_devicebatterytypes` (
@@ -9105,7 +9109,7 @@ CREATE TABLE `glpi_devicebatterytypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicefirmwaremodels
 
@@ -9118,7 +9122,7 @@ CREATE TABLE `glpi_devicefirmwaremodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_devicefirmwares
 
@@ -9145,7 +9149,7 @@ CREATE TABLE `glpi_devicefirmwares` (
   KEY `date_creation` (`date_creation`),
   KEY `devicefirmwaremodels_id` (`devicefirmwaremodels_id`),
   KEY `devicefirmwaretypes_id` (`devicefirmwaretypes_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_items_devicefirmwares
 
@@ -9173,7 +9177,7 @@ CREATE TABLE `glpi_items_devicefirmwares` (
   KEY `serial` (`serial`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `otherserial` (`otherserial`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_devicefirmwaretypes`;
 CREATE TABLE `glpi_devicefirmwaretypes` (
@@ -9186,7 +9190,7 @@ CREATE TABLE `glpi_devicefirmwaretypes` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_devicefirmwaretypes` VALUES ('1','BIOS',NULL,NULL,NULL);
 INSERT INTO `glpi_devicefirmwaretypes` VALUES ('2','UEFI',NULL,NULL,NULL);
@@ -9209,7 +9213,7 @@ CREATE TABLE `glpi_datacenters` (
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
   KEY `is_deleted` (`is_deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_dcrooms`;
 CREATE TABLE `glpi_dcrooms` (
@@ -9230,7 +9234,7 @@ CREATE TABLE `glpi_dcrooms` (
   KEY `locations_id` (`locations_id`),
   KEY `datacenters_id` (`datacenters_id`),
   KEY `is_deleted` (`is_deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_rackmodels`;
 CREATE TABLE `glpi_rackmodels` (
@@ -9243,7 +9247,7 @@ CREATE TABLE `glpi_rackmodels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_racktypes`;
 CREATE TABLE `glpi_racktypes` (
@@ -9260,7 +9264,7 @@ CREATE TABLE `glpi_racktypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_racks`;
 CREATE TABLE `glpi_racks` (
@@ -9307,7 +9311,7 @@ CREATE TABLE `glpi_racks` (
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
   KEY `dcrooms_id` (`dcrooms_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_racks`;
 CREATE TABLE `glpi_items_racks` (
@@ -9323,7 +9327,7 @@ CREATE TABLE `glpi_items_racks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_enclosuremodels`;
 CREATE TABLE `glpi_enclosuremodels` (
@@ -9346,7 +9350,7 @@ CREATE TABLE `glpi_enclosuremodels` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_enclosures`;
 CREATE TABLE `glpi_enclosures` (
@@ -9381,7 +9385,7 @@ CREATE TABLE `glpi_enclosures` (
   KEY `is_deleted` (`is_deleted`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_enclosures`;
 CREATE TABLE `glpi_items_enclosures` (
@@ -9393,7 +9397,7 @@ CREATE TABLE `glpi_items_enclosures` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`),
   KEY `relation` (`enclosures_id`,`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdumodels`;
 CREATE TABLE `glpi_pdumodels` (
@@ -9416,7 +9420,7 @@ CREATE TABLE `glpi_pdumodels` (
   KEY `name` (`name`),
   KEY `is_rackable` (`is_rackable`),
   KEY `product_number` (`product_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdutypes`;
 CREATE TABLE `glpi_pdutypes` (
@@ -9433,7 +9437,7 @@ CREATE TABLE `glpi_pdutypes` (
   KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_pdus`;
@@ -9469,7 +9473,7 @@ CREATE TABLE `glpi_pdus` (
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `pdutypes_id` (`pdutypes_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_plugs`;
 CREATE TABLE `glpi_plugs` (
@@ -9482,7 +9486,7 @@ CREATE TABLE `glpi_plugs` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdus_plugs`;
 CREATE TABLE `glpi_pdus_plugs` (
@@ -9495,7 +9499,7 @@ CREATE TABLE `glpi_pdus_plugs` (
   PRIMARY KEY (`id`),
   KEY `plugs_id` (`plugs_id`),
   KEY `pdus_id` (`pdus_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_pdus_racks`;
 CREATE TABLE `glpi_pdus_racks` (
@@ -9510,5 +9514,5 @@ CREATE TABLE `glpi_pdus_racks` (
   PRIMARY KEY (`id`),
   KEY `racks_id` (`racks_id`),
   KEY `pdus_id` (`pdus_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- /Datacenters
