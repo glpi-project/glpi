@@ -76,7 +76,7 @@ function update92to93() {
          KEY `users_id_approval` (`users_id_approval`),
          KEY `status` (`status`),
          KEY `ticketfollowups_id` (`ticketfollowups_id`)
-         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_itilsolutions");
    }
 
@@ -227,7 +227,7 @@ function update92to93() {
                   KEY `is_recursive` (`is_recursive`),
                   KEY `locations_id` (`locations_id`),
                   KEY `is_deleted` (`is_deleted`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_datacenters");
    }
 
@@ -250,7 +250,7 @@ function update92to93() {
                   KEY `locations_id` (`locations_id`),
                   KEY `datacenters_id` (`datacenters_id`),
                   KEY `is_deleted` (`is_deleted`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_dcrooms");
    }
 
@@ -265,7 +265,7 @@ function update92to93() {
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `product_number` (`product_number`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_rackmodels");
    }
 
@@ -284,7 +284,7 @@ function update92to93() {
                   KEY `name` (`name`),
                   KEY `date_creation` (`date_creation`),
                   KEY `date_mod` (`date_mod`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_racktypes");
    }
 
@@ -333,7 +333,7 @@ function update92to93() {
                   KEY `is_template` (`is_template`),
                   KEY `is_deleted` (`is_deleted`),
                   KEY `dcrooms_id` (`dcrooms_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_racks");
    }
 
@@ -351,7 +351,7 @@ function update92to93() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
                   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_items_racks");
    }
 
@@ -445,7 +445,7 @@ function update92to93() {
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`),
                   KEY `product_number` (`product_number`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_enclosuremodels");
    }
 
@@ -482,7 +482,7 @@ function update92to93() {
                   KEY `is_deleted` (`is_deleted`),
                   KEY `states_id` (`states_id`),
                   KEY `manufacturers_id` (`manufacturers_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_enclosures");
    }
 
@@ -496,7 +496,7 @@ function update92to93() {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `item` (`itemtype`,`items_id`),
                   KEY `relation` (`enclosures_id`,`itemtype`,`items_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_items_enclosures");
    }
 
@@ -521,7 +521,7 @@ function update92to93() {
                   KEY `name` (`name`),
                   KEY `is_rackable` (`is_rackable`),
                   KEY `product_number` (`product_number`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 ad table glpi_pdumodels");
    }
    if ($DB->fieldExists('glpi_pdumodels', 'power_consumption')) {
@@ -547,7 +547,7 @@ function update92to93() {
                   KEY `name` (`name`),
                   KEY `date_creation` (`date_creation`),
                   KEY `date_mod` (`date_mod`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_pdutypes");
    }
 
@@ -584,7 +584,7 @@ function update92to93() {
                   KEY `states_id` (`states_id`),
                   KEY `manufacturers_id` (`manufacturers_id`),
                   KEY `pdutypes_id` (`pdutypes_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_pdus");
    }
 
@@ -599,7 +599,7 @@ function update92to93() {
                   KEY `name` (`name`),
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, '9.3 add table glpi_plugs');
    }
 
@@ -614,7 +614,7 @@ function update92to93() {
                   PRIMARY KEY (`id`),
                   KEY `plugs_id` (`plugs_id`),
                   KEY `pdus_id` (`pdus_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, '9.3 add table glpi_pdus_plugs');
    }
 
@@ -640,7 +640,7 @@ function update92to93() {
                   PRIMARY KEY (`id`),
                   KEY `racks_id` (`racks_id`),
                   KEY `pdus_id` (`pdus_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, '9.3 add table glpi_pdus_racks');
    }
 
@@ -692,6 +692,18 @@ function update92to93() {
       );
    }
    /** /Add address to locations */
+
+   /** Innodb */
+   foreach (['glpi_knowbaseitemtranslations', 'glpi_knowbaseitems'] as $table) {
+      foreach (['name', 'answer'] as $key) {
+         $migration->addKey(
+            $table,
+            $key,
+            $key,
+            'FULLTEXT'
+         );
+      }
+   }
 
    /** Migrate computerdisks to items_disks */
    if (!$DB->tableExists('glpi_items_disks') && $DB->tableExists('glpi_computerdisks')) {
