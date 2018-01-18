@@ -133,7 +133,6 @@ class PDU_Rack extends CommonDBRelation {
             }
          }
 
-
          if (in_array($side, [self::SIDE_LEFT, self::SIDE_RIGHT])
              && ($position > $rack->fields['number_units']
                  || $position + $required_units  > $rack->fields['number_units'] + 1)) {
