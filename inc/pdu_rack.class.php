@@ -175,7 +175,8 @@ class PDU_Rack extends CommonDBRelation {
       $model  = new PDUModel;
       $filled = array_fill(0, $rack->fields['number_units'], 0);
 
-      foreach (self::getForRackSide($rack, $side) as $current_pdu) {
+      $used = self::getForRackSide($rack, $side);
+      foreach ($used as $current_pdu) {
          $required_units = 1;
          $pdu->getFromDB($current_pdu['pdus_id']);
 
@@ -294,13 +295,14 @@ class PDU_Rack extends CommonDBRelation {
 
       $found_pdus = [];
       // find pdus from this relation
-      foreach ($DB->request([
+      $iterator = $DB->request([
          'FROM' => self::getTable(),
          'WHERE' => [
             'racks_id' => $rack->getID()
          ],
          'ORDER' => 'side'
-      ]) as $current) {
+      ]);
+      foreach ($iterator as $current) {
          $found_pdus[] = [
             'pdus_id'  => $current['pdus_id'],
             'racked'   => false,
@@ -310,13 +312,14 @@ class PDU_Rack extends CommonDBRelation {
          ];
       }
       // find pdus from item_rack relation
-      foreach ($DB->request([
+      $iterator = $DB->request([
          'FROM' => Item_Rack::getTable(),
          'WHERE' => [
             'racks_id' => $rack->getID(),
             'itemtype' => 'PDU'
          ]
-      ]) as $current) {
+      ]);
+      foreach ($iterator as $current) {
          $found_pdus[] = [
             'pdus_id'  => $current['items_id'],
             'racked'   => true,
