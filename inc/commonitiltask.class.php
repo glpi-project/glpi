@@ -552,7 +552,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -637,7 +637,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @since 0.85
    **/
-   static function getSearchOptionsToAddNew($itemtype = null) {
+   static function rawSearchOptionsToAdd($itemtype = null) {
       $task = new static();
       $tab = [];
 

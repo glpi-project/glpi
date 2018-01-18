@@ -64,9 +64,9 @@ class DevicePci extends CommonDevice {
                                      'type'  => 'dropdownValue']]);
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
 
-      $tab                 = parent::getSearchOptionsNew();
+      $tab                 = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '17',

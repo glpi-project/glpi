@@ -993,7 +993,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -1071,7 +1071,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   static function getSearchOptionsToAddNew() {
+   static function rawSearchOptionsToAdd() {
       $tab = [];
 
       $tab[] = [

@@ -117,7 +117,7 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   static public function getSearchOptionsToAddNew() {
+   static public function rawSearchOptionsToAdd() {
       $tab = [];
 
       $tab[] = [
@@ -221,8 +221,8 @@ class Location extends CommonTreeDropdown {
       return $tab;
    }
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '11',

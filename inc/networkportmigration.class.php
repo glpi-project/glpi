@@ -400,9 +400,9 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $DB;
-      $tab = parent::getSearchOptionsNew();
+      $tab = parent::rawSearchOptions();
 
       $optionIndex = 10;
       // From 10 to 14

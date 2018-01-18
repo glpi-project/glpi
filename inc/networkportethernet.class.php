@@ -175,7 +175,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

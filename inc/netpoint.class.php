@@ -61,10 +61,10 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab  = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab  = parent::rawSearchOptions();
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       foreach ($tab as &$t) {
          if ($t['id'] == 3) {

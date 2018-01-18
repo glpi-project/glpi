@@ -5726,7 +5726,7 @@ class Search {
 
             default :
                if ($item = getItemForItemtype($itemtype)) {
-                  self::$search[$itemtype] = $item->getSearchOptions();
+                  self::$search[$itemtype] = $item->searchOptions();
                }
                break;
          }

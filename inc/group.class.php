@@ -433,8 +433,8 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       if (AuthLdap::useAuthLdap()) {
          $tab[] = [

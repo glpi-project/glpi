@@ -142,7 +142,7 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

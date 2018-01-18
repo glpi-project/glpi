@@ -63,7 +63,7 @@ class Certificate extends CommonDBTM {
       $cert_item->deleteByCriteria(['certificates_id' => $this->fields['id']]);
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -102,7 +102,7 @@ class Certificate extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '7',
@@ -282,8 +282,8 @@ class Certificate extends CommonDBTM {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

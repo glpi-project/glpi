@@ -106,8 +106,8 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       foreach (static::getSpecificities() as $field => $attributs) {
          switch ($field) {

@@ -129,7 +129,7 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -186,7 +186,7 @@ class ReservationItem extends CommonDBChild {
          'additionalfields'   => ['is_active']
       ];
 
-      $loc = Location::getSearchOptionsToAddNew();
+      $loc = Location::rawSearchOptionsToAdd();
       // Force massive actions to false
       foreach ($loc as &$val) {
          $val['massiveaction'] = false;

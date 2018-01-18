@@ -358,7 +358,7 @@ class Contract extends CommonDBTM {
    }
 
 
-   static function getSearchOptionsToAddNew() {
+   static function rawSearchOptionsToAdd() {
       $tab = [];
 
       $joinparams = [
@@ -645,7 +645,7 @@ class Contract extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -909,9 +909,9 @@ class Contract extends CommonDBTM {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => 'cost',

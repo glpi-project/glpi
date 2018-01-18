@@ -402,7 +402,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -459,15 +459,15 @@ class Change extends CommonITILObject {
          'datatype'           => 'text'
       ];
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-      $tab = array_merge($tab, ChangeValidation::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ChangeValidation::rawSearchOptionsToAdd());
 
-      $tab = array_merge($tab, ChangeTask::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ChangeTask::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
-      $tab = array_merge($tab, ChangeCost::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ChangeCost::rawSearchOptionsToAdd());
 
       return $tab;
    }

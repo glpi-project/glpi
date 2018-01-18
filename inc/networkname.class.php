@@ -160,8 +160,8 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '12',
@@ -210,7 +210,7 @@ class NetworkName extends FQDNLabel {
     * @param $tab          array   the array to fill
     * @param $joinparams   array
    **/
-   static function getSearchOptionsToAddNew(array &$tab, array $joinparams) {
+   static function rawSearchOptionsToAdd(array &$tab, array $joinparams) {
       $tab[] = [
          'id'                 => '126',
          'table'              => 'glpi_ipaddresses',

@@ -181,7 +181,7 @@ class Computer_SoftwareLicense extends DbTestCase {
       $this->Login();
 
       $cSoftwareLicense = new \Computer_SoftwareLicense();
-      $this->array($cSoftwareLicense->getSearchOptionsNew())
+      $this->array($cSoftwareLicense->rawSearchOptions())
          ->hasSize(4);
    }
 }

@@ -115,7 +115,7 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   static public function getSearchOptionsToAddNew() {
+   static public function rawSearchOptionsToAdd() {
       $tab = [];
 
       $tab[] = [

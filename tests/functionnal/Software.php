@@ -412,11 +412,11 @@ class Software extends DbTestCase {
 
    public function testGetSearchOptionsNew() {
       $software = new \Software();
-      $result   = $software->getSearchOptionsNew();
+      $result   = $software->rawSearchOptions();
       $this->array($result)->hasSize(39);
 
       $this->Login();
-      $result   = $software->getSearchOptionsNew();
+      $result   = $software->rawSearchOptions();
       $this->array($result)->hasSize(48);
    }
 }

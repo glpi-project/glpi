@@ -407,7 +407,7 @@ class Item_OperatingSystem extends CommonDBRelation {
       }
    }
 
-   public static function getSearchOptionsToAddNew($itemtype) {
+   public static function rawSearchOptionsToAdd($itemtype) {
       $tab = [];
       $tab[] = [
           'id'                => 'operatingsystem',

@@ -126,7 +126,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

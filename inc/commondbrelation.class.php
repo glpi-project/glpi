@@ -268,7 +268,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return array of search option
    **/
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

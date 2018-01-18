@@ -408,7 +408,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab = array_merge($tab, $this->getSearchOptionsMain());
@@ -494,15 +494,15 @@ class Problem extends CommonITILObject {
          'datatype'           => 'text'
       ];
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-      $tab = array_merge($tab, ProblemTask::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ProblemTask::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
       $tab = array_merge($tab, $this->getSearchOptionsStats());
 
-      $tab = array_merge($tab, ProblemCost::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ProblemCost::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => 'ticket',

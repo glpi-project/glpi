@@ -193,7 +193,7 @@ class PDU extends CommonDBTM {
       return true;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -237,7 +237,7 @@ class PDU extends CommonDBTM {
          'datatype'           => 'string'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '19',

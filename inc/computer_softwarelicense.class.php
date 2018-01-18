@@ -63,7 +63,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

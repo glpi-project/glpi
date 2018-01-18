@@ -233,7 +233,7 @@ class Search extends DbTestCase {
          $displaypref->delete($line, true);
       }
 
-      $itemtypeslist = $this->getClasses('getSearchOptions');
+      $itemtypeslist = $this->getClasses('searchOptions');
       foreach ($itemtypeslist as $itemtype) {
          $number = 0;
          if (!file_exists('front/'.strtolower($itemtype).'.php')
@@ -252,10 +252,10 @@ class Search extends DbTestCase {
          }
          $item = getItemForItemtype($itemtype);
 
-         //load all options; so getSearchOptionsToAdd to be tested
+         //load all options; so rawSearchOptionsToAdd to be tested
          $options = \Search::getCleanedOptions($itemtype);
          //but reload only items one because of mysql join limit
-         $options = $item->getSearchOptions();
+         $options = $item->searchOptions();
          $compare_options = [];
          foreach ($options as $key => $value) {
             if (is_array($value) && count($value) == 1) {
@@ -331,7 +331,7 @@ class Search extends DbTestCase {
          $metaList = \Search::getMetaItemtypeAvailable($itemtype);
          foreach ($metaList as $metaitemtype) {
             $item = getItemForItemtype($metaitemtype);
-            foreach ($item->getSearchOptions() as $key=>$data) {
+            foreach ($item->searchOptions() as $key=>$data) {
                if (is_int($key)) {
                   if (isset($data['datatype']) && $data['datatype'] == 'bool') {
                      $metacriteria[] = [
@@ -471,7 +471,7 @@ class Search extends DbTestCase {
    }
 
    /**
-    * Test that getSearchOptions throws an exception when it finds a duplicate
+    * Test that searchOptions throws an exception when it finds a duplicate
     *
     * @return void
     */
@@ -481,7 +481,7 @@ class Search extends DbTestCase {
       $this->exception(
          function () {
             $item = new DupSearchOpt();
-            $item->getSearchOptions();
+            $item->searchOptions();
          }
       )
          ->isInstanceOf('\RuntimeException')
@@ -816,7 +816,7 @@ class Search extends DbTestCase {
 }
 
 class DupSearchOpt extends \CommonDBTM {
-   public function getSearchOptionsNew() {
+   public function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

@@ -198,7 +198,7 @@ class RuleCriteria extends DbTestCase {
 
    public function testGetSearchOptionsNew() {
       $criteria = new \RuleCriteria();
-      $this->array($criteria->getSearchOptionsNew())->hasSize(3);
+      $this->array($criteria->rawSearchOptions())->hasSize(3);
    }
 
    public function testGetRuleCriterias() {

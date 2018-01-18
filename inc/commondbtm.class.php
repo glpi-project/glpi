@@ -3306,20 +3306,26 @@ class CommonDBTM extends CommonGLPI {
       return $this->getName($options);
    }
 
-
    /**
     * Get the Search options for the given Type
-    *
-    * This should be overloaded in Class
+    * If you want to work on search options, @see CommonDBTM::rawSearchOptions
     *
     * @return array an *indexed* array of search options
     *
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
-   function getSearchOptions() {
+   public final function searchOptions() {
       $options = [];
 
-      foreach ($this->getSearchOptionsNew() as $opt) {
+      if (method_exists(get_class(), 'getSearchOptions')) {
+         if (defined('TU_USER')) {
+            throw new \RuntimeException('getSearchOptions must not be used!');
+         }
+         Toolbox::deprecated('getSearchOptions should not be used. Check the docs.');
+         $options = $this->getSearchOptions();
+      }
+
+      foreach ($this->rawSearchOptions() as $opt) {
          if (!isset($opt['id'])) {
             throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
          }
@@ -3345,6 +3351,7 @@ class CommonDBTM extends CommonGLPI {
     * Get the Search options for the given Type
     *
     * @since 9.2
+    * @deprecated 9.3
     *
     * This should be overloaded in Class
     *
@@ -3353,6 +3360,23 @@ class CommonDBTM extends CommonGLPI {
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
    **/
    function getSearchOptionsNew() {
+      Toolbox::deprecated('Use rawSearchOptions instead');
+      return $this->rawSearchOptions();
+   }
+
+   /**
+    * Provides search options configuration. Do not rely directly
+    * on this, @see CommonDBTM::searchOptions instead.
+    *
+    * @since 9.3
+    *
+    * This should be overloaded in Class
+    *
+    * @return array a *not indexed* array of search options
+    *
+    * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
+   **/
+   public function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -3378,7 +3402,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }
@@ -3395,16 +3419,20 @@ class CommonDBTM extends CommonGLPI {
       $options = [];
 
       $classname = get_called_class();
-      if (!method_exists($classname, 'getSearchOptionsToAddNew')) {
+      $method_name = 'rawSearchOptionsToAdd';
+      if (method_exists($classname, 'getSearchOptionsToAddNew')) {
+         Toolbox::logDebug('getSearchOptionsToAddNew must be replaced with rawSearchOptionsToAdd');
+         $method_name = 'getSearchOptionsToAddNew';
+      } else if (!method_exists($classname, $method_name)) {
          return $options;
       }
 
       if (defined('TU_USER') && $itemtype != null) {
          $item = new $itemtype;
-         $all_options = $item->getSearchOptions();
+         $all_options = $item->searchOptions();
       }
 
-      foreach ($classname::getSearchOptionsToAddNew($itemtype) as $opt) {
+      foreach ($classname::$method_name($itemtype) as $opt) {
          if (!isset($opt['id'])) {
             throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
          }
@@ -3551,7 +3579,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getSearchOptionByField($field, $value, $table = '') {
 
-      foreach ($this->getSearchOptions() as $id => $searchOption) {
+      foreach ($this->searchOptions() as $id => $searchOption) {
          if ((isset($searchOption['linkfield']) && ($searchOption['linkfield'] == $value))
              || (isset($searchOption[$field]) && ($searchOption[$field] == $value))) {
             if (($table == '')
@@ -4077,7 +4105,7 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($field_id_or_search_options)) {
          $searchoptions = $field_id_or_search_options;
       } else {
-         $searchopt = $this->getSearchOptions();
+         $searchopt = $this->searchOptions();
 
          // Get if id of search option is passed
          if (is_numeric($field_id_or_search_options)) {
@@ -4304,7 +4332,7 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($field_id_or_search_options)) {
          $searchoptions = $field_id_or_search_options;
       } else {
-         $searchopt = $this->getSearchOptions();
+         $searchopt = $this->searchOptions();
 
          // Get if id of search option is passed
          if (is_numeric($field_id_or_search_options)) {

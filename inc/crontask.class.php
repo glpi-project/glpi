@@ -1306,7 +1306,7 @@ class CronTask extends CommonDBTM{
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

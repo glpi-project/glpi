@@ -685,7 +685,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -782,7 +782,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

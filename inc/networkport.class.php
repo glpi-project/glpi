@@ -913,7 +913,7 @@ class NetworkPort extends CommonDBChild {
    /**
     * @param $itemtype
    **/
-   static function getSearchOptionsToAddNew($itemtype = null) {
+   static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
 
       $tab[] = [
@@ -950,7 +950,7 @@ class NetworkPort extends CommonDBChild {
                                'condition'         => 'AND NEWTABLE.`is_deleted` = 0',
                                'beforejoin'        => ['table'      => 'glpi_networkports',
                                                             'joinparams' => $joinparams]];
-      NetworkName::getSearchOptionsToAddNew($tab, $networkNameJoin, $itemtype);
+      NetworkName::rawSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
 
       $instantjoin = ['jointype'   => 'child',
                            'beforejoin' => ['table'      => 'glpi_networkports',
@@ -995,7 +995,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

@@ -458,7 +458,7 @@ class Entity extends CommonTreeDropdown {
       $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -600,9 +600,9 @@ class Entity extends CommonTreeDropdown {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => 'advanced',
