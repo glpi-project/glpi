@@ -147,7 +147,7 @@ class RuleTicket extends DbTestCase {
       $ticket->getFromDB($tickets_id);
       $ticket_user = new \Ticket_User;
       $actors = $ticket_user->getActors($tickets_id);
-      $this->integer((int)$actors[2][0]['users_id'])->isEqualTo($users_id);
+      $this->integer((int)$actors[2][1]['users_id'])->isEqualTo($users_id);
       $this->integer((int)$ticket->getField('urgency'))->isEqualTo(5);
    }
 

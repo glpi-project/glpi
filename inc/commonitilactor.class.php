@@ -91,7 +91,8 @@ abstract class CommonITILActor extends CommonDBRelation {
       $users = [];
       $iterator = $DB->request([
          'FROM'   => $this->getTable(),
-         'WHERE'  => [static::getItilObjectForeignKey() => $items_id]
+         'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
+         'ORDER'  => 'id ASC'
       ]);
       while ($data = $iterator->next()) {
          $users[$data['type']][] = $data;
