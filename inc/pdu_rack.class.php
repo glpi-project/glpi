@@ -57,6 +57,144 @@ class PDU_Rack extends CommonDBRelation {
       $this->fields['bgcolor'] = '#FF9D1F';
    }
 
+   function prepareInputForAdd($input) {
+      return $this->prepareInput($input);
+   }
+
+   function prepareInputForUpdate($input) {
+      return $this->prepareInput($input);
+   }
+
+   /**
+    * Prepares and check validity of input (for update and add) and
+    *
+    * @param array $input Input data
+    *
+    * @return array
+    */
+   private function prepareInput($input) {
+      $error_detected = [];
+
+      $pdus_id  = $this->fields['pdus_id'];
+      $racks_id = $this->fields['racks_id'];
+      $position = $this->fields['position'];
+      $side     = $this->fields['side'];
+
+      Toolbox::logDebug($input);
+
+      //check for requirements
+      if ($this->isNewItem()) {
+         if (!isset($input['pdus_id'])) {
+            $error_detected[] = __('A pdu is required');
+         }
+
+         if (!isset($input['racks_id'])) {
+            $error_detected[] = __('A rack is required');
+         }
+
+         if (!isset($input['position'])) {
+            $error_detected[] = __('A position is required');
+         }
+
+         if (!isset($input['side'])) {
+            $error_detected[] = __('A side is required');
+         }
+      }
+
+      if (isset($input['pdus_id'])) {
+         $pdus_id = $input['pdus_id'];
+      }
+      if (isset($input['racks_id'])) {
+         $racks_id = $input['racks_id'];
+      }
+      if (isset($input['position'])) {
+         $position = $input['position'];
+      }
+      if (isset($input['side'])) {
+         $side = $input['side'];
+      }
+
+      if (!count($error_detected)) {
+         //check if required U are available at position
+         $required_units = 1;
+
+         $rack = new Rack;
+         $rack->getFromDB($racks_id);
+
+         $pdu = new PDU;
+         $pdu->getFromDB($pdus_id);
+
+         $filled = self::getFilled($rack, $side);
+
+         $model = new PDUModel;
+         if ($model->getFromDB($pdu->fields['pdumodels_id'])) {
+            if ($model->fields['required_units'] > 1) {
+               $required_units = $model->fields['required_units'];
+            }
+         }
+
+
+         if (in_array($side, [self::SIDE_LEFT, self::SIDE_RIGHT])
+             && ($position > $rack->fields['number_units']
+                 || $position + $required_units  > $rack->fields['number_units'] + 1)) {
+            $error_detected[] = __('Item is out of rack bounds');
+         } else {
+            for ($i = 0; $i < $required_units; $i++) {
+               if ($filled[$position + $i] > 0
+                   && $filled[$position + $i] != $pdus_id) {
+                  $error_detected[] = __('Not enough space available to place item');
+                  break;
+               }
+            }
+         }
+      }
+
+      if (count($error_detected)) {
+         foreach ($error_detected as $error) {
+            Session::addMessageAfterRedirect(
+               $error,
+               true,
+               ERROR
+            );
+         }
+         return false;
+      }
+
+      return $input;
+
+   }
+
+   /**
+    * Get already filled places
+    * @param  Rack    $rack The current rack
+    * @param  integer $side The side of rack to check
+    * @return Array   [position -> racks_id | 0]
+    */
+   static function getFilled(Rack $rack, $side = 0) {
+      $pdu    = new PDU;
+      $model  = new PDUModel;
+      $filled = array_fill(0, $rack->fields['number_units'], 0);
+
+      foreach (self::getForRackSide($rack, $side) as $current_pdu) {
+         $required_units = 1;
+         $pdu->getFromDB($current_pdu['pdus_id']);
+
+         if (in_array($side, [self::SIDE_LEFT, self::SIDE_RIGHT])
+             && $model->getFromDB($pdu->fields['pdumodels_id'])) {
+            if ($model->fields['required_units'] > 1) {
+               $required_units = $model->fields['required_units'];
+            }
+         }
+
+         for ($i = 0; $i <= $required_units; $i++) {
+            $position = $current_pdu['position'] + $i;
+            $filled[$position] = $current_pdu['pdus_id'];
+         }
+      }
+
+      return $filled;
+   }
+
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
