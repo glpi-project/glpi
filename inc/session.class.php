@@ -114,7 +114,12 @@ class Session {
                $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                $_SESSION["glpiusers_idisation"] = true;
                $_SESSION["glpiextauth"]         = $auth->extauth;
-               $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
+               if (isset($_SESSION['phpCAS']['user'])) {
+                  $_SESSION["glpiauthtype"]     = Auth::CAS;
+                  $_SESSION["glpiextauth"]      = 0;
+               } else {
+                  $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
+               }
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
