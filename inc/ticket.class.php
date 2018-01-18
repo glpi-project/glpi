@@ -2641,7 +2641,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
       $tab = [];
 
@@ -2945,7 +2945,7 @@ class Ticket extends CommonITILObject {
          'forcegroupby'       => true
       ];
 
-      $validation_options = TicketValidation::getSearchOptionsToAddNew();
+      $validation_options = TicketValidation::rawSearchOptionsToAdd();
       if (!Session::haveRightsOr(
          'ticketvalidation',
          [
@@ -3142,7 +3142,7 @@ class Ticket extends CommonITILObject {
          ]
       ];
 
-      $tab = array_merge($tab, TicketTask::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, TicketTask::rawSearchOptionsToAdd());
 
       $tab = array_merge($tab, $this->getSearchOptionsStats());
 
@@ -3300,7 +3300,7 @@ class Ticket extends CommonITILObject {
          $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
          if (Session::haveRight('ticketcost', READ)) {
-            $tab = array_merge($tab, TicketCost::getSearchOptionsToAddNew());
+            $tab = array_merge($tab, TicketCost::rawSearchOptionsToAdd());
          }
 
          $tab[] = [

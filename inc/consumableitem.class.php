@@ -222,7 +222,7 @@ class ConsumableItem extends CommonDBTM {
       return $actions;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -315,7 +315,7 @@ class ConsumableItem extends CommonDBTM {
          ]
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '24',
@@ -366,9 +366,9 @@ class ConsumableItem extends CommonDBTM {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

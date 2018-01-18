@@ -317,7 +317,7 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -432,7 +432,7 @@ class RSSFeed extends CommonDBVisible {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

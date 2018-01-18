@@ -55,8 +55,8 @@ class DeviceSensor extends CommonDevice {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab                 = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab                 = parent::rawSearchOptions();
 
       $tab[] = ['id'       => '12',
                 'table'    => 'glpi_devicesensortypes',

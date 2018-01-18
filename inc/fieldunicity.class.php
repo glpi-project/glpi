@@ -298,7 +298,7 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

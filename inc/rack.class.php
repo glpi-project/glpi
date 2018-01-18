@@ -331,7 +331,7 @@ class Rack extends CommonDBTM {
       return true;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -359,7 +359,7 @@ class Rack extends CommonDBTM {
          'datatype'           => 'number'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '4',
@@ -480,7 +480,7 @@ class Rack extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

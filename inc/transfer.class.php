@@ -71,7 +71,7 @@ class Transfer extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

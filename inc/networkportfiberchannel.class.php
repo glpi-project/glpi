@@ -175,7 +175,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    // TODO why this? you don't have search engine for this object
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

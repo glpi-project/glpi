@@ -79,7 +79,7 @@ class AuthMail extends CommonDBTM {
       return $ong;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

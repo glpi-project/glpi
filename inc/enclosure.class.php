@@ -186,7 +186,7 @@ class Enclosure extends CommonDBTM {
       return true;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -214,7 +214,7 @@ class Enclosure extends CommonDBTM {
          'datatype'           => 'number'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '40',
@@ -311,7 +311,7 @@ class Enclosure extends CommonDBTM {
          'datatype'           => 'dropdown'
       ];
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

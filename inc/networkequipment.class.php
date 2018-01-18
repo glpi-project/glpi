@@ -427,7 +427,7 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -453,7 +453,7 @@ class NetworkEquipment extends CommonDBTM {
          'datatype'           => 'number'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '4',
@@ -646,12 +646,12 @@ class NetworkEquipment extends CommonDBTM {
       ];
 
       // add operating system search options
-      $tab = array_merge($tab, Item_OperatingSystem::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

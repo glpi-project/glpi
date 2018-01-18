@@ -62,8 +62,8 @@ class TaskCategory extends CommonTreeDropdown {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '8',

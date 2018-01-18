@@ -741,7 +741,7 @@ class Document extends CommonDBTM {
    }
 
 
-   static function getSearchOptionsToAddNew($itemtype = null) {
+   static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
 
       $tab[] = [
@@ -783,7 +783,7 @@ class Document extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -922,9 +922,9 @@ class Document extends CommonDBTM {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

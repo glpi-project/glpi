@@ -449,7 +449,7 @@ class Software extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       // Only use for History (not by search Engine)
       $tab = [];
 
@@ -476,7 +476,7 @@ class Software extends CommonDBTM {
          'datatype'           => 'number'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '16',
@@ -575,7 +575,7 @@ class Software extends CommonDBTM {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, SoftwareLicense::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, SoftwareLicense::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '80',
@@ -688,9 +688,9 @@ class Software extends CommonDBTM {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

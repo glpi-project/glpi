@@ -711,7 +711,7 @@ class ProjectTask extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -904,7 +904,7 @@ class ProjectTask extends CommonDBChild {
          'datatype'           => 'bool'
       ];
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }

@@ -587,7 +587,7 @@ class Computer extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $CFG_GLPI;
 
       $tab = [];
@@ -615,7 +615,7 @@ class Computer extends CommonDBTM {
          'datatype'           => 'number'
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '4',
@@ -787,12 +787,12 @@ class Computer extends CommonDBTM {
       ];
 
       // add operating system search options
-      $tab = array_merge($tab, Item_OperatingSystem::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       $tab[] = [
           'id'                => 'periph',
@@ -1230,7 +1230,7 @@ class Computer extends CommonDBTM {
          ]
       ];
 
-      $tab = array_merge($tab, ComputerAntivirus::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ComputerAntivirus::rawSearchOptionsToAdd());
 
       return $tab;
    }

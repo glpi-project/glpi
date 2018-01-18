@@ -1305,7 +1305,7 @@ class Infocom extends CommonDBChild {
    /**
     * @param $itemtype
    **/
-   static function getSearchOptionsToAddNew($itemtype = null) {
+   static function rawSearchOptionsToAdd($itemtype = null) {
       $specific_itemtype = '';
       $beforejoin        = [];
 
@@ -1611,7 +1611,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

@@ -74,8 +74,8 @@ class BlacklistedMailContent extends CommonDropdown {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'                 => '11',

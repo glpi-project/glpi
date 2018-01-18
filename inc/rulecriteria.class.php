@@ -148,7 +148,7 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

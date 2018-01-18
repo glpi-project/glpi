@@ -85,7 +85,7 @@ abstract class CommonITILCost extends CommonDBChild {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -189,7 +189,7 @@ abstract class CommonITILCost extends CommonDBChild {
    }
 
 
-   static function getSearchOptionsToAddNew() {
+   static function rawSearchOptionsToAdd() {
       $tab = [];
 
       $tab[] = [

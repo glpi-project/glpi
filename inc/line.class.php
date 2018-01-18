@@ -176,10 +176,10 @@ class Line extends CommonDropdown {
    }
 
 
-   function getSearchOptionsNew() {
-      $tab = parent::getSearchOptionsNew();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
             'id'                 => '31',

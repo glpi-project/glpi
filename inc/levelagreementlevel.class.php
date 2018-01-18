@@ -78,7 +78,7 @@ abstract class LevelAgreementLevel extends RuleTicket {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

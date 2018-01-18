@@ -178,7 +178,7 @@ class Notepad extends CommonDBChild {
    }
 
 
-   static public function getSearchOptionsToAddNew() {
+   static public function rawSearchOptionsToAdd() {
       $tab = [];
 
       $tab[] = [

@@ -23,6 +23,10 @@ The following methods have been deprecated:
 - `Search::constructDatas`
 - `Search::displayDatas`
 - `DBMysql::list_tables`
+- `Search::getSearchOptions`
+- `Search::getSearchOptionsNew`
+- `Search::getSearchOptionsToAdd`
+- `Search::getSearchOptionsToAddNew`
 
 #### Removed
 

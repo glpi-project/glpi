@@ -1218,7 +1218,7 @@ class Item_Ticket extends CommonDBRelation{
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

@@ -523,7 +523,7 @@ class ObjectLock extends CommonDBTM {
    }
 
 
-   static public function getSearchOptionsToAddNew($itemtype) {
+   static public function rawSearchOptionsToAdd($itemtype) {
       global $CFG_GLPI;
       $tab = [];
 

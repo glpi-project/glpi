@@ -462,7 +462,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       global $DB;
       $tab = [];
 
@@ -550,7 +550,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

@@ -194,7 +194,7 @@ class Link extends CommonDBTM {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
@@ -587,7 +587,7 @@ class Link extends CommonDBTM {
       return $computedlinks;
    }
 
-   static function getSearchOptionsToAddNew($itemtype = null) {
+   static function rawSearchOptionsToAdd($itemtype = null) {
       $tab = [];
 
       $newtab = [

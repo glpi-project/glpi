@@ -858,7 +858,7 @@ class Profile_User extends CommonDBRelation {
    }
 
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [

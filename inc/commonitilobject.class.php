@@ -2948,7 +2948,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[] = $newtab;
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
       return $tab;
    }

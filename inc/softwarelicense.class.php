@@ -484,7 +484,7 @@ class SoftwareLicense extends CommonTreeDropdown {
       return $actions;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       // Only use for History (not by search Engine)
@@ -513,7 +513,7 @@ class SoftwareLicense extends CommonTreeDropdown {
          'forcegroupby'       => true
       ];
 
-      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
       $tab[] = [
          'id'                 => '11',
@@ -682,14 +682,14 @@ class SoftwareLicense extends CommonTreeDropdown {
       ];
 
       // add objectlock search options
-      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
-      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
+      $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+      $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
       return $tab;
    }
 
 
-   static public function getSearchOptionsToAddNew() {
+   static public function rawSearchOptionsToAdd() {
       $tab = [];
 
       if (!self::canView()) {

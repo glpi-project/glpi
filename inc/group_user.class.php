@@ -596,7 +596,7 @@ class Group_User extends CommonDBRelation{
     *
     * @return array of search option
    **/
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
       $tab = [];
 
       $tab[] = [
