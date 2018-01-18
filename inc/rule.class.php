@@ -2257,6 +2257,7 @@ class Rule extends CommonDBTM {
               || in_array($condition, [self::PATTERN_IS, self::PATTERN_IS_NOT,
                                             self::PATTERN_NOT_UNDER, self::PATTERN_UNDER]))) {
 
+         $tested = true;
          switch ($crit['type']) {
             case "yesonly" :
                Dropdown::showYesNo($name, $crit['table'], 0);
@@ -2319,8 +2320,11 @@ class Rule extends CommonDBTM {
                Ticket::dropdownType($name, ['value' => $value]);
                $display = true;
                break;
+
+            default:
+               $tested = false;
+               break;
          }
-         $tested = true;
       }
       //Not a standard condition
       if (!$tested) {
