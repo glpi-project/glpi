@@ -197,6 +197,14 @@ class Central extends CommonGLPI {
          $warnings[] = __('SQL replica: read only');
       }
 
+      $myisam_tables = $DB->getMyIsamTables();
+      if (count($myisam_tables)) {
+         $warnings[] = sprintf(
+            __('%1$s tables not migrated to InnoDB engine.'),
+            count($myisam_tables)
+         );
+      }
+
       if (count($warnings)) {
          echo "<tr><th colspan='2'>";
          echo "<div class='warning'>";
