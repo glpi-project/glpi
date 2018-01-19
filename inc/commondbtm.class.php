@@ -44,6 +44,14 @@ if (!defined('GLPI_ROOT')) {
 **/
 class CommonDBTM extends CommonGLPI {
 
+   /**
+    * Database instance
+    *
+    * @Inject
+    * @var DB
+    */
+   protected $DB;
+
    /// Data of the Item
    public $fields                              = [];
    /// Make an history of the changes

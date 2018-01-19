@@ -171,13 +171,10 @@ class DBConnection extends CommonDBTM {
    /**
     * Switch database connection to slave
    **/
-   static function switchToSlave() {
-      global $DB;
-
-      if (self::isDBSlaveActive()) {
-         include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
-         $DB = new DBSlave();
-         return $DB->connected;
+   public function switchToSlave() {
+      if ($this->isDBSlaveActive()) {
+         $this->DB = $this->getDBSlaveConf();
+         return $this->DB->connected;
       }
       return false;
    }
@@ -186,11 +183,9 @@ class DBConnection extends CommonDBTM {
    /**
     * Switch database connection to master
    **/
-   static function switchToMaster() {
-      global $DB;
-
-      $DB = new DB();
-      return $DB->connected;
+   public function switchToMaster() {
+      $this->DB = new DB();
+      return $this->DB->connected;
    }
 
 
@@ -256,20 +251,18 @@ class DBConnection extends CommonDBTM {
    /**
     *  Establish a connection to a mysql server (main or replicate)
     *
-    * @param $use_slave    try to connect to slave server first not to main server
-    * @param $required     connection to the specified server is required
-    *                      (if connection failed, do not try to connect to the other server)
-    * @param $display      display error message (true by default)
+    * @param boolean $use_slave try to connect to slave server first not to main server
+    * @param boolean $required  connection to the specified server is required
+    *                           (if connection failed, do not try to connect to the other server)
+    * @param boolea $display    display error message (true by default)
    **/
-   static function establishDBConnection($use_slave, $required, $display = true) {
-      global $DB;
-
-      $DB  = null;
+   public final function establishDBConnection($use_slave, $required, $display = true) {
+      $this->sDB  = null;
       $res = false;
 
       // First standard config : no use slave : try to connect to master
       if (!$use_slave) {
-         $res = self::switchToMaster();
+         $res = $this->switchToMaster();
       }
 
       // If not already connected to master due to config or error
@@ -280,25 +273,25 @@ class DBConnection extends CommonDBTM {
             // Slave wanted but not defined -> use master
             // Ignore $required when no slave configured
             if ($use_slave) {
-               $res = self::switchToMaster();
+               $res = $this->switchToMaster();
             }
 
          } else { // Slave DB configured
             // Try to connect to slave if wanted
             if ($use_slave) {
-               $res = self::switchToSlave();
+               $res = $this->switchToSlave();
             }
 
             // No connection to 'mandatory' server
             if (!$res && !$required) {
                //Try to establish the connection to the other mysql server
                if ($use_slave) {
-                  $res = self::switchToMaster();
+                  $res = $this->switchToMaster();
                } else {
-                  $res = self::switchToSlave();
+                  $res = $this->switchToSlave();
                }
                if ($res) {
-                  $DB->first_connection = false;
+                  $this->DB->first_connection = false;
                }
             }
          }
@@ -489,4 +482,10 @@ class DBConnection extends CommonDBTM {
       $cron->update($input);
    }
 
+   /**
+    * Get DB instance
+    */
+   public function getDb() {
+      return $this->DB;
+   }
 }
