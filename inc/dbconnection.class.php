@@ -254,7 +254,7 @@ class DBConnection extends CommonDBTM {
     * @param boolean $use_slave try to connect to slave server first not to main server
     * @param boolean $required  connection to the specified server is required
     *                           (if connection failed, do not try to connect to the other server)
-    * @param boolea $display    display error message (true by default)
+    * @param boolean $display    display error message (true by default)
    **/
    public final function establishDBConnection($use_slave, $required, $display = true) {
       $this->sDB  = null;

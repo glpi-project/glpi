@@ -1095,6 +1095,7 @@ abstract class APIBaseClass extends atoum {
     * @tags    api
     */
    public function testProtectedConfigSettings() {
+      global $container;
       $sensitiveSettings = [
             'proxy_passwd',
             'smtp_passwd',
@@ -1102,8 +1103,8 @@ abstract class APIBaseClass extends atoum {
 
       // set a non empty value to the sessionts to check
       foreach ($sensitiveSettings as $name) {
-         Config::setConfigurationValues('core', [$name => 'not_empty_password']);
-         $config = new Config();
+         $config = $container->get('Config');
+         $config->setConfigurationValues('core', [$name => 'not_empty_password']);
          $value = $config->getValues('core', [$name]);
          $this->array($value)->hasKey($name);
          $this->string($value[$name])->isNotEmpty();
