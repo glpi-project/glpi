@@ -1978,7 +1978,7 @@ class Config extends CommonDBTM {
                  'version' => phpCAS::getVersion() ,
                  'check'   => 'phpCAS' ],
                [ 'name'    => 'PHPMailer',
-                 'version' => $pm->Version ,
+                 'version' => $pm::VERSION,
                  'check'   => 'PHPMailer' ],
                [ 'name'    => 'SimplePie',
                  'version' => SIMPLEPIE_VERSION,
