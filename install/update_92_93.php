@@ -37,7 +37,6 @@
 **/
 function update92to93() {
    global $DB, $migration, $CFG_GLPI, $container;
-   $dbutils = new DbUtils();
 
    $config = $container->get('Config');
    $current_config   = $config->getValues('core');
