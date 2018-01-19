@@ -1103,7 +1103,8 @@ abstract class APIBaseClass extends atoum {
       // set a non empty value to the sessionts to check
       foreach ($sensitiveSettings as $name) {
          Config::setConfigurationValues('core', [$name => 'not_empty_password']);
-         $value = Config::getConfigurationValues('core', [$name]);
+         $config = new Config();
+         $value = $config->getValues('core', [$name]);
          $this->array($value)->hasKey($name);
          $this->string($value[$name])->isNotEmpty();
       }

@@ -335,17 +335,18 @@ class Config extends DbTestCase {
       $this->array($report)->isIdenticalTo($expected);
    }
 
-   public function testGetConfigurationValues() {
-      $conf = \Config::getConfigurationValues('core');
-      $this->array($conf)
-         ->hasKeys(['version', 'dbversion'])
-         ->size->isGreaterThan(170);
-
-      $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
-      $this->array($conf)->isIdenticalTo([
-         'dbversion' => GLPI_SCHEMA_VERSION,
-         'version'   => GLPI_VERSION
-      ]);
+   public function testGetValues() {
+      $this
+         ->if($this->newTestedInstance)
+         ->then
+            ->array($this->testedInstance->getValues('core'))
+               ->hasKeys(['version', 'dbversion'])
+               ->size->isGreaterThan(170)
+            ->array($this->testedInstance->getValues('core', ['version', 'dbversion']))
+               ->isIdenticalTo([
+                  'dbversion' => GLPI_SCHEMA_VERSION,
+                  'version'   => GLPI_VERSION;
+               ])
    }
 
    public function testSetConfigurationValues() {

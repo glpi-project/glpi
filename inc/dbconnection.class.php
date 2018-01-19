@@ -301,6 +301,11 @@ class DBConnection extends CommonDBTM {
       if (!$res && $display) {
          self::displayMySQLError();
       }
+
+      //kept here for globals to work
+      global $DB;
+      $DB = $this->getDb();
+
       return $res;
    }
 

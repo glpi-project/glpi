@@ -74,16 +74,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $builder = new ContainerBuilder();
    $builder->useAnnotations(true);
    $builder->addDefinitions(__DIR__ . '/di_define.php');
-   if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+   global $container;
+   /*if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE || defined('TU_USER')) {
       $container = $builder->buildDevContainer();
    } else {
       $container = $builder->build();
-   }
+   }*/
    $container = $builder->build();
-
-   //kept here for globals to wok
-   $DB = $container->get('DB');
-
 
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
