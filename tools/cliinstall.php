@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use DI\ContainerBuilder;
+
 function displayUsage() {
    die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --lang=xx_XX] [ --tests ] [ --force ]\n\n");
 }
@@ -54,6 +56,17 @@ if (isset($args['tests'])) {
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
+
+$builder = new ContainerBuilder();
+$builder->useAnnotations(true);
+$builder->addDefinitions(__DIR__ . '/../inc/di_define.php');
+global $container;
+/*if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE || defined('TU_USER')) {
+   $container = $builder->buildDevContainer();
+} else {
+   $container = $builder->build();
+}*/
+$container = $builder->build();
 Config::detectRootDoc();
 
 if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
