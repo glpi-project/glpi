@@ -36,10 +36,11 @@
  * @return bool for success (will die for most error)
 **/
 function update92to93() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration, $CFG_GLPI, $container;
    $dbutils = new DbUtils();
 
-   $current_config   = Config::getConfigurationValues('core');
+   $config = $container->get('Config');
+   $current_config   = $config->getValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
 

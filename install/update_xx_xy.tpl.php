@@ -37,9 +37,10 @@
  * @return bool for success (will die for most error)
 **/
 function updateXXtoXY() {
-   global $DB, $migration, $CFG_GLPI;
+   global $DB, $migration, $CFG_GLPI, $container;
 
-   $current_config   = Config::getConfigurationValues('core');
+   $config = $container->get('Config');
+   $current_config   = $config->getValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
 
