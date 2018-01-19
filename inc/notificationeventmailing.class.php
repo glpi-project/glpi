@@ -109,13 +109,13 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
 
 
    static public function send(array $data) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB, $container;
 
       $processed = [];
 
       foreach ($data as $row) {
          //make sure mailer is reset on each mail
-         $mmail = new GLPIMailer();
+         $mmail = $container->get('GLPIMailer');
          $current = new QueuedNotification();
          $current->getFromResultSet($row);
 

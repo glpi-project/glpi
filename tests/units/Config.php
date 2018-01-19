@@ -335,21 +335,23 @@ class Config extends DbTestCase {
       $this->array($report)->isIdenticalTo($expected);
    }
 
-   public function testGetConfigurationValues() {
-      $conf = \Config::getConfigurationValues('core');
-      $this->array($conf)
+   public function testGetValues() {
+      global $container;
+      $config = $container->get('Config');
+      $this->array($config->getValues('core'))
          ->hasKeys(['version', 'dbversion'])
          ->size->isGreaterThan(170);
-
-      $conf = \Config::getConfigurationValues('core', ['version', 'dbversion']);
-      $this->array($conf)->isIdenticalTo([
-         'dbversion' => GLPI_SCHEMA_VERSION,
-         'version'   => GLPI_VERSION
-      ]);
+      $this->array($config->getValues('core', ['version', 'dbversion']))
+         ->isIdenticalTo([
+            'dbversion' => GLPI_SCHEMA_VERSION,
+            'version'   => GLPI_VERSION
+         ]);
    }
 
    public function testSetConfigurationValues() {
-      $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
+      global $container;
+      $config = $container->get('Config');
+      $conf = $config->getValues('core', ['version', 'notification_to_myself']);
       $this->array($conf)->isIdenticalTo([
          'notification_to_myself'   => '1',
          'version'                  => GLPI_VERSION
@@ -357,7 +359,7 @@ class Config extends DbTestCase {
 
       //update configuration value
       \Config::setConfigurationValues('core', ['notification_to_myself' => 0]);
-      $conf = \Config::getConfigurationValues('core', ['version', 'notification_to_myself']);
+      $conf = $config->getValues('core', ['version', 'notification_to_myself']);
       $this->array($conf)->isIdenticalTo([
          'notification_to_myself'   => '0',
          'version'                  => GLPI_VERSION
@@ -365,14 +367,14 @@ class Config extends DbTestCase {
       \Config::setConfigurationValues('core', ['notification_to_myself' => 1]); //reset
 
       //check new configuration key does not exists
-      $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+      $conf = $config->getValues('core', ['version', 'new_configuration_key']);
       $this->array($conf)->isIdenticalTo([
          'version' => GLPI_VERSION
       ]);
 
       //add new configuration key
       \Config::setConfigurationValues('core', ['new_configuration_key' => 'test']);
-      $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+      $conf = $config->getValues('core', ['version', 'new_configuration_key']);
       $this->array($conf)->isIdenticalTo([
          'new_configuration_key' => 'test',
          'version'               => GLPI_VERSION
@@ -380,7 +382,7 @@ class Config extends DbTestCase {
 
       //drop new configuration key
       \Config::deleteConfigurationValues('core', ['new_configuration_key']);
-      $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
+      $conf = $config->getValues('core', ['version', 'new_configuration_key']);
       $this->array($conf)->isIdenticalTo([
          'version' => GLPI_VERSION
       ]);

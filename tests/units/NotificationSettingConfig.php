@@ -39,7 +39,9 @@ use \DbTestCase;
 class NotificationSettingConfig extends DbTestCase {
 
    public function testUpdate() {
-      $current_config = \Config::getConfigurationValues('core');
+      global $container;
+      $config = $container->get('Config');
+      $current_config = $config->getValues('core');
 
       $this->variable($current_config['use_notifications'])->isEqualTo(0);
       $this->variable($current_config['notifications_mailing'])->isEqualTo(0);
@@ -50,7 +52,7 @@ class NotificationSettingConfig extends DbTestCase {
          'use_notifications' => 1
       ]);
 
-      $current_config = \Config::getConfigurationValues('core');
+      $current_config = $config->getValues('core');
 
       $this->variable($current_config['use_notifications'])->isEqualTo(1);
       $this->variable($current_config['notifications_mailing'])->isEqualTo(0);
@@ -60,7 +62,7 @@ class NotificationSettingConfig extends DbTestCase {
          'notifications_mailing' => 1
       ]);
 
-      $current_config = \Config::getConfigurationValues('core');
+      $current_config = $config->getValues('core');
 
       $this->variable($current_config['use_notifications'])->isEqualTo(1);
       $this->variable($current_config['notifications_mailing'])->isEqualTo(1);
@@ -70,7 +72,7 @@ class NotificationSettingConfig extends DbTestCase {
          'use_notifications' => 0
       ]);
 
-      $current_config = \Config::getConfigurationValues('core');
+      $current_config = $config->getValues('core');
 
       $this->variable($current_config['use_notifications'])->isEqualTo(0);
       $this->variable($current_config['notifications_mailing'])->isEqualTo(0);
