@@ -769,14 +769,14 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td><label for='dropdown_enable_api_login_credentials$rand'>";
       echo __("Enable login with credentials")."</label>&nbsp;";
-      Html::showToolTip(__("Allow to login to api and get a session token with user credentials"));
+      Html::showToolTip(__("Allow to login to API and get a session token with user credentials"));
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"], -1, ['rand' => $rand]);
       echo "</td>";
       echo "<td><label for='dropdown_enable_api_login_external_token$rand'>";
       echo __("Enable login with external token")."</label>&nbsp;";
-      Html::showToolTip(__("Allow to login to api and get a session token with user external token. See Remote access key in user Settings tab "));
+      Html::showToolTip(__("Allow to login to API and get a session token with user external token. See Remote access key in user Settings tab "));
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"], -1, ['rand' => $rand]);
