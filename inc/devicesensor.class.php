@@ -42,7 +42,7 @@ class DeviceSensor extends CommonDevice {
    static protected $forward_entity_to = ['Item_DeviceSensor', 'Infocom'];
 
    static function getTypeName($nb = 0) {
-      return _n('Sensors', 'Sensors', $nb);
+      return _n('Sensor', 'Sensors', $nb);
    }
 
 

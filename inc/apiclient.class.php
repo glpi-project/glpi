@@ -207,7 +207,7 @@ class APIClient extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4'>";
-      echo "<i>".__('Leave these parameters empty to disable api access restriction')."</i>";
+      echo "<i>".__('Leave these parameters empty to disable API access restriction')."</i>";
       echo "<br><br><br>";
       echo "</td></tr>";
 
