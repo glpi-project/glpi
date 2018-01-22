@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Interop\Container\ContainerInterface;
 
 return [
@@ -129,5 +131,14 @@ return [
    }),
    'GLPI_TR_CACHE'   => DI\factory(function (ContainerInterface $c) {
       return $c->get('Config')->getCache('cache_trans');
+   }),
+   Psr\Log\LoggerInterface::class => DI\factory(function () {
+      $logger = new Logger('mylog');
+
+      $fileHandler = new StreamHandler('path/to/your.log', Logger::DEBUG);
+      $fileHandler->setFormatter(new LineFormatter());
+      $logger->pushHandler($fileHandler);
+
+      return $logger;
    }),
 ];
