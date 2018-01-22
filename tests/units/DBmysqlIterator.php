@@ -33,6 +33,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use Monolog\Logger;
+use Monolog\Handler\TestHandler;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
@@ -129,13 +131,28 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testDebug() {
-      $it = null;
-      $this->exception(
-         function () use (&$it) {
-            $it = $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+      global $SQLLOGGER;
+
+      foreach ($SQLLOGGER->getHandlers() as $handler) {
+         if ($handler instanceof TestHandler) {
+            break;
          }
-      )->message
-         ->contains('From DBmysqlIterator');
+      }
+
+      //clean from previous queries
+      $handler->clear();
+      define('GLPI_SQL_DEBUG', true);
+
+      $id = mt_rand();
+      $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . $id]);
+
+      $this->array($handler->getRecords())->hasSize(1);
+      $this->boolean(
+         $handler->hasRecordThatContains(
+            'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
+            Logger::DEBUG
+         )
+      )->isTrue();
    }
 
 

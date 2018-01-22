@@ -85,11 +85,11 @@ class DBmysqlIterator implements Iterator, Countable {
     *
     * @param string|array $table       Table name (optional when $crit have FROM entry)
     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-    * @param boolean      $debug       To log the request (default false)
+    * @param boolean      $log         To log the request (default false)
     *
     * @return void
     */
-   function buildQuery ($table, $crit = "", $debug = false) {
+   function buildQuery ($table, $crit = "", $log = false) {
       $this->sql = null;
       $this->res = false;
       $this->parameters = [];
@@ -299,8 +299,9 @@ class DBmysqlIterator implements Iterator, Countable {
             }
          }
       }
-      if ($debug) {
-         Toolbox::logDebug("Generated query:", $this->getSql());
+
+      if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
+         Toolbox::logSqlDebug("Generated query:", $this->getSql());
       }
    }
 

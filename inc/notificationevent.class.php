@@ -159,7 +159,7 @@ class NotificationEvent extends CommonDBTM {
                   $notify_me
                );
             } else {
-               Toolbox::logDebug('Missing event class for mode ' . $data['mode'] . ' (' . $eventclass . ')');
+               Toolbox::logWarning('Missing event class for mode ' . $data['mode'] . ' (' . $eventclass . ')');
                $label = Notification_NotificationTemplate::getMode($data['mode'])['label'];
                Session::addMessageAfterRedirect(
                   sprintf(__('Unable to send notification using %1$s'), $label),

@@ -69,21 +69,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 } else {
    include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
+   // Default Use mode
+   if (!isset($_SESSION['glpi_use_mode'])) {
+      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+   }
+
+   $GLPI = new GLPI();
+   $GLPI->initLogger();
+
    //Database connection
    DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
                                        (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
-
 
    // *************************** Statics config options **********************
    // ********************options d'installation statiques*********************
    // *************************************************************************
 
    //Options from DB, do not touch this part.
-
-   // Default Use mode
-   if (!isset($_SESSION['glpi_use_mode'])) {
-      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-   }
 
    $config_object  = new Config();
    $current_config = [];

@@ -877,7 +877,7 @@ class SavedSearch extends CommonDBTM {
                try {
                   $data = $this->execute();
                } catch (\RuntimeException $e) {
-                  Toolbox::logDebug($e);
+                  Toolbox::logError($e);
                   $data = false;
                }
                if ($data) {
@@ -1274,7 +1274,7 @@ class SavedSearch extends CommonDBTM {
                      $stmt->execute();
                   }
                } catch (\Exception $e) {
-                  Toolbox::logDebug($e);
+                  Toolbox::logError($e);
                }
             }
 
@@ -1282,7 +1282,7 @@ class SavedSearch extends CommonDBTM {
             $stmt->close();
          }
       } else {
-         Toolbox::logDebug('Count on tabs has been disabled; crontask is inefficient.');
+         Toolbox::logWarning('Count on tabs has been disabled; crontask is inefficient.');
       }
    }
 

@@ -72,7 +72,7 @@ class NotificationEventAjax extends NotificationEventAbstract implements Notific
 
 
    static public function send(array $data) {
-      Toolbox::logDebug(__METHOD__ . ' should not be called!');
+      Toolbox::logError(__METHOD__ . ' should not be called!');
       return false;
    }
 }

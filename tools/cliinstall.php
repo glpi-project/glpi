@@ -54,6 +54,10 @@ if (isset($args['tests'])) {
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
+
+$GLPI = new GLPI();
+$GLPI->initLogger();
+
 Config::detectRootDoc();
 
 if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
