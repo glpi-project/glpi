@@ -134,6 +134,9 @@ return [
       return $c->get('Config')->getCache('cache_trans');
    }),
    'log.level'       => DI\Factory(function() {
+      if (defined('GLPI_LOG_LVL')) {
+         return GLPI_LOG_LVL;
+      }
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
          return Logger::DEBUG;
       } else {
