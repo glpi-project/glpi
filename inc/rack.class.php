@@ -954,7 +954,7 @@ JAVASCRIPT;
                      $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
                      $val = 1;
                      if (isset($content_filled[self::POS_LEFT][$pos]) && $content_filled[self::POS_LEFT][$pos] != 0) {
-                        Toolbox::logDebug('Several elements exists in rack at same place :(');
+                        Toolbox::logError('Several elements exists in rack at same place :(');
                         $val += $content_filled[self::POS_LEFT][$pos];
                      }
                      $content_filled[self::POS_LEFT][$pos] = $val;
@@ -968,7 +968,7 @@ JAVASCRIPT;
                      $pos = ($row['orientation'] == self::REAR) ? 3 - $d : $d;
                      $val = 1;
                      if (isset($content_filled[self::POS_RIGHT][$pos]) && $content_filled[self::POS_RIGHT][$pos] != 0) {
-                        Toolbox::logDebug('Several elements exists in rack at same place :(');
+                        Toolbox::logError('Several elements exists in rack at same place :(');
                         $val += $content_filled[self::POS_RIGHT][$pos];
                      }
                      $content_filled[self::POS_RIGHT][$pos] = $val;

@@ -120,7 +120,7 @@ class SavedSearch_Alert extends CommonDBChild {
             $count = $data['data']['totalcount'];
          }
       } catch (\RuntimeException $e) {
-         Toolbox::logDebug($e);
+         Toolbox::logError($e);
          $pass = true;
       }
 
@@ -378,7 +378,7 @@ class SavedSearch_Alert extends CommonDBChild {
                   NotificationEvent::raiseEvent($event, $alert, $data);
                }
             } catch (\Exception $e) {
-               Toolbox::logDebug($e);
+               Toolbox::logError($e);
             }
          }
       }

@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Interop\Container\ContainerInterface;
+use Monolog\Formatter\LineFormatter;
 
 return [
    'DB'           => Di\Factory(function() {
@@ -148,28 +149,13 @@ return [
             GLPI_LOG_DIR . "/php-errors.log",
             $c->get('log.level')
          );
+         $formatter = new LineFormatter(null, null, true);
+         $fileHandler->setFormatter($formatter);
       } else {
          $fileHandler = new NullHandler();
       }
 
       $logger->pushHandler($fileHandler);
       return $logger;
-   }),
-   /*Psr\Log\LoggerInterface::class => DI\factory(function ($type) {
-      $logger = new Logger('glpilog-' . $type);
-
-      $CFG_GLPI = $c->get('GLPIConfig');
-      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {
-         $fileHandler = new StreamHandler(
-            GLPI_LOG_DIR . "/$type-error.log",
-            Logger::DEBUG
-         );
-         $fileHandler->setFormatter(new LineFormatter());
-      } else {
-         $fileHandler = new NullHandler();
-      }
-
-      $logger->pushHandler($fileHandler);
-      return $logger;
-   }),*/
+   })
 ];

@@ -605,7 +605,7 @@ class DBmysql {
 
       $crashed_tables = self::checkForCrashedTables();
       if (!empty($crashed_tables)) {
-         Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+         Toolbox::logError("Cannot launch automatic action : crashed tables detected");
          return -1;
       }
 

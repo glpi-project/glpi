@@ -3338,12 +3338,7 @@ class CommonDBTM extends CommonGLPI {
             $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
                 get_class($this) . " searchOptions!";
 
-            if (defined('TU_USER')) {
-               //will break tests
-               throw new \RuntimeException($message);
-            } else {
-               Toolbox::logDebug($message);
-            }
+            Toolbox::logError($message);
          }
 
          foreach ($opt as $k => $v) {
@@ -3429,12 +3424,7 @@ class CommonDBTM extends CommonGLPI {
                $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in ".
                   self::class . " searchOptionsToAdd for $itemtype!";
 
-               if (defined('TU_USER')) {
-                  //will break tests
-                  throw new \RuntimeException($message);
-               } else {
-                  Toolbox::logDebug($message);
-               }
+               Toolbox::logError($message);
             }
          }
 
@@ -3899,12 +3889,7 @@ class CommonDBTM extends CommonGLPI {
             $entities_id = $this->fields['entities_id'];
          } else {
             $message = 'Missing entity ID!';
-            if (defined('TU_USER')) {
-               //will break tests
-               throw new \RuntimeException($message);
-            } else {
-               Toolbox::logDebug($message);
-            }
+            Toolbox::logError($message);
          }
 
          $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);

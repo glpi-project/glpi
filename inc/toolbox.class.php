@@ -31,6 +31,7 @@
  */
 
 use Glpi\Event;
+use Monolog\Logger;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -377,9 +378,12 @@ class Toolbox {
    /**
     * Log in 'php-errors' all args
     *
-    * @param string $level Log level (defaults to warning)
+    * @param integer $level Log level (defaults to warning)
+    * @param array   $args  Arguments (message to log, ...)
+    *
+    * @return void
    **/
-   static function log($level = 'warning') {
+   static function log($level = Logger::WARNING, $args = null) {
       static $tps = 0;
 
       $extra = [];
@@ -391,15 +395,9 @@ class Toolbox {
                       number_format(memory_get_usage()/1024/1024, 2).'Mio)';
       }
 
-      foreach (func_get_args() as $arg) {
-         $extra['args'][] = $arg;
-      }
-
-
       $msg = "";
       if (function_exists('debug_backtrace')) {
          $bt  = debug_backtrace();
-         $msg = '  From ';
          if (count($bt) > 1) {
             if (isset($bt[1]['class'])) {
                $msg .= $bt[1]['class'].'::';
@@ -409,13 +407,11 @@ class Toolbox {
          $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'] . "\n";
       }
 
-      /*if ($tps && function_exists('memory_get_usage')) {
-         $msg .= ' ('.number_format(microtime(true)-$tps, 3).'", '.
-                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
+      if ($args == null) {
+         $args = func_get_args();
       }
-      $msg .= "\n  ";*/
-
-      foreach (func_get_args() as $arg) {
+      var_dump($args);
+      foreach ($args as $arg) {
          if (is_array($arg) || is_object($arg)) {
             $msg .= str_replace("\n", "\n  ", print_r($arg, true));
          } else if (is_null($arg)) {
@@ -427,83 +423,37 @@ class Toolbox {
          }
       }
 
+      $tps = microtime(true);
+
       global $container;
       $logger = $container->get('GLPIPHPLog');
-      $logger->$level($msg, $extra);
+      $logger->addRecord($level, $msg, $extra);
 
-      $tps = microtime(true);
-      if (defined('TU_USER')) {
+      if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
-      /*} else {
-         self::logInFile('php-errors', $msg."\n", true);*/
       }
    }
-
 
    /**
-    * Log in 'php-errors' all args
+    * PHP debug log
    **/
    static function logDebug() {
-      self::log('debug');
-      /*static $tps = 0;
-
-      $extra = [];
-      if (method_exists('Session', 'getLoginUserID')) {
-         $extra['user'] = Session::getLoginUserID().'@'.php_uname('n');
-      }
-      if ($tps && function_exists('memory_get_usage')) {
-         $extra['mem_usage'] = number_format(microtime(true)-$tps, 3).'", '.
-                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
-      }
-
-      foreach (func_get_args() as $arg) {
-         $extra['args'][] = $arg;
-      }
-
-
-      $msg = "";
-      if (function_exists('debug_backtrace')) {
-         $bt  = debug_backtrace();
-         $msg = '  From ';
-         if (count($bt) > 1) {
-            if (isset($bt[1]['class'])) {
-               $msg .= $bt[1]['class'].'::';
-            }
-            $msg .= $bt[1]['function'].'() in ';
-         }
-         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'];
-      }*/
-
-      /*if ($tps && function_exists('memory_get_usage')) {
-         $msg .= ' ('.number_format(microtime(true)-$tps, 3).'", '.
-                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
-      }
-      $msg .= "\n  ";*/
-
-      /*foreach (func_get_args() as $arg) {
-         if (is_array($arg) || is_object($arg)) {
-            $msg .= str_replace("\n", "\n  ", print_r($arg, true));
-         } else if (is_null($arg)) {
-            $msg .= 'NULL ';
-         } else if (is_bool($arg)) {
-            $msg .= ($arg ? 'true' : 'false').' ';
-         } else {
-            $msg .= $arg . ' ';
-         }
-      }
-
-      global $container;
-      $logger = $container->get('GLPIPHPLog');
-      $logger->info($msg, $extra);
-
-      $tps = microtime(true);
-      if (defined('TU_USER')) {
-         throw new \RuntimeException($msg);
-      } else {
-         self::logInFile('php-errors', $msg."\n", true);
-      }*/
+      self::log(Logger::DEBUG, func_get_args());
    }
 
+   /**
+    * PHP error log
+    */
+   static function logError() {
+      self::log(Logger::ERROR, func_get_args());
+   }
+
+   /**
+    * PHP warning log
+    */
+   static function logWarning() {
+      self::log(Logger::WARNING, func_get_args());
+   }
 
    /**
     * Generate a Backtrace
@@ -561,7 +511,7 @@ class Toolbox {
     * @return void
     */
    static function deprecated($message = "Called method is deprecated") {
-      self::logDebug($message);
+      self::log(Logger::INFO, [$message]);
       self::backtrace();
    }
 
@@ -655,7 +605,7 @@ class Toolbox {
       }
 
       // Save error
-      static::logInFile("php-errors", $err);
+      static::logError($err);
 
       return $errortype[$errno];
    }
@@ -2766,7 +2716,7 @@ class Toolbox {
     */
    static public function jsonDecode($encoded, $assoc = false) {
       if (!is_string($encoded)) {
-         Toolbox::logDebug('Only strings can be json to decode!');
+         self::log(Logger::INFO, ['Only strings can be json to decode!']);
          return $encoded;
       }
 
@@ -2776,7 +2726,7 @@ class Toolbox {
          //something went wrong... Try to stripslashes before decoding.
          $json = json_decode(self::stripslashes_deep($encoded), $assoc);
          if (json_last_error() != JSON_ERROR_NONE) {
-            Toolbox::logDebug('Unable to decode JSON string! Is this really JSON?');
+            self::log(Logger::INFO, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
          }
       }

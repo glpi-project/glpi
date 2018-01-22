@@ -299,9 +299,7 @@ class DBmysqlIterator implements Iterator, Countable {
             }
          }
       }
-      if ($debug) {
-         Toolbox::logDebug("Generated query:", $this->getSql());
-      }
+      Toolbox::logDebug("Generated query:", $this->getSql());
    }
 
 
