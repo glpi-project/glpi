@@ -143,17 +143,17 @@ return [
    'GLPIPHPLog'      => DI\factory(function (ContainerInterface $c) {
       $logger = new Logger('glpiphplog');
 
-      $CFG_GLPI = $c->get('GLPIConfig');
-      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {
+      /*$CFG_GLPI = $c->get('GLPIConfig');
+      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {*/
          $fileHandler = new StreamHandler(
             GLPI_LOG_DIR . "/php-errors.log",
             $c->get('log.level')
          );
          $formatter = new LineFormatter(null, null, true);
          $fileHandler->setFormatter($formatter);
-      } else {
+      /*} else {
          $fileHandler = new NullHandler();
-      }
+      }*/
 
       $logger->pushHandler($fileHandler);
       return $logger;
