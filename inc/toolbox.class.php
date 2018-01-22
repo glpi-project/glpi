@@ -374,12 +374,27 @@ class Toolbox {
       return $value;
    }
 
-
    /**
     * Log in 'php-errors' all args
+    *
+    * @param string $level Log level (defaults to warning)
    **/
-   static function logDebug() {
+   static function log($level = 'warning') {
       static $tps = 0;
+
+      $extra = [];
+      if (method_exists('Session', 'getLoginUserID')) {
+         $extra['user'] = Session::getLoginUserID().'@'.php_uname('n');
+      }
+      if ($tps && function_exists('memory_get_usage')) {
+         $extra['mem_usage'] = number_format(microtime(true)-$tps, 3).'", '.
+                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
+      }
+
+      foreach (func_get_args() as $arg) {
+         $extra['args'][] = $arg;
+      }
+
 
       $msg = "";
       if (function_exists('debug_backtrace')) {
@@ -391,14 +406,14 @@ class Toolbox {
             }
             $msg .= $bt[1]['function'].'() in ';
          }
-         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'];
+         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'] . "\n";
       }
 
-      if ($tps && function_exists('memory_get_usage')) {
+      /*if ($tps && function_exists('memory_get_usage')) {
          $msg .= ' ('.number_format(microtime(true)-$tps, 3).'", '.
                       number_format(memory_get_usage()/1024/1024, 2).'Mio)';
       }
-      $msg .= "\n  ";
+      $msg .= "\n  ";*/
 
       foreach (func_get_args() as $arg) {
          if (is_array($arg) || is_object($arg)) {
@@ -412,12 +427,81 @@ class Toolbox {
          }
       }
 
+      global $container;
+      $logger = $container->get('GLPIPHPLog');
+      $logger->$level($msg, $extra);
+
+      $tps = microtime(true);
+      if (defined('TU_USER')) {
+         throw new \RuntimeException($msg);
+      /*} else {
+         self::logInFile('php-errors', $msg."\n", true);*/
+      }
+   }
+
+
+   /**
+    * Log in 'php-errors' all args
+   **/
+   static function logDebug() {
+      self::log('debug');
+      /*static $tps = 0;
+
+      $extra = [];
+      if (method_exists('Session', 'getLoginUserID')) {
+         $extra['user'] = Session::getLoginUserID().'@'.php_uname('n');
+      }
+      if ($tps && function_exists('memory_get_usage')) {
+         $extra['mem_usage'] = number_format(microtime(true)-$tps, 3).'", '.
+                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
+      }
+
+      foreach (func_get_args() as $arg) {
+         $extra['args'][] = $arg;
+      }
+
+
+      $msg = "";
+      if (function_exists('debug_backtrace')) {
+         $bt  = debug_backtrace();
+         $msg = '  From ';
+         if (count($bt) > 1) {
+            if (isset($bt[1]['class'])) {
+               $msg .= $bt[1]['class'].'::';
+            }
+            $msg .= $bt[1]['function'].'() in ';
+         }
+         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'];
+      }*/
+
+      /*if ($tps && function_exists('memory_get_usage')) {
+         $msg .= ' ('.number_format(microtime(true)-$tps, 3).'", '.
+                      number_format(memory_get_usage()/1024/1024, 2).'Mio)';
+      }
+      $msg .= "\n  ";*/
+
+      /*foreach (func_get_args() as $arg) {
+         if (is_array($arg) || is_object($arg)) {
+            $msg .= str_replace("\n", "\n  ", print_r($arg, true));
+         } else if (is_null($arg)) {
+            $msg .= 'NULL ';
+         } else if (is_bool($arg)) {
+            $msg .= ($arg ? 'true' : 'false').' ';
+         } else {
+            $msg .= $arg . ' ';
+         }
+      }
+
+      global $container;
+      $logger = $container->get('GLPIPHPLog');
+      $logger->info($msg, $extra);
+
       $tps = microtime(true);
       if (defined('TU_USER')) {
          throw new \RuntimeException($msg);
       } else {
          self::logInFile('php-errors', $msg."\n", true);
-      }
+      }*/
    }
 
 

@@ -132,13 +132,44 @@ return [
    'GLPI_TR_CACHE'   => DI\factory(function (ContainerInterface $c) {
       return $c->get('Config')->getCache('cache_trans');
    }),
-   Psr\Log\LoggerInterface::class => DI\factory(function () {
-      $logger = new Logger('mylog');
+   'log.level'       => DI\Factory(function() {
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+         return Logger::DEBUG;
+      } else {
+         return Logger::WARNING;
+      }
+   }),
+   'GLPIPHPLog'      => DI\factory(function (ContainerInterface $c) {
+      $logger = new Logger('glpiphplog');
 
-      $fileHandler = new StreamHandler('path/to/your.log', Logger::DEBUG);
-      $fileHandler->setFormatter(new LineFormatter());
+      $CFG_GLPI = $c->get('GLPIConfig');
+      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {
+         $fileHandler = new StreamHandler(
+            GLPI_LOG_DIR . "/php-errors.log",
+            $c->get('log.level')
+         );
+      } else {
+         $fileHandler = new NullHandler();
+      }
+
       $logger->pushHandler($fileHandler);
-
       return $logger;
    }),
+   /*Psr\Log\LoggerInterface::class => DI\factory(function ($type) {
+      $logger = new Logger('glpilog-' . $type);
+
+      $CFG_GLPI = $c->get('GLPIConfig');
+      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {
+         $fileHandler = new StreamHandler(
+            GLPI_LOG_DIR . "/$type-error.log",
+            Logger::DEBUG
+         );
+         $fileHandler->setFormatter(new LineFormatter());
+      } else {
+         $fileHandler = new NullHandler();
+      }
+
+      $logger->pushHandler($fileHandler);
+      return $logger;
+   }),*/
 ];
