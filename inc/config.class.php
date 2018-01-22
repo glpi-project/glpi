@@ -2739,7 +2739,7 @@ class Config extends CommonDBTM {
             return false;
          }
          $opt = json_decode($conf[$optname], true);
-         //Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
+         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
       if (!isset($opt['options']['namespace'])) {
          $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION;
@@ -2790,12 +2790,14 @@ class Config extends CommonDBTM {
       $cache = false;
       try {
          $cache = Zend\Cache\StorageFactory::factory($opt);
+         $cache_class = get_class($cache);
       } catch (Exception $e) {
+         $cache_class = 'no class';
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logDebug($e->getMessage());
+            Toolbox::logError($e->getMessage());
          }
       }
-      //Toolbox::logDebug("CACHE $optname", get_class($cache));
+      Toolbox::logDebug("CACHE $optname", $cache_class);
       return $cache;
    }
 

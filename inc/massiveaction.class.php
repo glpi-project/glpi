@@ -138,7 +138,7 @@ class MassiveAction {
 
                case 'specialize' :
                   if (!isset($POST['action'])) {
-                     Toolbox::logDebug('Implementation error !');
+                     Toolbox::logError('Implementation error !');
                      throw new Exception(__('Implementation error !'));
                   }
                   if ($POST['action'] == -1) {
@@ -148,7 +148,7 @@ class MassiveAction {
                   if (isset($POST['actions'])) {
                      // First, get the name of current action !
                      if (!isset($POST['actions'][$POST['action']])) {
-                        Toolbox::logDebug('Implementation error !');
+                        Toolbox::logError('Implementation error !');
                         throw new Exception(__('Implementation error !'));
                      }
                      $POST['action_name'] = $POST['actions'][$POST['action']];
@@ -258,7 +258,7 @@ class MassiveAction {
       } else {
          if (($stage != 'process')
              || (!isset($_SESSION['current_massive_action'][$GET['identifier']]))) {
-            Toolbox::logDebug('Implementation error !');
+            Toolbox::logError('Implementation error !');
             throw new Exception(__('Implementation error !'));
          }
          $identifier = $GET['identifier'];

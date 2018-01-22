@@ -56,6 +56,10 @@ if (isset($args['config-dir'])) {
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+$GLPI = new GLPI();
+$GLPI->initLogger();
+
 Config::detectRootDoc();
 
 $DB = new DB();

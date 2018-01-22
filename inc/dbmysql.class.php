@@ -178,10 +178,7 @@ class DBmysql {
                    $this->dbh->error."\n";
          $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
 
-         Toolbox::logInFile("sql-errors", $error);
-         if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new GlpitestSQLError($error);
-         }
+         Toolbox::logSqlError($error);
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
@@ -605,7 +602,7 @@ class DBmysql {
 
       $crashed_tables = self::checkForCrashedTables();
       if (!empty($crashed_tables)) {
-         Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+         Toolbox::logError("Cannot launch automatic action : crashed tables detected");
          return -1;
       }
 

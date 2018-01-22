@@ -145,7 +145,7 @@ class Html {
       try {
          $date = new \DateTime($time);
       } catch (\Exception $e) {
-         Toolbox::logDebug("Invalid date $time!");
+         Toolbox::logWarning("Invalid date $time!");
          Session::addMessageAfterRedirect(
             sprintf(
                __('%1$s %2$s'),
@@ -5683,7 +5683,7 @@ class Html {
                }
             }
             if (!$found) {
-               Toolbox::logDebug("JS lib $name is not known!");
+               Toolbox::logError("JS lib $name is not known!");
             }
       }
    }
