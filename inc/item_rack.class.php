@@ -69,6 +69,10 @@ class Item_Rack extends CommonDBRelation {
                   self::getTable(),
                   ['racks_id'  => $item->getID()]
                );
+               $nb+= countElementsInTable(
+                  PDU_Rack::getTable(),
+                  ['racks_id'  => $item->getID()]
+               );
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -77,6 +81,15 @@ class Item_Rack extends CommonDBRelation {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showItems($item, $withtemplate);
+   }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'MassiveAction:update';
+      $forbidden[] = 'CommonDBConnexity:affect';
+      $forbidden[] = 'CommonDBConnexity:unaffect';
+
+      return $forbidden;
    }
 
    /**
@@ -104,16 +117,18 @@ class Item_Rack extends CommonDBRelation {
       ]);
       $link = new self();
 
-      Session::initNavigateListItems(
-         self::getType(),
-         //TRANS : %1$s is the itemtype name,
-         //        %2$s is the name of the item (used for headings of a list)
-         sprintf(
-            __('%1$s = %2$s'),
-            $rack->getTypeName(1),
-            $rack->getName()
-         )
-      );
+      if ($canedit) {
+         Session::initNavigateListItems(
+            self::getType(),
+            //TRANS : %1$s is the itemtype name,
+            //        %2$s is the name of the item (used for headings of a list)
+            sprintf(
+               __('%1$s = %2$s'),
+               $rack->getTypeName(1),
+               $rack->getName()
+            )
+         );
+      }
 
       echo "<div id='switchview'>";
       echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
@@ -123,12 +138,13 @@ class Item_Rack extends CommonDBRelation {
       $items = iterator_to_array($items);
       echo "<div id='viewlist'>";
 
-      /*$rack = new self();*/
+      echo "<h2>".__("Racked items")."</h2>";
       if (!count($items)) {
          echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr>";
          echo "</table>";
       } else {
          if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = [
                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
                'container'       => 'mass'.__CLASS__.$rand
@@ -175,6 +191,9 @@ class Item_Rack extends CommonDBRelation {
             Html::closeForm();
          }
       }
+
+      PDU_Rack::showListForRack($rack);
+
       echo "</div>";
       echo "<div id='viewgraph'>";
 
@@ -347,7 +366,7 @@ class Item_Rack extends CommonDBRelation {
          </div>
          <div class="racks_col">';
       self::showStats($rack);
-      Pdu_Rack::showListForRack($rack);
+      Pdu_Rack::showStatsForRack($rack);
       echo '</div>'; // .racks_col
       echo '</div>'; // .racks_row
       echo '<div class="sep"></div>';

@@ -57,6 +57,15 @@ class PDU_Rack extends CommonDBRelation {
       $this->fields['bgcolor'] = '#FF9D1F';
    }
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'MassiveAction:update';
+      $forbidden[] = 'CommonDBConnexity:affect';
+      $forbidden[] = 'CommonDBConnexity:unaffect';
+
+      return $forbidden;
+   }
+
    function prepareInputForAdd($input) {
       return $this->prepareInput($input);
    }
@@ -79,8 +88,6 @@ class PDU_Rack extends CommonDBRelation {
       $racks_id = $this->fields['racks_id'];
       $position = $this->fields['position'];
       $side     = $this->fields['side'];
-
-      Toolbox::logDebug($input);
 
       //check for requirements
       if ($this->isNewItem()) {
@@ -285,6 +292,74 @@ class PDU_Rack extends CommonDBRelation {
    }
 
    static function showListForRack(Rack $rack) {
+      global $DB;
+
+      echo "<h2>".__("Side pdus")."</h2>";
+
+      $pdu     = new PDU;
+      $canedit = $rack->canEdit($rack->getID());
+      $rand    = mt_rand();
+      $items   = $DB->request([
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'racks_id' => $rack->getID()
+         ]
+      ]);
+
+      if (!count($items)) {
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr>";
+         echo "</table>";
+      } else {
+         if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = [
+               'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
+               'container'       => 'mass'.__CLASS__.$rand
+            ];
+            Html::showMassiveActions($massiveactionparams);
+         }
+
+         echo "<table class='tab_cadre_fixehov'>";
+         $header = "<tr>";
+         if ($canedit) {
+            $header .= "<th width='10'>";
+            $header .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header .= "</th>";
+         }
+         $header .= "<th>".__('Item')."</th>";
+         $header .= "<th>".__('Side')."</th>";
+         $header .= "<th>".__('Position')."</th>";
+         $header .= "</tr>";
+
+         echo $header;
+         foreach ($items as $row) {
+            if ($pdu->getFromDB($row['pdus_id'])) {
+               echo "<tr lass='tab_bg_1'>";
+               if ($canedit) {
+                  echo "<td>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
+                  echo "</td>";
+               }
+               echo "<td>".$pdu->getLink()."</td>";
+               echo "<td>".self::getSideName($row['side'])."</td>";
+               echo "<td>{$row['position']}</td>";
+               echo "</tr>";
+            }
+         }
+         echo $header;
+         echo "</table>";
+
+         if ($canedit && count($items)) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+         }
+         if ($canedit) {
+            Html::closeForm();
+         }
+      }
+   }
+
+   static function showStatsForRack(Rack $rack) {
       global $DB, $CFG_GLPI;
 
       $pdu   = new PDU;
