@@ -624,7 +624,36 @@ $(function() {
       event.preventDefault();
       langSwitch($(this));
    });
+
+   // ctrl+enter in form textareas (without tinymce)
+   $(document).on('keydown', '#page form textarea', function(event) {
+      if (event.ctrlKey
+          && event.keyCode == 13) {
+         submitparentForm($(this));
+      }
+   });
 });
+
+/**
+ * Trigger submit event for a parent form of passed input dom element
+ *
+ * @param  Object input the dom or jquery object of input
+ * @return bool
+ */
+var submitparentForm = function(input) {
+   // find parent form
+   var form = $(input).closest('form');
+
+   // find submit button(s)
+   var submit = form.find('input[type=submit]').filter('[name=add], [name=update]');
+
+   // trigger if only one submit button
+   if (submit.length == 1) {
+      return (submit.trigger('click') !== false);
+   }
+
+   return false
+};
 
 /**
 * Determines if data from drop is an image.
