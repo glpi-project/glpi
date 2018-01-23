@@ -52,6 +52,7 @@ return [
       //required since there are declarations hardcoded, as example in inc/define.php
       global $CFG_GLPI;
       $config_object = $c->get('Config');
+      $dbu = $c->get('DbUtils');
       $current_config = [];
 
       if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
@@ -62,7 +63,7 @@ return [
             unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
          }
 
-         if (tableExists('glpi_config')) {
+         if ($dbu->tableExists('glpi_config')) {
             // First try old config table : for update process management from < 0.80 to >= 0.80
             $config_object->forceTable('glpi_config');
             if ($config_object->getFromDB(1)) {
@@ -99,13 +100,13 @@ return [
          $CFG_GLPI = array_merge($CFG_GLPI, $current_config);
 
          if (isset($CFG_GLPI['priority_matrix'])) {
-            $CFG_GLPI['priority_matrix'] = importArrayFromDB(
+            $CFG_GLPI['priority_matrix'] = $dbu->importArrayFromDB(
                $CFG_GLPI['priority_matrix'],
                true
             );
          }
          if (isset($CFG_GLPI['lock_item_list'])) {
-            $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+            $CFG_GLPI['lock_item_list'] = $dbu->importArrayFromDB($CFG_GLPI['lock_item_list']);
          }
          if (isset($CFG_GLPI['lock_lockprofile_id'])
             && $CFG_GLPI["lock_use_lock_item"]
@@ -127,7 +128,7 @@ return [
       }
       return $CFG_GLPI;
    }),
-   'GLPI_DB_CACHE'   => Di\factory(function(ContainerInterface $c) {
+   'GLPI_DB_CACHE'   => DI\factory(function(ContainerInterface $c) {
       return $c->get('Config')->getCache('cache_db');
    }),
    'GLPI_TR_CACHE'   => DI\factory(function (ContainerInterface $c) {
