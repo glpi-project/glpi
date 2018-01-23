@@ -40,7 +40,7 @@ use Interop\Container\ContainerInterface;
 use Monolog\Formatter\LineFormatter;
 
 return [
-   'DB'           => Di\Factory(function() {
+   'DB'           => DI\Factory(function() {
       $dbconn = new DBConnection();
       $dbconn->establishDBConnection(
          (isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
@@ -62,11 +62,12 @@ return [
             unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
          }
 
-         // First try old config table : for update process management from < 0.80 to >= 0.80
-         $config_object->forceTable('glpi_config');
-
-         if ($config_object->getFromDB(1)) {
-            $current_config = $config_object->fields;
+         if (tableExists('glpi_config')) {
+            // First try old config table : for update process management from < 0.80 to >= 0.80
+            $config_object->forceTable('glpi_config');
+            if ($config_object->getFromDB(1)) {
+               $current_config = $config_object->fields;
+            }
          } else {
             $config_object->forceTable('glpi_configs');
             if ($config_object->getFromDB(1)) {
@@ -78,7 +79,6 @@ return [
                $config_ok = true;
             }
          }
-
       } else { // Normal load process : use normal config table. If problem try old one
          if ($config_object->getFromDB(1)) {
             if (isset($config_object->fields['context'])) {
@@ -146,19 +146,28 @@ return [
    'GLPIPHPLog'      => DI\factory(function (ContainerInterface $c) {
       $logger = new Logger('glpiphplog');
 
-      /*$CFG_GLPI = $c->get('GLPIConfig');
-      if ((isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"])) {*/
-         $fileHandler = new StreamHandler(
-            GLPI_LOG_DIR . "/php-errors.log",
-            $c->get('log.level')
-         );
-         $formatter = new LineFormatter(null, null, true);
-         $fileHandler->setFormatter($formatter);
-      /*} else {
-         $fileHandler = new NullHandler();
-      }*/
+      $fileHandler = new StreamHandler(
+         GLPI_LOG_DIR . "/php-errors.log",
+         $c->get('log.level')
+      );
+      $formatter = new LineFormatter(null, null, true, true);
+      $fileHandler->setFormatter($formatter);
+
+      $logger->pushHandler($fileHandler);
+      return $logger;
+   }),
+   'GLPISQLLog'      => DI\factory(function (ContainerInterface $c) {
+      $logger = new Logger('glpisqllog');
+
+      $fileHandler = new StreamHandler(
+         GLPI_LOG_DIR . "/sql-errors.log",
+         $c->get('log.level')
+      );
+      $formatter = new LineFormatter(null, null, true, true);
+      $fileHandler->setFormatter($formatter);
 
       $logger->pushHandler($fileHandler);
       return $logger;
    })
+
 ];

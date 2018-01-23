@@ -383,7 +383,7 @@ class Toolbox {
     *
     * @return void
    **/
-   static function log($level = Logger::WARNING, $args = null) {
+   static function log($logger = null, $level = Logger::WARNING, $args = null) {
       static $tps = 0;
 
       $extra = [];
@@ -410,7 +410,7 @@ class Toolbox {
       if ($args == null) {
          $args = func_get_args();
       }
-      var_dump($args);
+
       foreach ($args as $arg) {
          if (is_array($arg) || is_object($arg)) {
             $msg .= str_replace("\n", "\n  ", print_r($arg, true));
@@ -425,8 +425,10 @@ class Toolbox {
 
       $tps = microtime(true);
 
-      global $container;
-      $logger = $container->get('GLPIPHPLog');
+      if ($logger === null) {
+         global $container;
+         $logger = $container->get('GLPIPHPLog');
+      }
       $logger->addRecord($level, $msg, $extra);
 
       if (defined('TU_USER') && $level >= Logger::NOTICE) {
@@ -436,24 +438,47 @@ class Toolbox {
 
    /**
     * PHP debug log
-   **/
+    */
    static function logDebug() {
-      self::log(Logger::DEBUG, func_get_args());
+      self::log(null, Logger::DEBUG, func_get_args());
    }
 
    /**
-    * PHP error log
+    * PHP info log
     */
-   static function logError() {
-      self::log(Logger::ERROR, func_get_args());
+   static function loginfo() {
+      self::log(null, Logger::INFO, func_get_args());
    }
 
    /**
     * PHP warning log
     */
    static function logWarning() {
-      self::log(Logger::WARNING, func_get_args());
+      self::log(null, Logger::WARNING, func_get_args());
    }
+
+   /**
+    * PHP error log
+    */
+   static function logError() {
+      self::log(null, Logger::ERROR, func_get_args());
+   }
+
+   /**
+    * SQL error log
+    */
+   static function logSqlError() {
+      global $container;
+      $logger = $container->get('GLPISQLLog');
+      try {
+         self::log($logger, Logger::ERROR, func_get_args());
+      } finally {
+         if (class_exists('GlpitestSQLError')) { // For unit test
+            throw new GlpitestSQLError(func_get_args());
+         }
+      }
+   }
+
 
    /**
     * Generate a Backtrace
@@ -511,7 +536,7 @@ class Toolbox {
     * @return void
     */
    static function deprecated($message = "Called method is deprecated") {
-      self::log(Logger::INFO, [$message]);
+      self::log(null, Logger::INFO, [$message]);
       self::backtrace();
    }
 
@@ -2716,7 +2741,7 @@ class Toolbox {
     */
    static public function jsonDecode($encoded, $assoc = false) {
       if (!is_string($encoded)) {
-         self::log(Logger::INFO, ['Only strings can be json to decode!']);
+         self::log(null, Logger::INFO, ['Only strings can be json to decode!']);
          return $encoded;
       }
 
@@ -2726,7 +2751,7 @@ class Toolbox {
          //something went wrong... Try to stripslashes before decoding.
          $json = json_decode(self::stripslashes_deep($encoded), $assoc);
          if (json_last_error() != JSON_ERROR_NONE) {
-            self::log(Logger::INFO, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(null, Logger::INFO, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
          }
       }
