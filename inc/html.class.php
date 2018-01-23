@@ -3516,6 +3516,12 @@ class Html {
                editor.on('SaveContent', function (contentEvent) {
                   contentEvent.content = contentEvent.content.replace(/\\r?\\n/g, '');
                });
+
+               // ctrl + enter submit the parent form
+               editor.addShortcut('ctrl+13', 'submit', function() {
+                  editor.save();
+                  submitparentForm($('#$name'));
+               });
             },
             plugins: [
                'table directionality searchreplace',
