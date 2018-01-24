@@ -557,19 +557,20 @@ abstract class API extends CommonGLPI {
       // retrieve computer disks
       if (isset($params['with_disks'])
           && $params['with_disks']
-          && $itemtype == "Computer") {
+          && in_array($itemtype, $CFG_GLPI['itemdeviceharddrive_types'])) {
          // build query to retrive filesystems
          $query = "SELECT `glpi_filesystems`.`name` AS fsname,
-                          `glpi_computerdisks`.*
-                   FROM `glpi_computerdisks`
+                          `glpi_items_disks`.*
+                   FROM `glpi_items_disks`
                    LEFT JOIN `glpi_filesystems`
-                             ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
-                   WHERE `computers_id` = '$id'
+                             ON (`glpi_items_disks`.`filesystems_id` = `glpi_filesystems`.`id`)
+                   WHERE `items_id` = '$id'
+                         AND `itemtype` = '$itemtype'
                          AND `is_deleted` = '0'";
          $fields['_disks'] = [];
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {
-               unset($data['computers_id']);
+               unset($data['items_id']);
                unset($data['is_deleted']);
                $fields['_disks'][] = ['name' => $data];
             }
