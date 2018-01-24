@@ -99,6 +99,16 @@ abstract class CommonDCModelDropdown extends CommonDropdown {
          ];
       }
 
+      if ($DB->fieldExists($this->getTable(), 'max_power')) {
+         $fields[] = [
+            'name'   => 'max_power',
+            'type'   => 'integer',
+            'label'  => __('Max. power (in watts)'),
+            'unit'   => __('watts'),
+            'html'   => true
+         ];
+      }
+
       if ($DB->fieldExists($this->getTable(), 'is_half_rack')) {
          $fields[] = [
             'name'   => 'is_half_rack',

@@ -99,6 +99,9 @@ final class DbUtils {
    public function getPlural($string) {
       $rules = [
          //'singular'         => 'plural'
+         // special case for acronym pdu (to avoid us rule)
+         'pdus$'              => 'pdus',
+         'pdu$'               => 'pdus',
          //FIXME: singular is criterion, plural is criteria
          'criterias$'         => 'criterias',// Special case (criterias) when getPlural is called on already plural form
          'ch$'                => 'ches',
@@ -138,6 +141,7 @@ final class DbUtils {
 
       $rules = [
          //'plural'           => 'singular'
+         'pdus$'              => 'pdu', // special case for acronym pdu (to avoid us rule)
          'ches$'              => 'ch',
          'ch$'                => 'ch',
          'shes$'              => 'sh',

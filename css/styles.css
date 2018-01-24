@@ -4700,8 +4700,13 @@ div#viewgraph .mini_toggle:hover {
    filter: Alpha(Opacity=100)
 }
 
-.clear_picture .grid-stack .grid-stack-item .grid-stack-item-content {
+.clear_picture .grid-stack .grid-stack-item .grid-stack-item-content,
+.clear_picture .grid-stack .grid-stack-item:after {
    background: none !important;
+}
+
+.grid-stack-item {
+   position: relative; /** should be erased by lib, defined for case without lib **/
 }
 
 .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
@@ -4743,16 +4748,15 @@ div#viewgraph .mini_toggle:hover {
    position: absolute;
    right: 3px;
    bottom: 3px;
-   opacity: .3;
+   opacity: 0;
 }
 
 .grid-stack-item-content .rel-link a i.fa {
    color: #000;
 }
 
-
-.grid-stack-item-content .rel-link:hover {
-   opacity: 1;
+.grid-stack-item-content:hover .rel-link {
+   opacity: .8;
 }
 
 .grid-stack .grid-stack-item .grid-stack-item-content,
@@ -4787,6 +4791,79 @@ ul.indexes {
    font-size: .7em;
    color: silver;
    float: left;
+}
+
+.virtual_pdu_space {
+   height: 20px;
+   clear: both;
+}
+
+.side_pdus_float {
+   float: left;
+   min-height: 100%;
+   width: 20px;
+}
+.side_pdus.side_pdus_nofloat {
+   clear: left;
+   margin: 0 2px 2px;
+}
+
+.side_pdus_nofloat .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
+   cursor: initial;
+}
+
+.side_pdus {
+   background-color: #575757;
+   margin: 0 1px;
+}
+
+.side_pdus .grid-stack-item:not(.lock-bottom) {
+   background-color: #FF9D1F;
+   overflow: hidden;
+}
+
+.side_pdus_float .grid-stack-item .grid-stack-item-content {
+   border: 0 solid #0404046b;
+   border-width: 4px 1px;
+}
+
+.side_pdus_float .grid-stack-item .grid-stack-item-content .rotated_text {
+   transform: rotate(-90deg);
+   transform-origin: bottom left;
+   position: absolute;
+   bottom: 25px;
+   left: 15px;
+   white-space: nowrap;
+}
+
+.side_pdus_float .grid-stack-item .item_rack_icon {
+   position: absolute;
+   bottom: 1px;
+   left: 0;
+}
+
+.side_pdus_float .grid-stack-item .item_rack_icon {
+   position: absolute;
+   bottom: 1px;
+   left: 0;
+}
+
+.side_pdus_float .grid-stack-item-content .rel-link {
+   left: 3px;
+   top: 3px;
+   bottom: unset;
+   right: unset;
+}
+
+.side_pdus_float .grid-stack-item:after {
+   content: '';
+   position: absolute;
+   height: 20px;
+   bottom: 4px;
+   left: 20px;
+   z-index: -1;
+   transform: rotate(-90deg);
+   transform-origin: bottom left;
 }
 
 .racks_add .cell_add {
@@ -4919,17 +4996,20 @@ ul.indexes {
    margin-left: 2px;
    float: left;
    position: relative;
-}
-
-.rack_side {
-   text-align: center;
-   background: #4C4C4C;
    margin-right: 40px;
 }
 
-.rack_side h2 {
-   font-size: .8em;
+.rack_side {
+   float: left;
+   text-align: center;
+   background: #4C4C4C;
+   padding-top: 18px;
+}
+
+.racks_col h2 {
+   font-size: 1em;
    color: #959595;
+   height: 18px;
 }
 
 .racks_add {
@@ -4953,6 +5033,7 @@ ul.indexes {
    float: left;
 }
 
+.side_pdus_nofloat .grid-stack-item .grid-stack-item-content,
 .grid-rack .grid-stack-item:not(.lock-bottom) .grid-stack-item-content {
    color: #2c3e50;
    border: 0 solid #0404046b;
@@ -4994,7 +5075,7 @@ ul.indexes {
    );
 }
 
-.grid-rack .grid-stack-item .item_rack_icon {
+.grid-stack-item .item_rack_icon {
    float: left;
    opacity: .6;
    padding: 3px 0 0 2px;
@@ -5028,28 +5109,78 @@ ul.indexes {
    line-height: 20px;
 }
 
-.rack_stats {
+.rack_side_block {
    width: 200px;
    border: 1px solid #E6E6E6;
    background-color: #F3F3F3;
    text-align: left;
-   padding: 10px 5px;
    font-size: 11px;
+   margin-bottom: 20px;
+}
+.rack_side_block_content {
+   padding: 10px 5px;
 }
 
-.rack_stats h3 {
+.rack_side_block h2 {
+   color: #555;
+   margin: 0;
+   padding: 5px 10px;
+   font-size: 14px;
+   font-weight: bold;
+   background-color: #e6e6e6;
+}
+
+.rack_side_block h3 {
    color: #6F6F6F;
    margin: 0;
    font-size: 11px;
    font-weight: bold;
 }
 
-.rack_stats .ui-progressbar {
+.rack_side_block .ui-progressbar {
    height: 13px;
 }
-.rack_stats .doaction_progress_text {
+.rack_side_block .doaction_progress_text {
    font-weight: normal;
    padding: 0;
+}
+
+.rack_side_block_content i {
+   margin: 0 3px;
+}
+
+.rack_side_block .sub_action {
+   display: block;
+   color: #555;
+   cursor: pointer;
+   padding: 5px;
+   text-align: center;
+}
+.rack_side_block .sub_action:hover {
+   background-color: #D1D1D1;
+}
+
+.rack_side_block .sub_action i {
+   margin-right: 3px;
+   color: #555;
+}
+
+div#viewgraph .rack_side_block .pdu_list {
+   background: none;
+}
+
+div#viewgraph .rack_side_block .pdu_list td {
+   text-align: left;
+   border: 1px solid rgba(0, 0, 0, .2);
+   padding: 0 3px;
+}
+
+.pdu_list .rack_position {
+   width: 20px;
+}
+
+.pdu_list i.fa {
+   color: rgba(0, 0, 0, .6);
 }
 
 ul#menu ul {

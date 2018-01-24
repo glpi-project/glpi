@@ -69,6 +69,10 @@ class Item_Rack extends CommonDBRelation {
                   self::getTable(),
                   ['racks_id'  => $item->getID()]
                );
+               $nb+= countElementsInTable(
+                  PDU_Rack::getTable(),
+                  ['racks_id'  => $item->getID()]
+               );
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -77,6 +81,15 @@ class Item_Rack extends CommonDBRelation {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showItems($item, $withtemplate);
+   }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'MassiveAction:update';
+      $forbidden[] = 'CommonDBConnexity:affect';
+      $forbidden[] = 'CommonDBConnexity:unaffect';
+
+      return $forbidden;
    }
 
    /**
@@ -104,16 +117,18 @@ class Item_Rack extends CommonDBRelation {
       ]);
       $link = new self();
 
-      Session::initNavigateListItems(
-         self::getType(),
-         //TRANS : %1$s is the itemtype name,
-         //        %2$s is the name of the item (used for headings of a list)
-         sprintf(
-            __('%1$s = %2$s'),
-            $rack->getTypeName(1),
-            $rack->getName()
-         )
-      );
+      if ($canedit) {
+         Session::initNavigateListItems(
+            self::getType(),
+            //TRANS : %1$s is the itemtype name,
+            //        %2$s is the name of the item (used for headings of a list)
+            sprintf(
+               __('%1$s = %2$s'),
+               $rack->getTypeName(1),
+               $rack->getName()
+            )
+         );
+      }
 
       echo "<div id='switchview'>";
       echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
@@ -123,12 +138,13 @@ class Item_Rack extends CommonDBRelation {
       $items = iterator_to_array($items);
       echo "<div id='viewlist'>";
 
-      /*$rack = new self();*/
+      echo "<h2>".__("Racked items")."</h2>";
       if (!count($items)) {
          echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr>";
          echo "</table>";
       } else {
          if ($canedit) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = [
                'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
                'container'       => 'mass'.__CLASS__.$rand
@@ -175,6 +191,9 @@ class Item_Rack extends CommonDBRelation {
             Html::closeForm();
          }
       }
+
+      PDU_Rack::showListForRack($rack);
+
       echo "</div>";
       echo "<div id='viewgraph'>";
 
@@ -281,6 +300,9 @@ class Item_Rack extends CommonDBRelation {
          echo "</tbody></table>";
       }
 
+      $nb_top_pdu = count(Pdu_Rack::getForRackSide($rack, Pdu_Rack::SIDE_TOP));
+      $nb_bot_pdu = count(Pdu_Rack::getForRackSide($rack, Pdu_Rack::SIDE_BOTTOM));
+
       echo '
       <div class="racks_row">
          <span class="racks_view_controls">
@@ -290,10 +312,18 @@ class Item_Rack extends CommonDBRelation {
                   id="toggle_text">'.__('texts').'</span>
             <div class="sep"></div>
          </span>
-         <div class="racks_col rack_side rack_front">
-            <h2>'.__('Front').'</h2>
-            <ul class="indexes"></ul>
-            <div class="grid-stack grid-stack-2 grid-rack" id="grid-front">
+         <div class="racks_col">
+         <h2>'.__('Front').'</h2>
+         <div class="rack_side rack_front">';
+      // append some spaces on top for having symetrical view between front and rear
+      for ($i = 0; $i < $nb_top_pdu; $i++) {
+         echo "<div class='virtual_pdu_space'></div>";
+      }
+      echo '<ul class="indexes"></ul>
+            <div class="grid-stack grid-stack-2 grid-rack"
+                 id="grid-front"
+                 data-gs-width="2"
+                 data-gs-height="'.($rack->fields['number_units'] + 1).'">
                <div class="racks_add"></div>';
       foreach ($data[Rack::FRONT] as $current_item) {
          echo self::getCell($current_item);
@@ -302,12 +332,23 @@ class Item_Rack extends CommonDBRelation {
                     data-gs-no-resize="true" data-gs-no-move="true"
                     data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'"></div>
             </div>
-            <ul class="indexes"></ul>
+            <ul class="indexes"></ul>';
+      // append some spaces on bottom for having symetrical view between front and rear
+      for ($i = 0; $i < $nb_bot_pdu; $i++) {
+         echo "<div class='virtual_pdu_space'></div>";
+      }
+      echo '</div>
          </div>
-         <div class="racks_col rack_side rack_rear">
-            <h2>'.__('Rear').'</h2>
-            <ul class="indexes"></ul>
-            <div class="grid-stack grid-stack-2 grid-rack" id="grid2-rear">
+         <div class="racks_col">
+            <h2>'.__('Rear').'</h2>';
+      echo '<div class="rack_side rack_rear">';
+      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_TOP);
+      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_LEFT);
+      echo '<ul class="indexes"></ul>
+            <div class="grid-stack grid-stack-2 grid-rack"
+                 id="grid2-rear"
+                 data-gs-width="2"
+                 data-gs-height="'.($rack->fields['number_units'] + 1).'">
                <div class="racks_add"></div>';
       foreach ($data[Rack::REAR] as $current_item) {
          echo self::getCell($current_item);
@@ -317,10 +358,15 @@ class Item_Rack extends CommonDBRelation {
                     data-gs-height="1" data-gs-width="2" data-gs-x="0" data-gs-y="'.$rack->fields['number_units'].'">
                </div>
             </div>
-            <ul class="indexes"></ul>
+            <ul class="indexes"></ul>';
+      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_RIGHT);
+      Pdu_Rack::showVizForRack($rack, Pdu_Rack::SIDE_BOTTOM);
+      echo '</div>';
+      echo '
          </div>
          <div class="racks_col">';
-      self::showStats($rack, $data);
+      self::showStats($rack);
+      Pdu_Rack::showStatsForRack($rack);
       echo '</div>'; // .racks_col
       echo '</div>'; // .racks_row
       echo '<div class="sep"></div>';
@@ -331,120 +377,24 @@ class Item_Rack extends CommonDBRelation {
       $ajax_url     = $CFG_GLPI['root_doc']."/ajax/rack.php";
 
       $js = <<<JAVASCRIPT
+      // init variables to pass to js/rack.js
+      var grid_link_url      = "{$link->getFormURL()}";
+      var grid_item_ajax_url = "{$ajax_url}";
+      var grid_rack_id       = $ID;
+      var grid_rack_units    = {$rack->fields['number_units']};
+      var grid_rack_add_tip  = "{$rack_add_tip}";
+
       $(function() {
-         $('#sviewlist').on('click', function() {
-            $('#viewlist').show();
-            $('#viewgraph').hide();
-            $(this).addClass('selected');
-            $('#sviewgraph').removeClass('selected');
-         });
-         $('#sviewgraph').on('click', function() {
-            $('#viewlist').hide();
-            $('#viewgraph').show();
-            $(this).addClass('selected');
-            $('#sviewlist').removeClass('selected');
-         });
+         // initialize grid with function defined in js/rack.js
+         initRack();
 
-         $('#toggle_images').on('click', function(){
-            $('#toggle_text').toggle();
-            $(this).toggleClass('active');
-            $('#viewgraph').toggleClass('clear_picture');
-         });
-
-         $('#toggle_text').on('click', function(){
-            $(this).toggleClass('active');
-            $('#viewgraph').toggleClass('clear_text');
-         });
-
-         $('.grid-stack').gridstack({
-            width: 2,
-            height: {$rack->fields['number_units']}+1,
-            cellHeight: 20,
-            verticalMargin: 1,
-            float: true,
-            disableOneColumnMode: true,
-            animate: true,
-            removeTimeout: 100,
-            disableResize: true,
-            draggable: {
-              handle: '.grid-stack-item-content',
-              appendTo: 'body',
-              containment: '.grid-stack',
-              cursor: 'move',
-              scroll: true,
-            }
-         });
-
-         for (var i = {$rack->fields['number_units']}; i >= 1; i--) {
-            // add index number front of each rows
-            $('.indexes').append('<li>' + i + '</li>');
-
-            // append cells for adding new items
-            $('.racks_add').append('<div class=\"cell_add\"><span class="tipcontent">{$rack_add_tip}</span></div>');
-         }
-
-         var lockAll = function() {
-            // lock all item (prevent pushing down elements)
-            $('.grid-stack').each(function (idx, gsEl) {
-               $(gsEl).data('gridstack').locked('.grid-stack-item', true);
-            });
-
-            // add containment to items, this avoid bad collisions on the start of the grid
-            $('.grid-stack .grid-stack-item').draggable('option', 'containment', 'parent');
-         };
-         lockAll(); // call it immediatly
-
-         // grid events
-         $('.cell_add').click(function() {
-            var index = {$rack->fields['number_units']} - $(this).index();
-            var side = ($(this).parents('.racks_col').hasClass('rack_front')
-                           ? 0  // front
-                           : 1); // rear
-            var current_grid = $(this).parents('.grid-stack').data('gridstack');
-
-            $.ajax({
-                  url : "{$link->getFormURL()}",
-                  data: {
-                     racks_id: $ID,
-                     orientation: side,
-                     position: index,
-                     ajax: true,
-                  },
-                  success: function(data) {
-                     $('#grid-dialog')
-                        .html(data)
-                        .dialog({
-                           modal: true,
-                           width: 'auto'
-                        });
-                  }
-               });
-         });
-
-         var x_before_drag = 0;
-         var y_before_drag = 0;
-         var dirty = false;
-         var getHpos = function(x, is_half_rack, is_rack_rear) {
-            if (!is_half_rack) {
-               return 0;
-            } else if (x == 0 && !is_rack_rear) {
-               return 1;
-            } else if (x == 0 && is_rack_rear) {
-               return 2;
-            } else if (x == 1 && is_rack_rear) {
-               return 1;
-            } else if (x == 1 && !is_rack_rear) {
-               return 2;
-            }
-         };
-
-         // drag&drop scenario:
+         // drag&drop scenario for item_rack:
          // - we start by storing position before drag
          // - we send position to db by ajax after drag stop event
          // - if ajax answer return a fail, we restore item to the old position
          //   and we display a message explaning the failure
          // - else we move the other side of asset (if exists)
-         $('.grid-stack')
+         $('.grid-stack.grid-rack')
             .on('change', function(event, items) {
                if (dirty) {
                   return;
@@ -454,11 +404,8 @@ class Item_Rack extends CommonDBRelation {
                $.each(items, function(index, item) {
                   var is_half_rack = item.el.hasClass('half_rack');
                   var is_el_rear   = item.el.hasClass('rear');
-                  var new_pos      = {$rack->fields['number_units']}
-                                     - item.y
-                                     - item.height
-                                     + 1;
-                  $.post('{$ajax_url}', {
+                  var new_pos      = grid_rack_units - item.y - item.height + 1;
+                  $.post(grid_item_ajax_url, {
                      id: item.id,
                      action: 'move_item',
                      position: new_pos,
@@ -494,45 +441,6 @@ class Item_Rack extends CommonDBRelation {
                   });
                });
             })
-            .on('dragstart', function(event, ui) {
-               var grid    = this;
-               var element = $(event.target);
-               var node    = element.data('_gridstack_node');
-
-               // store position before drag
-               x_before_drag = Number(node.x);
-               y_before_drag = Number(node.y);
-
-               // disable qtip
-               element.qtip('hide', true);
-            })
-            .on('click', function(event, ui) {
-               var grid    = this;
-               var element = $(event.target);
-               var el_url  = element.find('.itemrack_name').attr('href');
-
-               if (el_url) {
-                  window.location = el_url;
-               }
-            });
-
-         $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
-            var tipcontent = $(this).find('.tipcontent');
-            if (tipcontent.length) {
-               $(this).qtip({
-                  position: {
-                     my: 'left center',
-                     at: 'right center',
-                  },
-                  content: {
-                     text: tipcontent
-                  },
-                  style: {
-                     classes: 'qtip-shadow qtip-bootstrap rack_tipcontent'
-                  }
-               });
-            }
-         });
       });
 JAVASCRIPT;
       echo Html::scriptBlock($js);
@@ -599,8 +507,11 @@ JAVASCRIPT;
       $weight_prct = round(100 * $weight / max($rack->fields['max_weight'], 1));
       $power_prct  = round(100 * $power / max($rack->fields['max_power'], 1));
 
-      echo "<div class='rack_stats'>";
+      echo "<div id='rack_stats' class='rack_side_block'>";
 
+      echo "<h2>".__("Rack stats")."</h2>";
+
+      echo "<div class='rack_side_block_content'>";
       echo "<h3>".__("Space")."</h3>";
       Html::progressBar('rack_space', [
          'create' => true,
@@ -621,6 +532,7 @@ JAVASCRIPT;
          'percent' => $power_prct,
          'message' => $power." / ".$rack->fields['max_power']
       ]);
+      echo "</div>";
       echo "</div>";
    }
 
@@ -664,6 +576,11 @@ JAVASCRIPT;
       while ($row = $iterator->next()) {
          $used[$row['itemtype']][] = $row['items_id'];
       }
+      // find used pdu (not racked)
+      foreach (PDU_Rack::getUsed() as $used_pdu) {
+         $used['PDU'][] = $used_pdu['pdus_id'];
+      }
+      // get all reserved items
       $iterator = $DB->request([
          'FROM'  => $this->getTable(),
          'WHERE' => [
@@ -930,10 +847,12 @@ JAVASCRIPT;
                $icon".
                (!empty($gs_item['url'])
                   ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
-                  : "<span class='itemrack_name'>".$gs_item['name']."</span>").
-               (!$rear
-                  ? "<a href='{$gs_item['rel_url']}'><i class='fa fa-link rel-link' style='$fg_color_s'></i></a>"
-                  : "")."
+                  : "<span class='itemrack_name'>".$gs_item['name']."</span>")."
+               <a href='{$gs_item['rel_url']}'>
+                  <i class='fa fa-pencil rel-link'
+                     style='$fg_color_s'
+                     title='".__("Edit rack relation")."'></i>
+               </a>
                $tip
             </div>
          </div>";
