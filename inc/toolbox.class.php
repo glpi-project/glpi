@@ -506,7 +506,9 @@ class Toolbox {
       if (isset($_SESSION['glpi_use_mode'])
           && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && isCommandLine()) {
-         fwrite(STDERR, $text);
+         $stderr = fopen('php://stderr', 'w');
+         fwrite($stderr, $text);
+         fclose($stderr);
       }
       return $ok;
    }
