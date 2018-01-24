@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/infocom.class.php */
 
-class Infocom extends atoum {
+class Infocom extends \GLPITestCase {
 
    public function dataLinearAmortise() {
       return [

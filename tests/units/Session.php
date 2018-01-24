@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/session.class.php */
 
-class Session extends atoum {
+class Session extends \GLPITestCase {
 
    public function testAddMessageAfterRedirect() {
       $err_msg = 'Something is broken. Weird.';

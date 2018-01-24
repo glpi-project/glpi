@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class APIBaseClass extends atoum {
+abstract class APIBaseClass extends \atoum {
    protected $session_token;
    protected $http_client;
    protected $base_uri = "";
@@ -41,12 +41,14 @@ abstract class APIBaseClass extends atoum {
                                      $expected_code = 200);
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       $this->initSessionCredentials();
    }
 
    abstract public function initSessionCredentials();
 
    public function setUp() {
+      parent::setUp();
       // enable api config
       $config = new Config;
       $config->update(['id'                              => 1,

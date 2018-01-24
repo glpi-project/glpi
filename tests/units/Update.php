@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/update.class.php */
 
-class Update extends atoum {
+class Update extends \GLPITestCase {
 
    public function testConstructor() {
       global $DB;

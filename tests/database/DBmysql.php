@@ -32,13 +32,12 @@
 
 namespace tests\units;
 
-use \atoum;
-
-class DBmysql extends atoum {
+class DBmysql extends \GLPITestCase {
 
    private $olddb;
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       $this->olddb = new \DB();
       $this->olddb->dbdefault = 'glpitest0723';
       $this->olddb->connect();
@@ -46,6 +45,7 @@ class DBmysql extends atoum {
    }
 
    public function afterTestMethod($method) {
+      parent::afterTestMethod($method);
       $this->olddb->close();
    }
 

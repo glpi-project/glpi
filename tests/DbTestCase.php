@@ -32,66 +32,25 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
-class DbTestCase extends atoum {
-   private $int;
-   private $str;
-   protected $cached_methods = [];
-   protected $nscache;
+class DbTestCase extends \GLPITestCase {
 
    public function setUp() {
       global $DB;
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = [];
-
-      // By default, no session, not connected
-      $_SESSION = [
-         'glpi_use_mode'         => Session::NORMAL_MODE,
-         'glpi_currenttime'      => date("Y-m-d H:i:s"),
-         'glpiis_ids_visible'    => 0,
-         'glpiticket_timeline'   => 1
-      ];
-   }
-
-   public function beforeTestMethod($method) {
-      if (in_array($method, $this->cached_methods)) {
-         $this->nscache = 'glpitestcache' . GLPI_VERSION;
-         global $GLPI_CACHE;
-         //run with cache
-         define('CACHED_TESTS', true);
-         //ZendCache does not works with PHP5 acpu...
-         $adapter = (version_compare(PHP_VERSION, '7.0.0') >= 0) ? 'apcu' : 'apc';
-         $GLPI_CACHE = \Zend\Cache\StorageFactory::factory([
-            'adapter'   => $adapter,
-            'options'   => [
-               'namespace' => $this->nscache
-            ]
-         ]);
-      }
+      parent::setUp();
    }
 
    public function afterTestMethod($method) {
       global $DB;
 
-      if (in_array($method, $this->cached_methods)) {
-         global $GLPI_CACHE;
-         if ($GLPI_CACHE instanceof \Zend\Cache\Storage\Adapter\AbstractAdapter) {
-            $GLPI_CACHE->flush();
-         }
-         $GLPI_CACHE = false;
-      }
-
-      // Cleanup log directory
-      foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
-         if (file_exists($file)) {
-            unlink($file);
-         }
-      }
+      parent::afterTestMethod($method);
 
       // Need Innodb -- $DB->rollback()  -- workaround:
       foreach ($DB->objcreated as $table => $ids) {
          foreach ($ids as $id) {
-            $DB->query($q = "DELETE FROM `$table` WHERE `id`=$id");
+            $DB->delete($table, ['id' => $id]);
          }
       }
       unset($DB->objcreated);
@@ -107,26 +66,6 @@ class DbTestCase extends atoum {
       if (!$auth->login($user_name, $user_pass, true)) {
          $this->markTestSkipped('No login');
       }
-   }
-
-   /**
-    * Get a unique random string
-    */
-   protected function getUniqueString() {
-      if (is_null($this->str)) {
-         return $this->str = uniqid('str');
-      }
-      return $this->str .= 'x';
-   }
-
-   /**
-    * Get a unique random integer
-    */
-   protected function getUniqueInteger() {
-      if (is_null($this->int)) {
-         return $this->int = mt_rand(1000, 10000);
-      }
-      return $this->int++;
    }
 
    /**
