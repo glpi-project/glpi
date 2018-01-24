@@ -9494,6 +9494,7 @@ CREATE TABLE `glpi_pdus_plugs` (
   KEY `pdus_id` (`pdus_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `glpi_pdus_racks`;
 CREATE TABLE `glpi_pdus_racks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `racks_id` int(11) NOT NULL DEFAULT '0',
