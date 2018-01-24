@@ -79,9 +79,9 @@ class NotificationMailing implements NotificationInterface {
 
 
    static function testNotification() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $container;
 
-      $mmail = new GLPIMailer();
+      $mmail = $container->get('GLPIMailer');
 
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
       // For exchange

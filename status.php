@@ -47,9 +47,10 @@ $ok_master = true;
 $ok_slave  = true;
 $ok        = true;
 
+$dbconn = new DBConnection();
 // Check slave server connection
-if (DBConnection::isDBSlaveActive()) {
-   $DBslave = DBConnection::getDBSlaveConf();
+if ($dbconn->isDBSlaveActive()) {
+   $DBslave = $dbconn->getDBSlaveConf();
    if (is_array($DBslave->dbhost)) {
       $hosts = $DBslave->dbhost;
    } else {
@@ -57,7 +58,7 @@ if (DBConnection::isDBSlaveActive()) {
    }
 
    foreach ($hosts as $num => $name) {
-      $diff = DBConnection::getReplicateDelay($num);
+      $diff = $dbconn->getReplicateDelay($num);
       if (abs($diff) > 1000000000) {
          echo "GLPI_DBSLAVE_${num}_OFFLINE\n";
          $ok_slave = false;
@@ -73,7 +74,7 @@ if (DBConnection::isDBSlaveActive()) {
 }
 
 // Check main server connection
-if (DBConnection::establishDBConnection(false, true, false)) {
+if ($dbconn->establishDBConnection(false, true, false)) {
    echo "GLPI_DB_OK\n";
 } else {
    echo "GLPI_DB_PROBLEM\n";
@@ -100,7 +101,7 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 
 // Reestablished DB connection
 if (($ok_master || $ok_slave )
-    && DBConnection::establishDBConnection(false, false, false)) {
+    && $dbconn->establishDBConnection(false, false, false)) {
 
    // Check LDAP Auth connections
    $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');

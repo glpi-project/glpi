@@ -36,7 +36,7 @@
  * @return bool for success (will die for most error)
 **/
 function update085to0853() {
-   global $DB, $migration;
+   global $DB, $migration, $container;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = [];
@@ -64,7 +64,8 @@ function update085to0853() {
    }
 
    // Increase cron_limit
-   $current_config = Config::getConfigurationValues('core');
+   $config = $container->get('Config');
+   $current_config   = $config->getValues('core');
    if ($current_config['cron_limit'] = 1) {
       Config::setConfigurationValues('core', ['cron_limit' => 5]);
    }

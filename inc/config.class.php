@@ -2580,8 +2580,11 @@ class Config extends CommonDBTM {
     * @param $names    array    of config names to get
     *
     * @return array of config values
+    *
+    * @deprecated 9.3
    **/
    static function getConfigurationValues($context, array $names = []) {
+      Toolbox::deprecated('getConfigurationValues is deprecated, use getValues and get object from the DI');
       global $DB;
 
       $query = [
@@ -2603,6 +2606,35 @@ class Config extends CommonDBTM {
       return $result;
    }
 
+   /**
+    * Get config values
+    *
+    * @since 9.3
+    *
+    * @param string $context context to get values (default for glpi is core)
+    * @param array  $names   array of config names to get
+    *
+    * @return array of config values
+   **/
+   public function getValues($context, array $names = []) {
+      $query = [
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'context'   => $context
+         ]
+      ];
+
+      if (count($names) > 0) {
+         $query['WHERE']['name'] = $names;
+      }
+
+      $iterator = $this->DB->request($query);
+      $result = [];
+      while ($line = $iterator->next()) {
+         $result[$line['name']] = $line['value'];
+      }
+      return $result;
+   }
 
    /**
     * Set config values : create or update entry
@@ -2706,12 +2738,10 @@ class Config extends CommonDBTM {
     *
     * @return Zend\Cache\Storage\StorageInterface object or false
     */
-   public static function getCache($optname, $context = 'core') {
-      global $DB;
-
+   public function getCache($optname, $context = 'core') {
       if (defined('TU_USER') && !defined('CACHED_TESTS')
-         || !$DB || !$DB->tableExists(self::getTable())
-         || !$DB->fieldExists(self::getTable(), 'context')) {
+         || !$this->DB || !$this->DB->tableExists($this->getTable())
+         || !$this->DB->fieldExists($this->getTable(), 'context')) {
          return false;
       }
 
@@ -2730,7 +2760,7 @@ class Config extends CommonDBTM {
        *
        */
       // Read configuration
-      $conf = self::getConfigurationValues($context, [$optname]);
+      $conf = $this->getValues($context, [$optname]);
 
       // Adapter default options
       $opt = [];
@@ -2739,7 +2769,7 @@ class Config extends CommonDBTM {
             return false;
          }
          $opt = json_decode($conf[$optname], true);
-         //Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
+         Toolbox::logDebug("CACHE CONFIG  $optname", $opt);
       }
       if (!isset($opt['options']['namespace'])) {
          $opt['options']['namespace'] = "glpi_${optname}_" . GLPI_VERSION;
@@ -2792,10 +2822,10 @@ class Config extends CommonDBTM {
          $cache = Zend\Cache\StorageFactory::factory($opt);
       } catch (Exception $e) {
          if (Session::DEBUG_MODE == $_SESSION['glpi_use_mode']) {
-            Toolbox::logDebug($e->getMessage());
+            Toolbox::logError($e->getMessage());
          }
       }
-      //Toolbox::logDebug("CACHE $optname", get_class($cache));
+      Toolbox::logDebug("CACHE $optname", get_class($cache));
       return $cache;
    }
 

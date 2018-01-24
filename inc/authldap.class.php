@@ -1619,7 +1619,7 @@ class AuthLDAP extends CommonDBTM {
                   $uid = self::getFieldValue($info[$ligne], $field_for_sync);
 
                   if ($login_field != $field_for_sync && !isset($info[$ligne][$login_field])) {
-                     Toolbox::logDebug("Missing field $login_field for LDAP entry $field_for_sync $uid");
+                     Toolbox::logWarning("Missing field $login_field for LDAP entry $field_for_sync $uid");
                      //Login field may be missing... Skip the user
                      continue;
                   }
@@ -2422,7 +2422,7 @@ class AuthLDAP extends CommonDBTM {
                      'id'     => $users_id];
             }
          } catch (\RuntimeException $e) {
-            Toolbox::logDebug($e->getMessage());
+            Toolbox::logError($e->getMessage());
             return false;
          }
       } else {

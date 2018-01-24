@@ -542,7 +542,7 @@ class Session {
     * @return nothing (make an include)
    **/
    static function loadLanguage($forcelang = '') {
-      global $LANG, $CFG_GLPI, $TRANSLATE, $GLPI_CACHE;
+      global $LANG, $CFG_GLPI, $TRANSLATE, $GLPI_CACHE, $container;
 
       $file = "";
 
@@ -582,7 +582,8 @@ class Session {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
-      $cache = Config::getCache('cache_trans');
+
+      $cache = $container->get('GLPI_TR_CACHE');
       if ($cache !== false) {
          $TRANSLATE->setCache($cache);
       }

@@ -120,7 +120,9 @@ class Update extends CommonGLPI {
          $currents['dbversion']  = $currents['version'];
          $currents['language']   = trim($DB->result($result, 0, 1));
       } else {
-         $currents = Config::getConfigurationValues(
+         global $container;
+         $config = $container->get('Config');
+         $currents = $config->getValues(
             'core',
             ['version', 'dbversion', 'language']
          );

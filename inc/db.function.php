@@ -44,7 +44,8 @@ if (!defined('GLPI_ROOT')) {
  * @deprecated 9.2 see DbUtils::getForeignKeyFieldForTable()
 **/
 function getForeignKeyFieldForTable($table) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getForeignKeyFieldForTable($table);
 }
 
@@ -61,7 +62,8 @@ function getForeignKeyFieldForTable($table) {
  * @deprecated 9.2 see DbUtils::isForeignKeyField()
 **/
 function isForeignKeyField($field) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->isForeignKeyField($field);
 }
 
@@ -88,7 +90,8 @@ function getForeignKeyFieldForItemType($itemtype) {
  * @deprecated 9.2 see DbUtils::getTableNameForForeignKeyField()
 **/
 function getTableNameForForeignKeyField($fkname) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTableNameForForeignKeyField($fkname);
 }
 
@@ -103,7 +106,8 @@ function getTableNameForForeignKeyField($fkname) {
  * @deprecated 9.2 see DbUtils::getItemTypeForTable()
 **/
 function getItemTypeForTable($table) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getItemTypeForTable($table);
 }
 
@@ -117,7 +121,8 @@ function getItemTypeForTable($table) {
  * @deprecated 9.2 see DbUtils::getItemtypeForForeignKeyField()
  */
 function getItemtypeForForeignKeyField($fkname) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getItemtypeForForeignKeyField($fkname);
 }
 
@@ -131,7 +136,8 @@ function getItemtypeForForeignKeyField($fkname) {
  * @deprecated 9.2 see DbUtils::getTableForItemType()
 **/
 function getTableForItemType($itemtype) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTableForItemType($itemtype);
 }
 
@@ -148,7 +154,8 @@ function getTableForItemType($itemtype) {
  * @deprecated 9.2 see DbUtils::getItemForItemtype()
 **/
 function getItemForItemtype($itemtype) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getItemForItemtype($itemtype);
 }
 
@@ -163,7 +170,8 @@ function getItemForItemtype($itemtype) {
  * @deprecated 9.2 see DbUtils::getPlural()
 **/
 function getPlural($string) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getPlural($string);
 }
 
@@ -178,7 +186,8 @@ function getPlural($string) {
  * @deprecated 9.2 see DbUtils::getSingular()
 **/
 function getSingular($string) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getSingular($string);
 }
 
@@ -194,7 +203,8 @@ function getSingular($string) {
  * @deprecated 9.2 see DbUtils::countElementsInTable()
 **/
 function countElementsInTable($table, $condition = "") {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->countElementsInTable($table, $condition);
 }
 
@@ -210,7 +220,8 @@ function countElementsInTable($table, $condition = "") {
  * @deprecated 9.2 see DbUtils::countDistinctElementsInTable()
 **/
 function countDistinctElementsInTable($table, $field, $condition = "") {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->countDistinctElementsInTable($table, $field, $condition);
 }
 
@@ -225,7 +236,8 @@ function countDistinctElementsInTable($table, $field, $condition = "") {
  * @deprecated 9.2 see DbUtils::countElementsInTableForMyEntities()
 **/
 function countElementsInTableForMyEntities($table, $condition = '') {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->countElementsInTableForMyEntities($table, $condition);
 }
 
@@ -243,7 +255,8 @@ function countElementsInTableForMyEntities($table, $condition = '') {
  * @deprecated 9.2 see DbUtils::countElementsInTableForEntity()
 **/
 function countElementsInTableForEntity($table, $entity, $condition = '', $recursive = true) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
 }
 
@@ -262,7 +275,8 @@ function countElementsInTableForEntity($table, $entity, $condition = '', $recurs
  * @deprecated 9.2 see DbUtils::getAllDataFromTable()
 **/
 function getAllDatasFromTable($table, $condition = '', $usecache = false, $order = '') {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getAllDataFromTable($table, $condition, $usecache, $order);
 }
 
@@ -281,7 +295,8 @@ function getAllDatasFromTable($table, $condition = '', $usecache = false, $order
  * @deprecated 9.2 see DbUtils::getTreeLeafValueName()
 **/
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTreeLeafValueName($table, $ID, $withcomment, $translate);
 }
 
@@ -302,7 +317,8 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  * @deprecated 9.2 see DbUtils::getTreeValueCompleteName()
 **/
 function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTreeValueCompleteName($table, $ID, $withcomment, $translate, $tooltip);
 }
 
@@ -321,7 +337,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @deprecated 9.2 see DbUtils::getTreeValueName()
 **/
 function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTreeValueName($table, $ID, $wholename, $level);
 }
 
@@ -337,7 +354,8 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0) {
  * @deprecated 9.2 see DbUtils::getAncestorsOf()
 **/
 function getAncestorsOf($table, $items_id) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getAncestorsOf($table, $items_id);
 }
 
@@ -353,7 +371,8 @@ function getAncestorsOf($table, $items_id) {
  * @deprecated 9.2 see DbUtils::getSonsOf()
 **/
 function getSonsOf($table, $IDf) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getSonsOf($table, $IDf);
 }
 
@@ -371,7 +390,8 @@ function getSonsOf($table, $IDf) {
  * @deprecated 9.2 see DbUtils::getSonsAndAncestorsOf()
 **/
 function getSonsAndAncestorsOf($table, $IDf) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getSonsAndAncestorsOf($table, $IDf);
 }
 
@@ -387,7 +407,8 @@ function getSonsAndAncestorsOf($table, $IDf) {
  * @deprecated 9.2 see DbUtils::getTreeForItem()
 **/
 function getTreeForItem($table, $IDf) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getTreeForItem($table, $IDf);
 }
 
@@ -403,7 +424,8 @@ function getTreeForItem($table, $IDf) {
  * @deprecated 9.2 see DbUtils::constructTreeFromList()
 **/
 function contructTreeFromList($list, $root) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->constructTreeFromList($list, $root);
 }
 
@@ -419,7 +441,8 @@ function contructTreeFromList($list, $root) {
  * @deprecated 9.2 see DbUtils::constructListFromTree()
 **/
 function contructListFromTree($tree, $parent = 0) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->constructListFromTree($tree, $parent);
 }
 
@@ -436,7 +459,8 @@ function contructListFromTree($tree, $parent = 0) {
  * @deprecated 9.2 see DbUtils::getRealQueryForTreeItem()
 **/
 function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getRealQueryForTreeItem($table, $IDf, $reallink);
 }
 
@@ -451,7 +475,8 @@ function getRealQueryForTreeItem($table, $IDf, $reallink = "") {
  * @deprecated 9.2 see DbUtils::regenerateTreeCompleteName()
 **/
 function regenerateTreeCompleteName($table) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->regenerateTreeCompleteName($table);
 }
 
@@ -469,7 +494,8 @@ function regenerateTreeCompleteName($table) {
  * @deprecated 9.2 see DbUtils::getNextItem()
 **/
 function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getNextItem($table, $ID, $condition, $nextprev_item);
 }
 
@@ -487,7 +513,8 @@ function getNextItem($table, $ID, $condition = "", $nextprev_item = "name") {
  * @deprecated 9.2 see DbUtils::getPreviousItem()
 **/
 function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getPreviousItem($table, $ID, $condition, $nextprev_item);
 }
 
@@ -508,7 +535,8 @@ function getPreviousItem($table, $ID, $condition = "", $nextprev_item = "name") 
  * @deprecated 9.2 see DbUtils::formatUserName()
 **/
 function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->formatUserName($ID, $login, $realname, $firstname, $link, $cut, $force_config);
 }
 
@@ -525,7 +553,8 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  * @deprecated 9.2 see DbUtils::getUserName()
 **/
 function getUserName($ID, $link = 0) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getUserName($ID, $link);
 }
 
@@ -577,7 +606,8 @@ function FieldExists($table, $field, $usecache = true) {
  * @deprecated 9.2 Use DbUtils::isIndex()
 **/
 function isIndex($table, $field) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->isIndex($table, $field);
 }
 
@@ -596,7 +626,8 @@ function isIndex($table, $field) {
  * @deprecated 9.2 Use DbUtils::autoName()
 **/
 function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
 }
 
@@ -609,7 +640,8 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  * @deprecated 9.2 Use DbUtils::autoName()
 **/
 function closeDBConnections() {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->closeDBConnections();
 }
 
@@ -641,7 +673,8 @@ function formatOutputWebLink($link) {
  * @deprecated 9.2 Use DbUtils::getDateRequest()
 **/
 function getDateRequest($field, $begin, $end) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getDateRequest($field, $begin, $end);
 }
 
@@ -656,7 +689,8 @@ function getDateRequest($field, $begin, $end) {
  * @deprecated 9.2 Use DbUtils::exportArrayToDB()
 **/
 function exportArrayToDB($TAB) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->exportArrayToDB($TAB);
 }
 
@@ -671,7 +705,8 @@ function exportArrayToDB($TAB) {
  * @deprecated 9.2 Use DbUtils::importArrayFromDB()
 **/
 function importArrayFromDB($DATA) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->importArrayFromDB($DATA);
 }
 
@@ -686,7 +721,8 @@ function importArrayFromDB($DATA) {
  * @deprecated 9.2 Use DbUtils::getHourFromSql()
 **/
 function get_hour_from_sql($time) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getHourFromSql($time);
 }
 
@@ -699,7 +735,8 @@ function get_hour_from_sql($time) {
  * @deprecated 9.2 Use DbUtils::getDbRelations()
 **/
 function getDbRelations() {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getDbRelations();
 }
 
@@ -725,7 +762,8 @@ function getDbRelations() {
 **/
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "", $value = '',
                                     $is_recursive = false, $complete_request = false) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getEntitiesRestrictRequest(
       $separator,
       $table,
@@ -758,7 +796,8 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  **/
 function getEntitiesRestrictCriteria($table = '', $field = '', $value = '',
                                      $is_recursive = false, $complete_request = false) {
-   $dbu = new DbUtils();
+   global $container;
+   $dbu = $container->get('DbUtils');
    return $dbu->getEntitiesRestrictCriteria(
       $table,
       $field,

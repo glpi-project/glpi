@@ -75,5 +75,7 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->display();
 
+Toolbox::logDebug('Test MONOLOG');
+
 Html::footer();
 
