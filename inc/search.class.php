@@ -5143,7 +5143,8 @@ class Search {
       $default_values["criteria"]    = [0 => ['field' => $default_criteria,
                                                         'link'  => 'contains',
                                                         'value' => '']];
-      $default_values["metacriteria"]    = [];
+      // Do not set a default value for metacriteria else
+      // $default_values["metacriteria"]    = [];
 
       // Reorg search array
       // start
