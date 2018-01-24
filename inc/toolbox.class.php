@@ -383,7 +383,7 @@ class Toolbox {
     *
     * @return void
    **/
-   static function log($logger = null, $level = Logger::WARNING, $args = null) {
+   private static function log($logger = null, $level = Logger::WARNING, $args = null) {
       static $tps = 0;
 
       $extra = [];
@@ -399,12 +399,12 @@ class Toolbox {
       if (function_exists('debug_backtrace')) {
          $bt  = debug_backtrace();
          if (count($bt) > 1) {
-            if (isset($bt[1]['class'])) {
-               $msg .= $bt[1]['class'].'::';
+            if (isset($bt[2]['class'])) {
+               $msg .= $bt[2]['class'].'::';
             }
-            $msg .= $bt[1]['function'].'() in ';
+            $msg .= $bt[2]['function'].'() in ';
          }
-         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'] . "\n";
+         $msg .= $bt[1]['file'] . ' line ' . $bt[1]['line'] . "\n";
       }
 
       if ($args == null) {
@@ -431,9 +431,9 @@ class Toolbox {
       }
       $logger->addRecord($level, $msg, $extra);
 
-      if (defined('TU_USER') && $level >= Logger::NOTICE) {
+      /*if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
-      }
+      }*/
    }
 
    /**
@@ -470,11 +470,15 @@ class Toolbox {
    static function logSqlError() {
       global $container;
       $logger = $container->get('GLPISQLLog');
+      $args = func_get_args();
+      $msg = $args[0];
       try {
-         self::log($logger, Logger::ERROR, func_get_args());
+         self::log($logger, Logger::ERROR, $args);
+      } catch (\RuntimeException $e) {
+         $msg = $e->getMesage();
       } finally {
          if (class_exists('GlpitestSQLError')) { // For unit test
-            throw new GlpitestSQLError(func_get_args());
+            throw new \GlpitestSQLError($msg);
          }
       }
    }
