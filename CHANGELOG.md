@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [9.3] Unreleased
 
 ### Changed
+- Switch MySQL engine from MyIsam to Innodb
 - Rework solutions for Tickets, Problems and Changes to support history
 
 ### API changes
