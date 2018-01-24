@@ -129,10 +129,20 @@ class DBmysqlIterator extends DbTestCase {
 
 
    public function testDebug() {
-      $it = null;
+      $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+      $logger = $this->container->get('GLPISQLLog');
+      foreach ($logger->getHandlers() as $handler) {
+         if ($handler instanceof TestHandler) {
+            break;
+         }
+      }
+      var_dump($handler);
+      //hasRecord / hasRecords with level as argument
+      //hasRcordThatContains
+      //hasRcordThatMatches
       $this->exception(
-         function () use (&$it) {
-            $it = $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+         function () {
+            $this->it->execute('foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
          }
       )->message
          ->contains('From DBmysqlIterator');

@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\TestHandler;
 use Interop\Container\ContainerInterface;
 use Monolog\Formatter\LineFormatter;
 
@@ -144,30 +145,43 @@ return [
          return Logger::WARNING;
       }
    }),
+   'GLPITestHandler' => DI\factory(function (ContainerInterface $c) {
+      return new TestHandler($c->get('log.level'));
+   }),
+   'GLPISqlTestHandler' => DI\factory(function (ContainerInterface $c) {
+      return new TestHandler($c->get('log.level'));
+   }),
    'GLPIPHPLog'      => DI\factory(function (ContainerInterface $c) {
       $logger = new Logger('glpiphplog');
 
-      $fileHandler = new StreamHandler(
-         GLPI_LOG_DIR . "/php-errors.log",
-         $c->get('log.level')
-      );
-      $formatter = new LineFormatter(null, null, true, true);
-      $fileHandler->setFormatter($formatter);
-
-      $logger->pushHandler($fileHandler);
+      if (defined('TU_USER')) {
+         $handler = $c->get('GLPITestHandler');
+      } else {
+         $handler = new StreamHandler(
+            GLPI_LOG_DIR . "/php-errors.log",
+            $c->get('log.level')
+         );
+         $formatter = new LineFormatter(null, null, true, true);
+         $handler->setFormatter($formatter);
+      }
+      $logger->pushHandler($handler);
       return $logger;
    }),
    'GLPISQLLog'      => DI\factory(function (ContainerInterface $c) {
       $logger = new Logger('glpisqllog');
 
-      $fileHandler = new StreamHandler(
-         GLPI_LOG_DIR . "/sql-errors.log",
-         $c->get('log.level')
-      );
-      $formatter = new LineFormatter(null, null, true, true);
-      $fileHandler->setFormatter($formatter);
+      if (defined('TU_USER')) {
+         $handler = $c->get('GLPISqlTestHandler');
+      } else {
+         $handler = new StreamHandler(
+            GLPI_LOG_DIR . "/sql-errors.log",
+            $c->get('log.level')
+         );
+         $formatter = new LineFormatter(null, null, true, true);
+         $handler->setFormatter($formatter);
+      }
 
-      $logger->pushHandler($fileHandler);
+      $logger->pushHandler($handler);
       return $logger;
    })
 

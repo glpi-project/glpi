@@ -37,8 +37,12 @@ class GLPITestCase extends atoum {
    private $str;
    protected $cached_methods = [];
    protected $nscache;
+   protected $container;
 
    public function setUp() {
+      global $container; //FIXME: how to avoid this? //Also find how to make that work...
+      $this->container = $container;
+
       // By default, no session, not connected
       $_SESSION = [
          'glpi_use_mode'         => Session::NORMAL_MODE,
