@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/dbmysql.class.php */
 
-class DB extends atoum {
+class DB extends \GLPITestCase {
 
    public function testTableExist() {
       $this

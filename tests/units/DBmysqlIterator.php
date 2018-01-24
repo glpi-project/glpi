@@ -41,6 +41,7 @@ class DBmysqlIterator extends DbTestCase {
    private $it;
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       $this->it = new \DBmysqlIterator(null);
    }
 

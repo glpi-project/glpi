@@ -32,19 +32,18 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/migration.class.php */
 /**
  * @engine inline
  */
-class Migration extends atoum {
+class Migration extends \GLPITestCase {
 
    private $db;
    private $migration;
    private $queries;
 
    public function beforeTestMethod($method) {
+      parent::beforeTestMethod($method);
       if ($method !== 'testConstructor') {
          $this->db = new \mock\DB();
          $queries = [];

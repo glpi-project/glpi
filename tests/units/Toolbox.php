@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/toolbox.class.php */
 
-class Toolbox extends atoum {
+class Toolbox extends \GLPITestCase {
 
    public function testGetRandomString() {
       for ($len = 20; $len < 50; $len += 5) {

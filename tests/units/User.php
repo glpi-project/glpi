@@ -32,11 +32,10 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/user.class.php */
 
-class User extends atoum {
+class User extends \GLPITestCase {
+
    public function testGenerateUserToken() {
       $user = getItemByTypeName('User', TU_USER);
       $this->variable($user->fields['personal_token_date'])->isNull();

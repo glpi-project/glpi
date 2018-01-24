@@ -32,11 +32,9 @@
 
 namespace tests\units;
 
-use \atoum;
-
 /* Test for inc/html.class.php */
 
-class Html extends atoum {
+class Html extends \GLPITestCase {
 
    public function testConvDate() {
       $this->variable(\Html::convDate(null))->isNull();
