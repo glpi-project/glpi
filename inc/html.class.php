@@ -4765,7 +4765,7 @@ class Html {
    static function css($url, $options = [], $minify = true) {
 
       if (!isset($options['media']) || $options['media'] == '') {
-         $options['media'] = 'screen';
+         $options['media'] = 'all';
       }
 
       $version = GLPI_VERSION;

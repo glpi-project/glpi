@@ -424,7 +424,7 @@ class Html extends \GLPITestCase {
       $dir = str_replace(GLPI_ROOT, '', GLPI_TMP_DIR);
       $base_expected = '<link rel="stylesheet" type="text/css" href="'.
          $CFG_GLPI['root_doc'] . $dir .'/%url?v='. GLPI_VERSION .'" %attrs>';
-      $base_attrs = 'media="screen"';
+      $base_attrs = 'media="all"';
 
       //create test files
       foreach ($fake_files as $fake_file) {
