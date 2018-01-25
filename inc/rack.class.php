@@ -666,12 +666,29 @@ class Rack extends CommonDBTM {
       }
       echo "</style>";
 
+      $blueprint = "";
+      $blueprint_ctrl = "";
+      if (strlen($room->fields['blueprint'])) {
+         $blueprint = "
+            <div class='blueprint'
+                 style='background: url({$room->fields['blueprint']}) no-repeat top left/100% 100%;
+                        height: ".$grid_h."px;></div>";
+         $blueprint_ctrl = "<span class='mini_toggle active'
+                                  id='toggle_blueprint'>".__('Blueprint')."</span>";
+      }
+
       echo "
       <div class='grid-room' style='width: ".($grid_w + 16)."px; height: ".$grid_h."px'>
-      <ul class='indexes indexes-x'></ul>
-      <ul class='indexes indexes-y'></ul>
-      <div class='racks_add' style='width: ".$grid_w."px'></div>
-      <div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
+         <span class='racks_view_controls'>
+            $blueprint_ctrl
+            <span class='mini_toggle active'
+                  id='toggle_grid'>".__('Grid')."</span>
+            <div class='sep'></div>
+         </span>
+         <ul class='indexes indexes-x'></ul>
+         <ul class='indexes indexes-y'></ul>
+         <div class='racks_add' style='width: ".$grid_w."px'></div>
+         <div class='grid-stack grid-stack-$cols' style='width: ".$grid_w."px'>";
 
       foreach ($cells as $cell) {
          if ($rack->getFromDB($cell['id'])) {
@@ -689,6 +706,7 @@ class Rack extends CommonDBTM {
                  data-gs-y='$rows'></div>";
 
       echo "</div>"; //.grid-stack
+      echo $blueprint;
       echo "</div>"; //.grid-room
       echo "<div class='sep'></div>";
       echo "<div id='grid-dialog'></div>";
@@ -697,18 +715,27 @@ class Rack extends CommonDBTM {
       $rack_add_tip = __s('Insert a rack here');
       $js = <<<JAVASCRIPT
       $(function() {
-         $('#sviewlist').on('click', function() {
-            $('#viewlist').show();
-            $('#viewgraph').hide();
-            $(this).addClass('selected');
-            $('#sviewgraph').removeClass('selected');
-         });
-         $('#sviewgraph').on('click', function() {
-            $('#viewlist').hide();
-            $('#viewgraph').show();
-            $(this).addClass('selected');
-            $('#sviewlist').removeClass('selected');
-         });
+         $(document)
+            .on('click', '#sviewlist', function() {
+               $('#viewlist').show();
+               $('#viewgraph').hide();
+               $(this).addClass('selected');
+               $('#sviewgraph').removeClass('selected');
+            })
+            .on('click', '#sviewgraph', function() {
+               $('#viewlist').hide();
+               $('#viewgraph').show();
+               $(this).addClass('selected');
+               $('#sviewlist').removeClass('selected');
+            })
+            .on("click", "#toggle_blueprint", function() {
+               $(this).toggleClass('active');
+               $('#viewgraph').toggleClass('clear_blueprint');
+            })
+            .on("click", "#toggle_grid", function() {
+               $(this).toggleClass('active');
+               $('#viewgraph').toggleClass('clear_grid');
+            })
 
          $('.grid-room .grid-stack').gridstack({
             width: $cols,
