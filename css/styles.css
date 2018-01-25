@@ -4996,6 +4996,9 @@ ul.indexes {
    margin-left: 2px;
    float: left;
    position: relative;
+}
+
+.racks_col:not(:last-child) {
    margin-right: 40px;
 }
 
@@ -5008,8 +5011,22 @@ ul.indexes {
 
 .racks_col h2 {
    font-size: 1em;
-   color: #959595;
+   color: #555;
+   background-color: #e6e6e6;
    height: 18px;
+   margin: 0;
+   padding: 5px 0;
+}
+
+@media screen and (max-width: 900px) {
+   .racks_col:not(:last-child) {
+      margin-right: 0;
+      margin-bottom: 15px;
+   }
+
+   #viewgraph {
+      min-width: 100%;
+   }
 }
 
 .racks_add {
