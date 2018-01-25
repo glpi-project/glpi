@@ -4898,6 +4898,15 @@ ul.indexes {
    overflow-y: hidden;
 }
 
+.grid-room .blueprint {
+   margin-left: 15px;
+   width: calc(100% - 16px);
+}
+
+.clear_blueprint .grid-room .blueprint {
+   background: none !important;
+}
+
 .grid-room .grid-stack {
    border: 1px solid #EEEEEE;
    float: left;
@@ -4905,6 +4914,10 @@ ul.indexes {
    background-size: 40px 39px;
    background-image: linear-gradient(to right, #EEEEEE 1px, transparent 1px),
                      linear-gradient(to bottom, #EEEEEE 1px, transparent 1px);
+}
+
+.clear_grid .grid-room .grid-stack {
+   background-image: none;
 }
 
 .grid-room .grid-stack-item {
@@ -4968,6 +4981,10 @@ ul.indexes {
    width: 10px;
    height: 39px;
    line-height: 40px;
+}
+
+.clear_grid .grid-room ul.indexes {
+   visibility: hidden;
 }
 
 .grid-room .racks_add {

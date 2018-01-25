@@ -9223,6 +9223,7 @@ CREATE TABLE `glpi_dcrooms` (
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `vis_cols` int(11) DEFAULT NULL,
   `vis_rows` int(11) DEFAULT NULL,
+  `blueprint` text COLLATE utf8_unicode_ci,
   `datacenters_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,

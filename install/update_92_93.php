@@ -240,6 +240,7 @@ function update92to93() {
                   `locations_id` int(11) NOT NULL DEFAULT '0',
                   `vis_cols` int(11) DEFAULT NULL,
                   `vis_rows` int(11) DEFAULT NULL,
+                  `blueprint` text COLLATE utf8_unicode_ci,
                   `datacenters_id` int(11) NOT NULL DEFAULT '0',
                   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
@@ -252,6 +253,9 @@ function update92to93() {
                   KEY `is_deleted` (`is_deleted`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "9.3 add table glpi_dcrooms");
+   }
+   if (!$DB->fieldExists('glpi_dcrooms', 'blueprint')) {
+      $migration->addField('glpi_dcrooms', 'blueprint', 'text', ['after' => 'vis_rows']);
    }
 
    if (!$DB->tableExists('glpi_rackmodels')) {
