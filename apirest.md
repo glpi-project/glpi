@@ -1309,6 +1309,10 @@ You miss to provide Session-Token in header of your HTTP request.
 
 The current API requires an App-Token header for using its methods.
 
+### ERROR_WRONG_APP_TOKEN_PARAMETER
+
+It seems the provided application token doesn't exists in GLPI API configuration.
+
 ### ERROR_NOT_DELETED
 
 You must mark the item for deletion before actually deleting it
