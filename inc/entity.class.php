@@ -1090,7 +1090,7 @@ class Entity extends CommonTreeDropdown {
 
       $rand = mt_rand();
 
-      if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
+      if (Session::getCurrentInterface() == 'helpdesk') {
          $actionurl = $CFG_GLPI["root_doc"]."/front/helpdesk.public.php?active_entity=";
       } else {
          $actionurl = $CFG_GLPI["root_doc"]."/front/central.php?active_entity=";
