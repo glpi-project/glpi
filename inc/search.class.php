@@ -5488,7 +5488,7 @@ class Search {
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
-                && ($key == 'is_deleted' || $key == 'as_map' || !isset($saved_params[$key])) // retrieve session only if not a new request
+                && ($key == 'is_deleted' || $key == 'as_map' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
