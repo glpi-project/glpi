@@ -6069,6 +6069,18 @@ class Ticket extends CommonITILObject {
                                     'items_id' => $item->getID()]);
          echo "</div>";
       }
+
+      if ($item->getID()
+          && ($item->getType() == 'User')
+          && self::canCreate()
+          && !(!empty($withtemplate) && ($withtemplate == 2))) {
+         echo "<div class='firstbloc'>";
+         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
+                              '_add_fromitem', __('New ticket for this item...'),
+                              ['_users_id_requester' => $item->getID()]);
+         echo "</div>";
+      }
+
       echo "<div>";
 
       if ($number > 0) {
@@ -6092,18 +6104,6 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
-      }
-
-      if ($item->getID()
-          && ($item->getType() == 'User')
-          && self::canCreate()
-          && !(!empty($withtemplate) && ($withtemplate == 2))
-          && isset($item->fields['is_template']) && ($item->fields['is_template'] == 0)) {
-         echo "<tr><td class='tab_bg_2 center b' colspan='$colspan'>";
-         Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
-                              '_add_fromitem', __('New ticket for this item...'),
-                              ['_users_id_requester' => $item->getID()]);
-         echo "</td></tr>";
       }
 
       // Ticket list
