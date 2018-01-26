@@ -34,8 +34,10 @@
 * @brief
 */
 
+$ajax = false;
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "searchoptionvalue.php")) {
+   $ajax = true;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -47,8 +49,9 @@ Session::checkLoginUser();
 
 if (isset($_POST['searchtype'])) {
    $searchopt      = $_POST['searchopt'];
-   $_POST['value'] = rawurldecode($_POST['value']);
-
+   if ($ajax) {
+      $_POST['value'] = rawurldecode($_POST['value']);
+   }
    $fieldname = 'criteria';
    if (isset($_POST['meta']) && $_POST['meta']) {
       $fieldname = 'metacriteria';
