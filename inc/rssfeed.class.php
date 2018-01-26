@@ -90,14 +90,14 @@ class RSSFeed extends CommonDBVisible {
    static function canCreate() {
 
       return (Session::haveRight(self::$rightname, CREATE)
-              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+              || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
    static function canView() {
 
       return (Session::haveRight('rssfeed_public', READ)
-              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+              || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -129,7 +129,7 @@ class RSSFeed extends CommonDBVisible {
     * for personal rss feed
    **/
    static function canUpdate() {
-      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+      return (Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -138,7 +138,7 @@ class RSSFeed extends CommonDBVisible {
     * for personal rss feed
    **/
    static function canPurge() {
-      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+      return (Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -847,7 +847,7 @@ class RSSFeed extends CommonDBVisible {
       if ($personal) {
 
          /// Personal notes only for central view
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         if (Session::getCurrentInterface() == 'helpdesk') {
             return false;
          }
 
@@ -868,7 +868,7 @@ class RSSFeed extends CommonDBVisible {
 
          $restrict_user = '1';
          // Only personal on central so do not keep it
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (Session::getCurrentInterface() == 'central') {
             $restrict_user = "`glpi_rssfeeds`.`users_id` <> '$users_id'";
          }
 
@@ -879,7 +879,7 @@ class RSSFeed extends CommonDBVisible {
                          AND ".self::addVisibilityRestrict()."
                    ORDER BY `glpi_rssfeeds`.`name`";
 
-         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+         if (Session::getCurrentInterface() == 'central') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/rssfeed.php\">".
                        _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber())."</a>";
          } else {

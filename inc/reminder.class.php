@@ -69,14 +69,14 @@ class Reminder extends CommonDBVisible {
    static function canCreate() {
 
       return (Session::haveRight(self::$rightname, CREATE)
-              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+              || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
    static function canView() {
 
       return (Session::haveRight(self::$rightname, READ)
-              || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
+              || Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -121,7 +121,7 @@ class Reminder extends CommonDBVisible {
     * for personnal reminder
    **/
    static function canUpdate() {
-      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+      return (Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -130,7 +130,7 @@ class Reminder extends CommonDBVisible {
     * for personnal reminder
    **/
    static function canPurge() {
-      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+      return (Session::getCurrentInterface() != 'helpdesk');
    }
 
 
@@ -1043,7 +1043,7 @@ class Reminder extends CommonDBVisible {
       if ($personal) {
 
          /// Personal notes only for central view
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         if (Session::getCurrentInterface() == 'helpdesk') {
             return false;
          }
 
@@ -1066,7 +1066,7 @@ class Reminder extends CommonDBVisible {
 
          $restrict_user = '1';
          // Only personal on central so do not keep it
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (Session::getCurrentInterface() == 'central') {
             $restrict_user = "`glpi_reminders`.`users_id` <> '$users_id'";
          }
 
@@ -1078,7 +1078,7 @@ class Reminder extends CommonDBVisible {
                          AND ".self::addVisibilityRestrict()."
                    ORDER BY `glpi_reminders`.`name`";
 
-         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+         if (Session::getCurrentInterface() != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".
                        _n('Public reminder', 'Public reminders', Session::getPluralNumber())."</a>";
          } else {
