@@ -912,8 +912,7 @@ abstract class CommonDropdown extends CommonDBTM {
           && $this->fields['knowbaseitemcategories_id']) {
          $title = __s('FAQ');
 
-         if (isset($_SESSION['glpiactiveprofile'])
-             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
+         if (Session::getCurrentInterface() == 'central') {
             $title = __s('Knowledge base');
          }
 

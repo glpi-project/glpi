@@ -1230,4 +1230,19 @@ class Session {
               && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
    }
 
+   /**
+    * Get current interface name extracted from session var (if exists)
+    *
+    * @since  9.2.2
+    *
+    * @return false or [helpdesk|central]
+    */
+   static function getCurrentInterface() {
+      if (isset($_SESSION['glpiactiveprofile']['interface'])) {
+         return $_SESSION['glpiactiveprofile']['interface'];
+      }
+
+      return false;
+   }
+
 }

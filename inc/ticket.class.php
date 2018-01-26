@@ -310,11 +310,6 @@ class Ticket extends CommonITILObject {
 
 
    static function canView() {
-      /*
-      if (isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         return true;
-      }*/
       return (Session::haveRightsOr(self::$rightname,
                                     [self::READALL, self::READMY, UPDATE, self::READASSIGN,
                                           self::READGROUP, self::OWN])
@@ -1838,8 +1833,7 @@ class Ticket extends CommonITILObject {
       // fill auto-assign when no tech defined (only for tech)
       if (!isset($input['_auto_import'])
           && isset($_SESSION['glpiset_default_tech']) && $_SESSION['glpiset_default_tech']
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'central'
+          && Session::getCurrentInterface() == 'central'
           && (!isset($input['_users_id_assign']) || $input['_users_id_assign'] == 0)) {
          $input['_users_id_assign'] = Session::getLoginUserID();
       }
@@ -2599,7 +2593,7 @@ class Ticket extends CommonITILObject {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+      if (Session::getCurrentInterface() == 'central') {
          if (TicketFollowup::canCreate()) {
             $actions['TicketFollowup'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_followup']
                = __('Add a new followup');
@@ -3330,8 +3324,7 @@ class Ticket extends CommonITILObject {
 
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
-          && (!isset($_SESSION['glpiactiveprofile']['interface'])
-              || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+          && (Session::getCurrentInterface() != 'central')) {
          $tokeep = ['common', 'requester','satisfaction'];
          if (Session::haveRightsOr('ticketvalidation',
                                    array_merge(TicketValidation::getValidateRights(),

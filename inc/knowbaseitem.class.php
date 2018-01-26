@@ -163,8 +163,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      if (isset($_SESSION['glpiactiveprofile'])
-          && ($_SESSION['glpiactiveprofile']['interface'] == "central")) {
+      if (Session::getCurrentInterface() == "central") {
          return "$dir/front/knowbaseitem.php";
       }
       return "$dir/front/helpdesk.faq.php";

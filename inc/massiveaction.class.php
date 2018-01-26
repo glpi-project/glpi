@@ -531,7 +531,7 @@ class MassiveAction {
          }
 
       } else {
-         if (($_SESSION['glpiactiveprofile']['interface'] == 'central')
+         if (Session::getCurrentInterface() == 'central'
              && ($canupdate
                  || (InfoCom::canApplyOn($itemtype)
                      && Infocom::canUpdate()))) {

@@ -466,12 +466,11 @@ class Profile extends CommonDBTM {
          return $query." 1 ";
       }
 
-      if ($_SESSION['glpiactiveprofile']['interface']=='central') {
+      if (Session::getCurrentInterface() == 'central') {
          $query .= " (`glpi_profiles`.`interface` = 'helpdesk') ";
       }
 
-      $query .= " OR (`glpi_profiles`.`interface` = '" .
-                $_SESSION['glpiactiveprofile']['interface'] . "' ";
+      $query .= " OR (`glpi_profiles`.`interface` = '".Session::getCurrentInterface()."' ";
 
       // First, get all possible rights
       $right_subqueries = [];
@@ -479,7 +478,7 @@ class Profile extends CommonDBTM {
          $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
 
          if (!is_array($val) // Do not include entities field added by login
-             && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
+             && (Session::getCurrentInterface() == 'central'
                  || in_array($key, self::$helpdesk_rights))) {
 
             $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'

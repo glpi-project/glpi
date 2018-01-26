@@ -2904,8 +2904,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
+          && Session::getCurrentInterface() == 'helpdesk') {
          $newtab['condition']         = "`is_helpdeskvisible`";
       }
       $tab[] = $newtab;
@@ -2942,8 +2941,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
-          && (!isset($_SESSION['glpiactiveprofile']['interface'])
-              || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+          && Session::getCurrentInterface() != 'central') {
          // last updater no search
          $newtab['nosearch'] = true;
       }
@@ -3071,8 +3069,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          && Session::getCurrentInterface() == 'helpdesk') {
          $newtab['right']       = 'id';
       }
       $tab[] = $newtab;
@@ -3098,8 +3095,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          && Session::getCurrentInterface() == 'helpdesk') {
          $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
       }
       $tab[] = $newtab;
@@ -3115,8 +3111,7 @@ abstract class CommonITILObject extends CommonDBTM {
       ];
 
       if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          && Session::getCurrentInterface() == 'helpdesk') {
          $newtab['right']       = 'id';
       }
       $tab[] = $newtab;

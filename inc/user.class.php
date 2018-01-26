@@ -3245,7 +3245,7 @@ class User extends CommonDBTM {
                }
             }
             // Add me to users list for central
-            if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            if (Session::getCurrentInterface() == 'central') {
                $users[Session::getLoginUserID()] = Session::getLoginUserID();
             }
 
@@ -3278,7 +3278,7 @@ class User extends CommonDBTM {
                }
             }
             // Add me to users list for central
-            if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            if (Session::getCurrentInterface() == 'central') {
                $users[Session::getLoginUserID()] = Session::getLoginUserID();
             }
 
