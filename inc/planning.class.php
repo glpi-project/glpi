@@ -2181,6 +2181,11 @@ class Planning extends CommonGLPI {
                // be sure to replace nl by \r\n
                $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
                $description = Html::clean($description);
+            } else if (isset($val["text"])) {
+               $description = $val["text"];
+               // be sure to replace nl by \r\n
+               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
+               $description = Html::clean($description);
             } else if (isset($val["name"])) {
                $description = $val["name"];
                // be sure to replace nl by \r\n
