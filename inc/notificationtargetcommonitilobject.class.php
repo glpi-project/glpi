@@ -54,6 +54,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
    /**
+    * @param $event (default '')
+    **/
+   function getSubjectPrefix($event = '') {
+
+      $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
+                                              '', ''));
+
+      if (empty($perso_tag)) {
+         $perso_tag = 'GLPI';
+      }
+      return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
+   }
+
+   /**
     * Get events related to Itil Object
     *
     * @since 9.2
