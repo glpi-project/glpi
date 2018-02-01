@@ -185,6 +185,22 @@ class DCRoom extends CommonDBTM {
       ];
 
       $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'vis_cols',
+         'name'               => __('Number of columns'),
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'vis_rows',
+         'name'               => __('Number of rows'),
+         'datatype'           => 'number'
+      ];
+
+      $tab[] = [
          'id'                 => '19',
          'table'              => $this->getTable(),
          'field'              => 'date_mod',
