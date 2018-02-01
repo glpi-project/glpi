@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-          || !$ticket->canReopen()) {
+          || $ticket->canReopen()) {
          return false;
       }
       return $ticket->canAddFollowups();
