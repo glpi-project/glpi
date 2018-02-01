@@ -2144,8 +2144,9 @@ class Ticket extends CommonITILObject {
          $tickettask   = new TicketTask;
          foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
             $tasktemplate->getFromDB($tasktemplates_id);
+            $tasktemplate_content = Toolbox::addslashes_deep($tasktemplate->fields["content"]);
             $tickettask->add(['tasktemplates_id'  => $tasktemplates_id,
-                              'content'           => $tasktemplate->fields['content'],
+                              'content'           => $tasktemplate_content,
                               'taskcategories_id' => $tasktemplate->fields['taskcategories_id'],
                               'actiontime'        => $tasktemplate->fields['actiontime'],
                               'state'             => $tasktemplate->fields['state'],
