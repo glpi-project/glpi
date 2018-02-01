@@ -644,6 +644,9 @@ function update92to93() {
       $DB->queryOrDie($query, '9.3 add table glpi_pdus_racks');
    }
 
+   $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1]);
+   $migration->addKey('glpi_states', 'is_visible_rack');
+
    /** /Datacenters */
 
    /** Add address to locations */

@@ -110,6 +110,7 @@ class Rack extends CommonDBTM {
       State::dropdown([
          'value'     => $this->fields["states_id"],
          'entity'    => $this->fields["entities_id"],
+         'condition' => "`is_visible_rack`",
          'rand'      => $rand]
       );
       echo "</td></tr>\n";
@@ -382,7 +383,7 @@ class Rack extends CommonDBTM {
          'field'              => 'completename',
          'name'               => __('Status'),
          'datatype'           => 'dropdown',
-         'condition'          => '`is_visible_computer`'
+         'condition'          => '`is_visible_rack`'
       ];
 
       $tab[] = [
