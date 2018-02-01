@@ -1361,6 +1361,18 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (!empty($this->input['items_id'])) {
+         $item_ticket = new Item_Ticket();
+         foreach ($this->input['items_id'] as $itemtype => $items) {
+            foreach ($items as $items_id) {
+               $item_ticket->add(['items_id'      => $items_id,
+                                  'itemtype'      => $itemtype,
+                                  'tickets_id'    => $this->fields['id'],
+                                  '_disablenotif' => true]);
+            }
+         }
+      }
+
       if (count($this->updates)) {
          // Update Ticket Tco
          if (in_array("actiontime", $this->updates)
