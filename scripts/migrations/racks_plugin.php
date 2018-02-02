@@ -79,78 +79,6 @@ function confirmMigration() {
    echo textGreen("Here we go\n");
 }
 
-function printOutput() {
-   global $out;
-
-   if (!isCommandLine()) {
-      $out = nlbr($out);
-   }
-   echo $out;
-   $out = "";
-}
-
-function checkError($error = false) {
-   printOutput();
-   if ($error
-       && (!isset($_GET['skip_error']) || !$_GET['skip_error'])) {
-      echo textRed("\nSome errors triggered, aborting!\n");
-      if (count($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
-         var_dump($_SESSION['MESSAGE_AFTER_REDIRECT']);
-      }
-      exit (1);
-   }
-}
-
-function checkResult($result = 0, $print_result = false) {
-   global $out;
-
-   $error = false;
-
-   if ($result !== false && $result > 0) {
-      $out.= textGreen("OK");
-      if ($print_result) {
-         $out.= " (".$result.")";
-      }
-   } else {
-      $out.= textRed("KO");
-      if ($print_result) {
-         if ($result === false) {
-            $result = "false";
-         }
-         $out.= " (".$result.")";
-      }
-      $error = true;
-   }
-   $out.= "\n";
-   printOutput();
-
-   return !$error;
-}
-
-function textGreen($text = "") {
-   if (isCommandLine()) {
-      return "\033[32m$text\033[0m";
-   } else {
-      return "<span style='color=green;'>$text</span>";
-   }
-}
-
-function textRed($text = "") {
-   if (isCommandLine()) {
-      return "\033[31m$text\033[0m";
-   } else {
-      return "<span style='color=red;'>$text</span>";
-   }
-}
-
-function textYellow($text = "") {
-   if (isCommandLine()) {
-      return "\033[33m$text\033[0m";
-   } else {
-      return "<span style='color=yellow;'>$text</span>";
-   }
-}
-
 function checkPluginVersion($verbose = true) {
    global $out;
 
@@ -534,3 +462,77 @@ function getNewID($matches_collection, $old_id, $default = 0) {
    }
    return $default;
 }
+
+function printOutput() {
+   global $out;
+
+   if (!isCommandLine()) {
+      $out = nlbr($out);
+   }
+   echo $out;
+   $out = "";
+}
+
+function checkError($error = false) {
+   printOutput();
+   if ($error
+       && (!isset($_GET['skip_error']) || !$_GET['skip_error'])) {
+      echo textRed("\nSome errors triggered, aborting!\n");
+      if (count($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+         var_dump($_SESSION['MESSAGE_AFTER_REDIRECT']);
+      }
+      exit (1);
+   }
+}
+
+function checkResult($result = 0, $print_result = false) {
+   global $out;
+
+   $error = false;
+
+   if ($result !== false && $result > 0) {
+      $out.= textGreen("OK");
+      if ($print_result) {
+         $out.= " (".$result.")";
+      }
+   } else {
+      $out.= textRed("KO");
+      if ($print_result) {
+         if ($result === false) {
+            $result = "false";
+         }
+         $out.= " (".$result.")";
+      }
+      $error = true;
+   }
+   $out.= "\n";
+   printOutput();
+
+   return !$error;
+}
+
+function textGreen($text = "") {
+   if (isCommandLine()) {
+      return "\033[32m$text\033[0m";
+   } else {
+      return "<span style='color=green;'>$text</span>";
+   }
+}
+
+function textRed($text = "") {
+   if (isCommandLine()) {
+      return "\033[31m$text\033[0m";
+   } else {
+      return "<span style='color=red;'>$text</span>";
+   }
+}
+
+function textYellow($text = "") {
+   if (isCommandLine()) {
+      return "\033[33m$text\033[0m";
+   } else {
+      return "<span style='color=yellow;'>$text</span>";
+   }
+}
+
+
