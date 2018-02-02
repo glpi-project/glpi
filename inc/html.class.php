@@ -3513,6 +3513,7 @@ class Html {
                   ? 'glpi_upload_doc'
                   : '',
             ],
+            autoresize_max_height: 500,
             toolbar: 'styleselect | bold italic | forecolor backcolor | bullist numlist outdent indent | table link image | code fullscreen',
             $readonlyjs
          });
