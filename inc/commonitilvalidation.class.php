@@ -633,7 +633,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             'users_id_validate'  => $users_id
          ],
          'START'  => 0,
-         'LLIMIT' => 1
+         'LIMIT'  => 1
       ]);
 
       if (count($iterator) > 0) {
