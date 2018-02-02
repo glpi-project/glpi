@@ -458,36 +458,7 @@ class Plugin extends CommonDBTM {
                echo "&nbsp;";
             }
             echo "</td><td>";
-            switch ($plug['state']) {
-               case self::ANEW :
-                  echo _x('status', 'New');
-                  break;
-
-               case self::ACTIVATED :
-                  echo _x('plugin', 'Enabled');
-                  break;
-
-               case self::NOTINSTALLED :
-                  echo _x('plugin', 'Not installed');
-                  break;
-
-               case self::NOTUPDATED :
-                  echo __('To update');
-                  break;
-
-               case self::TOBECONFIGURED :
-                  echo _x('plugin', 'Installed / not configured');
-                  break;
-
-               case self::NOTACTIVATED :
-                  echo _x('plugin', 'Installed / not activated');
-                  break;
-
-               case self::TOBECLEANED :
-               default:
-                  echo __('Error / to clean');
-                  break;
-            }
+            echo self::getState($plug['state']);
             echo "</td>";
             echo "<td>".$plug['author']."</td>";
             $weblink = trim($plug['homepage']);
@@ -1836,5 +1807,43 @@ class Plugin extends CommonDBTM {
     */
    public function getPhpVersion() {
       return PHP_VERSION;
+   }
+
+   /**
+    * Return label for an integer plugin state
+    *
+    * @since 9.3
+    *
+    * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+    * @return string  the label
+    */
+   static function getState($state = 0) {
+      switch ($state) {
+         case self::ANEW :
+            return _x('status', 'New');
+            break;
+
+         case self::ACTIVATED :
+            return _x('plugin', 'Enabled');
+            break;
+
+         case self::NOTINSTALLED :
+            return _x('plugin', 'Not installed');
+            break;
+
+         case self::NOTUPDATED :
+            return __('To update');
+            break;
+
+         case self::TOBECONFIGURED :
+            return _x('plugin', 'Installed / not configured');
+            break;
+
+         case self::NOTACTIVATED :
+            return _x('plugin', 'Installed / not activated');
+            break;
+      }
+
+      return __('Error / to clean');
    }
 }

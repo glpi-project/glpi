@@ -58,6 +58,7 @@ function getArgs() {
       echo "Usage: php -q -f racks_plugin.php\n";
       echo "skip_error: Don't exit on import error\n";
       echo "truncate: Remove existing core data\n";
+      echo "update_plugin: force plugin migration (you need at least version 1.8.0 files to do this ) \n";
       exit (0);
    }
 }
@@ -134,6 +135,30 @@ function textYellow($text = "") {
    }
 }
 
+function checkPluginVersion($verbose = true) {
+   global $out;
+
+   $plugin = new Plugin;
+   $plugin->getFromDBbyDir('racks');
+
+   if ($verbose) {
+      $out .= "- ".$plugin->fields['name']." - ".
+              $plugin->fields['version']." (".
+              Plugin::getState($plugin->fields['state'])."): ";
+   }
+
+   if ($plugin->fields['version'] == "1.8.0"
+       && in_array($plugin->fields['state'], [Plugin::TOBECONFIGURED, Plugin::NOTACTIVATED])) {
+      $out .= textGreen("OK")."\n";
+      return true;
+   }
+
+   $out .= textRed("KO")."\n";
+   printOutput();
+
+   return false;
+}
+
 function checkPlugin() {
    global $DB, $out;
 
@@ -141,15 +166,29 @@ function checkPlugin() {
 
    $out .= "\n## Check plugin version:\n\n";
    $plugin = new Plugin;
-   $plugin_infos = Plugin::getInfo('racks');
-   $out .= $plugin_infos['name']." - ".$plugin_infos['version'].": ";
-   if (version_compare($plugin_infos['version'], "1.7.1", "<")) {
-      $out .= textRed("KO")."\n\n";
-      $out .= textRed("You need at least version 1.7.1 to migrate your data")."\n";
-      printOutput();
-      exit (1);
+   $plugin->getFromDBbyDir('racks');
+   if (!checkPluginVersion()) {
+      $out .= textRed("You need at least version 1.8.0 to migrate your data")."\n";
+
+      // try to migrate plugin
+      if (isset($_GET['update_plugin'])) {
+         $out.= "- Migrate plugin to last version:";
+         ob_start();
+         $plugin->install($plugin->fields['id']);
+         ob_end_clean();
+
+         $plugin->getFromDBbyDir('racks');
+         if (!checkPluginVersion(false)) {
+            exit (1);
+         }
+      } else {
+         if ($plugin->fields['version'] == "1.8.0") {
+            $out .= textRed("You can try option --update_plugin\n");
+         }
+         printOutput();
+         exit (1);
+      }
    }
-   $out .= textGreen("OK")."\n";
 
    $out .= "\n## Check presence of racks plugin tables\n\n";
    $rack_tables = [
