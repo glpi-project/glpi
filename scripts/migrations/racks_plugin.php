@@ -37,6 +37,7 @@ include ('../../inc/includes.php');
 
 $out = "";
 getArgs();
+confirmMigration();
 checkPlugin();
 TruncateCoreTables();
 migratePlugin();
@@ -61,6 +62,21 @@ function getArgs() {
       echo "update_plugin: force plugin migration (you need at least version 1.8.0 files to do this ) \n";
       exit (0);
    }
+}
+
+function confirmMigration() {
+   echo "\nYou're about to launch migration of plugin rack data into the core of glpi!\n";
+   echo "It's better to make a backup of your existing data before.\n";
+   echo textYellow("Do you want to lauch migration? (Y)es, (N)o").": ";
+
+   flush();
+   $confirmation = strtolower(trim(fgets(STDIN)));
+
+   if (!in_array($confirmation, ['y', 'yes'])) {
+      exit (0);
+   }
+
+   echo textGreen("Here we go\n");
 }
 
 function printOutput() {
