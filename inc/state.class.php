@@ -40,15 +40,16 @@ if (!defined('GLPI_ROOT')) {
 class State extends CommonTreeDropdown {
 
    protected $visibility_fields    = ['Computer'         => 'is_visible_computer',
-                                           'SoftwareVersion'  => 'is_visible_softwareversion',
-                                           'Monitor'          => 'is_visible_monitor',
-                                           'Printer'          => 'is_visible_printer',
-                                           'Peripheral'       => 'is_visible_peripheral',
-                                           'Phone'            => 'is_visible_phone',
-                                           'NetworkEquipment' => 'is_visible_networkequipment',
-                                           'SoftwareLicense'  => 'is_visible_softwarelicense',
-                                           'Line'             => 'is_visible_line',
-                                           'Certificate'      => 'is_visible_certificate'];
+                                      'SoftwareVersion'  => 'is_visible_softwareversion',
+                                      'Monitor'          => 'is_visible_monitor',
+                                      'Printer'          => 'is_visible_printer',
+                                      'Peripheral'       => 'is_visible_peripheral',
+                                      'Phone'            => 'is_visible_phone',
+                                      'NetworkEquipment' => 'is_visible_networkequipment',
+                                      'SoftwareLicense'  => 'is_visible_softwarelicense',
+                                      'Line'             => 'is_visible_line',
+                                      'Certificate'      => 'is_visible_certificate',
+                                      'Rack'             => 'is_visible_rack',];
    public $can_be_translated       = true;
 
    static $rightname               = 'state';
@@ -359,6 +360,15 @@ class State extends CommonTreeDropdown {
          'field'              => 'is_visible_certificate',
          'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
                                      Certificate::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
+
+      $tab[] = [
+         'id'                 => '30',
+         'table'              => $this->getTable(),
+         'field'              => 'is_visible_rack',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'),
+                                     Rack::getTypeName(Session::getPluralNumber())),
          'datatype'           => 'bool'
       ];
 

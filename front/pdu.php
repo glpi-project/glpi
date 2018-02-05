@@ -36,6 +36,6 @@ Session::checkRight("datacenter", READ);
 
 Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
 
-Search::show('pdu');
+Search::show('PDU');
 
 Html::footer();

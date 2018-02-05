@@ -648,6 +648,16 @@ function update92to93() {
       $DB->queryOrDie($query, '9.3 add table glpi_pdus_racks');
    }
 
+   $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,
+                                                                   'after' => 'is_visible_certificate']);
+   $migration->addKey('glpi_states', 'is_visible_rack');
+
+   $ADDTODISPLAYPREF['datacenter'] = [3];
+   $ADDTODISPLAYPREF['Rack']       = [31, 23, 5, 7];
+   $ADDTODISPLAYPREF['DCRoom']     = [4, 5, 6];
+   $ADDTODISPLAYPREF['PDU']        = [31, 23, 5];
+   $ADDTODISPLAYPREF['Enclosure']  = [31, 23, 5];
+
    /** /Datacenters */
 
    /** Add address to locations */
@@ -737,6 +747,16 @@ function update92to93() {
       )
    );
    /** /Migrate computerdisks to items_disks */
+
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $rank = 1;
+      foreach ($tab as $newval) {
+         $query = "REPLACE INTO `glpi_displaypreferences`
+                           (`itemtype` ,`num` ,`rank` ,`users_id`)
+                     VALUES ('$type', '$newval', '".$rank++."', '0')";
+         $DB->query($query);
+      }
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
