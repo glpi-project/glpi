@@ -73,6 +73,41 @@ abstract class APIBaseClass extends atoum {
    }
 
    /**
+    * @tags   api
+    * @covers API::initSession
+    */
+   public function testAppToken() {
+      $apiclient = new APIClient;
+      $apiclient->add([
+         'name'             => 'test app token',
+         'is_active'        => 1,
+         'ipv4_range_start' => 2130706433,
+         'ipv4_range_end'   => 2130706433,
+         '_reset_app_token' => true,
+      ]);
+
+      $app_token = $apiclient->fields['app_token'];
+      $this->string($app_token)->isNotEmpty()->hasLength(40);
+
+      // test valid app token -> expect ok session
+      $data = $this->query('initSession',
+            ['query' => [
+                  'login'     => TU_USER,
+                  'password'  => TU_PASS,
+                  'app_token' => $app_token]]);
+      $this->variable($data)->isNotFalse();
+      $this->array($data)->hasKey('session_token');
+
+      // test invalid app token -> expect error 400 and a specific code
+      $data = $this->query('initSession',
+            ['query' => [
+                  'login'     => TU_USER,
+                  'password'  => TU_PASS,
+                  'app_token' => "test_invalid_token"]],
+            400, 'ERROR_WRONG_APP_TOKEN_PARAMETER');
+   }
+
+   /**
     * @tags    api
     * @covers  API::changeActiveEntities
     */
