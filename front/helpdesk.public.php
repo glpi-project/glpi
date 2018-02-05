@@ -37,7 +37,7 @@ if (isset($_POST['newprofile'])) {
    if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       Session::changeProfile($_POST['newprofile']);
 
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      if (Session::getCurrentInterface() == "central") {
          Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
       } else {
          Html::redirect($_SERVER['PHP_SELF']);

@@ -1302,7 +1302,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                echo $groupname;
             }
             if (PlanningRecall::isAvailable()
-                && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
+                && Session::getCurrentInterface() == "central") {
                echo "<tr><td>"._x('Planning', 'Reminder')."</td><td>";
                PlanningRecall::specificForm(['itemtype' => $this->getType(),
                                                   'items_id' => $this->fields["id"]]);

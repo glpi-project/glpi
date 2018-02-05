@@ -441,7 +441,7 @@ class ObjectLock extends CommonDBTM {
          $ol       = new self($itemtype, $options['id']);
          $template = (isset($options['withtemplate'])
                       && ($options['withtemplate'] > 0) ? true : false);
-         if (($_SESSION["glpiactiveprofile"]["interface"] == "central")
+         if ((Session::getCurrentInterface() == "central")
              && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
              && ($CFG_GLPI["lock_lockprofile_id"] > 0)
              && in_array($itemtype, $CFG_GLPI['lock_item_list'])
@@ -527,8 +527,7 @@ class ObjectLock extends CommonDBTM {
       global $CFG_GLPI;
       $tab = [];
 
-      if (isset($_SESSION["glpiactiveprofile"]["interface"])
-          && ($_SESSION["glpiactiveprofile"]["interface"] == "central")
+      if ((Session::getCurrentInterface() == "central")
           && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
           && in_array($itemtype, $CFG_GLPI['lock_item_list'])) {

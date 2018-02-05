@@ -153,7 +153,7 @@ if (isset($_POST["add"])) {
       $kb->check($_GET["id"], READ);
 
       if (Session::getLoginUserID()) {
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         if (Session::getCurrentInterface() == "central") {
             Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
          } else {
             Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
@@ -178,7 +178,7 @@ if (isset($_POST["add"])) {
       $kb->display($options);
 
       if (Session::getLoginUserID()) {
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         if (Session::getCurrentInterface() == "central") {
             Html::footer();
          } else {
             Html::helpFooter();

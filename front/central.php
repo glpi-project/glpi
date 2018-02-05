@@ -38,7 +38,7 @@ Session::checkCentralAccess();
 if (isset($_POST['newprofile'])) {
    if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       Session::changeProfile($_POST['newprofile']);
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if (Session::getCurrentInterface() == "helpdesk") {
          if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
             Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
          } else {

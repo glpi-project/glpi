@@ -133,8 +133,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || (isset($_SESSION["glpiactiveprofile"])
-                  && $_SESSION["glpiactiveprofile"]["interface"] == "central"
+              || (Session::getCurrentInterface() == "central"
                   && $this->fields['users_id'] == Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
@@ -892,7 +891,7 @@ class KnowbaseItem extends CommonDBVisible {
       $linkusers_id = true;
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
-          || ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
+          || (Session::getCurrentInterface() == "helpdesk")
           || !User::canView()) {
          $linkusers_id = false;
       }

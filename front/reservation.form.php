@@ -38,7 +38,7 @@ Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
@@ -200,7 +200,7 @@ if (isset($_POST["update"])) {
    }
 }
 
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();
 } else {
    Html::footer();

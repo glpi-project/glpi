@@ -148,7 +148,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       $linkusers_id = true;
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
-          || ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
+          || (Session::getCurrentInterface() == "helpdesk")
           || !User::canView()) {
          $linkusers_id = false;
       }

@@ -153,7 +153,7 @@ class Session {
                   self::changeProfile(key($_SESSION['glpiprofiles']));
                }
 
-               if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
+               if (!Session::getCurrentInterface()) {
                   $auth->auth_succeded = false;
                   $auth->addToError(__("You don't have right to connect"));
                }
@@ -702,8 +702,7 @@ class Session {
       global $CFG_GLPI;
 
       self::checkValidSessionId();
-      if (!isset($_SESSION["glpiactiveprofile"])
-          || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
+      if (Session::getCurrentInterface() != "central") {
          // Gestion timeout session
          self::redirectIfNotLoggedIn();
          Html::displayRightError();
@@ -737,8 +736,7 @@ class Session {
       global $CFG_GLPI;
 
       self::checkValidSessionId();
-      if (!isset($_SESSION["glpiactiveprofile"])
-          || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
+      if (Session::getCurrentInterface() != "helpdesk") {
          // Gestion timeout session
          self::redirectIfNotLoggedIn();
          Html::displayRightError();

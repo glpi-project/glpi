@@ -508,13 +508,13 @@ class Html {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
-         if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
+         if (!Session::getCurrentInterface()) {
             self::nullHeader(__('Access denied'));
 
-         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         } else if (Session::getCurrentInterface() == "central") {
             self::header(__('Access denied'));
 
-         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         } else if (Session::getCurrentInterface() == "helpdesk") {
             self::helpHeader(__('Access denied'));
          }
       }
@@ -843,13 +843,13 @@ class Html {
       global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
-         if ($minimal || !isset($_SESSION["glpiactiveprofile"]["interface"])) {
+         if ($minimal || !Session::getCurrentInterface()) {
             self::nullHeader(__('Access denied'), '');
 
-         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         } else if (Session::getCurrentInterface() == "central") {
             self::header(__('Access denied'), '');
 
-         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         } else if (Session::getCurrentInterface() == "helpdesk") {
             self::helpHeader(__('Access denied'), '');
          }
       }
@@ -1205,7 +1205,7 @@ class Html {
          }
       }
 
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if (Session::getCurrentInterface() == "helpdesk") {
          echo Html::css('lib/jqueryplugins/rateit/rateit.css');
          Html::requireJs('rateit');
       }
@@ -3833,7 +3833,7 @@ class Html {
 
       if (!empty($item_type_output)
           && isset($_SESSION["glpiactiveprofile"])
-          && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
+          && (Session::getCurrentInterface() == "central")) {
 
          echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'>";

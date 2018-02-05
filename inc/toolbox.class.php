@@ -1694,14 +1694,13 @@ class Toolbox {
 
       if (!empty($where)) {
 
-         if (isset($_SESSION["glpiactiveprofile"]["interface"])
-             && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
+         if (Session::getCurrentInterface()) {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
             if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/', $decoded_where, $matches)) {
                if ($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
-                  if ($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
+                  if (Session::getCurrentInterface() === "helpdesk") {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                   } else {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
@@ -1723,7 +1722,7 @@ class Toolbox {
                $forcetab = 'forcetab='.$data[2];
             }
 
-            switch ($_SESSION["glpiactiveprofile"]["interface"]) {
+            switch (Session::getCurrentInterface()) {
                case "helpdesk" :
                   switch (strtolower($data[0])) {
                      // Use for compatibility with old name
