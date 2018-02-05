@@ -69,9 +69,7 @@ function confirmMigration() {
    echo "It's better to make a backup of your existing data before.\n";
    echo textYellow("Do you want to lauch migration? (Y)es, (N)o").": ";
 
-   flush();
-   $confirmation = strtolower(trim(fgets(STDIN)));
-
+   $confirmation = readAnswer();
    if (!in_array($confirmation, ['y', 'yes'])) {
       exit (0);
    }
@@ -165,6 +163,7 @@ function TruncateCoreTables() {
          'glpi_dcrooms',
          'glpi_racks',
          'glpi_items_racks',
+         'glpi_pdus',
       ];
 
       foreach ($core_tables as $table) {
@@ -190,6 +189,118 @@ function migratePlugin() {
       $dc_id = $dc->add($dc_fields);
    }
    $error = !checkResult($dc_id);
+   checkError($error);
+
+   // migrate others models and items
+   $out.= "- Import other models:\n\n";
+   $iterator_othermodels = $DB->request([
+      'FROM' => 'glpi_plugin_racks_othermodels'
+   ]);
+   $old_othermodel = [];
+   if ($nb_othermodels = count($iterator_othermodels)) {
+      $out.= textYellow("  Other items don't exist in GLPI core.\n");
+      $out.= "  We found $nb_othermodels models for other items. For each, we'll ask you where you want to import it.\n";
+      $out.= "  You need to answer: \n";
+      $out.= "   - (C)omputer,\n";
+      $out.= "   - (N)etworkEpuipment,\n";
+      $out.= "   - (P)eripheral,\n";
+      $out.= "   - Pd(U),\n";
+      $out.= "   - Or (I)gnore.\n\n";
+
+      foreach ($iterator_othermodels as $othermodel) {
+         $model_lbl = "  * ".$othermodel['name'];
+         if (strlen($othermodel['comment'])) {
+            $model_lbl.= " (".$othermodel['comment'].")";
+         }
+         $model_lbl.=": ";
+         $out.= textYellow($model_lbl);
+         $answer = readAnswer();
+         $out.= "    ";
+
+         // transform input choice
+         $new_model_itemtype = false;
+         if (in_array($answer, ['c', 'computer'])) {
+            $new_model_itemtype = "ComputerModel";
+         } else if (in_array($answer, ['n', 'networkepuipment'])) {
+            $new_model_itemtype = "NetworkEpuipmentModel";
+         } else if (in_array($answer, ['p', 'peripheral'])) {
+            $new_model_itemtype = "PeripheralModel";
+         } else if (in_array($answer, ['u', 'pdu'])) {
+            $new_model_itemtype = "PduModel";
+         }
+
+         // import model
+         if ($new_model_itemtype !== false) {
+            $new_model = new $new_model_itemtype;
+            $new_model_fields = Toolbox::sanitize([
+               'name'    => $othermodel['name'],
+               'comment' => $othermodel['comment'],
+            ]);
+            if (!$new_model->getFromDBByCrit($new_model_fields)
+                || !$newmodel_id = $new_model->getID()) {
+               $newmodel_id = $new_model->add($new_model_fields);
+            }
+
+            if (!checkResult($newmodel_id, true)) {
+               $error = true;
+            } else {
+               $old_othermodel[$othermodel['id']] = "$new_model_itemtype:$newmodel_id";
+
+               // replace itemtype in specifications
+               $DB->update("glpi_plugin_racks_itemspecifications", [
+                  'itemtype' => $new_model_itemtype,
+               ], [
+                  'itemtype' => 'PluginRacksOtherModel',
+                  'model_id' => $othermodel['id']
+               ]);
+            }
+         }
+      }
+
+      // import items (linked to other imported models)
+      $iterator_others = $DB->request([
+         'FROM' => 'glpi_plugin_racks_others'
+      ]);
+      if (count($iterator_others)) {
+         $out.= "- Import other items:\n\n";
+         foreach ($iterator_others as $other) {
+            $old_model = $old_othermodel[$other['plugin_racks_othermodels_id']];
+            list($new_model_itemtype, $new_models_id) = explode(':', $old_model);
+            $new_itemtype = str_replace('Model', '', $new_model_itemtype);
+            $fk_new_model = getForeignKeyFieldForItemType($new_model_itemtype);
+
+            $out.= "   * $new_itemtype - ".$other['name'].": ";
+
+            $new_item = new $new_itemtype;
+            $new_item_fields = Toolbox::sanitize([
+               'name'        => strlen($other['name'])
+                                 ? $other['name']
+                                 : $other['id'],
+               'entities_id' => $other['entities_id'],
+               $fk_new_model => $new_models_id
+            ]);
+            if (!$new_item->getFromDBByCrit($new_item_fields)
+                || !$new_items_id = $new_item->getID()) {
+               $new_items_id = $new_item->add($new_item_fields);
+            }
+
+            if (!checkResult($new_items_id, true)) {
+               $error = true;
+            } else {
+               // replace itemtype in racks items
+               $DB->update("glpi_plugin_racks_racks_items", [
+                  'itemtype' => $new_model_itemtype,
+                  'items_id' => $new_items_id,
+               ], [
+                  'itemtype' => 'PluginRacksOtherModel',
+                  'items_id' => $other['id']
+               ]);
+            }
+         }
+      }
+   } else {
+      $out.= "  None found\n";
+   }
    checkError($error);
 
    // migrate specifications
@@ -414,10 +525,16 @@ function migratePlugin() {
    $item_rack = new Item_Rack;
    foreach ($iterator_rackitems as $old_itemrack) {
       $item_rack->getEmpty();
-      $model = new $old_itemrack['itemtype'];
+
       $itemtype = str_replace('Model', '', $old_itemrack['itemtype']);
       $out.= "   * $itemtype (".$old_itemrack['items_id']."): ";
 
+      if (!class_exists($old_itemrack['itemtype'])) {
+         $out.= textYellow("Type not found\n");
+         continue;
+      }
+
+      $model = new $old_itemrack['itemtype'];
       $item = new $itemtype;
       if (!$item->getFromDB($old_itemrack['items_id'])) {
          $out.= textYellow("Not found\n");
@@ -456,6 +573,7 @@ function migratePlugin() {
    checkError($error);
 }
 
+
 function getNewID($matches_collection, $old_id, $default = 0) {
    if (isset($matches_collection[$old_id])) {
       return $matches_collection[$old_id];
@@ -483,6 +601,7 @@ function checkError($error = false) {
       }
       exit (1);
    }
+   flush();
 }
 
 function checkResult($result = 0, $print_result = false) {
@@ -535,4 +654,7 @@ function textYellow($text = "") {
    }
 }
 
-
+function readAnswer() {
+   printOutput();
+   return strtolower(trim(fgets(STDIN)));
+}
