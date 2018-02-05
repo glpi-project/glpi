@@ -65,7 +65,7 @@ if (isset($_POST["update"])
    Html::back();
 
 } else {
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   if (Session::getCurrentInterface() == "central") {
       Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference');
    } else {
       Html::helpHeader(Preference::getTypeName(1), $_SERVER['PHP_SELF']);
@@ -74,7 +74,7 @@ if (isset($_POST["update"])
    $pref = new Preference();
    $pref->display(['main_class' => 'tab_cadre_fixe']);
 
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   if (Session::getCurrentInterface() == "central") {
       Html::footer();
    } else {
       Html::helpFooter();

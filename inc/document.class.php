@@ -568,8 +568,7 @@ class Document extends CommonDBTM {
    function canViewFile($options) {
       global $DB, $CFG_GLPI;
 
-      if (isset($_SESSION["glpiactiveprofile"]["interface"])
-          && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
+      if (Session::getCurrentInterface() == "central") {
 
          // My doc Check and Common doc right access
          if ($this->can($this->fields["id"], READ)

@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTicketCategories.php")) {
 
 $opt = ['entity' => $_POST["entity_restrict"]];
 
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
    $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
 } else {
    $opt['condition'] = '';

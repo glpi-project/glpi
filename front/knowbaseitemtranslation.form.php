@@ -71,7 +71,7 @@ if (isset($_POST['add'])) {
    $translation->check($_GET["id"], READ);
 
    if (Session::getLoginUserID()) {
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      if (Session::getCurrentInterface() == "central") {
          Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitemtranslation");
       } else {
          Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
@@ -96,7 +96,7 @@ if (isset($_POST['add'])) {
    $translation->display([]);
 
    if (Session::getLoginUserID()) {
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      if (Session::getCurrentInterface() == "central") {
          Html::footer();
       } else {
          Html::helpFooter();
