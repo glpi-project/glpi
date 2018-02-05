@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+use DI\ContainerBuilder;
+
 if (in_array('--help', $_SERVER['argv'])) {
    die("usage: ".$_SERVER['argv'][0]."  [ --force ] [ --optimize ] [ --lang=xx_XX ] [ --config-dir=/path/relative/to/script ]\n");
 }
@@ -56,9 +58,21 @@ if (isset($args['config-dir'])) {
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+$builder = new ContainerBuilder();
+$builder->useAnnotations(true);
+$builder->addDefinitions(__DIR__ . '/../inc/di_define.php');
+global $container;
+/*if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE || defined('TU_USER')) {
+   $container = $builder->buildDevContainer();
+} else {
+   $container = $builder->build();
+}*/
+$container = $builder->build();
+
 Config::detectRootDoc();
 
-$DB = new DB();
+$DB = $container->get('DB');
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
 $update = new Update($DB, $args);
