@@ -201,7 +201,7 @@ if (isset($_POST["add"])) {
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   if (Session::getCurrentInterface() == "helpdesk") {
       Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
    } else {
       Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
@@ -250,7 +250,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 }
 
 
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
    Html::helpFooter();
 } else {
    Html::footer();

@@ -299,8 +299,7 @@ class Ticket extends CommonITILObject {
    static function canUpdate() {
 
       // To allow update of urgency and category for post-only
-      if (isset($_SESSION["glpiactiveprofile"]["interface"])
-          && $_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if (Session::getCurrentInterface() == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
 
@@ -561,7 +560,7 @@ class Ticket extends CommonITILObject {
       }
 
       // for self-service only, if modification in ticket, we can't update the ticket
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+      if (Session::getCurrentInterface() == "helpdesk"
           && !$can_requester) {
          return false;
       }
@@ -591,7 +590,7 @@ class Ticket extends CommonITILObject {
    static function canDelete() {
 
       // to allow delete for self-service only if no action on the ticket
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      if (Session::getCurrentInterface() == "helpdesk") {
          return Session::haveRight(self::$rightname, CREATE);
       }
       return Session::haveRight(self::$rightname, DELETE);
@@ -622,7 +621,7 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+      if (Session::getCurrentInterface() == "helpdesk"
           && (!($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                || $this->fields["users_id_recipient"] === Session::getLoginUserID())
              || $this->numberOfFollowups() > 0
@@ -4783,7 +4782,7 @@ class Ticket extends CommonITILObject {
 
          $opt = ['value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]];
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         if (Session::getCurrentInterface() == "helpdesk") {
             $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
          } else {
             $opt['condition'] = '';
@@ -5819,7 +5818,7 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadrehov' >";
       echo "<tr class='noHover'><th colspan='2'>";
 
-      if ($_SESSION["glpiactiveprofile"]["interface"] != "central") {
+      if (Session::getCurrentInterface() != "central") {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\" class='pointer'>".
                 __('Create a ticket')."&nbsp;<i class='fa fa-plus'></i><span class='sr-only'>". __s('Add')."</span></a>";
       } else {

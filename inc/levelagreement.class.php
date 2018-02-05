@@ -402,8 +402,7 @@ abstract class LevelAgreement extends CommonDBChild {
       $calendar = new Calendar();
       $rand     = mt_rand();
       $canedit  = ($slm->canEdit($instID)
-                   && isset($_SESSION["glpiactiveprofile"])
-                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
+                   && Session::getCurrentInterface() == "central");
 
       if ($canedit) {
          echo "<div id='showLa$instID$rand'></div>\n";

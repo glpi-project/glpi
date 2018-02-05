@@ -981,7 +981,7 @@ class Config extends CommonDBTM {
    function showFormUserPrefs($data = []) {
       global $DB, $CFG_GLPI;
 
-      $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
+      $oncentral = (Session::getCurrentInterface() == "central");
       $userpref  = false;
       $url       = Toolbox::getItemTypeFormURL(__CLASS__);
       $rand      = mt_rand();

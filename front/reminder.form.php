@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   if (Session::getCurrentInterface() == "helpdesk") {
       Html::helpHeader(Reminder::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
    } else {
       Html::header(Reminder::getTypeName(Session::getPluralNumber()), '', "tools", "reminder");
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
 
    $remind->display(['id' =>$_GET["id"]]);
 
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   if (Session::getCurrentInterface() == "helpdesk") {
       Html::helpFooter();
    } else {
       Html::footer();
