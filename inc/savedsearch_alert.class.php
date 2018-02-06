@@ -321,6 +321,11 @@ class SavedSearch_Alert extends CommonDBChild {
       if ($iterator->numrows()) {
          $savedsearch = new SavedSearch();
 
+         if (!isset($_SESSION['glpiname'])) {
+            //required from search class
+            $_SESSION['glpiname'] = 'crontab';
+         }
+
          while ($row = $iterator->next()) {
             //execute saved search to get results
             try {
