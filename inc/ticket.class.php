@@ -4182,7 +4182,7 @@ class Ticket extends CommonITILObject {
          $requesttype = $_SESSION['glpidefault_requesttypes_id'];
       } else {
          $users_id_requester = 0;
-         $users_id_assign    = o;
+         $users_id_assign    = 0;
          $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
