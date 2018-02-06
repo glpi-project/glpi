@@ -6517,12 +6517,17 @@ class Search {
    static function makeTextCriteria ($field, $val, $not = false, $link = 'AND') {
 
       $sql = $field . self::makeTextSearch($val, $not);
+      // mange empty field (string with length = 0)
+      $sql_or = "";
+      if (strtolower($val) == "null") {
+         $sql_or = "OR $field = ''";
+      }
 
       if (($not && ($val != 'NULL') && ($val != 'null') && ($val != '^$'))    // Not something
           ||(!$not && ($val == '^$'))) {   // Empty
          $sql = "($sql OR $field IS NULL)";
       }
-      return " $link $sql ";
+      return " $link ($sql $sql_or)";
    }
 
 
