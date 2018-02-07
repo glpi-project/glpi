@@ -1324,7 +1324,7 @@ class SavedSearch extends CommonDBTM {
                                                                      $params);
             $data['search']['sort'] = null;
             $search->constructSQL($data);
-            $search->constructDatas($data, true);
+            $search->constructData($data, true);
             return $data;
          }
       }

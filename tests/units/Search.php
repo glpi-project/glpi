@@ -750,7 +750,7 @@ class Search extends DbTestCase {
       // do search and check presence of the created problem
       $data = \Search::prepareDatasForSearch('Problem', ['reset' => 'reset']);
       \Search::constructSQL($data);
-      \Search::constructDatas($data); // should be constructDatas in 9.3
+      \Search::constructData($data);
 
       $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
       $this->array($data)
@@ -802,7 +802,7 @@ class Search extends DbTestCase {
       // do search and check presence of the created Change
       $data = \Search::prepareDatasForSearch('Change', ['reset' => 'reset']);
       \Search::constructSQL($data);
-      \Search::constructDatas($data); // should be constructDatas in 9.3
+      \Search::constructData($data);
 
       $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
       $this->array($data)
