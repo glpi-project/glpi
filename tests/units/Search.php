@@ -721,19 +721,24 @@ class Search extends DbTestCase {
       $groups_id = $group->add([
          'name' => "test group for tech user"
       ]);
+      $this->integer((int)$groups_id)->isGreaterThan(0);
       $group_user = new \Group_User;
-      $group_user->add([
-         'groups_id' => $groups_id,
-         'users_id'  => $tech_users_id
-      ]);
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $tech_users_id
+         ])
+      )->isGreaterThan(0);
 
       // create a problem and assign group with tech user
       $problem = new \Problem;
-      $problem->add([
-         'name'              => "test problem visibility for tech",
-         'content'           => "test problem visibility for tech",
-         '_groups_id_assign' => $groups_id
-      ]);
+      $this->integer(
+         (int)$problem->add([
+            'name'              => "test problem visibility for tech",
+            'content'           => "test problem visibility for tech",
+            '_groups_id_assign' => $groups_id
+         ])
+      )->isGreaterThan(0);
 
       // let's use tech user
       $this->login('tech', 'tech');
@@ -767,19 +772,25 @@ class Search extends DbTestCase {
       $groups_id = $group->add([
          'name' => "test group for tech user"
       ]);
+      $this->integer((int)$groups_id)->isGreaterThan(0);
+
       $group_user = new \Group_User;
-      $group_user->add([
-         'groups_id' => $groups_id,
-         'users_id'  => $tech_users_id
-      ]);
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $tech_users_id
+         ])
+      )->isGreaterThan(0);
 
       // create a Change and assign group with tech user
       $change = new \Change;
-      $change->add([
-         'name'              => "test Change visibility for tech",
-         'content'           => "test Change visibility for tech",
-         '_groups_id_assign' => $groups_id
-      ]);
+      $this->integer(
+         (int)$change->add([
+            'name'              => "test Change visibility for tech",
+            'content'           => "test Change visibility for tech",
+            '_groups_id_assign' => $groups_id
+         ])
+      )->isGreaterThan(0);
 
       // let's use tech user
       $this->login('tech', 'tech');
