@@ -706,6 +706,109 @@ class Search extends DbTestCase {
          }
       }
    }
+
+   public function testProblems() {
+      $tech_users_id = getItemByTypeName('User', "tech", true);
+
+      // reduce the right of tech profile
+      // to have only the right of display their own problems (created, assign)
+      \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+         'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE)
+      ]);
+
+      // add a group for tech user
+      $group = new \Group;
+      $groups_id = $group->add([
+         'name' => "test group for tech user"
+      ]);
+      $this->integer((int)$groups_id)->isGreaterThan(0);
+      $group_user = new \Group_User;
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $tech_users_id
+         ])
+      )->isGreaterThan(0);
+
+      // create a problem and assign group with tech user
+      $problem = new \Problem;
+      $this->integer(
+         (int)$problem->add([
+            'name'              => "test problem visibility for tech",
+            'content'           => "test problem visibility for tech",
+            '_groups_id_assign' => $groups_id
+         ])
+      )->isGreaterThan(0);
+
+      // let's use tech user
+      $this->login('tech', 'tech');
+
+      // do search and check presence of the created problem
+      $data = \Search::prepareDatasForSearch('Problem', ['reset' => 'reset']);
+      \Search::constructSQL($data);
+      \Search::constructDatas($data); // should be constructDatas in 9.3
+
+      $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
+      $this->array($data)
+         ->array['data']
+         ->array['rows']
+         ->array[0]
+         ->array['raw']
+         ->string['ITEM_0']->isEqualTo('test problem visibility for tech');
+
+   }
+
+   public function testChanges() {
+      $tech_users_id = getItemByTypeName('User', "tech", true);
+
+      // reduce the right of tech profile
+      // to have only the right of display their own changes (created, assign)
+      \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
+         'Change' => (\Change::READMY + READNOTE + UPDATENOTE)
+      ]);
+
+      // add a group for tech user
+      $group = new \Group;
+      $groups_id = $group->add([
+         'name' => "test group for tech user"
+      ]);
+      $this->integer((int)$groups_id)->isGreaterThan(0);
+
+      $group_user = new \Group_User;
+      $this->integer(
+         (int)$group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $tech_users_id
+         ])
+      )->isGreaterThan(0);
+
+      // create a Change and assign group with tech user
+      $change = new \Change;
+      $this->integer(
+         (int)$change->add([
+            'name'              => "test Change visibility for tech",
+            'content'           => "test Change visibility for tech",
+            '_groups_id_assign' => $groups_id
+         ])
+      )->isGreaterThan(0);
+
+      // let's use tech user
+      $this->login('tech', 'tech');
+
+      // do search and check presence of the created Change
+      $data = \Search::prepareDatasForSearch('Change', ['reset' => 'reset']);
+      \Search::constructSQL($data);
+      \Search::constructDatas($data); // should be constructDatas in 9.3
+
+      $this->array($data)->array['data']->integer['totalcount']->isEqualTo(1);
+      $this->array($data)
+         ->array['data']
+         ->array['rows']
+         ->array[0]
+         ->array['raw']
+         ->string['ITEM_0']->isEqualTo('test Change visibility for tech');
+
+   }
 }
 
 class DupSearchOpt extends \CommonDBTM {
