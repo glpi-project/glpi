@@ -806,12 +806,14 @@ class User extends CommonDBTM {
          }
       }
 
-      if (isset($input['_reset_personal_token'])) {
+      if (isset($input['_reset_personal_token'])
+          && $input['_reset_personal_token']) {
          $input['personal_token']      = self::getUniqueToken('personal_token');
          $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
       }
 
-      if (isset($input['_reset_api_token'])) {
+      if (isset($input['_reset_api_token'])
+          && $input['_reset_api_token']) {
          $input['api_token']      = self::getUniqueToken('api_token');
          $input['api_token_date'] = $_SESSION['glpi_currenttime'];
       }
