@@ -483,6 +483,16 @@ class APIRest extends API {
          $parameters['app_token'] = $headers['App-Token'];
       }
 
+      // check boolean parameters
+      foreach ($parameters as $key => &$parameter) {
+         if ($parameter === "true") {
+            $parameter = true;
+         }
+         if ($parameter === "false") {
+            $parameter = false;
+         }
+      }
+
       $this->parameters = $parameters;
 
       return "";
