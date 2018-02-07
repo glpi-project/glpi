@@ -78,13 +78,15 @@ abstract class APIBaseClass extends atoum {
     */
    public function testAppToken() {
       $apiclient = new APIClient;
-      $apiclient->add([
-         'name'             => 'test app token',
-         'is_active'        => 1,
-         'ipv4_range_start' => 2130706433,
-         'ipv4_range_end'   => 2130706433,
-         '_reset_app_token' => true,
-      ]);
+      $this->integer(
+         (int)$apiclient->add([
+            'name'             => 'test app token',
+            'is_active'        => 1,
+            'ipv4_range_start' => 2130706433,
+            'ipv4_range_end'   => 2130706433,
+            '_reset_app_token' => true,
+         ])
+      )->isGreaterThan(0);
 
       $app_token = $apiclient->fields['app_token'];
       $this->string($app_token)->isNotEmpty()->hasLength(40);
