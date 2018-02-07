@@ -4807,9 +4807,14 @@ class CommonDBTM extends CommonGLPI {
          }
 
          //retrieve entity
-         $entities_id = isset($this->fields["entities_id"])
-                           ? $this->fields["entities_id"]
-                           : $_SESSION['glpiactive_entity'];
+         $entities_id = $_SESSION['glpiactive_entity'];
+         if (isset($this->fields["entities_id"])) {
+            $entities_id = $this->fields["entities_id"];
+         } else if (isset($input['entities_id'])) {
+            $entities_id = $input['entities_id'];
+         } else if (isset($input['_job']->fields['entities_id'])) {
+            $entities_id = $input['_job']->fields['entities_id'];
+         }
 
          // Check for duplicate
          if ($doc->getFromDBbyContent($entities_id, $filename)) {
@@ -4837,6 +4842,7 @@ class CommonDBTM extends CommonGLPI {
             // Insert image tag
             $input2["tag"] = $input['_tag'][$key];
             $input2["entities_id"]             = $entities_id;
+            $input2["is_recursive"]            = 1;
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
             $input2["_only_if_upload_succeed"] = 1;
             $input2["_filename"]               = [$file];
@@ -4868,7 +4874,7 @@ class CommonDBTM extends CommonGLPI {
                $skip_docitem = true;
             }
 
-            // add doc - item ling
+            // add doc - item link
             if (!$skip_docitem) {
                $toadd = [
                   'documents_id'  => $docID,
