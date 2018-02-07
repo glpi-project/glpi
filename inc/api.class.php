@@ -1938,8 +1938,13 @@ abstract class API extends CommonGLPI {
          $this->parameters['app_token'] = "";
       }
       if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
-         $this->returnError(__("missing parameter app_token"), 400,
-                            "ERROR_APP_TOKEN_PARAMETERS_MISSING");
+         if ($this->parameters['app_token'] != "") {
+            $this->returnError(__("parameter app_token seems wrong"), 400,
+                               "ERROR_WRONG_APP_TOKEN_PARAMETER");
+         } else {
+            $this->returnError(__("missing parameter app_token"), 400,
+                               "ERROR_APP_TOKEN_PARAMETERS_MISSING");
+         }
       }
    }
 
