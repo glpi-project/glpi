@@ -294,7 +294,7 @@ class Telemetry extends CommonGLPI {
          if (!empty($CFG_GLPI["proxy_user"])) {
             $opts += [
                CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
-               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)
+               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . Toolbox::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)
             ];
          }
 
