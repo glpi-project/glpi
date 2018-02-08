@@ -957,10 +957,11 @@ JAVASCRIPT;
             $model_class = $item->getType() . 'Model';
             $modelsfield = strtolower($item->getType()) . 'models_id';
             $model = new $model_class;
-            $model->getFromDB($item->fields[$modelsfield]);
-            $units = $model->fields['required_units'];
-            $depth = $model->fields['depth'];
-            $width = $model->fields['is_half_rack'] == 0 ? 1 : 0.5;
+            if ($model->getFromDB($item->fields[$modelsfield])) {
+               $units = $model->fields['required_units'];
+               $depth = $model->fields['depth'];
+               $width = $model->fields['is_half_rack'] == 0 ? 1 : 0.5;
+            }
          }
          $position = $row['position'];
          if (empty($itemtype) || empty($items_id)
