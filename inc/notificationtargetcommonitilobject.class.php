@@ -54,7 +54,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
    /**
-    * @param $event (default '')
+    * Get notification subject prefix
+    *
+    * @param $event Event name (default '')
+    *
+    * @return string
     **/
    function getSubjectPrefix($event = '') {
 

@@ -99,9 +99,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   /**
-    * @param $event  (default '')
-   **/
    function getSubjectPrefix($event = '') {
 
       if ($event !='alertnotclosed') {
