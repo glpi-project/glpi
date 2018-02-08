@@ -446,6 +446,11 @@ class APIRest extends API {
       if (function_exists('getallheaders')) {
          //apache specific
          $headers = getallheaders();
+         if (false !== $headers) {
+            foreach ($headers as $key => $value) {
+               $headers[ucwords(strtolower($key), '-')] = $value;
+            }
+         }
       } else {
          // other servers
          foreach ($_SERVER as $server_key => $server_value) {
