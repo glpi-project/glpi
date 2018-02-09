@@ -430,13 +430,6 @@ class Update extends CommonGLPI {
          $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
          $DB->queryOrDie($query);
       }
-
-      if (isCommandLine() && isset($this->args['optimize']) || !isCommandLine()) {
-         DBmysql::optimize_tables($this->migration);
-         if (isCommandLine()) {
-            $this->migration->displayWarning(__("Optimize done."));
-         }
-      }
    }
 
    /**
