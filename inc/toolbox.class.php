@@ -2541,10 +2541,14 @@ class Toolbox {
                // Add only image files : try to detect mime type
                if ($document->getFromDB($id)
                    && strpos($document->fields['mime'], 'image/') !== false) {
-                  // Replace tags by image in textarea
+                  // append ticket reference in image link
                   $ticket_url_param = "";
                   if ($item instanceof Ticket) {
                      $ticket_url_param = "&tickets_id=".$item->fields['id'];
+                  }
+                  if (isset($item->input['_job'])
+                      && $item->input['_job'] instanceof Ticket) {
+                     $ticket_url_param = "&tickets_id=".$item->input['_job']->fields['id'];
                   }
                   $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
                           "/front/document.send.php?docid=".$id.$ticket_url_param."'/>";
@@ -2576,7 +2580,8 @@ class Toolbox {
 
                      // replace image
                      $new_image =  Html::convertTagFromRichTextToImageTag($image['tag'],
-                                                                          $width, $height);
+                                                                          $width, $height,
+                                                                          true, $ticket_url_param);
                      $content_text = preg_replace("/<img([^>]*?)(".$image['tag'].")([^<]*?)>/Uim",
                                                   $new_image,
                                                   Html::entity_decode_deep($content_text));
