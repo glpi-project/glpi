@@ -559,7 +559,7 @@ class Migration {
          $DB->queryOrDie($query, $this->version." rename $oldtable");
       } else {
          $message = sprintf(
-            __('Unable to rename table %1$s (%2$s) to %3$s (%4$s), one or both already exists!'),
+            __('Unable to rename table %1$s (%2$s) to %3$s (%4$s)!'),
             $oldtable,
             ($DB->tableExists($oldtable) ? __('ok') : __('nok')),
             $newtable,
