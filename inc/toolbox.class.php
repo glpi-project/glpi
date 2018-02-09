@@ -434,12 +434,10 @@ class Toolbox {
       }
       $logger->addRecord($level, $msg, $extra);
 
-      if (isCommandLine() && $level >= Logger::WARNING) {
-         echo $msg;
-      }
-
       if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
+      } else if (isCommandLine() && $level >= Logger::WARNING) {
+         echo $msg;
       }
    }
 
