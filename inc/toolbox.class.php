@@ -385,6 +385,8 @@ class Toolbox {
     * @return void
    **/
    private static function log($logger = null, $level = Logger::WARNING, $args = null) {
+      global $GLPI;
+
       static $tps = 0;
 
       $extra = [];
@@ -433,6 +435,10 @@ class Toolbox {
          $logger = $PHPLOGGER;
       }
       $logger->addRecord($level, $msg, $extra);
+
+      if (isCommandLine() && $level >= $GLPI->getLogLevel()) {
+         echo $msg;
+      }
 
       if (defined('TU_USER') && $level >= Logger::NOTICE) {
          throw new \RuntimeException($msg);
