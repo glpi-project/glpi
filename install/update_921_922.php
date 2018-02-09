@@ -59,6 +59,10 @@ function update921to922() {
       AND `name` = 'default_graphtype'"
    );
 
+   $migration->addPostQuery(
+      "DELETE FROM `glpi_crontasks` WHERE `name` = 'optimize'"
+   );
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
