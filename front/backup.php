@@ -566,7 +566,6 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
          }
 
       } else {
-         DBmysql::optimize_tables(null, true);
          // Compatiblity for old version for utf8 complete conversion
          $cnf                = new Config();
          $input['id']        = 1;

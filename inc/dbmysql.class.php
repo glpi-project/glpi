@@ -595,10 +595,14 @@ class DBmysql {
      * @param mixed   $migration Migration class (default NULL)
      * @param boolean $cron      To know if optimize must be done (false by default)
      *
+     * @deprecated 9.2.2
+     *
      * @return int number of tables
      */
    static function optimize_tables($migration = null, $cron = false) {
       global $DB;
+
+      Toolbox::deprecated();
 
       $crashed_tables = self::checkForCrashedTables();
       if (!empty($crashed_tables)) {

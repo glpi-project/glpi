@@ -1662,20 +1662,6 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * Clean log cron function
-    *
-    * @param $task for log
-   **/
-   static function cronOptimize($task) {
-
-      $nb = DBmysql::optimize_tables(null, true);
-      $task->setVolume($nb);
-
-      return 1;
-   }
-
-
-   /**
     * Check zombie crontask
     *
     * @param $task for log
@@ -1727,9 +1713,6 @@ class CronTask extends CommonDBTM{
             return ['description' => __('Clean old logs'),
                          'parameter'
                            => __('System logs retention period (in days, 0 for infinite)')];
-
-         case 'optimize' :
-            return ['description' => __('Database optimization')];
 
          case 'session' :
             return ['description' => __('Clean expired sessions')];
