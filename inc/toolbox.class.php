@@ -385,8 +385,6 @@ class Toolbox {
     * @return void
    **/
    private static function log($logger = null, $level = Logger::WARNING, $args = null) {
-      global $GLPI;
-
       static $tps = 0;
 
       $extra = [];
@@ -436,7 +434,7 @@ class Toolbox {
       }
       $logger->addRecord($level, $msg, $extra);
 
-      if (isCommandLine() && $level >= $GLPI->getLogLevel()) {
+      if (isCommandLine() && $level >= Logger::WARNING) {
          echo $msg;
       }
 
