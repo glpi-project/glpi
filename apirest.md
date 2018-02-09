@@ -41,7 +41,7 @@ Method
 itemtype
 :   A GLPI type, could be an asset, an itil or a configuration object, etc.
     This type must be a class who inherits CommonDTBM GLPI class.
-    See [List itemtypes](https://forge.glpi-project.org/projects/glpi/embedded/class-CommonDBTM.html).
+    See [List itemtypes](https://forge.glpi-project.org/apidoc/class-CommonDBTM.html).
 
 searchOption
 :   A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
