@@ -441,7 +441,7 @@ class Html {
     * @return nothing
    **/
    static function back() {
-      self::redirect($_SERVER['HTTP_REFERER']);
+      self::redirect(self::getBackUrl());
    }
 
 
@@ -826,12 +826,42 @@ class Html {
     * Display a Link to the last page using http_referer if available else use history.back
    **/
    static function displayBackLink() {
-
-      if (isset($_SERVER['HTTP_REFERER'])) {
-         echo "<a href='".$_SERVER['HTTP_REFERER']."'>".__('Back')."</a>";
+      $url_referer = self::getBackUrl();
+      if ($url_referer !== false) {
+         echo "<a href='$url_referer'>".__('Back')."</a>";
       } else {
          echo "<a href='javascript:history.back();'>".__('Back')."</a>";
       }
+   }
+
+   /**
+    * Return an url for getting back to previous page.
+    * Remove `forcetab` parameter if exists to prevent bad tab display
+    *
+    * @param string $url_in optional url to return (without forcetab param), if empty, we will user HTTP_REFERER from server
+    *
+    * @since 9.2.2
+    *
+    * @return mixed [string|boolean] false, if failed, else the url string
+    */
+   static function getBackUrl($url_in = "") {
+      if (isset($_SERVER['HTTP_REFERER'])
+          && strlen($url_in) == 0) {
+         $url_in = $_SERVER['HTTP_REFERER'];
+      }
+      if (strlen($url_in) > 0) {
+         $url = parse_url($url_in);
+
+         if (isset($url['query'])) {
+            parse_str($url['query'], $parameters);
+            unset($parameters['forcetab']);
+            $new_query = http_build_query($parameters);
+            return str_replace($url['query'], $new_query, $url_in);
+         }
+
+         return $url_in;
+      }
+      return false;
    }
 
 
