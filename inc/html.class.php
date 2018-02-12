@@ -5523,14 +5523,15 @@ class Html {
     *
     * @since 9.2
     *
-    * @param string $tag      the tag identifier of the document
-    * @param int $width       witdh of the final image
-    * @param int $height      height of the final image
-    * @param bool $addLink    boolean, do we need to add an anchor link
+    * @param string $tag       the tag identifier of the document
+    * @param int $width        witdh of the final image
+    * @param int $height       height of the final image
+    * @param bool $addLink     boolean, do we need to add an anchor link
+    * @param string $more_link append to the link (ex &test=true)
     *
     * @return nothing
    **/
-   public static function convertTagFromRichTextToImageTag($tag, $width, $height, $addLink = true) {
+   public static function convertTagFromRichTextToImageTag($tag, $width, $height, $addLink = true, $more_link = "") {
       global $CFG_GLPI;
 
       $doc = new Document();
@@ -5553,16 +5554,16 @@ class Html {
 
                   if ($addLink) {
                      $out .= '<a href="'.$CFG_GLPI['root_doc'].
-                             '/front/document.send.php?docid='.$id.
+                             '/front/document.send.php?docid='.$id.$more_link.
                              '" target="_blank"><img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
                              '" src="'.$CFG_GLPI['root_doc'].
-                        '/front/document.send.php?docid='.$id.'" /></a>';
+                        '/front/document.send.php?docid='.$id.$more_link.'" /></a>';
                   } else {
                      $out .= '<img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
                              '" src="'.$CFG_GLPI['root_doc'].
-                             '/front/document.send.php?docid='.$id.'" />';
+                             '/front/document.send.php?docid='.$id.$more_link.'" />';
                   }
                }
             }
