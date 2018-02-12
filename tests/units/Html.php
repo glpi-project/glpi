@@ -766,6 +766,7 @@ class Html extends atoum {
             \Html::displayBackLink();
          }
       )->isIdenticalTo("<a href='originalpage.html'>Back</a>");
+      $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
    }
 
    public function testAddConfirmationOnAction() {
@@ -876,5 +877,25 @@ class Html extends atoum {
       ];
       $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
       $this->string(\Html::input($name, $options))->isIdenticalTo($expected);
+   }
+
+   public function providerGetBackUrl() {
+      return [
+         ["http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
+          "http://localhost/glpi/front/change.form.php?id=1"],
+         ["http://localhost/glpi/front/change.form.php?id=1",
+          "http://localhost/glpi/front/change.form.php?id=1"],
+         ["https://test/test/test.php?param1=1&param2=2&param3=3",
+          "https://test/test/test.php?param1=1&param2=2&param3=3"],
+         ["&forcetab=test",
+          ""],
+      ];
+   }
+
+   /**
+    * @dataProvider providerGetBackUrl
+    */
+   public function testGetBackUrl($url_in, $url_out) {
+      $this->string(\Html::getBackUrl($url_in), $url_out);
    }
 }
