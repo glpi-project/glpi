@@ -557,6 +557,16 @@ class Migration {
       if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
          $DB->queryOrDie($query, $this->version." rename $oldtable");
+      } else {
+         $message = sprintf(
+            __('Unable to rename table %1$s (%2$s) to %3$s (%4$s)!'),
+            $oldtable,
+            ($DB->tableExists($oldtable) ? __('ok') : __('nok')),
+            $newtable,
+            ($DB->tableExists($newtable) ? __('nok') : __('ok'))
+         );
+         Toolbox::logError($message);
+         die(1);
       }
    }
 

@@ -45,29 +45,35 @@ if (!defined('GLPI_ROOT')) {
 class GLPI {
 
    private $loggers;
+   private $log_level;
 
+   /**
+    * Init logger
+    *
+    * @return void
+    */
    public function initLogger() {
       global $PHPLOGGER, $SQLLOGGER;
 
-      $log_level = Logger::WARNING;
+      $this->log_level = Logger::WARNING;
       if (defined('TU_USER')) {
-         $log_level = Logger::DEBUG;
+         $this->log_level = Logger::DEBUG;
       } else if (defined('GLPI_LOG_LVL')) {
-         $log_level = GLPI_LOG_LVL;
+         $this->log_level = GLPI_LOG_LVL;
       } else if (!isset($_SESSION['glpi_use_mode'])
          || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
       ) {
-         $log_level = Logger::DEBUG;
+         $this->log_level = Logger::DEBUG;
       }
 
       foreach (['php', 'sql'] as $type) {
          $logger = new Logger('glpi' . $type . 'log');
          if (defined('TU_USER')) {
-            $handler = new TestHandler($log_level);
+            $handler = new TestHandler($this->log_level);
          } else {
             $handler = new StreamHandler(
                GLPI_LOG_DIR . "/{$type}-errors.log",
-               $log_level
+               $this->log_level
             );
             $formatter = new LineFormatter(null, null, true, true);
             $handler->setFormatter($formatter);
@@ -77,5 +83,14 @@ class GLPI {
          $var = strtoupper($type . 'logger');
          $$var = $this->loggers[$type];
       }
+   }
+
+   /**
+    * Get log level
+    *
+    * @return string
+    */
+   public function getLogLevel() {
+      return $this->log_level;
    }
 }
