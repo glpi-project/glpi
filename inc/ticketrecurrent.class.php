@@ -188,7 +188,7 @@ class TicketRecurrent extends CommonDropdown {
                $possible_values[$i.'MONTH'] = sprintf(_n('%d month', '%d months', $i), $i);
             }
 
-            for ($i=1; $i<5; $i++) {
+            for ($i=1; $i<11; $i++) {
                $possible_values[$i.'YEAR'] = sprintf(_n('%d year', '%d years', $i), $i);
             }
 
