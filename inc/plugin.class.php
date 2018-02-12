@@ -213,7 +213,8 @@ class Plugin extends CommonDBTM {
       if (!$translation_included) {
          if (file_exists($dir.$trytoload.'.php')) {
             include ($dir.$trytoload.'.php');
-         } else if (file_exists($dir.$CFG_GLPI["language"].'.php')) {
+         } else if (isset($CFG_GLPI["language"])
+                    && file_exists($dir.$CFG_GLPI["language"].'.php')) {
             include ($dir.$CFG_GLPI["language"].'.php');
          } else if (file_exists($dir . "en_GB.php")) {
             include ($dir . "en_GB.php");
