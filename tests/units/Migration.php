@@ -221,14 +221,15 @@ class Migration extends \GLPITestCase {
       $this->queries = [];
       $this->calling($this->db)->tableExists = true;
       $DB = $this->db;
-      $this->output(
+      $this->exception(
          function () {
             $this->migration->backupTables(['glpi_existingtest']);
             $this->migration->executeMigration();
          }
-      )->isIdenticalTo("glpi_existingtest table already exists. " .
+      )->message->contains('Unable to rename table glpi_existingtest (ok) to backup_glpi_existingtest (nok)!');
+      /*)->isIdenticalTo("glpi_existingtest table already exists. " .
          "A backup have been done to backup_glpi_existingtest" .
-         "You can delete backup tables if you have no need of them.Task completed.");
+         "You can delete backup tables if you have no need of them.Task completed.");*/
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'DROP TABLE `backup_glpi_existingtest`',
