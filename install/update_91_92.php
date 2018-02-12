@@ -1038,7 +1038,7 @@ function update91to92() {
    } else {
       //Just display a Warning to the user.
       $migration->displayWarning("An index must be added in the 'id_search_option' field " .
-         "of the 'glpi_logs table'; but your gpi_logs table is " .
+         "of the 'glpi_logs table'; but your glpi_logs table is " .
                                  "too huge. You'll have to add it on your database.");
    }
 
