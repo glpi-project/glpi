@@ -494,6 +494,12 @@ class KnowbaseItem extends CommonDBVisible {
     * @return array
     */
    static public function getVisibilityCriteria($forceall = false) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+         return [
+            'LEFT JOIN' => [],
+            'WHERE' => [],
+         ];
+      }
 
       $join = [];
       $where = [];
