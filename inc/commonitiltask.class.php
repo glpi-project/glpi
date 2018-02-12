@@ -1424,7 +1424,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                $("#content'.$rand_text.'").html(data.content);
                // set also tinmyce (if enabled)
                if (tasktinymce = tinymce.get("content'.$rand_text.'")) {
-                  tasktinymce.setContent(data.content);
+                  tasktinymce.setContent(data.content.replace(/\r?\n/g, "<br />"));
                }
                // set category
                $("#dropdown_taskcategories_id'.$rand_type.'").select2("val", taskcategories_id);
