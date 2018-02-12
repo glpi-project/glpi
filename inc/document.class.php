@@ -690,6 +690,28 @@ class Document extends CommonDBTM {
                if ($DB->numrows($result) > 0) {
                   return true;
                }
+
+               // check also contents
+               $query = "SELECT *
+                         FROM glpi_tickets AS tic
+                         LEFT JOIN glpi_ticketfollowups AS fup
+                           ON fup.tickets_id = tic.id
+                         LEFT JOIN glpi_tickettasks AS task
+                           ON task.tickets_id = tic.id
+                         LEFT JOIN glpi_solutions AS sol
+                           ON sol.items_id = tic.id
+                           AND sol.itemtype = 'Ticket'
+                         WHERE tic.id = {$options["tickets_id"]}
+                         AND (
+                           tic.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
+                           OR sol.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
+                           OR fup.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
+                           OR task.content LIKE '%document.send.php?docid=".$this->fields["id"]."%'
+                         )";
+               $result = $DB->query($query);
+               if ($DB->numrows($result) > 0) {
+                  return true;
+               }
             }
          }
       }
