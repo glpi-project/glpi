@@ -263,6 +263,16 @@ class APIXmlrpc extends API {
          }
       }
 
+      // check boolean parameters
+      foreach ($this->parameters as $key => &$parameter) {
+         if ($parameter === "true") {
+            $parameter = true;
+         }
+         if ($parameter === "false") {
+            $parameter = false;
+         }
+      }
+
       return $resource;
    }
 

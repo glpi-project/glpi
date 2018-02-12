@@ -35,7 +35,7 @@
 */
 
 if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]."  [ --force ] [ --optimize ] [ --lang=xx_XX ] [ --config-dir=/path/relative/to/script ]\n");
+   die("usage: ".$_SERVER['argv'][0]."  [ --force ] [ --lang=xx_XX ] [ --config-dir=/path/relative/to/script ] [--dev]\n");
 }
 
 chdir(__DIR__);

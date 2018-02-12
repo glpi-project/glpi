@@ -446,6 +446,13 @@ class APIRest extends API {
       if (function_exists('getallheaders')) {
          //apache specific
          $headers = getallheaders();
+         if (false !== $headers && count($headers) > 0) {
+            $fixedHeaders = [];
+            foreach ($headers as $key => $value) {
+               $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
+            }
+            $headers = $fixedHeaders;
+         }
       } else {
          // other servers
          foreach ($_SERVER as $server_key => $server_value) {
@@ -481,6 +488,16 @@ class APIRest extends API {
       // try to retrieve app_token in header
       if (isset($headers['App-Token'])) {
          $parameters['app_token'] = $headers['App-Token'];
+      }
+
+      // check boolean parameters
+      foreach ($parameters as $key => &$parameter) {
+         if ($parameter === "true") {
+            $parameter = true;
+         }
+         if ($parameter === "false") {
+            $parameter = false;
+         }
       }
 
       $this->parameters = $parameters;
