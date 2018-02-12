@@ -458,6 +458,13 @@ class SoftwareLicense extends CommonTreeDropdown {
           && $soft->getFromDB($this->fields["softwares_id"])) {
          return $soft->isRecursive();
       }
+
+      // when CommonDBTM::listTemplates, return true
+      if (isset($this->fields["is_template"])
+          && $this->fields["is_template"]) {
+         return true;
+      }
+
       return false;
    }
 

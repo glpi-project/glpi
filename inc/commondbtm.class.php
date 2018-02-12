@@ -4525,6 +4525,9 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
+      // force template
+      $item->fields['is_template'] = true;
+
       $query = "SELECT *
                 FROM `".$item->getTable()."`
                 WHERE `is_template` = '1' ";
