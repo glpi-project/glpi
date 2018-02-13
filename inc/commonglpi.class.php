@@ -700,6 +700,7 @@ class CommonGLPI {
          if ($this->getType() == 'Ticket') {
             $this->input = $cleaned_options;
             $this->saveInput();
+            unset($cleaned_options['content']);
          }
 
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
