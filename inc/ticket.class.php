@@ -3098,6 +3098,12 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (isset($options['name'])) {
+         $order           = ["\\'", '\\"', "\\\\"];
+         $replace         = ["'", '"', "\\"];
+         $options['name'] = str_replace($order, $replace, $options['name']);
+      }
+
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
