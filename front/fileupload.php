@@ -73,9 +73,12 @@ $upload_dir = GLPI_TMP_DIR.'/';
 
 $pname = $_GET['name'];
 $rand_name = uniqid('', true);
-foreach ($_FILES[$pname]['name'] as &$name) {
-   $name = $rand_name . $name;
-}
+
+// yllen: this part insert a wrong filename in database
+//foreach ($_FILES[$pname]['name'] as &$name) {
+//   $name = $rand_name . $name;
+//}
+
 $upload_handler = new UploadHandler(array('upload_dir'        => $upload_dir,
                                           'param_name'        => $pname,
                                           'orient_image'      => false,
