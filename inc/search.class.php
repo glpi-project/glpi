@@ -936,6 +936,14 @@ class Search {
                $DBread->execution_time = true;
                $result = $DBread->query($data['sql']['search']);
             }
+
+            if ($res['Code'] == 1116) { // too many tables
+               echo self::showError($data['search']['display_type'],
+                                    __("'All' criterion is not usable with this object list, ".
+                                       "sql query fails (too many tables). ".
+                                       "Please use 'Items seen' criterion instead"));
+               return false;
+            }
          }
       }
 
@@ -5865,10 +5873,14 @@ class Search {
     * Print generic error
     *
     * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $message message to display, if empty "no item found" will be displayed
     *
     * @return string to display
    **/
-   static function showError($type) {
+   static function showError($type, $message = "") {
+      if (strlen($message) == 0) {
+         $message = __('No item found');
+      }
 
       $out = "";
       switch ($type) {
@@ -5879,7 +5891,7 @@ class Search {
             break;
 
          default :
-            $out = "<div class='center b'>".__('No item found')."</div>\n";
+            $out = "<div class='center b'>$message</div>\n";
       }
       return $out;
    }

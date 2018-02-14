@@ -1280,7 +1280,7 @@ INSERT INTO `glpi_configs` VALUES ('107','core','show_count_on_tabs','1');
 INSERT INTO `glpi_configs` VALUES ('108','core','refresh_ticket_list','0');
 INSERT INTO `glpi_configs` VALUES ('109','core','set_default_tech','1');
 INSERT INTO `glpi_configs` VALUES ('110','core','allow_search_view','2');
-INSERT INTO `glpi_configs` VALUES ('111','core','allow_search_all','1');
+INSERT INTO `glpi_configs` VALUES ('111','core','allow_search_all','0');
 INSERT INTO `glpi_configs` VALUES ('112','core','allow_search_global','1');
 INSERT INTO `glpi_configs` VALUES ('113','core','display_count_on_home','5');
 INSERT INTO `glpi_configs` VALUES ('114','core','use_password_security','0');
