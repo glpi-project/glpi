@@ -142,6 +142,7 @@ class NotificationTargetSavedsearch_Alert extends NotificationTarget {
                   $data = ['name'     => $user->getName(),
                                 'email'    => $user->getDefaultEmail(),
                                 'language' => $user->getField('language'),
+                                'users_id' => $user->getID(),
                                 'usertype' => $usertype];
                   $this->addToRecipientsList($data);
             }
