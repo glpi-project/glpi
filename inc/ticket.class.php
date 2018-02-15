@@ -4467,7 +4467,8 @@ class Ticket extends CommonITILObject {
                                               !$canupdate);
          $rows = 10;
       } else {
-         $content = $this->setSimpleTextContent($content);
+         $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+         echo nl2br(Html::Clean($content));
       }
 
       echo "<div id='content$rand_text'>";
