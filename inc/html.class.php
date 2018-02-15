@@ -6111,11 +6111,11 @@ class Html {
             foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
                if ($active) {
                   $infos = Plugin::getInfo($plugin);
-                  $link = "";
-                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
-                     $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
-                  }
-                  $infos['page'] = $link;
+                 // $link = "";
+                //  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                //     $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+                //  }
+               //   $infos['page'] = $link;
                   $infos['title'] = $infos['name'];
                   $menu['plugins']['content'][$plugin] = $infos;
                }
