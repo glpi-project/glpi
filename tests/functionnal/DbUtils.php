@@ -368,7 +368,7 @@ class DbUtils extends DbTestCase {
       $condition,
       $count
    ) {
-      $this->Login();
+      $this->login();
       $this->setEntity($entity, $recursive);
 
       $this
@@ -505,7 +505,7 @@ class DbUtils extends DbTestCase {
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'name'))->isFalse()
             ->boolean($this->testedInstance->isIndex('glpi_configs', 'value'))->isFalse()
             ->boolean($this->testedInstance->isIndex('glpi_users', 'locations_id'))->isTrue()
-            ->boolean($this->testedInstance->isIndex('glpi_users', 'unicity'))->isTrue()
+            ->boolean($this->testedInstance->isIndex('glpi_users', 'unicityloginauth'))->isTrue()
          ->when(
             function () {
                $this->boolean($this->testedInstance->isIndex('fakeTable', 'id'))->isFalse();
@@ -518,7 +518,7 @@ class DbUtils extends DbTestCase {
       $this->boolean(isIndex('glpi_configs', 'fakeField'))->isFalse();
       $this->boolean(isIndex('glpi_configs', 'name'))->isFalse();
       $this->boolean(isIndex('glpi_users', 'locations_id'))->isTrue();
-      $this->boolean(isIndex('glpi_users', 'unicity'))->isTrue();
+      $this->boolean(isIndex('glpi_users', 'unicityloginauth'))->isTrue();
 
       $this->when(
          function () {
@@ -531,7 +531,7 @@ class DbUtils extends DbTestCase {
    }
 
    public function testGetEntityRestrict() {
-      $this->Login();
+      $this->login();
       $this->newTestedInstance();
 
       // See all, really all

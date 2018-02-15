@@ -39,7 +39,7 @@ use \DbTestCase;
 class AuthLDAPReplicate extends DbTestCase {
 
    public function testCanCreate() {
-      $this->Login();
+      $this->login();
       $this->boolean((boolean)\AuthLdapReplicate::canCreate())->isTrue();
 
       $_SESSION['glpiactiveprofile']['config'] = READ;
@@ -50,7 +50,7 @@ class AuthLDAPReplicate extends DbTestCase {
    }
 
    public function testCanPurge() {
-      $this->Login();
+      $this->login();
       $this->boolean((boolean)\AuthLdapReplicate::canPurge())->isTrue();
 
       $_SESSION['glpiactiveprofile']['config'] = READ;
@@ -61,7 +61,7 @@ class AuthLDAPReplicate extends DbTestCase {
    }
 
    public function testGetForbiddenStandardMassiveAction() {
-      $this->Login();
+      $this->login();
       $replicate = new \AuthLdapReplicate();
       $result    = $replicate->getForbiddenStandardMassiveAction();
       $this->array($result)->isIdenticalTo([0 => 'update']);

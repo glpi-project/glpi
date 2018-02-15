@@ -2264,6 +2264,7 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin input[type=text],
+#boxlogin select,
 #boxlogin input[type=password] {
    width: 100%;
    height: 30px;
@@ -2276,6 +2277,7 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin input[type=text]:focus,
+#boxlogin select:focus,
 #boxlogin input[type=password]:focus{
    border-color:#FFA500;
    background-color: #fff;
@@ -2309,6 +2311,10 @@ a.icon_nav_move:hover img {
 }
 #boxlogin #login_password ~ .login_img {
    background: url(../pics/login_password.png) no-repeat 3% 50%;
+}
+
+#boxlogin #dropdown_auth1 ~ .login_img {
+   background: url(../pics/login_source.png) no-repeat 3% 50%;
 }
 
 #boxlogin input.submit {

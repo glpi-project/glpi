@@ -39,7 +39,7 @@ use \DbTestCase;
 class Monitor extends DbTestCase {
 
    public function testBasicMonitor() {
-      $this->Login();
+      $this->login();
       $this->setEntity('_test_root_entity', true);
 
       $date = date('Y-m-d H:i:s');

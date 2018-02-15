@@ -46,7 +46,7 @@ class Search extends DbTestCase {
 
       // login to glpi if needed
       if (!isset($_SESSION['glpiname'])) {
-         $this->Login();
+         $this->login();
       }
 
       // force session in debug mode (to store & retrieve sql errors)

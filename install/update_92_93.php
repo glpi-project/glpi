@@ -758,6 +758,21 @@ function update92to93() {
       }
    }
 
+   // upgrade for users multi-domains
+   if (!isIndex('glpi_users', 'unicityloginauth')) {
+      $migration->dropKey("glpi_users", "unicity");
+      $migration->addKey(
+         'glpi_users',
+         ['name', 'authtype', 'auths_id'],
+         'unicityloginauth',
+         'UNIQUE'
+      );
+   }
+   $migration->addField('glpi_authldaps', 'inventory_domain', 'string');
+   $migration->addPostQuery("UPDATE `glpi_users`
+                          SET `glpi_users`.`authtype` = 1
+                          WHERE `glpi_users`.`authtype` = 0");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

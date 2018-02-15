@@ -103,7 +103,7 @@ class Printer extends DbTestCase {
 
    public function testVisibility() {
 
-      $this->Login();
+      $this->login();
 
       $p = new \Printer();
 

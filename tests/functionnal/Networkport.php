@@ -39,7 +39,7 @@ use \DbTestCase;
 class Networkport extends DbTestCase {
 
    public function testAddSimpleNetworkPort() {
-      $this->Login();
+      $this->login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $networkport = new \NetworkPort();
@@ -99,7 +99,7 @@ class Networkport extends DbTestCase {
    }
 
    public function testAddCompleteNetworkPort() {
-      $this->Login();
+      $this->login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
 

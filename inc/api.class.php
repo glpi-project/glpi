@@ -163,7 +163,7 @@ abstract class API extends CommonGLPI {
     * Init GLPI Session
     *
     * @param array $params array with theses options :
-    *    - a couple 'name' & 'password' : 2 parameters to login with user auhentication
+    *    - a couple 'name' & 'password' : 2 parameters to login with user authentication
     *         OR
     *    - an 'user_token' defined in User Configuration
     *
@@ -205,8 +205,12 @@ abstract class API extends CommonGLPI {
                             "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED", false);
       }
 
+      if (!isset($params['auth'])) {
+         $params['auth'] = '';
+      }
+
       // login on glpi
-      if (!$auth->login($params['login'], $params['password'], $noAuto)) {
+      if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
          $err = Html::clean($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {

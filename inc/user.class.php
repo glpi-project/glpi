@@ -417,6 +417,15 @@ class User extends CommonDBTM {
       return $this->getFromDBByCrit(['name' => $name]);
    }
 
+
+   function getFromDBbyNameAndAuth($name, $authtype, $auths_id) {
+      return $this->getFromDBByCrit([
+         'name'     => $name,
+         'authtype' => $authtype,
+         'auths_id' => $auths_id
+         ]);
+   }
+
    /**
     * Retrieve an item from the database using its login
     *
@@ -567,10 +576,20 @@ class User extends CommonDBTM {
          return false;
       }
 
+      if (!isset($input["authtype"])) {
+         $input["authtype"] = Auth::DB_GLPI;
+      }
+
+      if (!isset($input["auths_id"])) {
+         $input["auths_id"] = 0;
+      }
+
       // Check if user does not exists
       $query = "SELECT *
                 FROM `".$this->getTable()."`
-                WHERE `name` = '".$input['name']."'";
+                WHERE `name` = '".$input['name']."'
+                   AND `authtype` = '".$input['authtype']."'
+                   AND `auths_id` = '".$input['auths_id']."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
@@ -619,10 +638,6 @@ class User extends CommonDBTM {
 
       if (!isset($input["profiles_id"])) {
          $input["profiles_id"] = 0;
-      }
-
-      if (!isset($input["authtype"])) {
-         $input["authtype"] = 0;
       }
 
       return $input;

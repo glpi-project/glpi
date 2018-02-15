@@ -48,7 +48,7 @@ class Computer_SoftwareVersion extends DbTestCase {
    }
 
    public function testPrepareInputForAdd() {
-      $this->Login();
+      $this->login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);

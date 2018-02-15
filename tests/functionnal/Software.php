@@ -49,7 +49,7 @@ class Software extends DbTestCase {
    }
 
    public function testGetTabNameForItem() {
-      $this->Login();
+      $this->login();
 
       $software = new \Software();
       $input    = ['name'         => 'soft1',
@@ -63,7 +63,7 @@ class Software extends DbTestCase {
    }
 
    public function defineTabs() {
-      $this->Login();
+      $this->login();
 
       $software = new \Software();
       $tabs     = $software->defineTabs();
@@ -180,7 +180,7 @@ class Software extends DbTestCase {
    public function testPost_addItem() {
       global $CFG_GLPI;
 
-      $this->Login();
+      $this->login();
 
       $software     = new \Software();
       $softwares_id = $software->add([
@@ -212,7 +212,7 @@ class Software extends DbTestCase {
    }
 
    public function testPost_addItemWithTemplate() {
-      $this->Login();
+      $this->login();
 
       $software     = new \Software();
       $softwares_id = $software->add([
@@ -265,7 +265,7 @@ class Software extends DbTestCase {
 
    public function testCleanDBonPurge() {
       global $CFG_GLPI;
-      $this->Login();
+      $this->login();
 
       //Force creation of infocom when an asset is added
       $CFG_GLPI['auto_create_infocoms'] = 1;
@@ -384,7 +384,7 @@ class Software extends DbTestCase {
    }
 
    public function testGetSpecificMassiveActions() {
-      $this->Login();
+      $this->login();
 
       $software = new \Software();
       $result = $software->getSpecificMassiveActions();
@@ -415,7 +415,7 @@ class Software extends DbTestCase {
       $result   = $software->rawSearchOptions();
       $this->array($result)->hasSize(39);
 
-      $this->Login();
+      $this->login();
       $result   = $software->rawSearchOptions();
       $this->array($result)->hasSize(48);
    }

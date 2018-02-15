@@ -123,6 +123,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
+
+   // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
+   echo '<p class="login_input">';
+   Auth::dropdownLogin();
+   echo '<span class="login_img"></span></p>';
+
    if ($CFG_GLPI["login_remember_time"]) {
       echo '<p class="login_input">
             <label for="login_remember">

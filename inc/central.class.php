@@ -161,7 +161,7 @@ class Central extends CommonGLPI {
          if (!empty($logins)) {
             $accounts = [];
             foreach ($logins as $login) {
-               $user->getFromDBbyName($login);
+               $user->getFromDBbyNameAndAuth($login, Auth::DB_GLPI, 0);
                $accounts[] = $user->getLink();
             }
             $warnings[] = sprintf(__('For security reasons, please change the password for the default users: %s'),

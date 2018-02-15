@@ -343,7 +343,7 @@ class Ticket extends DbTestCase {
 
    public function testPostOnlyAcls() {
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
 
       $ticket = new \Ticket();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
@@ -436,7 +436,7 @@ class Ticket extends DbTestCase {
 
    public function testTechAcls() {
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       $ticket = new \Ticket();
       $this->boolean((boolean)$ticket->canAdminActors())->isTrue();
@@ -531,7 +531,7 @@ class Ticket extends DbTestCase {
       $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
       //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
       $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
@@ -602,7 +602,7 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reload ticket from DB
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -633,7 +633,7 @@ class Ticket extends DbTestCase {
       $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
       //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
       $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
@@ -663,7 +663,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
 
       // post only tests
-      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
@@ -886,7 +886,7 @@ class Ticket extends DbTestCase {
 
    public function testFormPostOnly() {
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
+      $this->boolean((boolean)$auth->login('post-only', 'postonly', true))->isTrue();
 
       //create a new ticket
       $ticket = new \Ticket();
@@ -1104,7 +1104,7 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
 
       $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isFalse();
@@ -1132,7 +1132,7 @@ class Ticket extends DbTestCase {
       $query = "UPDATE glpi_profilerights SET rights = 234503 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
       //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
       $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
@@ -1171,7 +1171,7 @@ class Ticket extends DbTestCase {
       )->isGreaterThan(0);
 
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
 
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
@@ -1200,7 +1200,7 @@ class Ticket extends DbTestCase {
       $query = "UPDATE glpi_profilerights SET rights = 136199 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
       //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
       $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
@@ -1231,7 +1231,7 @@ class Ticket extends DbTestCase {
       $query = "UPDATE glpi_profilerights SET rights = 144391 WHERE profiles_id = 6 AND name = 'ticket'";
       $DB->query($query);
       //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
       $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
