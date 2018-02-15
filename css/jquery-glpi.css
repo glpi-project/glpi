@@ -186,7 +186,9 @@ html .ui-autocomplete {
 .select2-search--dropdown .select2-search__field {
    padding: 0 4px;
 }
-
+#show_validator_field .select2.select2-container.select2-container--default{
+  width: 60% !important;
+}
 /** left-ellipsis stuff... */
 .select2-selection.select2-selection--single {
    min-width: 72px;
