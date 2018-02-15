@@ -48,37 +48,6 @@ function update92to93() {
    $migration->setVersion('9.3');
 
    //Create solutions table
-   if (!$DB->tableExists('glpi_inventorytypes')) {
-      $query = "CREATE TABLE `glpi_inventorytypes` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-         `comment` text COLLATE utf8_unicode_ci,
-         `date_creation` datetime DEFAULT NULL,
-         `date_mod` datetime DEFAULT NULL,
-         PRIMARY KEY (`id`),
-         KEY `name` (`name`)
-         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.3 add table glpi_inventorytypes");
-   }
-
-   //Add automatic inventory infos for each itemtype
-   $fields = [
-      'date_last_inventory' => 'datetime', //Last inventory
-      'date_last_seen'      => 'datetime', //Last time the asset has been seen (either local or remote inventory)
-      'inventorytypes_id'   => 'integer', //Type of inventory (fusion, ocs, etc)
-      'inventory_source'    => 'string' //Which device has discovered the asset
-   ];
-   foreach ($CFG_GLPI["asset_types"] as $itemtype) {
-      foreach ($fields as $field => $type) {
-         $table = getTableForItemType($itemtype);
-         if ($migration->addField($table, $field, $type)) {
-            $migration->migrationOneTable($table);
-            $migration->addKey($table, $field);
-         }
-      }
-   }
-
-   //Create solutions table
    if (!$DB->tableExists('glpi_itilsolutions')) {
       $query = "CREATE TABLE `glpi_itilsolutions` (
          `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -380,6 +349,9 @@ function update92to93() {
                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_racks");
+   } else {
+      $migration->addField('glpi_racks','users_id', 'integer');
+      $migration->addKey('glpi_racks', 'users_id');
    }
 
    if (!$DB->tableExists('glpi_items_racks')) {
@@ -539,6 +511,9 @@ function update92to93() {
                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_enclosures");
+   } else {
+      $migration->addField('glpi_enclosures','users_id', 'integer');
+      $migration->addKey('glpi_enclosures', 'users_id');
    }
 
    if (!$DB->tableExists('glpi_items_enclosures')) {
@@ -651,6 +626,9 @@ function update92to93() {
                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_pdus");
+   } else {
+      $migration->addField('glpi_pdus','users_id', 'integer');
+      $migration->addKey('glpi_pdus', 'users_id');
    }
 
    if (!$DB->tableExists('glpi_plugs')) {
@@ -777,6 +755,37 @@ function update92to93() {
             $key,
             'FULLTEXT'
          );
+      }
+   }
+
+   //Create solutions table
+   if (!$DB->tableExists('glpi_inventorytypes')) {
+      $query = "CREATE TABLE `glpi_inventorytypes` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `comment` text COLLATE utf8_unicode_ci,
+         `date_creation` datetime DEFAULT NULL,
+         `date_mod` datetime DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.3 add table glpi_inventorytypes");
+   }
+
+   //Add automatic inventory infos for each itemtype
+   $fields = [
+      'date_last_inventory' => 'datetime', //Last inventory
+      'date_last_seen'      => 'datetime', //Last time the asset has been seen (either local or remote inventory)
+      'inventorytypes_id'   => 'integer', //Type of inventory (fusion, ocs, etc)
+      'inventory_source'    => 'string' //Which device has discovered the asset
+   ];
+   foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+      foreach ($fields as $field => $type) {
+         $table = getTableForItemType($itemtype);
+         if ($migration->addField($table, $field, $type)) {
+            $migration->migrationOneTable($table);
+            $migration->addKey($table, $field);
+         }
       }
    }
 
