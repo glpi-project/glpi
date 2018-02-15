@@ -779,7 +779,12 @@ function update92to93() {
       'inventorytypes_id'   => 'integer', //Type of inventory (fusion, ocs, etc)
       'inventory_source'    => 'string' //Which device has discovered the asset
    ];
-   foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+   $asset_itemtypes = [
+      'Computer', 'Monitor', 'NetworkEquipment',
+      'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+      'Certificate'
+   ];
+   foreach ($asset_itemtypes as $itemtype) {
       foreach ($fields as $field => $type) {
          $table = getTableForItemType($itemtype);
          if ($migration->addField($table, $field, $type)) {
