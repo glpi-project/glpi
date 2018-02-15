@@ -1,0 +1,88 @@
+version: 2
+
+shared: &shared
+  steps:
+    - checkout
+    - run:
+        name: Dependencies
+        command: |
+          sudo apt-get install -y mysql-client libpng-dev libxml2-dev
+          sudo docker-php-ext-install mysqli gd xmlrpc
+    - run:
+        name: Composer
+        command: |
+          composer self-update
+          sed -e '/"php":/d' -i composer.json
+          rm -f composer.lock
+          composer install --optimize-autoloader
+    - run:
+        name: Update DB
+        command: |
+          mysql -h 127.0.0.1 -u root -e 'create database glpitest0723;'
+          mysql -h 127.0.0.1 -u root glpitest0723 < tests/glpi-0.72.3-empty.sql
+          cp tests/circleci.config_db.php tests/config_db.php
+          php scripts/cliupdate.php --config-dir=../tests --dev
+          php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
+          php scripts/innodb_migration.php --config-dir=../tests
+          rm tests/config_db.php
+    - run:
+        name: Install DB
+        command: |
+          mysql -h 127.0.0.1 -u root -e 'create database glpitest;'
+          php scripts/cliinstall.php --db=glpitest --host=127.0.0.1 --user=root --tests
+          php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
+          ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
+    - run:
+        name: tests DB
+        command: composer testdb
+    - run:
+        name: tests
+        command: composer test
+    - run:
+        name: tests WEB
+        command: |
+          php -S localhost:8088 tests/router.php &>/dev/null &
+          composer testweb
+    - run:
+        name: tests LDAP
+        command: |
+          ./tests/LDAP/ldap_run.sh
+          composer testldap
+    - run:
+        name: Coding standards
+        command: composer cs
+jobs:
+  "build":
+    <<: *shared
+    docker:
+      - image: circleci/php:5.6-apache-node-browsers
+      - image: circleci/mariadb:10.1
+  "php5.6":
+    <<: *shared
+    docker:
+      - image: circleci/php:5.6-apache-node-browsers
+      - image: circleci/mariadb:10.1
+  "php7.0":
+    <<: *shared
+    docker:
+      - image: circleci/php:7.0-apache-node-browsers
+      - image: circleci/mariadb:10.2
+  "php7.1":
+    <<: *shared
+    docker:
+      - image: circleci/php:7.1-apache-node-browsers
+      - image: circleci/mariadb:10.3
+  "php7.2":
+    <<: *shared
+    docker:
+      - image: circleci/php:7.2-apache-node-browsers
+      - image: circleci/mariadb:10.3
+
+workflows:
+  version: 2
+  tests_all:
+    jobs:
+      - php5.6
+      - php7.0
+      - php7.1
+      - php7.2
