@@ -1639,6 +1639,20 @@ class Toolbox {
     * @return content of the page (or empty)
    **/
    static function getURLContent ($url, &$msgerr = null, $rec = 0) {
+      $content = self::callCurl($url);
+      return $content;
+   }
+
+   /**
+    * Executes a curl call
+    *
+    * @param string $url    URL to retrieve
+    * @param array  $eopts  Extra curl opts
+    * @param string $msgerr set if problem encountered (default NULL)
+    *
+    * @return string
+    */
+   public static function callCurl($url, array $eopts = [], &$msgerr = null) {
       global $CFG_GLPI;
 
       $content = "";
@@ -1659,7 +1673,7 @@ class Toolbox {
          CURLOPT_URL             => $url,
          CURLOPT_USERAGENT       => "GLPI/".trim($CFG_GLPI["version"]),
          CURLOPT_RETURNTRANSFER  => 1
-      ];
+      ] + $eopts;
 
       if (!empty($CFG_GLPI["proxy_name"])) {
          // Connection using proxy
@@ -1703,6 +1717,9 @@ class Toolbox {
 
       if (empty($content)) {
          $msgerr = __('No data available on the web site');
+      }
+      if (!empty($msgerr)) {
+         Toolbox::logDebug($msgerr);
       }
       return $content;
    }

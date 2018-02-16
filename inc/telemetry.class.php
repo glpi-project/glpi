@@ -267,43 +267,17 @@ class Telemetry extends CommonGLPI {
     * @return void
     */
    static public function cronTelemetry($task) {
-      global $CFG_GLPI;
-
       $data = self::getTelemetryInfos();
       $infos = json_encode(['data' => $data]);
 
-      $uri = GLPI_TELEMETRY_URI . '/telemetry';
-      $ch = curl_init($uri);
+      $url = GLPI_TELEMETRY_URI . '/telemetry';
       $opts = [
-         CURLOPT_URL             => $uri,
-         CURLOPT_USERAGENT       => "GLPI/".trim($CFG_GLPI["version"]),
-         CURLOPT_RETURNTRANSFER  => 1,
          CURLOPT_POSTFIELDS      => $infos,
          CURLOPT_HTTPHEADER      => ['Content-Type:application/json']
       ];
 
-      if (!empty($CFG_GLPI["proxy_name"])) {
-         // Connection using proxy
-         $opts += [
-            CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
-            CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
-            CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
-            CURLOPT_HTTPPROXYTUNNEL => 1
-         ];
-
-         if (!empty($CFG_GLPI["proxy_user"])) {
-            $opts += [
-               CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
-               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . Toolbox::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)
-            ];
-         }
-
-      }
-
-      curl_setopt_array($ch, $opts);
-      $content = json_decode(curl_exec($ch));
-      $errstr = curl_error($ch);
-      curl_close($ch);
+      $errstr = null;
+      $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
 
       if ($content && property_exists($content, 'message')) {
          //all is OK!
@@ -315,7 +289,6 @@ class Telemetry extends CommonGLPI {
          }
          throw new \RuntimeException($message);
       }
-
    }
 
    /**
