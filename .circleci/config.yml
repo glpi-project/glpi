@@ -23,7 +23,6 @@ shared: &shared
           cp tests/circleci.config_db.php tests/config_db.php
           php scripts/cliupdate.php --config-dir=../tests --dev
           php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-          php scripts/innodb_migration.php --config-dir=../tests
           rm tests/config_db.php
     - run:
         name: Install DB
