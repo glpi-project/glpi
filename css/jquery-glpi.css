@@ -174,7 +174,9 @@ html .ui-autocomplete {
 .select2-container .select2-choice div b {
     margin-top: -2px;
 }
-
+#show_validator_field .select2-container{
+  width: 60%;
+}
 .select2-results ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
 .select2-results ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
 .select2-results ul.select2-result-sub ul.select2-result-sub ul.select2-result-sub > li .select2-result-label { padding-left: 10px }
