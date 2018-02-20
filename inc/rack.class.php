@@ -679,7 +679,7 @@ class Rack extends CommonDBTM {
       }
 
       echo "
-      <div class='grid-room' style='width: ".($grid_w + 16)."px; height: ".$grid_h."px'>
+      <div class='grid-room' style='width: ".($grid_w + 16)."px; min-height: ".$grid_h."px'>
          <span class='racks_view_controls'>
             $blueprint_ctrl
             <span class='mini_toggle active'
