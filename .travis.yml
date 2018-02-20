@@ -17,7 +17,7 @@ before_script:
   - ./tests/LDAP/ldap_fixtures.sh > /dev/null
 script:
   - mysql -u root -e 'select version();'
-  - then composer testldap
+  - composer testldap
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
