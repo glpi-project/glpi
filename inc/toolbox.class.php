@@ -1604,17 +1604,21 @@ class Toolbox {
          $opts += [
             CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
             CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
-            CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
-            CURLOPT_HTTPPROXYTUNNEL => 1
+            CURLOPT_PROXYTYPE       => CURLPROXY_HTTP
          ];
 
          if (!empty($CFG_GLPI["proxy_user"])) {
             $opts += [
-               CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
-               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY)
+               CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
+               CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . self::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY),
             ];
          }
 
+         if ($defaultport == 443) {
+            $opts += [
+               CURLOPT_HTTPPROXYTUNNEL => 1
+            ];
+         }
       }
 
       curl_setopt_array($ch, $opts);
