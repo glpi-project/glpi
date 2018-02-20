@@ -183,7 +183,8 @@ class DBmysql {
             throw new GlpitestSQLError($error);
          }
 
-         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+                || isAPI())
              && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
          }
