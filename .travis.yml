@@ -23,12 +23,27 @@ script:
 matrix:
   include:
     - php: 5.6
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.0
       addons:
         mariadb: 10.2
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+
     - php: 7.1
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+
     - php: 7.2
       addons:
         apt:
@@ -36,6 +51,11 @@ matrix:
             - ldap-utils
             - slapd
     - php: nightly
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
   allow_failures:
     - php: nightly
 
