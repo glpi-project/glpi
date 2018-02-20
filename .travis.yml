@@ -1,4 +1,5 @@
 language: php
+sudo: required
 
 env:
   - DB=mysql
