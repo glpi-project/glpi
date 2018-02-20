@@ -718,16 +718,22 @@ JAVASCRIPT;
          ]
       );
 
+      $entities = $rack->fields['entities_id'];
+      if ($rack->fields['is_recursive']) {
+         $entities = getSonsOf('glpi_entities', $entities);
+      }
+
       Ajax::updateItemOnSelectEvent(
          ["dropdown_itemtype$rand", "dropdown_is_reserved$rand", "used_$rand"],
          "items_id",
          $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", [
-            'idtable'     => '__VALUE0__',
-            'name'        => 'items_id',
-            'value'       => $this->fields['items_id'],
-            'rand'        => $rand,
-            'is_reserved' => '__VALUE1__',
-            'used'        => '__VALUE2__'
+            'idtable'         => '__VALUE0__',
+            'name'            => 'items_id',
+            'value'           => $this->fields['items_id'],
+            'rand'            => $rand,
+            'is_reserved'     => '__VALUE1__',
+            'used'            => '__VALUE2__',
+            'entity_restrict' => $entities,
          ]
       );
       echo "</td>";
