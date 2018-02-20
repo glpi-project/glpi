@@ -28,7 +28,7 @@ var initRack = function() {
       })
       .on("click", ".cell_add", function() {
          var index = grid_rack_units - $(this).index();
-         var side = ($(this).parents('.racks_col').hasClass('rack_front')
+         var side = ($(this).parents('.rack_side').hasClass('rack_front')
                         ? 0  // front
                         : 1); // rear
          var current_grid = $(this).parents('.grid-stack').data('gridstack');
