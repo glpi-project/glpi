@@ -24,7 +24,7 @@
         "phpmailer/phpmailer": "~6.0",
         "sabre/vobject": "~4.1",
         "simplepie/simplepie": "^1.5",
-        "tecnickcom/tcpdf": "~6.2",
+        "tecnickcom/tcpdf": "~6.2.16",
         "zendframework/zend-cache": "^2.7",
         "zendframework/zend-i18n": "^2.7",
         "zendframework/zend-serializer": "^2.7",
@@ -60,7 +60,6 @@
         "cs": "vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce ./",
         "post-install-cmd": [
            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-           "patch -d vendor/tecnickcom/tcpdf/ -p1 < tools/tcpdf-php7.2.patch",
            "patch -d vendor/zendframework/zend-cache/ -p1 < tools/zend-cache-php7.2.patch"
         ],
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
