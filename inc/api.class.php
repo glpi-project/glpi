@@ -2025,6 +2025,7 @@ abstract class API extends CommonGLPI {
     * @return array  of messages
     */
    private function getGlpiLastMessage() {
+      global $DEBUG_SQL;
 
       $all_messages             = [];
 
@@ -2042,6 +2043,12 @@ abstract class API extends CommonGLPI {
          foreach ($messages as $message) {
             $all_messages[] = Html::clean($message);
          }
+      }
+
+      // get sql errors
+      if (count($all_messages) <= 0
+          && $DEBUG_SQL['errors'] !== null) {
+         $all_messages = $DEBUG_SQL['errors'];
       }
 
       if (!end($all_messages)) {
