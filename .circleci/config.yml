@@ -37,18 +37,21 @@ shared: &shared
           php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
           ./tests/test_fail_update.sh; git checkout install/update_92_93.php;
     - run:
-        name: tests DB
+        name: Database tests
         command: composer testdb
     - run:
-        name: tests
-        command: composer test
+        name: Functionnal tests
+        command: composer testfunc
     - run:
-        name: tests WEB
+        name: Unit tests
+        command: composer testunits
+    - run:
+        name: WEB tests
         command: |
           php -S localhost:8088 tests/router.php &>/dev/null &
           composer testweb
 #    - run:
-#        name: tests LDAP
+#        name: LDAP tests
 #        command: |
 #          ./tests/LDAP/ldap_run.sh
 #          composer testldap
