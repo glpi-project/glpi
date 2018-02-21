@@ -1050,8 +1050,7 @@ class Change extends CommonITILObject {
             } else {
                $restrict = "='".$item->getID()."'";
             }
-            $restrict   = "(`glpi_changes_groups`.`groups_id` $restrict
-                            AND `glpi_changes_groups`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_changes_groups`.`groups_id` $restrict)";
             $order      = '`glpi_changes`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 71;
