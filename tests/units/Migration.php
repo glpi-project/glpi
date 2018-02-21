@@ -73,7 +73,7 @@ class Migration extends \GLPITestCase {
          function () {
             new \Migration(GLPI_VERSION);
          }
-      )->isIdenticalTo("<div id='migration_message_" . GLPI_VERSION . "'>\n            <p class='center'>Work in progress...</p></div>");
+      )->isEmpty();
    }
 
    public function testPrePostQueries() {

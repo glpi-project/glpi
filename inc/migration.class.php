@@ -74,7 +74,7 @@ class Migration {
    function __construct($ver) {
 
       $this->deb = time();
-      $this->setVersion($ver);
+      $this->version = $ver;
    }
 
    /**
@@ -105,11 +105,14 @@ class Migration {
    **/
    function addNewMessageArea($id) {
 
-      $this->current_message_area_id = $id;
-      echo "<div id='".$this->current_message_area_id."'>
-            <p class='center'>".__('Work in progress...')."</p></div>";
-
-      $this->flushLogDisplayMessage();
+      if ($id == $this->current_message_area_id) {
+         $this->displayMessage(__('Work in progress...'));
+      } else {
+         $this->current_message_area_id = $id;
+         echo "<div id='".$this->current_message_area_id."'>
+               <p class='center'>".__('Work in progress...')."</p></div>";
+         $this->flushLogDisplayMessage();
+      }
    }
 
 

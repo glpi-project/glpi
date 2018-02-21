@@ -102,7 +102,7 @@ class Update extends \GLPITestCase {
          function () use (&$migration) {
             $migration = new \Migration(GLPI_VERSION);
          }
-      )->isIdenticalTo("<div id='migration_message_" . GLPI_VERSION . "'>\n            <p class='center'>Work in progress...</p></div>");
+      )->isEmpty();
 
       $this->object($update->setMigration($migration))->isInstanceOf('Update');
    }
