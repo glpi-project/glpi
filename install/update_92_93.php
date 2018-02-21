@@ -47,6 +47,14 @@ function update92to93() {
    $migration->displayTitle(sprintf(__('Update to %s'), '9.3'));
    $migration->setVersion('9.3');
 
+   //automatic inventory items types.
+   //may be completed in the update, used at the end.
+   $ai_itemtypes = [
+      'Computer', 'Monitor', 'NetworkEquipment',
+      'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+      'Certificate'
+   ];
+
    //Create solutions table
    if (!$DB->tableExists('glpi_itilsolutions')) {
       $query = "CREATE TABLE `glpi_itilsolutions` (
@@ -294,64 +302,67 @@ function update92to93() {
 
    if (!$DB->tableExists('glpi_racks')) {
       $query = "CREATE TABLE `glpi_racks` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `comment` text COLLATE utf8_unicode_ci,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                 `locations_id` int(11) NOT NULL DEFAULT '0',
-                 `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `rackmodels_id` int(11) DEFAULT NULL,
-                 `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                 `racktypes_id` int(11) NOT NULL DEFAULT '0',
-                 `states_id` int(11) NOT NULL DEFAULT '0',
-                 `users_id` int(11) NOT NULL DEFAULT '0',
-                 `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `width` int(11) DEFAULT NULL,
-                 `height` int(11) DEFAULT NULL,
-                 `depth` int(11) DEFAULT NULL,
-                 `number_units` int(11) DEFAULT '0',
-                 `is_template` tinyint(1) NOT NULL DEFAULT '0',
-                 `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                 `dcrooms_id` int(11) NOT NULL DEFAULT '0',
-                 `room_orientation` int(11) NOT NULL DEFAULT '0',
-                 `position` varchar(50),
-                 `bgcolor` varchar(7) DEFAULT NULL,
-                 `max_power` int(11) NOT NULL DEFAULT '0',
-                 `mesured_power` int(11) NOT NULL DEFAULT '0',
-                 `max_weight` int(11) NOT NULL DEFAULT '0',
-                 `date_mod` datetime DEFAULT NULL,
-                 `date_creation` datetime DEFAULT NULL,
-                 `date_last_inventory` datetime DEFAULT NULL,
-                 `date_last_seen` datetime DEFAULT NULL,
-                 `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
-                 `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 PRIMARY KEY (`id`),
-                 KEY `entities_id` (`entities_id`),
-                 KEY `is_recursive` (`is_recursive`),
-                 KEY `locations_id` (`locations_id`),
-                 KEY `rackmodels_id` (`rackmodels_id`),
-                 KEY `manufacturers_id` (`manufacturers_id`),
-                 KEY `racktypes_id` (`racktypes_id`),
-                 KEY `states_id` (`states_id`),
-                 KEY `users_id` (`users_id`),
-                 KEY `users_id_tech` (`users_id_tech`),
-                 KEY `group_id_tech` (`groups_id_tech`),
-                 KEY `is_template` (`is_template`),
-                 KEY `is_deleted` (`is_deleted`),
-                 KEY `dcrooms_id` (`dcrooms_id`),
-                 KEY `date_last_inventory` (`date_last_inventory`),
-                 KEY `date_last_seen` (`date_last_seen`),
-                 KEY `inventorytypes_id` (`inventorytypes_id`),
-                 KEY `inventory_source` (`inventory_source`)
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `rackmodels_id` int(11) DEFAULT NULL,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `racktypes_id` int(11) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `width` int(11) DEFAULT NULL,
+                  `height` int(11) DEFAULT NULL,
+                  `depth` int(11) DEFAULT NULL,
+                  `number_units` int(11) DEFAULT '0',
+                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `dcrooms_id` int(11) NOT NULL DEFAULT '0',
+                  `room_orientation` int(11) NOT NULL DEFAULT '0',
+                  `position` varchar(50),
+                  `bgcolor` varchar(7) DEFAULT NULL,
+                  `max_power` int(11) NOT NULL DEFAULT '0',
+                  `mesured_power` int(11) NOT NULL DEFAULT '0',
+                  `max_weight` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  `date_last_inventory` datetime DEFAULT NULL,
+                  `date_last_seen` datetime DEFAULT NULL,
+                  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+                  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `rackmodels_id` (`rackmodels_id`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `racktypes_id` (`racktypes_id`),
+                  KEY `states_id` (`states_id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `users_id_tech` (`users_id_tech`),
+                  KEY `group_id_tech` (`groups_id_tech`),
+                  KEY `is_template` (`is_template`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `dcrooms_id` (`dcrooms_id`),
+                  KEY `date_last_inventory` (`date_last_inventory`),
+                  KEY `date_last_seen` (`date_last_seen`),
+                  KEY `inventorytypes_id` (`inventorytypes_id`),
+                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_racks");
    } else {
-      $migration->addField('glpi_racks','users_id', 'integer');
+      $migration->addField('glpi_racks', 'users_id', 'integer');
       $migration->addKey('glpi_racks', 'users_id');
+      if (!$DB->fieldExists('glpi_racks', 'inventory_source')) {
+         $ai_itemtypes[] = 'Rack';
+      }
    }
 
    if (!$DB->tableExists('glpi_items_racks')) {
@@ -468,52 +479,55 @@ function update92to93() {
 
    if (!$DB->tableExists('glpi_enclosures')) {
       $query = "CREATE TABLE `glpi_enclosures` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                 `locations_id` int(11) NOT NULL DEFAULT '0',
-                 `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `enclosuremodels_id` int(11) DEFAULT NULL,
-                 `users_id` int(11) NOT NULL DEFAULT '0',
-                 `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `is_template` tinyint(1) NOT NULL DEFAULT '0',
-                 `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                 `orientation` tinyint(1),
-                 `power_supplies` tinyint(1) NOT NULL DEFAULT '0',
-                 `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
-                 `comment` text COLLATE utf8_unicode_ci,
-                 `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                 `date_mod` datetime DEFAULT NULL,
-                 `date_creation` datetime DEFAULT NULL,
-                 `date_last_inventory` datetime DEFAULT NULL,
-                 `date_last_seen` datetime DEFAULT NULL,
-                 `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
-                 `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 PRIMARY KEY (`id`),
-                 KEY `entities_id` (`entities_id`),
-                 KEY `is_recursive` (`is_recursive`),
-                 KEY `locations_id` (`locations_id`),
-                 KEY `enclosuremodels_id` (`enclosuremodels_id`),
-                 KEY `users_id` (`users_id`),
-                 KEY `users_id_tech` (`users_id_tech`),
-                 KEY `group_id_tech` (`groups_id_tech`),
-                 KEY `is_template` (`is_template`),
-                 KEY `is_deleted` (`is_deleted`),
-                 KEY `states_id` (`states_id`),
-                 KEY `manufacturers_id` (`manufacturers_id`),
-                 KEY `date_last_inventory` (`date_last_inventory`),
-                 KEY `date_last_seen` (`date_last_seen`),
-                 KEY `inventorytypes_id` (`inventorytypes_id`),
-                 KEY `inventory_source` (`inventory_source`)
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `enclosuremodels_id` int(11) DEFAULT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `orientation` tinyint(1),
+                  `power_supplies` tinyint(1) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  `date_last_inventory` datetime DEFAULT NULL,
+                  `date_last_seen` datetime DEFAULT NULL,
+                  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+                  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `enclosuremodels_id` (`enclosuremodels_id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `users_id_tech` (`users_id_tech`),
+                  KEY `group_id_tech` (`groups_id_tech`),
+                  KEY `is_template` (`is_template`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `states_id` (`states_id`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `date_last_inventory` (`date_last_inventory`),
+                  KEY `date_last_seen` (`date_last_seen`),
+                  KEY `inventorytypes_id` (`inventorytypes_id`),
+                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_enclosures");
    } else {
       $migration->addField('glpi_enclosures','users_id', 'integer');
       $migration->addKey('glpi_enclosures', 'users_id');
+      if (!$DB->fieldExists('glpi_enclosures', 'inventory_source')) {
+         $ai_itemtypes[] = 'Enclosure';
+      }
    }
 
    if (!$DB->tableExists('glpi_items_enclosures')) {
@@ -583,52 +597,55 @@ function update92to93() {
 
    if (!$DB->tableExists('glpi_pdus')) {
       $query = "CREATE TABLE `glpi_pdus` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                 `locations_id` int(11) NOT NULL DEFAULT '0',
-                 `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `pdumodels_id` int(11) DEFAULT NULL,
-                 `users_id` int(11) NOT NULL DEFAULT '0',
-                 `users_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `groups_id_tech` int(11) NOT NULL DEFAULT '0',
-                 `is_template` tinyint(1) NOT NULL DEFAULT '0',
-                 `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                 `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
-                 `comment` text COLLATE utf8_unicode_ci,
-                 `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-                 `pdutypes_id` int(11) NOT NULL DEFAULT '0',
-                 `date_mod` datetime DEFAULT NULL,
-                 `date_creation` datetime DEFAULT NULL,
-                 `date_last_inventory` datetime DEFAULT NULL,
-                 `date_last_seen` datetime DEFAULT NULL,
-                 `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
-                 `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 PRIMARY KEY (`id`),
-                 KEY `entities_id` (`entities_id`),
-                 KEY `is_recursive` (`is_recursive`),
-                 KEY `locations_id` (`locations_id`),
-                 KEY `pdumodels_id` (`pdumodels_id`),
-                 KEY `users_id` (`users_id`),
-                 KEY `users_id_tech` (`users_id_tech`),
-                 KEY `group_id_tech` (`groups_id_tech`),
-                 KEY `is_template` (`is_template`),
-                 KEY `is_deleted` (`is_deleted`),
-                 KEY `states_id` (`states_id`),
-                 KEY `manufacturers_id` (`manufacturers_id`),
-                 KEY `pdutypes_id` (`pdutypes_id`),
-                 KEY `date_last_inventory` (`date_last_inventory`),
-                 KEY `date_last_seen` (`date_last_seen`),
-                 KEY `inventorytypes_id` (`inventorytypes_id`),
-                 KEY `inventory_source` (`inventory_source`)
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `locations_id` int(11) NOT NULL DEFAULT '0',
+                  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `pdumodels_id` int(11) DEFAULT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `states_id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to states (id)',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `pdutypes_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  `date_last_inventory` datetime DEFAULT NULL,
+                  `date_last_seen` datetime DEFAULT NULL,
+                  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+                  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `pdumodels_id` (`pdumodels_id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `users_id_tech` (`users_id_tech`),
+                  KEY `group_id_tech` (`groups_id_tech`),
+                  KEY `is_template` (`is_template`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `states_id` (`states_id`),
+                  KEY `manufacturers_id` (`manufacturers_id`),
+                  KEY `pdutypes_id` (`pdutypes_id`),
+                  KEY `date_last_inventory` (`date_last_inventory`),
+                  KEY `date_last_seen` (`date_last_seen`),
+                  KEY `inventorytypes_id` (`inventorytypes_id`),
+                  KEY `inventory_source` (`inventory_source`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_pdus");
    } else {
-      $migration->addField('glpi_pdus','users_id', 'integer');
+      $migration->addField('glpi_pdus', 'users_id', 'integer');
       $migration->addKey('glpi_pdus', 'users_id');
+      if (!$DB->fieldExists('glpi_pdus', 'inventory_source')) {
+         $ai_itemtypes[] = 'PDU';
+      }
    }
 
    if (!$DB->tableExists('glpi_plugs')) {
@@ -758,42 +775,6 @@ function update92to93() {
       }
    }
 
-   //Create solutions table
-   if (!$DB->tableExists('glpi_inventorytypes')) {
-      $query = "CREATE TABLE `glpi_inventorytypes` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-         `comment` text COLLATE utf8_unicode_ci,
-         `date_creation` datetime DEFAULT NULL,
-         `date_mod` datetime DEFAULT NULL,
-         PRIMARY KEY (`id`),
-         KEY `name` (`name`)
-         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "9.3 add table glpi_inventorytypes");
-   }
-
-   //Add automatic inventory infos for each itemtype
-   $fields = [
-      'date_last_inventory' => 'datetime', //Last inventory
-      'date_last_seen'      => 'datetime', //Last time the asset has been seen (either local or remote inventory)
-      'inventorytypes_id'   => 'integer', //Type of inventory (fusion, ocs, etc)
-      'inventory_source'    => 'string' //Which device has discovered the asset
-   ];
-   $asset_itemtypes = [
-      'Computer', 'Monitor', 'NetworkEquipment',
-      'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-      'Certificate'
-   ];
-   foreach ($asset_itemtypes as $itemtype) {
-      foreach ($fields as $field => $type) {
-         $table = getTableForItemType($itemtype);
-         if ($migration->addField($table, $field, $type)) {
-            $migration->migrationOneTable($table);
-            $migration->addKey($table, $field);
-         }
-      }
-   }
-
    /** Migrate computerdisks to items_disks */
    if (!$DB->tableExists('glpi_items_disks') && $DB->tableExists('glpi_computerdisks')) {
       $migration->renameTable('glpi_computerdisks', 'glpi_items_disks');
@@ -822,6 +803,38 @@ function update92to93() {
       )
    );
    /** /Migrate computerdisks to items_disks */
+
+   /** Add automatic inventory infos for each itemtype */
+   if (!$DB->tableExists('glpi_inventorytypes')) {
+      $query = "CREATE TABLE `glpi_inventorytypes` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+         `comment` text COLLATE utf8_unicode_ci,
+         `date_creation` datetime DEFAULT NULL,
+         `date_mod` datetime DEFAULT NULL,
+         PRIMARY KEY (`id`),
+         KEY `name` (`name`)
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.3 add table glpi_inventorytypes");
+   }
+
+   $fields = [
+      'date_last_inventory' => 'datetime',   //Last inventory
+      'date_last_seen'      => 'datetime',   //Last time the asset has been seen (either local or remote inventory)
+      'inventorytypes_id'   => 'integer',    //Type of inventory (fusion, ocs, etc)
+      'inventory_source'    => 'string'      //Which device has discovered the asset
+   ];
+
+   foreach ($ai_itemtypes as $itemtype) {
+      foreach ($fields as $field => $type) {
+         $table = getTableForItemType($itemtype);
+         if ($migration->addField($table, $field, $type)) {
+            $migration->migrationOneTable($table);
+            $migration->addKey($table, $field);
+         }
+      }
+   }
+   /** /Add automatic inventory infos for each itemtype */
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $rank = 1;
