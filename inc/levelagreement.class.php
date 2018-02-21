@@ -979,8 +979,10 @@ abstract class LevelAgreement extends CommonDBChild {
 
       $pre = static::$prefix;
 
-      $levels_id = ($levels_id ? $levels_id
-                               : $ticket->fields["ttr_".$pre."levels_id"]);
+      if (!$levels_id && isset($ticket->fields['ttr'.$pre.'levels_id'])) {
+         $levels_id = $ticket->fields["ttr_".$pre."levels_id"];
+      }
+
       if ($levels_id) {
          $toadd = [];
          $date = $this->computeExecutionDate($ticket->fields['date'], $levels_id,
