@@ -377,7 +377,7 @@ class Profile extends CommonDBTM {
    **/
    function cleanProfile() {
 
-      if ($this->fields["interface"] == "helpdesk") {
+      if (isset($this->fields['interface']) && $this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
             if (!in_array($key, self::$common_fields)
                 && !in_array($key, self::$helpdesk_rights)) {
