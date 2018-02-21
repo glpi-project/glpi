@@ -1015,7 +1015,7 @@ class TicketFollowup  extends CommonDBTM {
                         Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
             }
             echo ">";
-            $content = nl2br($data['content']);
+            $content = Toolbox::getHtmlToDisplay($this->fields['content']);
             if (empty($content)) {
                $content = NOT_AVAILABLE;
             }
