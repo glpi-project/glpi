@@ -139,9 +139,17 @@ class Notification_NotificationTemplate extends CommonDBChild {
             $tpl = new NotificationTemplate();
             $tpl->getFromDB($data['notificationtemplates_id']);
 
+            $tpl_link = $tpl->getLink();
+            if (empty($tpl_link)) {
+               $tpl_link = "<i class='fa fa-exclamation-triangle red'></i>&nbsp;
+                            <a href='".$notiftpl->getLinkUrl()."'>".
+                              __("No template selected").
+                           "</a>";
+            }
+
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$notiftpl->getLink()."</td>";
-            echo "<td>".$tpl->getLink()."</td>";
+            echo "<td>$tpl_link</td>";
             $mode = self::getMode($data['mode']);
             if ($mode === NOT_AVAILABLE) {
                $mode = "{$data['mode']} ($mode)";
