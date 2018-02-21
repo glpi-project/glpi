@@ -314,6 +314,8 @@ function update92to93() {
                   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
                   `racktypes_id` int(11) NOT NULL DEFAULT '0',
                   `states_id` int(11) NOT NULL DEFAULT '0',
+                  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `users_id_tech` int(11) NOT NULL DEFAULT '0',
                   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
@@ -360,6 +362,8 @@ function update92to93() {
    } else {
       $migration->addField('glpi_racks', 'users_id', 'integer');
       $migration->addKey('glpi_racks', 'users_id');
+      $migration->addField('glpi_racks', 'contact', 'text');
+      $migration->addField('glpi_racks', 'contact_num', 'text');
       if (!$DB->fieldExists('glpi_racks', 'inventory_source')) {
          $ai_itemtypes[] = 'Rack';
       }
@@ -487,6 +491,8 @@ function update92to93() {
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `enclosuremodels_id` int(11) DEFAULT NULL,
+                  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `users_id_tech` int(11) NOT NULL DEFAULT '0',
                   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
@@ -523,8 +529,10 @@ function update92to93() {
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.3 add table glpi_enclosures");
    } else {
-      $migration->addField('glpi_enclosures','users_id', 'integer');
+      $migration->addField('glpi_enclosures', 'users_id', 'integer');
       $migration->addKey('glpi_enclosures', 'users_id');
+      $migration->addField('glpi_enclosures', 'contact', 'text');
+      $migration->addField('glpi_enclosures', 'contact_num', 'text');
       if (!$DB->fieldExists('glpi_enclosures', 'inventory_source')) {
          $ai_itemtypes[] = 'Enclosure';
       }
@@ -605,6 +613,8 @@ function update92to93() {
                   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `pdumodels_id` int(11) DEFAULT NULL,
+                  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `users_id_tech` int(11) NOT NULL DEFAULT '0',
                   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
@@ -643,6 +653,8 @@ function update92to93() {
    } else {
       $migration->addField('glpi_pdus', 'users_id', 'integer');
       $migration->addKey('glpi_pdus', 'users_id');
+      $migration->addField('glpi_pdus', 'contact', 'text');
+      $migration->addField('glpi_pdus', 'contact_num', 'text');
       if (!$DB->fieldExists('glpi_pdus', 'inventory_source')) {
          $ai_itemtypes[] = 'PDU';
       }
