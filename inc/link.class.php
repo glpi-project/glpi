@@ -276,6 +276,7 @@ class Link extends CommonDBTM {
       $matches = [];
       if (preg_match_all('/\[FIELD:(\w+)\]/', $link, $matches)) {
          foreach ($matches[1] as $key => $field) {
+            $item::unsetUndisclosedFields($item->fields);
             if ($item->isField($field)) {
                $link = str_replace($matches[0][$key], $item->getField($field), $link);
             }
