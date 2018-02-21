@@ -2973,4 +2973,22 @@ class Toolbox {
       return $bij_str;
    }
 
+   /**
+    * Get HTML content to display (cleaned)
+    *
+    * @since 9.1.8
+    *
+    * @param string $content Content to display
+    *
+    * @return string
+    */
+   public static function getHtmlToDisplay($content) {
+      $content = Toolbox::unclean_cross_side_scripting_deep(
+         Html::entity_decode_deep(
+            $content
+         )
+      );
+      $content = nl2br(Html::clean($content, false, 1));
+      return $content;
+   }
 }

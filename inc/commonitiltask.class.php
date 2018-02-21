@@ -1250,7 +1250,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          //else echo "--no--";
          echo Html::convDateTime($this->fields["date"]) . "</td>";
-         echo "<td class='left'>" . nl2br(html_entity_decode($this->fields["content"])) . "</td>";
+         $content = Toolbox::getHtmlToDisplay($this->fields['content']);
+         echo "<td class='left'>$content</td>";
          echo "<td>".Html::timestampToString($this->fields["actiontime"], 0)."</td>";
          echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
          if ($this->maybePrivate() && $showprivate) {
