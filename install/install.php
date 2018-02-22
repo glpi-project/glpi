@@ -37,6 +37,8 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 
 Config::detectRootDoc();
 
+$GLPI = new GLPI();
+$GLPI->initLogger();
 
 //Print a correct  Html header for application
 function header_html($etape) {
