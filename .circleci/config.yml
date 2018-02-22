@@ -48,6 +48,8 @@ shared: &shared
 #        command: |
 #          ./tests/LDAP/ldap_run.sh
 #          composer testldap
+
+cs: &cs
     - run:
         name: Coding standards
         command: composer cs
@@ -74,6 +76,7 @@ jobs:
       - image: circleci/mariadb:10.3
   "php7.2":
     <<: *shared
+    <<: *cs
     docker:
       - image: circleci/php:7.2-apache-node-browsers
       - image: circleci/mariadb:10.3
