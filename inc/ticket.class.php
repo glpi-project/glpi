@@ -5814,9 +5814,9 @@ class Ticket extends CommonITILObject {
            $link = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
            echo "<tr class='tab_bg_2'>";
            echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-               Toolbox::append_params($opt,'&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
+               Toolbox::append_params($opt, '&amp;')."\">".__('Ticket waiting for your approval')."</a></td>";
            echo "<td class='numeric'>".$number_waitapproval."</td></tr>";
-       }
+      }
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
