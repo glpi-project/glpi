@@ -341,7 +341,7 @@ class APIRest extends APIBaseClass {
     * @tags    api
     * @covers  API::getItems
     */
-   public function testGetItems() {
+   public function testGetItemsCommonDBChild() {
       // test the case have DBChild not have entities_id
       $ticketTemplate = new \TicketTemplate();
       $ticketTMF = new \TicketTemplateMandatoryField();
