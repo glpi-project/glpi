@@ -6280,8 +6280,8 @@ class Ticket extends CommonITILObject {
 
       // If is html content
       if ($content != strip_tags($content)) {
-         $content = Html::clean($this->convertImageToTag($content), false, 1);
-         $content = Html::entity_decode_deep(Html::clean($this->convertImageToTag($content)));
+         $content = $this->convertImageToTag($content);
+         $content = Toolbox::getHtmlToDisplay($content);
       }
 
       return $content;
