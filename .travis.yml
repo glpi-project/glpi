@@ -5,53 +5,58 @@ env:
   - DB=mysql
 
 before_script:
-  - if [[ "$LDAP" == "true" ]]; then ./tests/LDAP/ldap_run.sh; fi
+  - ./tests/LDAP/ldap_run.sh
   - composer self-update
   - sed -e '/"php":/d' -i composer.json
   - rm -f composer.lock
   - composer install --optimize-autoloader
   #install 0.72.3 database
-  - if [[ "$UPDATE" == "true" ]]; then mysql -u root -e 'create database glpitest0723;'; fi
-  - if [[ "$UPDATE" == "true" ]]; then mysql -u root glpitest0723 < tests/glpi-0.72.3-empty.sql; fi
-  - if [[ "$UPDATE" == "true" ]]; then cp tests/travis.config_db.php tests/config_db.php; fi
-  - if [[ "$UPDATE" == "true" ]]; then php scripts/cliupdate.php --config-dir=../tests --dev; fi
-  - if [[ "$UPDATE" == "true" ]]; then rm tests/config_db.php; fi
   - mysql -u root -e 'create database glpitest;'
   - php scripts/cliinstall.php --db=glpitest --user=root --tests
   - php scripts/cliupdate.php --config-dir=../tests |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
-  - php -S localhost:8088 tests/router.php &>/dev/null &
   # LDAP stuff
-  - if [[ "$LDAP" == "true" ]]; then ./tests/LDAP/ldap_fixtures.sh > /dev/null; fi
-  #APCu
-  - phpenv config-add tests/enable-apcu.ini
+  - ./tests/LDAP/ldap_fixtures.sh > /dev/null
 script:
   - mysql -u root -e 'select version();'
-  - if [[ "$UPDATE" == "true" ]]; then composer testdb; fi
-  - composer test
-  - composer testweb
-  - if [[ "$LDAP" == "true" ]]; then composer testldap; fi
-  - if [[ "$CS" == "true" ]]; then composer cs; fi
+  - composer testldap
 
 #note: default maria version is 5.5 for all main php versions list exept nightly
 matrix:
   include:
     - php: 5.6
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
     - php: 7.0
-      env: UPDATE=true
       addons:
         mariadb: 10.2
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+
     - php: 7.1
-      env: CS=true
       addons:
         mariadb: 10.1
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
+
     - php: 7.2
-      env: LDAP=true
       addons:
         apt:
           packages:
             - ldap-utils
             - slapd
     - php: nightly
+      addons:
+        apt:
+          packages:
+            - ldap-utils
+            - slapd
   allow_failures:
     - php: nightly
 
