@@ -3591,8 +3591,8 @@ class Html {
 
       // If is html content
       if ($content != strip_tags($content)) {
-         $content = Html::clean(Toolbox::convertImageToTag($content), false, 1);
-         $content = Html::entity_decode_deep(Html::clean(Toolbox::convertImageToTag($content)));
+         $content = Toolbox::convertImageToTag($content);
+         $content = Toolbox::getHtmlToDisplay($content);
       }
 
       return $content;
