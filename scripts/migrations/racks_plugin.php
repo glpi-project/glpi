@@ -35,86 +35,107 @@ chdir(__DIR__);
 
 include ('../../inc/includes.php');
 
-$out = "";
+$climate = new League\CLImate\CLImate;
 getArgs();
 confirmMigration();
 checkPlugin();
 TruncateCoreTables();
 migratePlugin();
-printOutput();
 exit (0);
 
 function getArgs() {
-   if (isset($_SERVER['argv'])) {
-      for ($i=1; $i<$_SERVER['argc']; $i++) {
-         $it    = explode("=", $_SERVER['argv'][$i], 2);
-         $it[0] = preg_replace('/^--/', '', $it[0]);
+   global $climate;
 
-         $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
-      }
-   }
+   $climate->arguments->add([
+      'help' => [
+         'prefix'      => "h",
+         'longPrefix'  => "help",
+         'description' => "Prints a usage statement",
+         'noValue'     => true,
+      ],
+      'skip_error' => [
+         'prefix'      => "s",
+         'longPrefix'  => "skip_error",
+         'description' => "Don't exit on import error",
+         'noValue'     => true,
+      ],
+      'truncate' => [
+         'prefix'      => "t",
+         'longPrefix'  => "truncate",
+         'description' => "Remove existing core data",
+         'noValue'     => true,
+      ],
+      'update_plugin' => [
+         'prefix'      => "u",
+         'longPrefix'  => "update_plugin",
+         'description' => "force plugin migration ".
+                          "(you need at least version 1.8.0 files to do this )",
+         'noValue'     => true,
+      ],
+   ]);
 
-   if ((isset($_SERVER['argv']) && in_array('help', $_SERVER['argv']))
-       || isset($_GET['help'])) {
-      echo "Usage: php -q -f racks_plugin.php\n";
-      echo "skip_error: Don't exit on import error\n";
-      echo "truncate: Remove existing core data\n";
-      echo "update_plugin: force plugin migration (you need at least version 1.8.0 files to do this ) \n";
+   $climate->arguments->parse();
+   if ($climate->arguments->defined('help')) {
+      $climate->usage();
       exit (0);
    }
 }
 
 function confirmMigration() {
-   echo "\nYou're about to launch migration of plugin rack data into the core of glpi!\n";
-   echo "It's better to make a backup of your existing data before.\n";
-   echo textYellow("Do you want to lauch migration? (Y)es, (N)o").": ";
+   global $climate;
 
-   $confirmation = readAnswer();
+   $climate->br();
+   $climate->out("You're about to launch migration of plugin rack data into the core of glpi!");
+   $climate->out("It's better to make a backup of your existing data before.");
+   $input = $climate->br()->bold()->input("Do you want to lauch migration? (Y)es, (N)o: ");
+
+   $confirmation = $input->prompt();
    if (!in_array($confirmation, ['y', 'yes'])) {
       exit (0);
    }
 
-   echo textGreen("Here we go\n");
+   $climate->br()->green("Here we go");
 }
 
 function checkPluginVersion($verbose = true) {
-   global $out;
+   global $climate;
 
    $plugin = new Plugin;
    $plugin->getFromDBbyDir('racks');
-
-   if ($verbose) {
-      $out .= "- ".$plugin->fields['name']." - ".
-              $plugin->fields['version']." (".
-              Plugin::getState($plugin->fields['state'])."): ";
-   }
+   $valid_version = false;
 
    if ($plugin->fields['version'] == "1.8.0"
        && in_array($plugin->fields['state'], [Plugin::TOBECONFIGURED, Plugin::NOTACTIVATED])) {
-      $out .= textGreen("OK")."\n";
-      return true;
+      $valid_version = true;
    }
 
-   $out .= textRed("KO")."\n";
-   printOutput();
+   if ($verbose) {
+      $text = "- ".$plugin->fields['name']." - ".
+              $plugin->fields['version']." (".Plugin::getState($plugin->fields['state'])."): ";
+      if ($valid_version) {
+         $climate->green($text."OK");
+      } else {
+         $climate->red($text."KO");
+      }
+   }
 
-   return false;
+   return $valid_version;
 }
 
 function checkPlugin() {
-   global $DB, $out;
+   global $DB, $climate;
 
    $error = false;
 
-   $out .= "\n## Check plugin version:\n\n";
+   title("Check plugin version:");
    $plugin = new Plugin;
    $plugin->getFromDBbyDir('racks');
    if (!checkPluginVersion()) {
-      $out .= textRed("You need at least version 1.8.0 to migrate your data")."\n";
+      $climate->red("You need at least version 1.8.0 to migrate your data");
 
       // try to migrate plugin
-      if (isset($_GET['update_plugin'])) {
-         $out.= "- Migrate plugin to last version:";
+      if ($climate->arguments->defined('update_plugin')) {
+         $climate->out("- Migrate plugin to last version:");
          ob_start();
          $plugin->install($plugin->fields['id']);
          ob_end_clean();
@@ -125,14 +146,13 @@ function checkPlugin() {
          }
       } else {
          if ($plugin->fields['version'] == "1.8.0") {
-            $out .= textRed("You can try option --update_plugin\n");
+            $climate->red("You can try option --update_plugin");
          }
-         printOutput();
          exit (1);
       }
    }
 
-   $out .= "\n## Check presence of racks plugin tables\n\n";
+   title("Check presence of racks plugin tables");
    $rack_tables = [
       'glpi_plugin_racks_itemspecifications',
       'glpi_plugin_racks_rackmodels',
@@ -143,9 +163,8 @@ function checkPlugin() {
       'glpi_plugin_racks_racks_items',
    ];
    foreach ($rack_tables as $table) {
-      $out.= "- $table: ";
       $exist = $DB->tableExists($table);
-      $error = !checkResult($exist);
+      $error = !checkResult($exist, false, $table);
    }
 
    checkError($error);
@@ -154,9 +173,9 @@ function checkPlugin() {
 }
 
 function TruncateCoreTables() {
-   global $DB;
+   global $DB, $climate;
 
-   if (isset($_GET['truncate'])) {
+   if ($climate->arguments->defined('truncate')) {
       $core_tables = [
          'glpi_rackmodels',
          'glpi_racktypes',
@@ -173,13 +192,12 @@ function TruncateCoreTables() {
 }
 
 function migratePlugin() {
-   global $DB, $out;
+   global $DB, $climate;
 
    $error = false;
-   $out .= "\n## Migrate plugin data\n\n";
+   title("Migrate plugin data");
 
    // create fake DC/Room in core to import Racks from plugin
-   $out.= "- Create Datacenter: ";
    $dc = new Datacenter;
    $dc_fields = [
       'name' => 'Temp Datacenter (from plugin racks migration script)',
@@ -188,34 +206,34 @@ function migratePlugin() {
    if (!$dc_id = $dc->getFromDBByCrit($dc_fields)) {
       $dc_id = $dc->add($dc_fields);
    }
-   $error = !checkResult($dc_id);
+   $error = !checkResult($dc_id, false, "Create Datacenter");
    checkError($error);
 
    // migrate others models and items
-   $out.= "- Import other models:\n\n";
+   title("Import other models", 1);
    $iterator_othermodels = $DB->request([
       'FROM' => 'glpi_plugin_racks_othermodels'
    ]);
    $old_othermodel = [];
    if ($nb_othermodels = count($iterator_othermodels)) {
-      $out.= textYellow("  Other items don't exist in GLPI core.\n");
-      $out.= "  We found $nb_othermodels models for other items. For each, we'll ask you where you want to import it.\n";
-      $out.= "  You need to answer: \n";
-      $out.= "   - (C)omputer,\n";
-      $out.= "   - (N)etworkEpuipment,\n";
-      $out.= "   - (P)eripheral,\n";
-      $out.= "   - Pd(U),\n";
-      $out.= "   - Or (I)gnore.\n\n";
+      $climate->yellow("Other items don't exist in GLPI core.");
+      $climate->out("We found $nb_othermodels models for other items. For each, we'll ask you where you want to import it.");
+      $climate->out("You need to answer: ");
+      $climate->tab()->out("- (C)omputer,");
+      $climate->tab()->out("- (N)etworkEpuipment,");
+      $climate->tab()->out("- (P)eripheral,");
+      $climate->tab()->out("- Pd(U),");
+      $climate->tab()->out("- Or (I)gnore.");
+      $climate->br();
 
       foreach ($iterator_othermodels as $othermodel) {
-         $model_lbl = "  * ".$othermodel['name'];
+         $model_lbl = "* ".$othermodel['name'];
          if (strlen($othermodel['comment'])) {
             $model_lbl.= " (".$othermodel['comment'].")";
          }
          $model_lbl.=": ";
-         $out.= textYellow($model_lbl);
-         $answer = readAnswer();
-         $out.= "    ";
+         $input = $climate->tab()->yellow()->input($model_lbl);
+         $answer = $input->prompt();
 
          // transform input choice
          $new_model_itemtype = false;
@@ -262,14 +280,12 @@ function migratePlugin() {
          'FROM' => 'glpi_plugin_racks_others'
       ]);
       if (count($iterator_others)) {
-         $out.= "- Import other items:\n\n";
+         title("Import other items", 1);
          foreach ($iterator_others as $other) {
             $old_model = $old_othermodel[$other['plugin_racks_othermodels_id']];
             list($new_model_itemtype, $new_models_id) = explode(':', $old_model);
             $new_itemtype = str_replace('Model', '', $new_model_itemtype);
             $fk_new_model = getForeignKeyFieldForItemType($new_model_itemtype);
-
-            $out.= "   * $new_itemtype - ".$other['name'].": ";
 
             $new_item = new $new_itemtype;
             $new_item_fields = Toolbox::sanitize([
@@ -284,7 +300,7 @@ function migratePlugin() {
                $new_items_id = $new_item->add($new_item_fields);
             }
 
-            if (!checkResult($new_items_id, true)) {
+            if (!checkResult($new_items_id, true, "$new_itemtype - ".$other['name'])) {
                $error = true;
             } else {
                // replace itemtype in racks items
@@ -299,23 +315,23 @@ function migratePlugin() {
          }
       }
    } else {
-      $out.= "  None found\n";
+      $climate->tab()->out("None found");
    }
    checkError($error);
 
    // migrate specifications
-   $out.= "- Import specifications:\n";
+   title("Import specifications", 1);
    $old_specs = [];
    $iterator_specs = $DB->request([
       'FROM' => 'glpi_plugin_racks_itemspecifications'
    ]);
    foreach ($iterator_specs as $spec) {
-      $out.= "   * ".$spec['itemtype']." (".$spec['model_id']."): ";
       if (class_exists($spec['itemtype'])) {
          $model = new $spec['itemtype'];
+         $message = $spec['itemtype']." (".$spec['model_id'].")";
 
          if (!$model->getFromDB($spec['model_id'])) {
-            $out.= textYellow("Not found\n");
+            notFound($message);
             continue;
          }
 
@@ -331,25 +347,24 @@ function migratePlugin() {
             //'power_consumption' => $spec['amps'], // TODO amps to power conversion
          ]);
 
-         if (!checkResult($model->getID(), true)) {
+         if (!checkResult($model->getID(), true, $message)) {
             $error = true;
          }
          $old_specs[$spec['id']] = $model->fields;
       } else {
-         $out.= textYellow("Not found\n");
+         $climate->yellow($spec['itemtype']." not found");
       }
    }
    checkError($error);
 
    //migrate rack models
-   $out.= "- Import rack models:\n";
+   title("Import rack models", 1);
    $old_models = [];
    $iterator_rackmodels = $DB->request([
       'FROM' => 'glpi_plugin_racks_rackmodels'
    ]);
    foreach ($iterator_rackmodels as $old_model) {
       $rackmodel = new RackModel;
-      $out.= "   * ".$old_model['name'].": ";
       $rackmodel_fields = Toolbox::sanitize([
          'name'    => $old_model['name'],
          'comment' => $old_model['comment'],
@@ -358,7 +373,7 @@ function migratePlugin() {
           || !$rackmodel_id = $rackmodel->getID()) {
          $rackmodel_id = $rackmodel->add($rackmodel_fields);
       }
-      if (!checkResult($rackmodel_id, true)) {
+      if (!checkResult($rackmodel_id, true, $old_model['name'])) {
          $error = true;
       }
       $old_models[$old_model['id']] = $rackmodel_id;
@@ -366,14 +381,13 @@ function migratePlugin() {
    checkError($error);
 
    // migrate types
-   $out.= "- Import rack types:\n";
+   title("Import rack types", 1);
    $old_types = [];
    $iterator_types = $DB->request([
       'FROM' => 'glpi_plugin_racks_racktypes'
    ]);
    foreach ($iterator_types as $old_type) {
       $type = new RackType;
-      $out.= "   * ".$old_type['name'].": ";
       $type_fields = Toolbox::sanitize([
          'name'         => $old_type['name'],
          'entities_id'  => $old_type['entities_id'],
@@ -384,7 +398,7 @@ function migratePlugin() {
           || !$types_id = $type->getID()) {
          $types_id = $type->add($type_fields);
       }
-      if (!checkResult($types_id, true)) {
+      if (!checkResult($types_id, true, $old_type['name'])) {
          $error = true;
       }
       $old_types[$old_type['id']] = $types_id;
@@ -392,14 +406,13 @@ function migratePlugin() {
    checkError($error);
 
    //migrate states
-   $out.= "- Import rack states:\n";
+   title("Import rack states", 1);
    $old_states = [];
    $iterator_states = $DB->request([
       'FROM' => 'glpi_plugin_racks_rackstates'
    ]);
    foreach ($iterator_states as $old_state) {
       $state = new State;
-      $out.= "   * ".$old_state['name'].": ";
       $state_fields = Toolbox::sanitize([
          'name'         => $old_state['name'],
          'entities_id'  => $old_state['entities_id'],
@@ -411,7 +424,7 @@ function migratePlugin() {
          $state_fields['comment'] = $old_state['comment'];
          $state_id = $state->add($state_fields);
       }
-      if (!checkResult($state_id, true)) {
+      if (!checkResult($state_id, true, $old_state['name'])) {
          $error = true;
       }
       $old_states[$old_state['id']] = $state_id;
@@ -419,14 +432,13 @@ function migratePlugin() {
    checkError($error);
 
    // migrate room
-   $out.= "- Import rooms:\n";
+   title("Import rooms", 1);
    $old_rooms = [];
    $iterator_room = $DB->request([
       'FROM' => 'glpi_plugin_racks_roomlocations'
    ]);
    foreach ($iterator_room as $old_room) {
       $room = new DCRoom;
-      $out.= "   * ".$old_room['completename'].": ";
       $room_fields = Toolbox::sanitize([
          'name'           => $old_room['completename'],
          'entities_id'    => $old_room['entities_id'],
@@ -439,7 +451,7 @@ function migratePlugin() {
           || !$room_id = $room->getID()) {
          $room_id = $room->add($room_fields);
       }
-      if (!checkResult($room_id, true)) {
+      if (!checkResult($room_id, true, $old_room['completename'])) {
          $error = true;
       }
       $old_rooms[$old_room['id']] = $room_id;
@@ -469,7 +481,7 @@ function migratePlugin() {
    }
 
    // migrate racks
-   $out.= "- Import racks:\n";
+   title("Import racks", 1);
    $old_racks = [];
    $iterator_racks = $DB->request([
       'FROM' => 'glpi_plugin_racks_racks'
@@ -477,7 +489,6 @@ function migratePlugin() {
    $i = 0;
    foreach ($iterator_racks as $old_rack) {
       $rack = new Rack;
-      $out.= "   * ".$old_rack['name'].": ";
       $rack_fields = Toolbox::sanitize([
          'name'             => $old_rack['name'],
          'comment'          => "Imported from rack plugin",
@@ -509,7 +520,7 @@ function migratePlugin() {
          $rack_fields['position'] = "9999999999999,-".(++$i);
          $rack_id = $rack->add($rack_fields);
       }
-      if (!checkResult($rack_id, true)) {
+      if (!checkResult($rack_id, true, $old_rack['name']." (".$old_rack['id'].")")) {
          $error = true;
       }
       $old_racks[$old_rack['id']] = $rack_id;
@@ -517,7 +528,7 @@ function migratePlugin() {
    checkError($error);
 
    // migrate rack items
-   $out.= "- Import rack items:\n";
+   title("Import racks items", 1);
    $iterator_rackitems = $DB->request([
       'FROM' => 'glpi_plugin_racks_racks_items',
       'ORDER' => 'id'
@@ -527,17 +538,17 @@ function migratePlugin() {
       $item_rack->getEmpty();
 
       $itemtype = str_replace('Model', '', $old_itemrack['itemtype']);
-      $out.= "   * $itemtype (".$old_itemrack['items_id']."): ";
+      $message = "$itemtype (".$old_itemrack['items_id'].")";
 
       if (!class_exists($old_itemrack['itemtype'])) {
-         $out.= textYellow("Type not found\n");
+         notFound($message);
          continue;
       }
 
       $model = new $old_itemrack['itemtype'];
       $item = new $itemtype;
       if (!$item->getFromDB($old_itemrack['items_id'])) {
-         $out.= textYellow("Not found\n");
+         notFound($message);
          continue;
       }
 
@@ -566,7 +577,7 @@ function migratePlugin() {
           || !$rack_items_id = $item_rack->getID()) {
          $rack_items_id = $item_rack->add($itemrack_fields);
       }
-      if (!checkResult($rack_items_id, true)) {
+      if (!checkResult($rack_items_id, true, $message)) {
          $error = true;
       }
    }
@@ -581,80 +592,74 @@ function getNewID($matches_collection, $old_id, $default = 0) {
    return $default;
 }
 
-function printOutput() {
-   global $out;
-
-   if (!isCommandLine()) {
-      $out = nlbr($out);
-   }
-   echo $out;
-   $out = "";
-}
-
 function checkError($error = false) {
-   printOutput();
+   global $climate;
+
    if ($error
-       && (!isset($_GET['skip_error']) || !$_GET['skip_error'])) {
-      echo textRed("\nSome errors triggered, aborting!\n");
+       && !$climate->arguments->defined('skip_error')) {
+      $climate->to('error')->red("Some errors triggered, aborting!");
       if (count($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
-         var_dump($_SESSION['MESSAGE_AFTER_REDIRECT']);
+         $climate->dump($_SESSION['MESSAGE_AFTER_REDIRECT']);
       }
       exit (1);
    }
    flush();
 }
 
-function checkResult($result = 0, $print_result = false) {
-   global $out;
+function checkResult($result = 0, $print_result = false, $message = "", $tab = 0) {
+   global $out, $climate;
 
+   $colored = $climate->red();
+   if ($result !== false && $result > 0) {
+      $colored = $climate->green();
+   }
+
+   $padding_length = 50;
+   if (strlen($message) >= 50) {
+      $padding_length = 1;
+   }
+   if ($tab > 0) {
+      $padding = $colored->tab($tab)->padding($padding_length);
+   } else {
+      $padding = $colored->padding($padding_length);
+   }
    $error = false;
+   $append = "";
+
+   if ($print_result) {
+      $append = " (".$result.")";
+   }
 
    if ($result !== false && $result > 0) {
-      $out.= textGreen("OK");
-      if ($print_result) {
-         $out.= " (".$result.")";
-      }
+      $padding->label($message)->result("OK".$append);
    } else {
-      $out.= textRed("KO");
-      if ($print_result) {
-         if ($result === false) {
-            $result = "false";
-         }
-         $out.= " (".$result.")";
-      }
+      $padding->label($message)->result("KO".$append);
       $error = true;
    }
-   $out.= "\n";
-   printOutput();
 
    return !$error;
 }
 
-function textGreen($text = "") {
-   if (isCommandLine()) {
-      return "\033[32m$text\033[0m";
-   } else {
-      return "<span style='color=green;'>$text</span>";
+function notFound($message) {
+   global $climate;
+
+   $padding_length = 50;
+   if (strlen($message) >= 50) {
+      $padding_length = 1;
    }
+   $padding = $climate->yellow()->padding($padding_length);
+   $padding->label($message)->result("Not found");
 }
 
-function textRed($text = "") {
-   if (isCommandLine()) {
-      return "\033[31m$text\033[0m";
-   } else {
-      return "<span style='color=red;'>$text</span>";
-   }
-}
+function title($title, $level = 0) {
+   global $climate;
 
-function textYellow($text = "") {
-   if (isCommandLine()) {
-      return "\033[33m$text\033[0m";
-   } else {
-      return "<span style='color=yellow;'>$text</span>";
+   $char = "";
+   $nb_char = 3;
+   if ($level >= 1) {
+      $nb_char = $level;
+      $char = "-";
    }
-}
 
-function readAnswer() {
-   printOutput();
-   return strtolower(trim(fgets(STDIN)));
+   $climate->br()->bold()->flank($title, $char, $nb_char)->br();
 }
