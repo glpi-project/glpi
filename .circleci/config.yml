@@ -43,11 +43,11 @@ shared: &shared
         command: |
           php -S localhost:8088 tests/router.php &>/dev/null &
           composer testweb
-    - run:
-        name: tests LDAP
-        command: |
-          ./tests/LDAP/ldap_run.sh
-          composer testldap
+#    - run:
+#        name: tests LDAP
+#        command: |
+#          ./tests/LDAP/ldap_run.sh
+#          composer testldap
     - run:
         name: Coding standards
         command: composer cs
