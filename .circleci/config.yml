@@ -1,6 +1,6 @@
 version: 2
 
-shared: &shared
+prerequisite: &prerequisite
   steps:
     - checkout
     - run:
@@ -15,6 +15,8 @@ shared: &shared
           sed -e '/"php":/d' -i composer.json
           rm -f composer.lock
           composer install --optimize-autoloader
+update_db: &update_db
+  steps:
     - run:
         name: Update DB
         command: |
@@ -25,6 +27,8 @@ shared: &shared
           php scripts/cliupdate.php --config-dir=../tests --dev |grep -q "No migration needed." || (echo "scripts/cliupdate.php FAILED" && exit 1)
           php scripts/innodb_migration.php --config-dir=../tests
           rm tests/config_db.php
+testdb: &testdb
+  steps:
     - run:
         name: Install DB
         command: |
@@ -35,45 +39,49 @@ shared: &shared
     - run:
         name: tests DB
         command: composer testdb
+test: &test
+  steps:
     - run:
         name: tests
         command: composer test
+testweb: &testweb
+  steps:
     - run:
         name: tests WEB
         command: |
           php -S localhost:8088 tests/router.php &>/dev/null &
           composer testweb
-#    - run:
-#        name: tests LDAP
-#        command: |
-#          ./tests/LDAP/ldap_run.sh
-#          composer testldap
+testldap: &testldap
+  steps:
+    - run:
+        name: tests LDAP
+        command: |
+          ./tests/LDAP/ldap_run.sh
+          composer testldap
+
+cs: &cs
+  steps:
     - run:
         name: Coding standards
         command: composer cs
 jobs:
-  "build":
-    <<: *shared
-    docker:
-      - image: circleci/php:5.6-apache-node-browsers
-      - image: circleci/mariadb:10.1
   "php5.6":
-    <<: *shared
+    <<: [ *prerequisite, *testdb, *test, *testweb]
     docker:
       - image: circleci/php:5.6-apache-node-browsers
       - image: circleci/mariadb:10.1
   "php7.0":
-    <<: *shared
+    <<: [ *prerequisite, *update_db, *testdb, *test, *testweb]
     docker:
       - image: circleci/php:7.0-apache-node-browsers
       - image: circleci/mariadb:10.2
   "php7.1":
-    <<: *shared
+    <<: [ *prerequisite, *cs, *testdb, *test, *testweb]
     docker:
       - image: circleci/php:7.1-apache-node-browsers
       - image: circleci/mariadb:10.3
   "php7.2":
-    <<: *shared
+    <<: [ *prerequisite, *testdb, *test, *testldap]
     docker:
       - image: circleci/php:7.2-apache-node-browsers
       - image: circleci/mariadb:10.3
