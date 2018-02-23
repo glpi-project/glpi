@@ -1090,14 +1090,15 @@ abstract class API extends CommonGLPI {
          foreach ($params['searchText']  as $filter_field => $filter_value) {
             if (!empty($filter_value)) {
                $search = Search::makeTextSearch($filter_value);
-               $where.= " AND (`$table`.`$filter_field` $search
-                               OR `$table`.`id` $search)";
+               $where.= " AND (`$table`.`$filter_field` $search)";
             }
          }
       }
 
       // filter with entity
-      if ($item->isEntityAssign()) {
+      if ($item->isEntityAssign()
+          // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like TicketTemplateMandatoryField)
+          && array_key_exists('entities_id', $item->fields)) {
          $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
                                              '',
