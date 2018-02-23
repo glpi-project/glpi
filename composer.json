@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6",
-        "glpi-project/coding-standard": "0.6",
+        "glpi-project/coding-standard": "^0.7.0",
         "consolidation/robo": "^1.0",
         "natxet/CssMin": "^3.0",
         "patchwork/jsqueeze": "^2.0",
@@ -57,7 +57,8 @@
         "test":     "vendor/bin/atoum --debug --force-terminal --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/units",
         "testweb":  "vendor/bin/atoum --debug --force-terminal --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
         "testldap": "vendor/bin/atoum --debug --force-terminal --configurations tests/telemetry.php --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
-        "cs": "vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config ./",
+        "csp": "vendor/bin/phpcs --parallel=500 -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/.git ./",
+        "cs": "vendor/bin/phpcs -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/.git ./",
         "post-install-cmd": [
            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
            "patch -d vendor/zendframework/zend-cache/ -p1 < tools/zend-cache-php7.2.patch"
