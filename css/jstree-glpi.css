@@ -963,9 +963,9 @@
 @media (max-width: 768px) {
   .jstree-glpi-responsive {
     /*
-	.jstree-open > .jstree-ocl,
-	.jstree-closed > .jstree-ocl { border-radius:20px; background-color:white; }
-	*/
+   .jstree-open > .jstree-ocl,
+   .jstree-closed > .jstree-ocl { border-radius:20px; background-color:white; }
+   */
   }
   .jstree-glpi-responsive .jstree-icon {
     background-image: url("../pics/jquery/jstree/40px.png");
