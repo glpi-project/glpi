@@ -52,11 +52,6 @@ shared: &shared
         name: Coding standards
         command: composer cs
 jobs:
-  "build":
-    <<: *shared
-    docker:
-      - image: circleci/php:5.6-apache-node-browsers
-      - image: circleci/mariadb:10.1
   "php5.6":
     <<: *shared
     docker:
@@ -77,6 +72,15 @@ jobs:
     docker:
       - image: circleci/php:7.2-apache-node-browsers
       - image: circleci/mariadb:10.3
+  "security_check":
+    docker:
+      - image: circleci/php:7.2-apache-node-browsers
+      - image: circleci/mariadb:10.3
+    steps:
+      - checkout
+      - run:
+          name: sensiolabs/security-checker
+          command: vendor/bin/security-checker security:check
 
 workflows:
   version: 2
@@ -86,3 +90,13 @@ workflows:
       - php7.0
       - php7.1
       - php7.2
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+    jobs:
+      - php5.6
+      - php7.0
+      - php7.1
+      - php7.2
+      - security_check
