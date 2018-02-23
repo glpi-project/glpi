@@ -79,7 +79,7 @@ jobs:
     <<: *shared
     docker:
       - image: circleci/php:latest-node-browsers
-      - image: circleci/mariadb:10.3    
+      - image: circleci/mariadb:10.3
 
 workflows:
   version: 2
@@ -90,8 +90,8 @@ workflows:
       - php7.1
       - php7.2
   scheduled_build:
-#    triggers:
-#      - schedule:
-#          cron: "0 0 * * *"
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
     jobs:
       - phplatest
