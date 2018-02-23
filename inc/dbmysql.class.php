@@ -781,4 +781,95 @@ class DBmysql {
    public function disableTableCaching() {
       $this->cache_disabled = true;
    }
+
+
+   /**
+    * Get table schema
+    *
+    * @param string $table Table name,
+    * @param string|null $structure Raw table structure
+    *
+    * @return array
+    */
+   public function getTableSchema($table, $structure = null) {
+      if ($structure === null) {
+         $structure = $this->query("SHOW CREATE TABLE `$table`")->fetch_row();
+         $structure = $structure[1];
+      }
+
+      //get table index
+      $index = preg_grep(
+         "/^\s\s+?KEY/",
+         array_map(
+            function($idx) { return rtrim($idx, ','); },
+            explode("\n", $structure)
+         )
+      );
+      //get table schema, without index, without AUTO_INCREMENT
+      $structure = preg_replace(
+         [
+            "/\s\s+KEY .*/",
+            "/AUTO_INCREMENT=\d+ /"
+         ],
+         "",
+         $structure
+      );
+      $structure = preg_replace('/,(\s)?$/m', '', $structure);
+      $structure = preg_replace('/ COMMENT \'(.+)\'/', '', $structure);
+
+      $structure = str_replace(
+         [
+            " COLLATE utf8_unicode_ci",
+            " CHARACTER SET utf8",
+            ', ',
+         ], [
+            '',
+            '',
+            ',',
+         ],
+         trim($structure)
+      );
+
+      //do not check engine nor collation
+      $structure = preg_replace(
+         '/\) ENGINE.*$/',
+         '',
+         $structure
+      );
+
+      //Mariadb 10.2 will return current_timestamp()
+      //while older retuns CURRENT_TIMESTAMP...
+      $structure = preg_replace(
+         '/ CURRENT_TIMESTAMP\(\)/i',
+         ' CURRENT_TIMESTAMP',
+         $structure
+      );
+
+      //Mariadb 10.2 allow default values on longblob, text and longtext
+      preg_match_all(
+         '/^.+ (longblob|text|longtext) .+$/m',
+         $structure,
+         $defaults
+      );
+      if (count($defaults[0])) {
+         foreach ($defaults[0] as $line) {
+               $structure = str_replace(
+                  $line,
+                  str_replace(' DEFAULT NULL', '', $line),
+                  $structure
+               );
+         }
+      }
+
+      $structure = preg_replace("/(DEFAULT) ([-|+]?\d+)(\.\d+)?/", "$1 '$2$3'", $structure);
+      //$structure = preg_replace("/(DEFAULT) (')?([-|+]?\d+)(\.\d+)(')?/", "$1 '$3'", $structure);
+      $structure = preg_replace('/(BIGINT)\(\d+\)/i', '$1', $structure);
+      $structure = preg_replace('/(TINYINT) /i', '$1(4) ', $structure);
+
+      return [
+         'schema' => strtolower($structure),
+         'index'  => $index
+      ];
+
+   }
 }

@@ -62,42 +62,13 @@ class DBmysql extends atoum {
          $table = $fresh_table['TABLE_NAME'];
          $this->boolean($this->olddb->tableExists($table, false))->isTrue("Table $table does not exists from migration!");
 
-         $fresh         = $DB->query("SHOW CREATE TABLE `$table`")->fetch_row();
-         //get table index
-         $fresh_idx   = preg_grep(
-            "/^\s\s+?KEY/",
-            array_map(
-               function($idx) { return rtrim($idx, ','); },
-               explode("\n", $fresh[1])
-            )
-         );
-         //get table schema, without index, without AUTO_INCREMENT
-         $fresh         = preg_replace(
-            [
-               "/\s\s+KEY .*/",
-               "/AUTO_INCREMENT=\d+ /"
-            ],
-            "",
-            $fresh[1]
-         );
-         $updated       = $this->olddb->query("SHOW CREATE TABLE `$table`")->fetch_row();
-         //get table index
-         $updated_idx   = preg_grep(
-            "/^\s\s+?KEY/",
-            array_map(
-               function($idx) { return rtrim($idx, ','); },
-               explode("\n", $updated[1])
-            )
-         );
-         //get table schema, without index, without AUTO_INCREMENT
-         $updated       = preg_replace(
-            [
-               "/\s\s+KEY .*/",
-               "/AUTO_INCREMENT=\d+ /"
-            ],
-            "",
-            $updated[1]
-         );
+         $create = $DB->getTableSchema($table);
+         $fresh = $create['schema'];
+         $fresh_idx = $create['index'];
+
+         $update = $this->olddb->getTableSchema($table);
+         $updated = $update['schema'];
+         $updated_idx = $update['index'];
 
          //compare table schema
          $this->string($updated)->isIdenticalTo($fresh);
