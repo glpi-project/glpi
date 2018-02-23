@@ -91,9 +91,9 @@ workflows:
       - php7.1
       - php7.2
   nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
+#    triggers:
+#      - schedule:
+#          cron: "0 0 * * *"
     jobs:
       - php5.6
       - php7.0
