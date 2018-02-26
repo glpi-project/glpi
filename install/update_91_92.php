@@ -1228,7 +1228,7 @@ Regards,',
          if (!isset($mapping[$key])) {
             $mapping[$key] = [];
          }
-         $kver->add(['version' => $data['os_kernel_version']]);
+         $kver->add(['version' => $DB->escape($data['os_kernel_version'])]);
          $mapping[$key][$data['id']] = $kver->getID();
       }
 
@@ -1668,11 +1668,11 @@ Regards,',
       while ($row = $iterator->next()) {
          if (!isset($firmwares[$row['firmware']])) {
             $fw = new DeviceFirmware();
-            if ($fw->getFromDBByCrit(['designation' => $row['firmware']])) {
+            if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
                $firmwares[$row['firmware']] = $fw->getID();
             } else {
                $id = $fw->add([
-                  'designation'              => $row['firmware'],
+                  'designation'              => $DB->escape($row['firmware']),
                   'devicefirmwaretypes_id'   => '3' //type "firmware"
                ]);
                $firmwares[$row['firmware']] = $id;
@@ -1698,8 +1698,8 @@ Regards,',
       while ($row = $iterator->next()) {
          $fw = new DeviceFirmware();
          $id = $fw->add([
-            'designation'              => $row['name'],
-            'comment'                  => $row['comment'],
+            'designation'              => $DB->escape($row['name']),
+            'comment'                  => $DB->escape($row['comment']),
             'devicefirmwaretypes_id'   => 3, //type "Firmware"
             'date_creation'            => $row['date_creation'],
             'date_mod'                 => $row['date_mod']
