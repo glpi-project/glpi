@@ -283,7 +283,7 @@ class DB extends \GLPITestCase {
 
    }
 
-   public function testListTables() {
+   public function testTablesHasItemtype() {
       $dbu = new \DbUtils();
       $this->newTestedInstance();
       $list = $this->testedInstance->list_tables();
