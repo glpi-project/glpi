@@ -1078,7 +1078,6 @@ class Ticket extends DbTestCase {
          $location = false
       );
 
-
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
       $fup = new \TicketFollowup();
