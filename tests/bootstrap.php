@@ -32,9 +32,8 @@
 
 error_reporting(E_ALL);
 
-define('GLPI_TESTS_DIR', __DIR__ . '/tests');
-define('GLPI_CONFIG_DIR', GLPI_TESTS_DIR);
-define('GLPI_LOG_DIR', GLPI_TESTS_DIR . '/files/_log');
+define('GLPI_CONFIG_DIR', __DIR__);
+define('GLPI_LOG_DIR', __DIR__ . '/files/_log');
 define('GLPI_URI', (getenv('GLPI_URI') ?: 'http://localhost:8088'));
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
@@ -44,13 +43,13 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 }
 global $CFG_GLPI;
 
-include_once __DIR__ . '/inc/includes.php';
-include_once GLPI_TESTS_DIR . '/GLPITestCase.php';
-include_once GLPI_TESTS_DIR . '/DbTestCase.php';
-include_once GLPI_TESTS_DIR . '/APIBaseClass.php';
+include_once __DIR__ . '/../inc/includes.php';
+include_once __DIR__ . '/GLPITestCase.php';
+include_once __DIR__ . '/DbTestCase.php';
+include_once __DIR__ . '/APIBaseClass.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists(__DIR__ . '/vendor/autoload.php') && !file_exists(__DIR__ . '/vendor/guzzlehttp/guzzle')) {
+if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
 
