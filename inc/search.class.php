@@ -509,7 +509,7 @@ class Search {
     * @return nothing
    **/
    static function constructSQL(array &$data) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       if (!isset($data['itemtype'])) {
          return false;
@@ -539,7 +539,7 @@ class Search {
 
       //// 1 - SELECT
       // request currentuser for SQL supervision, not displayed
-      $SELECT = "SELECT '".Toolbox::addslashes_deep($_SESSION['glpiname'])."' AS currentuser,
+      $SELECT = "SELECT ".$DB->quote($_SESSION['glpiname'])." AS currentuser,
                         ".self::addDefaultSelect($data['itemtype']);
 
       // Add select for all toview item
@@ -553,7 +553,7 @@ class Search {
 
       //// 2 - FROM AND LEFT JOIN
       // Set reference table
-      $FROM = " FROM `$itemtable`";
+      $FROM = " FROM " . DB::quoteName($itemtable);
 
       // Init already linked tables array in order not to link a table several times
       $already_link_tables = [];
@@ -604,7 +604,8 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$data['search']['is_deleted']."' ";
+         $COMMONWHERE .= $LINK. DB::quoteName($itemtable) ."." .
+            DB::quoteName('is_deleted') . " = ".$DB->quote($data['search']['is_deleted'])." ";
       }
 
       // Remove template items
@@ -614,7 +615,8 @@ class Search {
             $LINK  = " ";
             $first = false;
          }
-         $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = '0' ";
+         $COMMONWHERE .= $LINK. DB::quoteName($itemtable) . "." .
+            DB::quoteName('is_template') . " = 0 ";
       }
 
       // Add Restrict to current entities
@@ -1286,9 +1288,11 @@ class Search {
          // Get rows
 
          // if real search seek to begin of items to display (because of complete search)
-         if (!$data['search']['no_search']) {
+         // FIXME: does not seems possible with PDO... A data_seek is done withing the fecth*
+         // maybe replace $DBread->fetch_assoc with $DBread->result in the above while loop?
+         /*if (!$data['search']['no_search']) {
             $DBread->data_seek($result, $data['search']['start']);
-         }
+         }*/
 
          $i = $data['data']['begin'];
          $data['data']['warning']

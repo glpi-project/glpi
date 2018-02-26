@@ -359,7 +359,7 @@ class Ticket_Ticket extends CommonDBRelation {
          "WHERE links.link='" . self::SON_OF . "' AND links.tickets_id_2=$pid " .
          "AND tickets.status NOT IN ('" . Ticket::SOLVED . "', '" . Ticket::CLOSED . "')";
       $results = $DB->query($query);
-      $result = $results->fetch_assoc();
+      $result = $DB->fetch_assoc($results);
       return (int)$result['cpt'];
    }
 

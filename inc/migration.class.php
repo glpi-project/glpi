@@ -599,13 +599,14 @@ class Migration {
          // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
          // $DB->query($query);
 
-         $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
+         $query = "CREATE TABLE ".DB::quoteName($newtable)."
+                   LIKE ".DB::quoteName($oldtable);
          $DB->queryOrDie($query, $this->version." create $newtable");
 
          //nedds DB::insert to support subqeries to get migrated
-         $query = "INSERT INTO `$newtable`
+         $query = "INSERT INTO ".DB::quoteName($newtable)."
                           (SELECT *
-                           FROM `$oldtable`)";
+                           FROM ".DB::quoteName($oldtable).")";
          $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
       }
    }
@@ -679,7 +680,7 @@ class Migration {
       global $DB;
 
       foreach ($this->queries[self::PRE_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->queryOrDie($query['query'], $query['message'], $query['params']);
       }
       $this->queries[self::PRE_QUERY] = [];
 
@@ -692,7 +693,7 @@ class Migration {
       }
 
       foreach ($this->queries[self::POST_QUERY] as $query) {
-         $DB->queryOrDie($query['query'], $query['message']);
+         $DB->queryOrDie($query['query'], $query['message'], $query['params']);
       }
       $this->queries[self::POST_QUERY] = [];
 
@@ -728,10 +729,11 @@ class Migration {
       $rule['description'] = '';
 
       // Compute ranking
+      //TODO: use iterator
       $sql = "SELECT MAX(`ranking`) AS rank
               FROM `glpi_rules`
-              WHERE `sub_type` = '".$rule['sub_type']."'";
-      $result = $DB->query($sql);
+              WHERE `sub_type` = :subtype";
+      $result = $DB->query($sql, [':subtype' => $rule['sub_type']]);
 
       $ranking = 1;
       if ($DB->numrows($result) > 0) {
@@ -791,32 +793,43 @@ class Migration {
             ]);
 
             if (count($iterator) > 0) {
+               $stmt_max = $DB->prepare(
+                  "SELECT MAX(".DB::quoteName('rank').")
+                   FROM ".DB::quoteName('glpi_displaypreferences')."
+                     WHERE ".DB::quoteName('users_id')." = :users_id
+                     AND ".DB::quoteName('itemtype')." = :itemtype"
+                  );
+               $stmt = null;
                while ($data = $iterator->next()) {
-                  $query = "SELECT MAX(`rank`)
-                              FROM `glpi_displaypreferences`
-                              WHERE `users_id` = '".$data['users_id']."'
-                                    AND `itemtype` = '$type'";
-                  $result = $DB->query($query);
-                  $rank   = $DB->result($result, 0, 0);
+                  $stmt_max->execute([
+                     'users_id' => $data['users_id'],
+                     'itemtype' => $type
+                  ]);
+                  $rank = $stmt_max->fetchColumn();
                   $rank++;
 
                   foreach ($tab as $newval) {
-                     $query = "SELECT *
-                                 FROM `glpi_displaypreferences`
-                                 WHERE `users_id` = '".$data['users_id']."'
-                                       AND `num` = '$newval'
-                                       AND `itemtype` = '$type'";
-                     if ($result2 = $DB->query($query)) {
-                        if ($DB->numrows($result2) == 0) {
-                              $DB->insert(
-                                 'glpi_displaypreferences', [
-                                    'itemtype'  => $type,
-                                    'num'       => $newval,
-                                    'rank'      => $rank++,
-                                    'users_id'  => $data['users_id']
-                                 ]
-                              );
-                        }
+                     if ($stmt === null) {
+                        $stmt = $DB->prepare(
+                        "SELECT * FROM ".DB::quoteName('glpi_displaypreferences')."
+                           WHERE ".DB::quoteName('users_id')." = :users_id
+                           AND ".DB::quoteName('itemtype')." = :itemtype
+                           AND ".DB::quoteName('num')." = :num"
+                        );
+                     }
+                     $stmt->execute([
+                        'users_id' => $data['users_id'],
+                        'itemtype' => $type,
+                        'num'      => $newval
+                     ]);
+                     if ($stmt->rowCount() == 0) {
+                        $params = [
+                           'itemtype' => $type,
+                           'num'      => $newval,
+                           'rank'     => $rank++,
+                           'users_id' => $data['users_id']
+                        ];
+                        $DB->insert('glpi_displaypreferences', $params);
                      }
                   }
                }
@@ -841,11 +854,13 @@ class Migration {
          // delete display preferences
          foreach ($todel as $type => $tab) {
             if (count($tab)) {
-               $query = "DELETE
-                         FROM `glpi_displaypreferences`
-                         WHERE `itemtype` = '$type'
-                               AND `num` IN (".implode(',', $tab).")";
-               $DB->query($query);
+               //FIXME: use delete()
+               $clause = implode(', ', array_fill(0, count($tab), '?'));
+               $parameters = array_merge([$type], $tab);
+               $query = "DELETE FROM ".DB::quoteName('glpi_displaypreferences')."
+                           WHERE ".DB::quoteName('itemtype')." = ?
+                           AND ".DB::quoteName('num')." IN ($clause)";
+               $DB->query($query, $parameters);
             }
          }
       }
@@ -856,13 +871,15 @@ class Migration {
     *
     * @param string $type    Either self::PRE_QUERY or self::POST_QUERY
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
     */
-   private function addQuery($type, $query, $message = null) {
+   private function addQuery($type, $query, $params, $message = null) {
       $this->queries[$type][] =  [
          'query'     => $query,
+         'params'    => $params,
          'message'   => $message
       ];
       return $this;
@@ -872,24 +889,26 @@ class Migration {
     * Add a pre migration SQL query
     *
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
     */
-   public function addPreQuery($query, $message = null) {
-      return $this->addQuery(self::PRE_QUERY, $query, $message);
+   public function addPreQuery($query, $params = [], $message = null) {
+      return $this->addQuery(self::PRE_QUERY, $query, $params, $message);
    }
 
    /**
     * Add a post migration SQL query
     *
     * @param string $query   Query to execute
+    * @param array  $params  Query parameters
     * @param string $message Mesage to display on error, defaults to null
     *
     * @return Migration
     */
-   public function addPostQuery($query, $message = null) {
-      return $this->addQuery(self::POST_QUERY, $query, $message);
+   public function addPostQuery($query, $params = [], $message = null) {
+      return $this->addQuery(self::POST_QUERY, $query, $params, $message);
    }
 
    /**

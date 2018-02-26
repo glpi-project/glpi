@@ -45,10 +45,7 @@ if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'test
    }
 }
 
-$_POST = array_map('stripslashes', $_POST);
-
 //Do login and checks
-//$user_present = 1;
 if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
    $login = $_POST[$_SESSION['namfield']];
 } else {

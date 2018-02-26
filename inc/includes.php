@@ -72,7 +72,7 @@ if (isset($_SESSION['glpi_use_mode'])
 }
 
 // Security system
-if (isset($_POST)) {
+/*if (isset($_POST)) {
    if (isset($_POST['_glpi_simple_form'])) {
       $_POST = array_map('urldecode', $_POST);
    }
@@ -83,7 +83,7 @@ if (isset($_GET)) {
 }
 if (isset($_REQUEST)) {
    $_REQUEST = Toolbox::sanitize($_REQUEST);
-}
+}*/
 if (isset($_FILES)) {
    foreach ($_FILES as &$file) {
       $file['name'] = Toolbox::addslashes_deep($file['name']);

@@ -1159,8 +1159,6 @@ class Stat extends CommonGLPI {
          echo Search::showHeaderItem($output_type, __('Number of tickets'), $header_num);
          echo Search::showEndLine($output_type);
 
-         $DB->data_seek($result, $start);
-
          $i = $start;
          if (isset($_GET['export_all'])) {
             $start = 0;

@@ -108,17 +108,25 @@ class ProfileRight extends CommonDBChild {
           'FROM'     => Profile::getTable()
       ]);
 
-      while ($profile = $iterator->next()) {
-         $profiles_id = $profile['id'];
-         foreach ($rights as $name) {
-            $res = $DB->insert(
-               self::getTable(), [
-                  'profiles_id'  => $profiles_id,
-                  'name'         => $name
-               ]
-            );
-            if (!$res) {
-               $ok = false;
+      if (count($iterator) > 0) {
+         $stmt = null;
+         while ($profile = $iterator->next()) {
+            $profiles_id = $profile['id'];
+            foreach ($rights as $name) {
+               $params = [
+                  'profiles_id' => $profiles_id,
+                  'name'        => $name
+               ];
+
+               if ($stmt === null) {
+                  $stmt = $DB->prepare($DB->buildInsert(self::getTable(), $params));
+               }
+
+               $res = $stmt->execute($params);
+
+               if (!$res) {
+                  $ok = false;
+               }
             }
          }
       }
@@ -235,13 +243,18 @@ class ProfileRight extends CommonDBChild {
                                   WHERE CURRENT.`profiles_id` = '$profiles_id'
                                         AND CURRENT.`NAME` = POSSIBLE.`NAME`)";
 
+      $stmt = null;
       foreach ($DB->request($query) as $right) {
-         $DB->insert(
-            self::getTable(), [
-               'profiles_id'  => $profiles_id,
-               'name'         => $right['NAME']
-            ]
-         );
+         $params = [
+            ':profiles_id' => $profiles_id,
+            ':name'        => $right['NAME']
+         ];
+
+         if ($stmt === null) {
+            $stmt = $DB->prepare($DB->buildInsert(self::getTable(), $params));
+         }
+
+         $stmt->execute($params);
       }
    }
 

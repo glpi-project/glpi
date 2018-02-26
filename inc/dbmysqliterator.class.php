@@ -49,6 +49,8 @@ class DBmysqlIterator implements Iterator, Countable {
    private $res = false;
    // Current row
    private $row;
+   // Query parameters
+   private $parameters = [];
 
    // Current position
    private $position = 0;
@@ -75,7 +77,7 @@ class DBmysqlIterator implements Iterator, Countable {
     */
    function execute ($table, $crit = "", $debug = false) {
       $this->buildQuery($table, $crit, $debug);
-      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+      $this->res = ($this->conn ? $this->conn->query($this->sql, $this->parameters) : false);
       $this->position = 0;
       return $this;
    }
@@ -310,7 +312,9 @@ class DBmysqlIterator implements Iterator, Countable {
       }
 
       if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
-         Toolbox::logSqlDebug("Generated query:", $this->getSql());
+         $dbg_msg = "Generated query: " . $this->getSql();
+         $dbg_msg .= "\n\tParameters: " . print_r($this->parameters, true);
+         Toolbox::logSqlDebug($dbg_msg);
       }
    }
 
@@ -327,13 +331,24 @@ class DBmysqlIterator implements Iterator, Countable {
    }
 
    /**
+    * Retrieve statement parameters
+    *
+    * @since 9.3
+    *
+    * @return array
+    */
+   public function getParameters() {
+      return $this->parameters;
+   }
+
+   /**
     * Destructor
     *
     * @return void
     */
    function __destruct () {
-      if ($this->res) {
-         $this->conn->free_result($this->res);
+      if ($this->res instanceof PDOStatement) {
+         $this->res->closeCursor();
       }
    }
 
@@ -346,8 +361,6 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string
     */
    public function analyseCrit ($crit, $bool = "AND") {
-      global $DB;
-
       static $operators = ['=', '<', '<=', '>', '>=', '<>', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX', '&'];
 
       if (!is_array($crit)) {
@@ -390,20 +403,27 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if (is_array($value)) {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
-
-               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . $DB::quoteValue($value[1]);
+               if (preg_match('/^`.+`(\.`.+`)?/', $value[1])) {
+                  $ret .= DBmysql::quoteName($name) . " {$value[0]} {$value[1]}";
+               } else {
+                  $ret .= DBmysql::quoteName($name) . " {$value[0]} ?";
+                  $this->parameters[] = $value[1];
+               }
             } else {
                // Array of Values
-               foreach ($value as $k => $v) {
-                  $value[$k] = $DB::quoteValue($v);
-               }
-               $ret .= DBmysql::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
+               $clause = implode(',', array_fill(0, count($value), '?'));
+               $ret .= DBmysql::quoteName($name) . ' IN (' . $clause . ')';
+               $this->parameters = array_merge($this->parameters, $value);
             }
          } else if (is_null($value)) {
             // NULL condition
             $ret .= DBmysql::quoteName($name) . " IS NULL";
+         } else if (preg_match('/^`.+`(\.`.+`)?/', $value)) {
+            $ret .= DBmysql::quoteName($name) . " = " . $value;
          } else {
-            $ret .= DBmysql::quoteName($name) . " = " . $DB::quoteValue($value);
+            // String
+            $ret .= DBmysql::quoteName($name) . " = ?";
+            $this->parameters[] = $value;
          }
       }
       return $ret;
@@ -415,11 +435,11 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string[]|null fetch_assoc() of first results row
     */
    public function rewind() {
-      if ($this->res && $this->conn->numrows($this->res)) {
-         $this->conn->data_seek($this->res, 0);
+      if (!$this->res instanceof PDOStatement) {
+         return false;
       }
-      $this->position = 0;
-      return $this->next();
+      $this->row = $this->res->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_ABS, 0);
+      return $this->current();
    }
 
    /**
@@ -446,7 +466,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return string[]|null fetch_assoc() of first results row
     */
    public function next() {
-      if (!$this->res) {
+      if (!$this->res instanceof PDOStatement) {
          return false;
       }
       $this->row = $this->conn->fetch_assoc($this->res);
@@ -460,7 +480,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return boolean
     */
    public function valid() {
-      return $this->res && $this->row;
+      return ($this->res instanceof PDOStatement) && $this->row;
    }
 
    /**
@@ -469,7 +489,7 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function numrows() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof PDOStatement ? $this->conn->numrows($this->res) : 0);
    }
 
    /**
@@ -480,6 +500,6 @@ class DBmysqlIterator implements Iterator, Countable {
     * @return integer
     */
    public function count() {
-      return ($this->res ? $this->conn->numrows($this->res) : 0);
+      return ($this->res instanceof PDOStatement ? $this->conn->numrows($this->res) : 0);
    }
 }

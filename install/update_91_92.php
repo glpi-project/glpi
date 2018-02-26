@@ -194,6 +194,7 @@ function update91to92() {
                                     `glpi_documents`
                              SET `glpi_documents_items`.`users_id` = `glpi_documents`.`users_id`
                              WHERE `glpi_documents_items`.`documents_id` = `glpi_documents`.`id`",
+                            [],
                             "9.2 update set users_id on glpi_documents_items");
 
    //add product number
@@ -985,10 +986,12 @@ function update91to92() {
    $migration->addKey('glpi_queuednotifications', 'mode');
    $migration->addPostQuery("UPDATE `glpi_queuednotifications`
                              SET `mode` = '" . Notification_NotificationTemplate::MODE_MAIL . "'",
+                            [],
                             '9.2 set default mode in queue');
    $migration->addPostQuery("UPDATE `glpi_notifications_notificationtemplates`
                              SET `mode` = '" . Notification_NotificationTemplate::MODE_MAIL . "'
                              WHERE `mode` = 'mail'",
+                             [],
                             '9.2 set default mode in notifications templates');
 
    // Migration Bookmark -> SavedSearch_Alert
@@ -1923,7 +1926,7 @@ Regards,',
       $add = true;
       $result = $DB->query("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
       if ($result && $DB->numrows($result)) {
-         $row = $result->fetch_assoc();
+         $row = $DB->fetch_assoc($result);
          if ($row['Non_unique'] == 1) {
             $migration->dropKey($table, 'unicity');
             $migration->migrationOneTable($table);

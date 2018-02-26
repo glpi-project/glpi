@@ -601,13 +601,14 @@ class QueuedNotification extends CommonDBTM {
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
          $send_time = date("U") - $secs;
+         //FIXME: use delete()
          $query_exp = "DELETE
                        FROM `glpi_queuednotifications`
                        WHERE `glpi_queuednotifications`.`is_deleted`
                              AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
-         $DB->query($query_exp);
-         $vol = $DB->affected_rows();
+         $result = $DB->query($query_exp);
+         $vol = $result->rowCount();
       }
 
       $task->setVolume($vol);

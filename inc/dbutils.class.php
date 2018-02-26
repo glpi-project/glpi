@@ -1027,13 +1027,14 @@ final class DbUtils {
                $JOIN
                WHERE `$table`.`id` = '$ID'";
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) == 1) {
-            $transname = $DB->result($result, 0, "transname");
+      $results = $DB->query($query);
+      if ($DB->numrows($results) == 1) {
+         if ($result = $DB->fetch_assoc($results)) {
+            $transname = $result["transname"];
             if ($translate && !empty($transname)) {
                $name = $transname;
             } else {
-               $name = $DB->result($result, 0, "completename");
+               $name = $result["completename"];
             }
             if ($tooltip) {
                $comment  = sprintf(__('%1$s: %2$s')."<br>",
@@ -1067,11 +1068,11 @@ final class DbUtils {
                }
                $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
             }
-            $transcomment = $DB->result($result, 0, "transcomment");
+            $transcomment = $result["transcomment"];
             if ($translate && !empty($transcomment)) {
                $comment .= nl2br($transcomment);
             } else {
-               $comment .= nl2br($DB->result($result, 0, "comment"));
+               $comment .= nl2br($result["comment"]);
             }
          }
       }

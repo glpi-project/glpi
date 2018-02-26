@@ -83,17 +83,24 @@ echo "Connect to the DB...\n";
 //Check if the port is in url
 $hostport = explode(':', $args['host']);
 if (count($hostport) < 2) {
-   $link = new mysqli($hostport[0], $args['user'], $args['pass']);
+   $dsn = "mysql:host={$hostport[0]}";
+   //$link = new mysqli($hostport[0], $args['user'], $args['pass']);
 } else {
-   $link = new mysqli($hostport[0], $args['user'], $args['pass'], '', $hostport[1]);
+   $dsn = "mysql:host={$hostport[0]}:{$hostport[1]}";
+   //$link = new mysqli($hostport[0], $args['user'], $args['pass'], '', $hostport[1]);
 }
 
-if (!$link || mysqli_connect_error()) {
+try {
+   $link = new PDO(
+      $dsn,
+      $args['user'],
+      $args['pass']
+   );
+} catch (\Exception $e) {
    echo "DB connection failed\n";
+   echo $e->getMessage() . "\n";
    die(1);
 }
-
-$args['db'] = $link->real_escape_string($args['db']);
 
 echo "Create the DB...\n";
 if (!$link->query("CREATE DATABASE IF NOT EXISTS `" . $args['db'] ."`")) {
@@ -101,8 +108,16 @@ if (!$link->query("CREATE DATABASE IF NOT EXISTS `" . $args['db'] ."`")) {
    die(1);
 }
 
-if (!$link->select_db($args['db'])) {
+try {
+   $link = new PDO(
+      "$dsn;dbname={$args['db']}",
+      $args['user'],
+      $args['pass']
+   );
+   $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (\Exception $e) {
    echo "Can't select the DB\n";
+   echo $e->getMessage() . "\n";
    die(1);
 }
 

@@ -491,7 +491,7 @@ class User extends CommonDBTM {
          Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
          $request = "LEFT JOIN `glpi_useremails`
                      ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
-                     WHERE `glpi_useremails`.`email` = '$email'";
+                     WHERE `glpi_useremails`.`email` = ". $DB->quote($email);
 
          if (!empty($condition)) {
             $request .= " AND $condition";
@@ -1165,7 +1165,7 @@ class User extends CommonDBTM {
    /**
     * Synchronise picture (photo) of the user
     *
-    * ??@since 0.85
+    * @since 0.85
     *
     * @return string : the filename to be stored in user picture field
    **/
