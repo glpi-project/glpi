@@ -106,9 +106,8 @@ class Ticket extends DbTestCase {
    public function testCreateTicketWithActors($ticketActors) {
       $ticket = new \Ticket();
       $this->integer((int)$ticket->add([
-            'name'         => 'ticket title',
-            'description'  => 'a description',
-            'content'      => ''
+            'name'    => 'ticket title',
+            'content' => 'a description',
       ] + $ticketActors))->isGreaterThan(0);
 
       $this->boolean($ticket->isNewItem())->isFalse();
@@ -152,10 +151,9 @@ class Ticket extends DbTestCase {
       $uid = getItemByTypeName('User', TU_USER, true);
       $ticket = new \Ticket();
       $this->integer((int)$ticket->add([
-         'name'               => 'ticket title',
-         'description'        => 'a description',
-         'content'            => '',
-         '_users_id_assign'   => $uid
+         'name'             => 'ticket title',
+         'content'          => 'a description',
+         '_users_id_assign' => $uid
       ]))->isGreaterThan(0);
 
       $this->boolean($ticket->isNewItem())->isFalse();
@@ -409,9 +407,8 @@ class Ticket extends DbTestCase {
 
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
          ])
       )->isGreaterThan(0);
 
@@ -503,9 +500,8 @@ class Ticket extends DbTestCase {
 
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
          ])
       )->isGreaterThan(0);
 
@@ -603,9 +599,8 @@ class Ticket extends DbTestCase {
 
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'Another ticket to check ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'Another ticket to check ACLS',
          ])
       )->isGreaterThan(0);
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
@@ -638,9 +633,8 @@ class Ticket extends DbTestCase {
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check ACLS',
          ])
       )->isGreaterThan(0);
 
@@ -705,6 +699,7 @@ class Ticket extends DbTestCase {
       $this->boolean((boolean)$ticket->canAddItem('Ticket_Cost'))->isFalse();
       $this->boolean((boolean)$ticket->canAddFollowups())->isTrue();
 
+      // post only tests
       $this->boolean((boolean)$auth->Login('post-only', 'postonly', true))->isTrue();
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
@@ -903,7 +898,7 @@ class Ticket extends DbTestCase {
 
       //Save button
       preg_match(
-         '/.*<input[^>]type=\'submit\'[^>]*>.*/',
+         '/.*<input[^>]type=\'submit\'[^>]*name=\'update\'[^>]*>.*/',
          $output,
          $matches
       );
@@ -934,9 +929,8 @@ class Ticket extends DbTestCase {
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check displayed postonly form',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check displayed postonly form',
          ])
       )->isGreaterThan(0);
       $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
@@ -990,21 +984,22 @@ class Ticket extends DbTestCase {
    }
 
    public function testFormTech() {
-      $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      global $DB;
 
       //create a new ticket
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check displayed tech form',
-            'content'      => ''
+            'name'                => '',
+            'content'             => 'A ticket to check displayed tech form',
+            '_users_id_requester' => '3', // post-only
+            '_users_id_assign'    => '4', // tech
          ])
       )->isGreaterThan(0);
       $this->boolean($ticket->getFromDB($ticket->getId()))->isTrue();
 
       //check output with default ACLs
+      $this->changeTechRight();
       $this->checkFormOutput(
          $ticket,
          $name = false,
@@ -1024,34 +1019,65 @@ class Ticket extends DbTestCase {
       );
 
       //drop update ticket right from tech profile
-      global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
-      //ACLs have changed: login again.
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
-
-      //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
-
-      //check output with changed ACLs
+      $this->changeTechRight(168965);
       $this->checkFormOutput(
          $ticket,
          $name = false,
-         $textarea = true,
+         $textarea = false,
          $priority = false,
-         $save = true,
+         $save = false,
          $assign = false,
          $openDate = false,
          $timeOwnResolve = false,
          $type = false,
          $status = false,
-         $urgency = true,
+         $urgency = false,
          $impact = false,
-         $category = true,
+         $category = false,
          $requestSource = false,
          $location = false
       );
+
+      // only assign right for tech (without UPDATE right)
+      $this->changeTechRight(61441);
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = true,
+         $assign = true,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = false,
+         $impact = false,
+         $category = false,
+         $requestSource = false,
+         $location = false
+      );
+
+      // no update rights, only display for tech
+      $this->changeTechRight(3077);
+      $this->checkFormOutput(
+         $ticket,
+         $name = false,
+         $textarea = false,
+         $priority = false,
+         $save = false,
+         $assign = false,
+         $openDate = false,
+         $timeOwnResolve = false,
+         $type = false,
+         $status = false,
+         $urgency = false,
+         $impact = false,
+         $category = false,
+         $requestSource = false,
+         $location = false
+      );
+
 
       $uid = getItemByTypeName('User', TU_USER, true);
       //add a followup to the ticket
@@ -1084,15 +1110,32 @@ class Ticket extends DbTestCase {
       );
    }
 
+   public function changeTechRight($rights = 168967) {
+      global $DB;
+
+      // set new rights
+      $DB->query("UPDATE glpi_profilerights SET rights = $rights
+                  WHERE profiles_id = 6 AND name = 'ticket'");
+
+      //ACLs have changed: login again.
+      $auth = new \Auth();
+      $this->boolean((boolean) $auth->Login('tech', 'tech', true))->isTrue();
+
+      if ($rights != 168967) {
+         //reset rights. Done here so ACLs are reset even if tests fails.
+         $DB->query("UPDATE glpi_profilerights SET rights = 168967
+                     WHERE profiles_id = 6 AND name = 'ticket'");
+      }
+   }
+
    public function testPriorityAcl() {
       $this->login();
 
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check priority ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check priority ACLS',
          ])
       )->isGreaterThan(0);
 
@@ -1158,9 +1201,8 @@ class Ticket extends DbTestCase {
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check assign ACLS',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check assign ACLS',
          ])
       )->isGreaterThan(0);
 
@@ -1261,9 +1303,8 @@ class Ticket extends DbTestCase {
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
-            'name'         => '',
-            'description'  => 'A ticket to check followup updates',
-            'content'      => ''
+            'name'    => '',
+            'content' => 'A ticket to check followup updates',
          ])
       )->isGreaterThan(0);
 
@@ -1397,8 +1438,7 @@ class Ticket extends DbTestCase {
       $ticket = new \Ticket();
       $this->integer((int)$ticket->add([
             'name'                => 'ticket title',
-            'description'         => 'a description',
-            'content'             => '',
+            'content'             => 'a description',
             '_users_id_requester' => '3', // post-only
             '_users_id_observer'  => '5', // normal
             '_users_id_assign'    => ['4', '5'] // tech and normal
