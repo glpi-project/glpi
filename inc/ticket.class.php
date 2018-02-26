@@ -5249,8 +5249,6 @@ class Ticket extends CommonITILObject {
             }
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
             echo "</div>";
-            
-
          } else {
             echo "<div class='tab_bg_2 center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
