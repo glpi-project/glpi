@@ -287,7 +287,7 @@ class DB extends \GLPITestCase {
       $dbu = new \DbUtils();
       $this->newTestedInstance();
       $list = $this->testedInstance->listTables();
-      $this->object($list)->isInstanceOf('mysqli_result');
+      $this->object($list)->isInstanceOf(\DBmysqlIterator::class);
       $this->integer($this->testedInstance->numrows($list))->isGreaterThan(200);
 
       //check if each table has a corresponding itemtype
