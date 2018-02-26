@@ -7609,7 +7609,7 @@ INSERT INTO `glpi_rulecriterias` VALUES ('3','2','samaccountname','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('4','2','MAIL_EMAIL','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('5','3','subject','6','/.*/');
 INSERT INTO `glpi_rulecriterias` VALUES ('6','4','x-auto-response-suppress','6','/\\S+/');
-INSERT INTO `glpi_rulecriterias` VALUES ('7','5','auto-submitted','6','/(?i)^(?!.*?no).*$/');
+INSERT INTO `glpi_rulecriterias` VALUES ('7','5','auto-submitted','6','/^(?!.*no).+$/i');
 INSERT INTO `glpi_rulecriterias` VALUES ('10','6','items_locations','8','1');
 INSERT INTO `glpi_rulecriterias` VALUES ('11','7','locations_id','9','1');
 INSERT INTO `glpi_rulecriterias` VALUES ('12','7','users_locations','8','1');
