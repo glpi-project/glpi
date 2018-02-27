@@ -8,6 +8,10 @@ shared: &shared
         command: |
           sudo apt-get install -y mysql-client libpng-dev libxml2-dev
           sudo docker-php-ext-install mysqli gd xmlrpc
+          sudo pecl install apcu <<< '' || sudo pecl install apcu-4.0.11 <<< ''
+          sudo docker-php-ext-enable apcu
+          echo "apc.enable=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+          echo "apc.enable_cli=1" | sudo tee --append /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
     - run:
         name: Composer
         command: |
