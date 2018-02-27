@@ -1106,6 +1106,7 @@ class KnowbaseItem extends CommonDBVisible {
                       'allmy'         => __('All my articles')];
       if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          $values['allunpublished'] = __('All unpublished articles');
+         $values['allpublished'] = __('All published articles');
       }
       Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
       echo "</td><td class='left'>";
