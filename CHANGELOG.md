@@ -82,6 +82,8 @@ new whole window
 - `FieldExists()` has been moved to `DBMysql::fieldExists()`
 - `Profile_User::getUserEntitiesForRight()` signature has changed
 - `NotificationTarget` property `datas` has been renamed to `data`
+- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket` has been deprecated
+- `CommonITILValidation::getNumberValidationForTicket` as been deprecated
 
 #### Deprecated
 
