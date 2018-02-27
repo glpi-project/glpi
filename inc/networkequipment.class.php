@@ -559,7 +559,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[] = [
          'id'                 => '11',
          'table'              => 'glpi_devicefirmwares',
-         'field'              => 'id',
+         'field'              => 'version',
          'name'               => _n('Firmware', 'Firmware', 1),
          'forcegroupby'       => true,
          'usehaving'          => true,
