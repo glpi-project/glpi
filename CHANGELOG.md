@@ -24,6 +24,13 @@ The following methods have been deprecated:
 - `Search::displayDatas`
 - `DBMysql::list_tables`
 
+#### Removed
+
+- `CommonITILValidation::isAllValidationsHaveSameStatusForTicket`
+- `CommonITILValidation::getNumberValidationForTicket`
+
+
+
 ## [9.2.2]
 
 - `CommonITILValidation::isAllValidationsHaveSameStatusForTicket` has been deprecated

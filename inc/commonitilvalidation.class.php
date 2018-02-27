@@ -525,46 +525,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
 
    /**
-    * All validations requests for an item have the same status ?
-    *
-    * @param $items_id   integer  item ID
-   **/
-   static function isAllValidationsHaveSameStatusForTicket($items_id) {
-      global $DB;
-
-      $query = "SELECT DISTINCT `status`
-                FROM `".static::getTable()."`
-                WHERE `".static::$items_id."` = '$items_id'";
-      $result = $DB->query($query);
-
-      return ($DB->numrows($result) == 1);
-   }
-
-
-   /**
-    * Get item validation demands count
-    *
-    * @param $items_id   integer  item ID
-   **/
-   static function getNumberValidationForTicket($items_id) {
-      global $DB;
-
-      $row = $DB->request([
-         'FROM'   => static::getTable(),
-         'COUNT'  => 'cpt',
-         'WHERE'  => [
-            static::$items_id => $items_id
-         ]
-      ])->next();
-
-      if ($row['cpt']) {
-         return $row['cpt'];
-      }
-      return false;
-   }
-
-
-   /**
     * Get item validation demands count for a user
     *
     * @param $users_id  integer  User ID
