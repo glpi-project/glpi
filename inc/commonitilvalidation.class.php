@@ -526,10 +526,13 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * All validations requests for an item have the same status ?
     *
+    * @deprecated 9.2.2
+    *
     * @param $items_id   integer  item ID
    **/
    static function isAllValidationsHaveSameStatusForTicket($items_id) {
       global $DB;
+      Toolbox::deprecated();
 
       $query = "SELECT DISTINCT `status`
                 FROM `".static::getTable()."`
@@ -543,10 +546,13 @@ abstract class CommonITILValidation  extends CommonDBChild {
    /**
     * Get item validation demands count
     *
+    * @deprecated 9.2.2
+    *
     * @param $items_id   integer  item ID
    **/
    static function getNumberValidationForTicket($items_id) {
       global $DB;
+      Toolbox::deprecated();
 
       $query = "SELECT COUNT(`id`) AS 'total'
                 FROM `".static::getTable()."`
