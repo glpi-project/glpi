@@ -4535,10 +4535,11 @@ class Ticket extends CommonITILObject {
       $options['_tickettemplate'] = $tt;
 
       // check right used for this ticket
-      $canupdate   = !$ID
-                     || Session::haveRight(self::$rightname, UPDATE);
+      $canupdate     = !$ID || Session::haveRight(self::$rightname, UPDATE);
       $can_requester = $this->canRequesterUpdateItem();
-      $canpriority = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canpriority   = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
+      $canassign     = $this->canAssign();
+      $canassigntome = $this->canAssignTome();
 
       if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
          $canupdate = false;
@@ -5213,45 +5214,41 @@ class Ticket extends CommonITILObject {
 
       echo "</table>";
 
-      if (($canupdate
-           || $can_requester
-           || $canpriority
-           || $this->canAssign()
-           || $this->canAssignTome())
+      $display_save_btn = $canupdate
+                       || $can_requester
+                       || $canpriority
+                       || $canassign
+                       || $canassigntome;
+
+      if ($display_save_btn
           && !$options['template_preview']) {
-
          if ($ID) {
-            if (self::canPurge()
-                || $this->canDeleteItem()
-                  || $canupdate || $can_requester) {
-               echo "<div class='center'>";
-               if ($this->fields["is_deleted"] == 1) {
-                  if (self::canPurge()) {
-                     echo "<input type='submit' class='submit' name='restore' value='".
-                            _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                  }
-               } else {
-                  if ($canupdate || $can_requester || $canpriority) {
-                     echo "<input type='submit' class='submit' name='update' value='".
-                            _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                  }
+            echo "<div class='center'>";
+            if ($this->fields["is_deleted"] == 1) {
+               if (self::canPurge()) {
+                  echo "<input type='submit' class='submit' name='restore' value='".
+                         _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
-               if ($this->fields["is_deleted"] == 1) {
-                  if (self::canPurge()) {
-                     echo "<input type='submit' class='submit' name='purge' value='".
-                            _sx('button', 'Delete permanently')."' ".
-                            Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
-                  }
-               } else {
-                  if ($this->canDeleteItem()) {
-                     echo "<input type='submit' class='submit' name='delete' value='".
-                            _sx('button', 'Put in dustbin')."'>";
-                  }
+            } else {
+               if ($display_save_btn) {
+                  echo "<input type='submit' class='submit' name='update' value='".
+                         _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                }
-               echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-               echo "</div>";
             }
-
+            if ($this->fields["is_deleted"] == 1) {
+               if (self::canPurge()) {
+                  echo "<input type='submit' class='submit' name='purge' value='".
+                         _sx('button', 'Delete permanently')."' ".
+                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+               }
+            } else {
+               if ($this->canDeleteItem()) {
+                  echo "<input type='submit' class='submit' name='delete' value='".
+                         _sx('button', 'Put in dustbin')."'>";
+               }
+            }
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+            echo "</div>";
          } else {
             echo "<div class='tab_bg_2 center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
