@@ -949,7 +949,9 @@ class Ticket extends DbTestCase {
    public function testFormTech() {
       global $DB;
 
-      //create a new ticket
+      //create a new ticket with tu user
+      $auth = new \Auth();
+      $this->login();
       $ticket = new \Ticket();
       $this->integer(
          (int)$ticket->add([
