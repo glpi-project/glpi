@@ -1763,9 +1763,8 @@ class AuthLDAP extends CommonDBTM {
          } else {
             //Ldap synchronisation : look if the user exists in the directory
             //and compares the modifications dates (ldap and glpi db)
-            $userfound = false;
-            if (!empty($ldap_users[$user[$field_for_db]])
-                || ($userfound = self::dnExistsInLdap($user_infos, $user['user_dn']))) {
+            $userfound = self::dnExistsInLdap($user_infos, $user['user_dn']);
+            if (!empty($ldap_users[$user[$field_for_db]]) || $userfound) {
                // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
                // -> renaming case
                if ($userfound) {
