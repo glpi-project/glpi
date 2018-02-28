@@ -69,6 +69,11 @@ class ProjectTask extends CommonDBChild {
    }
 
 
+   static function canPurge() {
+      return static::canChild('canUpdate');
+   }
+
+
    static function canView() {
 
       return (Session::haveRightsOr('project', [Project::READALL, Project::READMY])
