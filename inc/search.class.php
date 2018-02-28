@@ -5172,17 +5172,28 @@ class Search {
       if (($itemtype != 'AllAssets')
           && class_exists($itemtype)) {
 
-         $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+         // retrieve default values for current itemtype
+         $itemtype_default_values = [];
+         if (method_exists($itemtype, 'getDefaultSearchRequest')) {
+            $itemtype_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+         }
 
-         if (!$user_default_values
-             && method_exists($itemtype, 'getDefaultSearchRequest')) {
-            // user has no default bookmark (nor public, nor private) for $itemtype
-            // then gets defined one for type
-            $user_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+         // retrieve default values for the current user
+         $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+         if ($user_default_values === false) {
+            $user_default_values = [];
          }
-         if ($user_default_values) {
-            $default_values = array_merge($default_values, $user_default_values);
-         }
+
+         // we construct default values in this order:
+         // - general default
+         // - itemtype default
+         // - user default
+         //
+         // The last ones erase values or previous
+         // So, we can combine each part (order from itemtype, criteria from user, etc)
+         $default_values = array_merge($default_values,
+                                       $itemtype_default_values,
+                                       $user_default_values);
       }
 
       // First view of the page or force bookmark : try to load a bookmark
