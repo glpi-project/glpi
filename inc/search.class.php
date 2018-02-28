@@ -4507,6 +4507,7 @@ class Search {
                   switch ($table.'.'.$field) {
                      // If ticket has been taken into account : no progression display
                      case "glpi_tickets.time_to_own" :
+                     case "glpi_tickets.internal_time_to_own" :
                         if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
                            return $out;
                         }
