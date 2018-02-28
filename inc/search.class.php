@@ -6586,7 +6586,7 @@ class Search {
             $val = substr($val, $begin, $length-$end-$begin);
          }
 
-         $SEARCH = " $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+         $SEARCH = " $NOT LIKE '".(!$begin?"%":"").trim($val).(!$end?"%":"")."' ";
       }
       return $SEARCH;
    }
