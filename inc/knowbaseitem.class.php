@@ -497,7 +497,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $restrict = '';
       if (Session::getLoginUserID()) {
-         $restrict = "(`glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
+         $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
 
          // Users
          $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
