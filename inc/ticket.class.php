@@ -1912,7 +1912,8 @@ class Ticket extends CommonITILObject {
          unset($input['_users_id_requester_notif']);
       }
       if (isset($input['_users_id_requester_notif'])
-         && isset($input['_users_id_requester_notif']['alternative_email'])) {
+         && isset($input['_users_id_requester_notif']['alternative_email'])
+         && is_array($input['_users_id_requester_notif']['alternative_email'])) {
          foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
             if ($email && !NotificationMailing::isUserAddressValid($email)) {
                Session::addMessageAfterRedirect(
@@ -3175,6 +3176,8 @@ class Ticket extends CommonITILObject {
          ]
       ];
 
+      $tab = array_merge($tab, TicketTask::getSearchOptionsToAddNew());
+
       $tab = array_merge($tab, $this->getSearchOptionsStats());
 
       $tab[] = [
@@ -3327,8 +3330,6 @@ class Ticket extends CommonITILObject {
             ],
             'additionalfields'   => ['tickets_id_2']
          ];
-
-         $tab = array_merge($tab, TicketTask::getSearchOptionsToAddNew());
 
          $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
