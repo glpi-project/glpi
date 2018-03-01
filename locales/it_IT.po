@@ -4174,7 +4174,7 @@ msgstr "itemtype non trovato o non vi è una istanza di CommonDBTM"
 
 #: inc/apixmlrpc.class.php:153
 msgid "missing id"
-msgstr "ip mancante"
+msgstr "ID mancante"
 
 #: inc/auth.class.php:116
 msgid "Others"
@@ -13918,7 +13918,7 @@ msgstr "Numero di costi"
 
 #: inc/notificationtargetcommonitilobject.class.php:1256
 msgid "Category id"
-msgstr "Id categoria"
+msgstr "ID categoria"
 
 #: inc/notificationtargetcommonitilobject.class.php:1258
 msgid "Category comment"

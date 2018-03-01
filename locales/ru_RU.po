@@ -4099,7 +4099,7 @@ msgstr "Пароль успешно изменен."
 
 #: inc/api.class.php:1944
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "кажется параметр app_token неправильный"
 
 #: inc/api.class.php:1947
 msgid "missing parameter app_token"
@@ -9146,10 +9146,10 @@ msgstr[3] "Типы контактов"
 #: inc/profile.class.php:1742 inc/transfer.class.php:3460
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] "Контакт"
-msgstr[1] "Контакт"
-msgstr[2] "Контакты"
-msgstr[3] "Договора"
+msgstr[0] "Договор"
+msgstr[1] "Договоры"
+msgstr[2] "Договоры"
+msgstr[3] "Договоры"
 
 #: inc/contract.class.php:209 inc/contract.class.php:682
 #: inc/contract_item.class.php:459 inc/contract_supplier.class.php:221
@@ -12826,7 +12826,7 @@ msgstr[3] "Уровни эскалации"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Также удалить дату?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -12904,11 +12904,11 @@ msgstr[3] "Внешние ссылки"
 
 #: inc/link.class.php:155
 msgid "field name in DB"
-msgstr ""
+msgstr "название поля в БД"
 
 #: inc/link.class.php:155
 msgid "Example:"
-msgstr ""
+msgstr "Пример:"
 
 #: inc/link.class.php:163 inc/link.class.php:229
 msgid "Link or filename"
@@ -14186,7 +14186,7 @@ msgstr "Добавить шаблон"
 
 #: inc/notification_notificationtemplate.class.php:146
 msgid "No template selected"
-msgstr ""
+msgstr "Шаблон не выбран"
 
 #: inc/notification_notificationtemplate.class.php:287
 msgid "Ajax"
@@ -17342,6 +17342,9 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Критерии \"Все\" нельзя использовать в этом списке объектов, SQL запрос не "
+"выполняется (слишком много таблиц). Пожалуйста, взамен используйте критерий "
+"\"Видимые объекты\"."
 
 #: inc/search.class.php:1584 inc/search.class.php:1585
 msgid "Show the dustbin"
