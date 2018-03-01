@@ -293,6 +293,9 @@ class Planning extends CommonGLPI {
       }
       $realbegin = $begin." ".$CFG_GLPI["planning_begin"];
       $realend   = $end." ".$CFG_GLPI["planning_end"];
+      if ($CFG_GLPI["planning_end"] == "24:00") {
+         $realend = $end." 23:59:59";
+      }
 
       $users = [];
 

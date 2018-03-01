@@ -838,6 +838,9 @@ class Reminder extends CommonDBVisible {
 
       $readpub    = $readpriv = "";
 
+      if ($options['genical']) {
+         $_SESSION["glpiactiveprofile"][static::$rightname] = READ;
+      }
       $joinstoadd = self::addVisibilityJoins(true);
 
       // See public reminder ?
@@ -929,15 +932,18 @@ class Reminder extends CommonDBVisible {
                   $interv[$key]["users_id"]   = $data["users_id"];
                   $interv[$key]["state"]      = $data["state"];
                   $interv[$key]["state"]      = $data["state"];
-                  $interv[$key]["url"]        = $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
-                                                                      $data['id'];
-                  $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                                                      "?action=edit_event_form".
-                                                                      "&itemtype=Reminder".
-                                                                      "&id=".$data['id'].
-                                                                      "&url=".$interv[$key]["url"];
-
-                  $interv[$key]["editable"]   = $reminder->canUpdateItem();
+                  if (!$options['genical']) {
+                     $interv[$key]["url"] = Reminder::getFormURLWithID($data['id']);
+                  } else {
+                     $interv[$key]["url"] = $CFG_GLPI["url_base"].
+                                            Reminder::getFormURLWithID($data['id'], false);
+                  }
+                  $interv[$key]["ajaxurl"]  = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                              "?action=edit_event_form".
+                                              "&itemtype=Reminder".
+                                              "&id=".$data['id'].
+                                              "&url=".$interv[$key]["url"];
+                  $interv[$key]["editable"] = $reminder->canUpdateItem();
                }
             }
          }

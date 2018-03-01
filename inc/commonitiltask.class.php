@@ -1010,15 +1010,20 @@ abstract class CommonITILTask  extends CommonDBTM {
                   $interv[$key]['color']            = $options['color'];
                   $interv[$key]['event_type_color'] = $options['event_type_color'];
                   $interv[$key]['itemtype']         = $itemtype;
-                  $interv[$key]["url"]              = $parentitemtype::getFormURL()."?id=".
-                                                      $item->fields[$parentitem->getForeignKeyField()];
-                  $interv[$key]["ajaxurl"]          = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                                         "?action=edit_event_form".
-                                                         "&itemtype=".$itemtype.
-                                                         "&parentitemtype=".$parentitemtype.
-                                                         "&parentid=".$item->fields[$parentitem->getForeignKeyField()].
-                                                         "&id=".$data['id'].
-                                                         "&url=".$interv[$key]["url"];
+                  $url_id = $item->fields[$parentitem->getForeignKeyField()];
+                  if (!$options['genical']) {
+                     $interv[$key]["url"] = $parentitemtype::getFormURLWithID($url_id);
+                  } else {
+                     $interv[$key]["url"] = $CFG_GLPI["url_base"].
+                                            $parentitemtype::getFormURLWithID($url_id, false);
+                  }
+                  $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                             "?action=edit_event_form".
+                                             "&itemtype=".$itemtype.
+                                             "&parentitemtype=".$parentitemtype.
+                                             "&parentid=".$item->fields[$parentitem->getForeignKeyField()].
+                                             "&id=".$data['id'].
+                                             "&url=".$interv[$key]["url"];
 
                   $interv[$key][$item->getForeignKeyField()] = $data["id"];
                   $interv[$key]["id"]                        = $data["id"];
