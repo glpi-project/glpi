@@ -2512,13 +2512,19 @@ class Config extends CommonDBTM {
       ]);
 
       /* TODO: could be improved, only default vhost checked */
-      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
+      $protocol = 'http';
+      if (isset($_SERVER['HTTPS'])) {
+         $protocol = 'https';
+      }
+      $uri = $protocol . '://' . $_SERVER['SERVER_NAME'] . $CFG_GLPI['root_doc'];
+
+      if ($fic = fopen($uri.'/index.php?skipCheckWriteAccessToDirs=1', 'r', false, $context)) {
          fclose($fic);
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='b left'>".
                __('Web access to files directory is protected')."</td>";
          }
-         if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/files/_log/php-errors.log', 'r', false, $context)) {
+         if ($fic = fopen($uri.'/files/_log/php-errors.log', 'r', false, $context)) {
             fclose($fic);
             if ($fordebug) {
                echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
@@ -2541,6 +2547,10 @@ class Config extends CommonDBTM {
                      __s('Web access to files directory is protected')."\"></td></tr>";
             }
          }
+      } else {
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                  "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
+                  __('Automatic checks cannot be done; please review .htaccess file and the web server configuration.')."</p></td></tr>";
       }
       error_reporting($oldlevel);
       set_error_handler($oldhand);
