@@ -1488,13 +1488,17 @@ class ProjectTask extends CommonDBChild {
                $interv[$key]['color']            = $options['color'];
                $interv[$key]['event_type_color'] = $options['event_type_color'];
                $interv[$key]['itemtype']         = 'ProjectTask';
-               $interv[$key]["url"]              = $CFG_GLPI["root_doc"]."/front/project.form.php?id=".
-                                                     $task->fields['projects_id'];
-               $interv[$key]["ajaxurl"]          = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                                     "?action=edit_event_form".
-                                                     "&itemtype=ProjectTask".
-                                                     "&id=".$data['id'].
-                                                     "&url=".$interv[$key]["url"];
+               if (!$options['genical']) {
+                  $interv[$key]["url"] = Project::getFormURLWithID($task->fields['projects_id']);
+               } else {
+                  $interv[$key]["url"] = $CFG_GLPI["url_base"].
+                                         Project::getFormURLWithID($task->fields['projects_id'], false);
+               }
+               $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                          "?action=edit_event_form".
+                                          "&itemtype=ProjectTask".
+                                          "&id=".$data['id'].
+                                          "&url=".$interv[$key]["url"];
 
                $interv[$key][$task->getForeignKeyField()] = $data["id"];
                $interv[$key]["id"]                        = $data["id"];
