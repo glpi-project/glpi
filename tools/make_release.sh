@@ -76,7 +76,7 @@ echo "Clean PHP vendor"
 \find vendor/ -type f -name "composer.json" -exec rm -rf {} \;
 \find vendor/ -type f -name "composer.lock" -exec rm -rf {} \;
 \find vendor/ -type f -name "changelog.md" -exec rm -rf {} \;
-\find vendor/ -type f -name ".atoum.php" -exec rm -rf {} \;
+\find vendor/ -type f -name "*phpunit.xml.dist" -exec rm -rf {} \;
 \find vendor/ -type f -name ".gitignore" -exec rm -rf {} \;
 \find vendor/ -type d -name "test*" -prune -exec rm -rf {} \;
 \find vendor/ -type d -name "doc*" -prune -exec rm -rf {} \;
@@ -95,6 +95,8 @@ echo "Delete various scripts and directories"
 \rm -rf tests;
 \rm -rf .gitignore;
 \rm -rf .travis.yml;
+\rm -rf .atoum.php;
+\rm -rf .circleci;
 \rm -rf phpunit.xml.dist;
 \rm -rf composer.json;
 \rm -rf composer.lock;
