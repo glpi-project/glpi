@@ -84,7 +84,19 @@ workflows:
   version: 2
   tests_all:
     jobs:
-      - php5.6
-      - php7.0
-      - php7.1
-      - php7.2
+      - php5.6:
+          branches:
+            ignore:
+              - 9.1/bugfixes
+      - php7.0:
+          branches:
+            ignore:
+              - 9.1/bugfixes
+      - php7.1:
+          branches:
+            ignore:
+              - 9.1/bugfixes
+      - php7.2:
+          branches:
+            ignore:
+              - 9.1/bugfixes
