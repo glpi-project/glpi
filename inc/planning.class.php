@@ -2208,7 +2208,7 @@ class Planning extends CommonGLPI {
       $filename = date( 'YmdHis' ).'.ics';
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      @Header("Content-Length: ".Toolbox::strlen($output));
+      //@Header("Content-Length: ".Toolbox::strlen($output));
       @Header("Connection: close");
       @Header("content-type: text/calendar; charset=utf-8");
 
