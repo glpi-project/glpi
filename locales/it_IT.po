@@ -9657,7 +9657,7 @@ msgstr "Numero di righe"
 
 #: inc/dcroom.class.php:147
 msgid "Background picture (blueprint)"
-msgstr ""
+msgstr "Immagine di sfondo (planimetria)"
 
 #: inc/dcroom.class.php:358
 msgid "New room for this datacenter..."
@@ -13246,11 +13246,11 @@ msgstr "default_value deve essere numerico"
 #: inc/migration.class.php:565
 #, php-format
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
-msgstr ""
+msgstr "Impossibile rinominare la tabella %1$s (%2$s) in %3$s (%4$s)!"
 
 #: inc/migration.class.php:567 inc/migration.class.php:569
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #: inc/migration.class.php:567 inc/migration.class.php:569
 msgid "nok"
@@ -16228,11 +16228,11 @@ msgstr "I seguenti elementi eccedono le misure della stanza"
 
 #: inc/rack.class.php:678
 msgid "Blueprint"
-msgstr ""
+msgstr "Planimetria"
 
 #: inc/rack.class.php:686
 msgid "Grid"
-msgstr ""
+msgstr "Reticolo"
 
 #: inc/rack.class.php:716
 msgid "Insert a rack here"

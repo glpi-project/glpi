@@ -4171,7 +4171,7 @@ msgstr "Пароль успешно изменен."
 
 #: inc/api.class.php:1943
 msgid "parameter app_token seems wrong"
-msgstr ""
+msgstr "кажется параметр app_token неправильный"
 
 #: inc/api.class.php:1946
 msgid "missing parameter app_token"
@@ -9274,10 +9274,10 @@ msgstr[3] "Типы контактов"
 #: inc/profile.class.php:1748 inc/transfer.class.php:3486
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] "Контакт"
-msgstr[1] "Контакт"
-msgstr[2] "Контакты"
-msgstr[3] "Договора"
+msgstr[0] "Договор"
+msgstr[1] "Договоры"
+msgstr[2] "Договоры"
+msgstr[3] "Договоры"
 
 #: inc/contract.class.php:205 inc/contract.class.php:678
 #: inc/contract_item.class.php:455 inc/contract_supplier.class.php:217
@@ -13245,7 +13245,7 @@ msgstr[3] "Уровни эскалации"
 
 #: inc/levelagreement.class.php:299
 msgid "Also delete date?"
-msgstr ""
+msgstr "Также удалить дату?"
 
 #: inc/levelagreement.class.php:422
 msgid "Add a new item"
@@ -13323,11 +13323,11 @@ msgstr[3] "Внешние ссылки"
 
 #: inc/link.class.php:153
 msgid "field name in DB"
-msgstr ""
+msgstr "название поля в БД"
 
 #: inc/link.class.php:153
 msgid "Example:"
-msgstr ""
+msgstr "Пример:"
 
 #: inc/link.class.php:161 inc/link.class.php:227
 msgid "Link or filename"
@@ -18007,6 +18007,9 @@ msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr ""
+"Критерии \"Все\" нельзя использовать в этом списке объектов, SQL запрос не "
+"выполняется (слишком много таблиц). Пожалуйста, взамен используйте критерий "
+"\"Видимые объекты\"."
 
 #: inc/search.class.php:1491
 msgid "Show as map"

@@ -16226,7 +16226,7 @@ msgstr ""
 
 #: inc/rack.class.php:686
 msgid "Grid"
-msgstr ""
+msgstr "Grade"
 
 #: inc/rack.class.php:716
 msgid "Insert a rack here"
@@ -16235,7 +16235,7 @@ msgstr "Digite um rack aqui"
 #: inc/rack.class.php:921
 #, php-format
 msgid "%1$s position is not available"
-msgstr ""
+msgstr "%1$s posição não está disponível"
 
 #: inc/rackmodel.class.php:43
 msgid "Rack model"
@@ -16595,7 +16595,7 @@ msgstr "Antes"
 
 #: inc/rule.class.php:700
 msgid "Ranking"
-msgstr ""
+msgstr "Classificação"
 
 #: inc/rule.class.php:794 inc/rule.class.php:950 inc/rule.class.php:2492
 msgid "and"
