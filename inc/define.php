@@ -44,7 +44,7 @@ if (substr(GLPI_VERSION, -4) === '-dev') {
    define("GLPI_SCHEMA_VERSION", '9.2.2');
 }
 define('GLPI_MIN_PHP', '5.6.0'); // Must also be changed in top of index.php
-define('GLPI_YEAR', '2017');
+define('GLPI_YEAR', '2018');
 if (!defined('GLPI_DEMO_MODE')) {
    define('GLPI_DEMO_MODE', '0');
 }
