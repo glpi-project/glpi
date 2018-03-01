@@ -761,14 +761,20 @@ class SavedSearch extends CommonDBTM {
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
       echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
-                  sprintf(__('Private %1$s'), $this->getTypeName(count($searches['private']))) .
+                  sprintf(
+                     _n('Private %1$s', 'Private %1$s', count($searches['private'])),
+                     $this->getTypeName(count($searches['private']))
+                  ) .
                   "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
            "</th></tr></thead><tbody>";
       echo $this->displaySavedSearchType($searches['private']);
       echo "</tbody>";
       if ($this->canView()) {
          echo "<thead><tr><th colspan='$colspan'>" .
-                     sprintf(__('Public %1$s'), $this->getTypeName(count($searches['public']))) .
+                     sprintf(
+                        _n('Public %1$s', 'Public %1$s', count($searches['public'])),
+                        $this->getTypeName(count($searches['public']))
+                     ) .
                      "<i class='toggle fa fa-chevron-circle-up' title='".__('Hide/Show elements')."'></i>" .
               "</th></tr></thead><tbody>";
          echo $this->displaySavedSearchType($searches['public']);
