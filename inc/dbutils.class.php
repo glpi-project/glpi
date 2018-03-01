@@ -545,7 +545,9 @@ final class DbUtils {
 
       if ($is_recursive) {
          $ancestors = [];
-         if (isset($_SESSION['glpiactiveentities']) && $value == $_SESSION['glpiactiveentities']) {
+         if (isset($_SESSION['glpiactiveentities'])
+             && isset($_SESSION['glpiparententities'])
+             && $value == $_SESSION['glpiactiveentities']) {
             $ancestors = $_SESSION['glpiparententities'];
          } else {
             if (is_array($value)) {
