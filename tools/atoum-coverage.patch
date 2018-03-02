@@ -1,0 +1,22 @@
+From 63db908b94a2a4e9594675bcf6b375df43ef00b8 Mon Sep 17 00:00:00 2001
+From: Johan Cwiklinski <jcwiklinski@teclib.com>
+Date: Fri, 2 Mar 2018 15:31:55 +0100
+Subject: [PATCH] Take care to reset relative URL to prevent issues; fixes #783
+
+---
+ classes/report/fields/runner/coverage/html.php | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/classes/report/fields/runner/coverage/html.php b/classes/report/fields/runner/coverage/html.php
+index fc1db4746..5274bf5de 100644
+--- a/classes/report/fields/runner/coverage/html.php
++++ b/classes/report/fields/runner/coverage/html.php
+@@ -116,6 +116,8 @@ public function __toString()
+ 
+                     if (substr_count($className, '\\') >= 1) {
+                         $classTemplate->relativeRootUrl = rtrim(str_repeat('../', substr_count($className, '\\')), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
++                    } else {
++                        $classTemplate->relativeRootUrl = '';
+                     }
+ 
+                     $classCoverageValue = $this->coverage->getValueForClass($className);
