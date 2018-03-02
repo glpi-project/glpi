@@ -95,7 +95,7 @@ class Toolbox {
 
    static function shortcut($str, $shortcut) {
 
-      $pos = self::strpos(self::strtolower($str), $shortcut);
+      $pos = self::strpos(self::strtolower($str), self::strtolower($shortcut));
       if ($pos !== false) {
          return self::substr($str, 0, $pos).
                 "<u>". self::substr($str, $pos, 1)."</u>".
@@ -354,25 +354,27 @@ class Toolbox {
                                   ? $value : str_replace($out, $in, $value)));
 
       // revert unclean inside <pre>
-      $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
-      for ($i = 0; $i < $count; ++$i) {
-         $complete       = $matches[0][$i];
-         $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-         $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
-         $value          = str_replace($complete, $cleancomplete, $value);
-      }
+      if (!is_array($value)) {
+         $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
+         for ($i = 0; $i < $count; ++$i) {
+            $complete       = $matches[0][$i];
+            $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
+            $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
+            $value          = str_replace($complete, $cleancomplete, $value);
+         }
 
-      $config                      = ['safe'=>1];
-      $config["elements"]          = "*+iframe";
-      $config["direct_list_nest"]  = 1;
+         $config                      = ['safe'=>1];
+         $config["elements"]          = "*+iframe";
+         $config["direct_list_nest"]  = 1;
 
-      $value                       = htmLawed($value, $config);
+         $value                       = htmLawed($value, $config);
 
-      // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-      // combinaison introduce false positive
-      foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
-         $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
-                 'src="data:image/'.$imgtype.';base64,', $value);
+         // Special case : remove the 'denied:' for base64 img in case the base64 have characters
+         // combinaison introduce false positive
+         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
+            $value = str_replace('src="denied:data:image/'.$imgtype.';base64,',
+                  'src="data:image/'.$imgtype.';base64,', $value);
+         }
       }
 
       return $value;
