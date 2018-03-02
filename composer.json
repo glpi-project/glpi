@@ -64,7 +64,8 @@
         "cs":  "vendor/bin/phpcs -d memory_limit=512M -p --standard=vendor/glpi-project/coding-standard/GlpiStandard/ --ignore=/vendor/,/plugins/,/files/,/lib/,/config/,/tests/config,/css/tiny_mce,/.git ./",
         "post-install-cmd": [
            "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
-           "patch -d vendor/zendframework/zend-cache/ -p1 < tools/zend-cache-php7.2.patch"
+           "patch -d vendor/zendframework/zend-cache/ -p1 < tools/zend-cache-php7.2.patch",
+           "patch -d vendor/atoum/atoum/ -p1 < tools/atoum-coverage.patch"
         ],
         "post-update-cmd": "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\""
     }
