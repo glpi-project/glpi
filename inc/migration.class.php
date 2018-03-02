@@ -561,6 +561,11 @@ class Migration {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
          $DB->queryOrDie($query, $this->version." rename $oldtable");
       } else {
+         if (Toolbox::startsWith($oldtable, 'glpi_plugin_')
+            || Toolbox::startsWith($newtable, 'glpi_plugin_')
+         ) {
+            return;
+         }
          $message = sprintf(
             __('Unable to rename table %1$s (%2$s) to %3$s (%4$s)!'),
             $oldtable,
