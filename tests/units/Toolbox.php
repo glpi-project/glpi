@@ -181,4 +181,221 @@ class Toolbox extends \GLPITestCase {
          ->isInstanceOf('RuntimeException')
          ->message->contains('Unable to decode JSON string! Is this really JSON?');
    }
+
+   protected function ucProvider() {
+      return [
+         ['hello you', 'Hello you'],
+         ['HEllO you', 'HEllO you'],
+         ['éè', 'Éè'],
+         ['ÉÈ', 'ÉÈ']
+      ];
+   }
+
+   /**
+    * @dataProvider ucProvider
+    */
+   public function testUcfirst($in, $out) {
+      $this->string(\Toolbox::ucfirst($in))->isIdenticalTo($out);
+   }
+
+   protected function shortcutProvider() {
+      return [
+         ['My menu', 'm', '<u>M</u>y menu'],
+         ['Do something', 't', 'Do some<u>t</u>hing'],
+         ['Any menu entry', 'z', 'Any menu entry'],
+         ['Computer', 'O', 'C<u>o</u>mputer']
+      ];
+   }
+
+   /**
+    * @dataProvider shortcutProvider
+    */
+   public function testShortcut($string, $letter, $expected) {
+      $this->string(\Toolbox::shortcut($string, $letter))->isIdenticalTo($expected);
+   }
+
+   protected function strposProvider() {
+      return [
+         ['Where is Charlie?', 'W', 0, 0],
+         ['Where is Charlie?', 'W', 1, false],
+         ['Where is Charlie?', 'w', 0, false],
+         ['Where is Charlie?', '?', 0, 16],
+         ['Where is Charlie?', '?', 3, 16],
+         ['Where is Charlie?', 'e', 0, 2],
+         ['Where is Charlie?', 'e', 2, 2],
+         ['Where is Charlie?', 'e', 3, 4],
+         ['Où est Charlie ?', 'ù', 0, 1]
+      ];
+   }
+
+   /**
+    * @dataProvider strposProvider
+    */
+   public function testStrpos($string, $search, $offset, $expected) {
+      $this->variable(\Toolbox::strpos($string, $search, $offset))->isIdenticalTo($expected);
+   }
+
+   protected function padProvider() {
+      return [
+         ['GLPI', 10, " ", STR_PAD_RIGHT, 'GLPI      '],
+         ['éè', 10, " ", STR_PAD_RIGHT, 'éè        '],
+         ['GLPI', 10, " ", STR_PAD_LEFT, '      GLPI'],
+         ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
+         ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
+         ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
+         ['123', 10, " ", STR_PAD_BOTH, '   123    ']
+      ];
+   }
+
+   /**
+    * @dataProvider padProvider
+    */
+   public function testStr_pad($string, $length, $char, $pad, $expected) {
+      $this->string(\Toolbox::str_pad($string, $length, $char, $pad))
+         ->isIdenticalTo($expected);
+   }
+
+   protected function strlenProvider() {
+      return [
+         ['GLPI', 4],
+         ['Où ça ?', 7]
+      ];
+   }
+
+   /**
+    * @dataProvider strlenProvider
+    */
+   public function testStrlen($string, $length) {
+      $this->integer(\Toolbox::strlen($string))->isIdenticalTo($length);
+   }
+
+   protected function substrProvider() {
+      return [
+         ['I want a substring', 0, -1, 'I want a substring'],
+         ['I want a substring', 9, -1, 'substring'],
+         ['I want a substring', 9, 3, 'sub'],
+         ['Caractères accentués', 0, -1, 'Caractères accentués'],
+         ['Caractères accentués', 11, -1, 'accentués'],
+         ['Caractères accentués', 11, 8, 'accentué']
+      ];
+   }
+
+   /**
+    * @dataProvider substrProvider
+    */
+   public function testSubstr($string, $start, $length, $expected) {
+      $this->string(\Toolbox::substr($string, $start, $length))
+         ->isIdenticalTo($expected);
+   }
+
+   protected function lowercaseProvider() {
+      return [
+         ['GLPI', 'glpi'],
+         ['ÉÈ', 'éè'],
+         ['glpi', 'glpi']
+      ];
+   }
+
+   /**
+    * @dataProvider lowercaseProvider
+    */
+   public function testStrtolower($upper, $lower) {
+      $this->string(\Toolbox::strtolower($upper))->isIdenticalTo($lower);
+   }
+
+   protected function uppercaseProvider() {
+      return [
+         ['glpi', 'GLPI'],
+         ['éè', 'ÉÈ'],
+         ['GlPI', 'GLPI']
+      ];
+   }
+
+   /**
+    * @dataProvider uppercaseProvider
+    */
+   public function testStrtoupper($lower, $upper) {
+      $this->string(\Toolbox::strtoupper($lower))->isIdenticalTo($upper);
+   }
+
+   protected function utfProvider() {
+      return [
+         ['a simple string', true],
+         ['caractère', true],
+         [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
+         [mb_convert_encoding('simple string', 'ISO-8859-15'), true]
+      ];
+   }
+
+   /**
+    * @dataProvider utfProvider
+    */
+   public function testSeems_utf8($string, $utf) {
+      $this->boolean(\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
+   }
+
+   protected function encryptProvider() {
+      return [
+         ['My string', 'mykey', 'xuaZ3tnr1ufS'],
+         ['keepmysecret', 'keepmykey', '5NDK1d3m7NDI69DZ']
+      ];
+   }
+
+   /**
+    * @dataProvider encryptProvider
+    */
+   public function testEncrypt($string, $key, $expected) {
+      $this->string(\Toolbox::encrypt($string, $key))->isIdenticalTo($expected);
+   }
+
+   /**
+    * @dataProvider encryptProvider
+    */
+   public function testDecrypt($expected, $key, $string) {
+      $this->string(\Toolbox::decrypt($string, $key))->isIdenticalTo($expected);
+   }
+
+   protected function cleanProvider() {
+      return [
+         ['mystring', 'mystring'],
+         ['<strong>string</strong>', '&lt;strong&gt;string&lt;/strong&gt;'],
+         [
+            ['<strong>string</strong>', 'string', '<p>my</p>'],
+            ['&lt;strong&gt;string&lt;/strong&gt;', 'string', '&lt;p&gt;my&lt;/p&gt;']
+         ]
+      ];
+   }
+
+   /**
+    * @dataProvider cleanProvider
+    */
+   public function testClean_cross_side_scripting_deep($value, $expected) {
+      $this->variable(\Toolbox::clean_cross_side_scripting_deep($value))
+         ->isIdenticalTo($expected);
+   }
+
+   /**
+    * @dataProvider cleanProvider
+    */
+   public function testUnclean_cross_side_scripting_deep($expected, $value) {
+      $this->variable(\Toolbox::unclean_cross_side_scripting_deep($value))
+         ->isIdenticalTo($expected);
+   }
+
+   protected function cleanHtmlProvider() {
+      $dataset = $this->cleanProvider();
+      $dataset[] = [
+         ['<div>Here a list example: <pre>&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;</pre></div>'],
+         ['&lt;div&gt;Here a list example: &lt;pre&gt;&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;&lt;/pre&gt;']
+      ];
+      return $dataset;
+   }
+
+   /**
+    * @dataProvider cleanHtmlProvider
+    */
+   public function testUnclean_html_cross_side_scripting_deep($expected, $value) {
+      $this->variable(\Toolbox::unclean_html_cross_side_scripting_deep($value))
+         ->isIdenticalTo($expected);
+   }
 }
