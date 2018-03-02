@@ -524,14 +524,6 @@ class Computer extends CommonDBTM {
       echo "<td >";
       AutoUpdateSystem::dropdown(['value' => $this->fields["autoupdatesystems_id"], 'rand' => $randDropdown]);
       echo "</td></tr>";
-      // Display auto inventory informations
-      if (!empty($ID)
-          && Plugin::haveImport()
-          && $this->fields["is_dynamic"]) {
-         echo "<tr class='tab_bg_1'><td colspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td></tr>";
-      }
 
       $this->showFormButtons($options);
 
@@ -1231,6 +1223,8 @@ class Computer extends CommonDBTM {
       ];
 
       $tab = array_merge($tab, ComputerAntivirus::getSearchOptionsToAddNew());
+
+      $tab = array_merge($tab, $this->getInventoryInfosSearchOptions());
 
       return $tab;
    }

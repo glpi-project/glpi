@@ -523,6 +523,10 @@ CREATE TABLE `glpi_certificates` (
   `certificate_item` text COLLATE utf8_unicode_ci,
   `date_creation` datetime DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -537,7 +541,11 @@ CREATE TABLE `glpi_certificates` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `states_id` (`states_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -896,6 +904,20 @@ CREATE TABLE `glpi_items_disks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_inventorytypes
+
+DROP TABLE IF EXISTS `glpi_inventorytypes`;
+CREATE TABLE `glpi_inventorytypes` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `comment` text COLLATE utf8_unicode_ci,
+   `date_creation` datetime DEFAULT NULL,
+   `date_mod` datetime DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_computermodels
 
 DROP TABLE IF EXISTS `glpi_computermodels`;
@@ -955,6 +977,10 @@ CREATE TABLE `glpi_computers` (
   `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -978,7 +1004,11 @@ CREATE TABLE `glpi_computers` (
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -4358,6 +4388,10 @@ CREATE TABLE `glpi_monitors` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4377,7 +4411,11 @@ CREATE TABLE `glpi_monitors` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -4492,6 +4530,10 @@ CREATE TABLE `glpi_networkequipments` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4512,7 +4554,11 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5951,6 +5997,10 @@ CREATE TABLE `glpi_peripherals` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5971,7 +6021,11 @@ CREATE TABLE `glpi_peripherals` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6060,6 +6114,10 @@ CREATE TABLE `glpi_phones` (
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -6081,7 +6139,11 @@ CREATE TABLE `glpi_phones` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6195,6 +6257,10 @@ CREATE TABLE `glpi_printers` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -6217,7 +6283,11 @@ CREATE TABLE `glpi_printers` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -7978,6 +8048,10 @@ CREATE TABLE `glpi_softwarelicenses` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -7999,7 +8073,11 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `states_id` (`states_id`)
+  KEY `states_id` (`states_id`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -9281,7 +9359,11 @@ CREATE TABLE `glpi_racks` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `racktypes_id` int(11) NOT NULL DEFAULT '0',
   `states_id` int(11) NOT NULL DEFAULT '0',
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `width` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
@@ -9299,6 +9381,10 @@ CREATE TABLE `glpi_racks` (
   `max_weight` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -9307,11 +9393,17 @@ CREATE TABLE `glpi_racks` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `racktypes_id` (`racktypes_id`),
   KEY `states_id` (`states_id`),
+  KEY `users_id` (`users_id`),
   KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id` (`groups_id`),
   KEY `group_id_tech` (`groups_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `dcrooms_id` (`dcrooms_id`)
+  KEY `dcrooms_id` (`dcrooms_id`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_racks`;
@@ -9363,7 +9455,11 @@ CREATE TABLE `glpi_enclosures` (
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `enclosuremodels_id` int(11) DEFAULT NULL,
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -9375,17 +9471,27 @@ CREATE TABLE `glpi_enclosures` (
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
   KEY `enclosuremodels_id` (`enclosuremodels_id`),
+  KEY `users_id` (`users_id`),
   KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id` (`groups_id`),
   KEY `group_id_tech` (`groups_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
   KEY `states_id` (`states_id`),
-  KEY `manufacturers_id` (`manufacturers_id`)
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_items_enclosures`;
@@ -9451,7 +9557,11 @@ CREATE TABLE `glpi_pdus` (
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pdumodels_id` int(11) DEFAULT NULL,
+  `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -9462,18 +9572,28 @@ CREATE TABLE `glpi_pdus` (
   `pdutypes_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `date_last_inventory` datetime DEFAULT NULL,
+  `date_last_seen` datetime DEFAULT NULL,
+  `inventorytypes_id` int(11) NOT NULL DEFAULT '0',
+  `inventory_source` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `locations_id` (`locations_id`),
   KEY `pdumodels_id` (`pdumodels_id`),
+  KEY `users_id` (`users_id`),
   KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id` (`groups_id`),
   KEY `group_id_tech` (`groups_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `pdutypes_id` (`pdutypes_id`)
+  KEY `pdutypes_id` (`pdutypes_id`),
+  KEY `date_last_inventory` (`date_last_inventory`),
+  KEY `date_last_seen` (`date_last_seen`),
+  KEY `inventorytypes_id` (`inventorytypes_id`),
+  KEY `inventory_source` (`inventory_source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_plugs`;

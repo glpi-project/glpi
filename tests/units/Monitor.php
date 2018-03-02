@@ -91,7 +91,11 @@ class Monitor extends DbTestCase {
          'ticket_tco' => '0.0000',
          'is_dynamic' => '0',
          'date_creation' => $date,
-         'is_recursive' => '0'
+         'is_recursive' => '0',
+         'date_last_inventory' => null,
+         'date_last_seen' => null,
+         'inventorytypes_id' => '0',
+         'inventory_source' => null
       ];
 
       $this->array($monitor->fields)->isIdenticalTo($expected);
