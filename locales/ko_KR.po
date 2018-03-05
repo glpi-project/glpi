@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-26 09:39+0100\n"
+"POT-Creation-Date: 2018-03-02 16:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Sean Bongchoon Ryu <bryu@innofactory.kr>, 2017\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/glpi/teams/1637/ko_KR/)\n"
@@ -26,8 +26,8 @@ msgstr "API 사용안함"
 msgid "GLPI - Authentication"
 msgstr "GLPI - 인증"
 
-#: index.php:127 inc/authldap.class.php:3119 inc/authmail.class.php:240
-#: inc/config.class.php:1815 inc/dbutils.class.php:1539
+#: index.php:127 inc/authldap.class.php:3118 inc/authmail.class.php:240
+#: inc/config.class.php:1815 inc/dbutils.class.php:1541
 #: inc/mailcollector.class.php:263 inc/mailcollector.class.php:372
 #: inc/notificationtargetuser.class.php:111 inc/ruleright.class.php:264
 #: inc/user.class.php:1923 inc/user.class.php:2276 inc/user.class.php:2694
@@ -47,7 +47,7 @@ msgstr "기억하기"
 
 #: index.php:144 ajax/dropdownMassiveActionAuthMethods.php:69
 #: ajax/dropdownMassiveActionField.php:57 inc/authldap.class.php:1264
-#: inc/authldap.class.php:2255 inc/certificate.class.php:554
+#: inc/authldap.class.php:2254 inc/certificate.class.php:554
 #: inc/certificate.class.php:563 inc/change_ticket.class.php:140
 #: inc/commonitilobject.class.php:2580
 #: inc/computer_softwarelicense.class.php:122
@@ -102,9 +102,9 @@ msgstr "FAQ 에 접근"
 #: ajax/getDropdownFindNum.php:135 ajax/getDropdownFindNum.php:138
 #: ajax/getDropdownFindNum.php:141 ajax/getDropdownNetpoint.php:148
 #: ajax/getDropdownNetpoint.php:149 ajax/getDropdownUsers.php:136
-#: ajax/getDropdownValue.php:356 ajax/getDropdownValue.php:413
-#: ajax/getDropdownValue.php:613 ajax/getDropdownValue.php:632
-#: ajax/getDropdownValue.php:648 ajax/private_public.php:55 front/rule.php:52
+#: ajax/getDropdownValue.php:359 ajax/getDropdownValue.php:416
+#: ajax/getDropdownValue.php:616 ajax/getDropdownValue.php:635
+#: ajax/getDropdownValue.php:651 ajax/private_public.php:55 front/rule.php:52
 #: inc/cartridge.class.php:1008 inc/cartridgeitem.class.php:589
 #: inc/cartridgeitem.class.php:591 inc/commondbtm.class.php:2438
 #: inc/commondbtm.class.php:3252 inc/commondbtm.class.php:3256
@@ -112,7 +112,7 @@ msgstr "FAQ 에 접근"
 #: inc/commondbtm.class.php:3870 inc/commondbtm.class.php:3876
 #: inc/commondbtm.class.php:4861 inc/commonglpi.class.php:861
 #: inc/commonitilcost.class.php:245 inc/commonitilobject.class.php:5276
-#: inc/commonitilobject.class.php:5425 inc/commonitiltask.class.php:1234
+#: inc/commonitilobject.class.php:5425 inc/commonitiltask.class.php:1239
 #: inc/computer_softwarelicense.class.php:478
 #: inc/computer_softwareversion.class.php:459 inc/consumable.class.php:692
 #: inc/contract.class.php:430 inc/contract.class.php:445
@@ -148,7 +148,7 @@ msgstr "FAQ 에 접근"
 #: inc/stat.class.php:1182 inc/state.class.php:297 inc/state.class.php:305
 #: inc/state.class.php:314 inc/state.class.php:322 inc/state.class.php:330
 #: inc/state.class.php:338 inc/state.class.php:346 inc/state.class.php:355
-#: inc/state.class.php:364 inc/ticket.class.php:6235
+#: inc/state.class.php:364 inc/ticket.class.php:6233
 #: inc/ticketfollowup.class.php:518 inc/ticketfollowup.class.php:1001
 #: inc/ticketfollowup.class.php:1006 inc/tickettemplate.class.php:460
 #: inc/vlan.class.php:167 install/update_0723_078.php:4824
@@ -176,13 +176,13 @@ msgstr "%1$s - 네트워크 콘센트 %2$s"
 #: ajax/dropdownConnectNetworkPort.php:110 ajax/dropdownInstallVersion.php:78
 #: ajax/dropdownSoftwareLicense.php:69 ajax/getDropdownConnect.php:178
 #: ajax/getDropdownFindNum.php:146 ajax/getDropdownNetpoint.php:152
-#: ajax/getDropdownValue.php:398 ajax/getDropdownValue.php:637
+#: ajax/getDropdownValue.php:401 ajax/getDropdownValue.php:640
 #: inc/apiclient.class.php:232 inc/cartridge.class.php:734
 #: inc/cartridgeitem.class.php:590 inc/change_item.class.php:216
 #: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4626
 #: inc/commonglpi.class.php:873 inc/commonitilcost.class.php:572
 #: inc/commonitilobject.class.php:5424 inc/commonitilobject.class.php:5429
-#: inc/commonitiltask.class.php:1278 inc/commonitiltask.class.php:1304
+#: inc/commonitiltask.class.php:1283 inc/commonitiltask.class.php:1309
 #: inc/computer_item.class.php:461 inc/computer_softwarelicense.class.php:531
 #: inc/computer_softwareversion.class.php:539
 #: inc/computer_softwareversion.class.php:568
@@ -196,12 +196,12 @@ msgstr "%1$s - 네트워크 콘센트 %2$s"
 #: inc/contract.class.php:1492 inc/contractcost.class.php:398
 #: inc/contract_item.class.php:490 inc/contract_item.class.php:729
 #: inc/contract_supplier.class.php:243 inc/contract_supplier.class.php:392
-#: inc/dbutils.class.php:1478 inc/document.class.php:402
+#: inc/dbutils.class.php:1480 inc/document.class.php:402
 #: inc/document.class.php:438 inc/document.class.php:898
 #: inc/document_item.class.php:521 inc/dropdown.class.php:402
 #: inc/glpipdf.class.php:108 inc/group_user.class.php:230
 #: inc/group_user.class.php:235 inc/group_user.class.php:452
-#: inc/group_user.class.php:542 inc/html.class.php:4854
+#: inc/group_user.class.php:542 inc/html.class.php:4855
 #: inc/ipnetwork_vlan.class.php:174 inc/item_devicegraphiccard.class.php:56
 #: inc/item_deviceharddrive.class.php:56 inc/item_devicememory.class.php:58
 #: inc/item_deviceprocessor.class.php:57
@@ -238,12 +238,12 @@ msgstr "%1$s - 네트워크 콘센트 %2$s"
 #: inc/profile_user.class.php:338 inc/profile_user.class.php:485
 #: inc/projectcost.class.php:394 inc/rule.class.php:2182
 #: inc/rulecollection.class.php:1203 inc/rulemailcollector.class.php:198
-#: inc/rulemailcollector.class.php:203 inc/search.class.php:4716
-#: inc/search.class.php:4850 inc/session.class.php:371
+#: inc/rulemailcollector.class.php:203 inc/search.class.php:4717
+#: inc/search.class.php:4851 inc/session.class.php:371
 #: inc/session.class.php:374 inc/softwareversion.class.php:260
-#: inc/supplier.class.php:577 inc/ticket.class.php:2191
-#: inc/ticket.class.php:4593 inc/ticket.class.php:6091
-#: inc/ticket.class.php:6234 inc/tickettemplatemandatoryfield.class.php:234
+#: inc/supplier.class.php:577 inc/ticket.class.php:2192
+#: inc/ticket.class.php:4595 inc/ticket.class.php:6089
+#: inc/ticket.class.php:6232 inc/tickettemplatemandatoryfield.class.php:234
 #: inc/tickettemplatemandatoryfield.class.php:236 inc/user.class.php:2897
 #: inc/user.class.php:2952 inc/user.class.php:3811 inc/user.class.php:3892
 #, php-format
@@ -309,8 +309,8 @@ msgstr "이메일 추적"
 #: inc/commonglpi.class.php:1258 inc/commonglpi.class.php:1261
 #: inc/commonitilobject.class.php:2439 inc/commonitilobject.class.php:3376
 #: inc/commonitilobject.class.php:3615 inc/commonitilobject.class.php:5270
-#: inc/commonitilobject.class.php:5296 inc/commonitiltask.class.php:1172
-#: inc/commonitiltask.class.php:1952 inc/config.class.php:1419
+#: inc/commonitilobject.class.php:5296 inc/commonitiltask.class.php:1177
+#: inc/commonitiltask.class.php:1957 inc/config.class.php:1419
 #: inc/config.class.php:1484 inc/contract.class.php:1251
 #: inc/contract.class.php:1328 inc/contract.class.php:1362
 #: inc/contract.class.php:1365 inc/contract.class.php:1382
@@ -318,8 +318,8 @@ msgstr "이메일 추적"
 #: inc/crontask.class.php:828 inc/crontask.class.php:836
 #: inc/crontask.class.php:850 inc/crontask.class.php:860
 #: inc/dbconnection.class.php:448 inc/dbconnection.class.php:453
-#: inc/dbconnection.class.php:456 inc/dbutils.class.php:1023
-#: inc/dbutils.class.php:1580 inc/document.class.php:219
+#: inc/dbconnection.class.php:456 inc/dbutils.class.php:1025
+#: inc/dbutils.class.php:1582 inc/document.class.php:219
 #: inc/document_item.class.php:504 inc/dropdown.class.php:360
 #: inc/dropdown.class.php:364 inc/dropdown.class.php:369
 #: inc/dropdown.class.php:374 inc/dropdown.class.php:378
@@ -481,19 +481,19 @@ msgstr "이메일 추적"
 #: inc/problem.class.php:1137 inc/profile_user.class.php:357
 #: inc/profile_user.class.php:483 inc/profile_user.class.php:1041
 #: inc/profile_user.class.php:1043 inc/projectcost.class.php:434
-#: inc/projecttask.class.php:610 inc/projecttask.class.php:613
-#: inc/projecttask.class.php:1550 inc/projecttask.class.php:1564
-#: inc/projecttask.class.php:1573 inc/projecttask.class.php:1578
-#: inc/projecttask.class.php:1586 inc/registeredid.class.php:116
-#: inc/reminder.class.php:962 inc/reminder.class.php:989
+#: inc/projecttask.class.php:615 inc/projecttask.class.php:618
+#: inc/projecttask.class.php:1559 inc/projecttask.class.php:1573
+#: inc/projecttask.class.php:1582 inc/projecttask.class.php:1587
+#: inc/projecttask.class.php:1595 inc/registeredid.class.php:116
+#: inc/reminder.class.php:968 inc/reminder.class.php:995
 #: inc/reservationitem.class.php:669 inc/reservationitem.class.php:674
 #: inc/reservationitem.class.php:692 inc/rule.class.php:3117
 #: inc/rulemailcollector.class.php:130 inc/softwarelicense.class.php:885
 #: inc/softwarelicense.class.php:888 inc/softwarelicense.class.php:905
 #: inc/supplier.class.php:553 inc/supplier.class.php:590
-#: inc/ticket.class.php:2193 inc/ticket.class.php:6179
-#: inc/ticket.class.php:6429 inc/ticket.class.php:6519
-#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:979
+#: inc/ticket.class.php:2194 inc/ticket.class.php:6177
+#: inc/ticket.class.php:6427 inc/ticket.class.php:6517
+#: inc/ticket_ticket.class.php:70 inc/toolbox.class.php:981
 #: inc/user.class.php:2064 inc/user.class.php:2276 inc/user.class.php:3678
 #: inc/vlan.class.php:168 inc/vlan.class.php:170
 #: install/update_0681_07.php:533 install/update_0681_07.php:556
@@ -509,13 +509,13 @@ msgstr "%1$s: %2$s"
 #: inc/authldap.class.php:749 inc/authldap.class.php:754
 #: inc/authldap.class.php:757 inc/authldap.class.php:996
 #: inc/authldap.class.php:1005 inc/authldap.class.php:1014
-#: inc/authldap.class.php:1023 inc/authldap.class.php:3121
-#: inc/authldap.class.php:3123 inc/authldap.class.php:3125
-#: inc/authldap.class.php:3127 inc/blacklist.class.php:235
+#: inc/authldap.class.php:1023 inc/authldap.class.php:3120
+#: inc/authldap.class.php:3122 inc/authldap.class.php:3124
+#: inc/authldap.class.php:3126 inc/blacklist.class.php:235
 #: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:268
 #: inc/commonitilobject.class.php:2439 inc/commonitilobject.class.php:3376
 #: inc/contact.class.php:209 inc/contact.class.php:351
-#: inc/contact_supplier.class.php:356 inc/dbutils.class.php:1545
+#: inc/contact_supplier.class.php:356 inc/dbutils.class.php:1547
 #: inc/dropdown.class.php:378 inc/dropdown.class.php:395
 #: inc/entity.class.php:531 inc/entity.class.php:1340
 #: inc/notification_notificationtemplate.class.php:283
@@ -542,7 +542,7 @@ msgstr[0] "이메일"
 #: inc/change_project.class.php:185 inc/change_project.class.php:280
 #: inc/change_ticket.class.php:275 inc/change_ticket.class.php:377
 #: inc/commondbrelation.class.php:1117 inc/commondbtm.class.php:2201
-#: inc/commonitiltask.class.php:1769 inc/commontreedropdown.class.php:509
+#: inc/commonitiltask.class.php:1774 inc/commontreedropdown.class.php:509
 #: inc/computer_softwarelicense.class.php:391
 #: inc/computer_softwareversion.class.php:838
 #: inc/contact_supplier.class.php:187 inc/contact_supplier.class.php:323
@@ -557,16 +557,16 @@ msgstr[0] "이메일"
 #: inc/knowbaseitem_item.class.php:155 inc/link_itemtype.class.php:104
 #: inc/netpoint.class.php:280 inc/netpoint.class.php:303
 #: inc/networkport.class.php:560 inc/notepad.class.php:311
-#: inc/olalevel.class.php:118 inc/planning.class.php:1415
-#: inc/planning.class.php:1454 inc/planning.class.php:1541
+#: inc/olalevel.class.php:118 inc/planning.class.php:1418
+#: inc/planning.class.php:1457 inc/planning.class.php:1544
 #: inc/problem_ticket.class.php:313 inc/problem_ticket.class.php:423
 #: inc/profile_user.class.php:149 inc/profile_user.class.php:306
-#: inc/project.class.php:1247 inc/projecttask.class.php:1182
+#: inc/project.class.php:1247 inc/projecttask.class.php:1187
 #: inc/projecttask_ticket.class.php:195 inc/reservation.class.php:753
 #: inc/reservationitem.class.php:584 inc/rule.class.php:2741
 #: inc/ruleright.class.php:85 inc/slalevel.class.php:118
-#: inc/ticket.class.php:5257 inc/ticket.class.php:7424
-#: inc/ticket.class.php:7484 inc/ticketfollowup.class.php:560
+#: inc/ticket.class.php:5255 inc/ticket.class.php:7422
+#: inc/ticket.class.php:7482 inc/ticketfollowup.class.php:560
 #: inc/tickettemplatehiddenfield.class.php:231
 #: inc/tickettemplatemandatoryfield.class.php:242
 #: inc/tickettemplatepredefinedfield.class.php:293
@@ -585,8 +585,8 @@ msgstr "추가"
 #: inc/commondbtm.class.php:3135 inc/commondevice.class.php:230
 #: inc/commondropdown.class.php:254 inc/commondropdown.class.php:465
 #: inc/commonitilcost.class.php:123 inc/commonitilcost.class.php:432
-#: inc/commonitilvalidation.class.php:964
-#: inc/commonitilvalidation.class.php:978 inc/commontreedropdown.class.php:531
+#: inc/commonitilvalidation.class.php:970
+#: inc/commonitilvalidation.class.php:984 inc/commontreedropdown.class.php:531
 #: inc/commontreedropdown.class.php:733 inc/computer.class.php:499
 #: inc/computer.class.php:682 inc/computer_softwareversion.class.php:1001
 #: inc/computer_softwareversion.class.php:1082
@@ -597,7 +597,7 @@ msgstr "추가"
 #: inc/contact.class.php:431 inc/contract.class.php:303
 #: inc/contract.class.php:852 inc/contractcost.class.php:151
 #: inc/contractcost.class.php:306 inc/crontask.class.php:454
-#: inc/crontask.class.php:1395 inc/dbutils.class.php:1026
+#: inc/crontask.class.php:1395 inc/dbutils.class.php:1028
 #: inc/document.class.php:415 inc/document.class.php:907
 #: inc/entity.class.php:584 inc/fieldunicity.class.php:379
 #: inc/group.class.php:248 inc/infocom.class.php:1162
@@ -628,7 +628,7 @@ msgstr "추가"
 #: inc/profile.class.php:593 inc/profile.class.php:1553
 #: inc/project.class.php:590 inc/project.class.php:1161
 #: inc/projectcost.class.php:148 inc/projectcost.class.php:303
-#: inc/projecttask.class.php:627 inc/projecttask.class.php:878
+#: inc/projecttask.class.php:632 inc/projecttask.class.php:883
 #: inc/projecttasktemplate.class.php:98 inc/reservation.class.php:746
 #: inc/reservation.class.php:1091 inc/reservation.class.php:1139
 #: inc/reservation.class.php:1209 inc/reservation.class.php:1272
@@ -636,13 +636,13 @@ msgstr "추가"
 #: inc/reservationitem.class.php:365 inc/rssfeed.class.php:396
 #: inc/rssfeed.class.php:622 inc/rule.class.php:738 inc/rule.class.php:892
 #: inc/ruledictionnaryprinter.class.php:86
-#: inc/rulesoftwarecategory.class.php:85 inc/search.class.php:5415
+#: inc/rulesoftwarecategory.class.php:85 inc/search.class.php:5427
 #: inc/slm.class.php:114 inc/software.class.php:297 inc/software.class.php:489
 #: inc/softwarelicense.class.php:397 inc/softwarelicense.class.php:612
 #: inc/softwarelicense.class.php:1284 inc/softwareversion.class.php:125
 #: inc/softwareversion.class.php:185 inc/softwareversion.class.php:318
 #: inc/supplier.class.php:149 inc/supplier.class.php:377
-#: inc/ticket.class.php:3056 inc/ticketfollowup.class.php:1128
+#: inc/ticket.class.php:3057 inc/ticketfollowup.class.php:1128
 #: inc/ticketsatisfaction.class.php:149 inc/transfer.class.php:109
 #: inc/transfer.class.php:3284 inc/user.class.php:2095 inc/user.class.php:2861
 #: inc/vlan.class.php:171
@@ -657,19 +657,19 @@ msgstr "논평"
 #: inc/commonglpi.class.php:728 inc/commonitilvalidation.class.php:447
 #: inc/config.class.php:399 inc/dropdown.class.php:1974
 #: inc/notificationtemplatetranslation.class.php:372
-#: inc/planning.class.php:358 inc/problem.class.php:565
+#: inc/planning.class.php:361 inc/problem.class.php:565
 #: inc/profile_user.class.php:533 inc/search.class.php:1220
-#: inc/search.class.php:1621 inc/ticket.class.php:3533 inc/user.class.php:3535
+#: inc/search.class.php:1621 inc/ticket.class.php:3534 inc/user.class.php:3535
 msgid "All"
 msgstr "모두"
 
 #: ajax/dropdownMassiveActionAddValidator.php:113
-#: ajax/dropdownValidator.php:135 inc/commonitiltask.class.php:1283
-#: inc/commonitiltask.class.php:1622 inc/dbconnection.class.php:456
+#: ajax/dropdownValidator.php:135 inc/commonitiltask.class.php:1288
+#: inc/commonitiltask.class.php:1627 inc/dbconnection.class.php:456
 #: inc/dropdown.class.php:1975 inc/group_user.class.php:172
 #: inc/group_user.class.php:259 inc/htmltablemain.class.php:242
 #: inc/item_devices.class.php:674 inc/planningrecall.class.php:255
-#: inc/profileright.class.php:313 inc/search.class.php:4608
+#: inc/profileright.class.php:313 inc/search.class.php:4609
 msgid "None"
 msgstr "없음"
 
@@ -717,8 +717,8 @@ msgid_plural "Actions"
 msgstr[0] "작업"
 
 #: ajax/planningcheck.php:52 ajax/planningcheck.php:59 front/planning.php:62
-#: inc/commonitiltask.class.php:1525 inc/commonitiltask.class.php:1532
-#: inc/planning.class.php:342
+#: inc/commonitiltask.class.php:1530 inc/commonitiltask.class.php:1537
+#: inc/planning.class.php:345
 msgid "Availability"
 msgstr "가용성"
 
@@ -736,7 +736,7 @@ msgid "Public"
 msgstr "공용"
 
 #: ajax/private_public.php:71 ajax/subvisibility.php:70 ajax/visibility.php:95
-#: inc/authldap.class.php:1930 inc/budget.class.php:285
+#: inc/authldap.class.php:1929 inc/budget.class.php:285
 #: inc/certificate.class.php:271 inc/commondbtm.class.php:2459
 #: inc/commondbtm.class.php:3414 inc/commondropdown.class.php:485
 #: inc/commonglpi.class.php:871 inc/commontreedropdown.class.php:753
@@ -746,7 +746,7 @@ msgstr "공용"
 #: inc/levelagreementlevel.class.php:152 inc/networkequipment.class.php:644
 #: inc/notification.class.php:408 inc/printer.class.php:802
 #: inc/profile_user.class.php:906 inc/project.class.php:624
-#: inc/projecttask.class.php:902 inc/rule.class.php:755
+#: inc/projecttask.class.php:907 inc/rule.class.php:755
 #: inc/savedsearch.class.php:102 inc/savedsearch.class.php:410
 #: inc/software.class.php:622 inc/softwarelicense.class.php:675
 #: inc/supplier.class.php:394
@@ -915,7 +915,7 @@ msgstr "제한 없음"
 #: inc/profile.class.php:2098 inc/profile_user.class.php:195
 #: inc/profile_user.class.php:897 inc/profile_user.class.php:1041
 #: inc/project.class.php:616 inc/project.class.php:737
-#: inc/projectcost.class.php:188 inc/projecttask.class.php:894
+#: inc/projectcost.class.php:188 inc/projecttask.class.php:899
 #: inc/queuednotification.class.php:370 inc/reservation.class.php:1207
 #: inc/reservation.class.php:1270 inc/reservationitem.class.php:269
 #: inc/rule.class.php:746 inc/rulecollection.class.php:489
@@ -924,7 +924,7 @@ msgstr "제한 없음"
 #: inc/ruleimportcomputer.class.php:436 inc/ruleimportentity.class.php:164
 #: inc/rulemailcollector.class.php:182 inc/ruleright.class.php:291
 #: inc/rulerightcollection.class.php:159 inc/ruleticket.class.php:443
-#: inc/savedsearch.class.php:407 inc/search.class.php:5460
+#: inc/savedsearch.class.php:407 inc/search.class.php:5472
 #: inc/software.class.php:588 inc/software.class.php:982
 #: inc/softwarelicense.class.php:667 inc/softwarelicense.class.php:997
 #: inc/softwarelicense.class.php:1216 inc/softwarelicense.class.php:1281
@@ -941,11 +941,11 @@ msgstr[0] "엔티티"
 msgid "Debug mode has been switched %1$s!"
 msgstr "디버그 모드가 %1$s로 변경되었습니다!"
 
-#: ajax/switchdebug.php:51 inc/html.class.php:5907
+#: ajax/switchdebug.php:51 inc/html.class.php:5908
 msgid "on"
 msgstr "켜기"
 
-#: ajax/switchdebug.php:51 inc/html.class.php:5907
+#: ajax/switchdebug.php:51 inc/html.class.php:5908
 msgid "off"
 msgstr "끄기"
 
@@ -963,7 +963,7 @@ msgstr ""
 #: ajax/ticketassigninformation.php:112 ajax/ticketassigninformation.php:113
 #: inc/change.class.php:506 inc/commonitilobject.class.php:3614
 #: inc/commonitilobject.class.php:3615 inc/problem.class.php:563
-#: inc/ticket.class.php:3531 install/update_084_085.php:2015
+#: inc/ticket.class.php:3532 install/update_084_085.php:2015
 msgid "Processing"
 msgstr "처리중"
 
@@ -1048,7 +1048,7 @@ msgid "Access denied"
 msgstr "접근이 거부됨"
 
 #: front/allassets.php:43 inc/config.class.php:522 inc/html.class.php:1424
-#: inc/savedsearch.class.php:869 inc/stat.class.php:1216
+#: inc/savedsearch.class.php:875 inc/stat.class.php:1216
 #: inc/stat.class.php:1228 inc/stat.class.php:1237
 msgid "Global"
 msgstr "전역"
@@ -1141,7 +1141,7 @@ msgstr "새 버전이 사용 가능한지 체크하세요"
 
 #: front/backup.php:606 front/report.contract.list.php:179
 #: front/report.year.list.php:135 inc/notificationtargetticket.class.php:756
-#: inc/problem.class.php:936 inc/ticket.class.php:5844
+#: inc/problem.class.php:936 inc/ticket.class.php:5842
 msgid "Deleted"
 msgstr "삭제됨"
 
@@ -1174,7 +1174,7 @@ msgstr "크기"
 #: front/backup.php:624 front/report.contract.php:66 front/report.year.php:67
 #: inc/commonitilobject.class.php:4567 inc/commonitilobject.class.php:5514
 #: inc/commonitiltask.class.php:588 inc/commonitiltask.class.php:793
-#: inc/commonitiltask.class.php:1448 inc/commonitiltask.class.php:1716
+#: inc/commonitiltask.class.php:1453 inc/commonitiltask.class.php:1721
 #: inc/crontask.class.php:1098 inc/crontask.class.php:1155
 #: inc/document_item.class.php:792 inc/event.class.php:277
 #: inc/event.class.php:332 inc/item_devicebattery.class.php:64
@@ -1196,7 +1196,7 @@ msgstr "크기"
 #: inc/notificationtargetticket.class.php:916
 #: inc/notificationtargetticket.class.php:923
 #: inc/notimportedemail.class.php:202 inc/project.class.php:733
-#: inc/ticket.class.php:3099 inc/ticket.class.php:7661
+#: inc/ticket.class.php:3100 inc/ticket.class.php:7659
 #: inc/ticketfollowup.class.php:696 inc/ticketfollowup.class.php:1090
 #: inc/ticketfollowup.class.php:1181
 msgid "Date"
@@ -1228,8 +1228,8 @@ msgstr "%s 파일을 삭제하시겠습니까?"
 #: inc/netpoint.class.php:331 inc/notepad.class.php:367
 #: inc/problem_ticket.class.php:328 inc/profile_user.class.php:331
 #: inc/reservation.class.php:763 inc/rule.class.php:2783
-#: inc/ticket.class.php:5242 inc/ticket.class.php:7153
-#: inc/ticket.class.php:7154 inc/ticketfollowup.class.php:813
+#: inc/ticket.class.php:5242 inc/ticket.class.php:7151
+#: inc/ticket.class.php:7152 inc/ticketfollowup.class.php:813
 #: inc/ticketfollowup.class.php:1036 inc/tickettask.class.php:310
 #: inc/ticket_ticket.class.php:185 inc/transfer.class.php:3296
 #: inc/transfer.class.php:3301 inc/transfer.class.php:3318
@@ -1280,7 +1280,7 @@ msgstr "다운로드"
 #: front/sla.form.php:54 front/slm.form.php:55 front/software.form.php:56
 #: front/supplier.form.php:55 front/transfer.form.php:54
 #: front/user.form.php:72 front/user.form.php:182
-#: inc/rulecollection.class.php:1369 inc/ticket.class.php:2040
+#: inc/rulecollection.class.php:1369 inc/ticket.class.php:2041
 #, php-format
 msgid "%1$s adds the item %2$s"
 msgstr "%1$s 는 %2$s 아이템을 추가합니다."
@@ -1477,7 +1477,7 @@ msgstr[0] "변경"
 
 #: front/change_ticket.form.php:53 front/problem_ticket.form.php:54
 #: inc/commonitilcost.class.php:547 inc/document_item.class.php:504
-#: inc/entity.class.php:1983 inc/event.class.php:158 inc/html.class.php:6006
+#: inc/entity.class.php:1983 inc/event.class.php:158 inc/html.class.php:6007
 #: inc/notificationtargetchange.class.php:336
 #: inc/notificationtargetchange.class.php:350
 #: inc/notificationtargetchange.class.php:362
@@ -1502,7 +1502,7 @@ msgstr[0] "변경"
 #: inc/notificationtargetprojecttask.class.php:574 inc/profile.class.php:646
 #: inc/profile.class.php:994 inc/profile.class.php:1015
 #: inc/profile.class.php:1026 inc/ticket.class.php:168
-#: inc/ticket.class.php:2193 inc/ticket.class.php:5830
+#: inc/ticket.class.php:2194 inc/ticket.class.php:5828
 #: inc/ticket_ticket.class.php:70 inc/transfer.class.php:3324
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -1693,29 +1693,29 @@ msgstr "%s 작업이 실행되었습니다."
 #: inc/auth.class.php:1404 inc/authldap.class.php:749
 #: inc/authldap.class.php:754 inc/authldap.class.php:757
 #: inc/authldap.class.php:1005 inc/authldap.class.php:1014
-#: inc/authldap.class.php:1023 inc/authldap.class.php:3122
-#: inc/authldap.class.php:3124 inc/authldap.class.php:3126
+#: inc/authldap.class.php:1023 inc/authldap.class.php:3121
+#: inc/authldap.class.php:3123 inc/authldap.class.php:3125
 #: inc/commondbvisible.class.php:234 inc/commondbvisible.class.php:242
 #: inc/commondbvisible.class.php:265 inc/commondbvisible.class.php:267
 #: inc/commondbvisible.class.php:290 inc/commondbvisible.class.php:296
 #: inc/commonglpi.class.php:505 inc/commonitilcost.class.php:581
 #: inc/commonitilobject.class.php:5329 inc/commonitilobject.class.php:5349
 #: inc/commonitilobject.class.php:5437 inc/commonitilobject.class.php:5482
-#: inc/commonitiltask.class.php:1967 inc/contact_supplier.class.php:379
+#: inc/commonitiltask.class.php:1972 inc/contact_supplier.class.php:379
 #: inc/contractcost.class.php:402 inc/contract_item.class.php:109
 #: inc/contract_item.class.php:503 inc/crontask.class.php:829
 #: inc/crontask.class.php:837 inc/crontask.class.php:851
 #: inc/dropdown.class.php:357 inc/dropdown.class.php:641
 #: inc/dropdown.class.php:1554 inc/group.class.php:502 inc/group.class.php:510
-#: inc/html.class.php:155 inc/html.class.php:3956
+#: inc/html.class.php:155 inc/html.class.php:3957
 #: inc/item_ticket.class.php:1277 inc/log.class.php:680 inc/log.class.php:691
 #: inc/networkportinstantiation.class.php:777 inc/problem.class.php:975
 #: inc/problem.class.php:1006 inc/profile_user.class.php:234
 #: inc/profile_user.class.php:399 inc/profile_user.class.php:556
 #: inc/project.class.php:864 inc/project.class.php:893
-#: inc/projectcost.class.php:398 inc/projecttask.class.php:1065
+#: inc/projectcost.class.php:398 inc/projecttask.class.php:1070
 #: inc/projecttask_ticket.class.php:361 inc/projecttask_ticket.class.php:370
-#: inc/reminder.class.php:1117 inc/reservation.class.php:475
+#: inc/reminder.class.php:1123 inc/reservation.class.php:475
 #: inc/rule.class.php:1866 inc/rule.class.php:1880
 #: inc/ruleticket.class.php:468 inc/ruleticket.class.php:476
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
@@ -1729,11 +1729,11 @@ msgstr "%s 작업이 실행되었습니다."
 #: inc/search.class.php:1760 inc/search.class.php:1765
 #: inc/search.class.php:1766 inc/search.class.php:4227
 #: inc/search.class.php:4266 inc/search.class.php:4295
-#: inc/search.class.php:4334 inc/search.class.php:4721
-#: inc/search.class.php:4883 inc/ticket.class.php:6189
-#: inc/ticket.class.php:6240 inc/ticket_ticket.class.php:192
-#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:980
-#: inc/toolbox.class.php:1141 inc/useremail.class.php:169
+#: inc/search.class.php:4334 inc/search.class.php:4722
+#: inc/search.class.php:4884 inc/ticket.class.php:6187
+#: inc/ticket.class.php:6238 inc/ticket_ticket.class.php:192
+#: inc/ticket_ticket.class.php:194 inc/toolbox.class.php:982
+#: inc/toolbox.class.php:1143 inc/useremail.class.php:169
 #: install/update_0681_07.php:538 install/update_0681_07.php:541
 #: install/update_0681_07.php:546 install/update_0681_07.php:549
 #, php-format
@@ -1828,7 +1828,7 @@ msgstr[0] "소프트웨어"
 #: inc/ruledictionnaryprinter.class.php:82
 #: inc/ruledictionnaryprinter.class.php:106
 #: inc/ruledictionnaryprintermodel.class.php:64
-#: inc/ruleimportcomputer.class.php:112 inc/search.class.php:5444
+#: inc/ruleimportcomputer.class.php:112 inc/search.class.php:5456
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "생산자"
@@ -1926,7 +1926,7 @@ msgstr[0] "전화기 모델"
 #: inc/certificate.class.php:111 inc/certificate.class.php:386
 #: inc/certificate_item.class.php:282 inc/certificate_item.class.php:496
 #: inc/change_item.class.php:170 inc/commondbvisible.class.php:199
-#: inc/commonitiltask.class.php:1716 inc/computer.class.php:397
+#: inc/commonitiltask.class.php:1721 inc/computer.class.php:397
 #: inc/computer.class.php:625 inc/computer_item.class.php:446
 #: inc/consumableitem.class.php:152 inc/consumableitem.class.php:267
 #: inc/contact.class.php:219 inc/contact.class.php:398
@@ -1974,8 +1974,8 @@ msgstr[0] "전화기 모델"
 #: inc/phone.class.php:200 inc/phone.class.php:407 inc/printer.class.php:299
 #: inc/printer.class.php:531 inc/project.class.php:471
 #: inc/project.class.php:1086 inc/project.class.php:1273
-#: inc/projecttask.class.php:522 inc/projecttask.class.php:773
-#: inc/projecttask.class.php:929 inc/projecttask.class.php:1207
+#: inc/projecttask.class.php:527 inc/projecttask.class.php:778
+#: inc/projecttask.class.php:934 inc/projecttask.class.php:1212
 #: inc/projecttasktemplate.class.php:65 inc/projecttasktemplate.class.php:117
 #: inc/projecttask_ticket.class.php:281 inc/queuednotification.class.php:330
 #: inc/queuednotification.class.php:673 inc/rulecollection.class.php:1175
@@ -1993,9 +1993,9 @@ msgstr[0] "전화기 모델"
 #: inc/ruledictionnaryprintertype.class.php:73 inc/ruleticket.class.php:351
 #: inc/ruleticket.class.php:510 inc/softwarelicense.class.php:342
 #: inc/softwarelicense.class.php:546 inc/softwarelicense.class.php:1001
-#: inc/supplier.class.php:489 inc/ticket.class.php:2799
-#: inc/ticket.class.php:3006 inc/ticket.class.php:3902
-#: inc/ticket.class.php:4753 inc/user.class.php:3775 inc/user.class.php:3855
+#: inc/supplier.class.php:489 inc/ticket.class.php:2800
+#: inc/ticket.class.php:3007 inc/ticket.class.php:3903
+#: inc/ticket.class.php:4755 inc/user.class.php:3775 inc/user.class.php:3855
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "유형"
@@ -2093,7 +2093,7 @@ msgstr "표시 옵션"
 #: front/dropdown.php:41 front/plugin.php:93 front/rulesengine.test.php:65
 #: front/rule.test.php:66 front/setup.auth.php:47 inc/auth.class.php:119
 #: inc/config.class.php:65 inc/event.class.php:164 inc/html.class.php:1341
-#: inc/html.class.php:6280 inc/notificationsetting.class.php:92
+#: inc/html.class.php:6281 inc/notificationsetting.class.php:92
 #: inc/profile.class.php:107 inc/profile.class.php:1471
 #: inc/profile.class.php:1830
 msgid "Setup"
@@ -2142,8 +2142,8 @@ msgstr[0] "드롭다운"
 msgid "Search the ID of your hardware"
 msgstr "하드웨어의 ID 검색"
 
-#: front/find_num.php:85 inc/authldap.class.php:3178 inc/knowbase.class.php:69
-#: inc/knowbaseitem.class.php:1004 inc/planning.class.php:369
+#: front/find_num.php:85 inc/authldap.class.php:3177 inc/knowbase.class.php:69
+#: inc/knowbaseitem.class.php:1004 inc/planning.class.php:372
 #: inc/reservationitem.class.php:427 inc/search.class.php:1882
 msgctxt "button"
 msgid "Search"
@@ -2160,11 +2160,11 @@ msgstr "검색"
 #: inc/notificationtargetticket.class.php:752 inc/peripheral.class.php:244
 #: inc/peripheral.class.php:426 inc/phone.class.php:242
 #: inc/phone.class.php:448 inc/printer.class.php:341 inc/printer.class.php:572
-#: inc/search.class.php:5424
+#: inc/search.class.php:5436
 msgid "Alternate username"
 msgstr "대체 사용자이름"
 
-#: front/find_num.php:94 inc/ticket.class.php:3964
+#: front/find_num.php:94 inc/ticket.class.php:3965
 msgid "Hardware type"
 msgstr "하드웨어 유형"
 
@@ -2179,8 +2179,8 @@ msgstr "하드웨어 유형"
 #: inc/notificationtargetticket.class.php:746
 #: inc/notificationtargetticket.class.php:749 inc/problem.class.php:445
 #: inc/ruleticket.class.php:582 inc/stat.class.php:1159
-#: inc/ticket.class.php:2808 inc/ticket.class.php:5013
-#: inc/ticket.class.php:5724
+#: inc/ticket.class.php:2809 inc/ticket.class.php:5015
+#: inc/ticket.class.php:5722
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "연결된 요소"
@@ -2192,7 +2192,7 @@ msgstr[0] "연결된 요소"
 #: inc/commondbrelation.class.php:287 inc/commondbtm.class.php:3797
 #: inc/commondropdown.class.php:447 inc/commonitilcost.class.php:114
 #: inc/commonitilobject.class.php:2731 inc/commonitilobject.class.php:5270
-#: inc/commonitiltask.class.php:1903 inc/commonitiltask.class.php:1952
+#: inc/commonitiltask.class.php:1908 inc/commonitiltask.class.php:1957
 #: inc/commontreedropdown.class.php:705 inc/computer.class.php:614
 #: inc/computer_softwarelicense.class.php:82 inc/consumable.class.php:546
 #: inc/consumableitem.class.php:250 inc/contact.class.php:310
@@ -2224,10 +2224,10 @@ msgstr[0] "연결된 요소"
 #: inc/profile_user.class.php:860 inc/project.class.php:423
 #: inc/project.class.php:731 inc/projectcost.class.php:139
 #: inc/queuednotification.class.php:194 inc/reservationitem.class.php:176
-#: inc/savedsearch.class.php:201 inc/search.class.php:5375
-#: inc/search.class.php:5396 inc/slm.class.php:154 inc/software.class.php:478
+#: inc/savedsearch.class.php:201 inc/search.class.php:5387
+#: inc/search.class.php:5408 inc/slm.class.php:154 inc/software.class.php:478
 #: inc/softwarelicense.class.php:514 inc/softwarelicense.class.php:1214
-#: inc/supplier.class.php:242 inc/ticket.class.php:6179
+#: inc/supplier.class.php:242 inc/ticket.class.php:6177
 #: inc/ticket_ticket.class.php:70 inc/user.class.php:2704
 #: inc/user.class.php:4368
 msgid "ID"
@@ -2260,7 +2260,7 @@ msgstr "ID"
 #: inc/notificationtargetticket.class.php:728 inc/peripheral.class.php:238
 #: inc/peripheral.class.php:410 inc/phone.class.php:236
 #: inc/phone.class.php:432 inc/printer.class.php:335 inc/printer.class.php:556
-#: inc/ruleimportcomputer.class.php:106 inc/search.class.php:5407
+#: inc/ruleimportcomputer.class.php:106 inc/search.class.php:5419
 #: inc/softwarelicense.class.php:368 inc/softwarelicense.class.php:526
 #: inc/softwarelicense.class.php:998 inc/softwarelicense.class.php:1215
 #: inc/supplier.class.php:492 inc/user.class.php:3778 inc/user.class.php:3858
@@ -2286,7 +2286,7 @@ msgstr "시리얼 번호"
 #: inc/notificationtargetticket.class.php:729 inc/peripheral.class.php:250
 #: inc/peripheral.class.php:418 inc/phone.class.php:247
 #: inc/phone.class.php:440 inc/printer.class.php:347 inc/printer.class.php:564
-#: inc/reservationitem.class.php:204 inc/search.class.php:5411
+#: inc/reservationitem.class.php:204 inc/search.class.php:5423
 #: inc/softwarelicense.class.php:382 inc/softwarelicense.class.php:683
 #: inc/supplier.class.php:493 inc/user.class.php:3779 inc/user.class.php:3859
 msgid "Inventory number"
@@ -2334,7 +2334,7 @@ msgstr "%s 가 그룹에 사용자 추가"
 #: front/knowbaseitemtranslation.form.php:79
 #: front/knowbaseitemtranslation.form.php:83
 #: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:871
-#: inc/html.class.php:6024 inc/knowbaseitem.class.php:88
+#: inc/html.class.php:6025 inc/knowbaseitem.class.php:88
 #: inc/profile.class.php:738
 msgid "FAQ"
 msgstr "FAQ"
@@ -2389,7 +2389,7 @@ msgstr "문제사항을 기술하세요"
 
 #: front/helpdesk.php:108 inc/change.class.php:797
 #: inc/commonitilcost.class.php:104 inc/commonitilobject.class.php:2706
-#: inc/commonitilobject.class.php:5528 inc/commonitiltask.class.php:1910
+#: inc/commonitilobject.class.php:5528 inc/commonitiltask.class.php:1915
 #: inc/contact.class.php:406 inc/contractcost.class.php:132
 #: inc/notificationtargetchange.class.php:365
 #: inc/notificationtargetchange.class.php:370
@@ -2404,7 +2404,7 @@ msgstr "문제사항을 기술하세요"
 #: inc/notificationtargetticket.class.php:926 inc/problem.class.php:1218
 #: inc/projectcost.class.php:129 inc/reminder.class.php:316
 #: inc/reminder.class.php:641 inc/ruleticket.class.php:335
-#: inc/ticket.class.php:4029 inc/ticket.class.php:5066 inc/user.class.php:2971
+#: inc/ticket.class.php:4030 inc/ticket.class.php:5068 inc/user.class.php:2971
 msgid "Title"
 msgstr "제목"
 
@@ -2426,13 +2426,13 @@ msgid "post"
 msgstr "작성"
 
 #: front/helpdesk.public.php:96 front/ticket.form.php:233
-#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4603
+#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4605
 msgid "New ticket"
 msgstr "새 티켓"
 
 #: front/helpdesk.public.php:101 inc/html.class.php:1487
-#: inc/html.class.php:1640 inc/html.class.php:1714 inc/html.class.php:6043
-#: inc/html.class.php:6158 inc/html.class.php:6159
+#: inc/html.class.php:1640 inc/html.class.php:1714 inc/html.class.php:6044
+#: inc/html.class.php:6159 inc/html.class.php:6160
 msgid "Home"
 msgstr "홈"
 
@@ -2517,7 +2517,7 @@ msgid "LDAP directory link"
 msgstr "LDAP 디렉터리 링크"
 
 #: front/ldap.group.import.php:76 inc/auth.class.php:255
-#: inc/authldap.class.php:3303
+#: inc/authldap.class.php:3302
 msgid "Unable to connect to the LDAP directory"
 msgstr "LDAP 디렉터리에 연결할수 없습니다."
 
@@ -2541,11 +2541,11 @@ msgstr "새 그룹 가져오기"
 msgid "Bulk import users from a LDAP directory"
 msgstr "LDAP 디렉토리에서 대량으로 사용자 불러오기"
 
-#: front/ldap.php:52 inc/authldap.class.php:3015
+#: front/ldap.php:52 inc/authldap.class.php:3014
 msgid "Synchronizing already imported users"
 msgstr "불러온 기존 사용자들과 동기화"
 
-#: front/ldap.php:56 inc/authldap.class.php:3016
+#: front/ldap.php:56 inc/authldap.class.php:3015
 msgid "Import new users"
 msgstr "새 사용자 가져오기"
 
@@ -2668,12 +2668,12 @@ msgstr "%s 가 운영수준동의 수준 갱신함"
 msgid "%s purges an ola level"
 msgstr "%s 운영수준동의 수준을 제거함"
 
-#: front/planning.php:141 inc/commonitiltask.class.php:1552
-#: inc/commonitiltask.class.php:1722 inc/event.class.php:152
+#: front/planning.php:141 inc/commonitiltask.class.php:1557
+#: inc/commonitiltask.class.php:1727 inc/event.class.php:152
 #: inc/event.class.php:160 inc/planning.class.php:78
 #: inc/profile.class.php:1086 inc/profile.class.php:2203
-#: inc/project.class.php:1114 inc/projecttask.class.php:551
-#: inc/reminder.class.php:372 inc/reminder.class.php:1127
+#: inc/project.class.php:1114 inc/projecttask.class.php:556
+#: inc/reminder.class.php:372 inc/reminder.class.php:1133
 #: inc/reservationitem.class.php:185
 msgid "Planning"
 msgstr "계획"
@@ -2739,7 +2739,7 @@ msgstr "계약 중 하드웨어 목록"
 #: front/report.year.list.php:134 inc/apiclient.class.php:81
 #: inc/apiclient.class.php:180 inc/authldap.class.php:334
 #: inc/authldap.class.php:555 inc/authldap.class.php:857
-#: inc/authldap.class.php:2245 inc/authldapreplicate.class.php:87
+#: inc/authldap.class.php:2244 inc/authldapreplicate.class.php:87
 #: inc/authmail.class.php:98 inc/authmail.class.php:185
 #: inc/budget.class.php:126 inc/budget.class.php:200 inc/budget.class.php:335
 #: inc/calendar_holiday.class.php:134 inc/cartridgeitem.class.php:192
@@ -2771,7 +2771,7 @@ msgstr "계약 중 하드웨어 목록"
 #: inc/contractcost.class.php:379 inc/contract_item.class.php:457
 #: inc/contract_item.class.php:698 inc/contract_supplier.class.php:219
 #: inc/crontask.class.php:447 inc/crontask.class.php:1319
-#: inc/dbutils.class.php:1535 inc/document.class.php:381
+#: inc/dbutils.class.php:1537 inc/document.class.php:381
 #: inc/document.class.php:801 inc/document_item.class.php:419
 #: inc/document_item.class.php:783 inc/entity.class.php:495
 #: inc/fieldunicity.class.php:317 inc/group.class.php:244
@@ -2825,8 +2825,8 @@ msgstr "계약 중 하드웨어 목록"
 #: inc/profile.class.php:591 inc/profile.class.php:1499
 #: inc/project.class.php:413 inc/project.class.php:743
 #: inc/project.class.php:1046 inc/projectcost.class.php:287
-#: inc/projectcost.class.php:376 inc/projecttask.class.php:510
-#: inc/projecttask.class.php:725 inc/reservationitem.class.php:164
+#: inc/projectcost.class.php:376 inc/projecttask.class.php:515
+#: inc/projecttask.class.php:730 inc/reservationitem.class.php:164
 #: inc/rssfeed.class.php:336 inc/rssfeed.class.php:603 inc/rule.class.php:695
 #: inc/rule.class.php:862 inc/rule.class.php:2728
 #: inc/rulecollection.class.php:481 inc/rulecollection.class.php:512
@@ -2835,7 +2835,7 @@ msgstr "계약 중 하드웨어 목록"
 #: inc/ruledictionnaryprinter.class.php:100 inc/ruleright.class.php:72
 #: inc/savedsearch_alert.class.php:141 inc/savedsearch_alert.class.php:252
 #: inc/savedsearch.class.php:193 inc/savedsearch.class.php:377
-#: inc/search.class.php:5369 inc/search.class.php:5390
+#: inc/search.class.php:5381 inc/search.class.php:5402
 #: inc/slalevel.class.php:101 inc/slalevel.class.php:146
 #: inc/slalevel.class.php:231 inc/slm.class.php:111 inc/slm.class.php:145
 #: inc/software.class.php:261 inc/software.class.php:469
@@ -2859,7 +2859,7 @@ msgstr "이름"
 #: inc/commondbtm.class.php:3083 inc/computer.class.php:390
 #: inc/computer_softwarelicense.class.php:488
 #: inc/computer_softwareversion.class.php:328 inc/config.class.php:558
-#: inc/dbutils.class.php:1560 inc/dropdown.class.php:411
+#: inc/dbutils.class.php:1562 inc/dropdown.class.php:411
 #: inc/dropdown.class.php:774 inc/item_devices.class.php:190
 #: inc/item_devices.class.php:191 inc/line.class.php:114
 #: inc/location.class.php:83 inc/location.class.php:94
@@ -2872,8 +2872,8 @@ msgstr "이름"
 #: inc/phone.class.php:195 inc/printer.class.php:294
 #: inc/profile.class.php:1430 inc/ruleimportentity.class.php:168
 #: inc/ruleticket.class.php:650 inc/software.class.php:270
-#: inc/softwarelicense.class.php:338 inc/ticket.class.php:2850
-#: inc/ticket.class.php:3975 inc/ticket.class.php:4965 inc/user.class.php:2113
+#: inc/softwarelicense.class.php:338 inc/ticket.class.php:2851
+#: inc/ticket.class.php:3976 inc/ticket.class.php:4967 inc/user.class.php:2113
 #: inc/user.class.php:2228 inc/user.class.php:2460
 msgid "Location"
 msgid_plural "Locations"
@@ -2910,7 +2910,7 @@ msgstr[0] "계약 유형"
 #: inc/crontask.class.php:999 inc/dropdown.class.php:425
 #: inc/notificationtargetcommonitilobject.class.php:1262
 #: inc/notificationtargetplanningrecall.class.php:186
-#: inc/notificationtargetreservation.class.php:161 inc/planning.class.php:1673
+#: inc/notificationtargetreservation.class.php:161 inc/planning.class.php:1676
 #: inc/reservation.class.php:696 inc/reservation.class.php:1088
 #: inc/reservation.class.php:1136 inc/reservation.class.php:1204
 #: inc/reservation.class.php:1267 inc/reservationitem.class.php:423
@@ -3112,12 +3112,12 @@ msgstr "%s 가 알림을 제거"
 msgid "%s updates an alert"
 msgstr "%s 가 알림을 갱신"
 
-#: front/savedsearch.php:41 inc/html.class.php:5922 inc/html.class.php:5931
+#: front/savedsearch.php:41 inc/html.class.php:5923 inc/html.class.php:5932
 msgid "Saved searches"
 msgstr "저장된 검색들"
 
-#: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5958
-#: inc/html.class.php:6236 inc/html.class.php:6237
+#: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5959
+#: inc/html.class.php:6237 inc/html.class.php:6238
 msgid "Search"
 msgstr "검색"
 
@@ -3165,7 +3165,7 @@ msgid "Notification"
 msgid_plural "Notifications"
 msgstr[0] "통지"
 
-#: front/setup.templates.php:62 inc/html.class.php:6256
+#: front/setup.templates.php:62 inc/html.class.php:6257
 msgid "Manage templates..."
 msgstr "템플릿 관리"
 
@@ -3286,8 +3286,8 @@ msgid "Real duration"
 msgstr "실제 기간"
 
 #: front/stat.global.php:165 front/stat.graph.php:439
-#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:2999
-#: inc/ticket.class.php:5699
+#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:3000
+#: inc/ticket.class.php:5697
 msgid "Satisfaction survey"
 msgstr "만족 설문"
 
@@ -3311,7 +3311,7 @@ msgstr[0] "답변됨"
 #: front/stat.graph.php:458 front/stat.graph.php:461
 #: inc/notificationtargetticket.class.php:825
 #: inc/notificationtargetticket.class.php:898 inc/stat.class.php:412
-#: inc/ticket.class.php:807 inc/ticket.class.php:3044
+#: inc/ticket.class.php:807 inc/ticket.class.php:3045
 #: inc/ticketsatisfaction.class.php:48
 msgid "Satisfaction"
 msgstr "만족"
@@ -3340,13 +3340,13 @@ msgstr[0] "공급자"
 
 #: front/stat.graph.php:109 front/stat.graph.php:116
 #: inc/authldap.class.php:1493 inc/authldap.class.php:1542
-#: inc/authldap.class.php:3456 inc/certificate.class.php:231
+#: inc/authldap.class.php:3455 inc/certificate.class.php:231
 #: inc/certificate.class.php:433 inc/commondbtm.class.php:3091
 #: inc/commondbvisible.class.php:214 inc/commonitilactor.class.php:180
 #: inc/commonitilactor.class.php:260 inc/commonitilobject.class.php:3262
-#: inc/commonitilobject.class.php:3420 inc/commonitiltask.class.php:1507
-#: inc/commonitilvalidation.class.php:639
-#: inc/commonitilvalidation.class.php:1324 inc/computer.class.php:472
+#: inc/commonitilobject.class.php:3420 inc/commonitiltask.class.php:1512
+#: inc/commonitilvalidation.class.php:645
+#: inc/commonitilvalidation.class.php:1330 inc/computer.class.php:472
 #: inc/computer.class.php:706 inc/computer_softwarelicense.class.php:491
 #: inc/computer_softwareversion.class.php:331 inc/config.class.php:556
 #: inc/dropdown.class.php:1017 inc/group.class.php:308
@@ -3364,15 +3364,15 @@ msgstr[0] "공급자"
 #: inc/notificationtargetticket.class.php:754
 #: inc/notificationtargetuser.class.php:54 inc/peripheral.class.php:260
 #: inc/peripheral.class.php:442 inc/phone.class.php:257
-#: inc/phone.class.php:472 inc/planning.class.php:1353
-#: inc/planning.class.php:1395 inc/printer.class.php:357
+#: inc/phone.class.php:472 inc/planning.class.php:1356
+#: inc/planning.class.php:1398 inc/printer.class.php:357
 #: inc/printer.class.php:588 inc/profile.class.php:1320
 #: inc/profile.class.php:2070 inc/profile_user.class.php:298
 #: inc/profile_user.class.php:338 inc/profile_user.class.php:485
 #: inc/profile_user.class.php:887 inc/project.class.php:1099
 #: inc/reservationitem.class.php:221 inc/rulecollection.class.php:810
 #: inc/rulemailcollector.class.php:130 inc/ruleticket.class.php:621
-#: inc/savedsearch.class.php:209 inc/search.class.php:5420
+#: inc/savedsearch.class.php:209 inc/search.class.php:5432
 #: inc/software.class.php:303 inc/software.class.php:551
 #: inc/softwarelicense.class.php:374 inc/softwarelicense.class.php:649
 #: inc/ticketfollowup.class.php:1197 inc/user.class.php:67
@@ -3384,11 +3384,11 @@ msgstr[0] "사용자"
 #: front/stat.graph.php:129 front/stat.graph.php:219
 #: front/stat.tracking.php:86 front/stat.tracking.php:88
 #: inc/auth.class.php:1434 inc/authldap.class.php:775
-#: inc/authldap.class.php:979 inc/authldap.class.php:3134
+#: inc/authldap.class.php:979 inc/authldap.class.php:3133
 #: inc/change.class.php:749 inc/commonitilobject.class.php:2848
-#: inc/commonitilobject.class.php:5527 inc/commonitiltask.class.php:1461
-#: inc/commonitiltask.class.php:1746
-#: inc/computer_softwareversion.class.php:744 inc/dbutils.class.php:1572
+#: inc/commonitilobject.class.php:5527 inc/commonitiltask.class.php:1466
+#: inc/commonitiltask.class.php:1751
+#: inc/computer_softwareversion.class.php:744 inc/dbutils.class.php:1574
 #: inc/knowbaseitem.class.php:904 inc/knowbaseitem.class.php:1050
 #: inc/knowbaseitem.class.php:1349 inc/knowbaseitem.class.php:1411
 #: inc/knowbaseitem.class.php:1655
@@ -3398,19 +3398,19 @@ msgstr[0] "사용자"
 #: inc/problem.class.php:1182 inc/ruledictionnarysoftware.class.php:131
 #: inc/rulesoftwarecategory.class.php:99 inc/ruleticket.class.php:345
 #: inc/ruleticket.class.php:506 inc/software.class.php:274
-#: inc/software.class.php:497 inc/ticket.class.php:3909
-#: inc/ticket.class.php:4778 inc/user.class.php:2086 inc/user.class.php:2979
+#: inc/software.class.php:497 inc/ticket.class.php:3910
+#: inc/ticket.class.php:4780 inc/user.class.php:2086 inc/user.class.php:2979
 msgid "Category"
 msgstr "분류"
 
 #: front/stat.graph.php:166 front/stat.graph.php:174
 #: front/stat.tracking.php:83 front/stat.tracking.php:110
-#: inc/authldap.class.php:1922 inc/authldap.class.php:3457
+#: inc/authldap.class.php:1921 inc/authldap.class.php:3456
 #: inc/certificate.class.php:240 inc/certificate.class.php:439
 #: inc/commondbtm.class.php:3100 inc/commondbvisible.class.php:231
 #: inc/commonitilobject.class.php:3280 inc/commonitilobject.class.php:3423
-#: inc/commonitiltask.class.php:1536 inc/commonitilvalidation.class.php:640
-#: inc/commonitilvalidation.class.php:1325 inc/computer.class.php:487
+#: inc/commonitiltask.class.php:1541 inc/commonitilvalidation.class.php:646
+#: inc/commonitilvalidation.class.php:1331 inc/computer.class.php:487
 #: inc/computer.class.php:715 inc/computer_softwarelicense.class.php:490
 #: inc/computer_softwareversion.class.php:330 inc/config.class.php:557
 #: inc/group.class.php:54 inc/group_user.class.php:633
@@ -3423,13 +3423,13 @@ msgstr "분류"
 #: inc/notificationtargetproject.class.php:608
 #: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:278
 #: inc/peripheral.class.php:451 inc/phone.class.php:275
-#: inc/phone.class.php:481 inc/planning.class.php:1357
-#: inc/planning.class.php:1441 inc/planning.class.php:1535
+#: inc/phone.class.php:481 inc/planning.class.php:1360
+#: inc/planning.class.php:1444 inc/planning.class.php:1538
 #: inc/printer.class.php:377 inc/printer.class.php:597
 #: inc/profile.class.php:1327 inc/profile.class.php:2084
 #: inc/project.class.php:1106 inc/reservationitem.class.php:231
 #: inc/ruleimportentity.class.php:172 inc/rulemailcollector.class.php:131
-#: inc/ruleticket.class.php:627 inc/search.class.php:5434
+#: inc/ruleticket.class.php:627 inc/search.class.php:5446
 #: inc/software.class.php:311 inc/software.class.php:560
 #: inc/softwarelicense.class.php:392 inc/softwarelicense.class.php:658
 #: inc/tasktemplate.class.php:82 inc/user.class.php:2795
@@ -3440,12 +3440,12 @@ msgstr[0] "그룹"
 
 #: front/stat.graph.php:182 front/stat.tracking.php:92
 #: inc/change.class.php:765 inc/commonitilobject.class.php:2767
-#: inc/commonitilobject.class.php:5521 inc/commonitiltask.class.php:1172
+#: inc/commonitilobject.class.php:5521 inc/commonitiltask.class.php:1177
 #: inc/notificationtargetcommonitilobject.class.php:1183
 #: inc/notificationtargetproject.class.php:562 inc/problem.class.php:1197
 #: inc/project.class.php:462 inc/project.class.php:740
 #: inc/project.class.php:1057 inc/ruleticket.class.php:453
-#: inc/ruleticket.class.php:575 inc/ticket.class.php:4981
+#: inc/ruleticket.class.php:575 inc/ticket.class.php:4983
 msgid "Priority"
 msgstr "우선순위"
 
@@ -3454,8 +3454,8 @@ msgstr "우선순위"
 #: inc/config.class.php:919
 #: inc/notificationtargetcommonitilobject.class.php:1181
 #: inc/problem.class.php:1175 inc/ruleticket.class.php:447
-#: inc/ruleticket.class.php:569 inc/ticket.class.php:3937
-#: inc/ticket.class.php:4873
+#: inc/ruleticket.class.php:569 inc/ticket.class.php:3938
+#: inc/ticket.class.php:4875
 msgid "Urgency"
 msgstr "긴급"
 
@@ -3465,14 +3465,14 @@ msgstr "긴급"
 #: inc/notificationtargetchange.class.php:271
 #: inc/notificationtargetcommonitilobject.class.php:1182
 #: inc/problem.class.php:1189 inc/ruleticket.class.php:450
-#: inc/ruleticket.class.php:572 inc/ticket.class.php:4949
+#: inc/ruleticket.class.php:572 inc/ticket.class.php:4951
 msgid "Impact"
 msgstr "충격"
 
 #: front/stat.graph.php:203 front/stat.tracking.php:85 inc/auth.class.php:1428
 #: inc/authldap.class.php:771 inc/authldap.class.php:970
-#: inc/authldap.class.php:3133 inc/contact.class.php:228
-#: inc/dbutils.class.php:1566
+#: inc/authldap.class.php:3132 inc/contact.class.php:228
+#: inc/dbutils.class.php:1568
 #: inc/notificationtargetcommonitilobject.class.php:1197
 #: inc/user.class.php:2106
 msgctxt "person"
@@ -3493,8 +3493,8 @@ msgstr[0] "솔루션 유형"
 #: inc/dropdown.class.php:796 inc/notificationtargetticket.class.php:725
 #: inc/notificationtargetticket.class.php:761 inc/requesttype.class.php:46
 #: inc/ruleticket.class.php:431 inc/ruleticket.class.php:655
-#: inc/ticket.class.php:2841 inc/ticket.class.php:3128
-#: inc/ticket.class.php:4857 inc/ticketfollowup.class.php:1172
+#: inc/ticket.class.php:2842 inc/ticket.class.php:3129
+#: inc/ticket.class.php:4859 inc/ticketfollowup.class.php:1172
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "요청 소스"
@@ -3502,7 +3502,7 @@ msgstr[0] "요청 소스"
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:837 inc/commonglpi.class.php:838
 #: inc/commonglpi.class.php:849 inc/html.class.php:3663
-#: inc/html.class.php:3664 inc/html.class.php:3829 inc/html.class.php:3830
+#: inc/html.class.php:3664 inc/html.class.php:3830 inc/html.class.php:3831
 #: inc/reservation.class.php:473 inc/reservation.class.php:474
 msgid "Previous"
 msgstr "이전"
@@ -3510,13 +3510,13 @@ msgstr "이전"
 #: front/stat.graph.php:297 front/stat.graph.php:298
 #: inc/commonglpi.class.php:888 inc/commonglpi.class.php:889
 #: inc/commonglpi.class.php:900 inc/html.class.php:3684
-#: inc/html.class.php:3685 inc/html.class.php:3886 inc/html.class.php:3887
+#: inc/html.class.php:3685 inc/html.class.php:3887 inc/html.class.php:3888
 #: inc/reservation.class.php:478 inc/reservation.class.php:479
 msgid "Next"
 msgstr "다음"
 
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4594
-#: inc/stat.class.php:470 inc/ticket.class.php:7613
+#: inc/stat.class.php:470 inc/ticket.class.php:7611
 msgid "Take into account"
 msgstr "고려"
 
@@ -3552,7 +3552,7 @@ msgstr "%1$s 만족도 설문 (%2$s)"
 #: front/stat.tracking.php:81 front/stat.tracking.php:103
 #: inc/commonitilobject.class.php:2563 inc/commonitilobject.class.php:2981
 #: inc/commonitilobject.class.php:2990 inc/commonitilobject.class.php:3797
-#: inc/commonitilobject.class.php:5522 inc/commonitilvalidation.class.php:1199
+#: inc/commonitilobject.class.php:5522 inc/commonitilvalidation.class.php:1205
 #: inc/group.class.php:266 inc/group.class.php:470 inc/log.class.php:517
 #: inc/notificationtargetchange.class.php:298
 #: inc/notificationtargetcommonitilobject.class.php:537
@@ -3565,15 +3565,15 @@ msgstr "%1$s 만족도 설문 (%2$s)"
 #: inc/notificationtargetticket.class.php:788
 #: inc/notimportedemail.class.php:184 inc/problem.class.php:823
 #: inc/rulemailcollector.class.php:82 inc/ruleticket.class.php:357
-#: inc/ruleticket.class.php:514 inc/ticket.class.php:5723
-#: inc/ticket.class.php:6979 inc/ticket.class.php:7188
+#: inc/ruleticket.class.php:514 inc/ticket.class.php:5721
+#: inc/ticket.class.php:6977 inc/ticket.class.php:7186
 #: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "요청자"
 
 #: front/stat.tracking.php:82 inc/commonitilobject.class.php:3043
-#: inc/commonitiltask.class.php:721 inc/commonitiltask.class.php:1718
+#: inc/commonitiltask.class.php:721 inc/commonitiltask.class.php:1723
 #: inc/knowbaseitem.class.php:736 inc/knowbaseitem.class.php:931
 #: inc/knowbaseitem.class.php:1409 inc/notepad.class.php:224
 #: inc/notificationtargetcommonitilobject.class.php:538
@@ -3584,7 +3584,7 @@ msgstr[0] "요청자"
 #: inc/notificationtargetprojecttask.class.php:468
 #: inc/notificationtargetreservation.class.php:160
 #: inc/notificationtargetticket.class.php:759 inc/reminder.class.php:326
-#: inc/ticket.class.php:3162
+#: inc/ticket.class.php:3163
 msgid "Writer"
 msgstr "작성자"
 
@@ -3622,11 +3622,11 @@ msgstr "위치 트리"
 #: inc/peripheral.class.php:358 inc/phone.class.php:380
 #: inc/printer.class.php:504 inc/profile.class.php:1492
 #: inc/profile_user.class.php:853 inc/project.class.php:406
-#: inc/projectcost.class.php:122 inc/projecttask.class.php:718
+#: inc/projectcost.class.php:122 inc/projecttask.class.php:723
 #: inc/queuednotification.class.php:178 inc/reminder.class.php:309
 #: inc/reservationitem.class.php:157 inc/rssfeed.class.php:329
-#: inc/savedsearch.class.php:187 inc/search.class.php:5365
-#: inc/search.class.php:5386 inc/slm.class.php:138 inc/software.class.php:462
+#: inc/savedsearch.class.php:187 inc/search.class.php:5377
+#: inc/search.class.php:5398 inc/slm.class.php:138 inc/software.class.php:462
 #: inc/softwarelicense.class.php:497 inc/softwareversion.class.php:162
 #: inc/supplier.class.php:226 inc/ticketfollowup.class.php:1157
 #: inc/transfer.class.php:84 inc/user.class.php:2687
@@ -3710,15 +3710,15 @@ msgstr "%s로 정의된 항목 추가"
 msgid "%s purges link between tickets"
 msgstr "표 간의 연결을  %s로 제거했습니다"
 
-#: front/tracking.injector.php:75 inc/ticket.class.php:2192
+#: front/tracking.injector.php:75 inc/ticket.class.php:2193
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "표가 등록되었습니다. 처리가 진행 중입니다."
 
 #: front/tracking.injector.php:80 inc/config.class.php:2464
-#: inc/config.class.php:2484 inc/html.class.php:5304 inc/html.class.php:5463
+#: inc/config.class.php:2484 inc/html.class.php:5305 inc/html.class.php:5464
 #: inc/itilcategory.class.php:337 inc/itilcategory.class.php:346
-#: inc/telemetry.class.php:386 inc/toolbox.class.php:1035
-#: inc/toolbox.class.php:1069 inc/toolbox.class.php:1070
+#: inc/telemetry.class.php:386 inc/toolbox.class.php:1037
+#: inc/toolbox.class.php:1071 inc/toolbox.class.php:1072
 msgid "OK"
 msgstr "OK"
 
@@ -3740,8 +3740,8 @@ msgstr "언어가 변경 되었습니다!"
 msgid "Close"
 msgstr "닫기"
 
-#: inc/ajax.class.php:197 inc/ajax.class.php:417 inc/savedsearch.class.php:789
-#: inc/savedsearch.class.php:955
+#: inc/ajax.class.php:197 inc/ajax.class.php:417 inc/savedsearch.class.php:795
+#: inc/savedsearch.class.php:961
 msgid "Loading..."
 msgstr "로딩중..."
 
@@ -3822,10 +3822,10 @@ msgstr "매월"
 #: inc/dropdown.class.php:733 inc/entity.class.php:1841
 #: inc/entity.class.php:1887 inc/entity.class.php:1919
 #: inc/entity.class.php:1952 inc/entity.class.php:2518
-#: inc/entity.class.php:2606 inc/entity.class.php:2765 inc/html.class.php:5355
+#: inc/entity.class.php:2606 inc/entity.class.php:2765 inc/html.class.php:5356
 #: inc/plugin.class.php:512 inc/ruleimportcomputer.class.php:166
 #: inc/savedsearch.class.php:93 inc/savedsearch.class.php:386
-#: inc/savedsearch.class.php:1086 inc/savedsearch.class.php:1141
+#: inc/savedsearch.class.php:1092 inc/savedsearch.class.php:1147
 #: inc/savedsearch_user.class.php:56 inc/savedsearch_user.class.php:77
 #: inc/search.class.php:3346
 msgid "No"
@@ -3834,10 +3834,10 @@ msgstr "아니오"
 #: inc/alert.class.php:145 inc/config.class.php:386 inc/config.class.php:387
 #: inc/config.class.php:401 inc/config.class.php:1075
 #: inc/dropdown.class.php:712 inc/dropdown.class.php:731
-#: inc/html.class.php:5351 inc/plugin.class.php:509 inc/rule.class.php:2162
+#: inc/html.class.php:5352 inc/plugin.class.php:509 inc/rule.class.php:2162
 #: inc/ruleimportcomputer.class.php:192 inc/savedsearch.class.php:92
-#: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1089
-#: inc/savedsearch.class.php:1140 inc/savedsearch_user.class.php:54
+#: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1095
+#: inc/savedsearch.class.php:1146 inc/savedsearch_user.class.php:54
 #: inc/savedsearch_user.class.php:76 inc/search.class.php:3348
 msgid "Yes"
 msgstr "예"
@@ -3999,19 +3999,19 @@ msgstr "IPv4 주소 범위"
 #: inc/contract.class.php:316 inc/contract.class.php:331
 #: inc/contract.class.php:349 inc/crontask.class.php:1170
 #: inc/dbmysql.class.php:572 inc/holiday.class.php:59 inc/holiday.class.php:77
-#: inc/html.class.php:3660 inc/html.class.php:3661 inc/html.class.php:3824
-#: inc/html.class.php:3825 inc/planning.class.php:346
+#: inc/html.class.php:3660 inc/html.class.php:3661 inc/html.class.php:3825
+#: inc/html.class.php:3826 inc/planning.class.php:349
 msgid "Start"
 msgstr "시작"
 
 #: inc/apiclient.class.php:127 inc/calendar_holiday.class.php:136
 #: inc/calendarsegment.class.php:349 inc/calendarsegment.class.php:376
-#: inc/commonitiltask.class.php:1293 inc/contract.class.php:320
+#: inc/commonitiltask.class.php:1298 inc/contract.class.php:320
 #: inc/contract.class.php:336 inc/contract.class.php:353
 #: inc/contract.class.php:1612 inc/crontask.class.php:1180
 #: inc/dbmysql.class.php:597 inc/holiday.class.php:62 inc/holiday.class.php:85
-#: inc/html.class.php:3687 inc/html.class.php:3688 inc/html.class.php:3892
-#: inc/html.class.php:3893 inc/planning.class.php:351
+#: inc/html.class.php:3687 inc/html.class.php:3688 inc/html.class.php:3893
+#: inc/html.class.php:3894 inc/planning.class.php:354
 #: inc/reminder.class.php:672
 msgid "End"
 msgstr "끝"
@@ -4268,13 +4268,13 @@ msgid "Remove the domain of logins like login@domain"
 msgstr "login@domain 형식의 도메인 로그인 제거"
 
 #: inc/auth.class.php:1360 inc/authldap.class.php:729
-#: inc/authldap.class.php:925 inc/authldap.class.php:3128
+#: inc/authldap.class.php:925 inc/authldap.class.php:3127
 #: inc/contact.class.php:159 inc/user.class.php:1979 inc/user.class.php:2282
 msgid "Surname"
 msgstr "성"
 
 #: inc/auth.class.php:1366 inc/authldap.class.php:732
-#: inc/authldap.class.php:934 inc/authldap.class.php:3129
+#: inc/authldap.class.php:934 inc/authldap.class.php:3128
 #: inc/contact.class.php:169 inc/contact.class.php:302
 #: inc/notificationtargetuser.class.php:113 inc/user.class.php:1984
 #: inc/user.class.php:2318 inc/user.class.php:2721
@@ -4288,10 +4288,10 @@ msgstr "관리 번호"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/auth.class.php:1410 inc/authldap.class.php:761
-#: inc/authldap.class.php:943 inc/authldap.class.php:3130
+#: inc/authldap.class.php:943 inc/authldap.class.php:3129
 #: inc/contact.class.php:175 inc/contact.class.php:319
 #: inc/contact_supplier.class.php:216 inc/contact_supplier.class.php:352
-#: inc/contract_supplier.class.php:364 inc/dbutils.class.php:1550
+#: inc/contract_supplier.class.php:364 inc/dbutils.class.php:1552
 #: inc/dropdown.class.php:360 inc/dropdown.class.php:387
 #: inc/entity.class.php:522 inc/entity.class.php:1319
 #: inc/notificationtargetcommonitilobject.class.php:1194
@@ -4307,7 +4307,7 @@ msgid_plural "Phones"
 msgstr[0] "전화"
 
 #: inc/auth.class.php:1416 inc/authldap.class.php:764
-#: inc/authldap.class.php:952 inc/authldap.class.php:3131
+#: inc/authldap.class.php:952 inc/authldap.class.php:3130
 #: inc/contact.class.php:181 inc/contact.class.php:327
 #: inc/contact_supplier.class.php:353 inc/dropdown.class.php:365
 #: inc/notificationtargetcommonitilobject.class.php:1195
@@ -4317,9 +4317,9 @@ msgid "Phone 2"
 msgstr "전화 2"
 
 #: inc/auth.class.php:1422 inc/authldap.class.php:768
-#: inc/authldap.class.php:961 inc/authldap.class.php:3132
+#: inc/authldap.class.php:961 inc/authldap.class.php:3131
 #: inc/contact.class.php:187 inc/contact.class.php:335
-#: inc/contact_supplier.class.php:354 inc/dbutils.class.php:1555
+#: inc/contact_supplier.class.php:354 inc/dbutils.class.php:1557
 #: inc/dropdown.class.php:370
 #: inc/notificationtargetcommonitilobject.class.php:1193
 #: inc/user.class.php:2082 inc/user.class.php:2220 inc/user.class.php:2398
@@ -4383,11 +4383,11 @@ msgstr "기본값"
 #: inc/printer.class.php:606 inc/problem.class.php:1134
 #: inc/profile.class.php:1508 inc/project.class.php:598
 #: inc/project.class.php:734 inc/project.class.php:1038
-#: inc/projecttask.class.php:504 inc/projecttask.class.php:790
+#: inc/projecttask.class.php:509 inc/projecttask.class.php:795
 #: inc/reminder.class.php:397 inc/reservationitem.class.php:240
-#: inc/rssfeed.class.php:424 inc/rule.class.php:764 inc/search.class.php:5438
+#: inc/rssfeed.class.php:424 inc/rule.class.php:764 inc/search.class.php:5450
 #: inc/software.class.php:505 inc/supplier.class.php:331
-#: inc/ticket.class.php:4656 inc/transfer.class.php:100
+#: inc/ticket.class.php:4658 inc/transfer.class.php:100
 #: inc/transfer.class.php:3290 inc/user.class.php:2879
 msgid "Last update"
 msgstr "최종 수정"
@@ -4399,7 +4399,7 @@ msgstr "기본 서버"
 
 #: inc/authldap.class.php:354 inc/authldap.class.php:875
 #: inc/authldapreplicate.class.php:88 inc/authmail.class.php:116
-#: inc/config.class.php:1807 inc/toolbox.class.php:1979
+#: inc/config.class.php:1807 inc/toolbox.class.php:1985
 msgid "Server"
 msgstr "서버"
 
@@ -4412,7 +4412,7 @@ msgid "Connection filter"
 msgstr "연결 필터"
 
 #: inc/authldap.class.php:366 inc/authldap.class.php:891
-#: inc/authldap.class.php:3059
+#: inc/authldap.class.php:3058
 msgid "BaseDN"
 msgstr "BaseDN"
 
@@ -4439,12 +4439,12 @@ msgstr "로그인 실패"
 
 #: inc/authldap.class.php:396 inc/authldap.class.php:1112
 #: inc/authldap.class.php:1489 inc/authldap.class.php:1538
-#: inc/authldap.class.php:3120 inc/user.class.php:1962 inc/user.class.php:2332
+#: inc/authldap.class.php:3119 inc/user.class.php:1962 inc/user.class.php:2332
 #: inc/user.class.php:2752
 msgid "Synchronization field"
 msgstr "동기화 항목"
 
-#: inc/authldap.class.php:449 inc/authldap.class.php:3460
+#: inc/authldap.class.php:449 inc/authldap.class.php:3459
 #: inc/entity.class.php:335 inc/entity.class.php:613
 msgid "Advanced information"
 msgstr "고급 정보"
@@ -4474,7 +4474,7 @@ msgid "Maximum number of results"
 msgstr "결과의 최대 값"
 
 #: inc/authldap.class.php:481 inc/contract.class.php:289
-#: inc/search.class.php:4593 inc/softwarelicense.class.php:425
+#: inc/search.class.php:4594 inc/softwarelicense.class.php:425
 #: inc/softwarelicense.class.php:1142 inc/softwarelicense.class.php:1168
 msgid "Unlimited"
 msgstr "무제한"
@@ -4503,13 +4503,13 @@ msgstr "위치 찾기 시 역참조됨 (검색 시 제외)"
 msgid "List of LDAP directory replicates"
 msgstr "LDAP 디렉토리 복제 목록"
 
-#: inc/authldap.class.php:556 inc/authldap.class.php:3461
+#: inc/authldap.class.php:556 inc/authldap.class.php:3460
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] "복제"
 
 #: inc/authldap.class.php:570 inc/authldap.class.php:704
-#: inc/authldap.class.php:3455 inc/authmail.class.php:248
+#: inc/authldap.class.php:3454 inc/authmail.class.php:248
 #: inc/authmail.class.php:352 inc/rule.class.php:918 inc/rule.class.php:922
 #: inc/rule.class.php:2535 inc/rulecollection.class.php:1521
 msgctxt "button"
@@ -4561,9 +4561,9 @@ msgstr "LDAP 디렉터리 접속 테스트"
 msgid "Binding to the LDAP directory"
 msgstr "LDAP 디렉터리 바인딩"
 
-#: inc/authldap.class.php:782 inc/authldap.class.php:3135
-#: inc/notepad.class.php:328 inc/ticket.class.php:6968
-#: inc/ticket.class.php:7205 inc/ticketfollowup.class.php:986
+#: inc/authldap.class.php:782 inc/authldap.class.php:3134
+#: inc/notepad.class.php:328 inc/ticket.class.php:6966
+#: inc/ticket.class.php:7203 inc/ticketfollowup.class.php:986
 #: inc/user.class.php:1935 inc/user.class.php:1938 inc/user.class.php:1943
 #: inc/user.class.php:2295 inc/user.class.php:2298 inc/user.class.php:2302
 #: inc/user.class.php:2742 inc/user.class.php:3100
@@ -4606,17 +4606,17 @@ msgstr "엔티티 검색 필터"
 #: inc/peripheral.class.php:469 inc/phone.class.php:499
 #: inc/printer.class.php:615 inc/profile.class.php:1517
 #: inc/project.class.php:487 inc/project.class.php:607
-#: inc/project.class.php:1026 inc/projecttask.class.php:499
+#: inc/project.class.php:1026 inc/projecttask.class.php:504
 #: inc/queuednotification.class.php:203 inc/queuednotification.class.php:706
 #: inc/reminder.class.php:406 inc/rssfeed.class.php:433 inc/rule.class.php:773
 #: inc/software.class.php:514 inc/softwareversion.class.php:202
-#: inc/supplier.class.php:340 inc/ticket.class.php:3020
+#: inc/supplier.class.php:340 inc/ticket.class.php:3021
 #: inc/user.class.php:2888
 msgid "Creation date"
 msgstr "생성일자"
 
 #: inc/authldap.class.php:1241 inc/authldap.class.php:1255
-#: inc/authldap.class.php:3064
+#: inc/authldap.class.php:3063
 msgid "Search filter for users"
 msgstr "사용자 검색 필터"
 
@@ -4631,7 +4631,7 @@ msgctxt "button"
 msgid "Synchronize"
 msgstr "동기화"
 
-#: inc/authldap.class.php:1471 inc/authldap.class.php:1909
+#: inc/authldap.class.php:1471 inc/authldap.class.php:1908
 #: inc/notimportedemail.class.php:78 inc/notimportedemail.class.php:95
 #: inc/rulecollection.class.php:806 inc/rulecollection.class.php:997
 msgctxt "button"
@@ -4654,104 +4654,104 @@ msgstr "동기화된 사용자 없음"
 msgid "No user to be imported"
 msgstr "불러올 사용자가 없습니다"
 
-#: inc/authldap.class.php:1925 inc/group.class.php:461 inc/group.class.php:600
+#: inc/authldap.class.php:1924 inc/group.class.php:461 inc/group.class.php:600
 msgid "Group DN"
 msgstr "Group DN"
 
-#: inc/authldap.class.php:1926
+#: inc/authldap.class.php:1925
 msgid "Destination entity"
 msgstr "목적지 엔티티"
 
-#: inc/authldap.class.php:1979 inc/authldap.class.php:1982
+#: inc/authldap.class.php:1978 inc/authldap.class.php:1981
 msgid "No group to be imported"
 msgstr "불러올 그룹이 없습니다"
 
-#: inc/authldap.class.php:2239
+#: inc/authldap.class.php:2238
 msgid "Please choose LDAP directory to import users and groups from"
 msgstr "사용자와 그룹을 불러올 LDAP 디렉토리를 선택해 주세요"
 
-#: inc/authldap.class.php:2241 inc/authldap.class.php:3047
-#: inc/authldap.class.php:3075
+#: inc/authldap.class.php:2240 inc/authldap.class.php:3046
+#: inc/authldap.class.php:3074
 msgid "LDAP directory choice"
 msgstr "LDAP 디렉터리 선택"
 
-#: inc/authldap.class.php:2260
+#: inc/authldap.class.php:2259
 msgid "No LDAP directory defined in GLPI"
 msgstr "GLPI 에 정의된 LDAP 디렉터리 없음"
 
-#: inc/authldap.class.php:2628
+#: inc/authldap.class.php:2627
 msgid "User not found or several users found"
 msgstr "사용자가 없거나 몇몇 사용자들이 발견되었습니다"
 
-#: inc/authldap.class.php:2631
+#: inc/authldap.class.php:2630
 msgid "Unable to add. The user already exist."
 msgstr "추가할 수 없습니다. 사용자가 이미 존재합니다."
 
-#: inc/authldap.class.php:3028
+#: inc/authldap.class.php:3027
 msgid "Expert mode"
 msgstr "전문가 모드"
 
-#: inc/authldap.class.php:3030
+#: inc/authldap.class.php:3029
 msgid "Simple mode"
 msgstr "단순 모드"
 
-#: inc/authldap.class.php:3055 inc/authldap.class.php:3083
+#: inc/authldap.class.php:3054 inc/authldap.class.php:3082
 msgctxt "button"
 msgid "Change"
 msgstr "변경"
 
-#: inc/authldap.class.php:3091 inc/entity.class.php:1100
+#: inc/authldap.class.php:3090 inc/entity.class.php:1100
 #: inc/html.class.php:3242 inc/rulecollection.class.php:1207
 msgid "Select the desired entity"
 msgstr "희망하는 요소 선택"
 
-#: inc/authldap.class.php:3142
+#: inc/authldap.class.php:3141
 msgid "Search criteria for users"
 msgstr "사용자 검색 기준"
 
-#: inc/authldap.class.php:3182
+#: inc/authldap.class.php:3181
 msgid "No directory selected"
 msgstr "선택된 디렉터리 없음"
 
-#: inc/authldap.class.php:3187
+#: inc/authldap.class.php:3186
 msgid "No directory associated to entity: impossible search"
 msgstr "개체에 연관된 디렉토리가 없습니다: 검색 불가"
 
-#: inc/authldap.class.php:3369 inc/transfer.class.php:3297
+#: inc/authldap.class.php:3368 inc/transfer.class.php:3297
 #: inc/transfer.class.php:3299
 msgid "Preserve"
 msgstr "보존"
 
-#: inc/authldap.class.php:3370
+#: inc/authldap.class.php:3369
 msgid "Put in dustbin"
 msgstr "휴지통에 버리기"
 
-#: inc/authldap.class.php:3371 inc/authldap.class.php:3373
+#: inc/authldap.class.php:3370 inc/authldap.class.php:3372
 msgid "Withdraw dynamic authorizations and groups"
 msgstr "동적 인증과 그룹 철회"
 
-#: inc/authldap.class.php:3372 inc/authldap.class.php:3373
+#: inc/authldap.class.php:3371 inc/authldap.class.php:3372
 msgid "Disable"
 msgstr "사용안함"
 
-#: inc/authldap.class.php:3419
+#: inc/authldap.class.php:3418
 msgid "Enable filtering by date"
 msgstr "날짜 필터링 사용"
 
-#: inc/authldap.class.php:3423
+#: inc/authldap.class.php:3422
 msgid "View updated users"
 msgstr "변경된 사용자들 보기"
 
-#: inc/authldap.class.php:3424 inc/networkport.class.php:890
+#: inc/authldap.class.php:3423 inc/networkport.class.php:890
 #: inc/software.class.php:322
 msgid "from"
 msgstr "부터"
 
-#: inc/authldap.class.php:3431 inc/networkport.class.php:892
+#: inc/authldap.class.php:3430 inc/networkport.class.php:892
 msgid "to"
 msgstr "까지"
 
-#: inc/authldap.class.php:3440
+#: inc/authldap.class.php:3439
 msgid "Disable filtering by date"
 msgstr "날짜 필터링 사용불가"
 
@@ -4761,7 +4761,7 @@ msgstr "LDAP 디렉토리 사본 추가"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:124 inc/mailcollector.class.php:363
-#: inc/toolbox.class.php:2080
+#: inc/toolbox.class.php:2086
 msgid "Connection string"
 msgstr "접속 문자열"
 
@@ -4794,7 +4794,7 @@ msgstr[0] "소스 갱신"
 
 #: inc/backup.class.php:76 inc/commondbtm.class.php:4729 inc/log.class.php:726
 #: inc/profile.class.php:819 inc/profile.class.php:2539
-#: inc/reminder.class.php:1147 inc/report.class.php:449
+#: inc/reminder.class.php:1153 inc/report.class.php:449
 #: inc/rssfeed.class.php:967 inc/stat.class.php:1312
 msgid "Read"
 msgstr "읽기"
@@ -4941,7 +4941,7 @@ msgstr[0] "연관된 품목들"
 #: inc/change_project.class.php:206 inc/change_project.class.php:301
 #: inc/change_ticket.class.php:308 inc/change_ticket.class.php:405
 #: inc/commondbtm.class.php:3827 inc/commonitilcost.class.php:564
-#: inc/commonitilvalidation.class.php:850 inc/computerantivirus.class.php:361
+#: inc/commonitilvalidation.class.php:856 inc/computerantivirus.class.php:361
 #: inc/computerdisk.class.php:284 inc/computer_softwarelicense.class.php:477
 #: inc/computer_softwareversion.class.php:465
 #: inc/computer_softwareversion.class.php:732
@@ -4961,7 +4961,7 @@ msgstr[0] "연관된 품목들"
 #: inc/olalevel.class.php:152 inc/problem.class.php:1453
 #: inc/problem_ticket.class.php:346 inc/problem_ticket.class.php:449
 #: inc/profile_user.class.php:344 inc/project.class.php:993
-#: inc/projectcost.class.php:386 inc/projecttask.class.php:1036
+#: inc/projectcost.class.php:386 inc/projecttask.class.php:1041
 #: inc/projecttask_ticket.class.php:219 inc/projecttask_ticket.class.php:330
 #: inc/rule.class.php:2808 inc/search.class.php:1649 inc/search.class.php:1651
 #: inc/search.class.php:1673 inc/search.class.php:1688
@@ -4969,7 +4969,7 @@ msgstr[0] "연관된 품목들"
 #: inc/search.class.php:1754 inc/search.class.php:1771
 #: inc/slalevel.class.php:152 inc/softwarelicense.class.php:1040
 #: inc/softwareversion.class.php:308 inc/supplier.class.php:610
-#: inc/ticket.class.php:6084 inc/user.class.php:3898
+#: inc/ticket.class.php:6082 inc/user.class.php:3898
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -5128,14 +5128,14 @@ msgstr "재고로 돌아가기"
 msgid "Worn cartridges"
 msgstr "노후된 카트리지"
 
-#: inc/cartridge.class.php:695 inc/commonitiltask.class.php:1288
-#: inc/commonitilvalidation.class.php:768
-#: inc/commonitilvalidation.class.php:823 inc/consumable.class.php:547
+#: inc/cartridge.class.php:695 inc/commonitiltask.class.php:1293
+#: inc/commonitilvalidation.class.php:774
+#: inc/commonitilvalidation.class.php:829 inc/consumable.class.php:547
 #: inc/notificationtargetproject.class.php:567
 #: inc/notificationtargetproject.class.php:580
 #: inc/notificationtargetprojecttask.class.php:470
 #: inc/notificationtargetprojecttask.class.php:485 inc/project.class.php:1071
-#: inc/projecttask.class.php:517 inc/projecttask.class.php:765
+#: inc/projecttask.class.php:522 inc/projecttask.class.php:770
 #: inc/projecttasktemplate.class.php:61 inc/projecttasktemplate.class.php:109
 msgctxt "item"
 msgid "State"
@@ -5289,7 +5289,7 @@ msgstr "참조"
 #: inc/peripheral.class.php:208 inc/peripheral.class.php:503
 #: inc/phone.class.php:206 inc/phone.class.php:553 inc/printer.class.php:305
 #: inc/printer.class.php:765 inc/reservationitem.class.php:259
-#: inc/search.class.php:5449
+#: inc/search.class.php:5461
 msgid "Technician in charge of the hardware"
 msgstr "하드웨어 책임 기술자"
 
@@ -5304,7 +5304,7 @@ msgstr "하드웨어 책임 기술자"
 #: inc/notificationtargetreservation.class.php:61 inc/peripheral.class.php:221
 #: inc/peripheral.class.php:513 inc/phone.class.php:219
 #: inc/phone.class.php:563 inc/printer.class.php:318 inc/printer.class.php:775
-#: inc/search.class.php:5454
+#: inc/search.class.php:5466
 msgid "Group in charge of the hardware"
 msgstr "하드웨어 책임 그룹"
 
@@ -5353,7 +5353,7 @@ msgid "Add a compatible printer model"
 msgstr "호환 프린터 모델 추가"
 
 #: inc/cartridgeitem_printermodel.class.php:214
-#: inc/commonitilcost.class.php:625 inc/commonitilvalidation.class.php:893
+#: inc/commonitilcost.class.php:625 inc/commonitilvalidation.class.php:899
 #: inc/computerantivirus.class.php:389 inc/computerdisk.class.php:316
 #: inc/computer_softwarelicense.class.php:312
 #: inc/computer_softwarelicense.class.php:400
@@ -5372,9 +5372,9 @@ msgstr "호환 프린터 모델 추가"
 #: inc/networkalias.class.php:396
 #: inc/notification_notificationtemplate.class.php:165
 #: inc/notificationtarget.class.php:1338 inc/profile_user.class.php:255
-#: inc/projectcost.class.php:425 inc/projecttask.class.php:1098
+#: inc/projectcost.class.php:425 inc/projecttask.class.php:1103
 #: inc/projecttask_ticket.class.php:401 inc/rule.class.php:2771
-#: inc/savedsearch_alert.class.php:272 inc/search.class.php:5882
+#: inc/savedsearch_alert.class.php:272 inc/search.class.php:5894
 #: inc/software.class.php:1000 inc/softwarelicense.class.php:1183
 #: inc/softwareversion.class.php:342 inc/state.class.php:232
 #: inc/tickettemplatehiddenfield.class.php:277
@@ -5469,8 +5469,8 @@ msgstr "인증서 요청 (CSR)"
 #: inc/certificate_item.class.php:501 inc/change.class.php:735
 #: inc/commondbtm.class.php:3075 inc/commonitilobject.class.php:2740
 #: inc/commonitilobject.class.php:5513 inc/commonitiltask.class.php:624
-#: inc/commonitiltask.class.php:806 inc/commonitiltask.class.php:1471
-#: inc/commonitilvalidation.class.php:1050 inc/computer.class.php:380
+#: inc/commonitiltask.class.php:806 inc/commonitiltask.class.php:1476
+#: inc/commonitilvalidation.class.php:1056 inc/computer.class.php:380
 #: inc/computer.class.php:641 inc/computer_softwarelicense.class.php:489
 #: inc/computer_softwareversion.class.php:329
 #: inc/computer_softwareversion.class.php:787
@@ -5488,15 +5488,15 @@ msgstr "인증서 요청 (CSR)"
 #: inc/phone.class.php:187 inc/phone.class.php:423 inc/plugin.class.php:410
 #: inc/printer.class.php:286 inc/printer.class.php:547
 #: inc/problem.class.php:1170 inc/project.class.php:732
-#: inc/projecttask.class.php:930 inc/projecttask_ticket.class.php:282
+#: inc/projecttask.class.php:935 inc/projecttask_ticket.class.php:282
 #: inc/reminder.class.php:336 inc/reminder.class.php:684
 #: inc/report.class.php:114 inc/ruleticket.class.php:579
-#: inc/search.class.php:5380 inc/search.class.php:5401
+#: inc/search.class.php:5392 inc/search.class.php:5413
 #: inc/software.class.php:650 inc/softwarelicense.class.php:321
 #: inc/softwarelicense.class.php:630 inc/softwareversion.class.php:139
 #: inc/softwareversion.class.php:193 inc/softwareversion.class.php:315
 #: inc/state.class.php:155 inc/tasktemplate.class.php:70
-#: inc/ticket.class.php:4832 inc/user.class.php:3780 inc/user.class.php:3860
+#: inc/ticket.class.php:4834 inc/user.class.php:3780 inc/user.class.php:3860
 msgid "Status"
 msgid_plural "Statuses"
 msgstr[0] "상태"
@@ -5526,20 +5526,20 @@ msgstr "연관된 품목 수"
 #: inc/profile_user.class.php:566 inc/search.class.php:4288
 #: inc/search.class.php:4292 inc/search.class.php:4327
 #: inc/search.class.php:4331 inc/softwarelicense.class.php:313
-#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3902
-#: inc/ticket.class.php:3909 inc/ticket.class.php:3937
-#: inc/ticket.class.php:3964 inc/ticket.class.php:3975
-#: inc/ticket.class.php:3984 inc/ticket.class.php:4029
-#: inc/ticket.class.php:4051 inc/ticket.class.php:4614
-#: inc/ticket.class.php:4671 inc/ticket.class.php:4683
-#: inc/ticket.class.php:4698 inc/ticket.class.php:4710
-#: inc/ticket.class.php:4753 inc/ticket.class.php:4778
-#: inc/ticket.class.php:4832 inc/ticket.class.php:4857
-#: inc/ticket.class.php:4873 inc/ticket.class.php:4895
-#: inc/ticket.class.php:4949 inc/ticket.class.php:4965
-#: inc/ticket.class.php:4981 inc/ticket.class.php:5013
-#: inc/ticket.class.php:5046 inc/ticket.class.php:5066
-#: inc/ticket.class.php:5087 inc/ticket.class.php:5179
+#: inc/softwarelicense.class.php:382 inc/ticket.class.php:3903
+#: inc/ticket.class.php:3910 inc/ticket.class.php:3938
+#: inc/ticket.class.php:3965 inc/ticket.class.php:3976
+#: inc/ticket.class.php:3985 inc/ticket.class.php:4030
+#: inc/ticket.class.php:4052 inc/ticket.class.php:4616
+#: inc/ticket.class.php:4673 inc/ticket.class.php:4685
+#: inc/ticket.class.php:4700 inc/ticket.class.php:4712
+#: inc/ticket.class.php:4755 inc/ticket.class.php:4780
+#: inc/ticket.class.php:4834 inc/ticket.class.php:4859
+#: inc/ticket.class.php:4875 inc/ticket.class.php:4897
+#: inc/ticket.class.php:4951 inc/ticket.class.php:4967
+#: inc/ticket.class.php:4983 inc/ticket.class.php:5015
+#: inc/ticket.class.php:5048 inc/ticket.class.php:5068
+#: inc/ticket.class.php:5089 inc/ticket.class.php:5181
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -5559,7 +5559,7 @@ msgstr "최상위 CA"
 #: inc/notificationtargetticket.class.php:753 inc/peripheral.class.php:234
 #: inc/peripheral.class.php:434 inc/phone.class.php:232
 #: inc/phone.class.php:456 inc/printer.class.php:331 inc/printer.class.php:580
-#: inc/search.class.php:5429
+#: inc/search.class.php:5441
 msgid "Alternate username number"
 msgstr "그 외 사용자명 수"
 
@@ -5620,12 +5620,12 @@ msgid_plural "Certificate types"
 msgstr[0] "인증서 유형"
 
 #: inc/change.class.php:182 inc/problem.class.php:409
-#: inc/ticket.class.php:2655
+#: inc/ticket.class.php:2656
 msgid "Add an actor"
 msgstr "액터 추가"
 
 #: inc/change.class.php:184 inc/problem.class.php:411
-#: inc/ticket.class.php:2657
+#: inc/ticket.class.php:2658
 msgid "Set notifications for all actors"
 msgstr "모든 수행자에게 통보 설정"
 
@@ -5642,8 +5642,8 @@ msgstr "계획"
 #: inc/commonitilobject.class.php:2924
 #: inc/notificationtargetcommonitilobject.class.php:1222
 #: inc/problem.class.php:182 inc/problem.class.php:195
-#: inc/ticket.class.php:801 inc/ticket.class.php:7311
-#: inc/ticket.class.php:7312 inc/ticket.class.php:7444
+#: inc/ticket.class.php:801 inc/ticket.class.php:7309
+#: inc/ticket.class.php:7310 inc/ticket.class.php:7442
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "해결책"
@@ -5669,7 +5669,7 @@ msgid "Checklist"
 msgstr "체크리스트"
 
 #: inc/change.class.php:491 inc/plugin.class.php:465 inc/problem.class.php:551
-#: inc/ticket.class.php:3521
+#: inc/ticket.class.php:3522
 msgctxt "status"
 msgid "New"
 msgstr "신규"
@@ -5680,11 +5680,11 @@ msgstr "평가"
 
 #: inc/change.class.php:493 inc/change.class.php:783
 #: inc/commonitilvalidation.class.php:95
-#: inc/commonitilvalidation.class.php:1027
-#: inc/commonitilvalidation.class.php:1105
-#: inc/commonitilvalidation.class.php:1124
+#: inc/commonitilvalidation.class.php:1033
+#: inc/commonitilvalidation.class.php:1111
+#: inc/commonitilvalidation.class.php:1130
 #: inc/notificationtargetcommonitilobject.class.php:735
-#: inc/ticket.class.php:4899
+#: inc/ticket.class.php:4901
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "승인"
@@ -5695,7 +5695,7 @@ msgid "Accepted"
 msgstr "채택"
 
 #: inc/change.class.php:495 inc/commonitilobject.class.php:4625
-#: inc/problem.class.php:555 inc/ticket.class.php:3524
+#: inc/problem.class.php:555 inc/ticket.class.php:3525
 msgid "Pending"
 msgstr "보류중"
 
@@ -5717,25 +5717,25 @@ msgid "Review"
 msgstr "검토"
 
 #: inc/change.class.php:500 inc/problem.class.php:558
-#: inc/ticket.class.php:3526
+#: inc/ticket.class.php:3527
 msgctxt "status"
 msgid "Closed"
 msgstr "닫힘"
 
 #: inc/change.class.php:504 inc/problem.class.php:561
-#: inc/ticket.class.php:3529
+#: inc/ticket.class.php:3530
 msgctxt "status"
 msgid "Not solved"
 msgstr "해결되지 않음"
 
 #: inc/change.class.php:505 inc/problem.class.php:562
-#: inc/ticket.class.php:3530
+#: inc/ticket.class.php:3531
 msgctxt "status"
 msgid "Not closed"
 msgstr "닫히지 않음"
 
 #: inc/change.class.php:507 inc/problem.class.php:564
-#: inc/ticket.class.php:3532
+#: inc/ticket.class.php:3533
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "해결됨 + 닫힘"
@@ -5748,7 +5748,7 @@ msgstr "해결됨 + 닫힘"
 #: inc/commondbtm.class.php:1343 inc/commondbtm.class.php:2443
 #: inc/commonglpi.class.php:863 inc/item_ticket.class.php:1346
 #: inc/problem.class.php:1091 inc/savedsearch.class.php:368
-#: inc/ticket.class.php:4591
+#: inc/ticket.class.php:4593
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr "%1$s - ID %2$d"
@@ -5760,8 +5760,8 @@ msgstr "%1$s - ID %2$d"
 #: inc/notificationtargetproject.class.php:573
 #: inc/notificationtargetprojecttask.class.php:478
 #: inc/notificationtargetticket.class.php:757 inc/problem.class.php:1101
-#: inc/projecttask.class.php:781 inc/ticket.class.php:4614
-#: inc/ticket.class.php:4616 inc/ticket.class.php:7608
+#: inc/projecttask.class.php:786 inc/ticket.class.php:4616
+#: inc/ticket.class.php:4618 inc/ticket.class.php:7606
 msgid "Opening date"
 msgstr "열린 날짜"
 
@@ -5773,19 +5773,19 @@ msgstr "열린 날짜"
 #: inc/problem.class.php:1116 inc/ruleticket.class.php:469
 #: inc/ruleticket.class.php:485 inc/ruleticket.class.php:590
 #: inc/ruleticket.class.php:606 inc/slalevel.class.php:179
-#: inc/ticket.class.php:2903 inc/ticket.class.php:4683
-#: inc/ticket.class.php:4685 inc/ticket.class.php:7642
+#: inc/ticket.class.php:2904 inc/ticket.class.php:4685
+#: inc/ticket.class.php:4687 inc/ticket.class.php:7640
 msgid "Time to resolve"
 msgstr "완결 시간"
 
 #: inc/change.class.php:694 inc/change.class.php:703
-#: inc/commonitiltask.class.php:1504 inc/problem.class.php:1128
-#: inc/problem.class.php:1137 inc/projecttask.class.php:1550
-#: inc/reminder.class.php:989 inc/reservation.class.php:681
+#: inc/commonitiltask.class.php:1509 inc/problem.class.php:1128
+#: inc/problem.class.php:1137 inc/projecttask.class.php:1559
+#: inc/reminder.class.php:995 inc/reservation.class.php:681
 #: inc/reservation.class.php:1090 inc/reservation.class.php:1138
 #: inc/reservation.class.php:1208 inc/reservation.class.php:1271
 #: inc/rssfeed.class.php:617 inc/tasktemplate.class.php:79
-#: inc/ticket.class.php:4636
+#: inc/ticket.class.php:4638
 msgid "By"
 msgstr "생성자"
 
@@ -5798,7 +5798,7 @@ msgstr "해결 일자"
 #: inc/change.class.php:720 inc/commonitilobject.class.php:2785
 #: inc/commonitilobject.class.php:4582
 #: inc/notificationtargetcommonitilobject.class.php:1186
-#: inc/problem.class.php:1154 inc/ticket.class.php:7655
+#: inc/problem.class.php:1154 inc/ticket.class.php:7653
 msgid "Closing date"
 msgstr "닫힌 날짜"
 
@@ -5808,16 +5808,16 @@ msgstr "닫힌 날짜"
 #: inc/notificationtargetcommonitilobject.class.php:1184
 #: inc/notificationtargetcommonitilobject.class.php:1259
 #: inc/notificationtargetprojecttask.class.php:475 inc/problem.class.php:1195
-#: inc/projecttask.class.php:613 inc/stat.class.php:485
-#: inc/ticket.class.php:5046
+#: inc/projecttask.class.php:618 inc/stat.class.php:485
+#: inc/ticket.class.php:5048
 msgid "Total duration"
 msgstr "기간 합계"
 
 #: inc/change.class.php:805 inc/commonitilobject.class.php:2717
 #: inc/commonitilobject.class.php:4288 inc/commonitilobject.class.php:4354
 #: inc/commonitiltask.class.php:571 inc/commonitiltask.class.php:657
-#: inc/commonitiltask.class.php:1369 inc/commonitiltask.class.php:1717
-#: inc/commonitiltask.class.php:1749 inc/commonitiltask.class.php:1911
+#: inc/commonitiltask.class.php:1374 inc/commonitiltask.class.php:1722
+#: inc/commonitiltask.class.php:1754 inc/commonitiltask.class.php:1916
 #: inc/crontask.class.php:459 inc/crontask.class.php:1101
 #: inc/crontask.class.php:1159 inc/crontask.class.php:1337
 #: inc/levelagreement.class.php:558 inc/notificationtargetchange.class.php:366
@@ -5840,16 +5840,16 @@ msgstr "기간 합계"
 #: inc/notificationtargetticket.class.php:921
 #: inc/notificationtargetticket.class.php:928 inc/problem.class.php:824
 #: inc/problem.class.php:1225 inc/project.class.php:453
-#: inc/project.class.php:1153 inc/projecttask.class.php:620
-#: inc/projecttask.class.php:756 inc/projecttasktemplate.class.php:95
+#: inc/project.class.php:1153 inc/projecttask.class.php:625
+#: inc/projecttask.class.php:761 inc/projecttasktemplate.class.php:95
 #: inc/projecttasktemplate.class.php:197 inc/reminder.class.php:346
 #: inc/reminder.class.php:777 inc/rule.class.php:713 inc/rule.class.php:866
 #: inc/rule.class.php:2731 inc/rule.class.php:2800
 #: inc/rulecollection.class.php:482 inc/rulecollection.class.php:513
 #: inc/ruleimportcomputer.class.php:104 inc/ruleright.class.php:75
-#: inc/ruleticket.class.php:340 inc/ticket.class.php:3079
-#: inc/ticket.class.php:4051 inc/ticket.class.php:5087
-#: inc/ticket.class.php:5725 inc/ticketfollowup.class.php:556
+#: inc/ruleticket.class.php:340 inc/ticket.class.php:3080
+#: inc/ticket.class.php:4052 inc/ticket.class.php:5089
+#: inc/ticket.class.php:5723 inc/ticketfollowup.class.php:556
 #: inc/ticketfollowup.class.php:679 inc/ticketfollowup.class.php:731
 #: inc/ticketfollowup.class.php:1091 inc/ticketfollowup.class.php:1164
 msgid "Description"
@@ -5875,7 +5875,7 @@ msgstr "최근 변경"
 
 #: inc/change.class.php:1040 inc/group.class.php:154 inc/group.class.php:776
 #: inc/group_user.class.php:436 inc/problem.class.php:1400
-#: inc/ticket.class.php:5981
+#: inc/ticket.class.php:5979
 msgid "Child groups"
 msgstr "자식 그룹"
 
@@ -5941,9 +5941,9 @@ msgstr "표 추가"
 msgid "Solve tickets"
 msgstr "표 처리"
 
-#: inc/change_ticket.class.php:292 inc/commonitiltask.class.php:1706
+#: inc/change_ticket.class.php:292 inc/commonitiltask.class.php:1711
 #: inc/problem.class.php:406 inc/problem_ticket.class.php:332
-#: inc/ticket.class.php:2637
+#: inc/ticket.class.php:2638
 msgid "Add a new task"
 msgstr "새 작업 추가"
 
@@ -5961,15 +5961,15 @@ msgstr "품목이 객체와 연결되지 않았습니다"
 #: inc/commonitilobject.class.php:3809 inc/commonitilobject.class.php:3913
 #: inc/commonitilobject.class.php:3915 inc/commonitilobject.class.php:4006
 #: inc/commonitilobject.class.php:4008 inc/dropdown.class.php:217
-#: inc/dropdown.class.php:219 inc/html.class.php:6223 inc/html.class.php:6224
-#: inc/html.class.php:6321 inc/html.class.php:6322 inc/infocom.class.php:706
+#: inc/dropdown.class.php:219 inc/html.class.php:6224 inc/html.class.php:6225
+#: inc/html.class.php:6322 inc/html.class.php:6323 inc/infocom.class.php:706
 #: inc/netpoint.class.php:150 inc/netpoint.class.php:152
-#: inc/reminder.class.php:1099 inc/reminder.class.php:1100
+#: inc/reminder.class.php:1105 inc/reminder.class.php:1106
 #: inc/rssfeed.class.php:915 inc/rssfeed.class.php:916
 #: inc/ruleaction.class.php:396 inc/ruleticket.class.php:83
-#: inc/ruleticket.class.php:85 inc/ticket.class.php:4149
-#: inc/ticket.class.php:5138 inc/ticket.class.php:5287
-#: inc/ticket.class.php:5296 inc/ticket.class.php:5824
+#: inc/ruleticket.class.php:85 inc/ticket.class.php:4150
+#: inc/ticket.class.php:5140 inc/ticket.class.php:5285
+#: inc/ticket.class.php:5294 inc/ticket.class.php:5822
 msgid "Add"
 msgstr "산입하다"
 
@@ -6042,7 +6042,7 @@ msgstr "견본 %s에서 생성됨"
 #. TRANS : means update / actualize
 #: inc/commondbtm.class.php:2204 inc/commondbtm.class.php:2216
 #: inc/commonglpi.class.php:1179 inc/commonitilactor.class.php:215
-#: inc/commonitilactor.class.php:279 inc/commonitilvalidation.class.php:782
+#: inc/commonitilactor.class.php:279 inc/commonitilvalidation.class.php:788
 #: inc/config.class.php:452 inc/config.class.php:600 inc/config.class.php:644
 #: inc/config.class.php:714 inc/config.class.php:783 inc/config.class.php:964
 #: inc/config.class.php:1397 inc/config.class.php:1824
@@ -6056,7 +6056,7 @@ msgstr "견본 %s에서 생성됨"
 #: inc/profile.class.php:1193 inc/profile.class.php:1288
 #: inc/profile.class.php:1382 inc/profile.class.php:1477
 #: inc/reservation.class.php:774 inc/reservationitem.class.php:370
-#: inc/ticket.class.php:5236 inc/ticket.class.php:7486 inc/user.class.php:2478
+#: inc/ticket.class.php:5236 inc/ticket.class.php:7484 inc/user.class.php:2478
 #: inc/user.class.php:4654
 msgctxt "button"
 msgid "Save"
@@ -6111,7 +6111,7 @@ msgid "Change visibility in child entities"
 msgstr "자식 요소 보이기 변경"
 
 #: inc/commondbtm.class.php:3058 inc/commontreedropdown.class.php:696
-#: inc/dbutils.class.php:1024 inc/entity.class.php:477
+#: inc/dbutils.class.php:1026 inc/entity.class.php:477
 #: inc/notificationtargetcommonitilobject.class.php:1326
 #: inc/notificationtargetproject.class.php:651
 #: inc/notificationtargetprojecttask.class.php:539
@@ -6152,7 +6152,7 @@ msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s가 이미 존재하는 품목을 추가하려고 합니다: %2$s"
 
 #: inc/commondbtm.class.php:4286 inc/entity.class.php:1823
-#: inc/entity.class.php:1868 inc/search.class.php:5037
+#: inc/entity.class.php:1868 inc/search.class.php:5038
 msgid "Default value"
 msgstr "기본값"
 
@@ -6175,7 +6175,7 @@ msgstr "템플릿 추가"
 #: inc/commondbtm.class.php:4730 inc/item_devices.class.php:686
 #: inc/profile.class.php:820 inc/ruleticket.class.php:84
 #: inc/ruleticket.class.php:86 inc/supplier.class.php:450
-#: inc/ticket.class.php:5016 inc/ticket.class.php:5017
+#: inc/ticket.class.php:5018 inc/ticket.class.php:5019
 msgid "Update"
 msgstr "업데이트"
 
@@ -6184,7 +6184,7 @@ msgid "Purge"
 msgstr "정리"
 
 #: inc/commondbtm.class.php:4737 inc/displaypreference.class.php:306
-#: inc/planning.class.php:1287
+#: inc/planning.class.php:1290
 msgid "Delete"
 msgstr "삭제"
 
@@ -6291,13 +6291,13 @@ msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr "삭제를 확인을 하려면, 이 드롭다운의 모든 사용 내역이 빈칸이 되야 합니다."
 
-#: inc/commondropdown.class.php:597 inc/html.class.php:5394
+#: inc/commondropdown.class.php:597 inc/html.class.php:5395
 msgctxt "button"
 msgid "Confirm"
 msgstr "확인"
 
 #: inc/commondropdown.class.php:600 inc/commondropdown.class.php:630
-#: inc/html.class.php:5405
+#: inc/html.class.php:5406
 msgctxt "button"
 msgid "Cancel"
 msgstr "취소"
@@ -6322,7 +6322,7 @@ msgstr "병합"
 
 #: inc/commonglpi.class.php:72 inc/commonitilobject.class.php:5397
 #: inc/item_ticket.class.php:658 inc/item_ticket.class.php:742
-#: inc/rule.class.php:2198 inc/ticket.class.php:6223
+#: inc/rule.class.php:2198 inc/ticket.class.php:6221
 msgid "General"
 msgstr "일반"
 
@@ -6345,8 +6345,8 @@ msgstr "목록"
 msgid "Last"
 msgstr "끝"
 
-#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7313
-#: inc/ticket.class.php:7314
+#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7311
+#: inc/ticket.class.php:7312
 msgid "Reset display options"
 msgstr "표시 옵션 재설정"
 
@@ -6430,8 +6430,8 @@ msgstr "시작일"
 
 #: inc/commonitilcost.class.php:147 inc/commonitilcost.class.php:245
 #: inc/commonitilcost.class.php:415 inc/commonitilcost.class.php:554
-#: inc/commonitiltask.class.php:780 inc/commonitiltask.class.php:1486
-#: inc/commonitiltask.class.php:1717 inc/commonitiltask.class.php:1756
+#: inc/commonitiltask.class.php:780 inc/commonitiltask.class.php:1491
+#: inc/commonitiltask.class.php:1722 inc/commonitiltask.class.php:1761
 #: inc/contract.class.php:445 inc/contract.class.php:707
 #: inc/crontask.class.php:1157
 #: inc/notificationtargetcommonitilobject.class.php:1241
@@ -6641,7 +6641,7 @@ msgstr "최소 매우 높음 "
 #: inc/log.class.php:521 inc/notificationtargetcommonitilobject.class.php:559
 #: inc/notificationtargetcommonitilobject.class.php:1223
 #: inc/ruleticket.class.php:419 inc/ruleticket.class.php:553
-#: inc/ticket.class.php:3984
+#: inc/ticket.class.php:3985
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "관찰자"
@@ -6655,7 +6655,7 @@ msgid "Time to resolve exceedeed"
 msgstr "완결 초과 시간"
 
 #: inc/commonitilobject.class.php:2830 inc/commonitilobject.class.php:4577
-#: inc/ticket.class.php:4726 inc/ticket.class.php:7650
+#: inc/ticket.class.php:4728 inc/ticket.class.php:7648
 msgid "Resolution date"
 msgstr "해결일자"
 
@@ -6719,7 +6719,7 @@ msgstr "관찰 사용자"
 msgid "Group in charge of the ticket"
 msgstr "표 책임 그룹"
 
-#: inc/commonitilobject.class.php:3789 inc/planning.class.php:1351
+#: inc/commonitilobject.class.php:3789 inc/planning.class.php:1354
 msgid "Actor"
 msgstr "액터"
 
@@ -6789,7 +6789,7 @@ msgid "To %s"
 msgstr "%s에게"
 
 #. TRANS: %s is user name
-#: inc/commonitilobject.class.php:5467 inc/commonitiltask.class.php:1148
+#: inc/commonitilobject.class.php:5467 inc/commonitiltask.class.php:1153
 #, php-format
 msgid "By %s"
 msgstr "%s가 생성"
@@ -6815,8 +6815,8 @@ msgstr "계획"
 #: inc/notificationtargetprojecttask.class.php:560
 #: inc/notificationtargetprojecttask.class.php:573 inc/profile.class.php:652
 #: inc/profile.class.php:953 inc/profile.class.php:1033
-#: inc/profile.class.php:1035 inc/ticket.class.php:7305
-#: inc/ticket.class.php:7306 inc/ticket.class.php:7434
+#: inc/profile.class.php:1035 inc/ticket.class.php:7303
+#: inc/ticket.class.php:7304 inc/ticket.class.php:7432
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "작업"
@@ -6871,103 +6871,103 @@ msgstr "개인 작업"
 msgid "Technician in charge of the task"
 msgstr "작업 담당 기술자"
 
-#: inc/commonitiltask.class.php:848 inc/commonitiltask.class.php:1395
+#: inc/commonitiltask.class.php:848 inc/commonitiltask.class.php:1400
 #: inc/dropdown.class.php:792 inc/tasktemplate.class.php:56
 msgid "Task template"
 msgid_plural "Task templates"
 msgstr[0] "작업 견본"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-#: inc/commonitiltask.class.php:1088
+#: inc/commonitiltask.class.php:1093
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
 msgstr "%1$s: %2$s에서 %3$s까지:"
 
-#: inc/commonitiltask.class.php:1160 inc/reminder.class.php:1005
+#: inc/commonitiltask.class.php:1165 inc/reminder.class.php:1011
 #, php-format
 msgid "Recall on %s"
 msgstr "%s에서 상기"
 
-#: inc/commonitiltask.class.php:1212 inc/html.class.php:571
-#: inc/html.class.php:5300 inc/planning.class.php:165
+#: inc/commonitiltask.class.php:1217 inc/html.class.php:571
+#: inc/html.class.php:5301 inc/planning.class.php:165
 #: inc/planning.class.php:186 inc/ticketrecurrent.class.php:88
 msgid "Information"
 msgid_plural "Information"
 msgstr[0] "정보"
 
-#: inc/commonitiltask.class.php:1218 inc/planning.class.php:168
+#: inc/commonitiltask.class.php:1223 inc/planning.class.php:168
 #: inc/planning.class.php:187
 msgid "To do"
 msgstr "해야할 일"
 
-#: inc/commonitiltask.class.php:1221
+#: inc/commonitiltask.class.php:1226
 msgid "Planned"
 msgstr "계획됨"
 
-#: inc/commonitiltask.class.php:1227 inc/planning.class.php:171
+#: inc/commonitiltask.class.php:1232 inc/planning.class.php:171
 #: inc/planning.class.php:188
 msgid "Done"
 msgstr "완료"
 
-#: inc/commonitiltask.class.php:1271 inc/commonitiltask.class.php:1297
+#: inc/commonitiltask.class.php:1276 inc/commonitiltask.class.php:1302
 msgid "By user"
 msgstr "사용자 별"
 
-#: inc/commonitiltask.class.php:1274 inc/commonitiltask.class.php:1300
+#: inc/commonitiltask.class.php:1279 inc/commonitiltask.class.php:1305
 msgid "By group"
 msgstr "그룹 별"
 
-#: inc/commonitiltask.class.php:1291 inc/reminder.class.php:666
+#: inc/commonitiltask.class.php:1296 inc/reminder.class.php:666
 msgid "Begin"
 msgstr "시작"
 
-#: inc/commonitiltask.class.php:1311 inc/commonitiltask.class.php:1631
-#: inc/planning.class.php:1722 inc/reminder.class.php:763
+#: inc/commonitiltask.class.php:1316 inc/commonitiltask.class.php:1636
+#: inc/planning.class.php:1725 inc/reminder.class.php:763
 msgctxt "Planning"
 msgid "Reminder"
 msgstr "리마인더"
 
-#: inc/commonitiltask.class.php:1478 inc/commonitiltask.class.php:1720
+#: inc/commonitiltask.class.php:1483 inc/commonitiltask.class.php:1725
 #: inc/notificationtargetcommonitilobject.class.php:1253
 #: inc/notificationtargetplanningrecall.class.php:182
 #: inc/notificationtargetticket.class.php:758 inc/savedsearch.class.php:399
 #: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:73
-#: inc/ticket.class.php:7105 inc/ticketfollowup.class.php:716
+#: inc/ticket.class.php:7103 inc/ticketfollowup.class.php:716
 #: inc/ticketfollowup.class.php:1006 inc/ticketfollowup.class.php:1189
 msgid "Private"
 msgstr "전용"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #. TRANS: %1$s is the begin date, %2$s is the end date
-#: inc/commonitiltask.class.php:1584 inc/projecttask.class.php:1562
+#: inc/commonitiltask.class.php:1589 inc/projecttask.class.php:1571
 #: inc/reminder.class.php:706 inc/reminder.class.php:748
-#: inc/reminder.class.php:960 inc/reminder.class.php:1123
+#: inc/reminder.class.php:966 inc/reminder.class.php:1129
 #, php-format
 msgid "From %1$s to %2$s"
 msgstr "%1$s에서 %2$s까지"
 
-#: inc/commonitiltask.class.php:1617
+#: inc/commonitiltask.class.php:1622
 msgid "Plan this task"
 msgstr "이 작업 계획"
 
-#: inc/commonitiltask.class.php:1711
+#: inc/commonitiltask.class.php:1716
 msgid "No task found."
 msgstr "검색된 작업 없음"
 
-#: inc/commonitiltask.class.php:1889
+#: inc/commonitiltask.class.php:1894
 msgid "Ticket tasks to do"
 msgstr "해야 할 표 작업"
 
-#: inc/commonitiltask.class.php:1892
+#: inc/commonitiltask.class.php:1897
 msgid "Problem tasks to do"
 msgstr "해야 할 문제 작업"
 
-#: inc/commonitiltask.class.php:1963
+#: inc/commonitiltask.class.php:1968
 #, php-format
 msgid "%1$s"
 msgstr "%1$s"
 
-#: inc/commonitiltask.class.php:1976
+#: inc/commonitiltask.class.php:1981
 msgid "No tasks do to."
 msgstr "해야 할 작업 없음"
 
@@ -7025,98 +7025,98 @@ msgstr "승인 대상 제외"
 msgid "Granted + Not subject to approval"
 msgstr "승인됨 + 승인 제외"
 
-#: inc/commonitilvalidation.class.php:757
+#: inc/commonitilvalidation.class.php:763
 #: inc/notificationtargetchange.class.php:288
 #: inc/notificationtargetticket.class.php:775
 msgid "Global approval status"
 msgstr "전체 승인 상태"
 
-#: inc/commonitilvalidation.class.php:775
-#: inc/commonitilvalidation.class.php:1112 inc/ruleticket.class.php:633
+#: inc/commonitilvalidation.class.php:781
+#: inc/commonitilvalidation.class.php:1118 inc/ruleticket.class.php:633
 msgid "Minimum validation required"
 msgstr "최소 확인 요청"
 
-#: inc/commonitilvalidation.class.php:823
-#: inc/commonitilvalidation.class.php:1059
-#: inc/commonitilvalidation.class.php:1173
+#: inc/commonitilvalidation.class.php:829
+#: inc/commonitilvalidation.class.php:1065
+#: inc/commonitilvalidation.class.php:1179
 msgid "Request date"
 msgstr "요청일"
 
-#: inc/commonitilvalidation.class.php:823
-#: inc/commonitilvalidation.class.php:939
-#: inc/commonitilvalidation.class.php:970
-#: inc/commonitilvalidation.class.php:1075
+#: inc/commonitilvalidation.class.php:829
+#: inc/commonitilvalidation.class.php:945
+#: inc/commonitilvalidation.class.php:976
+#: inc/commonitilvalidation.class.php:1081
 #: inc/notificationtargetcommonitilobject.class.php:566
 msgid "Approval requester"
 msgstr "승인요청자"
 
-#: inc/commonitilvalidation.class.php:824
-#: inc/commonitilvalidation.class.php:1034
-#: inc/commonitilvalidation.class.php:1133
+#: inc/commonitilvalidation.class.php:830
+#: inc/commonitilvalidation.class.php:1040
+#: inc/commonitilvalidation.class.php:1139
 msgid "Request comments"
 msgstr "요청 주석"
 
-#: inc/commonitilvalidation.class.php:824
-#: inc/commonitilvalidation.class.php:1160
+#: inc/commonitilvalidation.class.php:830
+#: inc/commonitilvalidation.class.php:1166
 msgid "Approval status"
 msgstr "승인 상태"
 
-#: inc/commonitilvalidation.class.php:825
-#: inc/commonitilvalidation.class.php:946
-#: inc/commonitilvalidation.class.php:973
-#: inc/commonitilvalidation.class.php:1088
-#: inc/commonitilvalidation.class.php:1219
+#: inc/commonitilvalidation.class.php:831
+#: inc/commonitilvalidation.class.php:952
+#: inc/commonitilvalidation.class.php:979
+#: inc/commonitilvalidation.class.php:1094
+#: inc/commonitilvalidation.class.php:1225
 #: inc/notificationtargetcommonitilobject.class.php:567
 #: inc/notificationtargetticket.class.php:778
 msgid "Approver"
 msgstr "승인자"
 
-#: inc/commonitilvalidation.class.php:825
-#: inc/commonitilvalidation.class.php:1001
-#: inc/commonitilvalidation.class.php:1010
-#: inc/commonitilvalidation.class.php:1042
-#: inc/commonitilvalidation.class.php:1146
+#: inc/commonitilvalidation.class.php:831
+#: inc/commonitilvalidation.class.php:1007
+#: inc/commonitilvalidation.class.php:1016
+#: inc/commonitilvalidation.class.php:1048
+#: inc/commonitilvalidation.class.php:1152
 msgid "Approval comments"
 msgstr "승인 주석"
 
-#: inc/commonitilvalidation.class.php:829
+#: inc/commonitilvalidation.class.php:835
 msgid "Approvals for the ticket"
 msgstr "표 승인"
 
-#: inc/commonitilvalidation.class.php:837 inc/ruleticket.class.php:620
+#: inc/commonitilvalidation.class.php:843 inc/ruleticket.class.php:620
 #: inc/ruleticket.class.php:626 inc/ruleticket.class.php:632
 msgid "Send an approval request"
 msgstr "승인 요청 전송"
 
-#: inc/commonitilvalidation.class.php:988
+#: inc/commonitilvalidation.class.php:994
 #: inc/notificationtargetchange.class.php:299
 #: inc/notificationtargetticket.class.php:789
 msgid "Status of the approval request"
 msgstr "승인 요청 상태"
 
-#: inc/commonitilvalidation.class.php:995
+#: inc/commonitilvalidation.class.php:1001
 msgid "Status of my validation"
 msgstr "나의 확인 상태"
 
-#: inc/commonitilvalidation.class.php:1001 inc/ticketfollowup.class.php:1128
+#: inc/commonitilvalidation.class.php:1007 inc/ticketfollowup.class.php:1128
 msgid "Optional when approved"
 msgstr "승인시 선택사항"
 
-#: inc/commonitilvalidation.class.php:1067
-#: inc/commonitilvalidation.class.php:1186
+#: inc/commonitilvalidation.class.php:1073
+#: inc/commonitilvalidation.class.php:1192
 msgid "Approval date"
 msgstr "승인일"
 
-#: inc/commonitilvalidation.class.php:1289
+#: inc/commonitilvalidation.class.php:1295
 msgid "Validate"
 msgstr "인증하다"
 
-#: inc/commonitilvalidation.class.php:1469
+#: inc/commonitilvalidation.class.php:1475
 #, php-format
 msgid "%1$s (%2$d%%) "
 msgstr "%1$s (%2$d%%)"
 
-#: inc/commonitilvalidation.class.php:1489
+#: inc/commonitilvalidation.class.php:1495
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
@@ -7125,7 +7125,7 @@ msgstr "이 품목은 승인 대기 중입니다, 정말로 완결 또는 종료
 #: inc/commontreedropdown.class.php:57 inc/commontreedropdown.class.php:616
 #: inc/group.class.php:254 inc/itilcategory.class.php:57
 #: inc/location.class.php:55 inc/project.class.php:1062
-#: inc/projecttask.class.php:482 inc/projecttasktemplate.class.php:68
+#: inc/projecttask.class.php:487 inc/projecttasktemplate.class.php:68
 #: inc/projecttasktemplate.class.php:125 inc/softwarelicense.class.php:329
 msgid "As child of"
 msgstr "상위 요소"
@@ -7150,7 +7150,7 @@ msgstr "이동"
 #: inc/commontreedropdown.class.php:722
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetprojecttask.class.php:467 inc/project.class.php:441
-#: inc/projecttask.class.php:743 inc/projecttask.class.php:936
+#: inc/projecttask.class.php:748 inc/projecttask.class.php:941
 #: inc/projecttask_ticket.class.php:288 inc/softwarelicense.class.php:602
 msgid "Father"
 msgstr "상위"
@@ -7243,7 +7243,7 @@ msgstr "연상하다"
 #: inc/computer.class.php:583 inc/monitor.class.php:374
 #: inc/networkequipment.class.php:422 inc/peripheral.class.php:345
 #: inc/phone.class.php:367 inc/printer.class.php:492
-#: inc/software.class.php:365 inc/ticket.class.php:2669
+#: inc/software.class.php:365 inc/ticket.class.php:2670
 msgctxt "button"
 msgid "Link knowledgebase article"
 msgstr "지식 기반 글 연결"
@@ -7410,7 +7410,7 @@ msgstr "가상머신 UUID"
 #: inc/devicememory.class.php:57 inc/item_devicegraphiccard.class.php:57
 #: inc/item_deviceharddrive.class.php:57 inc/item_devicememory.class.php:59
 #: inc/networkequipment.class.php:389 inc/networkequipment.class.php:583
-#: inc/toolbox.class.php:980 inc/toolbox.class.php:1132
+#: inc/toolbox.class.php:982 inc/toolbox.class.php:1134
 msgid "Mio"
 msgstr "Mio"
 
@@ -7471,7 +7471,7 @@ msgid "Affected computers"
 msgstr "반영된 컴퓨터"
 
 #: inc/computer_softwarelicense.class.php:659
-#: inc/computer_softwareversion.class.php:1154 inc/html.class.php:6272
+#: inc/computer_softwareversion.class.php:1154 inc/html.class.php:6273
 msgid "Summary"
 msgstr "요약"
 
@@ -7844,7 +7844,7 @@ msgstr "API 클라이언트 추가"
 #: inc/entity.class.php:341 inc/entity.class.php:893 inc/event.class.php:159
 #: inc/html.class.php:1321 inc/profile.class.php:97 inc/profile.class.php:102
 #: inc/profile.class.php:658 inc/profile.class.php:991
-#: inc/profile.class.php:2154 inc/search.class.php:5472
+#: inc/profile.class.php:2154 inc/search.class.php:5484
 msgid "Assistance"
 msgstr "지원"
 
@@ -8395,29 +8395,36 @@ msgstr "기록 파일용 쓰기 권한 확인"
 msgid "A file was created - Perfect!"
 msgstr "파일 생성 - 완벽!"
 
-#: inc/config.class.php:2519 inc/config.class.php:2536
-#: inc/config.class.php:2537 inc/config.class.php:2540
-#: inc/config.class.php:2541
+#: inc/config.class.php:2525 inc/config.class.php:2542
+#: inc/config.class.php:2543 inc/config.class.php:2546
+#: inc/config.class.php:2547
 msgid "Web access to files directory is protected"
 msgstr "파일 디렉토리에 웹 접근이 보호됩니다"
 
-#: inc/config.class.php:2525 inc/config.class.php:2529
+#: inc/config.class.php:2531 inc/config.class.php:2535
+#: inc/config.class.php:2552
 msgid "Web access to the files directory, should not be allowed"
 msgstr "파일 디렉토리에 웹 접근이 허용되지 않습니다"
 
-#: inc/config.class.php:2526 inc/config.class.php:2530
+#: inc/config.class.php:2532 inc/config.class.php:2536
 msgid "Check the .htaccess file and the web server configuration."
 msgstr ".htaccess 파일과 웹 서버 구성을 확인하세요."
 
-#: inc/config.class.php:2694
+#: inc/config.class.php:2553
+msgid ""
+"Automatic checks cannot be done; please review .htaccess file and the web "
+"server configuration."
+msgstr ""
+
+#: inc/config.class.php:2704
 msgid "You are using a development version, be careful!"
 msgstr "개발자 버전 사용중입니다, 주의하세요!"
 
-#: inc/config.class.php:2695
+#: inc/config.class.php:2705
 msgid "I know I am using a unstable version."
 msgstr "안정적이지 않은 버전을 사용중임을 압니다."
 
-#: inc/config.class.php:2701
+#: inc/config.class.php:2711
 msgid "Please check the unstable version checkbox."
 msgstr "안정적이지 않은 버전 체크박스에 체크해 주세요."
 
@@ -8758,13 +8765,13 @@ msgid "Periodicity"
 msgstr "주기"
 
 #: inc/contract.class.php:589 inc/document.class.php:1424
-#: inc/ticket.class.php:2646
+#: inc/ticket.class.php:2647
 msgctxt "button"
 msgid "Add an item"
 msgstr "아이템 추가"
 
 #: inc/contract.class.php:590 inc/document.class.php:1425
-#: inc/ticket.class.php:2650
+#: inc/ticket.class.php:2651
 msgctxt "button"
 msgid "Remove an item"
 msgstr "아이템 삭제"
@@ -9084,7 +9091,7 @@ msgstr "최근 구동 목록"
 #: inc/crontask.class.php:1100 inc/crontask.class.php:1158
 #: inc/fieldunicity.class.php:591 inc/problem.class.php:922
 #: inc/softwarelicense.class.php:419 inc/softwarelicense.class.php:999
-#: inc/stat.class.php:409 inc/ticket.class.php:5830
+#: inc/stat.class.php:409 inc/ticket.class.php:5828
 msgctxt "quantity"
 msgid "Number"
 msgstr "번호"
@@ -9601,9 +9608,9 @@ msgstr[0] "문서 머릿말"
 #: inc/notificationtargetprojecttask.class.php:534
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetticket.class.php:862 inc/profile.class.php:871
-#: inc/profile.class.php:1728 inc/ticket.class.php:2859
-#: inc/ticket.class.php:7307 inc/ticket.class.php:7308
-#: inc/ticket.class.php:7439 inc/transfer.class.php:3450
+#: inc/profile.class.php:1728 inc/ticket.class.php:2860
+#: inc/ticket.class.php:7305 inc/ticket.class.php:7306
+#: inc/ticket.class.php:7437 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "문서"
@@ -9808,7 +9815,7 @@ msgid_plural "Document types"
 msgstr[0] "문서 유형"
 
 #: inc/documenttype.class.php:177 inc/documenttype.class.php:178
-#: inc/html.class.php:5938 inc/html.class.php:5939
+#: inc/html.class.php:5939 inc/html.class.php:5940
 msgid "Help"
 msgstr "도움말"
 
@@ -9871,7 +9878,7 @@ msgid "Project tasks type"
 msgid_plural "Project tasks types"
 msgstr[0] "프로젝트 작업 유형"
 
-#: inc/dropdown.class.php:808 inc/projecttask.class.php:419
+#: inc/dropdown.class.php:808 inc/projecttask.class.php:424
 #: inc/projecttasktemplate.class.php:54
 msgid "Project task template"
 msgid_plural "Project task templates"
@@ -10172,7 +10179,7 @@ msgid "All pages in CSV"
 msgstr "CSV에서 모든 페이지"
 
 #: inc/dropdown.class.php:2150 inc/dropdown.class.php:2151
-#: inc/planning.class.php:1305 inc/planning.class.php:1309
+#: inc/planning.class.php:1308 inc/planning.class.php:1312
 #: inc/rule.class.php:562 inc/rulecollection.class.php:807
 msgctxt "button"
 msgid "Export"
@@ -10413,9 +10420,9 @@ msgstr "폐기 일자"
 msgid "to see the entity and its sub-entities"
 msgstr "개체와 그 하위 개체 보기"
 
-#: inc/entity.class.php:1104 inc/html.class.php:6264
-#: inc/reservation.class.php:442 inc/ticket.class.php:5881
-#: inc/ticket.class.php:6090
+#: inc/entity.class.php:1104 inc/html.class.php:6265
+#: inc/reservation.class.php:442 inc/ticket.class.php:5879
+#: inc/ticket.class.php:6088
 msgid "Show all"
 msgstr "모두 보기"
 
@@ -10515,7 +10522,7 @@ msgid "Send certificates alarms before"
 msgstr "사전에 인증서 알림을 전송"
 
 #: inc/entity.class.php:1965 inc/event.class.php:153 inc/event.class.php:166
-#: inc/html.class.php:6015 inc/profile.class.php:741
+#: inc/html.class.php:6016 inc/profile.class.php:741
 #: inc/profile.class.php:1803 inc/reservation.class.php:58
 #: inc/reservationitem.class.php:760 inc/transfer.class.php:3343
 #: install/update_0723_078.php:4800
@@ -10586,8 +10593,8 @@ msgstr[0] "규칙들"
 msgid "Security"
 msgstr "보안"
 
-#: inc/event.class.php:170 inc/html.class.php:1334 inc/html.class.php:6104
-#: inc/html.class.php:6130 inc/plugin.class.php:63 inc/search.class.php:5539
+#: inc/event.class.php:170 inc/html.class.php:1334 inc/html.class.php:6105
+#: inc/html.class.php:6131 inc/plugin.class.php:63 inc/search.class.php:5551
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "플러그인"
@@ -10930,7 +10937,7 @@ msgstr "GLPI 디버그 정보 표시"
 msgid "Progress"
 msgstr "진행"
 
-#: inc/html.class.php:1347 inc/html.class.php:5890 inc/html.class.php:5891
+#: inc/html.class.php:1347 inc/html.class.php:5891 inc/html.class.php:5892
 msgid "My settings"
 msgstr "내 설정"
 
@@ -10938,14 +10945,14 @@ msgstr "내 설정"
 msgid "Back to top of the page"
 msgstr "페이지 상단으로 돌아가기"
 
-#: inc/html.class.php:1562 inc/toolbox.class.php:1321
-#: inc/toolbox.class.php:1325
+#: inc/html.class.php:1562 inc/toolbox.class.php:1323
+#: inc/toolbox.class.php:1327
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "GLPI-PROJECT.org 사이트에 찾을 수 있습니다."
 
-#: inc/html.class.php:1564 inc/toolbox.class.php:1319
-#: inc/toolbox.class.php:1323 inc/toolbox.class.php:1331
-#: inc/toolbox.class.php:1334
+#: inc/html.class.php:1564 inc/toolbox.class.php:1321
+#: inc/toolbox.class.php:1325 inc/toolbox.class.php:1333
+#: inc/toolbox.class.php:1336
 #, php-format
 msgid "A new version is available: %s."
 msgstr "새 버전 사용가능: %s."
@@ -11086,97 +11093,97 @@ msgid "The description field is mandatory"
 msgstr "상세정보 항목 은 필수입니다"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: inc/html.class.php:3678 inc/html.class.php:3879
+#: inc/html.class.php:3678 inc/html.class.php:3880
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
 msgstr "%3$d의 %1$d에서 %2$d까지"
 
-#: inc/html.class.php:3757
+#: inc/html.class.php:3758
 msgid "Empty array"
 msgstr "빈 배열"
 
-#: inc/html.class.php:3916 inc/html.class.php:3921
+#: inc/html.class.php:3917 inc/html.class.php:3922
 msgid "Display (number of items)"
 msgstr "보기(품목 수)"
 
-#: inc/html.class.php:3950
+#: inc/html.class.php:3951
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%2$d의 %1$d"
 
-#: inc/html.class.php:4775
+#: inc/html.class.php:4776
 msgid "Attach file by drag & drop or copy & paste in editor or "
 msgstr "편집기에 첨부할 파일을 끌어 넣기나 복사해서 붙여넣기 하거나"
 
-#: inc/html.class.php:4776
+#: inc/html.class.php:4777
 msgid "selecting them"
 msgstr "그것들을 선택"
 
-#: inc/html.class.php:4854
+#: inc/html.class.php:4855
 msgid "File(s)"
 msgstr "파일(들)"
 
-#: inc/html.class.php:4871
+#: inc/html.class.php:4872
 msgid "Drag and drop your file here, or"
 msgstr "여기에 파일을 끌어 놓기, 또는"
 
-#: inc/html.class.php:4927
+#: inc/html.class.php:4928
 msgid "Upload successful"
 msgstr "업로드 되었습니다"
 
-#: inc/html.class.php:5065
+#: inc/html.class.php:5066
 msgid "Check/uncheck all"
 msgstr "모두 선택/해제"
 
-#: inc/html.class.php:5110 inc/html.class.php:5217 inc/profile.class.php:2983
+#: inc/html.class.php:5111 inc/html.class.php:5218 inc/profile.class.php:2983
 msgid "Select/unselect all"
 msgstr "전체 선택/해제"
 
-#: inc/html.class.php:5810
+#: inc/html.class.php:5811
 msgid "Start typing to find a menu"
 msgstr "입력하여 메뉴 찾기"
 
-#: inc/html.class.php:5883 inc/html.class.php:5885
+#: inc/html.class.php:5884 inc/html.class.php:5886
 msgid "Logout"
 msgstr "로그아웃"
 
-#: inc/html.class.php:5906
+#: inc/html.class.php:5907
 #, php-format
 msgid "Debug mode %1$s"
 msgstr "디버그 모드  %1$s"
 
-#: inc/html.class.php:5912
+#: inc/html.class.php:5913
 msgid "Change mode"
 msgstr "모드 변경"
 
-#: inc/html.class.php:5926
+#: inc/html.class.php:5927
 msgid "Manage saved searches"
 msgstr "저장된 검색 관리"
 
-#: inc/html.class.php:5930 inc/search.class.php:1955
+#: inc/html.class.php:5931 inc/search.class.php:1955
 msgid "Load a bookmark"
 msgstr "책갈피 로드"
 
-#: inc/html.class.php:5995 inc/profile.class.php:2161
-#: inc/ticket.class.php:5824
+#: inc/html.class.php:5996 inc/profile.class.php:2161
+#: inc/ticket.class.php:5822
 msgid "Create a ticket"
 msgstr "티켓 생성"
 
-#: inc/html.class.php:6131
+#: inc/html.class.php:6132
 msgid "Plugins"
 msgstr "플러그인"
 
-#: inc/html.class.php:6226 inc/html.class.php:6228
+#: inc/html.class.php:6227 inc/html.class.php:6229
 msgid "Add is disabled"
 msgstr "추가는 비활성화 되었습니다"
 
-#: inc/html.class.php:6239 inc/html.class.php:6241
+#: inc/html.class.php:6240 inc/html.class.php:6242
 msgid "Search is disabled"
 msgstr "검색이 비활성화 되었습니다"
 
-#: inc/html.class.php:6313 inc/html.class.php:6314 inc/ticket.class.php:257
-#: inc/ticket.class.php:258 inc/ticket.class.php:3663
-#: inc/ticket.class.php:3664
+#: inc/html.class.php:6314 inc/html.class.php:6315 inc/ticket.class.php:257
+#: inc/ticket.class.php:258 inc/ticket.class.php:3664
+#: inc/ticket.class.php:3665
 msgid "Ticket waiting for your approval"
 msgstr "티켓이 당신의 승인을 기다리고 있습니다."
 
@@ -11213,8 +11220,8 @@ msgstr "선형"
 msgid "Decreasing"
 msgstr "감소"
 
-#: inc/infocom.class.php:710 inc/ticket.class.php:7144
-#: inc/ticket.class.php:7145
+#: inc/infocom.class.php:710 inc/ticket.class.php:7142
+#: inc/ticket.class.php:7143
 msgctxt "button"
 msgid "Show"
 msgstr "보기"
@@ -11568,7 +11575,7 @@ msgid "Delete permanently"
 msgstr "영구 삭제"
 
 #: inc/item_ticket.class.php:1243 inc/link_itemtype.class.php:169
-#: inc/problem.class.php:462 inc/ticket.class.php:2825
+#: inc/problem.class.php:462 inc/ticket.class.php:2826
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] "연관된 품목 유형"
@@ -11604,14 +11611,14 @@ msgstr "사고 견본"
 #: inc/itilcategory.class.php:196 inc/notificationtargetchange.class.php:269
 #: inc/notificationtargetproblem.class.php:208
 #: inc/notificationtargetprojecttask.class.php:504 inc/problem.class.php:527
-#: inc/search.class.php:5477
+#: inc/search.class.php:5489
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "티켓 수량"
 
 #: inc/itilcategory.class.php:209 inc/notificationtargetchange.class.php:270
-#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5494
-#: inc/ticket.class.php:3348
+#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5506
+#: inc/ticket.class.php:3349
 msgctxt "quantity"
 msgid "Number of problems"
 msgstr "문제 발생 건수"
@@ -11623,16 +11630,16 @@ msgctxt "quantity"
 msgid "Number of changes"
 msgstr "변경 사항 건수"
 
-#: inc/itilcategory.class.php:327 inc/ticket.class.php:3483
-#: inc/ticket.class.php:3499
+#: inc/itilcategory.class.php:327 inc/ticket.class.php:3484
+#: inc/ticket.class.php:3500
 msgid "Incident"
 msgstr "사고"
 
 #: inc/itilcategory.class.php:328 inc/notificationtargetchange.class.php:300
 #: inc/notificationtargetchange.class.php:302
 #: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3484
-#: inc/ticket.class.php:3502
+#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3485
+#: inc/ticket.class.php:3503
 msgid "Request"
 msgstr "요청"
 
@@ -11957,7 +11964,7 @@ msgid "Next escalation: %s"
 msgstr "다음 확대: %s"
 
 #: inc/levelagreement.class.php:276 inc/levelagreementlevel.class.php:81
-#: inc/ticket.class.php:2916 inc/ticket.class.php:2967
+#: inc/ticket.class.php:2917 inc/ticket.class.php:2968
 msgid "Escalation level"
 msgid_plural "Escalation levels"
 msgstr[0] "확대 수준"
@@ -11978,9 +11985,9 @@ msgstr "표의 달력"
 #: inc/notificationtargetticket.class.php:715 inc/olalevel.class.php:178
 #: inc/ruleticket.class.php:477 inc/ruleticket.class.php:493
 #: inc/ruleticket.class.php:598 inc/ruleticket.class.php:614
-#: inc/slalevel.class.php:178 inc/ticket.class.php:2687
-#: inc/ticket.class.php:2889 inc/ticket.class.php:4671
-#: inc/ticket.class.php:4673 inc/ticket.class.php:7626
+#: inc/slalevel.class.php:178 inc/ticket.class.php:2688
+#: inc/ticket.class.php:2890 inc/ticket.class.php:4673
+#: inc/ticket.class.php:4675 inc/ticket.class.php:7624
 msgid "Time to own"
 msgstr "전달 소요 시간"
 
@@ -12026,7 +12033,7 @@ msgid "Mobile Network Code"
 msgstr "모바일 네트워크 코드"
 
 #: inc/link.class.php:55 inc/link.class.php:599 inc/profile.class.php:1457
-#: inc/profile.class.php:1894 inc/search.class.php:5530
+#: inc/profile.class.php:1894 inc/search.class.php:5542
 msgid "External link"
 msgid_plural "External links"
 msgstr[0] "외부 연결"
@@ -12169,8 +12176,8 @@ msgid "Change the component %1$s: %2$s"
 msgstr "구성요소 %1$s 변경: %2$s"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
-#: inc/log.class.php:407 inc/projecttask.class.php:501
-#: inc/ticket.class.php:4660
+#: inc/log.class.php:407 inc/projecttask.class.php:506
+#: inc/ticket.class.php:4662
 #, php-format
 msgid "%1$s by %2$s"
 msgstr "%1$s 로 %2$s"
@@ -12818,7 +12825,7 @@ msgstr "품목이 객체와 연결되지 않았습니다"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/networkportinstantiation.class.php:780
-#: inc/networkportinstantiation.class.php:801 inc/savedsearch.class.php:919
+#: inc/networkportinstantiation.class.php:801 inc/savedsearch.class.php:925
 #, php-format
 msgid "%1$s on %2$s"
 msgstr "%2$s의 %1$s"
@@ -13316,12 +13323,12 @@ msgstr "변경이 처리됨"
 #: inc/notificationtargetchange.class.php:62
 #: inc/notificationtargetchange.class.php:324
 #: inc/notificationtargetticket.class.php:228
-#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6847
+#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6845
 msgid "Validation request"
 msgstr "확인 요청"
 
 #: inc/notificationtargetchange.class.php:63
-#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6858
+#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6856
 msgid "Validation request answer"
 msgstr "확인 요청 응답"
 
@@ -13374,7 +13381,7 @@ msgstr "승인 요청에 대한 응답을 %s가 생성하였습니다"
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
 #: inc/profile.class.php:1101 inc/rule.class.php:2019 inc/rule.class.php:2040
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
-#: inc/ticket.class.php:7309 inc/ticket.class.php:7310
+#: inc/ticket.class.php:7307 inc/ticket.class.php:7308
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "확인"
@@ -13766,8 +13773,8 @@ msgstr "코드"
 #: inc/notificationtargetproject.class.php:582
 #: inc/notificationtargetprojecttask.class.php:463
 #: inc/notificationtargetprojecttask.class.php:487 inc/project.class.php:536
-#: inc/project.class.php:1117 inc/projecttask.class.php:554
-#: inc/projecttask.class.php:820 inc/projecttask.class.php:932
+#: inc/project.class.php:1117 inc/projecttask.class.php:559
+#: inc/projecttask.class.php:825 inc/projecttask.class.php:937
 #: inc/projecttasktemplate.class.php:77 inc/projecttasktemplate.class.php:149
 #: inc/projecttask_ticket.class.php:284
 msgid "Planned start date"
@@ -13777,8 +13784,8 @@ msgstr "계획된 시작 일"
 #: inc/notificationtargetproject.class.php:583
 #: inc/notificationtargetprojecttask.class.php:464
 #: inc/notificationtargetprojecttask.class.php:488 inc/project.class.php:544
-#: inc/project.class.php:1127 inc/projecttask.class.php:568
-#: inc/projecttask.class.php:828 inc/projecttask.class.php:933
+#: inc/project.class.php:1127 inc/projecttask.class.php:573
+#: inc/projecttask.class.php:833 inc/projecttask.class.php:938
 #: inc/projecttasktemplate.class.php:83 inc/projecttasktemplate.class.php:165
 #: inc/projecttask_ticket.class.php:285
 msgid "Planned end date"
@@ -13788,8 +13795,8 @@ msgstr "계획된 종료 일"
 #: inc/notificationtargetproject.class.php:584
 #: inc/notificationtargetprojecttask.class.php:465
 #: inc/notificationtargetprojecttask.class.php:489 inc/project.class.php:563
-#: inc/project.class.php:1121 inc/projecttask.class.php:560
-#: inc/projecttask.class.php:836 inc/projecttasktemplate.class.php:80
+#: inc/project.class.php:1121 inc/projecttask.class.php:565
+#: inc/projecttask.class.php:841 inc/projecttasktemplate.class.php:80
 #: inc/projecttasktemplate.class.php:157
 msgid "Real start date"
 msgstr "실제 시작 일자"
@@ -13798,8 +13805,8 @@ msgstr "실제 시작 일자"
 #: inc/notificationtargetproject.class.php:585
 #: inc/notificationtargetprojecttask.class.php:466
 #: inc/notificationtargetprojecttask.class.php:490 inc/project.class.php:571
-#: inc/project.class.php:1131 inc/projecttask.class.php:573
-#: inc/projecttask.class.php:844 inc/projecttasktemplate.class.php:86
+#: inc/project.class.php:1131 inc/projecttask.class.php:578
+#: inc/projecttask.class.php:849 inc/projecttasktemplate.class.php:86
 #: inc/projecttasktemplate.class.php:173
 msgid "Real end date"
 msgstr "실제 종료 일자"
@@ -13808,17 +13815,17 @@ msgstr "실제 종료 일자"
 #: inc/notificationtargetproject.class.php:581
 #: inc/notificationtargetprojecttask.class.php:471
 #: inc/notificationtargetprojecttask.class.php:486 inc/project.class.php:496
-#: inc/project.class.php:1075 inc/projecttask.class.php:529
-#: inc/projecttask.class.php:799 inc/projecttask.class.php:931
-#: inc/projecttask.class.php:1586 inc/projecttasktemplate.class.php:71
+#: inc/project.class.php:1075 inc/projecttask.class.php:534
+#: inc/projecttask.class.php:804 inc/projecttask.class.php:936
+#: inc/projecttask.class.php:1595 inc/projecttasktemplate.class.php:71
 #: inc/projecttasktemplate.class.php:133 inc/projecttask_ticket.class.php:283
 msgid "Percent done"
 msgstr "완료 %"
 
 #: inc/notificationtargetproject.class.php:569
 #: inc/notificationtargetprojecttask.class.php:472 inc/project.class.php:552
-#: inc/project.class.php:1137 inc/projecttask.class.php:580
-#: inc/projecttask.class.php:852 inc/projecttask.class.php:934
+#: inc/project.class.php:1137 inc/projecttask.class.php:585
+#: inc/projecttask.class.php:857 inc/projecttask.class.php:939
 #: inc/projecttasktemplate.class.php:89 inc/projecttasktemplate.class.php:181
 #: inc/projecttask_ticket.class.php:286
 msgid "Planned duration"
@@ -13826,8 +13833,8 @@ msgstr "계획 기간"
 
 #: inc/notificationtargetproject.class.php:570
 #: inc/notificationtargetprojecttask.class.php:473 inc/project.class.php:579
-#: inc/project.class.php:1144 inc/projecttask.class.php:597
-#: inc/projecttask.class.php:865 inc/projecttask.class.php:935
+#: inc/project.class.php:1144 inc/projecttask.class.php:602
+#: inc/projecttask.class.php:870 inc/projecttask.class.php:940
 #: inc/projecttasktemplate.class.php:92 inc/projecttasktemplate.class.php:189
 #: inc/projecttask_ticket.class.php:287
 msgid "Effective duration"
@@ -13879,13 +13886,13 @@ msgstr "프로젝트 팀 그룹"
 #: inc/notificationtargetprojecttask.class.php:458
 #: inc/notificationtargetprojecttask.class.php:522 inc/profile.class.php:950
 #: inc/profile.class.php:955 inc/project.class.php:66
-#: inc/projecttask.class.php:473 inc/projecttask.class.php:734
+#: inc/projecttask.class.php:478 inc/projecttask.class.php:739
 msgid "Project"
 msgid_plural "Projects"
 msgstr[0] "프로젝트"
 
 #: inc/notificationtargetprojecttask.class.php:474
-#: inc/projecttask.class.php:610
+#: inc/projecttask.class.php:615
 msgid "Tickets duration"
 msgstr "표 기간"
 
@@ -13968,7 +13975,7 @@ msgid "Deletion of a ticket"
 msgstr "표 삭제"
 
 #: inc/notificationtargetticket.class.php:238
-#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6336
+#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6334
 msgid "Not solved tickets"
 msgstr "미해결 표"
 
@@ -13997,9 +14004,9 @@ msgstr[0] "응답이 없으면, 표는 %s일 후에 자동으로 종료됩니다
 #: inc/notificationtargetticket.class.php:714
 #: inc/notificationtargetticket.class.php:717 inc/ruleticket.class.php:468
 #: inc/ruleticket.class.php:476 inc/ruleticket.class.php:589
-#: inc/ruleticket.class.php:597 inc/sla.class.php:54 inc/ticket.class.php:2881
-#: inc/ticket.class.php:2889 inc/ticket.class.php:2903
-#: inc/ticket.class.php:2916
+#: inc/ruleticket.class.php:597 inc/sla.class.php:54 inc/ticket.class.php:2882
+#: inc/ticket.class.php:2890 inc/ticket.class.php:2904
+#: inc/ticket.class.php:2917
 msgid "SLA"
 msgstr "SLA"
 
@@ -14007,20 +14014,20 @@ msgstr "SLA"
 #: inc/notificationtargetticket.class.php:723 inc/ola.class.php:51
 #: inc/ruleticket.class.php:484 inc/ruleticket.class.php:492
 #: inc/ruleticket.class.php:605 inc/ruleticket.class.php:613
-#: inc/ticket.class.php:2932 inc/ticket.class.php:2940
-#: inc/ticket.class.php:2954 inc/ticket.class.php:2967
+#: inc/ticket.class.php:2933 inc/ticket.class.php:2941
+#: inc/ticket.class.php:2955 inc/ticket.class.php:2968
 msgid "OLA"
 msgstr "운영수준동의"
 
-#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2761
-#: inc/ticket.class.php:2940 inc/ticket.class.php:4698
-#: inc/ticket.class.php:4700 inc/ticket.class.php:7618
+#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2762
+#: inc/ticket.class.php:2941 inc/ticket.class.php:4700
+#: inc/ticket.class.php:4702 inc/ticket.class.php:7616
 msgid "Internal time to own"
 msgstr "경과 내부 시간"
 
-#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2725
-#: inc/ticket.class.php:2954 inc/ticket.class.php:4710
-#: inc/ticket.class.php:4712 inc/ticket.class.php:7634
+#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2726
+#: inc/ticket.class.php:2955 inc/ticket.class.php:4712
+#: inc/ticket.class.php:4714 inc/ticket.class.php:7632
 msgid "Internal time to resolve"
 msgstr "해결할 내부 시간"
 
@@ -14028,7 +14035,7 @@ msgstr "해결할 내부 시간"
 msgid "Location name"
 msgstr "위치 명"
 
-#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3113
+#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3114
 msgctxt "quantity"
 msgid "Number of followups"
 msgstr "추적 수량"
@@ -14069,8 +14076,8 @@ msgstr "설문 조사에 초대"
 
 #: inc/notificationtargetticket.class.php:856 inc/profile.class.php:649
 #: inc/profile.class.php:1030 inc/profile.class.php:1035
-#: inc/ticket.class.php:3066 inc/ticket.class.php:7303
-#: inc/ticket.class.php:7304 inc/ticket.class.php:7428
+#: inc/ticket.class.php:3067 inc/ticket.class.php:7301
+#: inc/ticket.class.php:7302 inc/ticket.class.php:7426
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
@@ -14082,8 +14089,8 @@ msgstr[0] "추적"
 #: inc/notificationtargetticket.class.php:904
 #: inc/notificationtargetticket.class.php:907
 #: inc/notificationtargetticket.class.php:910
-#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3194
-#: inc/ticket.class.php:5133
+#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3197
+#: inc/ticket.class.php:5135
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "연결된 표들"
@@ -14343,77 +14350,77 @@ msgstr "스피커"
 msgid "The user is busy at the selected timeframe."
 msgstr "선택된 기간에서 사용자는 바쁩니다."
 
-#: inc/planning.class.php:505 inc/profile.class.php:539
+#: inc/planning.class.php:508 inc/profile.class.php:539
 msgid "Caption"
 msgstr "자막"
 
-#: inc/planning.class.php:506
+#: inc/planning.class.php:509
 msgid "Available"
 msgstr "사용 가능"
 
-#: inc/planning.class.php:507 inc/rule.class.php:1393
+#: inc/planning.class.php:510 inc/rule.class.php:1393
 msgid "Unavailable"
 msgstr "사용 불가"
 
-#: inc/planning.class.php:1043
+#: inc/planning.class.php:1046
 msgid "Events type"
 msgstr "이벤트 유형"
 
-#: inc/planning.class.php:1044
+#: inc/planning.class.php:1047
 msgid "Plannings"
 msgstr "일정"
 
-#: inc/planning.class.php:1049
+#: inc/planning.class.php:1052
 msgid "Toggle filters"
 msgstr "필터 반전"
 
-#: inc/planning.class.php:1305
+#: inc/planning.class.php:1308
 msgid "Ical"
 msgstr "Ical"
 
-#: inc/planning.class.php:1309
+#: inc/planning.class.php:1312
 msgid "Webcal"
 msgstr "Webcal"
 
-#: inc/planning.class.php:1356
+#: inc/planning.class.php:1359
 msgid "All users of a group"
 msgstr "그룹의 모든 사용자들"
 
-#: inc/planning.class.php:1497
+#: inc/planning.class.php:1500
 msgid "View this item in his context"
 msgstr "내용에서 이 품목 보기"
 
-#: inc/planning.class.php:1575
+#: inc/planning.class.php:1578
 msgid "Event type"
 msgstr "이벤트 유형"
 
-#: inc/planning.class.php:1685
+#: inc/planning.class.php:1688
 msgid "Period"
 msgstr "기간"
 
-#: inc/planning.class.php:1700 inc/reservation.class.php:710
+#: inc/planning.class.php:1703 inc/reservation.class.php:710
 #: inc/reservationitem.class.php:437
 msgid "Specify an end date"
 msgstr "종료일 지정"
 
-#: inc/planning.class.php:2093
+#: inc/planning.class.php:2096
 msgid "Your planning"
 msgstr "당신의 일정"
 
-#: inc/planning.class.php:2176
+#: inc/planning.class.php:2179
 #, php-format
 msgid "Ticket #%1$s %2$s"
 msgstr "표 #%1$s %2$s"
 
-#: inc/planning.class.php:2223
+#: inc/planning.class.php:2226
 msgid "See personnal planning"
 msgstr "개인 일정 보기"
 
-#: inc/planning.class.php:2224
+#: inc/planning.class.php:2227
 msgid "See schedule of people in my groups"
 msgstr "내 그룹 내의 사람들의 일정 보기"
 
-#: inc/planning.class.php:2225
+#: inc/planning.class.php:2228
 msgid "See all plannings"
 msgstr "모든 일정 보기"
 
@@ -14634,17 +14641,17 @@ msgstr "이더넷"
 msgid "Wifi"
 msgstr "와이파이"
 
-#: inc/problem.class.php:553 inc/ticket.class.php:3522
+#: inc/problem.class.php:553 inc/ticket.class.php:3523
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "처리중 (할당됨)"
 
-#: inc/problem.class.php:554 inc/ticket.class.php:3523
+#: inc/problem.class.php:554 inc/ticket.class.php:3524
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "처리중 (계획됨)"
 
-#: inc/problem.class.php:556 inc/ticket.class.php:3525
+#: inc/problem.class.php:556 inc/ticket.class.php:3526
 msgctxt "status"
 msgid "Solved"
 msgstr "해결됨"
@@ -14776,8 +14783,8 @@ msgid "Default ticket template"
 msgstr "기본 표 견본"
 
 #: inc/profile.class.php:744 inc/profile.class.php:929
-#: inc/profile.class.php:2350 inc/reminder.class.php:1083
-#: inc/reminder.class.php:1085
+#: inc/profile.class.php:2350 inc/reminder.class.php:1089
+#: inc/reminder.class.php:1091
 msgid "Public reminder"
 msgid_plural "Public reminders"
 msgstr[0] "공개 독촉"
@@ -14941,7 +14948,7 @@ msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "허가"
 
-#: inc/project.class.php:120 inc/projecttask.class.php:179
+#: inc/project.class.php:120 inc/projecttask.class.php:184
 msgid "See (actor)"
 msgstr "보기 (수행자)"
 
@@ -14978,11 +14985,11 @@ msgstr "작업 계획 시간 총 합"
 msgid "Sum of total effective durations of tasks"
 msgstr "작업 총 유효 시간 총 합"
 
-#: inc/project.class.php:1234 inc/projecttask.class.php:1169
+#: inc/project.class.php:1234 inc/projecttask.class.php:1174
 msgid "Add a team member"
 msgstr "팀원 추가"
 
-#: inc/project.class.php:1274 inc/projecttask.class.php:1208
+#: inc/project.class.php:1274 inc/projecttask.class.php:1213
 msgid "Member"
 msgid_plural "Members"
 msgstr[0] "구성원"
@@ -14992,86 +14999,86 @@ msgstr[0] "구성원"
 msgid "Invalid items (no start or end date): %s"
 msgstr "잘못된 품목 (시작일 또는 종료일 없음): %s"
 
-#: inc/project.class.php:1509 inc/toolbox.class.php:2149
+#: inc/project.class.php:1509 inc/toolbox.class.php:2155
 msgid "January"
 msgstr "1월"
 
-#: inc/project.class.php:1509 inc/toolbox.class.php:2150
+#: inc/project.class.php:1509 inc/toolbox.class.php:2156
 msgid "February"
 msgstr "2월"
 
-#: inc/project.class.php:1509 inc/toolbox.class.php:2151
+#: inc/project.class.php:1509 inc/toolbox.class.php:2157
 msgid "March"
 msgstr "3월"
 
-#: inc/project.class.php:1509 inc/toolbox.class.php:2152
+#: inc/project.class.php:1509 inc/toolbox.class.php:2158
 msgid "April"
 msgstr "4월"
 
-#: inc/project.class.php:1509 inc/toolbox.class.php:2153
+#: inc/project.class.php:1509 inc/toolbox.class.php:2159
 msgid "May"
 msgstr "5월"
 
-#: inc/project.class.php:1510 inc/toolbox.class.php:2154
+#: inc/project.class.php:1510 inc/toolbox.class.php:2160
 msgid "June"
 msgstr "6월"
 
-#: inc/project.class.php:1510 inc/toolbox.class.php:2155
+#: inc/project.class.php:1510 inc/toolbox.class.php:2161
 msgid "July"
 msgstr "7월"
 
-#: inc/project.class.php:1510 inc/toolbox.class.php:2156
+#: inc/project.class.php:1510 inc/toolbox.class.php:2162
 msgid "August"
 msgstr "8월"
 
-#: inc/project.class.php:1510 inc/toolbox.class.php:2157
+#: inc/project.class.php:1510 inc/toolbox.class.php:2163
 msgid "September"
 msgstr "9월"
 
-#: inc/project.class.php:1511 inc/toolbox.class.php:2158
+#: inc/project.class.php:1511 inc/toolbox.class.php:2164
 msgid "October"
 msgstr "10월"
 
-#: inc/project.class.php:1511 inc/toolbox.class.php:2159
+#: inc/project.class.php:1511 inc/toolbox.class.php:2165
 msgid "November"
 msgstr "11월"
 
-#: inc/project.class.php:1511 inc/toolbox.class.php:2160
+#: inc/project.class.php:1511 inc/toolbox.class.php:2166
 msgid "December"
 msgstr "12월"
 
 #: inc/project.class.php:1513 inc/reservation.class.php:533
-#: inc/toolbox.class.php:2135
+#: inc/toolbox.class.php:2141
 msgid "Sunday"
 msgstr "일요일"
 
 #: inc/project.class.php:1513 inc/reservation.class.php:527
-#: inc/toolbox.class.php:2136
+#: inc/toolbox.class.php:2142
 msgid "Monday"
 msgstr "월요일"
 
 #: inc/project.class.php:1514 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2137
+#: inc/toolbox.class.php:2143
 msgid "Tuesday"
 msgstr "화요일"
 
 #: inc/project.class.php:1514 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2138
+#: inc/toolbox.class.php:2144
 msgid "Wednesday"
 msgstr "수요일"
 
 #: inc/project.class.php:1515 inc/reservation.class.php:530
-#: inc/toolbox.class.php:2139
+#: inc/toolbox.class.php:2145
 msgid "Thursday"
 msgstr "목요일"
 
 #: inc/project.class.php:1515 inc/reservation.class.php:531
-#: inc/toolbox.class.php:2140
+#: inc/toolbox.class.php:2146
 msgid "Friday"
 msgstr "금요일"
 
 #: inc/project.class.php:1516 inc/reservation.class.php:532
-#: inc/toolbox.class.php:2141
+#: inc/toolbox.class.php:2147
 msgid "Saturday"
 msgstr "토요일"
 
@@ -15088,34 +15095,34 @@ msgid "Project task"
 msgid_plural "Project tasks"
 msgstr[0] "프로젝트 작업"
 
-#: inc/projecttask.class.php:180
+#: inc/projecttask.class.php:185
 msgid "Update (actor)"
 msgstr "수정 (수행자)"
 
-#: inc/projecttask.class.php:540 inc/projecttask.class.php:886
+#: inc/projecttask.class.php:545 inc/projecttask.class.php:891
 #: inc/projecttasktemplate.class.php:74 inc/projecttasktemplate.class.php:141
 msgid "Milestone"
 msgstr "마일스톤"
 
-#: inc/projecttask.class.php:812 inc/rssfeed.class.php:346
+#: inc/projecttask.class.php:817 inc/rssfeed.class.php:346
 msgid "Creator"
 msgstr "생성자"
 
-#: inc/projecttask.class.php:977
+#: inc/projecttask.class.php:982
 msgctxt "button"
 msgid "Add a task"
 msgstr "작업 추가"
 
-#: inc/projecttask.class.php:989
+#: inc/projecttask.class.php:994
 msgid "Create a sub task from this task of project"
 msgstr "이 프로젝트 작업에서 하위 작업 생성"
 
-#: inc/projecttask.class.php:1572
+#: inc/projecttask.class.php:1581
 #, php-format
 msgid "Start at %s"
 msgstr "%s에서 시작"
 
-#: inc/projecttask.class.php:1577
+#: inc/projecttask.class.php:1586
 #, php-format
 msgid "End at %s"
 msgstr "%s에서 종료"
@@ -15209,7 +15216,7 @@ msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] "독촉"
 
-#: inc/reminder.class.php:65 inc/reminder.class.php:1059
+#: inc/reminder.class.php:65 inc/reminder.class.php:1065
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "개인 독촉"
@@ -15223,7 +15230,7 @@ msgid "Planning end date"
 msgstr "일정 종료 일"
 
 #: inc/reminder.class.php:524 inc/reminder.class.php:569
-#: inc/rssfeed.class.php:524 inc/ticket.class.php:5077
+#: inc/rssfeed.class.php:524 inc/ticket.class.php:5079
 msgid "Without title"
 msgstr "제목 없음"
 
@@ -15378,7 +15385,7 @@ msgstr "예약 없음"
 
 #: inc/reservation.class.php:1105 inc/reservation.class.php:1153
 #: inc/reservation.class.php:1237 inc/reservation.class.php:1300
-#: inc/search.class.php:4796
+#: inc/search.class.php:4797
 msgid "See planning"
 msgstr "일정 보기"
 
@@ -15416,8 +15423,8 @@ msgstr "모든 진행 중인 예약을 제거합니다."
 msgid "Authorize reservations"
 msgstr "예약 허가"
 
-#: inc/reservationitem.class.php:359 inc/search.class.php:4606
-#: inc/search.class.php:4610
+#: inc/reservationitem.class.php:359 inc/search.class.php:4607
+#: inc/search.class.php:4611
 msgid "Modify the comment"
 msgstr "수정 주석"
 
@@ -15468,7 +15475,7 @@ msgid "Use"
 msgstr "사용"
 
 #. TRANS: short for : Assign a ticket
-#: inc/ruleaction.class.php:395 inc/ticket.class.php:6563
+#: inc/ruleaction.class.php:395 inc/ticket.class.php:6561
 msgid "Assign"
 msgstr "할당"
 
@@ -15677,26 +15684,26 @@ msgstr "로컬 규칙: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "규칙은 하위-요소 내에 해당됩니다"
 
-#: inc/rulecriteria.class.php:514 inc/search.class.php:5627
-#: inc/search.class.php:5663 inc/search.class.php:5675
-#: inc/search.class.php:5681 inc/search.class.php:5686
-#: inc/search.class.php:5693 inc/search.class.php:5711
-#: inc/search.class.php:5718
+#: inc/rulecriteria.class.php:514 inc/search.class.php:5639
+#: inc/search.class.php:5675 inc/search.class.php:5687
+#: inc/search.class.php:5693 inc/search.class.php:5698
+#: inc/search.class.php:5705 inc/search.class.php:5723
+#: inc/search.class.php:5730
 msgid "is"
 msgstr "이다"
 
-#: inc/rulecriteria.class.php:515 inc/search.class.php:5631
-#: inc/search.class.php:5664 inc/search.class.php:5676
-#: inc/search.class.php:5682 inc/search.class.php:5687
-#: inc/search.class.php:5694 inc/search.class.php:5712
-#: inc/search.class.php:5719
+#: inc/rulecriteria.class.php:515 inc/search.class.php:5643
+#: inc/search.class.php:5676 inc/search.class.php:5688
+#: inc/search.class.php:5694 inc/search.class.php:5699
+#: inc/search.class.php:5706 inc/search.class.php:5724
+#: inc/search.class.php:5731
 msgid "is not"
 msgstr "아니다"
 
-#: inc/rulecriteria.class.php:516 inc/search.class.php:5610
-#: inc/search.class.php:5635 inc/search.class.php:5662
-#: inc/search.class.php:5677 inc/search.class.php:5697
-#: inc/search.class.php:5717
+#: inc/rulecriteria.class.php:516 inc/search.class.php:5622
+#: inc/search.class.php:5647 inc/search.class.php:5674
+#: inc/search.class.php:5689 inc/search.class.php:5709
+#: inc/search.class.php:5729
 msgid "contains"
 msgstr "포함"
 
@@ -15729,14 +15736,14 @@ msgid "does not exist"
 msgstr "존재하지 않는다"
 
 #: inc/rulecriteria.class.php:540 inc/search.class.php:1679
-#: inc/search.class.php:1760 inc/search.class.php:5639
-#: inc/search.class.php:5726
+#: inc/search.class.php:1760 inc/search.class.php:5651
+#: inc/search.class.php:5738
 msgid "under"
 msgstr "하에"
 
 #: inc/rulecriteria.class.php:541 inc/search.class.php:1684
-#: inc/search.class.php:1766 inc/search.class.php:5643
-#: inc/search.class.php:5727
+#: inc/search.class.php:1766 inc/search.class.php:5655
+#: inc/search.class.php:5739
 msgid "not under"
 msgstr "하위가 아니다"
 
@@ -16111,7 +16118,7 @@ msgid_plural "Saved searches alerts"
 msgstr[0] "저장된 검색 알림"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
-#: inc/savedsearch.class.php:1329
+#: inc/savedsearch.class.php:1335
 msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] "저장된 검색들"
@@ -16147,31 +16154,31 @@ msgstr "알림 추가"
 msgid "Saved searches alerts"
 msgstr "저장된 검색 알림"
 
-#: inc/savedsearch_alert.class.php:343
+#: inc/savedsearch_alert.class.php:356
 msgid "less than"
 msgstr "미만"
 
-#: inc/savedsearch_alert.class.php:347
+#: inc/savedsearch_alert.class.php:360
 msgid "less or equals than"
 msgstr "작거나 같음"
 
-#: inc/savedsearch_alert.class.php:351
+#: inc/savedsearch_alert.class.php:364
 msgid "equals to"
 msgstr "같음"
 
-#: inc/savedsearch_alert.class.php:355
+#: inc/savedsearch_alert.class.php:368
 msgid "not equals to"
 msgstr "같지 않음"
 
-#: inc/savedsearch_alert.class.php:359
+#: inc/savedsearch_alert.class.php:372
 msgid "greater or equals than"
 msgstr "크거나 같음"
 
-#: inc/savedsearch_alert.class.php:363
+#: inc/savedsearch_alert.class.php:376
 msgid "greater than"
 msgstr "이상"
 
-#: inc/savedsearch_alert.class.php:372
+#: inc/savedsearch_alert.class.php:385
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
 msgstr "%1$s에 대한 결과 수는 %2$s %3$s 입니다"
@@ -16189,7 +16196,7 @@ msgid "Change visibility"
 msgstr "시각화 변경"
 
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:384
-#: inc/savedsearch.class.php:1139
+#: inc/savedsearch.class.php:1145
 msgid "Auto"
 msgstr "자동"
 
@@ -16225,67 +16232,69 @@ msgstr "계수 하기"
 msgid "Partial load of the saved search."
 msgstr "저장된 검색의 일부 읽기"
 
-#: inc/savedsearch.class.php:764
+#: inc/savedsearch.class.php:765
 #, php-format
 msgid "Private %1$s"
-msgstr "비공개 %1$s"
+msgid_plural "Private %1$s"
+msgstr[0] ""
 
-#: inc/savedsearch.class.php:765 inc/savedsearch.class.php:772
+#: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
 msgstr "요소 숨기기/보이기"
 
-#: inc/savedsearch.class.php:771
+#: inc/savedsearch.class.php:775
 #, php-format
 msgid "Public %1$s"
-msgstr "공개 %1$s"
+msgid_plural "Public %1$s"
+msgstr[0] ""
 
-#: inc/savedsearch.class.php:816
+#: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
 msgstr "기본 즐겨찾기가 변경되지 않았습니다!"
 
-#: inc/savedsearch.class.php:887
+#: inc/savedsearch.class.php:893
 msgid "Count for this saved search has been disabled."
 msgstr "이 저장된 검색의 계수가 사용불가 되었습니다."
 
-#: inc/savedsearch.class.php:888
+#: inc/savedsearch.class.php:894
 msgid "Counting this saved search would take too long, it has been skipped."
 msgstr "이 저장된 검색의 계수가 너무 오래걸려, 그냥 넘겨졌습니다."
 
-#: inc/savedsearch.class.php:909 inc/savedsearch.class.php:910
+#: inc/savedsearch.class.php:915 inc/savedsearch.class.php:916
 msgid "Not default search"
 msgstr "기본 검색 아님"
 
-#: inc/savedsearch.class.php:914 inc/savedsearch.class.php:915
+#: inc/savedsearch.class.php:920 inc/savedsearch.class.php:921
 msgid "Default search"
 msgstr "기본 검색"
 
-#: inc/savedsearch.class.php:921
+#: inc/savedsearch.class.php:927
 msgid "Click to load or drag and drop to reorder"
 msgstr "읽기를 클릭하거나 재주문에 끌어 넣으세요"
 
-#: inc/savedsearch.class.php:922
+#: inc/savedsearch.class.php:928
 msgid "Click to load"
 msgstr "불러오려면 클릭"
 
-#: inc/savedsearch.class.php:959
+#: inc/savedsearch.class.php:965
 msgid "Saved searches order cannot be saved!"
 msgstr "저장된 검색 주문은 저장될 수 없습니다!"
 
-#: inc/savedsearch.class.php:973
+#: inc/savedsearch.class.php:979
 #, php-format
 msgid "You have not recorded any %1$s yet"
 msgstr "어떤 %1$s도 절대 재주문 할 수 없습니다"
 
-#: inc/savedsearch.class.php:1013 inc/savedsearch.class.php:1014
-#: inc/savedsearch.class.php:1021
+#: inc/savedsearch.class.php:1019 inc/savedsearch.class.php:1020
+#: inc/savedsearch.class.php:1027
 msgid "Save current search"
 msgstr "현재 검색 저장"
 
-#: inc/savedsearch.class.php:1215
+#: inc/savedsearch.class.php:1221
 msgid "Update all bookmarks execution time"
 msgstr "모든 즐겨찾기 실행 시간 갱신"
 
-#: inc/savedsearch.class.php:1337
+#: inc/savedsearch.class.php:1343
 msgid "Notification has been created!"
 msgstr "통지 가 생성되었습니다!"
 
@@ -16331,11 +16340,11 @@ msgstr "그리고 아님"
 msgid "OR NOT"
 msgstr "또는 아님"
 
-#: inc/search.class.php:5647 inc/search.class.php:5695
+#: inc/search.class.php:5659 inc/search.class.php:5707
 msgid "before"
 msgstr "전에"
 
-#: inc/search.class.php:5651 inc/search.class.php:5696
+#: inc/search.class.php:5663 inc/search.class.php:5708
 msgid "after"
 msgstr "뒤에"
 
@@ -16723,310 +16732,310 @@ msgstr "만족도 설문 조사가 만료되었습니다"
 msgid "No generated survey"
 msgstr "생성된 설문 조사가 없습니다"
 
-#: inc/ticket.class.php:1311 inc/ticket.class.php:2103
+#: inc/ticket.class.php:1311 inc/ticket.class.php:2104
 msgid "Unknown ticket"
 msgstr "알 수 없는 표"
 
-#: inc/ticket.class.php:1919
+#: inc/ticket.class.php:1920
 #, php-format
 msgid "Invalid email address %s"
 msgstr "잘못된 이메일 주소 %s"
 
-#: inc/ticket.class.php:2348
+#: inc/ticket.class.php:2349
 #, php-format
 msgid "%1$s updates the item %2$s"
 msgstr "%1$s가 품목 %2$s를 갱신했습니다"
 
-#: inc/ticket.class.php:2633 inc/ticketfollowup.class.php:911
+#: inc/ticket.class.php:2634 inc/ticketfollowup.class.php:911
 msgid "Add a new followup"
 msgstr "새 추적 추가"
 
-#: inc/ticket.class.php:2642 inc/ticket.class.php:4895
+#: inc/ticket.class.php:2643 inc/ticket.class.php:4897
 #: inc/tickettemplate.class.php:269
 msgid "Approval request"
 msgstr "승인 요청"
 
-#: inc/ticket.class.php:2659
+#: inc/ticket.class.php:2660
 msgctxt "button"
 msgid "Link tickets"
 msgstr "표 연결"
 
-#: inc/ticket.class.php:2698
+#: inc/ticket.class.php:2699
 msgid "Time to own + Progress"
 msgstr "전달 소요 시간 + 진행도"
 
-#: inc/ticket.class.php:2708
+#: inc/ticket.class.php:2709
 msgid "Time to own exceedeed"
 msgstr "전달 소요 시간 초과"
 
-#: inc/ticket.class.php:2736
+#: inc/ticket.class.php:2737
 msgid "Internal time to resolve + Progress"
 msgstr "해결 + 작업 한 내부 시간"
 
-#: inc/ticket.class.php:2746
+#: inc/ticket.class.php:2747
 msgid "Internal time to resolve exceedeed"
 msgstr "해결할 내부 시간이 초과됨"
 
-#: inc/ticket.class.php:2772
+#: inc/ticket.class.php:2773
 msgid "Internal time to own + Progress"
 msgstr "경과 + 소유 내부 시간"
 
-#: inc/ticket.class.php:2782
+#: inc/ticket.class.php:2783
 msgid "Internal time to own exceedeed"
 msgstr "경과 내부 시간이 초과됨"
 
-#: inc/ticket.class.php:3032
+#: inc/ticket.class.php:3033
 msgid "Response date"
 msgstr "응답 일자"
 
-#: inc/ticket.class.php:3147
+#: inc/ticket.class.php:3148
 msgid "Private followup"
 msgstr "비공개 추적"
 
-#: inc/ticket.class.php:3184
+#: inc/ticket.class.php:3187
 msgid "Take into account time"
 msgstr "고려 시간"
 
-#: inc/ticket.class.php:3201
+#: inc/ticket.class.php:3204
 msgid "All linked tickets"
 msgstr "모든 연결된 표"
 
-#: inc/ticket.class.php:3215
+#: inc/ticket.class.php:3218
 msgid "Duplicated tickets"
 msgstr "표 복제"
 
-#: inc/ticket.class.php:3230
+#: inc/ticket.class.php:3233
 msgid "Number of all linked tickets"
 msgstr "모든 연결된 표 수량"
 
-#: inc/ticket.class.php:3243
+#: inc/ticket.class.php:3246
 msgid "Number of duplicated tickets"
 msgstr "복제된 표 수량"
 
-#: inc/ticket.class.php:3258
+#: inc/ticket.class.php:3261
 msgid "Parent tickets"
 msgstr "상위 표"
 
-#: inc/ticket.class.php:3281
+#: inc/ticket.class.php:3284
 msgid "Child tickets"
 msgstr "하위 표"
 
-#: inc/ticket.class.php:3303
+#: inc/ticket.class.php:3306
 msgid "Number of sons tickets"
 msgstr "하위 표 수"
 
-#: inc/ticket.class.php:3319
+#: inc/ticket.class.php:3322
 msgid "Number of parent tickets"
 msgstr "상위 표 수"
 
-#: inc/ticket.class.php:3341
+#: inc/ticket.class.php:3342
 msgid "Problems"
 msgstr "문제"
 
-#: inc/ticket.class.php:3665
+#: inc/ticket.class.php:3666
 msgid "Tickets awaiting approval"
 msgstr "승인 대기중인 표"
 
-#: inc/ticket.class.php:3758
+#: inc/ticket.class.php:3759
 msgid "This ticket concerns me"
 msgstr "이 표에서 나를 언급 함"
 
-#: inc/ticket.class.php:3780 inc/ticket.class.php:3810
+#: inc/ticket.class.php:3781 inc/ticket.class.php:3811
 msgid "Check your personnal information"
 msgstr "개인 정보를 확인 하세요"
 
-#: inc/ticket.class.php:3895
+#: inc/ticket.class.php:3896
 msgid "Describe the incident or request"
 msgstr "사고나 요청에 대해 기술"
 
-#: inc/ticket.class.php:3948
+#: inc/ticket.class.php:3949
 msgid "Inform me about the actions taken"
 msgstr "동작 수행에 대해 내게 알림"
 
-#: inc/ticket.class.php:4100
+#: inc/ticket.class.php:4101
 msgid "Submit message"
 msgstr "수락 메시지"
 
-#: inc/ticket.class.php:4600
+#: inc/ticket.class.php:4602
 #, php-format
 msgid "The ticket will be added in the entity %s"
 msgstr "표는 개체 %s에 추가 될 것입니다"
 
-#: inc/ticket.class.php:4734
+#: inc/ticket.class.php:4736
 msgid "Close date"
 msgstr "종료 일자"
 
-#: inc/ticket.class.php:4850
+#: inc/ticket.class.php:4852
 msgid "Reopen"
 msgstr "재개"
 
-#: inc/ticket.class.php:5178
+#: inc/ticket.class.php:5180
 #, php-format
 msgid "File (%s)"
 msgstr "파일 (%s)"
 
-#: inc/ticket.class.php:5194
+#: inc/ticket.class.php:5196
 msgid "Default documents:"
 msgstr "기본 문서:"
 
-#: inc/ticket.class.php:5477 inc/ticket.class.php:5649
+#: inc/ticket.class.php:5475 inc/ticket.class.php:5647
 msgid "Your tickets to close"
 msgstr "종료 할 당신의 표"
 
-#: inc/ticket.class.php:5493 inc/ticket.class.php:5560
+#: inc/ticket.class.php:5491 inc/ticket.class.php:5558
 msgid "Tickets on pending status"
 msgstr "대기 중인 표"
 
-#: inc/ticket.class.php:5509 inc/ticket.class.php:5576
+#: inc/ticket.class.php:5507 inc/ticket.class.php:5574
 msgid "Tickets to be processed"
 msgstr "진행 할 표"
 
-#: inc/ticket.class.php:5525 inc/ticket.class.php:5665
+#: inc/ticket.class.php:5523 inc/ticket.class.php:5663
 msgid "Your observed tickets"
 msgstr "당신이 주시하는 표"
 
-#: inc/ticket.class.php:5542 inc/ticket.class.php:5716
+#: inc/ticket.class.php:5540 inc/ticket.class.php:5714
 msgid "Your tickets in progress"
 msgstr "진행 중인 당신의 표"
 
-#: inc/ticket.class.php:5603
+#: inc/ticket.class.php:5601
 msgid "Your tickets to validate"
 msgstr "당신의 확인해야 할 표"
 
-#: inc/ticket.class.php:5620
+#: inc/ticket.class.php:5618
 msgid "Your rejected tickets"
 msgstr "당신의 거부된 표"
 
-#: inc/ticket.class.php:5827
+#: inc/ticket.class.php:5825
 msgid "Ticket followup"
 msgstr "표 추적"
 
 #. TRANS: %d is the number of new tickets
-#: inc/ticket.class.php:5879
+#: inc/ticket.class.php:5877
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d 새 표들"
 
-#: inc/ticket.class.php:5895 inc/ticket.class.php:6099
-#: inc/ticket.class.php:6149
+#: inc/ticket.class.php:5893 inc/ticket.class.php:6097
+#: inc/ticket.class.php:6147
 msgid "No ticket found."
 msgstr "검색된 표 없음."
 
-#: inc/ticket.class.php:5979
+#: inc/ticket.class.php:5977
 msgid "Last tickets"
 msgstr "최근 표들"
 
-#: inc/ticket.class.php:6060 inc/ticket.class.php:6072
+#: inc/ticket.class.php:6058 inc/ticket.class.php:6070
 msgid "New ticket for this item..."
 msgstr "이 품목에 대한 새 표..."
 
-#: inc/ticket.class.php:6088
+#: inc/ticket.class.php:6086
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "최근 %d 표들"
 
-#: inc/ticket.class.php:6094
+#: inc/ticket.class.php:6092
 msgid "You don't have right to see all tickets"
 msgstr "모든 표를 볼 권한이 없습니다"
 
-#: inc/ticket.class.php:6139
+#: inc/ticket.class.php:6137
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "연결된 품목의 표"
 
-#: inc/ticket.class.php:6250
+#: inc/ticket.class.php:6248
 msgid "No ticket in progress."
 msgstr "진행 중인 표 없음"
 
-#: inc/ticket.class.php:6307
+#: inc/ticket.class.php:6305
 msgid "Assign equipment"
 msgstr "장비 할당"
 
-#: inc/ticket.class.php:6333
+#: inc/ticket.class.php:6331
 msgid "Automatic tickets closing"
 msgstr "자동 표 마감"
 
-#: inc/ticket.class.php:6339
+#: inc/ticket.class.php:6337
 msgid "Generation of satisfaction surveys"
 msgstr "만족도 설문 생성"
 
-#: inc/ticket.class.php:6553
+#: inc/ticket.class.php:6551
 msgid "See my ticket"
 msgstr "내 표 보기"
 
 #. TRANS: short for : See tickets created by my groups
-#: inc/ticket.class.php:6555
+#: inc/ticket.class.php:6553
 msgid "See group ticket"
 msgstr "그룹 표 보기"
 
-#: inc/ticket.class.php:6556
+#: inc/ticket.class.php:6554
 msgid "See tickets created by my groups"
 msgstr "내 그룹이 생성한 표 보기"
 
-#: inc/ticket.class.php:6558
+#: inc/ticket.class.php:6556
 msgid "See all tickets"
 msgstr "모든 표 보기"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: inc/ticket.class.php:6560
+#: inc/ticket.class.php:6558
 msgid "See assigned"
 msgstr "할당 보기"
 
-#: inc/ticket.class.php:6561
+#: inc/ticket.class.php:6559
 msgid "See assigned tickets"
 msgstr "할당된 표 보기"
 
-#: inc/ticket.class.php:6564
+#: inc/ticket.class.php:6562
 msgid "Assign a ticket"
 msgstr "표 할당"
 
 #. TRANS: short for : Steal a ticket
-#: inc/ticket.class.php:6566
+#: inc/ticket.class.php:6564
 msgid "Steal"
 msgstr "도난"
 
-#: inc/ticket.class.php:6567
+#: inc/ticket.class.php:6565
 msgid "Steal a ticket"
 msgstr "표 도난"
 
 #. TRANS: short for : To be in charge of a ticket
-#: inc/ticket.class.php:6569
+#: inc/ticket.class.php:6567
 msgid "Beeing in charge"
 msgstr "담당"
 
-#: inc/ticket.class.php:6570
+#: inc/ticket.class.php:6568
 msgid "To be in charge of a ticket"
 msgstr "담당하게될 표"
 
-#: inc/ticket.class.php:6571
+#: inc/ticket.class.php:6569
 msgid "Change the priority"
 msgstr "우선순위 변경"
 
-#: inc/ticket.class.php:6572
+#: inc/ticket.class.php:6570
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr "해결책 승인/설문조사 응답(내 표)"
 
-#: inc/ticket.class.php:6573
+#: inc/ticket.class.php:6571
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr "내가 생성한 헤결책 승인 및 표에 대한 설문조사 응답하기"
 
-#: inc/ticket.class.php:7096
+#: inc/ticket.class.php:7094
 #, php-format
 msgid "Last edited on %1$s by %2$s"
 msgstr "%1$s에서 %2$s 가 마지막으로 수정함"
 
-#: inc/ticket.class.php:7220
+#: inc/ticket.class.php:7218
 #, php-format
 msgid "Ticket# %s description"
 msgstr "표 # %s 상세"
 
-#: inc/ticket.class.php:7288
+#: inc/ticket.class.php:7286
 msgid "Actions historical"
 msgstr "동작 이력"
 
-#: inc/ticket.class.php:7301
+#: inc/ticket.class.php:7299
 msgid "Timeline filter"
 msgstr "시간표 필터"
 
@@ -17247,54 +17256,54 @@ msgstr "요청 확인"
 msgid "Validate an incident"
 msgstr "사고 확인"
 
-#: inc/toolbox.class.php:879
+#: inc/toolbox.class.php:881
 msgid "Test done"
 msgstr "테스트 완료"
 
-#: inc/toolbox.class.php:879
+#: inc/toolbox.class.php:881
 msgid "Results"
 msgstr "결과"
 
-#: inc/toolbox.class.php:882
+#: inc/toolbox.class.php:884
 msgid "Testing PHP Parser"
 msgstr "PHP 파서 테스트"
 
-#: inc/toolbox.class.php:891
+#: inc/toolbox.class.php:893
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr "GLPI는 zend.ze1_compatibility_mode = On 옵션을 사용하면 호환되지 않습니다."
 
-#: inc/toolbox.class.php:895 inc/toolbox.class.php:896
+#: inc/toolbox.class.php:897 inc/toolbox.class.php:898
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
 msgstr "최소 PHP 버전은 %s 입니다 - 완벽합니다!"
 
-#: inc/toolbox.class.php:903
+#: inc/toolbox.class.php:905
 #, php-format
 msgid "You must install at least PHP %s."
 msgstr "최소 PHP %s을 설치해야 합니다."
 
-#: inc/toolbox.class.php:908
+#: inc/toolbox.class.php:910
 msgid "Sessions test"
 msgstr "세션 테스트"
 
-#: inc/toolbox.class.php:913
+#: inc/toolbox.class.php:915
 msgid "Your parser PHP is not installed with sessions support!"
 msgstr "PHP 파서에 세션 지원이 설치되지 않았습니다!"
 
-#: inc/toolbox.class.php:919 inc/toolbox.class.php:920
+#: inc/toolbox.class.php:921 inc/toolbox.class.php:922
 msgid "Sessions support is available - Perfect!"
 msgstr "세션 지원이 사용가능합니다 - 완벽합니다!"
 
-#: inc/toolbox.class.php:925
+#: inc/toolbox.class.php:927
 msgid "Make sure that sessions support has been activated in your php.ini"
 msgstr "php.ini에서 세션 지원이 활성화 되었는지 확인하세요"
 
-#: inc/toolbox.class.php:932
+#: inc/toolbox.class.php:934
 msgid "Test session auto start"
 msgstr "테스트 세션 자동 시작"
 
-#: inc/toolbox.class.php:935
+#: inc/toolbox.class.php:937
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
@@ -17302,206 +17311,206 @@ msgstr ""
 "session.auto_start가 활성화 되었습니다. 더 많은 정보를 보려면 GLPI 최상위 경로의 .htaccess 파일을 "
 "확인하세요."
 
-#: inc/toolbox.class.php:942
+#: inc/toolbox.class.php:944
 msgid "Test if Session_use_trans_sid is used"
 msgstr "Session_use_trans_sid 가 사용중이면 테스트"
 
-#: inc/toolbox.class.php:947
+#: inc/toolbox.class.php:949
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr "php.ini에서 Session_use_trans_id 옵션을 비 활성화 해야 합니다"
 
-#: inc/toolbox.class.php:952 inc/toolbox.class.php:953
+#: inc/toolbox.class.php:954 inc/toolbox.class.php:955
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr "좋습니다 - 세션이 동작합니다(trans_id 문제 없음) - 완벽합니다!"
 
-#: inc/toolbox.class.php:964
+#: inc/toolbox.class.php:966
 msgid "Allocated memory test"
 msgstr "할당된 메모리 테스트"
 
-#: inc/toolbox.class.php:972 inc/toolbox.class.php:973
+#: inc/toolbox.class.php:974 inc/toolbox.class.php:975
 msgid "Unlimited memory - Perfect!"
 msgstr "무제한 메모리 - 완벽합니다!"
 
-#: inc/toolbox.class.php:979
+#: inc/toolbox.class.php:981
 msgid "Allocated memory"
 msgstr "할당된 메모리"
 
-#: inc/toolbox.class.php:982
+#: inc/toolbox.class.php:984
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr "GLPI는 보통 최소 64Mio 가 요구됩니다."
 
-#: inc/toolbox.class.php:983
+#: inc/toolbox.class.php:985
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "php.ini 파일의 memory_limit 값을 증가시켜 보세요."
 
-#: inc/toolbox.class.php:990 inc/toolbox.class.php:991
+#: inc/toolbox.class.php:992 inc/toolbox.class.php:993
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "할당된 메모리 > 64Mio - 완벽합니다!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1033
+#: inc/toolbox.class.php:1035
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "SELinux 모드는 %s입니다"
 
-#: inc/toolbox.class.php:1059
+#: inc/toolbox.class.php:1061
 msgid "Some features may require this to be on"
 msgstr "이 일부 기능에게서 필요합니다"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1066
+#: inc/toolbox.class.php:1068
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "%s용 SELinux 부울 구성"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1132
+#: inc/toolbox.class.php:1134
 msgid "o"
 msgstr "o"
 
-#: inc/toolbox.class.php:1132
+#: inc/toolbox.class.php:1134
 msgid "Kio"
 msgstr "Kio"
 
-#: inc/toolbox.class.php:1132
+#: inc/toolbox.class.php:1134
 msgid "Gio"
 msgstr "Gio"
 
-#: inc/toolbox.class.php:1132
+#: inc/toolbox.class.php:1134
 msgid "Tio"
 msgstr "Tio"
 
-#: inc/toolbox.class.php:1341 inc/toolbox.class.php:1343
-#: inc/toolbox.class.php:1348 inc/toolbox.class.php:1350
+#: inc/toolbox.class.php:1343 inc/toolbox.class.php:1345
+#: inc/toolbox.class.php:1350 inc/toolbox.class.php:1352
 msgid "You have the latest available version"
 msgstr "최신 버전을 사용 할 수 있습니다"
 
-#: inc/toolbox.class.php:1629
+#: inc/toolbox.class.php:1635
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "접속 실패. 프록시를 사용한다면, 구성을 확인하세요. (%s)"
 
-#: inc/toolbox.class.php:1635
+#: inc/toolbox.class.php:1641
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "프록시 서버로 접속 실패 (%s)"
 
-#: inc/toolbox.class.php:1643
+#: inc/toolbox.class.php:1649
 msgid "No data available on the web site"
 msgstr "웹 사이트에서 사용 가능한 데이터 없음"
 
-#: inc/toolbox.class.php:1983
+#: inc/toolbox.class.php:1989
 msgid "Connection options"
 msgstr "접속 옵션"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1985
+#: inc/toolbox.class.php:1991
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1987
+#: inc/toolbox.class.php:1993
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1995
+#: inc/toolbox.class.php:2001
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2004
+#: inc/toolbox.class.php:2010
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2006
+#: inc/toolbox.class.php:2012
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2022
+#: inc/toolbox.class.php:2028
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2024
+#: inc/toolbox.class.php:2030
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2039
+#: inc/toolbox.class.php:2045
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2048
+#: inc/toolbox.class.php:2054
 msgid "SECURE"
 msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2057
+#: inc/toolbox.class.php:2063
 msgid "DEBUG"
 msgstr "DEBUG"
 
-#: inc/toolbox.class.php:2069
+#: inc/toolbox.class.php:2075
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "메일 수신 폴더 (선택, 보통 INBOX)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2074
+#: inc/toolbox.class.php:2080
 msgid "Port (optional)"
 msgstr "포트 (선택)"
 
-#: inc/toolbox.class.php:2350
+#: inc/toolbox.class.php:2356
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
 msgstr "요청에서 HTTP_REFERER 가 없습니다. 다시 동작을 수행하기 전에 이전 페이지를 다시 읽어 주세요."
 
-#: inc/toolbox.class.php:2356
+#: inc/toolbox.class.php:2362
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 msgstr "HTTP_REFERER를 파싱중에 오류 발생. 다시 동작을 수행하기 전에 이전 페이지를 다시 읽어 주세요."
 
-#: inc/toolbox.class.php:2367
+#: inc/toolbox.class.php:2373
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr "HTTP_REFERER에 호스트가 없거나 잘못되었습니다. 다시 동작을 수행하기 전에 이전 페이지를 다시 읽어 주세요."
 
-#: inc/toolbox.class.php:2377
+#: inc/toolbox.class.php:2383
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr "HTTP_REFERER에 경로가 없거나 잘못되었습니다. 다시 동작을 수행하기 전에 이전 페이지를 다시 읽어 주세요."
 
-#: inc/toolbox.class.php:2384
+#: inc/toolbox.class.php:2390
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
 msgstr "요청한 동작이 허가되지 않았습니다. 다시 동작을 수행하기 전에 이전 페이지를 다시 읽어 주세요."
 
-#: inc/toolbox.class.php:2783
+#: inc/toolbox.class.php:2789
 msgid "YYYY-MM-DD"
 msgstr "YYYY-MM-DD"
 
-#: inc/toolbox.class.php:2784
+#: inc/toolbox.class.php:2790
 msgid "DD-MM-YYYY"
 msgstr "DD-MM-YYYY"
 
-#: inc/toolbox.class.php:2785
+#: inc/toolbox.class.php:2791
 msgid "MM-DD-YYYY"
 msgstr "MM-DD-YYYY"
 
@@ -17605,7 +17614,7 @@ msgid ""
 "admin' rights with the creation of his new user type."
 msgstr "관리자 권한을 가진 모든 사용자들은 새 사용자 유형을 만든때 'super-admin' 권한으로 갱신됩니다."
 
-#: inc/update.class.php:412
+#: inc/update.class.php:413
 #, php-format
 msgid "Unsupported version (%1$s)"
 msgstr "지원하지 않는 버전 (%1$s)"
