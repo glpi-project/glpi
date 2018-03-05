@@ -404,10 +404,12 @@ class Update extends CommonGLPI {
             update92to921();
 
          case "9.2.1":
+         case "9.2.2":
+            //9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
             include_once("{$updir}update_921_922.php");
             update921to922();
 
-         case "9.2.2":
+         case "9.2.3":
          case GLPI_PREVER:
             include_once("{$updir}update_92_93.php");
             update92to93();
