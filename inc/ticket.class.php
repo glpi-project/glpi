@@ -7175,39 +7175,31 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_info'>";
          echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
-         $dem = '0';
-         foreach ($DB->request("glpi_tickets_users",
-               "`tickets_id` = ".$this->fields['id']." AND `type` = 1") AS $req) {
-               $dem = $req['users_id'];
+
+         $user->getFromDB($this->fields['users_id_recipient']);
+         if (isset($item_i['users_id_recipient'])
+               && ($item_i['users_id_recipient'] != 0)) {
+            $user->getFromDB($item_i['users_id_recipient']);
          }
-         if ((!isset($item_i['users_id_recipient'])
-               || ($item_i['users_id_recipient'] == 0))
-               && ($dem == 0)) {
-            echo __("Requester");
-         } else {
-            if (isset($item_i['users_id_recipient'])
-                  && ($item_i['users_id_recipient'] != 0)) {
-               $user->getFromDB($this->fields['users_id_recipient']);
-            } else if ($dem > 0) {
-               $requester = new User();
-               if ($requester->getFromDB($dem)) {
-                  $user = $requester;
-               }
-            }
 
-            echo "<div class='tooltip_picture_border'>";
-            $picture = "";
-            if (isset($user->fields['picture'])) {
-               $picture = $user->fields['picture'];
-            }
-            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-            User::getThumbnailURLForPicture($picture)."'>";
-            echo "</div>";
+         echo "<div class='tooltip_picture_border'>";
+         $picture = "";
+         if (isset($user->fields['picture'])) {
+            $picture = $user->fields['picture'];
+         }
+         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+         User::getThumbnailURLForPicture($picture)."'>";
+         echo "</div>";
 
+         if ($user->fields['id']) {
             echo $user->getLink()."&nbsp;";
             $reqdata = getUserName($user->getID(), 2);
-            echo Html::showToolTip($reqdata["comment"],
-              ['link' => $reqdata['link']]);
+            echo Html::showToolTip(
+               $reqdata["comment"],
+               ['link' => $reqdata['link']]
+            );
+         } else {
+            echo __('Requester');
          }
 
          echo "</div>"; // h_user
