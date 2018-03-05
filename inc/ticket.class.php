@@ -1061,7 +1061,8 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'entities_id';
          } else {
             if ($this->canApprove()
-                && isset($input["status"])) {
+                || $this->canAssign()
+                || $this->canAssignToMe()) {
                 $allowed_fields[] = 'status';
             }
             // for post-only with validate right or validation created by rules
