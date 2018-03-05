@@ -116,14 +116,6 @@ if (!isset($_POST['page'])) {
 
 $start = intval(($_POST['page']-1)*$_POST['page_limit']);
 $limit = intval($_POST['page_limit']);
-// Get last item retrieve to init values
-if ($_POST['page'] > 1) {
-   $start--;
-   $limit++;
-}
-if ($start < 0) {
-   $start = 0;
-}
 $LIMIT = "LIMIT $start,$limit";
 
 if (isset($_POST['used'])) {
