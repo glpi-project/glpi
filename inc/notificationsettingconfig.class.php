@@ -124,7 +124,7 @@ class NotificationSettingConfig extends CommonDBTM {
             $('[name=use_notifications]').on('change', function() {
                var _val = $(this).find('option:selected').val();
                if (_val == '1') {
-                  $('select[name!=use_notifications]').select2('enable', true);
+                  $('select[name!=use_notifications]').removeAttr('disabled');
                } else {
                   $('select[name!=use_notifications]').select2('enable', false);
                }
