@@ -1578,18 +1578,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (!empty($this->input['items_id'])) {
-         $item_ticket = new Item_Ticket();
-         foreach ($this->input['items_id'] as $itemtype => $items) {
-            foreach ($items as $items_id) {
-               $item_ticket->add(['items_id'      => $items_id,
-                                       'itemtype'      => $itemtype,
-                                       'tickets_id'    => $this->fields['id'],
-                                       '_disablenotif' => true]);
-            }
-         }
-      }
-
       if (count($this->updates)) {
          // Update Ticket Tco
          if (in_array("actiontime", $this->updates)
@@ -4977,30 +4965,17 @@ class Ticket extends CommonITILObject {
       }
       echo "</td>";
 
-      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('items_id');
-      printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('items_id'));
-      if ($ID && $canupdate) {
-         echo "&nbsp;<a class='fa fa-chevron-circle-right pointer'  href='".$this->getFormURL()."?id=".$ID.
-                       "&amp;forcetab=Item_Ticket$1' title='".__s('Update')."'><span class='sr-only'>".
-                       __s('Update')."</span></a>";
-      }
-      echo $tt->getEndHiddenFieldText('items_id');
-      echo "</th>";
       if (!$ID) {
+         echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('items_id');
+         printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('items_id'));
+         echo $tt->getEndHiddenFieldText('items_id');
+         echo "</th>";
          echo "<td rowspan='2'>";
          echo $tt->getBeginHiddenFieldValue('items_id');
          $options['_canupdate'] = Session::haveRight('ticket', CREATE);
          if ($options['_canupdate']) {
             Item_Ticket::itemAddForm($this, $options);
          }
-         echo $tt->getEndHiddenFieldValue('items_id', $this);
-         echo "</td>";
-
-      } else {
-         echo "<td>";
-         echo $tt->getBeginHiddenFieldValue('items_id');
-         $options['_canupdate'] = $canupdate || $can_requester;
-         Item_Ticket::itemAddForm($this, $options);
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
       }
