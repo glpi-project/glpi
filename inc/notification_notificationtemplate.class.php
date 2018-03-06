@@ -284,7 +284,7 @@ class Notification_NotificationTemplate extends CommonDBChild {
             'from'   => 'core'
          ],
          self::MODE_AJAX      => [
-            'label'  => __('Ajax'),
+            'label'  => __('Browser'),
             'from'   => 'core'
          ]
          /*self::MODE_WEBSOCKET => [
