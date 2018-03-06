@@ -315,8 +315,7 @@ class SavedSearch_Alert extends CommonDBChild {
 
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
-         'WHERE'  => ['is_active' => true],
-         'ORDER'  => ['users_id']
+         'WHERE'  => ['is_active' => true]
       ]);
 
       if ($iterator->numrows()) {
