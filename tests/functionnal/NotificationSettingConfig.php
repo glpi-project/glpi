@@ -115,7 +115,7 @@ class NotificationSettingConfig extends DbTestCase {
       )
          ->contains('Notifications configuration')
          ->contains('Notification templates')
-         ->contains('Ajax followups configuration')
+         ->contains('Browser followups configuration')
          ->notContains('Email followups configuration');
 
       $CFG_GLPI['notifications_mailing'] = 1;
@@ -127,7 +127,7 @@ class NotificationSettingConfig extends DbTestCase {
       )
          ->contains('Notifications configuration')
          ->contains('Notification templates')
-         ->contains('Ajax followups configuration')
+         ->contains('Browser followups configuration')
          ->contains('Email followups configuration');
 
       //reset

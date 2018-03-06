@@ -143,7 +143,7 @@ class Notification_NotificationTemplate extends DbTestCase {
             'from'   => 'core'
          ],
          \Notification_NotificationTemplate::MODE_AJAX   => [
-            'label'  => 'Ajax',
+            'label'  => 'Browser',
             'from'   => 'core'
          ]
       ];
@@ -169,7 +169,7 @@ class Notification_NotificationTemplate extends DbTestCase {
       $this->string($display)->isEmpty();
 
       $display = $n_nt->getSpecificValueToDisplay('mode', \Notification_NotificationTemplate::MODE_AJAX);
-      $this->string($display)->isIdenticalTo('Ajax');
+      $this->string($display)->isIdenticalTo('Browser');
 
       $display = $n_nt->getSpecificValueToDisplay('mode', 'not_a_mode');
       $this->string($display)->isIdenticalTo('not_a_mode (N/A)');
@@ -183,7 +183,7 @@ class Notification_NotificationTemplate extends DbTestCase {
       $select = $n_nt->getSpecificValueToSelect('mode', 'a_name', \Notification_NotificationTemplate::MODE_AJAX);
       //FIXME: why @selected?
       $this->string($select)->matches(
-         "/<select name='a_name' id='dropdown_a_name\d+' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Ajax<\/option><\/select>/"
+         "/<select name='a_name' id='dropdown_a_name\d+' size='1'><option value='mailing'>Email<\/option><option value='ajax' selected>Browser<\/option><\/select>/"
       );
    }
 

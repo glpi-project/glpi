@@ -40,12 +40,12 @@ if (!defined('GLPI_ROOT')) {
 class NotificationAjaxSetting extends NotificationSetting {
 
    static public function getTypeName($nb = 0) {
-      return __('Ajax followups configuration');
+      return __('Browser followups configuration');
    }
 
 
    public function getEnableLabel() {
-      return __('Enable followups via ajax calls');
+      return __('Enable followups from browser');
    }
 
 
@@ -62,7 +62,7 @@ class NotificationAjaxSetting extends NotificationSetting {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>".
-           "<th colspan='4'>"._n('Ajax notification', 'Ajax notifications', Session::getPluralNumber()).
+           "<th colspan='4'>"._n('Browser notification', 'Browser notifications', Session::getPluralNumber()).
            "</th></tr>";
 
       if ($CFG_GLPI['notifications_ajax']) {
@@ -106,7 +106,7 @@ class NotificationAjaxSetting extends NotificationSetting {
       }
       $options['candel']     = false;
       if ($CFG_GLPI['notifications_ajax']) {
-         $options['addbuttons'] = ['test_ajax_send' => __('Send a test ajax call to you')];
+         $options['addbuttons'] = ['test_ajax_send' => __('Send a test browser notification to you')];
       }
       $this->showFormButtons($options);
 
