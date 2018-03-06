@@ -1476,6 +1476,14 @@ class Auth extends CommonGLPI {
          $elements['mail-'.$data['id']] = $data['name'];
       }
 
-      Dropdown::showFromArray('auth', $elements, ['rand' => '1', 'value' => $default]);
+      // show dropdown of login src only when multiple src
+      if (count($elements) > 1) {
+         Dropdown::showFromArray('auth', $elements, ['rand' => '1', 'value' => $default]);
+      } else if (count($elements) == 1) {
+         // when one src, don't display it, pass it with hidden input
+         echo Html::hidden('auth', [
+            'value' => key($elements)
+         ]);
+      }
    }
 }
