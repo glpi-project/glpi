@@ -5518,7 +5518,7 @@ class Html {
                   } else {
                      $out .= '<img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
-                             '" src="'.$CFG_GLPI['root_doc'].
+                             '" src="'.$glpi_root.
                              '/front/document.send.php?docid='.$id.$more_link.'" />';
                   }
                }
