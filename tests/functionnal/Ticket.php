@@ -1655,6 +1655,25 @@ class Ticket extends DbTestCase {
       $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
 
+      // remove associated user
+      $ticket_user->delete([
+         'id' => $ticket_user->getId()
+      ]);
+
+      // check with very limited right and redo "associate myself"
+      $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
+                                               + \Ticket::READMY;
+                                               + \Ticket::READALL;
+                                               + \Ticket::READGROUP;
+                                               + \Ticket::OWN; // OWN right must allow self-assign
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+
+      // check status (should still be ASSIGNED)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
       // restore right
       $_SESSION['glpiactiveprofile'] = $saverights;
    }
