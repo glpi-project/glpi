@@ -1660,7 +1660,17 @@ class Ticket extends DbTestCase {
          'id' => $ticket_user->getId()
       ]);
 
-      // check with very limited right and redo "associate myself"
+      // check status (should be INCOMING)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::INCOMING);
+
+      // remove associated user
+      $ticket_user->delete([
+         'id' => $ticket_user->getId()
+      ]);
+
+      // check with very limited rights and redo "associate myself"
       $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
                                                + \Ticket::READMY;
                                                + \Ticket::READALL;
