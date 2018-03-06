@@ -5503,10 +5503,13 @@ class Html {
             }
             if (isset($image['tag'])) {
                if ($ok || empty($mime)) {
+                  $glpi_root = $CFG_GLPI['root_doc'];
+                  if (isCommandLine() && isset($CFG_GLPI['url_base'])) {
+                     $glpi_root = $CFG_GLPI['url_base'];
+                  }
                   // Replace tags by image in textarea
-
                   if ($addLink) {
-                     $out .= '<a href="'.$CFG_GLPI['root_doc'].
+                     $out .= '<a href="'.$glpi_root.
                              '/front/document.send.php?docid='.$id.$more_link.
                              '" target="_blank"><img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
