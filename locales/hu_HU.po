@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-27 10:59+0100\n"
+"POT-Creation-Date: 2018-03-06 11:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: ka_etit <ka@etit.hu>, 2017\n"
 "Language-Team: Hungarian (Hungary) (https://www.transifex.com/glpi/teams/1637/hu_HU/)\n"
@@ -27,7 +27,7 @@ msgid "GLPI - Authentication"
 msgstr "GLPI - Hitelesítés"
 
 #: index.php:118 inc/authldap.class.php:3131 inc/authmail.class.php:236
-#: inc/config.class.php:1807 inc/dbutils.class.php:1582
+#: inc/config.class.php:1807 inc/dbutils.class.php:1584
 #: inc/mailcollector.class.php:259 inc/mailcollector.class.php:368
 #: inc/notificationtargetuser.class.php:107 inc/ruleright.class.php:261
 #: inc/user.class.php:1955 inc/user.class.php:2308 inc/user.class.php:2726
@@ -53,7 +53,7 @@ msgstr "Jegyezd meg"
 #: inc/computer_softwarelicense.class.php:118
 #: inc/computer_softwareversion.class.php:109
 #: inc/computer_softwareversion.class.php:121 inc/knowbaseitem.class.php:1063
-#: inc/knowbaseitem.class.php:1112 inc/lock.class.php:528
+#: inc/knowbaseitem.class.php:1113 inc/lock.class.php:528
 #: inc/massiveaction.class.php:629 inc/massiveaction.class.php:888
 #: inc/networkportmigration.class.php:344 inc/problem_ticket.class.php:168
 #: inc/rulecollection.class.php:1283
@@ -106,17 +106,17 @@ msgstr ""
 #: ajax/getDropdownFindNum.php:135 ajax/getDropdownFindNum.php:138
 #: ajax/getDropdownFindNum.php:141 ajax/getDropdownNetpoint.php:138
 #: ajax/getDropdownNetpoint.php:139 ajax/getDropdownUsers.php:122
-#: ajax/getDropdownValue.php:343 ajax/getDropdownValue.php:400
-#: ajax/getDropdownValue.php:591 ajax/getDropdownValue.php:610
-#: ajax/getDropdownValue.php:626 ajax/private_public.php:51 front/rule.php:48
+#: ajax/getDropdownValue.php:335 ajax/getDropdownValue.php:392
+#: ajax/getDropdownValue.php:583 ajax/getDropdownValue.php:602
+#: ajax/getDropdownValue.php:618 ajax/private_public.php:51 front/rule.php:48
 #: inc/cartridge.class.php:1010 inc/cartridgeitem.class.php:585
 #: inc/cartridgeitem.class.php:587 inc/commondbtm.class.php:2405
 #: inc/commondbtm.class.php:3219 inc/commondbtm.class.php:3223
 #: inc/commondbtm.class.php:3229 inc/commondbtm.class.php:3301
-#: inc/commondbtm.class.php:3827 inc/commondbtm.class.php:3833
-#: inc/commondbtm.class.php:4813 inc/commonitilcost.class.php:241
+#: inc/commondbtm.class.php:3855 inc/commondbtm.class.php:3861
+#: inc/commondbtm.class.php:4841 inc/commonitilcost.class.php:241
 #: inc/commonitilobject.class.php:5225 inc/commonitilobject.class.php:5374
-#: inc/commonitiltask.class.php:1230
+#: inc/commonitiltask.class.php:1235
 #: inc/computer_softwarelicense.class.php:474
 #: inc/computer_softwareversion.class.php:458 inc/consumable.class.php:694
 #: inc/contract.class.php:426 inc/contract.class.php:441
@@ -152,7 +152,7 @@ msgstr ""
 #: inc/stat.class.php:1178 inc/state.class.php:294 inc/state.class.php:302
 #: inc/state.class.php:311 inc/state.class.php:319 inc/state.class.php:327
 #: inc/state.class.php:335 inc/state.class.php:343 inc/state.class.php:352
-#: inc/state.class.php:361 inc/state.class.php:370 inc/ticket.class.php:6222
+#: inc/state.class.php:361 inc/state.class.php:370 inc/ticket.class.php:6195
 #: inc/ticketfollowup.class.php:515 inc/ticketfollowup.class.php:998
 #: inc/ticketfollowup.class.php:1003 inc/tickettemplate.class.php:456
 #: inc/vlan.class.php:163 install/update_0723_078.php:4820
@@ -180,13 +180,13 @@ msgstr "%1$s - %2$s fali csatlakozó"
 #: ajax/dropdownConnectNetworkPort.php:109 ajax/dropdownInstallVersion.php:74
 #: ajax/dropdownSoftwareLicense.php:65 ajax/getDropdownConnect.php:177
 #: ajax/getDropdownFindNum.php:146 ajax/getDropdownNetpoint.php:142
-#: ajax/getDropdownValue.php:385 ajax/getDropdownValue.php:615
+#: ajax/getDropdownValue.php:377 ajax/getDropdownValue.php:607
 #: inc/apiclient.class.php:232 inc/cartridge.class.php:736
 #: inc/cartridgeitem.class.php:586 inc/change_item.class.php:212
-#: inc/commondbtm.class.php:3296 inc/commondbtm.class.php:4578
+#: inc/commondbtm.class.php:3296 inc/commondbtm.class.php:4606
 #: inc/commonglpi.class.php:871 inc/commonitilcost.class.php:568
 #: inc/commonitilobject.class.php:5373 inc/commonitilobject.class.php:5378
-#: inc/commonitiltask.class.php:1274 inc/commonitiltask.class.php:1300
+#: inc/commonitiltask.class.php:1279 inc/commonitiltask.class.php:1305
 #: inc/computer_item.class.php:460 inc/computer_softwarelicense.class.php:527
 #: inc/computer_softwareversion.class.php:538
 #: inc/computer_softwareversion.class.php:567
@@ -200,12 +200,12 @@ msgstr "%1$s - %2$s fali csatlakozó"
 #: inc/contract.class.php:1488 inc/contractcost.class.php:394
 #: inc/contract_item.class.php:486 inc/contract_item.class.php:725
 #: inc/contract_supplier.class.php:239 inc/contract_supplier.class.php:388
-#: inc/dbutils.class.php:1521 inc/document.class.php:398
+#: inc/dbutils.class.php:1523 inc/document.class.php:398
 #: inc/document.class.php:434 inc/document.class.php:897
 #: inc/document_item.class.php:517 inc/dropdown.class.php:403
 #: inc/glpipdf.class.php:104 inc/group_user.class.php:226
 #: inc/group_user.class.php:231 inc/group_user.class.php:448
-#: inc/group_user.class.php:538 inc/html.class.php:4932
+#: inc/group_user.class.php:538 inc/html.class.php:4933
 #: inc/ipnetwork_vlan.class.php:170 inc/item_devicegraphiccard.class.php:52
 #: inc/item_deviceharddrive.class.php:52 inc/item_devicememory.class.php:57
 #: inc/item_deviceprocessor.class.php:53
@@ -242,12 +242,12 @@ msgstr "%1$s - %2$s fali csatlakozó"
 #: inc/profile_user.class.php:334 inc/profile_user.class.php:481
 #: inc/projectcost.class.php:390 inc/rule.class.php:2178
 #: inc/rulecollection.class.php:1202 inc/rulemailcollector.class.php:195
-#: inc/rulemailcollector.class.php:200 inc/search.class.php:4967
-#: inc/search.class.php:5101 inc/session.class.php:367
+#: inc/rulemailcollector.class.php:200 inc/search.class.php:4968
+#: inc/search.class.php:5102 inc/session.class.php:367
 #: inc/session.class.php:370 inc/softwareversion.class.php:256
-#: inc/supplier.class.php:573 inc/ticket.class.php:2157
-#: inc/ticket.class.php:4560 inc/ticket.class.php:6078
-#: inc/ticket.class.php:6221 inc/tickettemplatemandatoryfield.class.php:230
+#: inc/supplier.class.php:573 inc/ticket.class.php:2143
+#: inc/ticket.class.php:4546 inc/ticket.class.php:6051
+#: inc/ticket.class.php:6194 inc/tickettemplatemandatoryfield.class.php:230
 #: inc/tickettemplatemandatoryfield.class.php:232 inc/user.class.php:2929
 #: inc/user.class.php:2984 inc/user.class.php:3846 inc/user.class.php:3927
 #, php-format
@@ -307,14 +307,14 @@ msgstr "E-mail értesítések"
 #: inc/change_item.class.php:225 inc/commondbtm.class.php:1041
 #: inc/commondbtm.class.php:1320 inc/commondbtm.class.php:1506
 #: inc/commondbtm.class.php:1546 inc/commondbtm.class.php:1653
-#: inc/commondbtm.class.php:3109 inc/commondbtm.class.php:3727
-#: inc/commondbtm.class.php:3823 inc/commonglpi.class.php:1245
+#: inc/commondbtm.class.php:3109 inc/commondbtm.class.php:3755
+#: inc/commondbtm.class.php:3851 inc/commonglpi.class.php:1245
 #: inc/commonglpi.class.php:1248 inc/commonglpi.class.php:1251
 #: inc/commonglpi.class.php:1254 inc/commonglpi.class.php:1257
 #: inc/commonitilobject.class.php:2493 inc/commonitilobject.class.php:3443
 #: inc/commonitilobject.class.php:3682 inc/commonitilobject.class.php:5219
-#: inc/commonitilobject.class.php:5245 inc/commonitiltask.class.php:1168
-#: inc/commonitiltask.class.php:1948 inc/config.class.php:1411
+#: inc/commonitilobject.class.php:5245 inc/commonitiltask.class.php:1173
+#: inc/commonitiltask.class.php:1953 inc/config.class.php:1411
 #: inc/config.class.php:1476 inc/contract.class.php:1247
 #: inc/contract.class.php:1324 inc/contract.class.php:1358
 #: inc/contract.class.php:1361 inc/contract.class.php:1378
@@ -322,8 +322,8 @@ msgstr "E-mail értesítések"
 #: inc/crontask.class.php:830 inc/crontask.class.php:838
 #: inc/crontask.class.php:852 inc/crontask.class.php:862
 #: inc/dbconnection.class.php:444 inc/dbconnection.class.php:449
-#: inc/dbconnection.class.php:452 inc/dbutils.class.php:1037
-#: inc/dbutils.class.php:1623 inc/document.class.php:215
+#: inc/dbconnection.class.php:452 inc/dbutils.class.php:1039
+#: inc/dbutils.class.php:1625 inc/document.class.php:215
 #: inc/document_item.class.php:500 inc/dropdown.class.php:361
 #: inc/dropdown.class.php:365 inc/dropdown.class.php:370
 #: inc/dropdown.class.php:375 inc/dropdown.class.php:379
@@ -337,7 +337,7 @@ msgstr "E-mail értesítések"
 #: inc/item_ticket.class.php:965 inc/item_ticket.class.php:1351
 #: inc/item_ticket.class.php:1390 inc/knowbaseitem.class.php:740
 #: inc/knowbaseitem.class.php:914 inc/knowbaseitem.class.php:941
-#: inc/knowbaseitem.class.php:1359 inc/levelagreement.class.php:276
+#: inc/knowbaseitem.class.php:1360 inc/levelagreement.class.php:276
 #: inc/link.class.php:556 inc/link.class.php:580 inc/lock.class.php:323
 #: inc/log.class.php:388 inc/log.class.php:418 inc/log.class.php:428
 #: inc/log.class.php:438 inc/log.class.php:445 inc/log.class.php:452
@@ -485,19 +485,19 @@ msgstr "E-mail értesítések"
 #: inc/problem.class.php:1126 inc/profile_user.class.php:353
 #: inc/profile_user.class.php:479 inc/profile_user.class.php:1054
 #: inc/profile_user.class.php:1056 inc/projectcost.class.php:430
-#: inc/projecttask.class.php:606 inc/projecttask.class.php:609
-#: inc/projecttask.class.php:1546 inc/projecttask.class.php:1560
-#: inc/projecttask.class.php:1569 inc/projecttask.class.php:1574
-#: inc/projecttask.class.php:1582 inc/registeredid.class.php:112
-#: inc/reminder.class.php:958 inc/reminder.class.php:985
+#: inc/projecttask.class.php:611 inc/projecttask.class.php:614
+#: inc/projecttask.class.php:1555 inc/projecttask.class.php:1569
+#: inc/projecttask.class.php:1578 inc/projecttask.class.php:1583
+#: inc/projecttask.class.php:1591 inc/registeredid.class.php:112
+#: inc/reminder.class.php:964 inc/reminder.class.php:991
 #: inc/reservationitem.class.php:665 inc/reservationitem.class.php:670
 #: inc/reservationitem.class.php:688 inc/rule.class.php:3117
 #: inc/rulemailcollector.class.php:127 inc/softwarelicense.class.php:881
 #: inc/softwarelicense.class.php:884 inc/softwarelicense.class.php:901
 #: inc/supplier.class.php:549 inc/supplier.class.php:586
-#: inc/ticket.class.php:2159 inc/ticket.class.php:6166
-#: inc/ticket.class.php:6416 inc/ticket.class.php:6506
-#: inc/ticket_ticket.class.php:66 inc/toolbox.class.php:1055
+#: inc/ticket.class.php:2145 inc/ticket.class.php:6139
+#: inc/ticket.class.php:6389 inc/ticket.class.php:6479
+#: inc/ticket_ticket.class.php:66 inc/toolbox.class.php:1057
 #: inc/user.class.php:2096 inc/user.class.php:2308 inc/user.class.php:3713
 #: inc/vlan.class.php:164 inc/vlan.class.php:166
 #: install/update_0681_07.php:529 install/update_0681_07.php:552
@@ -519,7 +519,7 @@ msgstr "%1$s: %2$s"
 #: inc/commonitilactor.class.php:189 inc/commonitilactor.class.php:269
 #: inc/commonitilobject.class.php:2493 inc/commonitilobject.class.php:3443
 #: inc/contact.class.php:205 inc/contact.class.php:347
-#: inc/contact_supplier.class.php:352 inc/dbutils.class.php:1588
+#: inc/contact_supplier.class.php:352 inc/dbutils.class.php:1590
 #: inc/dropdown.class.php:379 inc/dropdown.class.php:396
 #: inc/entity.class.php:527 inc/entity.class.php:1336
 #: inc/notification_notificationtemplate.class.php:283
@@ -547,7 +547,7 @@ msgstr[1] "Emailek"
 #: inc/change_project.class.php:181 inc/change_project.class.php:276
 #: inc/change_ticket.class.php:274 inc/change_ticket.class.php:376
 #: inc/commondbrelation.class.php:1113 inc/commondbtm.class.php:2168
-#: inc/commonitiltask.class.php:1765 inc/commontreedropdown.class.php:513
+#: inc/commonitiltask.class.php:1770 inc/commontreedropdown.class.php:513
 #: inc/computer_softwarelicense.class.php:387
 #: inc/computer_softwareversion.class.php:837
 #: inc/contact_supplier.class.php:183 inc/contact_supplier.class.php:319
@@ -563,16 +563,16 @@ msgstr[1] "Emailek"
 #: inc/netpoint.class.php:276 inc/netpoint.class.php:299
 #: inc/networkport.class.php:556 inc/notepad.class.php:307
 #: inc/olalevel.class.php:117 inc/pdu_plug.class.php:146
-#: inc/pdu_rack.class.php:462 inc/planning.class.php:1412
-#: inc/planning.class.php:1451 inc/planning.class.php:1538
+#: inc/pdu_rack.class.php:462 inc/planning.class.php:1415
+#: inc/planning.class.php:1454 inc/planning.class.php:1541
 #: inc/problem_ticket.class.php:312 inc/problem_ticket.class.php:422
 #: inc/profile_user.class.php:145 inc/profile_user.class.php:302
-#: inc/project.class.php:1243 inc/projecttask.class.php:1178
+#: inc/project.class.php:1243 inc/projecttask.class.php:1183
 #: inc/projecttask_ticket.class.php:191 inc/reservation.class.php:749
 #: inc/reservationitem.class.php:580 inc/rule.class.php:2737
 #: inc/ruleright.class.php:82 inc/slalevel.class.php:114
-#: inc/ticket.class.php:5220 inc/ticket.class.php:7439
-#: inc/ticket.class.php:7499 inc/ticketfollowup.class.php:557
+#: inc/ticket.class.php:5193 inc/ticket.class.php:7404
+#: inc/ticket.class.php:7464 inc/ticketfollowup.class.php:557
 #: inc/tickettemplatehiddenfield.class.php:227
 #: inc/tickettemplatemandatoryfield.class.php:238
 #: inc/tickettemplatepredefinedfield.class.php:289
@@ -591,8 +591,8 @@ msgstr "Hozzáad"
 #: inc/commondbtm.class.php:3102 inc/commondevice.class.php:226
 #: inc/commondropdown.class.php:255 inc/commondropdown.class.php:505
 #: inc/commonitilcost.class.php:119 inc/commonitilcost.class.php:428
-#: inc/commonitilvalidation.class.php:978
-#: inc/commonitilvalidation.class.php:992 inc/commontreedropdown.class.php:535
+#: inc/commonitilvalidation.class.php:938
+#: inc/commonitilvalidation.class.php:952 inc/commontreedropdown.class.php:535
 #: inc/commontreedropdown.class.php:737 inc/computer.class.php:498
 #: inc/computer.class.php:681 inc/computer_softwareversion.class.php:1000
 #: inc/computer_softwareversion.class.php:1081
@@ -603,7 +603,7 @@ msgstr "Hozzáad"
 #: inc/contact.class.php:427 inc/contract.class.php:299
 #: inc/contract.class.php:848 inc/contractcost.class.php:147
 #: inc/contractcost.class.php:302 inc/crontask.class.php:456
-#: inc/crontask.class.php:1397 inc/dbutils.class.php:1066
+#: inc/crontask.class.php:1397 inc/dbutils.class.php:1068
 #: inc/document.class.php:411 inc/document.class.php:906
 #: inc/enclosure.class.php:176 inc/enclosure.class.php:256
 #: inc/entity.class.php:580 inc/fieldunicity.class.php:375
@@ -635,8 +635,8 @@ msgstr "Hozzáad"
 #: inc/printer.class.php:624 inc/profile.class.php:595
 #: inc/profile.class.php:1559 inc/project.class.php:586
 #: inc/project.class.php:1157 inc/projectcost.class.php:144
-#: inc/projectcost.class.php:299 inc/projecttask.class.php:623
-#: inc/projecttask.class.php:874 inc/projecttasktemplate.class.php:94
+#: inc/projectcost.class.php:299 inc/projecttask.class.php:628
+#: inc/projecttask.class.php:879 inc/projecttasktemplate.class.php:94
 #: inc/rack.class.php:323 inc/rack.class.php:425 inc/reservation.class.php:742
 #: inc/reservation.class.php:1087 inc/reservation.class.php:1135
 #: inc/reservation.class.php:1205 inc/reservation.class.php:1268
@@ -644,13 +644,13 @@ msgstr "Hozzáad"
 #: inc/reservationitem.class.php:361 inc/rssfeed.class.php:392
 #: inc/rssfeed.class.php:618 inc/rule.class.php:734 inc/rule.class.php:888
 #: inc/ruledictionnaryprinter.class.php:83
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5667
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5679
 #: inc/slm.class.php:113 inc/software.class.php:293 inc/software.class.php:485
 #: inc/softwarelicense.class.php:393 inc/softwarelicense.class.php:608
 #: inc/softwarelicense.class.php:1280 inc/softwareversion.class.php:121
 #: inc/softwareversion.class.php:181 inc/softwareversion.class.php:314
 #: inc/supplier.class.php:145 inc/supplier.class.php:373
-#: inc/ticket.class.php:3022 inc/ticketfollowup.class.php:1125
+#: inc/ticket.class.php:3008 inc/ticketfollowup.class.php:1125
 #: inc/ticketsatisfaction.class.php:145 inc/transfer.class.php:104
 #: inc/transfer.class.php:3310 inc/user.class.php:2127 inc/user.class.php:2893
 #: inc/vlan.class.php:167
@@ -665,20 +665,20 @@ msgstr "Megjegyzések"
 #: inc/commonglpi.class.php:724 inc/commonitilvalidation.class.php:448
 #: inc/config.class.php:396 inc/dropdown.class.php:1977
 #: inc/notificationtemplatetranslation.class.php:368
-#: inc/planning.class.php:354 inc/problem.class.php:554
+#: inc/planning.class.php:357 inc/problem.class.php:554
 #: inc/profile_user.class.php:529 inc/search.class.php:1454
-#: inc/search.class.php:1865 inc/ticket.class.php:3499 inc/user.class.php:3567
+#: inc/search.class.php:1865 inc/ticket.class.php:3485 inc/user.class.php:3567
 msgid "All"
 msgstr "Összes"
 
 #: ajax/dropdownMassiveActionAddValidator.php:112
-#: ajax/dropdownValidator.php:134 inc/commonitiltask.class.php:1279
-#: inc/commonitiltask.class.php:1618 inc/dbconnection.class.php:452
+#: ajax/dropdownValidator.php:134 inc/commonitiltask.class.php:1284
+#: inc/commonitiltask.class.php:1623 inc/dbconnection.class.php:452
 #: inc/dropdown.class.php:1978 inc/group_user.class.php:168
 #: inc/group_user.class.php:255 inc/htmltablemain.class.php:238
 #: inc/item_devices.class.php:673 inc/item_rack.class.php:688
 #: inc/planningrecall.class.php:258 inc/profileright.class.php:327
-#: inc/search.class.php:4859
+#: inc/search.class.php:4860
 msgid "None"
 msgstr "Nincs"
 
@@ -743,8 +743,8 @@ msgstr[0] "Művelet"
 msgstr[1] "Műveletek"
 
 #: ajax/planningcheck.php:51 ajax/planningcheck.php:58 front/planning.php:58
-#: inc/commonitiltask.class.php:1521 inc/commonitiltask.class.php:1528
-#: inc/planning.class.php:338
+#: inc/commonitiltask.class.php:1526 inc/commonitiltask.class.php:1533
+#: inc/planning.class.php:341
 msgid "Availability"
 msgstr "Elérhetőség"
 
@@ -764,15 +764,15 @@ msgstr "Nyilvános"
 #: ajax/private_public.php:67 ajax/subvisibility.php:66 ajax/visibility.php:91
 #: inc/authldap.class.php:1933 inc/budget.class.php:281
 #: inc/certificate.class.php:271 inc/commondbtm.class.php:2426
-#: inc/commondbtm.class.php:3376 inc/commondropdown.class.php:525
+#: inc/commondbtm.class.php:3400 inc/commondropdown.class.php:525
 #: inc/commonglpi.class.php:869 inc/commontreedropdown.class.php:757
 #: inc/contact.class.php:444 inc/contract.class.php:874
 #: inc/document.class.php:871 inc/fieldunicity.class.php:367
-#: inc/infocom.class.php:1851 inc/knowbaseitem.class.php:1760
+#: inc/infocom.class.php:1851 inc/knowbaseitem.class.php:1761
 #: inc/levelagreementlevel.class.php:148 inc/networkequipment.class.php:644
 #: inc/notification.class.php:404 inc/printer.class.php:802
 #: inc/profile_user.class.php:919 inc/project.class.php:620
-#: inc/projecttask.class.php:898 inc/rule.class.php:751
+#: inc/projecttask.class.php:903 inc/rule.class.php:751
 #: inc/savedsearch.class.php:102 inc/savedsearch.class.php:410
 #: inc/software.class.php:618 inc/softwarelicense.class.php:671
 #: inc/supplier.class.php:390
@@ -881,8 +881,8 @@ msgstr "Nincsenek korlátozások"
 #: inc/budget.class.php:272 inc/budget.class.php:333 inc/budget.class.php:672
 #: inc/cartridgeitem.class.php:422 inc/certificate.class.php:263
 #: inc/certificate_item.class.php:281 inc/certificate_item.class.php:490
-#: inc/change_item.class.php:167 inc/commondbtm.class.php:3756
-#: inc/commondbtm.class.php:4570 inc/commondbvisible.class.php:258
+#: inc/change_item.class.php:167 inc/commondbtm.class.php:3784
+#: inc/commondbtm.class.php:4598 inc/commondbvisible.class.php:258
 #: inc/commondevice.class.php:252 inc/commondropdown.class.php:514
 #: inc/commonitilcost.class.php:183 inc/commonitilobject.class.php:2916
 #: inc/commonitilobject.class.php:5467 inc/commontreedropdown.class.php:528
@@ -905,7 +905,7 @@ msgstr "Nincsenek korlátozások"
 #: inc/infocom.class.php:1842 inc/ipnetwork_vlan.class.php:155
 #: inc/item_devices.class.php:148 inc/item_problem.class.php:170
 #: inc/item_project.class.php:166 inc/item_ticket.class.php:470
-#: inc/knowbaseitem.class.php:1751 inc/levelagreementlevel.class.php:139
+#: inc/knowbaseitem.class.php:1752 inc/levelagreementlevel.class.php:139
 #: inc/link.class.php:253 inc/location.class.php:390 inc/monitor.class.php:614
 #: inc/networkalias.class.php:308 inc/networkequipment.class.php:635
 #: inc/networkport_vlan.class.php:159 inc/notification.class.php:395
@@ -942,7 +942,7 @@ msgstr "Nincsenek korlátozások"
 #: inc/profile.class.php:2104 inc/profile_user.class.php:191
 #: inc/profile_user.class.php:910 inc/profile_user.class.php:1054
 #: inc/project.class.php:612 inc/project.class.php:733
-#: inc/projectcost.class.php:184 inc/projecttask.class.php:890
+#: inc/projectcost.class.php:184 inc/projecttask.class.php:895
 #: inc/queuednotification.class.php:366 inc/rack.class.php:479
 #: inc/reservation.class.php:1203 inc/reservation.class.php:1266
 #: inc/reservationitem.class.php:265 inc/rule.class.php:742
@@ -952,7 +952,7 @@ msgstr "Nincsenek korlátozások"
 #: inc/ruleimportcomputer.class.php:433 inc/ruleimportentity.class.php:161
 #: inc/rulemailcollector.class.php:179 inc/ruleright.class.php:288
 #: inc/rulerightcollection.class.php:156 inc/ruleticket.class.php:440
-#: inc/savedsearch.class.php:407 inc/search.class.php:5712
+#: inc/savedsearch.class.php:407 inc/search.class.php:5724
 #: inc/software.class.php:584 inc/software.class.php:978
 #: inc/softwarelicense.class.php:663 inc/softwarelicense.class.php:993
 #: inc/softwarelicense.class.php:1212 inc/softwarelicense.class.php:1277
@@ -966,17 +966,12 @@ msgstr[0] "Cég"
 msgstr[1] "Cégek"
 
 #: ajax/switchdebug.php:46
-#, php-format
-msgid "Debug mode has been switched %1$s!"
-msgstr "Nyomozási mód bekapcsolva %1$s'"
+msgid "Debug mode has been enabled!"
+msgstr ""
 
-#: ajax/switchdebug.php:47 inc/html.class.php:5999
-msgid "on"
-msgstr "Ebben"
-
-#: ajax/switchdebug.php:47 inc/html.class.php:5999
-msgid "off"
-msgstr "ki"
+#: ajax/switchdebug.php:47
+msgid "Debug mode has been disabled!"
+msgstr ""
 
 #: ajax/telemetry.php:42
 msgid ""
@@ -994,7 +989,7 @@ msgstr ""
 #: ajax/ticketassigninformation.php:108 ajax/ticketassigninformation.php:109
 #: inc/change.class.php:501 inc/commonitilobject.class.php:3681
 #: inc/commonitilobject.class.php:3682 inc/problem.class.php:552
-#: inc/ticket.class.php:3497 install/update_084_085.php:2011
+#: inc/ticket.class.php:3483 install/update_084_085.php:2011
 msgid "Processing"
 msgstr "Feldolgozás"
 
@@ -1080,7 +1075,7 @@ msgid "Access denied"
 msgstr "Hozzáférés megtagadva"
 
 #: front/allassets.php:43 inc/config.class.php:519 inc/html.class.php:1433
-#: inc/savedsearch.class.php:869 inc/stat.class.php:1212
+#: inc/savedsearch.class.php:875 inc/stat.class.php:1212
 #: inc/stat.class.php:1224 inc/stat.class.php:1233
 msgid "Global"
 msgstr "Globális"
@@ -1173,7 +1168,7 @@ msgstr "Új verzió ellenőrzése"
 
 #: front/backup.php:602 front/report.contract.list.php:175
 #: front/report.year.list.php:131 inc/notificationtargetticket.class.php:756
-#: inc/problem.class.php:925 inc/ticket.class.php:5831
+#: inc/problem.class.php:925 inc/ticket.class.php:5804
 msgid "Deleted"
 msgstr "Törölve"
 
@@ -1206,11 +1201,11 @@ msgstr "Méret"
 #: front/backup.php:620 front/report.contract.php:62 front/report.year.php:63
 #: inc/commonitilobject.class.php:4513 inc/commonitilobject.class.php:5463
 #: inc/commonitiltask.class.php:584 inc/commonitiltask.class.php:789
-#: inc/commonitiltask.class.php:1444 inc/commonitiltask.class.php:1712
+#: inc/commonitiltask.class.php:1449 inc/commonitiltask.class.php:1717
 #: inc/crontask.class.php:1100 inc/crontask.class.php:1157
 #: inc/document_item.class.php:788 inc/event.class.php:272
 #: inc/event.class.php:327 inc/item_devicebattery.class.php:59
-#: inc/knowbaseitem.class.php:1673 inc/log.class.php:287
+#: inc/knowbaseitem.class.php:1674 inc/log.class.php:287
 #: inc/notificationtargetchange.class.php:297
 #: inc/notificationtargetchange.class.php:301
 #: inc/notificationtargetchange.class.php:359
@@ -1228,7 +1223,7 @@ msgstr "Méret"
 #: inc/notificationtargetticket.class.php:916
 #: inc/notificationtargetticket.class.php:923
 #: inc/notimportedemail.class.php:199 inc/project.class.php:729
-#: inc/ticket.class.php:3065 inc/ticket.class.php:7676
+#: inc/ticket.class.php:3051 inc/ticket.class.php:7641
 #: inc/ticketfollowup.class.php:693 inc/ticketfollowup.class.php:1087
 #: inc/ticketfollowup.class.php:1178
 msgid "Date"
@@ -1246,7 +1241,7 @@ msgstr "Törölhető a %s fájl  ?"
 #: inc/cartridge.class.php:660 inc/cartridge.class.php:933
 #: inc/change_ticket.class.php:287 inc/commondbrelation.class.php:1115
 #: inc/commondbtm.class.php:2207 inc/commondbtm.class.php:2217
-#: inc/commondbtm.class.php:4598 inc/commondbtm.class.php:4684
+#: inc/commondbtm.class.php:4626 inc/commondbtm.class.php:4712
 #: inc/commondbvisible.class.php:176 inc/commonitilobject.class.php:2426
 #: inc/commonitilobject.class.php:2506 inc/commonitilobject.class.php:3459
 #: inc/computer_softwarelicense.class.php:453
@@ -1261,8 +1256,8 @@ msgstr "Törölhető a %s fájl  ?"
 #: inc/netpoint.class.php:327 inc/notepad.class.php:363
 #: inc/problem_ticket.class.php:327 inc/profile_user.class.php:327
 #: inc/reservation.class.php:759 inc/rule.class.php:2779
-#: inc/ticket.class.php:5207 inc/ticket.class.php:7168
-#: inc/ticket.class.php:7169 inc/ticketfollowup.class.php:810
+#: inc/ticket.class.php:5180 inc/ticket.class.php:7141
+#: inc/ticket.class.php:7142 inc/ticketfollowup.class.php:810
 #: inc/ticketfollowup.class.php:1033 inc/tickettask.class.php:306
 #: inc/ticket_ticket.class.php:181 inc/transfer.class.php:3322
 #: inc/transfer.class.php:3327 inc/transfer.class.php:3344
@@ -1316,7 +1311,7 @@ msgstr "Letöltés"
 #: front/sla.form.php:50 front/slm.form.php:54 front/software.form.php:52
 #: front/supplier.form.php:51 front/transfer.form.php:50
 #: front/user.form.php:68 front/user.form.php:178
-#: inc/rulecollection.class.php:1368 inc/ticket.class.php:2006
+#: inc/rulecollection.class.php:1368 inc/ticket.class.php:1992
 #, php-format
 msgid "%1$s adds the item %2$s"
 msgstr "%1$s hozzáadta a %2$s elemet"
@@ -1490,7 +1485,7 @@ msgstr ""
 #: front/change_ticket.form.php:42 front/change_ticket.form.php:48
 #: front/item_ticket.form.php:51 front/problem_ticket.form.php:43
 #: front/problem_ticket.form.php:49 inc/document_item.class.php:146
-#: inc/ticket.class.php:1120 inc/ticket.class.php:1763
+#: inc/ticket.class.php:1120 inc/ticket.class.php:1748
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
 msgstr "Kötelező mező nincs kitöltve. Kérem javítsa: %s"
@@ -1526,7 +1521,7 @@ msgstr[1] "Változások"
 
 #: front/change_ticket.form.php:49 front/problem_ticket.form.php:50
 #: inc/commonitilcost.class.php:543 inc/document_item.class.php:500
-#: inc/entity.class.php:1979 inc/event.class.php:153 inc/html.class.php:6099
+#: inc/entity.class.php:1979 inc/event.class.php:153 inc/html.class.php:6102
 #: inc/notificationtargetchange.class.php:332
 #: inc/notificationtargetchange.class.php:346
 #: inc/notificationtargetchange.class.php:358
@@ -1551,7 +1546,7 @@ msgstr[1] "Változások"
 #: inc/notificationtargetprojecttask.class.php:570 inc/profile.class.php:648
 #: inc/profile.class.php:1000 inc/profile.class.php:1021
 #: inc/profile.class.php:1032 inc/ticket.class.php:164
-#: inc/ticket.class.php:2159 inc/ticket.class.php:5795
+#: inc/ticket.class.php:2145 inc/ticket.class.php:5768
 #: inc/ticket_ticket.class.php:66 inc/transfer.class.php:3350
 msgid "Ticket"
 msgid_plural "Tickets"
@@ -1734,21 +1729,21 @@ msgstr "%s feladat végrehajtva."
 #: inc/commonglpi.class.php:501 inc/commonitilcost.class.php:577
 #: inc/commonitilobject.class.php:5278 inc/commonitilobject.class.php:5298
 #: inc/commonitilobject.class.php:5386 inc/commonitilobject.class.php:5431
-#: inc/commonitiltask.class.php:1963 inc/contact_supplier.class.php:375
+#: inc/commonitiltask.class.php:1968 inc/contact_supplier.class.php:375
 #: inc/contractcost.class.php:398 inc/contract_item.class.php:105
 #: inc/contract_item.class.php:499 inc/crontask.class.php:831
 #: inc/crontask.class.php:839 inc/crontask.class.php:853
 #: inc/dropdown.class.php:358 inc/dropdown.class.php:637
 #: inc/dropdown.class.php:1557 inc/group.class.php:501 inc/group.class.php:509
-#: inc/html.class.php:151 inc/html.class.php:3976
+#: inc/html.class.php:151 inc/html.class.php:3977
 #: inc/item_ticket.class.php:1273 inc/log.class.php:681 inc/log.class.php:692
 #: inc/networkportinstantiation.class.php:773 inc/problem.class.php:964
 #: inc/problem.class.php:995 inc/profile_user.class.php:230
 #: inc/profile_user.class.php:395 inc/profile_user.class.php:552
 #: inc/project.class.php:860 inc/project.class.php:889
-#: inc/projectcost.class.php:394 inc/projecttask.class.php:1061
+#: inc/projectcost.class.php:394 inc/projecttask.class.php:1066
 #: inc/projecttask_ticket.class.php:357 inc/projecttask_ticket.class.php:366
-#: inc/reminder.class.php:1113 inc/reservation.class.php:471
+#: inc/reminder.class.php:1119 inc/reservation.class.php:471
 #: inc/rule.class.php:1862 inc/rule.class.php:1876
 #: inc/ruleticket.class.php:465 inc/ruleticket.class.php:473
 #: inc/ruleticket.class.php:481 inc/ruleticket.class.php:489
@@ -1763,10 +1758,10 @@ msgstr "%s feladat végrehajtva."
 #: inc/search.class.php:2009 inc/search.class.php:2010
 #: inc/search.class.php:4478 inc/search.class.php:4517
 #: inc/search.class.php:4546 inc/search.class.php:4585
-#: inc/search.class.php:4972 inc/search.class.php:5134
-#: inc/ticket.class.php:6176 inc/ticket.class.php:6227
+#: inc/search.class.php:4973 inc/search.class.php:5135
+#: inc/ticket.class.php:6149 inc/ticket.class.php:6200
 #: inc/ticket_ticket.class.php:188 inc/ticket_ticket.class.php:190
-#: inc/toolbox.class.php:1056 inc/toolbox.class.php:1217
+#: inc/toolbox.class.php:1058 inc/toolbox.class.php:1219
 #: inc/useremail.class.php:165 install/update_0681_07.php:534
 #: install/update_0681_07.php:537 install/update_0681_07.php:542
 #: install/update_0681_07.php:545
@@ -1869,7 +1864,7 @@ msgstr[1] "Szoftverek"
 #: inc/ruledictionnaryprinter.class.php:79
 #: inc/ruledictionnaryprinter.class.php:103
 #: inc/ruledictionnaryprintermodel.class.php:60
-#: inc/ruleimportcomputer.class.php:109 inc/search.class.php:5696
+#: inc/ruleimportcomputer.class.php:109 inc/search.class.php:5708
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "Gyártó"
@@ -1978,7 +1973,7 @@ msgstr[1] "Telefon modellek"
 #: inc/certificate.class.php:111 inc/certificate.class.php:386
 #: inc/certificate_item.class.php:278 inc/certificate_item.class.php:492
 #: inc/change_item.class.php:166 inc/commondbvisible.class.php:195
-#: inc/commonitiltask.class.php:1712 inc/computer.class.php:396
+#: inc/commonitiltask.class.php:1717 inc/computer.class.php:396
 #: inc/computer.class.php:624 inc/computer_item.class.php:445
 #: inc/consumableitem.class.php:148 inc/consumableitem.class.php:263
 #: inc/contact.class.php:215 inc/contact.class.php:394
@@ -2027,9 +2022,9 @@ msgstr[1] "Telefon modellek"
 #: inc/peripheral.class.php:384 inc/phone.class.php:196
 #: inc/phone.class.php:403 inc/printer.class.php:299 inc/printer.class.php:531
 #: inc/project.class.php:467 inc/project.class.php:1082
-#: inc/project.class.php:1269 inc/projecttask.class.php:518
-#: inc/projecttask.class.php:769 inc/projecttask.class.php:925
-#: inc/projecttask.class.php:1203 inc/projecttasktemplate.class.php:61
+#: inc/project.class.php:1269 inc/projecttask.class.php:523
+#: inc/projecttask.class.php:774 inc/projecttask.class.php:930
+#: inc/projecttask.class.php:1208 inc/projecttasktemplate.class.php:61
 #: inc/projecttasktemplate.class.php:113 inc/projecttask_ticket.class.php:277
 #: inc/queuednotification.class.php:326 inc/queuednotification.class.php:669
 #: inc/rack.class.php:129 inc/rack.class.php:368
@@ -2048,9 +2043,9 @@ msgstr[1] "Telefon modellek"
 #: inc/ruledictionnaryprintertype.class.php:69 inc/ruleticket.class.php:348
 #: inc/ruleticket.class.php:507 inc/softwarelicense.class.php:338
 #: inc/softwarelicense.class.php:542 inc/softwarelicense.class.php:997
-#: inc/supplier.class.php:485 inc/ticket.class.php:2765
-#: inc/ticket.class.php:2972 inc/ticket.class.php:3868
-#: inc/ticket.class.php:4720 inc/user.class.php:3810 inc/user.class.php:3890
+#: inc/supplier.class.php:485 inc/ticket.class.php:2751
+#: inc/ticket.class.php:2958 inc/ticket.class.php:3854
+#: inc/ticket.class.php:4706 inc/user.class.php:3810 inc/user.class.php:3890
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Típus"
@@ -2159,7 +2154,7 @@ msgstr "Lehetőségek mutatása"
 #: front/dropdown.php:37 front/plugin.php:89 front/rulesengine.test.php:61
 #: front/rule.test.php:62 front/setup.auth.php:43 inc/auth.class.php:115
 #: inc/config.class.php:62 inc/event.class.php:159 inc/html.class.php:1350
-#: inc/html.class.php:6373 inc/notificationsetting.class.php:92
+#: inc/html.class.php:6376 inc/notificationsetting.class.php:92
 #: inc/profile.class.php:103 inc/profile.class.php:1477
 #: inc/profile.class.php:1836
 msgid "Setup"
@@ -2210,7 +2205,7 @@ msgid "Search the ID of your hardware"
 msgstr "Számítógép keresése azonosító (ID) alapján"
 
 #: front/find_num.php:81 inc/authldap.class.php:3190 inc/knowbase.class.php:65
-#: inc/knowbaseitem.class.php:1014 inc/planning.class.php:365
+#: inc/knowbaseitem.class.php:1014 inc/planning.class.php:368
 #: inc/reservationitem.class.php:423 inc/search.class.php:2127
 msgctxt "button"
 msgid "Search"
@@ -2227,11 +2222,11 @@ msgstr "Keresés"
 #: inc/notificationtargetticket.class.php:752 inc/peripheral.class.php:243
 #: inc/peripheral.class.php:425 inc/phone.class.php:238
 #: inc/phone.class.php:444 inc/printer.class.php:341 inc/printer.class.php:572
-#: inc/search.class.php:5676
+#: inc/search.class.php:5688
 msgid "Alternate username"
 msgstr "Kapcsolattartó"
 
-#: front/find_num.php:90 inc/ticket.class.php:3930
+#: front/find_num.php:90 inc/ticket.class.php:3916
 msgid "Hardware type"
 msgstr "Hardver fajtája"
 
@@ -2246,8 +2241,8 @@ msgstr "Hardver fajtája"
 #: inc/notificationtargetticket.class.php:746
 #: inc/notificationtargetticket.class.php:749 inc/problem.class.php:434
 #: inc/ruleticket.class.php:579 inc/stat.class.php:1155
-#: inc/ticket.class.php:2774 inc/ticket.class.php:4980
-#: inc/ticket.class.php:5689
+#: inc/ticket.class.php:2760 inc/ticket.class.php:4967
+#: inc/ticket.class.php:5662
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "Kapcsolódó elem"
@@ -2257,10 +2252,10 @@ msgstr[1] "Kapcsolódó elemek"
 #: inc/authmail.class.php:103 inc/budget.class.php:205
 #: inc/cartridge.class.php:696 inc/cartridge.class.php:963
 #: inc/cartridgeitem.class.php:289 inc/certificate.class.php:84
-#: inc/commondbrelation.class.php:283 inc/commondbtm.class.php:3754
+#: inc/commondbrelation.class.php:283 inc/commondbtm.class.php:3782
 #: inc/commondropdown.class.php:487 inc/commonitilcost.class.php:110
 #: inc/commonitilobject.class.php:2785 inc/commonitilobject.class.php:5219
-#: inc/commonitiltask.class.php:1899 inc/commonitiltask.class.php:1948
+#: inc/commonitiltask.class.php:1904 inc/commonitiltask.class.php:1953
 #: inc/commontreedropdown.class.php:709 inc/computer.class.php:613
 #: inc/computer_softwarelicense.class.php:78 inc/consumable.class.php:548
 #: inc/consumableitem.class.php:246 inc/contact.class.php:306
@@ -2271,7 +2266,7 @@ msgstr[1] "Kapcsolódó elemek"
 #: inc/entity.class.php:482 inc/event.class.php:326
 #: inc/fieldunicity.class.php:322 inc/group_user.class.php:611
 #: inc/infocom.class.php:1626 inc/infocom.class.php:1825
-#: inc/knowbaseitem.class.php:1656 inc/levelagreement.class.php:663
+#: inc/knowbaseitem.class.php:1657 inc/levelagreement.class.php:663
 #: inc/link.class.php:218 inc/log.class.php:286 inc/monitor.class.php:402
 #: inc/networkequipment.class.php:451 inc/networkname.class.php:200
 #: inc/networkport.class.php:1020 inc/networkport.class.php:1080
@@ -2296,10 +2291,10 @@ msgstr[1] "Kapcsolódó elemek"
 #: inc/project.class.php:727 inc/projectcost.class.php:135
 #: inc/queuednotification.class.php:190 inc/rack.class.php:357
 #: inc/reservationitem.class.php:172 inc/savedsearch.class.php:201
-#: inc/search.class.php:5627 inc/search.class.php:5648 inc/slm.class.php:153
+#: inc/search.class.php:5639 inc/search.class.php:5660 inc/slm.class.php:153
 #: inc/software.class.php:474 inc/softwarelicense.class.php:510
 #: inc/softwarelicense.class.php:1210 inc/supplier.class.php:238
-#: inc/ticket.class.php:6166 inc/ticket_ticket.class.php:66
+#: inc/ticket.class.php:6139 inc/ticket_ticket.class.php:66
 #: inc/user.class.php:2736 inc/user.class.php:4403
 msgid "ID"
 msgstr "ID"
@@ -2307,7 +2302,7 @@ msgstr "ID"
 #: front/find_num.php:93 inc/blacklist.class.php:229 inc/budget.class.php:335
 #: inc/certificate.class.php:93 inc/certificate.class.php:409
 #: inc/certificate_item.class.php:283 inc/change_item.class.php:169
-#: inc/commondbtm.class.php:3030 inc/commondbtm.class.php:3755
+#: inc/commondbtm.class.php:3030 inc/commondbtm.class.php:3783
 #: inc/computer.class.php:440 inc/computer.class.php:665
 #: inc/computer_item.class.php:451 inc/computer_item.class.php:597
 #: inc/computer_softwarelicense.class.php:482
@@ -2334,7 +2329,7 @@ msgstr "ID"
 #: inc/peripheral.class.php:409 inc/phone.class.php:232
 #: inc/phone.class.php:428 inc/printer.class.php:335 inc/printer.class.php:556
 #: inc/rack.class.php:176 inc/rack.class.php:393
-#: inc/ruleimportcomputer.class.php:103 inc/search.class.php:5659
+#: inc/ruleimportcomputer.class.php:103 inc/search.class.php:5671
 #: inc/softwarelicense.class.php:364 inc/softwarelicense.class.php:522
 #: inc/softwarelicense.class.php:994 inc/softwarelicense.class.php:1211
 #: inc/supplier.class.php:488 inc/user.class.php:3813 inc/user.class.php:3893
@@ -2364,7 +2359,7 @@ msgstr "Sorozatszám"
 #: inc/phone.class.php:243 inc/phone.class.php:436 inc/printer.class.php:347
 #: inc/printer.class.php:564 inc/rack.class.php:181 inc/rack.class.php:401
 #: inc/rack.class.php:1057 inc/reservationitem.class.php:200
-#: inc/search.class.php:5663 inc/softwarelicense.class.php:378
+#: inc/search.class.php:5675 inc/softwarelicense.class.php:378
 #: inc/softwarelicense.class.php:679 inc/supplier.class.php:489
 #: inc/user.class.php:3814 inc/user.class.php:3894
 msgid "Inventory number"
@@ -2415,7 +2410,7 @@ msgstr "%s felhasználót vett fel egy csoportba"
 #: front/knowbaseitemtranslation.form.php:77
 #: front/knowbaseitemtranslation.form.php:81
 #: front/knowbaseitemtranslation.form.php:84 inc/commondropdown.class.php:913
-#: inc/html.class.php:6117 inc/knowbaseitem.class.php:84
+#: inc/html.class.php:6120 inc/knowbaseitem.class.php:84
 #: inc/profile.class.php:740
 msgid "FAQ"
 msgstr "GY.I.K."
@@ -2470,7 +2465,7 @@ msgstr ""
 
 #: front/helpdesk.php:105 inc/change.class.php:792
 #: inc/commonitilcost.class.php:100 inc/commonitilobject.class.php:2760
-#: inc/commonitilobject.class.php:5477 inc/commonitiltask.class.php:1906
+#: inc/commonitilobject.class.php:5477 inc/commonitiltask.class.php:1911
 #: inc/contact.class.php:402 inc/contractcost.class.php:128
 #: inc/notificationtargetchange.class.php:361
 #: inc/notificationtargetchange.class.php:366
@@ -2485,14 +2480,14 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:926 inc/problem.class.php:1207
 #: inc/projectcost.class.php:125 inc/reminder.class.php:312
 #: inc/reminder.class.php:637 inc/ruleticket.class.php:332
-#: inc/ticket.class.php:3995 inc/ticket.class.php:5033 inc/user.class.php:3003
+#: inc/ticket.class.php:3981 inc/ticket.class.php:5006 inc/user.class.php:3003
 msgid "Title"
 msgstr "Cím"
 
 #: front/helpdesk.php:109 inc/blacklistedmailcontent.class.php:70
 #: inc/blacklistedmailcontent.class.php:84 inc/knowbaseitem.class.php:794
-#: inc/knowbaseitem.class.php:925 inc/knowbaseitem.class.php:1415
-#: inc/knowbaseitem.class.php:1690 inc/knowbaseitem_revision.class.php:209
+#: inc/knowbaseitem.class.php:925 inc/knowbaseitem.class.php:1416
+#: inc/knowbaseitem.class.php:1691 inc/knowbaseitem_revision.class.php:209
 #: inc/knowbaseitem_revision.class.php:246
 #: inc/knowbaseitemtranslation.class.php:162
 #: inc/knowbaseitemtranslation.class.php:308 inc/rssfeed.class.php:450
@@ -2507,13 +2502,13 @@ msgid "post"
 msgstr ""
 
 #: front/helpdesk.public.php:92 front/ticket.form.php:229
-#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4570
+#: inc/notificationtargetticket.class.php:224 inc/ticket.class.php:4556
 msgid "New ticket"
 msgstr "Új bejelentés"
 
 #: front/helpdesk.public.php:97 inc/html.class.php:1496
-#: inc/html.class.php:1653 inc/html.class.php:1727 inc/html.class.php:6136
-#: inc/html.class.php:6251 inc/html.class.php:6252
+#: inc/html.class.php:1653 inc/html.class.php:1727 inc/html.class.php:6139
+#: inc/html.class.php:6254 inc/html.class.php:6255
 msgid "Home"
 msgstr "Fel"
 
@@ -2777,12 +2772,12 @@ msgstr ""
 msgid "%s purges an ola level"
 msgstr ""
 
-#: front/planning.php:137 inc/commonitiltask.class.php:1548
-#: inc/commonitiltask.class.php:1718 inc/event.class.php:147
+#: front/planning.php:137 inc/commonitiltask.class.php:1553
+#: inc/commonitiltask.class.php:1723 inc/event.class.php:147
 #: inc/event.class.php:155 inc/planning.class.php:74
 #: inc/profile.class.php:1092 inc/profile.class.php:2209
-#: inc/project.class.php:1110 inc/projecttask.class.php:547
-#: inc/reminder.class.php:368 inc/reminder.class.php:1123
+#: inc/project.class.php:1110 inc/projecttask.class.php:552
+#: inc/reminder.class.php:368 inc/reminder.class.php:1129
 #: inc/reservationitem.class.php:181
 msgid "Planning"
 msgstr "Tervezés"
@@ -2856,7 +2851,7 @@ msgstr "Szerződéses hardverek"
 #: inc/cartridgeitem.class.php:280 inc/certificate.class.php:75
 #: inc/certificate.class.php:362 inc/certificate_item.class.php:279
 #: inc/certificate_item.class.php:488 inc/change_item.class.php:168
-#: inc/commondbtm.class.php:3367 inc/commondevice.class.php:209
+#: inc/commondbtm.class.php:3391 inc/commondevice.class.php:209
 #: inc/commondropdown.class.php:245 inc/commondropdown.class.php:478
 #: inc/commonitilcost.class.php:398 inc/commonitilcost.class.php:546
 #: inc/commontreedropdown.class.php:501 inc/commontreedropdown.class.php:526
@@ -2881,7 +2876,7 @@ msgstr "Szerződéses hardverek"
 #: inc/contract_item.class.php:694 inc/contract_supplier.class.php:215
 #: inc/crontask.class.php:449 inc/crontask.class.php:1321
 #: inc/datacenter.class.php:65 inc/datacenter.class.php:98
-#: inc/dbutils.class.php:1578 inc/dcroom.class.php:76 inc/dcroom.class.php:235
+#: inc/dbutils.class.php:1580 inc/dcroom.class.php:76 inc/dcroom.class.php:235
 #: inc/dcroom.class.php:392 inc/document.class.php:377
 #: inc/document.class.php:800 inc/document_item.class.php:415
 #: inc/document_item.class.php:779 inc/enclosure.class.php:76
@@ -2939,8 +2934,8 @@ msgstr "Szerződéses hardverek"
 #: inc/profile.class.php:593 inc/profile.class.php:1505
 #: inc/project.class.php:409 inc/project.class.php:739
 #: inc/project.class.php:1042 inc/projectcost.class.php:283
-#: inc/projectcost.class.php:372 inc/projecttask.class.php:506
-#: inc/projecttask.class.php:721 inc/rack.class.php:89 inc/rack.class.php:348
+#: inc/projectcost.class.php:372 inc/projecttask.class.php:511
+#: inc/projecttask.class.php:726 inc/rack.class.php:89 inc/rack.class.php:348
 #: inc/rack.class.php:582 inc/reservationitem.class.php:160
 #: inc/rssfeed.class.php:332 inc/rssfeed.class.php:599 inc/rule.class.php:691
 #: inc/rule.class.php:858 inc/rule.class.php:2724
@@ -2950,7 +2945,7 @@ msgstr "Szerződéses hardverek"
 #: inc/ruledictionnaryprinter.class.php:97 inc/ruleright.class.php:69
 #: inc/savedsearch_alert.class.php:141 inc/savedsearch_alert.class.php:252
 #: inc/savedsearch.class.php:193 inc/savedsearch.class.php:377
-#: inc/search.class.php:5621 inc/search.class.php:5642
+#: inc/search.class.php:5633 inc/search.class.php:5654
 #: inc/slalevel.class.php:97 inc/slalevel.class.php:142
 #: inc/slalevel.class.php:227 inc/slm.class.php:110 inc/slm.class.php:144
 #: inc/software.class.php:257 inc/software.class.php:465
@@ -2974,7 +2969,7 @@ msgstr "Név"
 #: inc/commondbtm.class.php:3050 inc/computer.class.php:389
 #: inc/computer_softwarelicense.class.php:484
 #: inc/computer_softwareversion.class.php:327 inc/config.class.php:555
-#: inc/datacenter.class.php:70 inc/dbutils.class.php:1603
+#: inc/datacenter.class.php:70 inc/dbutils.class.php:1605
 #: inc/dcroom.class.php:81 inc/dropdown.class.php:412
 #: inc/dropdown.class.php:770 inc/enclosure.class.php:111
 #: inc/item_devices.class.php:189 inc/item_devices.class.php:190
@@ -2989,8 +2984,8 @@ msgstr "Név"
 #: inc/printer.class.php:294 inc/profile.class.php:1436 inc/rack.class.php:121
 #: inc/ruleimportentity.class.php:165 inc/ruleticket.class.php:647
 #: inc/software.class.php:266 inc/softwarelicense.class.php:334
-#: inc/ticket.class.php:2816 inc/ticket.class.php:3941
-#: inc/ticket.class.php:4932 inc/user.class.php:2145 inc/user.class.php:2260
+#: inc/ticket.class.php:2802 inc/ticket.class.php:3927
+#: inc/ticket.class.php:4918 inc/user.class.php:2145 inc/user.class.php:2260
 #: inc/user.class.php:2492
 msgid "Location"
 msgid_plural "Locations"
@@ -3029,7 +3024,7 @@ msgstr[1] "Szerződés típusok"
 #: inc/crontask.class.php:1001 inc/dropdown.class.php:426
 #: inc/notificationtargetcommonitilobject.class.php:1258
 #: inc/notificationtargetplanningrecall.class.php:182
-#: inc/notificationtargetreservation.class.php:157 inc/planning.class.php:1670
+#: inc/notificationtargetreservation.class.php:157 inc/planning.class.php:1673
 #: inc/reservation.class.php:692 inc/reservation.class.php:1084
 #: inc/reservation.class.php:1132 inc/reservation.class.php:1200
 #: inc/reservation.class.php:1263 inc/reservationitem.class.php:419
@@ -3233,12 +3228,12 @@ msgstr "%s töröl egy figyelmeztetést"
 msgid "%s updates an alert"
 msgstr "%sfrissít egy figyelmeztetést"
 
-#: front/savedsearch.php:37 inc/html.class.php:6014 inc/html.class.php:6023
+#: front/savedsearch.php:37 inc/html.class.php:6017 inc/html.class.php:6026
 msgid "Saved searches"
 msgstr "Mentett keresések"
 
-#: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6050
-#: inc/html.class.php:6329 inc/html.class.php:6330 inc/location.class.php:465
+#: front/search.php:36 inc/entity.class.php:1105 inc/html.class.php:6053
+#: inc/html.class.php:6332 inc/html.class.php:6333 inc/location.class.php:465
 #: inc/location.class.php:466
 msgid "Search"
 msgstr "Keresés"
@@ -3290,7 +3285,7 @@ msgid_plural "Notifications"
 msgstr[0] "Értesítés"
 msgstr[1] "Értesítések"
 
-#: front/setup.templates.php:55 inc/html.class.php:6349
+#: front/setup.templates.php:55 inc/html.class.php:6352
 msgid "Manage templates..."
 msgstr "Sablonok kezelése"
 
@@ -3413,8 +3408,8 @@ msgid "Real duration"
 msgstr "Valós időtartam"
 
 #: front/stat.global.php:161 front/stat.graph.php:439
-#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:2965
-#: inc/ticket.class.php:5664
+#: inc/notificationtargetticket.class.php:241 inc/ticket.class.php:2951
+#: inc/ticket.class.php:5637
 msgid "Satisfaction survey"
 msgstr "Elégedettségi felmérés"
 
@@ -3440,7 +3435,7 @@ msgstr[1] "Válaszolva"
 #: front/stat.graph.php:458 front/stat.graph.php:461
 #: inc/notificationtargetticket.class.php:825
 #: inc/notificationtargetticket.class.php:898 inc/stat.class.php:408
-#: inc/ticket.class.php:782 inc/ticket.class.php:3010
+#: inc/ticket.class.php:782 inc/ticket.class.php:2996
 #: inc/ticketsatisfaction.class.php:44
 msgid "Satisfaction"
 msgstr "Elégedettség"
@@ -3474,13 +3469,13 @@ msgstr[1] "Szállítók"
 #: inc/certificate.class.php:433 inc/commondbtm.class.php:3058
 #: inc/commondbvisible.class.php:210 inc/commonitilactor.class.php:181
 #: inc/commonitilactor.class.php:261 inc/commonitilobject.class.php:3329
-#: inc/commonitilobject.class.php:3487 inc/commonitiltask.class.php:1503
-#: inc/commonitilvalidation.class.php:653
-#: inc/commonitilvalidation.class.php:1338 inc/computer.class.php:471
+#: inc/commonitilobject.class.php:3487 inc/commonitiltask.class.php:1508
+#: inc/commonitilvalidation.class.php:613
+#: inc/commonitilvalidation.class.php:1298 inc/computer.class.php:471
 #: inc/computer.class.php:705 inc/computer_softwarelicense.class.php:487
 #: inc/computer_softwareversion.class.php:330 inc/config.class.php:553
 #: inc/dropdown.class.php:1017 inc/group.class.php:307
-#: inc/group_user.class.php:638 inc/knowbaseitem.class.php:1741
+#: inc/group_user.class.php:638 inc/knowbaseitem.class.php:1742
 #: inc/line.class.php:139 inc/line.class.php:197 inc/log.class.php:288
 #: inc/monitor.class.php:263 inc/monitor.class.php:470
 #: inc/networkequipment.class.php:352 inc/networkequipment.class.php:519
@@ -3494,15 +3489,15 @@ msgstr[1] "Szállítók"
 #: inc/notificationtargetticket.class.php:754
 #: inc/notificationtargetuser.class.php:50 inc/peripheral.class.php:259
 #: inc/peripheral.class.php:441 inc/phone.class.php:253
-#: inc/phone.class.php:468 inc/planning.class.php:1350
-#: inc/planning.class.php:1392 inc/printer.class.php:357
+#: inc/phone.class.php:468 inc/planning.class.php:1353
+#: inc/planning.class.php:1395 inc/printer.class.php:357
 #: inc/printer.class.php:588 inc/profile.class.php:1326
 #: inc/profile.class.php:2076 inc/profile_user.class.php:294
 #: inc/profile_user.class.php:334 inc/profile_user.class.php:481
 #: inc/profile_user.class.php:900 inc/project.class.php:1095
 #: inc/reservationitem.class.php:217 inc/rulecollection.class.php:809
 #: inc/rulemailcollector.class.php:127 inc/ruleticket.class.php:618
-#: inc/savedsearch.class.php:209 inc/search.class.php:5672
+#: inc/savedsearch.class.php:209 inc/search.class.php:5684
 #: inc/software.class.php:299 inc/software.class.php:547
 #: inc/softwarelicense.class.php:370 inc/softwarelicense.class.php:645
 #: inc/ticketfollowup.class.php:1194 inc/user.class.php:62
@@ -3517,20 +3512,20 @@ msgstr[1] "Felhasználók"
 #: inc/auth.class.php:1430 inc/authldap.class.php:773
 #: inc/authldap.class.php:977 inc/authldap.class.php:3146
 #: inc/change.class.php:744 inc/commonitilobject.class.php:2902
-#: inc/commonitilobject.class.php:5476 inc/commonitiltask.class.php:1457
-#: inc/commonitiltask.class.php:1742
-#: inc/computer_softwareversion.class.php:743 inc/dbutils.class.php:1615
+#: inc/commonitilobject.class.php:5476 inc/commonitiltask.class.php:1462
+#: inc/commonitiltask.class.php:1747
+#: inc/computer_softwareversion.class.php:743 inc/dbutils.class.php:1617
 #: inc/knowbaseitem.class.php:914 inc/knowbaseitem.class.php:1060
-#: inc/knowbaseitem.class.php:1359 inc/knowbaseitem.class.php:1421
-#: inc/knowbaseitem.class.php:1665
+#: inc/knowbaseitem.class.php:1360 inc/knowbaseitem.class.php:1422
+#: inc/knowbaseitem.class.php:1666
 #: inc/notificationtargetcommonitilobject.class.php:1172
 #: inc/notificationtargetcommonitilobject.class.php:1194
 #: inc/notificationtargetcommonitilobject.class.php:1253
 #: inc/problem.class.php:1171 inc/ruledictionnarysoftware.class.php:128
 #: inc/rulesoftwarecategory.class.php:96 inc/ruleticket.class.php:342
 #: inc/ruleticket.class.php:503 inc/software.class.php:270
-#: inc/software.class.php:493 inc/ticket.class.php:3875
-#: inc/ticket.class.php:4745 inc/user.class.php:2118 inc/user.class.php:3011
+#: inc/software.class.php:493 inc/ticket.class.php:3861
+#: inc/ticket.class.php:4731 inc/user.class.php:2118 inc/user.class.php:3011
 msgid "Category"
 msgstr "Kategória"
 
@@ -3540,8 +3535,8 @@ msgstr "Kategória"
 #: inc/certificate.class.php:240 inc/certificate.class.php:439
 #: inc/commondbtm.class.php:3067 inc/commondbvisible.class.php:227
 #: inc/commonitilobject.class.php:3347 inc/commonitilobject.class.php:3490
-#: inc/commonitiltask.class.php:1532 inc/commonitilvalidation.class.php:654
-#: inc/commonitilvalidation.class.php:1339 inc/computer.class.php:486
+#: inc/commonitiltask.class.php:1537 inc/commonitilvalidation.class.php:614
+#: inc/commonitilvalidation.class.php:1299 inc/computer.class.php:486
 #: inc/computer.class.php:714 inc/computer_softwarelicense.class.php:486
 #: inc/computer_softwareversion.class.php:329 inc/config.class.php:554
 #: inc/group.class.php:50 inc/group_user.class.php:629
@@ -3554,13 +3549,13 @@ msgstr "Kategória"
 #: inc/notificationtargetproject.class.php:604
 #: inc/notificationtargetticket.class.php:755 inc/peripheral.class.php:277
 #: inc/peripheral.class.php:450 inc/phone.class.php:271
-#: inc/phone.class.php:477 inc/planning.class.php:1354
-#: inc/planning.class.php:1438 inc/planning.class.php:1532
+#: inc/phone.class.php:477 inc/planning.class.php:1357
+#: inc/planning.class.php:1441 inc/planning.class.php:1535
 #: inc/printer.class.php:377 inc/printer.class.php:597
 #: inc/profile.class.php:1333 inc/profile.class.php:2090
 #: inc/project.class.php:1102 inc/reservationitem.class.php:227
 #: inc/ruleimportentity.class.php:169 inc/rulemailcollector.class.php:128
-#: inc/ruleticket.class.php:624 inc/search.class.php:5686
+#: inc/ruleticket.class.php:624 inc/search.class.php:5698
 #: inc/software.class.php:307 inc/software.class.php:556
 #: inc/softwarelicense.class.php:388 inc/softwarelicense.class.php:654
 #: inc/tasktemplate.class.php:78 inc/user.class.php:2827
@@ -3572,12 +3567,12 @@ msgstr[1] "Csoportok"
 
 #: front/stat.graph.php:178 front/stat.tracking.php:88
 #: inc/change.class.php:760 inc/commonitilobject.class.php:2821
-#: inc/commonitilobject.class.php:5470 inc/commonitiltask.class.php:1168
+#: inc/commonitilobject.class.php:5470 inc/commonitiltask.class.php:1173
 #: inc/notificationtargetcommonitilobject.class.php:1179
 #: inc/notificationtargetproject.class.php:558 inc/problem.class.php:1186
 #: inc/project.class.php:458 inc/project.class.php:736
 #: inc/project.class.php:1053 inc/ruleticket.class.php:450
-#: inc/ruleticket.class.php:572 inc/ticket.class.php:4948
+#: inc/ruleticket.class.php:572 inc/ticket.class.php:4934
 msgid "Priority"
 msgstr "Prioritás"
 
@@ -3586,8 +3581,8 @@ msgstr "Prioritás"
 #: inc/config.class.php:916
 #: inc/notificationtargetcommonitilobject.class.php:1177
 #: inc/problem.class.php:1164 inc/ruleticket.class.php:444
-#: inc/ruleticket.class.php:566 inc/ticket.class.php:3903
-#: inc/ticket.class.php:4840
+#: inc/ruleticket.class.php:566 inc/ticket.class.php:3889
+#: inc/ticket.class.php:4826
 msgid "Urgency"
 msgstr "Fontosság"
 
@@ -3597,14 +3592,14 @@ msgstr "Fontosság"
 #: inc/notificationtargetchange.class.php:267
 #: inc/notificationtargetcommonitilobject.class.php:1178
 #: inc/problem.class.php:1178 inc/ruleticket.class.php:447
-#: inc/ruleticket.class.php:569 inc/ticket.class.php:4916
+#: inc/ruleticket.class.php:569 inc/ticket.class.php:4902
 msgid "Impact"
 msgstr "Terhelés"
 
 #: front/stat.graph.php:199 front/stat.tracking.php:81 inc/auth.class.php:1424
 #: inc/authldap.class.php:769 inc/authldap.class.php:968
 #: inc/authldap.class.php:3145 inc/contact.class.php:224
-#: inc/dbutils.class.php:1609
+#: inc/dbutils.class.php:1611
 #: inc/notificationtargetcommonitilobject.class.php:1193
 #: inc/user.class.php:2138
 msgctxt "person"
@@ -3626,8 +3621,8 @@ msgstr[1] "Megoldás típusok"
 #: inc/dropdown.class.php:792 inc/notificationtargetticket.class.php:725
 #: inc/notificationtargetticket.class.php:761 inc/requesttype.class.php:42
 #: inc/ruleticket.class.php:428 inc/ruleticket.class.php:652
-#: inc/ticket.class.php:2807 inc/ticket.class.php:3094
-#: inc/ticket.class.php:4824 inc/ticketfollowup.class.php:1169
+#: inc/ticket.class.php:2793 inc/ticket.class.php:3080
+#: inc/ticket.class.php:4810 inc/ticketfollowup.class.php:1169
 msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] "Igénylés forrása"
@@ -3636,7 +3631,7 @@ msgstr[1] "Igénylés források"
 #: front/stat.graph.php:287 front/stat.graph.php:288
 #: inc/commonglpi.class.php:833 inc/commonglpi.class.php:834
 #: inc/commonglpi.class.php:845 inc/html.class.php:3683
-#: inc/html.class.php:3684 inc/html.class.php:3849 inc/html.class.php:3850
+#: inc/html.class.php:3684 inc/html.class.php:3850 inc/html.class.php:3851
 #: inc/reservation.class.php:469 inc/reservation.class.php:470
 msgid "Previous"
 msgstr "Előző"
@@ -3644,13 +3639,13 @@ msgstr "Előző"
 #: front/stat.graph.php:297 front/stat.graph.php:298
 #: inc/commonglpi.class.php:886 inc/commonglpi.class.php:887
 #: inc/commonglpi.class.php:898 inc/html.class.php:3704
-#: inc/html.class.php:3705 inc/html.class.php:3906 inc/html.class.php:3907
+#: inc/html.class.php:3705 inc/html.class.php:3907 inc/html.class.php:3908
 #: inc/reservation.class.php:474 inc/reservation.class.php:475
 msgid "Next"
 msgstr "Következő"
 
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4540
-#: inc/stat.class.php:466 inc/ticket.class.php:7628
+#: inc/stat.class.php:466 inc/ticket.class.php:7593
 msgid "Take into account"
 msgstr "Figyelembe véve"
 
@@ -3686,7 +3681,7 @@ msgstr "%1$s elégedettségi felmérés (%2$s)"
 #: front/stat.tracking.php:77 front/stat.tracking.php:99
 #: inc/commonitilobject.class.php:2617 inc/commonitilobject.class.php:3048
 #: inc/commonitilobject.class.php:3057 inc/commonitilobject.class.php:3864
-#: inc/commonitilobject.class.php:5471 inc/commonitilvalidation.class.php:1213
+#: inc/commonitilobject.class.php:5471 inc/commonitilvalidation.class.php:1173
 #: inc/group.class.php:265 inc/group.class.php:469 inc/log.class.php:518
 #: inc/notificationtargetchange.class.php:294
 #: inc/notificationtargetcommonitilobject.class.php:533
@@ -3699,8 +3694,8 @@ msgstr "%1$s elégedettségi felmérés (%2$s)"
 #: inc/notificationtargetticket.class.php:788
 #: inc/notimportedemail.class.php:181 inc/problem.class.php:812
 #: inc/rulemailcollector.class.php:79 inc/ruleticket.class.php:354
-#: inc/ruleticket.class.php:511 inc/ticket.class.php:5688
-#: inc/ticket.class.php:6954 inc/ticket.class.php:7203
+#: inc/ruleticket.class.php:511 inc/ticket.class.php:5661
+#: inc/ticket.class.php:6927 inc/ticket.class.php:7192
 #: inc/ticketfollowup.class.php:1087
 msgid "Requester"
 msgid_plural "Requesters"
@@ -3708,9 +3703,9 @@ msgstr[0] "Igénylő"
 msgstr[1] "Igénylők"
 
 #: front/stat.tracking.php:78 inc/commonitilobject.class.php:3110
-#: inc/commonitiltask.class.php:717 inc/commonitiltask.class.php:1714
+#: inc/commonitiltask.class.php:717 inc/commonitiltask.class.php:1719
 #: inc/knowbaseitem.class.php:740 inc/knowbaseitem.class.php:941
-#: inc/knowbaseitem.class.php:1419 inc/notepad.class.php:220
+#: inc/knowbaseitem.class.php:1420 inc/notepad.class.php:220
 #: inc/notificationtargetcommonitilobject.class.php:534
 #: inc/notificationtargetcommonitilobject.class.php:536
 #: inc/notificationtargetcommonitilobject.class.php:1209
@@ -3719,7 +3714,7 @@ msgstr[1] "Igénylők"
 #: inc/notificationtargetprojecttask.class.php:464
 #: inc/notificationtargetreservation.class.php:156
 #: inc/notificationtargetticket.class.php:759 inc/reminder.class.php:322
-#: inc/ticket.class.php:3128
+#: inc/ticket.class.php:3114
 msgid "Writer"
 msgstr "Szerző"
 
@@ -3736,7 +3731,7 @@ msgid "Location tree"
 msgstr "Elhelyezkedési fa"
 
 #: front/stat.tracking.php:100 inc/cartridgeitem.class.php:273
-#: inc/commondbrelation.class.php:276 inc/commondbtm.class.php:3360
+#: inc/commondbrelation.class.php:276 inc/commondbtm.class.php:3384
 #: inc/commondevice.class.php:202 inc/commondropdown.class.php:471
 #: inc/commonitilcost.class.php:93 inc/commonitilobject.class.php:2753
 #: inc/commonitiltask.class.php:560 inc/commontreedropdown.class.php:693
@@ -3747,7 +3742,7 @@ msgstr "Elhelyezkedési fa"
 #: inc/dcroom.class.php:228 inc/document.class.php:793
 #: inc/enclosure.class.php:196 inc/entity.class.php:466
 #: inc/group_user.class.php:604 inc/infocom.class.php:1619
-#: inc/knowbaseitem.class.php:1649 inc/levelagreement.class.php:647
+#: inc/knowbaseitem.class.php:1650 inc/levelagreement.class.php:647
 #: inc/levelagreementlevel.class.php:86 inc/link.class.php:202
 #: inc/mailcollector.class.php:335 inc/monitor.class.php:386
 #: inc/networkequipment.class.php:435 inc/networkport.class.php:471
@@ -3759,11 +3754,11 @@ msgstr "Elhelyezkedési fa"
 #: inc/peripheral.class.php:357 inc/phone.class.php:376
 #: inc/printer.class.php:504 inc/profile.class.php:1498
 #: inc/profile_user.class.php:866 inc/project.class.php:402
-#: inc/projectcost.class.php:118 inc/projecttask.class.php:714
+#: inc/projectcost.class.php:118 inc/projecttask.class.php:719
 #: inc/queuednotification.class.php:174 inc/rack.class.php:341
 #: inc/reminder.class.php:305 inc/reservationitem.class.php:153
 #: inc/rssfeed.class.php:325 inc/savedsearch.class.php:187
-#: inc/search.class.php:5617 inc/search.class.php:5638 inc/slm.class.php:137
+#: inc/search.class.php:5629 inc/search.class.php:5650 inc/slm.class.php:137
 #: inc/software.class.php:458 inc/softwarelicense.class.php:493
 #: inc/softwareversion.class.php:158 inc/supplier.class.php:222
 #: inc/ticketfollowup.class.php:1154 inc/transfer.class.php:79
@@ -3843,15 +3838,15 @@ msgstr "%s elődefiniált mezőt adott hozzá"
 msgid "%s purges link between tickets"
 msgstr "%s kapcsolatot törölt bejelentések között"
 
-#: front/tracking.injector.php:68 inc/ticket.class.php:2158
+#: front/tracking.injector.php:68 inc/ticket.class.php:2144
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "A bejelentést regisztráltuk, a kérés teljesítése folyamatban van."
 
 #: front/tracking.injector.php:73 inc/config.class.php:2456
-#: inc/config.class.php:2476 inc/html.class.php:5382 inc/html.class.php:5541
+#: inc/config.class.php:2476 inc/html.class.php:5383 inc/html.class.php:5542
 #: inc/itilcategory.class.php:333 inc/itilcategory.class.php:342
-#: inc/telemetry.class.php:386 inc/toolbox.class.php:1111
-#: inc/toolbox.class.php:1145 inc/toolbox.class.php:1146
+#: inc/telemetry.class.php:386 inc/toolbox.class.php:1113
+#: inc/toolbox.class.php:1147 inc/toolbox.class.php:1148
 msgid "OK"
 msgstr "OK"
 
@@ -3873,8 +3868,8 @@ msgstr "Nyelv megváltozott !"
 msgid "Close"
 msgstr "Lezár"
 
-#: inc/ajax.class.php:193 inc/ajax.class.php:413 inc/savedsearch.class.php:789
-#: inc/savedsearch.class.php:955
+#: inc/ajax.class.php:193 inc/ajax.class.php:413 inc/savedsearch.class.php:795
+#: inc/savedsearch.class.php:961
 msgid "Loading..."
 msgstr "Betöltés folyamatban..."
 
@@ -3955,11 +3950,11 @@ msgstr "Minden hónapban"
 #: inc/dropdown.class.php:729 inc/entity.class.php:1837
 #: inc/entity.class.php:1883 inc/entity.class.php:1915
 #: inc/entity.class.php:1948 inc/entity.class.php:2514
-#: inc/entity.class.php:2602 inc/entity.class.php:2761 inc/html.class.php:5433
+#: inc/entity.class.php:2602 inc/entity.class.php:2761 inc/html.class.php:5434
 #: inc/item_disk.class.php:191 inc/plugin.class.php:482
 #: inc/ruleimportcomputer.class.php:163 inc/savedsearch.class.php:93
-#: inc/savedsearch.class.php:386 inc/savedsearch.class.php:1089
-#: inc/savedsearch.class.php:1144 inc/savedsearch_user.class.php:56
+#: inc/savedsearch.class.php:386 inc/savedsearch.class.php:1095
+#: inc/savedsearch.class.php:1150 inc/savedsearch_user.class.php:56
 #: inc/savedsearch_user.class.php:77 inc/search.class.php:3597
 msgid "No"
 msgstr "Nem"
@@ -3967,10 +3962,10 @@ msgstr "Nem"
 #: inc/alert.class.php:141 inc/config.class.php:383 inc/config.class.php:384
 #: inc/config.class.php:398 inc/config.class.php:1072
 #: inc/dropdown.class.php:708 inc/dropdown.class.php:727
-#: inc/html.class.php:5429 inc/plugin.class.php:479 inc/rule.class.php:2158
+#: inc/html.class.php:5430 inc/plugin.class.php:479 inc/rule.class.php:2158
 #: inc/ruleimportcomputer.class.php:189 inc/savedsearch.class.php:92
-#: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1092
-#: inc/savedsearch.class.php:1143 inc/savedsearch_user.class.php:54
+#: inc/savedsearch.class.php:385 inc/savedsearch.class.php:1098
+#: inc/savedsearch.class.php:1149 inc/savedsearch_user.class.php:54
 #: inc/savedsearch_user.class.php:76 inc/search.class.php:3599
 msgid "Yes"
 msgstr "Igen"
@@ -4134,19 +4129,19 @@ msgstr "IPv4 címtartomány"
 #: inc/contract.class.php:312 inc/contract.class.php:327
 #: inc/contract.class.php:345 inc/crontask.class.php:1172
 #: inc/dbmysql.class.php:617 inc/holiday.class.php:55 inc/holiday.class.php:73
-#: inc/html.class.php:3680 inc/html.class.php:3681 inc/html.class.php:3844
-#: inc/html.class.php:3845 inc/planning.class.php:342
+#: inc/html.class.php:3680 inc/html.class.php:3681 inc/html.class.php:3845
+#: inc/html.class.php:3846 inc/planning.class.php:345
 msgid "Start"
 msgstr "Kezdet"
 
 #: inc/apiclient.class.php:127 inc/calendar_holiday.class.php:132
 #: inc/calendarsegment.class.php:345 inc/calendarsegment.class.php:372
-#: inc/commonitiltask.class.php:1289 inc/contract.class.php:316
+#: inc/commonitiltask.class.php:1294 inc/contract.class.php:316
 #: inc/contract.class.php:332 inc/contract.class.php:349
 #: inc/contract.class.php:1608 inc/crontask.class.php:1182
 #: inc/dbmysql.class.php:641 inc/holiday.class.php:58 inc/holiday.class.php:81
-#: inc/html.class.php:3707 inc/html.class.php:3708 inc/html.class.php:3912
-#: inc/html.class.php:3913 inc/planning.class.php:347
+#: inc/html.class.php:3707 inc/html.class.php:3708 inc/html.class.php:3913
+#: inc/html.class.php:3914 inc/planning.class.php:350
 #: inc/reminder.class.php:668
 msgid "End"
 msgstr "Vége"
@@ -4429,7 +4424,7 @@ msgstr "Leltári szám"
 #: inc/authldap.class.php:941 inc/authldap.class.php:3142
 #: inc/contact.class.php:171 inc/contact.class.php:315
 #: inc/contact_supplier.class.php:212 inc/contact_supplier.class.php:348
-#: inc/contract_supplier.class.php:360 inc/dbutils.class.php:1593
+#: inc/contract_supplier.class.php:360 inc/dbutils.class.php:1595
 #: inc/dropdown.class.php:361 inc/dropdown.class.php:388
 #: inc/entity.class.php:518 inc/entity.class.php:1315
 #: inc/notificationtargetcommonitilobject.class.php:1190
@@ -4458,7 +4453,7 @@ msgstr "Telefon 2"
 #: inc/auth.class.php:1418 inc/authldap.class.php:766
 #: inc/authldap.class.php:959 inc/authldap.class.php:3144
 #: inc/contact.class.php:183 inc/contact.class.php:331
-#: inc/contact_supplier.class.php:350 inc/dbutils.class.php:1598
+#: inc/contact_supplier.class.php:350 inc/dbutils.class.php:1600
 #: inc/dropdown.class.php:371
 #: inc/notificationtargetcommonitilobject.class.php:1189
 #: inc/user.class.php:2114 inc/user.class.php:2252 inc/user.class.php:2430
@@ -4511,7 +4506,7 @@ msgstr "Alapértelmezett értékek"
 #: inc/crontask.class.php:1439 inc/datacenter.class.php:118
 #: inc/dcroom.class.php:279 inc/document.class.php:879
 #: inc/enclosure.class.php:264 inc/entity.class.php:588
-#: inc/knowbaseitem.class.php:1732 inc/levelagreement.class.php:184
+#: inc/knowbaseitem.class.php:1733 inc/levelagreement.class.php:184
 #: inc/link.class.php:235 inc/mailcollector.class.php:393
 #: inc/monitor.class.php:488 inc/networkequipment.class.php:537
 #: inc/notepad.class.php:238
@@ -4524,11 +4519,11 @@ msgstr "Alapértelmezett értékek"
 #: inc/printer.class.php:606 inc/problem.class.php:1123
 #: inc/profile.class.php:1514 inc/project.class.php:594
 #: inc/project.class.php:730 inc/project.class.php:1034
-#: inc/projecttask.class.php:500 inc/projecttask.class.php:786
+#: inc/projecttask.class.php:505 inc/projecttask.class.php:791
 #: inc/rack.class.php:433 inc/reminder.class.php:393
 #: inc/reservationitem.class.php:236 inc/rssfeed.class.php:420
-#: inc/rule.class.php:760 inc/search.class.php:5690 inc/software.class.php:501
-#: inc/supplier.class.php:327 inc/ticket.class.php:4623
+#: inc/rule.class.php:760 inc/search.class.php:5702 inc/software.class.php:501
+#: inc/supplier.class.php:327 inc/ticket.class.php:4609
 #: inc/transfer.class.php:95 inc/transfer.class.php:3316
 #: inc/user.class.php:2911
 msgid "Last update"
@@ -4541,7 +4536,7 @@ msgstr "Alapértelmezett kiszolgáló"
 
 #: inc/authldap.class.php:350 inc/authldap.class.php:873
 #: inc/authldapreplicate.class.php:84 inc/authmail.class.php:112
-#: inc/config.class.php:1799 inc/toolbox.class.php:2055
+#: inc/config.class.php:1799 inc/toolbox.class.php:2061
 msgid "Server"
 msgstr "Kiszolgáló"
 
@@ -4617,7 +4612,7 @@ msgid "Maximum number of results"
 msgstr "Eredmények maximális száma"
 
 #: inc/authldap.class.php:477 inc/contract.class.php:285
-#: inc/search.class.php:4844 inc/softwarelicense.class.php:421
+#: inc/search.class.php:4845 inc/softwarelicense.class.php:421
 #: inc/softwarelicense.class.php:1138 inc/softwarelicense.class.php:1164
 msgid "Unlimited"
 msgstr "Korlátlan"
@@ -4707,7 +4702,7 @@ msgstr "Bind LDAP könyvtárhoz"
 
 #: inc/authldap.class.php:780 inc/authldap.class.php:3147
 #: inc/itilsolution.class.php:429 inc/notepad.class.php:324
-#: inc/ticket.class.php:6943 inc/ticket.class.php:7220
+#: inc/ticket.class.php:6916 inc/ticket.class.php:7180
 #: inc/ticketfollowup.class.php:983 inc/user.class.php:1967
 #: inc/user.class.php:1970 inc/user.class.php:1975 inc/user.class.php:2327
 #: inc/user.class.php:2330 inc/user.class.php:2334 inc/user.class.php:2774
@@ -4753,12 +4748,12 @@ msgstr "Keresési szűrő szervezetekre"
 #: inc/peripheral.class.php:468 inc/phone.class.php:495
 #: inc/printer.class.php:615 inc/profile.class.php:1523
 #: inc/project.class.php:483 inc/project.class.php:603
-#: inc/project.class.php:1022 inc/projecttask.class.php:495
+#: inc/project.class.php:1022 inc/projecttask.class.php:500
 #: inc/queuednotification.class.php:199 inc/queuednotification.class.php:702
 #: inc/rack.class.php:442 inc/reminder.class.php:402 inc/rssfeed.class.php:429
 #: inc/rule.class.php:769 inc/software.class.php:510
 #: inc/softwareversion.class.php:198 inc/supplier.class.php:336
-#: inc/ticket.class.php:2986 inc/user.class.php:2920
+#: inc/ticket.class.php:2972 inc/user.class.php:2920
 msgid "Creation date"
 msgstr "Létrehozva"
 
@@ -4910,7 +4905,7 @@ msgstr "LDAP replika hozzáadás"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:120 inc/mailcollector.class.php:359
-#: inc/toolbox.class.php:2156
+#: inc/toolbox.class.php:2162
 msgid "Connection string"
 msgstr "Eredmény kapcsolat paraméter"
 
@@ -4942,14 +4937,14 @@ msgid_plural "Update Sources"
 msgstr[0] "Forrás frissítése"
 msgstr[1] "Források frissítése"
 
-#: inc/backup.class.php:72 inc/commondbtm.class.php:4681 inc/log.class.php:727
+#: inc/backup.class.php:72 inc/commondbtm.class.php:4709 inc/log.class.php:727
 #: inc/profile.class.php:821 inc/profile.class.php:2545
-#: inc/reminder.class.php:1143 inc/report.class.php:445
+#: inc/reminder.class.php:1149 inc/report.class.php:445
 #: inc/rssfeed.class.php:963 inc/stat.class.php:1308
 msgid "Read"
 msgstr "Olvas"
 
-#: inc/backup.class.php:73 inc/commondbtm.class.php:4680
+#: inc/backup.class.php:73 inc/commondbtm.class.php:4708
 #: inc/displaypreference.class.php:290
 msgid "Create"
 msgstr "Létrehoz"
@@ -5097,8 +5092,8 @@ msgstr[1] "Hivatkozott tételek"
 #: inc/change_problem.class.php:187 inc/change_problem.class.php:283
 #: inc/change_project.class.php:202 inc/change_project.class.php:297
 #: inc/change_ticket.class.php:307 inc/change_ticket.class.php:404
-#: inc/commondbtm.class.php:3784 inc/commonitilcost.class.php:560
-#: inc/commonitilvalidation.class.php:864 inc/computerantivirus.class.php:361
+#: inc/commondbtm.class.php:3812 inc/commonitilcost.class.php:560
+#: inc/commonitilvalidation.class.php:824 inc/computerantivirus.class.php:361
 #: inc/computer_softwarelicense.class.php:473
 #: inc/computer_softwareversion.class.php:464
 #: inc/computer_softwareversion.class.php:731
@@ -5121,7 +5116,7 @@ msgstr[1] "Hivatkozott tételek"
 #: inc/problem.class.php:1442 inc/problem_ticket.class.php:345
 #: inc/problem_ticket.class.php:448 inc/profile_user.class.php:340
 #: inc/project.class.php:989 inc/projectcost.class.php:382
-#: inc/projecttask.class.php:1032 inc/projecttask_ticket.class.php:215
+#: inc/projecttask.class.php:1037 inc/projecttask_ticket.class.php:215
 #: inc/projecttask_ticket.class.php:326 inc/rack.class.php:548
 #: inc/rule.class.php:2804 inc/search.class.php:1893 inc/search.class.php:1895
 #: inc/search.class.php:1917 inc/search.class.php:1932
@@ -5129,7 +5124,7 @@ msgstr[1] "Hivatkozott tételek"
 #: inc/search.class.php:1998 inc/search.class.php:2015
 #: inc/slalevel.class.php:148 inc/softwarelicense.class.php:1036
 #: inc/softwareversion.class.php:304 inc/supplier.class.php:606
-#: inc/ticket.class.php:6071 inc/user.class.php:3933
+#: inc/ticket.class.php:6044 inc/user.class.php:3933
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -5298,14 +5293,14 @@ msgstr "Vissza a raktárba"
 msgid "Worn cartridges"
 msgstr "Elhasznált patronok"
 
-#: inc/cartridge.class.php:697 inc/commonitiltask.class.php:1284
-#: inc/commonitilvalidation.class.php:782
-#: inc/commonitilvalidation.class.php:837 inc/consumable.class.php:549
+#: inc/cartridge.class.php:697 inc/commonitiltask.class.php:1289
+#: inc/commonitilvalidation.class.php:742
+#: inc/commonitilvalidation.class.php:797 inc/consumable.class.php:549
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetproject.class.php:576
 #: inc/notificationtargetprojecttask.class.php:466
 #: inc/notificationtargetprojecttask.class.php:481 inc/project.class.php:1067
-#: inc/projecttask.class.php:513 inc/projecttask.class.php:761
+#: inc/projecttask.class.php:518 inc/projecttask.class.php:766
 #: inc/projecttasktemplate.class.php:57 inc/projecttasktemplate.class.php:105
 msgctxt "item"
 msgid "State"
@@ -5466,7 +5461,7 @@ msgstr "Hivatkozás"
 #: inc/peripheral.class.php:502 inc/phone.class.php:202
 #: inc/phone.class.php:549 inc/printer.class.php:305 inc/printer.class.php:765
 #: inc/rack.class.php:138 inc/rack.class.php:460
-#: inc/reservationitem.class.php:255 inc/search.class.php:5701
+#: inc/reservationitem.class.php:255 inc/search.class.php:5713
 msgid "Technician in charge of the hardware"
 msgstr "Technikai felelős"
 
@@ -5483,7 +5478,7 @@ msgstr "Technikai felelős"
 #: inc/pdu.class.php:291 inc/peripheral.class.php:220
 #: inc/peripheral.class.php:512 inc/phone.class.php:215
 #: inc/phone.class.php:559 inc/printer.class.php:318 inc/printer.class.php:775
-#: inc/rack.class.php:157 inc/rack.class.php:470 inc/search.class.php:5706
+#: inc/rack.class.php:157 inc/rack.class.php:470 inc/search.class.php:5718
 msgid "Group in charge of the hardware"
 msgstr "Hardverért felelős csoport"
 
@@ -5534,7 +5529,7 @@ msgid "Add a compatible printer model"
 msgstr "Kompatibilis nyomtató hozzáadása"
 
 #: inc/cartridgeitem_printermodel.class.php:210
-#: inc/commonitilcost.class.php:621 inc/commonitilvalidation.class.php:907
+#: inc/commonitilcost.class.php:621 inc/commonitilvalidation.class.php:867
 #: inc/computerantivirus.class.php:389
 #: inc/computer_softwarelicense.class.php:308
 #: inc/computer_softwarelicense.class.php:396
@@ -5549,15 +5544,15 @@ msgstr "Kompatibilis nyomtató hozzáadása"
 #: inc/displaypreference.class.php:630 inc/group.class.php:879
 #: inc/group_user.class.php:544 inc/item_disk.class.php:336
 #: inc/item_enclosure.class.php:136 inc/item_rack.class.php:143
-#: inc/itilcategory.class.php:352 inc/knowbaseitem.class.php:1541
+#: inc/itilcategory.class.php:352 inc/knowbaseitem.class.php:1542
 #: inc/levelagreement.class.php:532 inc/location.class.php:412
 #: inc/netpoint.class.php:312 inc/networkalias.class.php:392
 #: inc/notification_notificationtemplate.class.php:165
 #: inc/notificationtarget.class.php:1334 inc/pdu_rack.class.php:310
 #: inc/profile_user.class.php:251 inc/projectcost.class.php:421
-#: inc/projecttask.class.php:1094 inc/projecttask_ticket.class.php:397
+#: inc/projecttask.class.php:1099 inc/projecttask_ticket.class.php:397
 #: inc/rule.class.php:2767 inc/savedsearch_alert.class.php:272
-#: inc/search.class.php:6134 inc/software.class.php:996
+#: inc/search.class.php:6146 inc/software.class.php:996
 #: inc/softwarelicense.class.php:1179 inc/softwareversion.class.php:338
 #: inc/state.class.php:229 inc/tickettemplatehiddenfield.class.php:273
 #: inc/tickettemplatemandatoryfield.class.php:292
@@ -5661,8 +5656,8 @@ msgstr "Tanúsítvány igénylés (CSR)"
 #: inc/certificate_item.class.php:497 inc/change.class.php:730
 #: inc/commondbtm.class.php:3042 inc/commonitilobject.class.php:2794
 #: inc/commonitilobject.class.php:5462 inc/commonitiltask.class.php:620
-#: inc/commonitiltask.class.php:802 inc/commonitiltask.class.php:1467
-#: inc/commonitilvalidation.class.php:1064 inc/computer.class.php:377
+#: inc/commonitiltask.class.php:802 inc/commonitiltask.class.php:1472
+#: inc/commonitilvalidation.class.php:1024 inc/computer.class.php:377
 #: inc/computer.class.php:640 inc/computer_softwarelicense.class.php:485
 #: inc/computer_softwareversion.class.php:328
 #: inc/computer_softwareversion.class.php:786
@@ -5681,16 +5676,16 @@ msgstr "Tanúsítvány igénylés (CSR)"
 #: inc/peripheral.class.php:400 inc/phone.class.php:183
 #: inc/phone.class.php:419 inc/plugin.class.php:409 inc/printer.class.php:286
 #: inc/printer.class.php:547 inc/problem.class.php:1159
-#: inc/project.class.php:728 inc/projecttask.class.php:926
+#: inc/project.class.php:728 inc/projecttask.class.php:931
 #: inc/projecttask_ticket.class.php:278 inc/rack.class.php:108
 #: inc/rack.class.php:384 inc/reminder.class.php:332
 #: inc/reminder.class.php:680 inc/report.class.php:110
-#: inc/ruleticket.class.php:576 inc/search.class.php:5632
-#: inc/search.class.php:5653 inc/software.class.php:646
+#: inc/ruleticket.class.php:576 inc/search.class.php:5644
+#: inc/search.class.php:5665 inc/software.class.php:646
 #: inc/softwarelicense.class.php:317 inc/softwarelicense.class.php:626
 #: inc/softwareversion.class.php:135 inc/softwareversion.class.php:189
 #: inc/softwareversion.class.php:311 inc/state.class.php:152
-#: inc/tasktemplate.class.php:66 inc/ticket.class.php:4799
+#: inc/tasktemplate.class.php:66 inc/ticket.class.php:4785
 #: inc/user.class.php:3815 inc/user.class.php:3895
 msgid "Status"
 msgid_plural "Statuses"
@@ -5724,20 +5719,20 @@ msgstr "Hozzárendelt elemek száma"
 #: inc/search.class.php:4539 inc/search.class.php:4543
 #: inc/search.class.php:4578 inc/search.class.php:4582
 #: inc/softwarelicense.class.php:309 inc/softwarelicense.class.php:378
-#: inc/ticket.class.php:3868 inc/ticket.class.php:3875
-#: inc/ticket.class.php:3903 inc/ticket.class.php:3930
-#: inc/ticket.class.php:3941 inc/ticket.class.php:3950
-#: inc/ticket.class.php:3995 inc/ticket.class.php:4017
-#: inc/ticket.class.php:4581 inc/ticket.class.php:4638
-#: inc/ticket.class.php:4650 inc/ticket.class.php:4665
-#: inc/ticket.class.php:4677 inc/ticket.class.php:4720
-#: inc/ticket.class.php:4745 inc/ticket.class.php:4799
-#: inc/ticket.class.php:4824 inc/ticket.class.php:4840
-#: inc/ticket.class.php:4862 inc/ticket.class.php:4916
-#: inc/ticket.class.php:4932 inc/ticket.class.php:4948
-#: inc/ticket.class.php:4980 inc/ticket.class.php:5013
-#: inc/ticket.class.php:5033 inc/ticket.class.php:5054
-#: inc/ticket.class.php:5146
+#: inc/ticket.class.php:3854 inc/ticket.class.php:3861
+#: inc/ticket.class.php:3889 inc/ticket.class.php:3916
+#: inc/ticket.class.php:3927 inc/ticket.class.php:3936
+#: inc/ticket.class.php:3981 inc/ticket.class.php:4003
+#: inc/ticket.class.php:4567 inc/ticket.class.php:4624
+#: inc/ticket.class.php:4636 inc/ticket.class.php:4651
+#: inc/ticket.class.php:4663 inc/ticket.class.php:4706
+#: inc/ticket.class.php:4731 inc/ticket.class.php:4785
+#: inc/ticket.class.php:4810 inc/ticket.class.php:4826
+#: inc/ticket.class.php:4848 inc/ticket.class.php:4902
+#: inc/ticket.class.php:4918 inc/ticket.class.php:4934
+#: inc/ticket.class.php:4967 inc/ticket.class.php:4986
+#: inc/ticket.class.php:5006 inc/ticket.class.php:5027
+#: inc/ticket.class.php:5119
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -5757,7 +5752,7 @@ msgstr "Gyökér CA"
 #: inc/notificationtargetticket.class.php:753 inc/peripheral.class.php:233
 #: inc/peripheral.class.php:433 inc/phone.class.php:228
 #: inc/phone.class.php:452 inc/printer.class.php:331 inc/printer.class.php:580
-#: inc/search.class.php:5681
+#: inc/search.class.php:5693
 msgid "Alternate username number"
 msgstr "Kapcsolattartó száma"
 
@@ -5819,12 +5814,12 @@ msgstr[0] "Tanúsítvány típus"
 msgstr[1] "Tanúsítvány típusok"
 
 #: inc/change.class.php:178 inc/problem.class.php:398
-#: inc/ticket.class.php:2621
+#: inc/ticket.class.php:2607
 msgid "Add an actor"
 msgstr "Új szerző"
 
 #: inc/change.class.php:180 inc/problem.class.php:400
-#: inc/ticket.class.php:2623
+#: inc/ticket.class.php:2609
 msgid "Set notifications for all actors"
 msgstr "Értesítések beállítása mindenhez"
 
@@ -5858,7 +5853,7 @@ msgid "Checklist"
 msgstr "Ellenőrző lista"
 
 #: inc/change.class.php:486 inc/plugin.class.php:1818
-#: inc/problem.class.php:540 inc/ticket.class.php:3487
+#: inc/problem.class.php:540 inc/ticket.class.php:3473
 msgctxt "status"
 msgid "New"
 msgstr "Új"
@@ -5869,11 +5864,11 @@ msgstr "Értékelés"
 
 #: inc/change.class.php:488 inc/change.class.php:778
 #: inc/commonitilvalidation.class.php:91
-#: inc/commonitilvalidation.class.php:1041
-#: inc/commonitilvalidation.class.php:1119
-#: inc/commonitilvalidation.class.php:1138
+#: inc/commonitilvalidation.class.php:1001
+#: inc/commonitilvalidation.class.php:1079
+#: inc/commonitilvalidation.class.php:1098
 #: inc/notificationtargetcommonitilobject.class.php:731
-#: inc/ticket.class.php:4866
+#: inc/ticket.class.php:4852
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "Érvényesítés"
@@ -5885,7 +5880,7 @@ msgid "Accepted"
 msgstr "Elfogadva"
 
 #: inc/change.class.php:490 inc/commonitilobject.class.php:4571
-#: inc/problem.class.php:544 inc/ticket.class.php:3490
+#: inc/problem.class.php:544 inc/ticket.class.php:3476
 msgid "Pending"
 msgstr "Függő"
 
@@ -5907,25 +5902,25 @@ msgid "Review"
 msgstr "Felülvizsgálat"
 
 #: inc/change.class.php:495 inc/problem.class.php:547
-#: inc/ticket.class.php:3492
+#: inc/ticket.class.php:3478
 msgctxt "status"
 msgid "Closed"
 msgstr "Zárva"
 
 #: inc/change.class.php:499 inc/problem.class.php:550
-#: inc/ticket.class.php:3495
+#: inc/ticket.class.php:3481
 msgctxt "status"
 msgid "Not solved"
 msgstr "Nincs megoldva"
 
 #: inc/change.class.php:500 inc/problem.class.php:551
-#: inc/ticket.class.php:3496
+#: inc/ticket.class.php:3482
 msgctxt "status"
 msgid "Not closed"
 msgstr "Nincs lezárva"
 
 #: inc/change.class.php:502 inc/problem.class.php:553
-#: inc/ticket.class.php:3498
+#: inc/ticket.class.php:3484
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "Megoldott + Lezárt"
@@ -5938,7 +5933,7 @@ msgstr "Megoldott + Lezárt"
 #: inc/commondbtm.class.php:1310 inc/commondbtm.class.php:2410
 #: inc/commonglpi.class.php:861 inc/item_ticket.class.php:1342
 #: inc/problem.class.php:1080 inc/savedsearch.class.php:368
-#: inc/ticket.class.php:4558
+#: inc/ticket.class.php:4544
 #, php-format
 msgid "%1$s - ID %2$d"
 msgstr "%1$s - ID %2$d"
@@ -5950,8 +5945,8 @@ msgstr "%1$s - ID %2$d"
 #: inc/notificationtargetproject.class.php:569
 #: inc/notificationtargetprojecttask.class.php:474
 #: inc/notificationtargetticket.class.php:757 inc/problem.class.php:1090
-#: inc/projecttask.class.php:777 inc/ticket.class.php:4581
-#: inc/ticket.class.php:4583 inc/ticket.class.php:7623
+#: inc/projecttask.class.php:782 inc/ticket.class.php:4567
+#: inc/ticket.class.php:4569 inc/ticket.class.php:7588
 msgid "Opening date"
 msgstr "Nyitás dátuma"
 
@@ -5963,19 +5958,19 @@ msgstr "Nyitás dátuma"
 #: inc/problem.class.php:1105 inc/ruleticket.class.php:466
 #: inc/ruleticket.class.php:482 inc/ruleticket.class.php:587
 #: inc/ruleticket.class.php:603 inc/slalevel.class.php:175
-#: inc/ticket.class.php:2869 inc/ticket.class.php:4650
-#: inc/ticket.class.php:4652 inc/ticket.class.php:7657
+#: inc/ticket.class.php:2855 inc/ticket.class.php:4636
+#: inc/ticket.class.php:4638 inc/ticket.class.php:7622
 msgid "Time to resolve"
 msgstr "Megoldási idő"
 
 #: inc/change.class.php:689 inc/change.class.php:698
-#: inc/commonitiltask.class.php:1500 inc/problem.class.php:1117
-#: inc/problem.class.php:1126 inc/projecttask.class.php:1546
-#: inc/reminder.class.php:985 inc/reservation.class.php:677
+#: inc/commonitiltask.class.php:1505 inc/problem.class.php:1117
+#: inc/problem.class.php:1126 inc/projecttask.class.php:1555
+#: inc/reminder.class.php:991 inc/reservation.class.php:677
 #: inc/reservation.class.php:1086 inc/reservation.class.php:1134
 #: inc/reservation.class.php:1204 inc/reservation.class.php:1267
 #: inc/rssfeed.class.php:613 inc/tasktemplate.class.php:75
-#: inc/ticket.class.php:4603
+#: inc/ticket.class.php:4589
 msgid "By"
 msgstr "Bejelentő"
 
@@ -5988,7 +5983,7 @@ msgstr "Megoldás dátuma"
 #: inc/change.class.php:715 inc/commonitilobject.class.php:2839
 #: inc/commonitilobject.class.php:4528
 #: inc/notificationtargetcommonitilobject.class.php:1182
-#: inc/problem.class.php:1143 inc/ticket.class.php:7670
+#: inc/problem.class.php:1143 inc/ticket.class.php:7635
 msgid "Closing date"
 msgstr "Befejezés dátuma"
 
@@ -5998,15 +5993,15 @@ msgstr "Befejezés dátuma"
 #: inc/notificationtargetcommonitilobject.class.php:1180
 #: inc/notificationtargetcommonitilobject.class.php:1255
 #: inc/notificationtargetprojecttask.class.php:471 inc/problem.class.php:1184
-#: inc/projecttask.class.php:609 inc/stat.class.php:481
-#: inc/ticket.class.php:5013
+#: inc/projecttask.class.php:614 inc/stat.class.php:481
+#: inc/ticket.class.php:4986
 msgid "Total duration"
 msgstr "Össz. idő"
 
 #: inc/change.class.php:800 inc/commonitilobject.class.php:2771
 #: inc/commonitiltask.class.php:567 inc/commonitiltask.class.php:653
-#: inc/commonitiltask.class.php:1365 inc/commonitiltask.class.php:1713
-#: inc/commonitiltask.class.php:1745 inc/commonitiltask.class.php:1907
+#: inc/commonitiltask.class.php:1370 inc/commonitiltask.class.php:1718
+#: inc/commonitiltask.class.php:1750 inc/commonitiltask.class.php:1912
 #: inc/crontask.class.php:461 inc/crontask.class.php:1103
 #: inc/crontask.class.php:1161 inc/crontask.class.php:1339
 #: inc/itilsolution.class.php:220 inc/levelagreement.class.php:558
@@ -6030,16 +6025,16 @@ msgstr "Össz. idő"
 #: inc/notificationtargetticket.class.php:921
 #: inc/notificationtargetticket.class.php:928 inc/problem.class.php:813
 #: inc/problem.class.php:1214 inc/project.class.php:449
-#: inc/project.class.php:1149 inc/projecttask.class.php:616
-#: inc/projecttask.class.php:752 inc/projecttasktemplate.class.php:91
+#: inc/project.class.php:1149 inc/projecttask.class.php:621
+#: inc/projecttask.class.php:757 inc/projecttasktemplate.class.php:91
 #: inc/projecttasktemplate.class.php:193 inc/reminder.class.php:342
 #: inc/reminder.class.php:773 inc/rule.class.php:709 inc/rule.class.php:862
 #: inc/rule.class.php:2727 inc/rule.class.php:2796
 #: inc/rulecollection.class.php:478 inc/rulecollection.class.php:509
 #: inc/ruleimportcomputer.class.php:101 inc/ruleright.class.php:72
-#: inc/ruleticket.class.php:337 inc/ticket.class.php:3045
-#: inc/ticket.class.php:4017 inc/ticket.class.php:5054
-#: inc/ticket.class.php:5690 inc/ticketfollowup.class.php:553
+#: inc/ruleticket.class.php:337 inc/ticket.class.php:3031
+#: inc/ticket.class.php:4003 inc/ticket.class.php:5027
+#: inc/ticket.class.php:5663 inc/ticketfollowup.class.php:553
 #: inc/ticketfollowup.class.php:676 inc/ticketfollowup.class.php:728
 #: inc/ticketfollowup.class.php:1088 inc/ticketfollowup.class.php:1161
 msgid "Description"
@@ -6065,7 +6060,7 @@ msgstr "Legutóbbi változások"
 
 #: inc/change.class.php:1035 inc/group.class.php:153 inc/group.class.php:775
 #: inc/group_user.class.php:432 inc/problem.class.php:1389
-#: inc/ticket.class.php:5968
+#: inc/ticket.class.php:5941
 msgid "Child groups"
 msgstr "Gyermek csoportok"
 
@@ -6136,9 +6131,9 @@ msgstr "Új bejelentés"
 msgid "Solve tickets"
 msgstr "Megoldott bejelentések"
 
-#: inc/change_ticket.class.php:291 inc/commonitiltask.class.php:1702
+#: inc/change_ticket.class.php:291 inc/commonitiltask.class.php:1707
 #: inc/problem.class.php:395 inc/problem_ticket.class.php:331
-#: inc/ticket.class.php:2603
+#: inc/ticket.class.php:2589
 msgid "Add a new task"
 msgstr "Új feladat"
 
@@ -6156,15 +6151,15 @@ msgstr "Az elem nem kapcsolódik más objektumhoz"
 #: inc/commonitilobject.class.php:3876 inc/commonitilobject.class.php:3980
 #: inc/commonitilobject.class.php:3982 inc/commonitilobject.class.php:4073
 #: inc/commonitilobject.class.php:4075 inc/dropdown.class.php:213
-#: inc/dropdown.class.php:215 inc/html.class.php:6316 inc/html.class.php:6317
-#: inc/html.class.php:6414 inc/html.class.php:6415 inc/infocom.class.php:702
+#: inc/dropdown.class.php:215 inc/html.class.php:6319 inc/html.class.php:6320
+#: inc/html.class.php:6417 inc/html.class.php:6418 inc/infocom.class.php:702
 #: inc/netpoint.class.php:146 inc/netpoint.class.php:148
-#: inc/reminder.class.php:1095 inc/reminder.class.php:1096
+#: inc/reminder.class.php:1101 inc/reminder.class.php:1102
 #: inc/rssfeed.class.php:911 inc/rssfeed.class.php:912
 #: inc/ruleaction.class.php:393 inc/ruleticket.class.php:80
-#: inc/ruleticket.class.php:82 inc/ticket.class.php:4115
-#: inc/ticket.class.php:5105 inc/ticket.class.php:5250
-#: inc/ticket.class.php:5259 inc/ticket.class.php:5789
+#: inc/ruleticket.class.php:82 inc/ticket.class.php:4101
+#: inc/ticket.class.php:5078 inc/ticket.class.php:5223
+#: inc/ticket.class.php:5232 inc/ticket.class.php:5762
 msgid "Add"
 msgstr "Hozzáad"
 
@@ -6239,7 +6234,7 @@ msgstr "Létrehozva a %s sablonból"
 #. TRANS : means update / actualize
 #: inc/commondbtm.class.php:2171 inc/commondbtm.class.php:2183
 #: inc/commonglpi.class.php:1175 inc/commonitilactor.class.php:216
-#: inc/commonitilactor.class.php:280 inc/commonitilvalidation.class.php:796
+#: inc/commonitilactor.class.php:280 inc/commonitilvalidation.class.php:756
 #: inc/config.class.php:449 inc/config.class.php:597 inc/config.class.php:641
 #: inc/config.class.php:711 inc/config.class.php:780 inc/config.class.php:961
 #: inc/config.class.php:1389 inc/config.class.php:1816
@@ -6253,14 +6248,14 @@ msgstr "Létrehozva a %s sablonból"
 #: inc/profile.class.php:1199 inc/profile.class.php:1294
 #: inc/profile.class.php:1388 inc/profile.class.php:1483
 #: inc/reservation.class.php:770 inc/reservationitem.class.php:366
-#: inc/ticket.class.php:5201 inc/ticket.class.php:7501 inc/user.class.php:2510
+#: inc/ticket.class.php:5174 inc/ticket.class.php:7466 inc/user.class.php:2510
 #: inc/user.class.php:4689
 msgctxt "button"
 msgid "Save"
 msgstr "Mentés"
 
 #: inc/commondbtm.class.php:2193 inc/massiveaction.class.php:530
-#: inc/ticket.class.php:5196
+#: inc/ticket.class.php:5169
 msgctxt "button"
 msgid "Restore"
 msgstr "Visszaállít"
@@ -6270,13 +6265,13 @@ msgid "Check to keep the devices while deleting this item"
 msgstr "Eszközök megtartása elem törlésekor"
 
 #: inc/commondbtm.class.php:2219 inc/notepad.class.php:367
-#: inc/ticket.class.php:5208 inc/ticketfollowup.class.php:812
+#: inc/ticket.class.php:5181 inc/ticketfollowup.class.php:812
 #: inc/ticketfollowup.class.php:1037 inc/tickettask.class.php:308
 msgid "Confirm the final deletion?"
 msgstr "Végső törlés megerősítése ?"
 
-#: inc/commondbtm.class.php:2223 inc/commondbtm.class.php:4690
-#: inc/massiveaction.class.php:552 inc/ticket.class.php:5213
+#: inc/commondbtm.class.php:2223 inc/commondbtm.class.php:4718
+#: inc/massiveaction.class.php:552 inc/ticket.class.php:5186
 #: inc/transfer.class.php:3326
 msgctxt "button"
 msgid "Put in dustbin"
@@ -6309,110 +6304,109 @@ msgid "Change visibility in child entities"
 msgstr "Láthatóság módosítása gyermek cégekben"
 
 #: inc/commondbtm.class.php:3025 inc/commontreedropdown.class.php:700
-#: inc/dbutils.class.php:1038 inc/entity.class.php:473
+#: inc/dbutils.class.php:1040 inc/entity.class.php:473
 #: inc/notificationtargetcommonitilobject.class.php:1322
 #: inc/notificationtargetproject.class.php:647
 #: inc/notificationtargetprojecttask.class.php:535
 msgid "Complete name"
 msgstr "Teljes név"
 
-#: inc/commondbtm.class.php:3511
+#: inc/commondbtm.class.php:3539
 msgctxt "button"
 msgid "Unlock items"
 msgstr "Zárolás feloldása"
 
-#: inc/commondbtm.class.php:3727
+#: inc/commondbtm.class.php:3755
 msgid "At least one field has an incorrect value"
 msgstr "Legalább egy mezőben érvénytelen érték"
 
-#: inc/commondbtm.class.php:3788
+#: inc/commondbtm.class.php:3816
 #, php-format
 msgid "Impossible record for %s"
 msgstr "Érvénytelen rekord a következőhöz %s"
 
-#: inc/commondbtm.class.php:3791
+#: inc/commondbtm.class.php:3819
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
 msgstr "Elem sikeresen hozzáadva, de duplikált %s"
 
-#: inc/commondbtm.class.php:3794
+#: inc/commondbtm.class.php:3822
 msgid "Other item exist"
 msgstr "Egyéb elem létezik"
 
-#: inc/commondbtm.class.php:3833
+#: inc/commondbtm.class.php:3861
 msgid "Item in the dustbin"
 msgstr "Lomtárban lévő elem"
 
 #. TRANS: %1$s is the user login, %2$s the message
-#: inc/commondbtm.class.php:3954
+#: inc/commondbtm.class.php:3982
 #, php-format
 msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s elemet próbált hozzáadni már létezőhöz: %2$s"
 
-#: inc/commondbtm.class.php:4238 inc/entity.class.php:1819
-#: inc/entity.class.php:1864 inc/search.class.php:5288
+#: inc/commondbtm.class.php:4266 inc/entity.class.php:1819
+#: inc/entity.class.php:1864 inc/search.class.php:5289
 msgid "Default value"
 msgstr "Alapértelmezett érték"
 
-#: inc/commondbtm.class.php:4563
+#: inc/commondbtm.class.php:4591
 msgid "Choose a template"
 msgstr "Válassz sablont"
 
-#: inc/commondbtm.class.php:4565
+#: inc/commondbtm.class.php:4593
 msgid "Blank Template"
 msgstr "Üres sablon"
 
-#: inc/commondbtm.class.php:4572
+#: inc/commondbtm.class.php:4600
 msgid "Templates"
 msgstr "Sablonok"
 
-#: inc/commondbtm.class.php:4623
+#: inc/commondbtm.class.php:4651
 msgid "Add a template..."
 msgstr "Sablon hozzáadása"
 
-#: inc/commondbtm.class.php:4682 inc/item_devices.class.php:685
+#: inc/commondbtm.class.php:4710 inc/item_devices.class.php:685
 #: inc/profile.class.php:822 inc/ruleticket.class.php:81
 #: inc/ruleticket.class.php:83 inc/supplier.class.php:446
-#: inc/ticket.class.php:4983 inc/ticket.class.php:4984
 msgid "Update"
 msgstr "Módosít"
 
-#: inc/commondbtm.class.php:4683
+#: inc/commondbtm.class.php:4711
 msgid "Purge"
 msgstr "Törlés végleg"
 
-#: inc/commondbtm.class.php:4689 inc/displaypreference.class.php:304
-#: inc/planning.class.php:1284
+#: inc/commondbtm.class.php:4717 inc/displaypreference.class.php:304
+#: inc/planning.class.php:1287
 msgid "Delete"
 msgstr "Töröl"
 
-#: inc/commondbtm.class.php:4693
+#: inc/commondbtm.class.php:4721
 msgid "Read notes"
 msgstr "Megjegyzések olvasása"
 
-#: inc/commondbtm.class.php:4694
+#: inc/commondbtm.class.php:4722
 msgid "Read the item's notes"
 msgstr "Elem jegyzeteinek olvasása"
 
-#: inc/commondbtm.class.php:4695
+#: inc/commondbtm.class.php:4723
 msgid "Update notes"
 msgstr "Megjegyzések frissítése"
 
-#: inc/commondbtm.class.php:4696
+#: inc/commondbtm.class.php:4724
 msgid "Update the item's notes"
 msgstr "Jegyzet frissítése"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/commondbtm.class.php:4794
+#: inc/commondbtm.class.php:4822
 #, php-format
 msgid "Document Ticket %d"
 msgstr "%d bejelentés dokumentuma"
 
-#: inc/commondbtm.class.php:4887
+#: inc/commondbtm.class.php:4915
 msgid "You can define an autofill template"
 msgstr "Beállíthatsz automatikus kitöltésű sablont"
 
-#: inc/commondbtm.class.php:4898
+#: inc/commondbtm.class.php:4926
 msgid "Autofilled from template"
 msgstr "Automatikusan kitöltve sablonból"
 
@@ -6551,13 +6545,13 @@ msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr "Ha megerősíted a törlést, a legördülő összes előfordulása üres lesz !"
 
-#: inc/commondropdown.class.php:639 inc/html.class.php:5472
+#: inc/commondropdown.class.php:639 inc/html.class.php:5473
 msgctxt "button"
 msgid "Confirm"
 msgstr "Megerősít"
 
 #: inc/commondropdown.class.php:642 inc/commondropdown.class.php:672
-#: inc/html.class.php:5483
+#: inc/html.class.php:5484
 msgctxt "button"
 msgid "Cancel"
 msgstr "Mégsem"
@@ -6582,7 +6576,7 @@ msgstr "Összefűz"
 
 #: inc/commonglpi.class.php:68 inc/commonitilobject.class.php:5346
 #: inc/item_ticket.class.php:654 inc/item_ticket.class.php:738
-#: inc/rule.class.php:2194 inc/ticket.class.php:6210
+#: inc/rule.class.php:2194 inc/ticket.class.php:6183
 msgid "General"
 msgstr "Általános"
 
@@ -6605,8 +6599,8 @@ msgstr "Listázás"
 msgid "Last"
 msgstr "Utolsó"
 
-#: inc/commonglpi.class.php:1157 inc/ticket.class.php:7328
-#: inc/ticket.class.php:7329
+#: inc/commonglpi.class.php:1157 inc/ticket.class.php:7293
+#: inc/ticket.class.php:7294
 msgid "Reset display options"
 msgstr "Megjelenítése beállítások alapértelmezett értékre állítása"
 
@@ -6691,8 +6685,8 @@ msgstr "Kezdet"
 
 #: inc/commonitilcost.class.php:143 inc/commonitilcost.class.php:241
 #: inc/commonitilcost.class.php:411 inc/commonitilcost.class.php:550
-#: inc/commonitiltask.class.php:776 inc/commonitiltask.class.php:1482
-#: inc/commonitiltask.class.php:1713 inc/commonitiltask.class.php:1752
+#: inc/commonitiltask.class.php:776 inc/commonitiltask.class.php:1487
+#: inc/commonitiltask.class.php:1718 inc/commonitiltask.class.php:1757
 #: inc/contract.class.php:441 inc/contract.class.php:703
 #: inc/crontask.class.php:1159
 #: inc/notificationtargetcommonitilobject.class.php:1237
@@ -6903,7 +6897,7 @@ msgstr "Legalább nagyon magas"
 #: inc/log.class.php:522 inc/notificationtargetcommonitilobject.class.php:555
 #: inc/notificationtargetcommonitilobject.class.php:1219
 #: inc/ruleticket.class.php:416 inc/ruleticket.class.php:550
-#: inc/ticket.class.php:3950
+#: inc/ticket.class.php:3936
 msgid "Watcher"
 msgid_plural "Watchers"
 msgstr[0] "Ügyeletes"
@@ -6918,7 +6912,7 @@ msgid "Time to resolve exceedeed"
 msgstr "Megoldási idő túllépés"
 
 #: inc/commonitilobject.class.php:2884 inc/commonitilobject.class.php:4523
-#: inc/ticket.class.php:4693 inc/ticket.class.php:7665
+#: inc/ticket.class.php:4679 inc/ticket.class.php:7630
 msgid "Resolution date"
 msgstr "Megoldás dátuma"
 
@@ -6929,8 +6923,8 @@ msgstr "Utoljára szerkesztette"
 #: inc/commonitilobject.class.php:2963 inc/commonitilobject.class.php:2987
 #: inc/itilsolution.class.php:48
 #: inc/notificationtargetcommonitilobject.class.php:1218
-#: inc/ticket.class.php:7326 inc/ticket.class.php:7327
-#: inc/ticket.class.php:7459
+#: inc/ticket.class.php:7291 inc/ticket.class.php:7292
+#: inc/ticket.class.php:7424
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "Megoldás"
@@ -6994,7 +6988,7 @@ msgstr "Ügyeletes"
 msgid "Group in charge of the ticket"
 msgstr "Bejelentéssel megbízott csoport"
 
-#: inc/commonitilobject.class.php:3856 inc/planning.class.php:1348
+#: inc/commonitilobject.class.php:3856 inc/planning.class.php:1351
 msgid "Actor"
 msgstr "Szereplő"
 
@@ -7040,7 +7034,7 @@ msgid "To %s"
 msgstr "vége %s"
 
 #. TRANS: %s is user name
-#: inc/commonitilobject.class.php:5416 inc/commonitiltask.class.php:1144
+#: inc/commonitilobject.class.php:5416 inc/commonitiltask.class.php:1149
 #, php-format
 msgid "By %s"
 msgstr "Bejelentő %s"
@@ -7066,8 +7060,8 @@ msgstr "Tervezés"
 #: inc/notificationtargetprojecttask.class.php:556
 #: inc/notificationtargetprojecttask.class.php:569 inc/profile.class.php:654
 #: inc/profile.class.php:959 inc/profile.class.php:1039
-#: inc/profile.class.php:1041 inc/ticket.class.php:7320
-#: inc/ticket.class.php:7321 inc/ticket.class.php:7449
+#: inc/profile.class.php:1041 inc/ticket.class.php:7285
+#: inc/ticket.class.php:7286 inc/ticket.class.php:7414
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "Feladat"
@@ -7124,7 +7118,7 @@ msgstr "Privát feladat"
 msgid "Technician in charge of the task"
 msgstr "Feladatért felelős technikus"
 
-#: inc/commonitiltask.class.php:844 inc/commonitiltask.class.php:1391
+#: inc/commonitiltask.class.php:844 inc/commonitiltask.class.php:1396
 #: inc/dropdown.class.php:788 inc/tasktemplate.class.php:52
 msgid "Task template"
 msgid_plural "Task templates"
@@ -7132,97 +7126,97 @@ msgstr[0] "Feladat sablon"
 msgstr[1] "Feladat sablonok"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-#: inc/commonitiltask.class.php:1084
+#: inc/commonitiltask.class.php:1089
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
 msgstr "%1$s: %2$s - %3$s:"
 
-#: inc/commonitiltask.class.php:1156 inc/reminder.class.php:1001
+#: inc/commonitiltask.class.php:1161 inc/reminder.class.php:1007
 #, php-format
 msgid "Recall on %s"
 msgstr "Következő visszahívása %s"
 
-#: inc/commonitiltask.class.php:1208 inc/html.class.php:567
-#: inc/html.class.php:5378 inc/planning.class.php:161
+#: inc/commonitiltask.class.php:1213 inc/html.class.php:567
+#: inc/html.class.php:5379 inc/planning.class.php:161
 #: inc/planning.class.php:182 inc/ticketrecurrent.class.php:84
 msgid "Information"
 msgid_plural "Information"
 msgstr[0] "Információ"
 msgstr[1] "Információ"
 
-#: inc/commonitiltask.class.php:1214 inc/planning.class.php:164
+#: inc/commonitiltask.class.php:1219 inc/planning.class.php:164
 #: inc/planning.class.php:183
 msgid "To do"
 msgstr "Tennivaló"
 
-#: inc/commonitiltask.class.php:1217
+#: inc/commonitiltask.class.php:1222
 msgid "Planned"
 msgstr "Tervezve"
 
-#: inc/commonitiltask.class.php:1223 inc/planning.class.php:167
+#: inc/commonitiltask.class.php:1228 inc/planning.class.php:167
 #: inc/planning.class.php:184
 msgid "Done"
 msgstr "Kész"
 
-#: inc/commonitiltask.class.php:1267 inc/commonitiltask.class.php:1293
+#: inc/commonitiltask.class.php:1272 inc/commonitiltask.class.php:1298
 msgid "By user"
 msgstr "Felhasználónként"
 
-#: inc/commonitiltask.class.php:1270 inc/commonitiltask.class.php:1296
+#: inc/commonitiltask.class.php:1275 inc/commonitiltask.class.php:1301
 msgid "By group"
 msgstr "Csoportonként"
 
-#: inc/commonitiltask.class.php:1287 inc/reminder.class.php:662
+#: inc/commonitiltask.class.php:1292 inc/reminder.class.php:662
 msgid "Begin"
 msgstr "Kezdet"
 
-#: inc/commonitiltask.class.php:1307 inc/commonitiltask.class.php:1627
-#: inc/planning.class.php:1719 inc/reminder.class.php:759
+#: inc/commonitiltask.class.php:1312 inc/commonitiltask.class.php:1632
+#: inc/planning.class.php:1722 inc/reminder.class.php:759
 msgctxt "Planning"
 msgid "Reminder"
 msgstr "Emlékeztető"
 
-#: inc/commonitiltask.class.php:1474 inc/commonitiltask.class.php:1716
+#: inc/commonitiltask.class.php:1479 inc/commonitiltask.class.php:1721
 #: inc/notificationtargetcommonitilobject.class.php:1249
 #: inc/notificationtargetplanningrecall.class.php:178
 #: inc/notificationtargetticket.class.php:758 inc/savedsearch.class.php:399
 #: inc/savedsearch.class.php:415 inc/tasktemplate.class.php:69
-#: inc/ticket.class.php:7120 inc/ticketfollowup.class.php:713
+#: inc/ticket.class.php:7093 inc/ticketfollowup.class.php:713
 #: inc/ticketfollowup.class.php:1003 inc/ticketfollowup.class.php:1186
 msgid "Private"
 msgstr "Privát"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #. TRANS: %1$s is the begin date, %2$s is the end date
-#: inc/commonitiltask.class.php:1580 inc/projecttask.class.php:1558
+#: inc/commonitiltask.class.php:1585 inc/projecttask.class.php:1567
 #: inc/reminder.class.php:702 inc/reminder.class.php:744
-#: inc/reminder.class.php:956 inc/reminder.class.php:1119
+#: inc/reminder.class.php:962 inc/reminder.class.php:1125
 #, php-format
 msgid "From %1$s to %2$s"
 msgstr "%1$s -tól %2$s -ig"
 
-#: inc/commonitiltask.class.php:1613
+#: inc/commonitiltask.class.php:1618
 msgid "Plan this task"
 msgstr "Feladat tervezése"
 
-#: inc/commonitiltask.class.php:1707
+#: inc/commonitiltask.class.php:1712
 msgid "No task found."
 msgstr "Nincs feladat."
 
-#: inc/commonitiltask.class.php:1885
+#: inc/commonitiltask.class.php:1890
 msgid "Ticket tasks to do"
 msgstr "Végrehajtandó feladatok"
 
-#: inc/commonitiltask.class.php:1888
+#: inc/commonitiltask.class.php:1893
 msgid "Problem tasks to do"
 msgstr "Végrehajtandó probléma-feladatok"
 
-#: inc/commonitiltask.class.php:1959
+#: inc/commonitiltask.class.php:1964
 #, php-format
 msgid "%1$s"
 msgstr "%1$s"
 
-#: inc/commonitiltask.class.php:1972
+#: inc/commonitiltask.class.php:1977
 msgid "No tasks do to."
 msgstr "Nincs feladat."
 
@@ -7267,7 +7261,7 @@ msgid "Waiting for approval"
 msgstr "Érvényesítésre vár"
 
 #: inc/commonitilvalidation.class.php:437 inc/itilsolution.class.php:524
-#: inc/ticket.class.php:7106
+#: inc/ticket.class.php:7079
 msgid "Refused"
 msgstr "Visszautasított"
 
@@ -7283,98 +7277,98 @@ msgstr "Nem kell jóváhagyni"
 msgid "Granted + Not subject to approval"
 msgstr "Engedélyezve + nem kell jóváhagyni"
 
-#: inc/commonitilvalidation.class.php:771
+#: inc/commonitilvalidation.class.php:731
 #: inc/notificationtargetchange.class.php:284
 #: inc/notificationtargetticket.class.php:775
 msgid "Global approval status"
 msgstr "Globális érvényesítés állapota"
 
-#: inc/commonitilvalidation.class.php:789
-#: inc/commonitilvalidation.class.php:1126 inc/ruleticket.class.php:630
+#: inc/commonitilvalidation.class.php:749
+#: inc/commonitilvalidation.class.php:1086 inc/ruleticket.class.php:630
 msgid "Minimum validation required"
 msgstr "Minimum érvényesítés szükséges"
 
-#: inc/commonitilvalidation.class.php:837
-#: inc/commonitilvalidation.class.php:1073
-#: inc/commonitilvalidation.class.php:1187
+#: inc/commonitilvalidation.class.php:797
+#: inc/commonitilvalidation.class.php:1033
+#: inc/commonitilvalidation.class.php:1147
 msgid "Request date"
 msgstr "Igénylés dátuma"
 
-#: inc/commonitilvalidation.class.php:837
-#: inc/commonitilvalidation.class.php:953
-#: inc/commonitilvalidation.class.php:984
-#: inc/commonitilvalidation.class.php:1089
+#: inc/commonitilvalidation.class.php:797
+#: inc/commonitilvalidation.class.php:913
+#: inc/commonitilvalidation.class.php:944
+#: inc/commonitilvalidation.class.php:1049
 #: inc/notificationtargetcommonitilobject.class.php:562
 msgid "Approval requester"
 msgstr "Érvényesítés kérelmező"
 
-#: inc/commonitilvalidation.class.php:838
-#: inc/commonitilvalidation.class.php:1048
-#: inc/commonitilvalidation.class.php:1147
+#: inc/commonitilvalidation.class.php:798
+#: inc/commonitilvalidation.class.php:1008
+#: inc/commonitilvalidation.class.php:1107
 msgid "Request comments"
 msgstr "Igénylés megjegyzései"
 
-#: inc/commonitilvalidation.class.php:838
-#: inc/commonitilvalidation.class.php:1174
+#: inc/commonitilvalidation.class.php:798
+#: inc/commonitilvalidation.class.php:1134
 msgid "Approval status"
 msgstr "Érvényesítési státusz"
 
-#: inc/commonitilvalidation.class.php:839
-#: inc/commonitilvalidation.class.php:960
-#: inc/commonitilvalidation.class.php:987
-#: inc/commonitilvalidation.class.php:1102
-#: inc/commonitilvalidation.class.php:1233
+#: inc/commonitilvalidation.class.php:799
+#: inc/commonitilvalidation.class.php:920
+#: inc/commonitilvalidation.class.php:947
+#: inc/commonitilvalidation.class.php:1062
+#: inc/commonitilvalidation.class.php:1193
 #: inc/notificationtargetcommonitilobject.class.php:563
 #: inc/notificationtargetticket.class.php:778
 msgid "Approver"
 msgstr "Érvényesítő felhasználó"
 
-#: inc/commonitilvalidation.class.php:839
-#: inc/commonitilvalidation.class.php:1015
-#: inc/commonitilvalidation.class.php:1024
-#: inc/commonitilvalidation.class.php:1056
-#: inc/commonitilvalidation.class.php:1160
+#: inc/commonitilvalidation.class.php:799
+#: inc/commonitilvalidation.class.php:975
+#: inc/commonitilvalidation.class.php:984
+#: inc/commonitilvalidation.class.php:1016
+#: inc/commonitilvalidation.class.php:1120
 msgid "Approval comments"
 msgstr "Érvényesség kommentálása"
 
-#: inc/commonitilvalidation.class.php:843
+#: inc/commonitilvalidation.class.php:803
 msgid "Approvals for the ticket"
 msgstr "Bejelentés érvényesítései"
 
-#: inc/commonitilvalidation.class.php:851 inc/ruleticket.class.php:617
+#: inc/commonitilvalidation.class.php:811 inc/ruleticket.class.php:617
 #: inc/ruleticket.class.php:623 inc/ruleticket.class.php:629
 msgid "Send an approval request"
 msgstr "Érvényesítési kérelem küldése"
 
-#: inc/commonitilvalidation.class.php:1002
+#: inc/commonitilvalidation.class.php:962
 #: inc/notificationtargetchange.class.php:295
 #: inc/notificationtargetticket.class.php:789
 msgid "Status of the approval request"
 msgstr "Érvényesítési kérelem állapota"
 
-#: inc/commonitilvalidation.class.php:1009
+#: inc/commonitilvalidation.class.php:969
 msgid "Status of my validation"
 msgstr "Érvényesítésem állapota"
 
-#: inc/commonitilvalidation.class.php:1015 inc/ticketfollowup.class.php:1125
+#: inc/commonitilvalidation.class.php:975 inc/ticketfollowup.class.php:1125
 msgid "Optional when approved"
 msgstr "Elfogadás esetén nem kötelező"
 
-#: inc/commonitilvalidation.class.php:1081
-#: inc/commonitilvalidation.class.php:1200
+#: inc/commonitilvalidation.class.php:1041
+#: inc/commonitilvalidation.class.php:1160
 msgid "Approval date"
 msgstr "Érvényesítés dátuma"
 
-#: inc/commonitilvalidation.class.php:1303
+#: inc/commonitilvalidation.class.php:1263
 msgid "Validate"
 msgstr "Érvényesítés"
 
-#: inc/commonitilvalidation.class.php:1483
+#: inc/commonitilvalidation.class.php:1443
 #, php-format
 msgid "%1$s (%2$d%%) "
 msgstr "%1$s (%2$d%%)"
 
-#: inc/commonitilvalidation.class.php:1503
+#: inc/commonitilvalidation.class.php:1463
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
@@ -7383,7 +7377,7 @@ msgstr "Ez az elem jóváhagyásra vár, biztosan megoldod vagy lezárod ?"
 #: inc/commontreedropdown.class.php:53 inc/commontreedropdown.class.php:620
 #: inc/group.class.php:253 inc/itilcategory.class.php:53
 #: inc/location.class.php:53 inc/project.class.php:1058
-#: inc/projecttask.class.php:478 inc/projecttasktemplate.class.php:64
+#: inc/projecttask.class.php:483 inc/projecttasktemplate.class.php:64
 #: inc/projecttasktemplate.class.php:121 inc/softwarelicense.class.php:325
 msgid "As child of"
 msgstr "A következő fia"
@@ -7408,7 +7402,7 @@ msgstr "Áthelyezés"
 #: inc/commontreedropdown.class.php:726
 #: inc/notificationtargetproject.class.php:559
 #: inc/notificationtargetprojecttask.class.php:463 inc/project.class.php:437
-#: inc/projecttask.class.php:739 inc/projecttask.class.php:932
+#: inc/projecttask.class.php:744 inc/projecttask.class.php:937
 #: inc/projecttask_ticket.class.php:284 inc/softwarelicense.class.php:598
 msgid "Father"
 msgstr "Apa"
@@ -7507,7 +7501,7 @@ msgstr "Kapcsolódás"
 #: inc/computer.class.php:582 inc/monitor.class.php:373
 #: inc/networkequipment.class.php:422 inc/peripheral.class.php:344
 #: inc/phone.class.php:363 inc/printer.class.php:492
-#: inc/software.class.php:361 inc/ticket.class.php:2635
+#: inc/software.class.php:361 inc/ticket.class.php:2621
 msgctxt "button"
 msgid "Link knowledgebase article"
 msgstr "Hivatkozás tudásbázis cikkre"
@@ -7737,7 +7731,7 @@ msgid "Affected computers"
 msgstr "Érintett számítógépek"
 
 #: inc/computer_softwarelicense.class.php:655
-#: inc/computer_softwareversion.class.php:1153 inc/html.class.php:6365
+#: inc/computer_softwareversion.class.php:1153 inc/html.class.php:6368
 msgid "Summary"
 msgstr "Összesítés"
 
@@ -7783,7 +7777,7 @@ msgstr "Gép"
 #: inc/item_deviceharddrive.class.php:53 inc/item_devicememory.class.php:58
 #: inc/item_disk.class.php:221 inc/item_disk.class.php:226
 #: inc/networkequipment.class.php:389 inc/networkequipment.class.php:583
-#: inc/toolbox.class.php:1056 inc/toolbox.class.php:1208
+#: inc/toolbox.class.php:1058 inc/toolbox.class.php:1210
 msgid "Mio"
 msgstr "MB"
 
@@ -8126,7 +8120,7 @@ msgstr "Add API client"
 #: inc/entity.class.php:337 inc/entity.class.php:889 inc/event.class.php:154
 #: inc/html.class.php:1330 inc/profile.class.php:93 inc/profile.class.php:98
 #: inc/profile.class.php:660 inc/profile.class.php:997
-#: inc/profile.class.php:2160 inc/search.class.php:5724
+#: inc/profile.class.php:2160 inc/search.class.php:5736
 msgid "Assistance"
 msgstr "HelpDesk"
 
@@ -8679,29 +8673,36 @@ msgstr "Napló fájlok írásának tesztelése"
 msgid "A file was created - Perfect!"
 msgstr "Fájlt sikerült létrehozni - Tökéletes !"
 
-#: inc/config.class.php:2511 inc/config.class.php:2528
-#: inc/config.class.php:2529 inc/config.class.php:2532
-#: inc/config.class.php:2533
+#: inc/config.class.php:2517 inc/config.class.php:2534
+#: inc/config.class.php:2535 inc/config.class.php:2538
+#: inc/config.class.php:2539
 msgid "Web access to files directory is protected"
 msgstr "A fájlmappa webes hozzáférése nem lehetséges"
 
-#: inc/config.class.php:2517 inc/config.class.php:2521
+#: inc/config.class.php:2523 inc/config.class.php:2527
+#: inc/config.class.php:2544
 msgid "Web access to the files directory, should not be allowed"
 msgstr "A fájlmappa webes hozzáférésének nem kéne lehetségesnek lennie"
 
-#: inc/config.class.php:2518 inc/config.class.php:2522
+#: inc/config.class.php:2524 inc/config.class.php:2528
 msgid "Check the .htaccess file and the web server configuration."
 msgstr "Ellenőrizd a .htaccess fájlt és a webszerver konfigurációját"
 
-#: inc/config.class.php:2686
+#: inc/config.class.php:2545
+msgid ""
+"Automatic checks cannot be done; please review .htaccess file and the web "
+"server configuration."
+msgstr ""
+
+#: inc/config.class.php:2696
 msgid "You are using a development version, be careful!"
 msgstr "Fejlesztői verziót használsz, légy óvatos !"
 
-#: inc/config.class.php:2687
+#: inc/config.class.php:2697
 msgid "I know I am using a unstable version."
 msgstr "Tudom, hogy instabil verziót használok."
 
-#: inc/config.class.php:2693
+#: inc/config.class.php:2703
 msgid "Please check the unstable version checkbox."
 msgstr "Jelöld be az instabil verzió négyzetet."
 
@@ -9060,13 +9061,13 @@ msgid "Periodicity"
 msgstr "Időszakosság"
 
 #: inc/contract.class.php:585 inc/document.class.php:1423
-#: inc/ticket.class.php:2612
+#: inc/ticket.class.php:2598
 msgctxt "button"
 msgid "Add an item"
 msgstr "Új elem"
 
 #: inc/contract.class.php:586 inc/document.class.php:1424
-#: inc/ticket.class.php:2616
+#: inc/ticket.class.php:2602
 msgctxt "button"
 msgid "Remove an item"
 msgstr "Elem eltávolítása"
@@ -9393,7 +9394,7 @@ msgstr "Utolsó futás listája"
 #: inc/crontask.class.php:1102 inc/crontask.class.php:1160
 #: inc/fieldunicity.class.php:587 inc/problem.class.php:911
 #: inc/softwarelicense.class.php:415 inc/softwarelicense.class.php:995
-#: inc/stat.class.php:405 inc/ticket.class.php:5795
+#: inc/stat.class.php:405 inc/ticket.class.php:5768
 msgctxt "quantity"
 msgid "Number"
 msgstr "Szám"
@@ -9578,7 +9579,7 @@ msgstr "Adattáblák optimalizálása"
 msgid "optimize"
 msgstr "optimalizálás"
 
-#: inc/dbutils.class.php:1063
+#: inc/dbutils.class.php:1065
 msgid "Address:"
 msgstr ""
 
@@ -9999,9 +10000,9 @@ msgstr[1] "Dokumentum fejlécek"
 #: inc/notificationtargetprojecttask.class.php:530
 #: inc/notificationtargetprojecttask.class.php:533
 #: inc/notificationtargetticket.class.php:862 inc/profile.class.php:873
-#: inc/profile.class.php:1734 inc/ticket.class.php:2825
-#: inc/ticket.class.php:7322 inc/ticket.class.php:7323
-#: inc/ticket.class.php:7454 inc/transfer.class.php:3476
+#: inc/profile.class.php:1734 inc/ticket.class.php:2811
+#: inc/ticket.class.php:7287 inc/ticket.class.php:7288
+#: inc/ticket.class.php:7419 inc/transfer.class.php:3476
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Dokumentum"
@@ -10210,7 +10211,7 @@ msgstr[0] "Dokumentum típus"
 msgstr[1] "Dokumentum típusok"
 
 #: inc/documenttype.class.php:173 inc/documenttype.class.php:174
-#: inc/html.class.php:6030 inc/html.class.php:6031
+#: inc/html.class.php:6033 inc/html.class.php:6034
 msgid "Help"
 msgstr "Segítség"
 
@@ -10290,7 +10291,7 @@ msgid_plural "Project tasks types"
 msgstr[0] "Projekt feladat típus"
 msgstr[1] "Projekt feladat típusok"
 
-#: inc/dropdown.class.php:804 inc/projecttask.class.php:415
+#: inc/dropdown.class.php:804 inc/projecttask.class.php:420
 #: inc/projecttasktemplate.class.php:50
 msgid "Project task template"
 msgid_plural "Project task templates"
@@ -10628,7 +10629,7 @@ msgid "All pages in CSV"
 msgstr "CSV-be ment minden oldalt"
 
 #: inc/dropdown.class.php:2153 inc/dropdown.class.php:2154
-#: inc/planning.class.php:1302 inc/planning.class.php:1306
+#: inc/planning.class.php:1305 inc/planning.class.php:1309
 #: inc/rule.class.php:558 inc/rulecollection.class.php:806
 msgctxt "button"
 msgid "Export"
@@ -10890,9 +10891,9 @@ msgstr "Leszerelés dátuma"
 msgid "to see the entity and its sub-entities"
 msgstr "a szervezet és alegységeinek megtekintéséhez"
 
-#: inc/entity.class.php:1100 inc/html.class.php:6357
-#: inc/reservation.class.php:438 inc/ticket.class.php:5868
-#: inc/ticket.class.php:6077
+#: inc/entity.class.php:1100 inc/html.class.php:6360
+#: inc/reservation.class.php:438 inc/ticket.class.php:5841
+#: inc/ticket.class.php:6050
 msgid "Show all"
 msgstr "Mindent mutat"
 
@@ -10992,7 +10993,7 @@ msgid "Send certificates alarms before"
 msgstr "Tanúsítvány riasztás küldés ennyivel előbb"
 
 #: inc/entity.class.php:1961 inc/event.class.php:148 inc/event.class.php:161
-#: inc/html.class.php:6108 inc/profile.class.php:743
+#: inc/html.class.php:6111 inc/profile.class.php:743
 #: inc/profile.class.php:1809 inc/reservation.class.php:54
 #: inc/reservationitem.class.php:756 inc/transfer.class.php:3369
 #: install/update_0723_078.php:4796
@@ -11065,8 +11066,8 @@ msgstr[1] "Szabályok"
 msgid "Security"
 msgstr "Biztonság"
 
-#: inc/event.class.php:165 inc/html.class.php:1343 inc/html.class.php:6197
-#: inc/html.class.php:6223 inc/plugin.class.php:62 inc/search.class.php:5791
+#: inc/event.class.php:165 inc/html.class.php:1343 inc/html.class.php:6200
+#: inc/html.class.php:6226 inc/plugin.class.php:62 inc/search.class.php:5803
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "Bővítmény"
@@ -11422,7 +11423,7 @@ msgstr "GLPI nyomkövetés megjelenítése"
 msgid "Progress"
 msgstr "Folyamatban"
 
-#: inc/html.class.php:1356 inc/html.class.php:5982 inc/html.class.php:5983
+#: inc/html.class.php:1356 inc/html.class.php:5986 inc/html.class.php:5987
 msgid "My settings"
 msgstr "Saját beállítások"
 
@@ -11430,16 +11431,16 @@ msgstr "Saját beállítások"
 msgid "Back to top of the page"
 msgstr "Vissza a lap tetejére"
 
-#: inc/html.class.php:1575 inc/toolbox.class.php:1397
-#: inc/toolbox.class.php:1401
+#: inc/html.class.php:1575 inc/toolbox.class.php:1399
+#: inc/toolbox.class.php:1403
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr ""
 "Elérhető a GLPI weboldaláról: <a href='http://glpi-project.org' "
 "target='_blank'>http://glpi-project.org</a>."
 
-#: inc/html.class.php:1577 inc/toolbox.class.php:1395
-#: inc/toolbox.class.php:1399 inc/toolbox.class.php:1407
-#: inc/toolbox.class.php:1410
+#: inc/html.class.php:1577 inc/toolbox.class.php:1397
+#: inc/toolbox.class.php:1401 inc/toolbox.class.php:1409
+#: inc/toolbox.class.php:1412
 #, php-format
 msgid "A new version is available: %s."
 msgstr "Új verzió érhető el : %s."
@@ -11592,97 +11593,100 @@ msgid "The description field is mandatory"
 msgstr "A leírás mező kötelező"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: inc/html.class.php:3698 inc/html.class.php:3899
+#: inc/html.class.php:3698 inc/html.class.php:3900
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
 msgstr "%1$d től %2$d -ig  %3$d -ból"
 
-#: inc/html.class.php:3777
+#: inc/html.class.php:3778
 msgid "Empty array"
 msgstr "Üres tömb"
 
-#: inc/html.class.php:3936 inc/html.class.php:3941
+#: inc/html.class.php:3937 inc/html.class.php:3942
 msgid "Display (number of items)"
 msgstr "Megjelenítés (elemek száma)"
 
-#: inc/html.class.php:3970
+#: inc/html.class.php:3971
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%1$d %2$d -ból/ből"
 
-#: inc/html.class.php:4853
+#: inc/html.class.php:4854
 msgid "Attach file by drag & drop or copy & paste in editor or "
 msgstr "Fájl csatolása húzással vagy beillesztéssel a szerkesztőbe vagy"
 
-#: inc/html.class.php:4854
+#: inc/html.class.php:4855
 msgid "selecting them"
 msgstr "kiválasztásuk"
 
-#: inc/html.class.php:4932
+#: inc/html.class.php:4933
 msgid "File(s)"
 msgstr "Fájl(ok)"
 
-#: inc/html.class.php:4949
+#: inc/html.class.php:4950
 msgid "Drag and drop your file here, or"
 msgstr "Fogja és húzza a fájlt ide, vagy"
 
-#: inc/html.class.php:5005
+#: inc/html.class.php:5006
 msgid "Upload successful"
 msgstr "Sikeres feltötés"
 
-#: inc/html.class.php:5143
+#: inc/html.class.php:5144
 msgid "Check/uncheck all"
 msgstr "Kijelölés/kijelölés megszüntetése"
 
-#: inc/html.class.php:5188 inc/html.class.php:5295 inc/profile.class.php:2989
+#: inc/html.class.php:5189 inc/html.class.php:5296 inc/profile.class.php:2989
 msgid "Select/unselect all"
 msgstr "Összes kijelölése/kijelölések elvetése"
 
-#: inc/html.class.php:5902
+#: inc/html.class.php:5906
 msgid "Start typing to find a menu"
 msgstr "Kezdj el gépelni menüpont kereséshez"
 
-#: inc/html.class.php:5975 inc/html.class.php:5977
+#: inc/html.class.php:5979 inc/html.class.php:5981
 msgid "Logout"
 msgstr "Kilépés"
 
-#: inc/html.class.php:5998
-#, php-format
-msgid "Debug mode %1$s"
-msgstr "Nyomozási mód %1$s'"
+#: inc/html.class.php:6002
+msgid "Debug mode enabled"
+msgstr ""
 
-#: inc/html.class.php:6004
+#: inc/html.class.php:6003
+msgid "Debug mode disabled"
+msgstr ""
+
+#: inc/html.class.php:6007
 msgid "Change mode"
 msgstr "Üzemmód változtatás"
 
-#: inc/html.class.php:6018
+#: inc/html.class.php:6021
 msgid "Manage saved searches"
 msgstr "Mentett keresések kezelése"
 
-#: inc/html.class.php:6022 inc/search.class.php:2200
+#: inc/html.class.php:6025 inc/search.class.php:2200
 msgid "Load a bookmark"
 msgstr "Könyvjelző betöltése"
 
-#: inc/html.class.php:6088 inc/profile.class.php:2167
-#: inc/ticket.class.php:5789
+#: inc/html.class.php:6091 inc/profile.class.php:2167
+#: inc/ticket.class.php:5762
 msgid "Create a ticket"
 msgstr "Bejelentés létrehozása"
 
-#: inc/html.class.php:6224
+#: inc/html.class.php:6227
 msgid "Plugins"
 msgstr "Bővítmények"
 
-#: inc/html.class.php:6319 inc/html.class.php:6321
+#: inc/html.class.php:6322 inc/html.class.php:6324
 msgid "Add is disabled"
 msgstr "Hozzáadás kikapcsolva"
 
-#: inc/html.class.php:6332 inc/html.class.php:6334
+#: inc/html.class.php:6335 inc/html.class.php:6337
 msgid "Search is disabled"
 msgstr "Keresés kikapcsolva"
 
-#: inc/html.class.php:6406 inc/html.class.php:6407 inc/ticket.class.php:253
-#: inc/ticket.class.php:254 inc/ticket.class.php:3629
-#: inc/ticket.class.php:3630 inc/ticket.class.php:5815
+#: inc/html.class.php:6409 inc/html.class.php:6410 inc/ticket.class.php:253
+#: inc/ticket.class.php:254 inc/ticket.class.php:3615
+#: inc/ticket.class.php:3616 inc/ticket.class.php:5788
 msgid "Ticket waiting for your approval"
 msgstr "Bejelentés érvényesítésre vár"
 
@@ -11721,8 +11725,8 @@ msgstr "Lineáris"
 msgid "Decreasing"
 msgstr "Degresszív"
 
-#: inc/infocom.class.php:706 inc/ticket.class.php:7159
-#: inc/ticket.class.php:7160
+#: inc/infocom.class.php:706 inc/ticket.class.php:7132
+#: inc/ticket.class.php:7133
 msgctxt "button"
 msgid "Show"
 msgstr "Megmutat"
@@ -11962,7 +11966,7 @@ msgstr "Leválasztott eszközök"
 msgid "%1$s of %2$s: %3$s"
 msgstr "%1$s of %2$s: %3$s"
 
-#: inc/item_devices.class.php:687 inc/knowbaseitem.class.php:1707
+#: inc/item_devices.class.php:687 inc/knowbaseitem.class.php:1708
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "Nézet"
@@ -12240,7 +12244,7 @@ msgid "Delete permanently"
 msgstr "Törlés végleg"
 
 #: inc/item_ticket.class.php:1239 inc/link_itemtype.class.php:165
-#: inc/problem.class.php:451 inc/ticket.class.php:2791
+#: inc/problem.class.php:451 inc/ticket.class.php:2777
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] "Hozzárendelt elem típus"
@@ -12277,14 +12281,14 @@ msgstr "Incidens sablon"
 #: inc/itilcategory.class.php:192 inc/notificationtargetchange.class.php:265
 #: inc/notificationtargetproblem.class.php:204
 #: inc/notificationtargetprojecttask.class.php:500 inc/problem.class.php:516
-#: inc/search.class.php:5729
+#: inc/search.class.php:5741
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "Bejelentések száma"
 
 #: inc/itilcategory.class.php:205 inc/notificationtargetchange.class.php:266
-#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5746
-#: inc/ticket.class.php:3314
+#: inc/notificationtargetticket.class.php:764 inc/search.class.php:5758
+#: inc/ticket.class.php:3300
 msgctxt "quantity"
 msgid "Number of problems"
 msgstr "Problémák száma"
@@ -12296,16 +12300,16 @@ msgctxt "quantity"
 msgid "Number of changes"
 msgstr "Módosítások száma"
 
-#: inc/itilcategory.class.php:323 inc/ticket.class.php:3449
-#: inc/ticket.class.php:3465
+#: inc/itilcategory.class.php:323 inc/ticket.class.php:3435
+#: inc/ticket.class.php:3451
 msgid "Incident"
 msgstr "Incidens"
 
 #: inc/itilcategory.class.php:324 inc/notificationtargetchange.class.php:296
 #: inc/notificationtargetchange.class.php:298
 #: inc/notificationtargetticket.class.php:790
-#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3450
-#: inc/ticket.class.php:3468
+#: inc/notificationtargetticket.class.php:792 inc/ticket.class.php:3436
+#: inc/ticket.class.php:3454
 msgid "Request"
 msgstr "Igénylés"
 
@@ -12338,17 +12342,17 @@ msgstr ""
 msgid "No solutions for this %1$s"
 msgstr ""
 
-#: inc/itilsolution.class.php:511 inc/ticket.class.php:7093
+#: inc/itilsolution.class.php:511 inc/ticket.class.php:7066
 #, php-format
 msgid "Last edited on %1$s by %2$s"
 msgstr ""
 
-#: inc/itilsolution.class.php:523 inc/ticket.class.php:7105
+#: inc/itilsolution.class.php:523 inc/ticket.class.php:7078
 #, php-format
 msgid "%1$s on %2$s by %3$s"
 msgstr ""
 
-#: inc/itilsolution.class.php:524 inc/ticket.class.php:7106
+#: inc/itilsolution.class.php:524 inc/ticket.class.php:7079
 msgid "Accepted"
 msgstr "Elfogadva"
 
@@ -12387,7 +12391,7 @@ msgid "Put this item in the FAQ"
 msgstr "Tétel kiállítása a nyilvános GY.I.K-ba"
 
 #: inc/knowbaseitem.class.php:727 inc/knowbaseitem.class.php:965
-#: inc/knowbaseitem.class.php:1469 inc/knowbaseitem.class.php:1633
+#: inc/knowbaseitem.class.php:1470 inc/knowbaseitem.class.php:1634
 msgid "This item is part of the FAQ"
 msgstr "Ez a tétel a nyilvános GY.I.K. része"
 
@@ -12420,7 +12424,7 @@ msgid "Visible until"
 msgstr "Láthatóság vége"
 
 #: inc/knowbaseitem.class.php:787 inc/knowbaseitem.class.php:917
-#: inc/knowbaseitem.class.php:1412 inc/knowbaseitem.class.php:1682
+#: inc/knowbaseitem.class.php:1413 inc/knowbaseitem.class.php:1683
 #: inc/knowbaseitem_revision.class.php:207
 #: inc/knowbaseitem_revision.class.php:245
 #: inc/knowbaseitemtranslation.class.php:158
@@ -12449,52 +12453,56 @@ msgstr "Összes cikkem"
 msgid "All unpublished articles"
 msgstr "Minden publikálatlan cikk"
 
-#: inc/knowbaseitem.class.php:1515
+#: inc/knowbaseitem.class.php:1109
+msgid "All published articles"
+msgstr ""
+
+#: inc/knowbaseitem.class.php:1516
 msgid "Use as a solution"
 msgstr "Felhasználás megoldásként"
 
-#: inc/knowbaseitem.class.php:1561
+#: inc/knowbaseitem.class.php:1562
 msgid "Recent entries"
 msgstr "Friss bejegyzések"
 
-#: inc/knowbaseitem.class.php:1564
+#: inc/knowbaseitem.class.php:1565
 msgid "Last updated entries"
 msgstr "Utoljára frissített elemek"
 
-#: inc/knowbaseitem.class.php:1567
+#: inc/knowbaseitem.class.php:1568
 msgid "Most popular questions"
 msgstr "Legnépszerűbb kérdések"
 
-#: inc/knowbaseitem.class.php:1699
+#: inc/knowbaseitem.class.php:1700
 msgid "FAQ item"
 msgstr "GYIK elem"
 
-#: inc/knowbaseitem.class.php:1716 inc/reminder.class.php:352
+#: inc/knowbaseitem.class.php:1717 inc/reminder.class.php:352
 msgid "Visibility start date"
 msgstr "Láthatóság kezdete"
 
-#: inc/knowbaseitem.class.php:1724 inc/reminder.class.php:360
+#: inc/knowbaseitem.class.php:1725 inc/reminder.class.php:360
 msgid "Visibility end date"
 msgstr "Láthatóság vége"
 
-#: inc/knowbaseitem.class.php:1779
+#: inc/knowbaseitem.class.php:1780
 msgid "Knowledge base administration"
 msgstr "Tudásbázis adminisztráció"
 
-#: inc/knowbaseitem.class.php:1780
+#: inc/knowbaseitem.class.php:1781
 msgid "Publish in the FAQ"
 msgstr "Publikálás a GYIK-be"
 
-#: inc/knowbaseitem.class.php:1781
+#: inc/knowbaseitem.class.php:1782
 msgid "Comment KB entries"
 msgstr "Tudástár kommentek"
 
-#: inc/knowbaseitem.class.php:1783
+#: inc/knowbaseitem.class.php:1784
 msgid "Read the FAQ"
 msgstr "GYIK olvasása"
 
 #. TRANS: %s is the user login, %d the revision number
-#: inc/knowbaseitem.class.php:1863
+#: inc/knowbaseitem.class.php:1864
 msgid "%s reverts item to revision %id"
 msgstr "%svisszaállítja az elem állapotát %in"
 
@@ -12681,7 +12689,7 @@ msgid "Next escalation: %s"
 msgstr "Következő beavatkozás: %s"
 
 #: inc/levelagreement.class.php:276 inc/levelagreementlevel.class.php:77
-#: inc/ticket.class.php:2882 inc/ticket.class.php:2933
+#: inc/ticket.class.php:2868 inc/ticket.class.php:2919
 msgid "Escalation level"
 msgid_plural "Escalation levels"
 msgstr[0] "Beavatkozási szinte"
@@ -12703,9 +12711,9 @@ msgstr "Bejelentés naptára"
 #: inc/notificationtargetticket.class.php:715 inc/olalevel.class.php:177
 #: inc/ruleticket.class.php:474 inc/ruleticket.class.php:490
 #: inc/ruleticket.class.php:595 inc/ruleticket.class.php:611
-#: inc/slalevel.class.php:174 inc/ticket.class.php:2653
-#: inc/ticket.class.php:2855 inc/ticket.class.php:4638
-#: inc/ticket.class.php:4640 inc/ticket.class.php:7641
+#: inc/slalevel.class.php:174 inc/ticket.class.php:2639
+#: inc/ticket.class.php:2841 inc/ticket.class.php:4624
+#: inc/ticket.class.php:4626 inc/ticket.class.php:7606
 msgid "Time to own"
 msgstr "Tulajdonlás ideje"
 
@@ -12753,7 +12761,7 @@ msgid "Mobile Network Code"
 msgstr "Mobll körzetszám"
 
 #: inc/link.class.php:51 inc/link.class.php:597 inc/profile.class.php:1463
-#: inc/profile.class.php:1900 inc/search.class.php:5782
+#: inc/profile.class.php:1900 inc/search.class.php:5794
 msgid "External link"
 msgid_plural "External links"
 msgstr[0] "Külső hivatkozás"
@@ -12911,8 +12919,8 @@ msgid "Change the component %1$s: %2$s"
 msgstr "Komponens megváltoztatása %1$s: %2$s"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
-#: inc/log.class.php:408 inc/projecttask.class.php:497
-#: inc/ticket.class.php:4627
+#: inc/log.class.php:408 inc/projecttask.class.php:502
+#: inc/ticket.class.php:4613
 #, php-format
 msgid "%1$s by %2$s"
 msgstr "%1$s %2$s által"
@@ -13182,22 +13190,22 @@ msgstr "az alapértelmezett érték 0 vagy 1 legyen"
 msgid "default_value must be numeric"
 msgstr "az alapértelmezés szám legyen"
 
-#: inc/migration.class.php:565
+#: inc/migration.class.php:570
 #, php-format
 msgid "Unable to rename table %1$s (%2$s) to %3$s (%4$s)!"
 msgstr ""
 
-#: inc/migration.class.php:567 inc/migration.class.php:569
+#: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "ok"
 msgstr ""
 
-#: inc/migration.class.php:567 inc/migration.class.php:569
+#: inc/migration.class.php:572 inc/migration.class.php:574
 msgid "nok"
 msgstr ""
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
-#: inc/migration.class.php:650 install/update_0723_078.php:48
+#: inc/migration.class.php:655 install/update_0723_078.php:48
 #: install/update_0723_078.php:228 install/update_0723_078.php:756
 #: install/update_0723_078.php:1421 install/update_0723_078.php:2303
 #: install/update_0723_078.php:2383 install/update_0723_078.php:2594
@@ -13235,17 +13243,17 @@ msgstr ""
 msgid "Change of the database layout - %s"
 msgstr "Adatbázis szerkezet változás : %s"
 
-#: inc/migration.class.php:656
+#: inc/migration.class.php:661
 #, php-format
 msgid "Adding fulltext index - %s"
 msgstr ""
 
-#: inc/migration.class.php:699 inc/software.class.php:1113
+#: inc/migration.class.php:704 inc/software.class.php:1113
 #: install/update.php:79
 msgid "Task completed."
 msgstr "Munka befejezve."
 
-#: inc/migration.class.php:721 inc/notificationtemplate.class.php:252
+#: inc/migration.class.php:726 inc/notificationtemplate.class.php:252
 #: inc/notificationtemplate.class.php:328
 #, php-format
 msgid "Automatically generated by GLPI %s"
@@ -13254,7 +13262,7 @@ msgstr "Automatikusan generálva GLPI-ben %s"
 #. TRANS: %s is the table or item to migrate
 #. TRANS: %s is 'Clean reservation entity link'
 #. TRANS: %s is the table or item to migrate
-#: inc/migration.class.php:778 install/update_0723_078.php:2670
+#: inc/migration.class.php:783 install/update_0723_078.php:2670
 #: install/update_0723_078.php:2699 install/update_0723_078.php:5098
 #: install/update_0723_078.php:5114 install/update_0723_078.php:5637
 #: install/update_078_0781.php:47 install/update_0782_080.php:780
@@ -13291,12 +13299,12 @@ msgstr "Automatikusan generálva GLPI-ben %s"
 msgid "Data migration - %s"
 msgstr "Adat migráció - %s"
 
-#: inc/migration.class.php:904
+#: inc/migration.class.php:909
 #, php-format
 msgid "%1$s table already exists. A backup have been done to %2$s"
 msgstr ""
 
-#: inc/migration.class.php:953
+#: inc/migration.class.php:958
 #, php-format
 msgid "Configuration values added for %1$s."
 msgstr "Konfigurációs értékek hozzáadva%1$s"
@@ -13587,7 +13595,7 @@ msgstr "az elem nincs objektumhoz csatolva"
 
 #. TRANS: %1$s and %2$s are links
 #: inc/networkportinstantiation.class.php:776
-#: inc/networkportinstantiation.class.php:797 inc/savedsearch.class.php:919
+#: inc/networkportinstantiation.class.php:797 inc/savedsearch.class.php:925
 #, php-format
 msgid "%1$s on %2$s"
 msgstr "%1$s itt: %2$s"
@@ -13737,27 +13745,27 @@ msgid "Create by %1$s on %2$s"
 msgstr "Létrehozta %1$s  %2$s"
 
 #: inc/notificationajax.class.php:90
-msgid "Error inserting ajax notification to queue"
-msgstr "Hiba ajax értesítés sorbaállításakor"
+msgid "Error inserting browser notification to queue"
+msgstr ""
 
 #: inc/notificationajax.class.php:96
 #, php-format
-msgid "An ajax notification to %s was added to queue"
-msgstr "Ajax értesítés %ssorbaállítva"
+msgid "A browser notification to %s was added to queue"
+msgstr ""
 
 #: inc/notificationajaxsetting.class.php:43
-msgid "Ajax followups configuration"
+msgid "Browser followups configuration"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:48
-msgid "Enable followups via ajax calls"
+msgid "Enable followups from browser"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:65
-msgid "Ajax notification"
-msgid_plural "Ajax notifications"
-msgstr[0] "Ajax értesítés"
-msgstr[1] "Ajax értesítések"
+msgid "Browser notification"
+msgid_plural "Browser notifications"
+msgstr[0] ""
+msgstr[1] ""
 
 #: inc/notificationajaxsetting.class.php:70
 #: inc/notificationajaxsetting.class.php:71
@@ -13789,8 +13797,8 @@ msgid "See configuration"
 msgstr "Beállítás megtekintése"
 
 #: inc/notificationajaxsetting.class.php:109
-msgid "Send a test ajax call to you"
-msgstr "Ajax teszt hívás küldése"
+msgid "Send a test browser notification to you"
+msgstr ""
 
 #: inc/notification.class.php:165 inc/notification.class.php:352
 #: inc/notificationevent.class.php:198
@@ -14047,7 +14055,7 @@ msgid "No template selected"
 msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
-msgid "Ajax"
+msgid "Browser"
 msgstr ""
 
 #: inc/notificationsettingconfig.class.php:95
@@ -14092,12 +14100,12 @@ msgstr "Változás megoldva"
 #: inc/notificationtargetchange.class.php:58
 #: inc/notificationtargetchange.class.php:320
 #: inc/notificationtargetticket.class.php:228
-#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6822
+#: inc/notificationtargetticket.class.php:896 inc/ticket.class.php:6795
 msgid "Validation request"
 msgstr "Érvényesítési kérelem"
 
 #: inc/notificationtargetchange.class.php:59
-#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6833
+#: inc/notificationtargetticket.class.php:229 inc/ticket.class.php:6806
 msgid "Validation request answer"
 msgstr "Érvényesítési kérelem válasza"
 
@@ -14150,7 +14158,7 @@ msgstr "Válasz érkezett érvényesítési kérelemre %s-tól/től"
 #: inc/profile.class.php:1045 inc/profile.class.php:1047
 #: inc/profile.class.php:1107 inc/rule.class.php:2015 inc/rule.class.php:2036
 #: inc/rulecollection.class.php:1760 inc/rulerightcollection.class.php:81
-#: inc/ticket.class.php:7324 inc/ticket.class.php:7325
+#: inc/ticket.class.php:7289 inc/ticket.class.php:7290
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Érvényesítése"
@@ -14544,8 +14552,8 @@ msgstr "Kód"
 #: inc/notificationtargetproject.class.php:578
 #: inc/notificationtargetprojecttask.class.php:459
 #: inc/notificationtargetprojecttask.class.php:483 inc/project.class.php:532
-#: inc/project.class.php:1113 inc/projecttask.class.php:550
-#: inc/projecttask.class.php:816 inc/projecttask.class.php:928
+#: inc/project.class.php:1113 inc/projecttask.class.php:555
+#: inc/projecttask.class.php:821 inc/projecttask.class.php:933
 #: inc/projecttasktemplate.class.php:73 inc/projecttasktemplate.class.php:145
 #: inc/projecttask_ticket.class.php:280
 msgid "Planned start date"
@@ -14555,8 +14563,8 @@ msgstr "Tervezett kezdet"
 #: inc/notificationtargetproject.class.php:579
 #: inc/notificationtargetprojecttask.class.php:460
 #: inc/notificationtargetprojecttask.class.php:484 inc/project.class.php:540
-#: inc/project.class.php:1123 inc/projecttask.class.php:564
-#: inc/projecttask.class.php:824 inc/projecttask.class.php:929
+#: inc/project.class.php:1123 inc/projecttask.class.php:569
+#: inc/projecttask.class.php:829 inc/projecttask.class.php:934
 #: inc/projecttasktemplate.class.php:79 inc/projecttasktemplate.class.php:161
 #: inc/projecttask_ticket.class.php:281
 msgid "Planned end date"
@@ -14566,8 +14574,8 @@ msgstr "Tervezett befejezés"
 #: inc/notificationtargetproject.class.php:580
 #: inc/notificationtargetprojecttask.class.php:461
 #: inc/notificationtargetprojecttask.class.php:485 inc/project.class.php:559
-#: inc/project.class.php:1117 inc/projecttask.class.php:556
-#: inc/projecttask.class.php:832 inc/projecttasktemplate.class.php:76
+#: inc/project.class.php:1117 inc/projecttask.class.php:561
+#: inc/projecttask.class.php:837 inc/projecttasktemplate.class.php:76
 #: inc/projecttasktemplate.class.php:153
 msgid "Real start date"
 msgstr "Kezdet tényleges dátuma"
@@ -14576,8 +14584,8 @@ msgstr "Kezdet tényleges dátuma"
 #: inc/notificationtargetproject.class.php:581
 #: inc/notificationtargetprojecttask.class.php:462
 #: inc/notificationtargetprojecttask.class.php:486 inc/project.class.php:567
-#: inc/project.class.php:1127 inc/projecttask.class.php:569
-#: inc/projecttask.class.php:840 inc/projecttasktemplate.class.php:82
+#: inc/project.class.php:1127 inc/projecttask.class.php:574
+#: inc/projecttask.class.php:845 inc/projecttasktemplate.class.php:82
 #: inc/projecttasktemplate.class.php:169
 msgid "Real end date"
 msgstr "Befejezés tényleges dátuma"
@@ -14586,17 +14594,17 @@ msgstr "Befejezés tényleges dátuma"
 #: inc/notificationtargetproject.class.php:577
 #: inc/notificationtargetprojecttask.class.php:467
 #: inc/notificationtargetprojecttask.class.php:482 inc/project.class.php:492
-#: inc/project.class.php:1071 inc/projecttask.class.php:525
-#: inc/projecttask.class.php:795 inc/projecttask.class.php:927
-#: inc/projecttask.class.php:1582 inc/projecttasktemplate.class.php:67
+#: inc/project.class.php:1071 inc/projecttask.class.php:530
+#: inc/projecttask.class.php:800 inc/projecttask.class.php:932
+#: inc/projecttask.class.php:1591 inc/projecttasktemplate.class.php:67
 #: inc/projecttasktemplate.class.php:129 inc/projecttask_ticket.class.php:279
 msgid "Percent done"
 msgstr "Készültségi fok"
 
 #: inc/notificationtargetproject.class.php:565
 #: inc/notificationtargetprojecttask.class.php:468 inc/project.class.php:548
-#: inc/project.class.php:1133 inc/projecttask.class.php:576
-#: inc/projecttask.class.php:848 inc/projecttask.class.php:930
+#: inc/project.class.php:1133 inc/projecttask.class.php:581
+#: inc/projecttask.class.php:853 inc/projecttask.class.php:935
 #: inc/projecttasktemplate.class.php:85 inc/projecttasktemplate.class.php:177
 #: inc/projecttask_ticket.class.php:282
 msgid "Planned duration"
@@ -14604,8 +14612,8 @@ msgstr "Tervezett időtartam"
 
 #: inc/notificationtargetproject.class.php:566
 #: inc/notificationtargetprojecttask.class.php:469 inc/project.class.php:575
-#: inc/project.class.php:1140 inc/projecttask.class.php:593
-#: inc/projecttask.class.php:861 inc/projecttask.class.php:931
+#: inc/project.class.php:1140 inc/projecttask.class.php:598
+#: inc/projecttask.class.php:866 inc/projecttask.class.php:936
 #: inc/projecttasktemplate.class.php:88 inc/projecttasktemplate.class.php:185
 #: inc/projecttask_ticket.class.php:283
 msgid "Effective duration"
@@ -14659,14 +14667,14 @@ msgstr "Projekt csapat csoport"
 #: inc/notificationtargetprojecttask.class.php:454
 #: inc/notificationtargetprojecttask.class.php:518 inc/profile.class.php:956
 #: inc/profile.class.php:961 inc/project.class.php:62
-#: inc/projecttask.class.php:469 inc/projecttask.class.php:730
+#: inc/projecttask.class.php:474 inc/projecttask.class.php:735
 msgid "Project"
 msgid_plural "Projects"
 msgstr[0] "Projekt"
 msgstr[1] "Projektek"
 
 #: inc/notificationtargetprojecttask.class.php:470
-#: inc/projecttask.class.php:606
+#: inc/projecttask.class.php:611
 msgid "Tickets duration"
 msgstr "Bejelentés időtartama"
 
@@ -14749,7 +14757,7 @@ msgid "Deletion of a ticket"
 msgstr "Bejelentés törlése"
 
 #: inc/notificationtargetticket.class.php:238
-#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6323
+#: inc/notificationtargetticket.class.php:890 inc/ticket.class.php:6296
 msgid "Not solved tickets"
 msgstr "Megoldatlan bejelentések"
 
@@ -14779,9 +14787,9 @@ msgstr[1] "Válasz nélkül a bejelentés %s nap múlva automatikusan lezárul."
 #: inc/notificationtargetticket.class.php:714
 #: inc/notificationtargetticket.class.php:717 inc/ruleticket.class.php:465
 #: inc/ruleticket.class.php:473 inc/ruleticket.class.php:586
-#: inc/ruleticket.class.php:594 inc/sla.class.php:53 inc/ticket.class.php:2847
-#: inc/ticket.class.php:2855 inc/ticket.class.php:2869
-#: inc/ticket.class.php:2882
+#: inc/ruleticket.class.php:594 inc/sla.class.php:53 inc/ticket.class.php:2833
+#: inc/ticket.class.php:2841 inc/ticket.class.php:2855
+#: inc/ticket.class.php:2868
 msgid "SLA"
 msgstr "SLA"
 
@@ -14789,20 +14797,20 @@ msgstr "SLA"
 #: inc/notificationtargetticket.class.php:723 inc/ola.class.php:51
 #: inc/ruleticket.class.php:481 inc/ruleticket.class.php:489
 #: inc/ruleticket.class.php:602 inc/ruleticket.class.php:610
-#: inc/ticket.class.php:2898 inc/ticket.class.php:2906
-#: inc/ticket.class.php:2920 inc/ticket.class.php:2933
+#: inc/ticket.class.php:2884 inc/ticket.class.php:2892
+#: inc/ticket.class.php:2906 inc/ticket.class.php:2919
 msgid "OLA"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2727
-#: inc/ticket.class.php:2906 inc/ticket.class.php:4665
-#: inc/ticket.class.php:4667 inc/ticket.class.php:7633
+#: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2713
+#: inc/ticket.class.php:2892 inc/ticket.class.php:4651
+#: inc/ticket.class.php:4653 inc/ticket.class.php:7598
 msgid "Internal time to own"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2691
-#: inc/ticket.class.php:2920 inc/ticket.class.php:4677
-#: inc/ticket.class.php:4679 inc/ticket.class.php:7649
+#: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2677
+#: inc/ticket.class.php:2906 inc/ticket.class.php:4663
+#: inc/ticket.class.php:4665 inc/ticket.class.php:7614
 msgid "Internal time to resolve"
 msgstr ""
 
@@ -14810,7 +14818,7 @@ msgstr ""
 msgid "Location name"
 msgstr "Hely neve"
 
-#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3079
+#: inc/notificationtargetticket.class.php:762 inc/ticket.class.php:3065
 msgctxt "quantity"
 msgid "Number of followups"
 msgstr "Utótevékenységek száma"
@@ -14851,8 +14859,8 @@ msgstr "Meghívó felmérés kitöltésére"
 
 #: inc/notificationtargetticket.class.php:856 inc/profile.class.php:651
 #: inc/profile.class.php:1036 inc/profile.class.php:1041
-#: inc/ticket.class.php:3032 inc/ticket.class.php:7318
-#: inc/ticket.class.php:7319 inc/ticket.class.php:7443
+#: inc/ticket.class.php:3018 inc/ticket.class.php:7283
+#: inc/ticket.class.php:7284 inc/ticket.class.php:7408
 #: inc/ticketfollowup.class.php:65
 msgid "Followup"
 msgid_plural "Followups"
@@ -14865,8 +14873,8 @@ msgstr[1] "Utótevékenységek"
 #: inc/notificationtargetticket.class.php:904
 #: inc/notificationtargetticket.class.php:907
 #: inc/notificationtargetticket.class.php:910
-#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3160
-#: inc/ticket.class.php:5100
+#: inc/notificationtargetticket.class.php:913 inc/ticket.class.php:3148
+#: inc/ticket.class.php:5073
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "Hivatkozott bejelentése"
@@ -15226,77 +15234,77 @@ msgstr "Hangszóró"
 msgid "The user is busy at the selected timeframe."
 msgstr "A felhasználó elfoglalt a kiválasztott időben. "
 
-#: inc/planning.class.php:501 inc/profile.class.php:541
+#: inc/planning.class.php:504 inc/profile.class.php:541
 msgid "Caption"
 msgstr "Felirat"
 
-#: inc/planning.class.php:502
+#: inc/planning.class.php:505
 msgid "Available"
 msgstr "Elérhető"
 
-#: inc/planning.class.php:503 inc/rule.class.php:1389
+#: inc/planning.class.php:506 inc/rule.class.php:1389
 msgid "Unavailable"
 msgstr "Nem elérhető"
 
-#: inc/planning.class.php:1040
+#: inc/planning.class.php:1043
 msgid "Events type"
 msgstr "Esemény típusa"
 
-#: inc/planning.class.php:1041
+#: inc/planning.class.php:1044
 msgid "Plannings"
 msgstr "Tervek"
 
-#: inc/planning.class.php:1046
+#: inc/planning.class.php:1049
 msgid "Toggle filters"
 msgstr "Szűrők ki/be"
 
-#: inc/planning.class.php:1302
+#: inc/planning.class.php:1305
 msgid "Ical"
 msgstr "Ical"
 
-#: inc/planning.class.php:1306
+#: inc/planning.class.php:1309
 msgid "Webcal"
 msgstr "Webcal"
 
-#: inc/planning.class.php:1353
+#: inc/planning.class.php:1356
 msgid "All users of a group"
 msgstr "A csoport minden tagja"
 
-#: inc/planning.class.php:1494
+#: inc/planning.class.php:1497
 msgid "View this item in his context"
 msgstr "Elem megnézése a környezetében"
 
-#: inc/planning.class.php:1572
+#: inc/planning.class.php:1575
 msgid "Event type"
 msgstr "Esemény típus"
 
-#: inc/planning.class.php:1682
+#: inc/planning.class.php:1685
 msgid "Period"
 msgstr "Periódus"
 
-#: inc/planning.class.php:1697 inc/reservation.class.php:706
+#: inc/planning.class.php:1700 inc/reservation.class.php:706
 #: inc/reservationitem.class.php:433
 msgid "Specify an end date"
 msgstr "Befejező dátuma van"
 
-#: inc/planning.class.php:2090
+#: inc/planning.class.php:2093
 msgid "Your planning"
 msgstr "Tervezés"
 
-#: inc/planning.class.php:2173
+#: inc/planning.class.php:2176
 #, php-format
 msgid "Ticket #%1$s %2$s"
 msgstr "Bejelentés #%1$s %2$s"
 
-#: inc/planning.class.php:2220
+#: inc/planning.class.php:2223
 msgid "See personnal planning"
 msgstr "Személyes tervező"
 
-#: inc/planning.class.php:2221
+#: inc/planning.class.php:2224
 msgid "See schedule of people in my groups"
 msgstr "A csoportom időbeosztásának megtekintése"
 
-#: inc/planning.class.php:2222
+#: inc/planning.class.php:2225
 msgid "See all plannings"
 msgstr "Minden terv"
 
@@ -15525,17 +15533,17 @@ msgstr "Ethernet"
 msgid "Wifi"
 msgstr "Wifi"
 
-#: inc/problem.class.php:542 inc/ticket.class.php:3488
+#: inc/problem.class.php:542 inc/ticket.class.php:3474
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "Feldolgozás (kiadva)"
 
-#: inc/problem.class.php:543 inc/ticket.class.php:3489
+#: inc/problem.class.php:543 inc/ticket.class.php:3475
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "Feldolgozás (tervezett)"
 
-#: inc/problem.class.php:545 inc/ticket.class.php:3491
+#: inc/problem.class.php:545 inc/ticket.class.php:3477
 msgctxt "status"
 msgid "Solved"
 msgstr "Megoldva"
@@ -15671,8 +15679,8 @@ msgid "Default ticket template"
 msgstr "Alapértemezett bejelentés sablon"
 
 #: inc/profile.class.php:746 inc/profile.class.php:935
-#: inc/profile.class.php:2356 inc/reminder.class.php:1079
-#: inc/reminder.class.php:1081
+#: inc/profile.class.php:2356 inc/reminder.class.php:1085
+#: inc/reminder.class.php:1087
 msgid "Public reminder"
 msgid_plural "Public reminders"
 msgstr[0] "Nyilvános emlékeztető"
@@ -15843,7 +15851,7 @@ msgid_plural "Authorizations"
 msgstr[0] "Jogosultságo"
 msgstr[1] "Jogosultságok"
 
-#: inc/project.class.php:116 inc/projecttask.class.php:175
+#: inc/project.class.php:116 inc/projecttask.class.php:180
 msgid "See (actor)"
 msgstr "Megnéz"
 
@@ -15880,11 +15888,11 @@ msgstr "Tervezett feladatok összes időtartama"
 msgid "Sum of total effective durations of tasks"
 msgstr "A feladatok összes effektív összesítése"
 
-#: inc/project.class.php:1230 inc/projecttask.class.php:1165
+#: inc/project.class.php:1230 inc/projecttask.class.php:1170
 msgid "Add a team member"
 msgstr "Új csapat tag"
 
-#: inc/project.class.php:1270 inc/projecttask.class.php:1204
+#: inc/project.class.php:1270 inc/projecttask.class.php:1209
 msgid "Member"
 msgid_plural "Members"
 msgstr[0] "Tag"
@@ -15895,86 +15903,86 @@ msgstr[1] "Tagok"
 msgid "Invalid items (no start or end date): %s"
 msgstr "Érvénytelen elemek (nincs kezdő vagy záró dátum) : %s"
 
-#: inc/project.class.php:1505 inc/toolbox.class.php:2225
+#: inc/project.class.php:1505 inc/toolbox.class.php:2231
 msgid "January"
 msgstr "Január"
 
-#: inc/project.class.php:1505 inc/toolbox.class.php:2226
+#: inc/project.class.php:1505 inc/toolbox.class.php:2232
 msgid "February"
 msgstr "Február"
 
-#: inc/project.class.php:1505 inc/toolbox.class.php:2227
+#: inc/project.class.php:1505 inc/toolbox.class.php:2233
 msgid "March"
 msgstr "Március"
 
-#: inc/project.class.php:1505 inc/toolbox.class.php:2228
+#: inc/project.class.php:1505 inc/toolbox.class.php:2234
 msgid "April"
 msgstr "Április"
 
-#: inc/project.class.php:1505 inc/toolbox.class.php:2229
+#: inc/project.class.php:1505 inc/toolbox.class.php:2235
 msgid "May"
 msgstr "Május"
 
-#: inc/project.class.php:1506 inc/toolbox.class.php:2230
+#: inc/project.class.php:1506 inc/toolbox.class.php:2236
 msgid "June"
 msgstr "Június"
 
-#: inc/project.class.php:1506 inc/toolbox.class.php:2231
+#: inc/project.class.php:1506 inc/toolbox.class.php:2237
 msgid "July"
 msgstr "Július"
 
-#: inc/project.class.php:1506 inc/toolbox.class.php:2232
+#: inc/project.class.php:1506 inc/toolbox.class.php:2238
 msgid "August"
 msgstr "Augusztus"
 
-#: inc/project.class.php:1506 inc/toolbox.class.php:2233
+#: inc/project.class.php:1506 inc/toolbox.class.php:2239
 msgid "September"
 msgstr "Szeptember"
 
-#: inc/project.class.php:1507 inc/toolbox.class.php:2234
+#: inc/project.class.php:1507 inc/toolbox.class.php:2240
 msgid "October"
 msgstr "Október"
 
-#: inc/project.class.php:1507 inc/toolbox.class.php:2235
+#: inc/project.class.php:1507 inc/toolbox.class.php:2241
 msgid "November"
 msgstr "November"
 
-#: inc/project.class.php:1507 inc/toolbox.class.php:2236
+#: inc/project.class.php:1507 inc/toolbox.class.php:2242
 msgid "December"
 msgstr "December"
 
 #: inc/project.class.php:1509 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2211
+#: inc/toolbox.class.php:2217
 msgid "Sunday"
 msgstr "Vasárnap"
 
 #: inc/project.class.php:1509 inc/reservation.class.php:523
-#: inc/toolbox.class.php:2212
+#: inc/toolbox.class.php:2218
 msgid "Monday"
 msgstr "Hétfő"
 
 #: inc/project.class.php:1510 inc/reservation.class.php:524
-#: inc/toolbox.class.php:2213
+#: inc/toolbox.class.php:2219
 msgid "Tuesday"
 msgstr "Kedd"
 
 #: inc/project.class.php:1510 inc/reservation.class.php:525
-#: inc/toolbox.class.php:2214
+#: inc/toolbox.class.php:2220
 msgid "Wednesday"
 msgstr "Szerda"
 
 #: inc/project.class.php:1511 inc/reservation.class.php:526
-#: inc/toolbox.class.php:2215
+#: inc/toolbox.class.php:2221
 msgid "Thursday"
 msgstr "Csütörtök"
 
 #: inc/project.class.php:1511 inc/reservation.class.php:527
-#: inc/toolbox.class.php:2216
+#: inc/toolbox.class.php:2222
 msgid "Friday"
 msgstr "Péntek"
 
 #: inc/project.class.php:1512 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2217
+#: inc/toolbox.class.php:2223
 msgid "Saturday"
 msgstr "Szombat"
 
@@ -15992,34 +16000,34 @@ msgid_plural "Project tasks"
 msgstr[0] "Projekt feladat"
 msgstr[1] "Projekt feladatok"
 
-#: inc/projecttask.class.php:176
+#: inc/projecttask.class.php:181
 msgid "Update (actor)"
 msgstr "Módosítás (aktor)"
 
-#: inc/projecttask.class.php:536 inc/projecttask.class.php:882
+#: inc/projecttask.class.php:541 inc/projecttask.class.php:887
 #: inc/projecttasktemplate.class.php:70 inc/projecttasktemplate.class.php:137
 msgid "Milestone"
 msgstr "Mérföldkő"
 
-#: inc/projecttask.class.php:808 inc/rssfeed.class.php:342
+#: inc/projecttask.class.php:813 inc/rssfeed.class.php:342
 msgid "Creator"
 msgstr "Szerző"
 
-#: inc/projecttask.class.php:973
+#: inc/projecttask.class.php:978
 msgctxt "button"
 msgid "Add a task"
 msgstr "Új feladat"
 
-#: inc/projecttask.class.php:985
+#: inc/projecttask.class.php:990
 msgid "Create a sub task from this task of project"
 msgstr "Alfeladat létrehozása ebből"
 
-#: inc/projecttask.class.php:1568
+#: inc/projecttask.class.php:1577
 #, php-format
 msgid "Start at %s"
 msgstr "Indítás %s-kor"
 
-#: inc/projecttask.class.php:1573
+#: inc/projecttask.class.php:1582
 #, php-format
 msgid "End at %s"
 msgstr "Befejezve %s"
@@ -16202,7 +16210,7 @@ msgid_plural "Reminders"
 msgstr[0] "Emlékeztető"
 msgstr[1] "Emlékeztetők"
 
-#: inc/reminder.class.php:61 inc/reminder.class.php:1055
+#: inc/reminder.class.php:61 inc/reminder.class.php:1061
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "Személyes emlékeztetők"
@@ -16217,7 +16225,7 @@ msgid "Planning end date"
 msgstr "Tervezés vége"
 
 #: inc/reminder.class.php:520 inc/reminder.class.php:565
-#: inc/rssfeed.class.php:520 inc/ticket.class.php:5044
+#: inc/rssfeed.class.php:520 inc/ticket.class.php:5017
 msgid "Without title"
 msgstr "Cím nélkül"
 
@@ -16373,7 +16381,7 @@ msgstr "Nincs foglalás"
 
 #: inc/reservation.class.php:1101 inc/reservation.class.php:1149
 #: inc/reservation.class.php:1233 inc/reservation.class.php:1296
-#: inc/search.class.php:5047
+#: inc/search.class.php:5048
 msgid "See planning"
 msgstr "Foglalások megnézése"
 
@@ -16412,8 +16420,8 @@ msgstr "Ezzel minden folyamatban levő foglalás törölve lesz."
 msgid "Authorize reservations"
 msgstr "Kölcsönözhető"
 
-#: inc/reservationitem.class.php:355 inc/search.class.php:4857
-#: inc/search.class.php:4861
+#: inc/reservationitem.class.php:355 inc/search.class.php:4858
+#: inc/search.class.php:4862
 msgid "Modify the comment"
 msgstr "Megjegyzés módosítása"
 
@@ -16465,7 +16473,7 @@ msgid "Use"
 msgstr "Használ"
 
 #. TRANS: short for : Assign a ticket
-#: inc/ruleaction.class.php:392 inc/ticket.class.php:6550
+#: inc/ruleaction.class.php:392 inc/ticket.class.php:6523
 msgid "Assign"
 msgstr "Hozzárendel"
 
@@ -16676,26 +16684,26 @@ msgstr "Helyi szabályok: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "Alszervezetek szabályai"
 
-#: inc/rulecriteria.class.php:511 inc/search.class.php:5879
-#: inc/search.class.php:5915 inc/search.class.php:5927
-#: inc/search.class.php:5933 inc/search.class.php:5938
-#: inc/search.class.php:5945 inc/search.class.php:5963
-#: inc/search.class.php:5970
+#: inc/rulecriteria.class.php:511 inc/search.class.php:5891
+#: inc/search.class.php:5927 inc/search.class.php:5939
+#: inc/search.class.php:5945 inc/search.class.php:5950
+#: inc/search.class.php:5957 inc/search.class.php:5975
+#: inc/search.class.php:5982
 msgid "is"
 msgstr "pontosan"
 
-#: inc/rulecriteria.class.php:512 inc/search.class.php:5883
-#: inc/search.class.php:5916 inc/search.class.php:5928
-#: inc/search.class.php:5934 inc/search.class.php:5939
-#: inc/search.class.php:5946 inc/search.class.php:5964
-#: inc/search.class.php:5971
+#: inc/rulecriteria.class.php:512 inc/search.class.php:5895
+#: inc/search.class.php:5928 inc/search.class.php:5940
+#: inc/search.class.php:5946 inc/search.class.php:5951
+#: inc/search.class.php:5958 inc/search.class.php:5976
+#: inc/search.class.php:5983
 msgid "is not"
 msgstr "nem"
 
-#: inc/rulecriteria.class.php:513 inc/search.class.php:5862
-#: inc/search.class.php:5887 inc/search.class.php:5914
-#: inc/search.class.php:5929 inc/search.class.php:5949
-#: inc/search.class.php:5969
+#: inc/rulecriteria.class.php:513 inc/search.class.php:5874
+#: inc/search.class.php:5899 inc/search.class.php:5926
+#: inc/search.class.php:5941 inc/search.class.php:5961
+#: inc/search.class.php:5981
 msgid "contains"
 msgstr "tartalmaz"
 
@@ -16728,14 +16736,14 @@ msgid "does not exist"
 msgstr "nem létezik"
 
 #: inc/rulecriteria.class.php:537 inc/search.class.php:1923
-#: inc/search.class.php:2004 inc/search.class.php:5891
-#: inc/search.class.php:5978
+#: inc/search.class.php:2004 inc/search.class.php:5903
+#: inc/search.class.php:5990
 msgid "under"
 msgstr "alatt"
 
 #: inc/rulecriteria.class.php:538 inc/search.class.php:1928
-#: inc/search.class.php:2010 inc/search.class.php:5895
-#: inc/search.class.php:5979
+#: inc/search.class.php:2010 inc/search.class.php:5907
+#: inc/search.class.php:5991
 msgid "not under"
 msgstr "nincs alatta"
 
@@ -17113,7 +17121,7 @@ msgstr[0] "Mentett keresés figyelmeztetés"
 msgstr[1] "Mentett keresés figyelmeztetések"
 
 #: inc/savedsearch_alert.class.php:134 inc/savedsearch.class.php:61
-#: inc/savedsearch.class.php:1346
+#: inc/savedsearch.class.php:1352
 msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] "Mentett keresése"
@@ -17152,31 +17160,31 @@ msgstr "Új figyelmeztetés"
 msgid "Saved searches alerts"
 msgstr "Mentett keresés figyelmeztetések"
 
-#: inc/savedsearch_alert.class.php:356
+#: inc/savedsearch_alert.class.php:355
 msgid "less than"
 msgstr "kevesebb mint"
 
-#: inc/savedsearch_alert.class.php:360
+#: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
 msgstr "kisebb vagy egyenlő mint"
 
-#: inc/savedsearch_alert.class.php:364
+#: inc/savedsearch_alert.class.php:363
 msgid "equals to"
 msgstr "egyenlő"
 
-#: inc/savedsearch_alert.class.php:368
+#: inc/savedsearch_alert.class.php:367
 msgid "not equals to"
 msgstr "nem egyenlő"
 
-#: inc/savedsearch_alert.class.php:372
+#: inc/savedsearch_alert.class.php:371
 msgid "greater or equals than"
 msgstr "nagyobb vagy egyenlő mint"
 
-#: inc/savedsearch_alert.class.php:376
+#: inc/savedsearch_alert.class.php:375
 msgid "greater than"
 msgstr "nagyobb mint"
 
-#: inc/savedsearch_alert.class.php:385
+#: inc/savedsearch_alert.class.php:384
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
 msgstr "Eredmények száma %1$s is %2$s %3$s"
@@ -17194,7 +17202,7 @@ msgid "Change visibility"
 msgstr "Láthatóság módosítása"
 
 #: inc/savedsearch.class.php:91 inc/savedsearch.class.php:384
-#: inc/savedsearch.class.php:1142
+#: inc/savedsearch.class.php:1148
 msgid "Auto"
 msgstr "Auto"
 
@@ -17230,67 +17238,71 @@ msgstr "Számolás"
 msgid "Partial load of the saved search."
 msgstr "A mentett keresés részleges betöltése"
 
-#: inc/savedsearch.class.php:764
+#: inc/savedsearch.class.php:765
 #, php-format
 msgid "Private %1$s"
-msgstr "Privát %1$s"
+msgid_plural "Private %1$s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: inc/savedsearch.class.php:765 inc/savedsearch.class.php:772
+#: inc/savedsearch.class.php:768 inc/savedsearch.class.php:778
 msgid "Hide/Show elements"
 msgstr ""
 
-#: inc/savedsearch.class.php:771
+#: inc/savedsearch.class.php:775
 #, php-format
 msgid "Public %1$s"
-msgstr "Nyilvános %1$s"
+msgid_plural "Public %1$s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: inc/savedsearch.class.php:816
+#: inc/savedsearch.class.php:822
 msgid "Default bookmark has not been changed!"
 msgstr "Alapértelmezett könyvjelző nem változott !"
 
-#: inc/savedsearch.class.php:887
+#: inc/savedsearch.class.php:893
 msgid "Count for this saved search has been disabled."
 msgstr "A mentett keresés darabszáma ki van kapcsolva."
 
-#: inc/savedsearch.class.php:888
+#: inc/savedsearch.class.php:894
 msgid "Counting this saved search would take too long, it has been skipped."
 msgstr "A számolás túl sokáig tartana, átléptem"
 
-#: inc/savedsearch.class.php:909 inc/savedsearch.class.php:910
+#: inc/savedsearch.class.php:915 inc/savedsearch.class.php:916
 msgid "Not default search"
 msgstr "Nem alapértelmezett keresés"
 
-#: inc/savedsearch.class.php:914 inc/savedsearch.class.php:915
+#: inc/savedsearch.class.php:920 inc/savedsearch.class.php:921
 msgid "Default search"
 msgstr "Alapértelmezett keresés"
 
-#: inc/savedsearch.class.php:921
+#: inc/savedsearch.class.php:927
 msgid "Click to load or drag and drop to reorder"
 msgstr "Kattints a betöltéshez vagy mozgasd egérrel az újraszervezéshez"
 
-#: inc/savedsearch.class.php:922
+#: inc/savedsearch.class.php:928
 msgid "Click to load"
 msgstr "Kattints a betöltéshez"
 
-#: inc/savedsearch.class.php:959
+#: inc/savedsearch.class.php:965
 msgid "Saved searches order cannot be saved!"
 msgstr "Mentett keresés sorrendje nem menthető !"
 
-#: inc/savedsearch.class.php:973
+#: inc/savedsearch.class.php:979
 #, php-format
 msgid "You have not recorded any %1$s yet"
 msgstr "Még nem vettél fel %1$s egyet sem"
 
-#: inc/savedsearch.class.php:1013 inc/savedsearch.class.php:1014
-#: inc/savedsearch.class.php:1021
+#: inc/savedsearch.class.php:1019 inc/savedsearch.class.php:1020
+#: inc/savedsearch.class.php:1027
 msgid "Save current search"
 msgstr "Aktuális keresés mentése"
 
-#: inc/savedsearch.class.php:1226
+#: inc/savedsearch.class.php:1232
 msgid "Update all bookmarks execution time"
 msgstr "Minden könyvjelző frissítés végrehajtási ideje"
 
-#: inc/savedsearch.class.php:1354
+#: inc/savedsearch.class.php:1360
 msgid "Notification has been created!"
 msgstr "Megjegyzések létrehozva!"
 
@@ -17356,11 +17368,11 @@ msgstr ""
 msgid "OR NOT"
 msgstr ""
 
-#: inc/search.class.php:5899 inc/search.class.php:5947
+#: inc/search.class.php:5911 inc/search.class.php:5959
 msgid "before"
 msgstr "előtt"
 
-#: inc/search.class.php:5903 inc/search.class.php:5948
+#: inc/search.class.php:5915 inc/search.class.php:5960
 msgid "after"
 msgstr "után"
 
@@ -17747,308 +17759,308 @@ msgstr "Elégedettségi felmérés lejárt"
 msgid "No generated survey"
 msgstr "Nincs felmérés létrehozva"
 
-#: inc/ticket.class.php:1286 inc/ticket.class.php:2069
+#: inc/ticket.class.php:1286 inc/ticket.class.php:2055
 msgid "Unknown ticket"
 msgstr "Ismeretlen bejelentés"
 
-#: inc/ticket.class.php:1885
+#: inc/ticket.class.php:1871
 #, php-format
 msgid "Invalid email address %s"
 msgstr "Érvénytelen email cím 1%s"
 
-#: inc/ticket.class.php:2314
+#: inc/ticket.class.php:2300
 #, php-format
 msgid "%1$s updates the item %2$s"
 msgstr "%1$s frissít egy elemet: %2$s"
 
-#: inc/ticket.class.php:2599 inc/ticketfollowup.class.php:908
+#: inc/ticket.class.php:2585 inc/ticketfollowup.class.php:908
 msgid "Add a new followup"
 msgstr "Új feladat"
 
-#: inc/ticket.class.php:2608 inc/ticket.class.php:4862
+#: inc/ticket.class.php:2594 inc/ticket.class.php:4848
 #: inc/tickettemplate.class.php:265
 msgid "Approval request"
 msgstr "Érvényesítési kérelem"
 
-#: inc/ticket.class.php:2625
+#: inc/ticket.class.php:2611
 msgctxt "button"
 msgid "Link tickets"
 msgstr "Hivatkozás bejelentésekre"
 
-#: inc/ticket.class.php:2664
+#: inc/ticket.class.php:2650
 msgid "Time to own + Progress"
 msgstr "Birtoklási idő + feldolgozás"
 
-#: inc/ticket.class.php:2674
+#: inc/ticket.class.php:2660
 msgid "Time to own exceedeed"
 msgstr "Birtoklási idő túllépés"
 
-#: inc/ticket.class.php:2702
+#: inc/ticket.class.php:2688
 msgid "Internal time to resolve + Progress"
 msgstr ""
 
-#: inc/ticket.class.php:2712
+#: inc/ticket.class.php:2698
 msgid "Internal time to resolve exceedeed"
 msgstr ""
 
-#: inc/ticket.class.php:2738
+#: inc/ticket.class.php:2724
 msgid "Internal time to own + Progress"
 msgstr ""
 
-#: inc/ticket.class.php:2748
+#: inc/ticket.class.php:2734
 msgid "Internal time to own exceedeed"
 msgstr ""
 
-#: inc/ticket.class.php:2998
+#: inc/ticket.class.php:2984
 msgid "Response date"
 msgstr "Válasz dátuma"
 
-#: inc/ticket.class.php:3113
+#: inc/ticket.class.php:3099
 msgid "Private followup"
 msgstr "Privát utótevékenység"
 
-#: inc/ticket.class.php:3150
+#: inc/ticket.class.php:3138
 msgid "Take into account time"
 msgstr "Figyelembe vétel ideje"
 
-#: inc/ticket.class.php:3167
+#: inc/ticket.class.php:3155
 msgid "All linked tickets"
 msgstr "Összes kapcsolódó bejelentés"
 
-#: inc/ticket.class.php:3181
+#: inc/ticket.class.php:3169
 msgid "Duplicated tickets"
 msgstr "Duplikált bejelentések"
 
-#: inc/ticket.class.php:3196
+#: inc/ticket.class.php:3184
 msgid "Number of all linked tickets"
 msgstr "Kapcsolódó bejelentések száma"
 
-#: inc/ticket.class.php:3209
+#: inc/ticket.class.php:3197
 msgid "Number of duplicated tickets"
 msgstr "Duplikált bejelentések száma"
 
-#: inc/ticket.class.php:3224
+#: inc/ticket.class.php:3212
 msgid "Parent tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3247
+#: inc/ticket.class.php:3235
 msgid "Child tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3269
+#: inc/ticket.class.php:3257
 msgid "Number of sons tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3285
+#: inc/ticket.class.php:3273
 msgid "Number of parent tickets"
 msgstr ""
 
-#: inc/ticket.class.php:3307
+#: inc/ticket.class.php:3293
 msgid "Problems"
 msgstr "Problémák"
 
-#: inc/ticket.class.php:3631
+#: inc/ticket.class.php:3617
 msgid "Tickets awaiting approval"
 msgstr "A bejelentés jóváhagyásra vár"
 
-#: inc/ticket.class.php:3724
+#: inc/ticket.class.php:3710
 msgid "This ticket concerns me"
 msgstr "Ez a bejelentés aggaszt"
 
-#: inc/ticket.class.php:3746 inc/ticket.class.php:3776
+#: inc/ticket.class.php:3732 inc/ticket.class.php:3762
 msgid "Check your personnal information"
 msgstr "Ellenőrizze a személyes adatait"
 
-#: inc/ticket.class.php:3861
+#: inc/ticket.class.php:3847
 msgid "Describe the incident or request"
 msgstr "A probléma/művelet leírása"
 
-#: inc/ticket.class.php:3914
+#: inc/ticket.class.php:3900
 msgid "Inform me about the actions taken"
 msgstr "Kérek értesítést a műveletekről"
 
-#: inc/ticket.class.php:4066
+#: inc/ticket.class.php:4052
 msgid "Submit message"
 msgstr "Üzenet küldése"
 
-#: inc/ticket.class.php:4567
+#: inc/ticket.class.php:4553
 #, php-format
 msgid "The ticket will be added in the entity %s"
 msgstr "Bejelentés létrehozva %s"
 
-#: inc/ticket.class.php:4701
+#: inc/ticket.class.php:4687
 msgid "Close date"
 msgstr "Lezárás dátuma"
 
-#: inc/ticket.class.php:4817
+#: inc/ticket.class.php:4803
 msgid "Reopen"
 msgstr "Újranyitás"
 
-#: inc/ticket.class.php:5145
+#: inc/ticket.class.php:5118
 #, php-format
 msgid "File (%s)"
 msgstr "Fájl (%s)"
 
-#: inc/ticket.class.php:5161
+#: inc/ticket.class.php:5134
 msgid "Default documents:"
 msgstr "Alapértelmezett dokumentumok"
 
-#: inc/ticket.class.php:5442 inc/ticket.class.php:5614
+#: inc/ticket.class.php:5415 inc/ticket.class.php:5587
 msgid "Your tickets to close"
 msgstr "Lezárandó bejelentéseid"
 
-#: inc/ticket.class.php:5458 inc/ticket.class.php:5525
+#: inc/ticket.class.php:5431 inc/ticket.class.php:5498
 msgid "Tickets on pending status"
 msgstr "Bejelentések szüneteltetett állapotban"
 
-#: inc/ticket.class.php:5474 inc/ticket.class.php:5541
+#: inc/ticket.class.php:5447 inc/ticket.class.php:5514
 msgid "Tickets to be processed"
 msgstr "Feldolgozandó bejelentések"
 
-#: inc/ticket.class.php:5490 inc/ticket.class.php:5630
+#: inc/ticket.class.php:5463 inc/ticket.class.php:5603
 msgid "Your observed tickets"
 msgstr "Az ön által ellenőrzött bejelentések"
 
-#: inc/ticket.class.php:5507 inc/ticket.class.php:5681
+#: inc/ticket.class.php:5480 inc/ticket.class.php:5654
 msgid "Your tickets in progress"
 msgstr "Folyamatban levő bejelentések"
 
-#: inc/ticket.class.php:5568
+#: inc/ticket.class.php:5541
 msgid "Your tickets to validate"
 msgstr "Jóváhagyásra váró bejelentéseid"
 
-#: inc/ticket.class.php:5585
+#: inc/ticket.class.php:5558
 msgid "Your rejected tickets"
 msgstr "Visszautasított bejelentéseid"
 
-#: inc/ticket.class.php:5792
+#: inc/ticket.class.php:5765
 msgid "Ticket followup"
 msgstr "Bejelentés követése"
 
 #. TRANS: %d is the number of new tickets
-#: inc/ticket.class.php:5866
+#: inc/ticket.class.php:5839
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d új bejelentés"
 msgstr[1] "%d új bejelentés"
 
-#: inc/ticket.class.php:5882 inc/ticket.class.php:6086
-#: inc/ticket.class.php:6136
+#: inc/ticket.class.php:5855 inc/ticket.class.php:6059
+#: inc/ticket.class.php:6109
 msgid "No ticket found."
 msgstr "Nincs bejelentés.."
 
-#: inc/ticket.class.php:5966
+#: inc/ticket.class.php:5939
 msgid "Last tickets"
 msgstr "utolsó bejelentés(ek)"
 
-#: inc/ticket.class.php:6047 inc/ticket.class.php:6059
+#: inc/ticket.class.php:6020 inc/ticket.class.php:6032
 msgid "New ticket for this item..."
 msgstr "Új bejelentés a tételhez..."
 
-#: inc/ticket.class.php:6075
+#: inc/ticket.class.php:6048
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "Utolsó %d bejelentés"
 msgstr[1] "Utolsó %d bejelentés"
 
-#: inc/ticket.class.php:6081
+#: inc/ticket.class.php:6054
 msgid "You don't have right to see all tickets"
 msgstr "Nincs joga megtekinteni az összes bejelentést!"
 
-#: inc/ticket.class.php:6126
+#: inc/ticket.class.php:6099
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Hivatkozott tételek bejelentése"
 msgstr[1] "Hivatkozott tételek bejelentései"
 
-#: inc/ticket.class.php:6237
+#: inc/ticket.class.php:6210
 msgid "No ticket in progress."
 msgstr "Nincs folyamatban levő bejelentés."
 
-#: inc/ticket.class.php:6294
+#: inc/ticket.class.php:6267
 msgid "Assign equipment"
 msgstr "Eszköz hozzárendelése"
 
-#: inc/ticket.class.php:6320
+#: inc/ticket.class.php:6293
 msgid "Automatic tickets closing"
 msgstr "Bejelentések adminisztratív lezárása"
 
-#: inc/ticket.class.php:6326
+#: inc/ticket.class.php:6299
 msgid "Generation of satisfaction surveys"
 msgstr "Elégedettségi felmérés generálása"
 
-#: inc/ticket.class.php:6540
+#: inc/ticket.class.php:6513
 msgid "See my ticket"
 msgstr "Saját bejelentésem"
 
 #. TRANS: short for : See tickets created by my groups
-#: inc/ticket.class.php:6542
+#: inc/ticket.class.php:6515
 msgid "See group ticket"
 msgstr "Csoport bejelentése"
 
-#: inc/ticket.class.php:6543
+#: inc/ticket.class.php:6516
 msgid "See tickets created by my groups"
 msgstr "A csoportom által létrehozott bejelentések"
 
-#: inc/ticket.class.php:6545
+#: inc/ticket.class.php:6518
 msgid "See all tickets"
 msgstr "Minden bejelentés"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: inc/ticket.class.php:6547
+#: inc/ticket.class.php:6520
 msgid "See assigned"
 msgstr "Hozzárendeltek megnézése"
 
-#: inc/ticket.class.php:6548
+#: inc/ticket.class.php:6521
 msgid "See assigned tickets"
 msgstr "Hozzárendelt bejelentések"
 
-#: inc/ticket.class.php:6551
+#: inc/ticket.class.php:6524
 msgid "Assign a ticket"
 msgstr "Bejelentés hozzárendelése"
 
 #. TRANS: short for : Steal a ticket
-#: inc/ticket.class.php:6553
+#: inc/ticket.class.php:6526
 msgid "Steal"
 msgstr "Ellop"
 
-#: inc/ticket.class.php:6554
+#: inc/ticket.class.php:6527
 msgid "Steal a ticket"
 msgstr "Bejelentés eltulajdonítása"
 
 #. TRANS: short for : To be in charge of a ticket
-#: inc/ticket.class.php:6556
+#: inc/ticket.class.php:6529
 msgid "Beeing in charge"
 msgstr "Módosítás alatt"
 
-#: inc/ticket.class.php:6557
+#: inc/ticket.class.php:6530
 msgid "To be in charge of a ticket"
 msgstr "Bejelentés átvétele"
 
-#: inc/ticket.class.php:6558
+#: inc/ticket.class.php:6531
 msgid "Change the priority"
 msgstr "Prioritás módosítása"
 
-#: inc/ticket.class.php:6559
+#: inc/ticket.class.php:6532
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr "Approve solution/Reply survey (my ticket)"
 
-#: inc/ticket.class.php:6560
+#: inc/ticket.class.php:6533
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr "Approve solution and reply to survey for ticket created by me"
 
-#: inc/ticket.class.php:7235
+#: inc/ticket.class.php:7200
 #, php-format
 msgid "Ticket# %s description"
 msgstr ""
 
-#: inc/ticket.class.php:7303
+#: inc/ticket.class.php:7268
 msgid "Actions historical"
 msgstr "Műveletek története"
 
-#: inc/ticket.class.php:7316
+#: inc/ticket.class.php:7281
 msgid "Timeline filter"
 msgstr "Idősáv szűrő"
 
@@ -18273,55 +18285,55 @@ msgstr "Érvényesítési kérelem"
 msgid "Validate an incident"
 msgstr "Esemény érvényesítése"
 
-#: inc/toolbox.class.php:955
+#: inc/toolbox.class.php:957
 msgid "Test done"
 msgstr "Teszt kész"
 
-#: inc/toolbox.class.php:955
+#: inc/toolbox.class.php:957
 msgid "Results"
 msgstr "Eredmények"
 
-#: inc/toolbox.class.php:958
+#: inc/toolbox.class.php:960
 msgid "Testing PHP Parser"
 msgstr "PHP tesztelése"
 
-#: inc/toolbox.class.php:967
+#: inc/toolbox.class.php:969
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr "A GLPI nem kompatibilis a zend.ze1_compatibility_mode = On opcióval."
 
-#: inc/toolbox.class.php:971 inc/toolbox.class.php:972
+#: inc/toolbox.class.php:973 inc/toolbox.class.php:974
 #, php-format
 msgid "PHP version is at least %s - Perfect!"
 msgstr "PHP legalább %s - Tökéletes !"
 
-#: inc/toolbox.class.php:979
+#: inc/toolbox.class.php:981
 #, php-format
 msgid "You must install at least PHP %s."
 msgstr "Legalább PHP %s-t kell telepíteni.."
 
-#: inc/toolbox.class.php:984
+#: inc/toolbox.class.php:986
 msgid "Sessions test"
 msgstr "Sessionok tesztelése"
 
-#: inc/toolbox.class.php:989
+#: inc/toolbox.class.php:991
 msgid "Your parser PHP is not installed with sessions support!"
 msgstr "A PHP nem támogatja a munkameneteket !"
 
-#: inc/toolbox.class.php:995 inc/toolbox.class.php:996
+#: inc/toolbox.class.php:997 inc/toolbox.class.php:998
 msgid "Sessions support is available - Perfect!"
 msgstr "Sessionok működnek - Tökéletes !"
 
-#: inc/toolbox.class.php:1001
+#: inc/toolbox.class.php:1003
 msgid "Make sure that sessions support has been activated in your php.ini"
 msgstr ""
 "Ellenőrizze, hogy a sessionok támogatása be van-e kapcsolva a php.ini-ben"
 
-#: inc/toolbox.class.php:1008
+#: inc/toolbox.class.php:1010
 msgid "Test session auto start"
 msgstr "Teszt munkamenet automatikus indítása"
 
-#: inc/toolbox.class.php:1011
+#: inc/toolbox.class.php:1013
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
@@ -18329,184 +18341,184 @@ msgstr ""
 "session.auto_start bekapcsolva. Nézd meg a .htaccess fájlt a GLPI gyökerében"
 " további útmutatáshoz"
 
-#: inc/toolbox.class.php:1018
+#: inc/toolbox.class.php:1020
 msgid "Test if Session_use_trans_sid is used"
 msgstr "Session_use_trans_sid beállításának tesztelése"
 
-#: inc/toolbox.class.php:1023
+#: inc/toolbox.class.php:1025
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr "Ki kell kapcsolni a Session_use_trans_id option-t a php.ini-ben"
 
-#: inc/toolbox.class.php:1028 inc/toolbox.class.php:1029
+#: inc/toolbox.class.php:1030 inc/toolbox.class.php:1031
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr "Ok - a sessionok működnek - Tökéletes !"
 
-#: inc/toolbox.class.php:1040
+#: inc/toolbox.class.php:1042
 msgid "Allocated memory test"
 msgstr "Lefoglalt memória ellenőrzése"
 
-#: inc/toolbox.class.php:1048 inc/toolbox.class.php:1049
+#: inc/toolbox.class.php:1050 inc/toolbox.class.php:1051
 msgid "Unlimited memory - Perfect!"
 msgstr "Korlátlan memória"
 
-#: inc/toolbox.class.php:1055
+#: inc/toolbox.class.php:1057
 msgid "Allocated memory"
 msgstr "Allokált memória"
 
-#: inc/toolbox.class.php:1058
+#: inc/toolbox.class.php:1060
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr "64M Ram legalább szükséges"
 
-#: inc/toolbox.class.php:1059
+#: inc/toolbox.class.php:1061
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "Próbáld megnövelni a memory_limit paramétert a php.ini-ben."
 
-#: inc/toolbox.class.php:1066 inc/toolbox.class.php:1067
+#: inc/toolbox.class.php:1068 inc/toolbox.class.php:1069
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "Lefoglalt memória > 64M"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1109
+#: inc/toolbox.class.php:1111
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "SELinux üzemmód %s"
 
-#: inc/toolbox.class.php:1135
+#: inc/toolbox.class.php:1137
 msgid "Some features may require this to be on"
 msgstr "Néhány funkció igényli a bekapcsolást"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1142
+#: inc/toolbox.class.php:1144
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "SELinux boolean konfiguráció %s"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1208
+#: inc/toolbox.class.php:1210
 msgid "o"
 msgstr "o"
 
-#: inc/toolbox.class.php:1208
+#: inc/toolbox.class.php:1210
 msgid "Kio"
 msgstr "Kio"
 
-#: inc/toolbox.class.php:1208
+#: inc/toolbox.class.php:1210
 msgid "Gio"
 msgstr "Gio"
 
-#: inc/toolbox.class.php:1208
+#: inc/toolbox.class.php:1210
 msgid "Tio"
 msgstr "Tio"
 
-#: inc/toolbox.class.php:1417 inc/toolbox.class.php:1419
-#: inc/toolbox.class.php:1424 inc/toolbox.class.php:1426
+#: inc/toolbox.class.php:1419 inc/toolbox.class.php:1421
+#: inc/toolbox.class.php:1426 inc/toolbox.class.php:1428
 msgid "You have the latest available version"
 msgstr "A legújabb verzió működik."
 
-#: inc/toolbox.class.php:1705
+#: inc/toolbox.class.php:1711
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "Kapcsolódási hiba. Ha proxyt használ, kérem konfigurálja. (%s)"
 
-#: inc/toolbox.class.php:1711
+#: inc/toolbox.class.php:1717
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "Sikertelen csatlakozás a proxy szerverhez. (%s)"
 
-#: inc/toolbox.class.php:1719
+#: inc/toolbox.class.php:1725
 msgid "No data available on the web site"
 msgstr "Nincs elérhető adat a webhelyen"
 
-#: inc/toolbox.class.php:2059
+#: inc/toolbox.class.php:2065
 msgid "Connection options"
 msgstr "Kapcsolat beállításai"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2061
+#: inc/toolbox.class.php:2067
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2063
+#: inc/toolbox.class.php:2069
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2071
+#: inc/toolbox.class.php:2077
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2080
+#: inc/toolbox.class.php:2086
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2082
+#: inc/toolbox.class.php:2088
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2098
+#: inc/toolbox.class.php:2104
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2100
+#: inc/toolbox.class.php:2106
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2115
+#: inc/toolbox.class.php:2121
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2124
+#: inc/toolbox.class.php:2130
 msgid "SECURE"
 msgstr "BIZTONSÁG"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2133
+#: inc/toolbox.class.php:2139
 msgid "DEBUG"
 msgstr "Hibakeresés"
 
-#: inc/toolbox.class.php:2145
+#: inc/toolbox.class.php:2151
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "Beérkező levelek mappája (opcionális, általában INBOX)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2150
+#: inc/toolbox.class.php:2156
 msgid "Port (optional)"
 msgstr "Port (opcionális)"
 
-#: inc/toolbox.class.php:2429
-msgid ""
-"No HTTP_REFERER found in request. Reload previous page before doing action "
-"again."
-msgstr ""
-"No HTTP_REFERER found in request. Reload previous page before doing action "
-"again."
-
 #: inc/toolbox.class.php:2435
 msgid ""
+"No HTTP_REFERER found in request. Reload previous page before doing action "
+"again."
+msgstr ""
+"No HTTP_REFERER found in request. Reload previous page before doing action "
+"again."
+
+#: inc/toolbox.class.php:2441
+msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 msgstr ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 
-#: inc/toolbox.class.php:2446
+#: inc/toolbox.class.php:2452
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -18514,7 +18526,7 @@ msgstr ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
 
-#: inc/toolbox.class.php:2456
+#: inc/toolbox.class.php:2462
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -18522,7 +18534,7 @@ msgstr ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 
-#: inc/toolbox.class.php:2463
+#: inc/toolbox.class.php:2469
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -18530,15 +18542,15 @@ msgstr ""
 "Az ön által kért folyamat nem engedélyezett, frissítse az előző lapot újbóli"
 " próbálkozás előtt. "
 
-#: inc/toolbox.class.php:2863
+#: inc/toolbox.class.php:2869
 msgid "YYYY-MM-DD"
 msgstr "ÉÉÉÉ-HH-NN"
 
-#: inc/toolbox.class.php:2864
+#: inc/toolbox.class.php:2870
 msgid "DD-MM-YYYY"
 msgstr "NN-HH-ÉÉÉÉ"
 
-#: inc/toolbox.class.php:2865
+#: inc/toolbox.class.php:2871
 msgid "MM-DD-YYYY"
 msgstr "HH-NN-ÉÉÉÉ"
 
@@ -18644,7 +18656,7 @@ msgstr ""
 "Most minden adminisztrátornak super-admin joga van. Az új felhasználótípus "
 "is létrejött."
 
-#: inc/update.class.php:421
+#: inc/update.class.php:424
 #, php-format
 msgid "Unsupported version (%1$s)"
 msgstr ""
