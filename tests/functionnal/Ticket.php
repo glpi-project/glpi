@@ -1562,4 +1562,95 @@ class Ticket extends DbTestCase {
                ->string['name']->isIdenticalTo($expected['name'])
                ->string['content']->isIdenticalTo($expected['content']);
    }
+
+   public function testAssignChangeStatus() {
+      // login postonly
+      $this->login('post-only', 'postonly');
+
+      //create a new ticket
+      $ticket = new \Ticket();
+      $this->integer(
+         (int)$ticket->add([
+            'name'    => '',
+            'content' => 'A ticket to check change of status when using "associate myself" feature',
+         ])
+      )->isGreaterThan(0);
+      $tickets_id = $ticket->getID();
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+      // login TU_USER
+      $this->login();
+
+      // simulate "associate myself" feature
+      $ticket_user = new \Ticket_User();
+      $input_ticket_user = [
+         'tickets_id'       => $tickets_id,
+         'users_id'         => \Session::getLoginUserID(),
+         'use_notification' => 1,
+         'type'             => \CommonITILActor::ASSIGN
+      ];
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+
+      // check status (should be ASSIGNED)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
+      // remove associated user
+      $ticket_user->delete([
+         'id' => $ticket_user->getId()
+      ]);
+
+      // check status (should be INCOMING)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::INCOMING);
+
+      // drop UPDATE right to TU_USER and redo "associate myself"
+      $saverights = $_SESSION['glpiactiveprofile'];
+      $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      // restore rights
+      $_SESSION['glpiactiveprofile'] = $saverights;
+      //check ticket creation
+      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+
+      // check status (should be ASSIGNED)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+
+      // remove associated user
+      $ticket_user->delete([
+         'id' => $ticket_user->getId()
+      ]);
+
+      // check status (should be INCOMING)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::INCOMING);
+
+      // remove associated user
+      $ticket_user->delete([
+         'id' => $ticket_user->getId()
+      ]);
+
+      // check with very limited rights and redo "associate myself"
+      $_SESSION['glpiactiveprofile']['ticket'] = \CREATE
+                                               + \Ticket::READMY;
+                                               + \Ticket::READALL;
+                                               + \Ticket::READGROUP;
+                                               + \Ticket::OWN; // OWN right must allow self-assign
+      $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      // restore rights
+      $_SESSION['glpiactiveprofile'] = $saverights;
+      //check ticket creation
+      $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
+
+      // check status (should still be ASSIGNED)
+      $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+      $this->integer((int) $ticket->fields['status'])
+           ->isEqualto(\CommonITILObject::ASSIGNED);
+   }
 }

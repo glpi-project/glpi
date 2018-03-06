@@ -359,8 +359,9 @@ abstract class CommonITILActor extends CommonDBRelation {
          if (!isset($this->input['_from_object'])
              && in_array($item->fields["status"], $item->getNewStatusArray())
              && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))) {
-            $item->update(['id'     => $item->getID(),
-                                'status' => CommonITILObject::ASSIGNED]);
+            $item->update(['id'               => $item->getID(),
+                           'status'           => CommonITILObject::ASSIGNED,
+                           '_from_assignment' => true]);
          }
 
          // raise notification for this actor addition
