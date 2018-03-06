@@ -5903,10 +5903,9 @@ class Html {
       if (Config::canUpdate()) {
          $current_mode = $_SESSION['glpi_use_mode'];
          $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
-         $title = sprintf(
-            __s('Debug mode %1$s'),
-            ($current_mode == Session::DEBUG_MODE ? __('on') : __('off'))
-         );
+         $title = $current_mode == Session::DEBUG_MODE ?
+            __('Debug mode enabled') :
+            __('Debug mode disabled');
          echo "<li id='debug_mode'>";
          echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
                 title='$title'>";
