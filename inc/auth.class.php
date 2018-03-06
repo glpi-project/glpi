@@ -1446,7 +1446,7 @@ class Auth extends CommonGLPI {
    static function dropdownLogin() {
       global $DB;
 
-      $elements = ['local' => __("GLPI internal DB")];
+      $elements = ['local' => __("GLPI internal database")];
       $default = 'local';
 
       // Get LDAP
