@@ -739,6 +739,7 @@ class Html {
             echo "<li><a href='#debugautoload$rand'>AUTOLOAD</a></li>";
             echo "<li><a href='#debugpost$rand'>POST VARIABLE</a></li>";
             echo "<li><a href='#debugget$rand'>GET VARIABLE</a></li>";
+            echo "<li><a href='#debugcfg$rand'>GLPI CONFIG</a></li>";
             if ($with_session) {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
@@ -777,6 +778,9 @@ class Html {
             echo "</div>";
             echo "<div id='debugget$rand'>";
             self::printCleanArray($_GET, 0, true);
+            echo "</div>";
+            echo "<div id='debugcfg$rand'>";
+            self::printCleanArray($CFG_GLPI, 0, true);
             echo "</div>";
             if ($with_session) {
                echo "<div id='debugsession$rand'>";
