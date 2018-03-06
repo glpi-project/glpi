@@ -1601,10 +1601,7 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         // Clean content to mail
-         //$this->fields["content"] = stripslashes($this->fields["content"]);
          $donotif                 = true;
-
       }
 
       if (isset($this->input['_disablenotif'])) {
