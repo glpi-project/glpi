@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-02 16:54+0100\n"
+"POT-Creation-Date: 2018-03-06 11:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: peachberry <gtucr7gpw.4g2@gmail.com>, 2017\n"
 "Language-Team: Japanese (Japan) (https://www.transifex.com/glpi/teams/1637/ja_JP/)\n"
@@ -102,9 +102,9 @@ msgstr "FAQへのアクセス"
 #: ajax/getDropdownFindNum.php:135 ajax/getDropdownFindNum.php:138
 #: ajax/getDropdownFindNum.php:141 ajax/getDropdownNetpoint.php:148
 #: ajax/getDropdownNetpoint.php:149 ajax/getDropdownUsers.php:136
-#: ajax/getDropdownValue.php:359 ajax/getDropdownValue.php:416
-#: ajax/getDropdownValue.php:616 ajax/getDropdownValue.php:635
-#: ajax/getDropdownValue.php:651 ajax/private_public.php:55 front/rule.php:52
+#: ajax/getDropdownValue.php:351 ajax/getDropdownValue.php:408
+#: ajax/getDropdownValue.php:608 ajax/getDropdownValue.php:627
+#: ajax/getDropdownValue.php:643 ajax/private_public.php:55 front/rule.php:52
 #: inc/cartridge.class.php:1008 inc/cartridgeitem.class.php:589
 #: inc/cartridgeitem.class.php:591 inc/commondbtm.class.php:2438
 #: inc/commondbtm.class.php:3252 inc/commondbtm.class.php:3256
@@ -176,7 +176,7 @@ msgstr "%1$s - 情報コンセント %2$s"
 #: ajax/dropdownConnectNetworkPort.php:110 ajax/dropdownInstallVersion.php:78
 #: ajax/dropdownSoftwareLicense.php:69 ajax/getDropdownConnect.php:178
 #: ajax/getDropdownFindNum.php:146 ajax/getDropdownNetpoint.php:152
-#: ajax/getDropdownValue.php:401 ajax/getDropdownValue.php:640
+#: ajax/getDropdownValue.php:393 ajax/getDropdownValue.php:632
 #: inc/apiclient.class.php:232 inc/cartridge.class.php:734
 #: inc/cartridgeitem.class.php:590 inc/change_item.class.php:216
 #: inc/commondbtm.class.php:3329 inc/commondbtm.class.php:4626
@@ -565,8 +565,8 @@ msgstr[0] "メール"
 #: inc/projecttask_ticket.class.php:195 inc/reservation.class.php:753
 #: inc/reservationitem.class.php:584 inc/rule.class.php:2741
 #: inc/ruleright.class.php:85 inc/slalevel.class.php:118
-#: inc/ticket.class.php:5255 inc/ticket.class.php:7422
-#: inc/ticket.class.php:7482 inc/ticketfollowup.class.php:560
+#: inc/ticket.class.php:5255 inc/ticket.class.php:7414
+#: inc/ticket.class.php:7474 inc/ticketfollowup.class.php:560
 #: inc/tickettemplatehiddenfield.class.php:231
 #: inc/tickettemplatemandatoryfield.class.php:242
 #: inc/tickettemplatepredefinedfield.class.php:293
@@ -937,17 +937,12 @@ msgid_plural "Entities"
 msgstr[0] "エンティティ"
 
 #: ajax/switchdebug.php:50
-#, php-format
-msgid "Debug mode has been switched %1$s!"
+msgid "Debug mode has been enabled!"
 msgstr ""
 
-#: ajax/switchdebug.php:51 inc/html.class.php:5908
-msgid "on"
-msgstr "on"
-
-#: ajax/switchdebug.php:51 inc/html.class.php:5908
-msgid "off"
-msgstr "off"
+#: ajax/switchdebug.php:51
+msgid "Debug mode has been disabled!"
+msgstr ""
 
 #: ajax/telemetry.php:46
 msgid ""
@@ -1195,7 +1190,7 @@ msgstr "サイズ"
 #: inc/notificationtargetticket.class.php:916
 #: inc/notificationtargetticket.class.php:923
 #: inc/notimportedemail.class.php:202 inc/project.class.php:733
-#: inc/ticket.class.php:3100 inc/ticket.class.php:7659
+#: inc/ticket.class.php:3100 inc/ticket.class.php:7651
 #: inc/ticketfollowup.class.php:696 inc/ticketfollowup.class.php:1090
 #: inc/ticketfollowup.class.php:1181
 msgid "Date"
@@ -1476,7 +1471,7 @@ msgstr[0] "変更依頼"
 
 #: front/change_ticket.form.php:53 front/problem_ticket.form.php:54
 #: inc/commonitilcost.class.php:547 inc/document_item.class.php:504
-#: inc/entity.class.php:1983 inc/event.class.php:158 inc/html.class.php:6007
+#: inc/entity.class.php:1983 inc/event.class.php:158 inc/html.class.php:6009
 #: inc/notificationtargetchange.class.php:336
 #: inc/notificationtargetchange.class.php:350
 #: inc/notificationtargetchange.class.php:362
@@ -2092,7 +2087,7 @@ msgstr "オプションの表示"
 #: front/dropdown.php:41 front/plugin.php:93 front/rulesengine.test.php:65
 #: front/rule.test.php:66 front/setup.auth.php:47 inc/auth.class.php:119
 #: inc/config.class.php:65 inc/event.class.php:164 inc/html.class.php:1341
-#: inc/html.class.php:6281 inc/notificationsetting.class.php:92
+#: inc/html.class.php:6283 inc/notificationsetting.class.php:92
 #: inc/profile.class.php:107 inc/profile.class.php:1471
 #: inc/profile.class.php:1830
 msgid "Setup"
@@ -2333,7 +2328,7 @@ msgstr "%s はユーザをグループに追加しました"
 #: front/knowbaseitemtranslation.form.php:79
 #: front/knowbaseitemtranslation.form.php:83
 #: front/knowbaseitemtranslation.form.php:86 inc/commondropdown.class.php:871
-#: inc/html.class.php:6025 inc/knowbaseitem.class.php:88
+#: inc/html.class.php:6027 inc/knowbaseitem.class.php:88
 #: inc/profile.class.php:738
 msgid "FAQ"
 msgstr "FAQ"
@@ -2430,8 +2425,8 @@ msgid "New ticket"
 msgstr "新しいチケット"
 
 #: front/helpdesk.public.php:101 inc/html.class.php:1487
-#: inc/html.class.php:1640 inc/html.class.php:1714 inc/html.class.php:6044
-#: inc/html.class.php:6159 inc/html.class.php:6160
+#: inc/html.class.php:1640 inc/html.class.php:1714 inc/html.class.php:6046
+#: inc/html.class.php:6161 inc/html.class.php:6162
 msgid "Home"
 msgstr "ホーム"
 
@@ -3111,12 +3106,12 @@ msgstr ""
 msgid "%s updates an alert"
 msgstr ""
 
-#: front/savedsearch.php:41 inc/html.class.php:5923 inc/html.class.php:5932
+#: front/savedsearch.php:41 inc/html.class.php:5925 inc/html.class.php:5934
 msgid "Saved searches"
 msgstr ""
 
-#: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5959
-#: inc/html.class.php:6237 inc/html.class.php:6238
+#: front/search.php:40 inc/entity.class.php:1109 inc/html.class.php:5961
+#: inc/html.class.php:6239 inc/html.class.php:6240
 msgid "Search"
 msgstr "検索"
 
@@ -3164,7 +3159,7 @@ msgid "Notification"
 msgid_plural "Notifications"
 msgstr[0] "通知設定"
 
-#: front/setup.templates.php:62 inc/html.class.php:6257
+#: front/setup.templates.php:62 inc/html.class.php:6259
 msgid "Manage templates..."
 msgstr "テンプレートの管理..."
 
@@ -3515,7 +3510,7 @@ msgid "Next"
 msgstr "次"
 
 #: front/stat.graph.php:414 inc/commonitilobject.class.php:4594
-#: inc/stat.class.php:470 inc/ticket.class.php:7611
+#: inc/stat.class.php:470 inc/ticket.class.php:7603
 msgid "Take into account"
 msgstr "考慮中"
 
@@ -3565,7 +3560,7 @@ msgstr ""
 #: inc/notimportedemail.class.php:184 inc/problem.class.php:823
 #: inc/rulemailcollector.class.php:82 inc/ruleticket.class.php:357
 #: inc/ruleticket.class.php:514 inc/ticket.class.php:5721
-#: inc/ticket.class.php:6977 inc/ticket.class.php:7186
+#: inc/ticket.class.php:6977 inc/ticket.class.php:7202
 #: inc/ticketfollowup.class.php:1090
 msgid "Requester"
 msgid_plural "Requesters"
@@ -4562,7 +4557,7 @@ msgstr "LDAPディレクトリへのバインド"
 
 #: inc/authldap.class.php:782 inc/authldap.class.php:3134
 #: inc/notepad.class.php:328 inc/ticket.class.php:6966
-#: inc/ticket.class.php:7203 inc/ticketfollowup.class.php:986
+#: inc/ticket.class.php:7190 inc/ticketfollowup.class.php:986
 #: inc/user.class.php:1935 inc/user.class.php:1938 inc/user.class.php:1943
 #: inc/user.class.php:2295 inc/user.class.php:2298 inc/user.class.php:2302
 #: inc/user.class.php:2742 inc/user.class.php:3100
@@ -5641,8 +5636,8 @@ msgstr "計画"
 #: inc/commonitilobject.class.php:2924
 #: inc/notificationtargetcommonitilobject.class.php:1222
 #: inc/problem.class.php:182 inc/problem.class.php:195
-#: inc/ticket.class.php:801 inc/ticket.class.php:7309
-#: inc/ticket.class.php:7310 inc/ticket.class.php:7442
+#: inc/ticket.class.php:801 inc/ticket.class.php:7301
+#: inc/ticket.class.php:7302 inc/ticket.class.php:7434
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] "解決方法"
@@ -5760,7 +5755,7 @@ msgstr "%1$s - ID %2$d"
 #: inc/notificationtargetprojecttask.class.php:478
 #: inc/notificationtargetticket.class.php:757 inc/problem.class.php:1101
 #: inc/projecttask.class.php:786 inc/ticket.class.php:4616
-#: inc/ticket.class.php:4618 inc/ticket.class.php:7606
+#: inc/ticket.class.php:4618 inc/ticket.class.php:7598
 msgid "Opening date"
 msgstr "開始日付"
 
@@ -5773,7 +5768,7 @@ msgstr "開始日付"
 #: inc/ruleticket.class.php:485 inc/ruleticket.class.php:590
 #: inc/ruleticket.class.php:606 inc/slalevel.class.php:179
 #: inc/ticket.class.php:2904 inc/ticket.class.php:4685
-#: inc/ticket.class.php:4687 inc/ticket.class.php:7640
+#: inc/ticket.class.php:4687 inc/ticket.class.php:7632
 msgid "Time to resolve"
 msgstr ""
 
@@ -5797,7 +5792,7 @@ msgstr "解決日"
 #: inc/change.class.php:720 inc/commonitilobject.class.php:2785
 #: inc/commonitilobject.class.php:4582
 #: inc/notificationtargetcommonitilobject.class.php:1186
-#: inc/problem.class.php:1154 inc/ticket.class.php:7653
+#: inc/problem.class.php:1154 inc/ticket.class.php:7645
 msgid "Closing date"
 msgstr "終了日"
 
@@ -5960,8 +5955,8 @@ msgstr "アイテムはオブジェクトにリンクしていません"
 #: inc/commonitilobject.class.php:3809 inc/commonitilobject.class.php:3913
 #: inc/commonitilobject.class.php:3915 inc/commonitilobject.class.php:4006
 #: inc/commonitilobject.class.php:4008 inc/dropdown.class.php:217
-#: inc/dropdown.class.php:219 inc/html.class.php:6224 inc/html.class.php:6225
-#: inc/html.class.php:6322 inc/html.class.php:6323 inc/infocom.class.php:706
+#: inc/dropdown.class.php:219 inc/html.class.php:6226 inc/html.class.php:6227
+#: inc/html.class.php:6324 inc/html.class.php:6325 inc/infocom.class.php:706
 #: inc/netpoint.class.php:150 inc/netpoint.class.php:152
 #: inc/reminder.class.php:1105 inc/reminder.class.php:1106
 #: inc/rssfeed.class.php:915 inc/rssfeed.class.php:916
@@ -6055,7 +6050,7 @@ msgstr "テンプレート %s から作成"
 #: inc/profile.class.php:1193 inc/profile.class.php:1288
 #: inc/profile.class.php:1382 inc/profile.class.php:1477
 #: inc/reservation.class.php:774 inc/reservationitem.class.php:370
-#: inc/ticket.class.php:5236 inc/ticket.class.php:7484 inc/user.class.php:2478
+#: inc/ticket.class.php:5236 inc/ticket.class.php:7476 inc/user.class.php:2478
 #: inc/user.class.php:4654
 msgctxt "button"
 msgid "Save"
@@ -6344,8 +6339,8 @@ msgstr "リスト"
 msgid "Last"
 msgstr "最後"
 
-#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7311
-#: inc/ticket.class.php:7312
+#: inc/commonglpi.class.php:1161 inc/ticket.class.php:7303
+#: inc/ticket.class.php:7304
 msgid "Reset display options"
 msgstr "表示オプションのリセット"
 
@@ -6654,7 +6649,7 @@ msgid "Time to resolve exceedeed"
 msgstr ""
 
 #: inc/commonitilobject.class.php:2830 inc/commonitilobject.class.php:4577
-#: inc/ticket.class.php:4728 inc/ticket.class.php:7648
+#: inc/ticket.class.php:4728 inc/ticket.class.php:7640
 msgid "Resolution date"
 msgstr "解決日"
 
@@ -6814,8 +6809,8 @@ msgstr "計画"
 #: inc/notificationtargetprojecttask.class.php:560
 #: inc/notificationtargetprojecttask.class.php:573 inc/profile.class.php:652
 #: inc/profile.class.php:953 inc/profile.class.php:1033
-#: inc/profile.class.php:1035 inc/ticket.class.php:7303
-#: inc/ticket.class.php:7304 inc/ticket.class.php:7432
+#: inc/profile.class.php:1035 inc/ticket.class.php:7295
+#: inc/ticket.class.php:7296 inc/ticket.class.php:7424
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "タスク"
@@ -7470,7 +7465,7 @@ msgid "Affected computers"
 msgstr "影響するコンピュータ"
 
 #: inc/computer_softwarelicense.class.php:659
-#: inc/computer_softwareversion.class.php:1154 inc/html.class.php:6273
+#: inc/computer_softwareversion.class.php:1154 inc/html.class.php:6275
 msgid "Summary"
 msgstr "一覧"
 
@@ -9606,8 +9601,8 @@ msgstr[0] "ドキュメントの見出し"
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetticket.class.php:862 inc/profile.class.php:871
 #: inc/profile.class.php:1728 inc/ticket.class.php:2860
-#: inc/ticket.class.php:7305 inc/ticket.class.php:7306
-#: inc/ticket.class.php:7437 inc/transfer.class.php:3450
+#: inc/ticket.class.php:7297 inc/ticket.class.php:7298
+#: inc/ticket.class.php:7429 inc/transfer.class.php:3450
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "ドキュメント管理"
@@ -9812,7 +9807,7 @@ msgid_plural "Document types"
 msgstr[0] "ドキュメントタイプ"
 
 #: inc/documenttype.class.php:177 inc/documenttype.class.php:178
-#: inc/html.class.php:5939 inc/html.class.php:5940
+#: inc/html.class.php:5941 inc/html.class.php:5942
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -10417,7 +10412,7 @@ msgstr ""
 msgid "to see the entity and its sub-entities"
 msgstr "エンティティとサブエンティティを確認する。"
 
-#: inc/entity.class.php:1104 inc/html.class.php:6265
+#: inc/entity.class.php:1104 inc/html.class.php:6267
 #: inc/reservation.class.php:442 inc/ticket.class.php:5879
 #: inc/ticket.class.php:6088
 msgid "Show all"
@@ -10519,7 +10514,7 @@ msgid "Send certificates alarms before"
 msgstr ""
 
 #: inc/entity.class.php:1965 inc/event.class.php:153 inc/event.class.php:166
-#: inc/html.class.php:6016 inc/profile.class.php:741
+#: inc/html.class.php:6018 inc/profile.class.php:741
 #: inc/profile.class.php:1803 inc/reservation.class.php:58
 #: inc/reservationitem.class.php:760 inc/transfer.class.php:3343
 #: install/update_0723_078.php:4800
@@ -10590,8 +10585,8 @@ msgstr[0] "ルール"
 msgid "Security"
 msgstr "セキュリティ"
 
-#: inc/event.class.php:170 inc/html.class.php:1334 inc/html.class.php:6105
-#: inc/html.class.php:6131 inc/plugin.class.php:63 inc/search.class.php:5551
+#: inc/event.class.php:170 inc/html.class.php:1334 inc/html.class.php:6107
+#: inc/html.class.php:6133 inc/plugin.class.php:63 inc/search.class.php:5551
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "プラグイン"
@@ -10934,7 +10929,7 @@ msgstr ""
 msgid "Progress"
 msgstr "進捗状況"
 
-#: inc/html.class.php:1347 inc/html.class.php:5891 inc/html.class.php:5892
+#: inc/html.class.php:1347 inc/html.class.php:5894 inc/html.class.php:5895
 msgid "My settings"
 msgstr "個人別設定"
 
@@ -11136,49 +11131,52 @@ msgstr "全チェック/全チェック解除"
 msgid "Select/unselect all"
 msgstr "全選択/全選択解除"
 
-#: inc/html.class.php:5811
+#: inc/html.class.php:5814
 msgid "Start typing to find a menu"
 msgstr ""
 
-#: inc/html.class.php:5884 inc/html.class.php:5886
+#: inc/html.class.php:5887 inc/html.class.php:5889
 msgid "Logout"
 msgstr "ログアウト"
 
-#: inc/html.class.php:5907
-#, php-format
-msgid "Debug mode %1$s"
+#: inc/html.class.php:5910
+msgid "Debug mode enabled"
 msgstr ""
 
-#: inc/html.class.php:5913
+#: inc/html.class.php:5911
+msgid "Debug mode disabled"
+msgstr ""
+
+#: inc/html.class.php:5915
 msgid "Change mode"
 msgstr ""
 
-#: inc/html.class.php:5927
+#: inc/html.class.php:5929
 msgid "Manage saved searches"
 msgstr ""
 
-#: inc/html.class.php:5931 inc/search.class.php:1955
+#: inc/html.class.php:5933 inc/search.class.php:1955
 msgid "Load a bookmark"
 msgstr "ブックマークのロード"
 
-#: inc/html.class.php:5996 inc/profile.class.php:2161
+#: inc/html.class.php:5998 inc/profile.class.php:2161
 #: inc/ticket.class.php:5822
 msgid "Create a ticket"
 msgstr "チケットを作成"
 
-#: inc/html.class.php:6132
+#: inc/html.class.php:6134
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: inc/html.class.php:6227 inc/html.class.php:6229
+#: inc/html.class.php:6229 inc/html.class.php:6231
 msgid "Add is disabled"
 msgstr ""
 
-#: inc/html.class.php:6240 inc/html.class.php:6242
+#: inc/html.class.php:6242 inc/html.class.php:6244
 msgid "Search is disabled"
 msgstr ""
 
-#: inc/html.class.php:6314 inc/html.class.php:6315 inc/ticket.class.php:257
+#: inc/html.class.php:6316 inc/html.class.php:6317 inc/ticket.class.php:257
 #: inc/ticket.class.php:258 inc/ticket.class.php:3664
 #: inc/ticket.class.php:3665
 msgid "Ticket waiting for your approval"
@@ -11984,7 +11982,7 @@ msgstr "チケットのカレンダー"
 #: inc/ruleticket.class.php:598 inc/ruleticket.class.php:614
 #: inc/slalevel.class.php:178 inc/ticket.class.php:2688
 #: inc/ticket.class.php:2890 inc/ticket.class.php:4673
-#: inc/ticket.class.php:4675 inc/ticket.class.php:7624
+#: inc/ticket.class.php:4675 inc/ticket.class.php:7616
 msgid "Time to own"
 msgstr ""
 
@@ -12969,25 +12967,25 @@ msgid "Create by %1$s on %2$s"
 msgstr "%1$s による作成 %2$s"
 
 #: inc/notificationajax.class.php:90
-msgid "Error inserting ajax notification to queue"
+msgid "Error inserting browser notification to queue"
 msgstr ""
 
 #: inc/notificationajax.class.php:96
 #, php-format
-msgid "An ajax notification to %s was added to queue"
+msgid "A browser notification to %s was added to queue"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:43
-msgid "Ajax followups configuration"
+msgid "Browser followups configuration"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:48
-msgid "Enable followups via ajax calls"
+msgid "Enable followups from browser"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:65
-msgid "Ajax notification"
-msgid_plural "Ajax notifications"
+msgid "Browser notification"
+msgid_plural "Browser notifications"
 msgstr[0] ""
 
 #: inc/notificationajaxsetting.class.php:70
@@ -13020,7 +13018,7 @@ msgid "See configuration"
 msgstr ""
 
 #: inc/notificationajaxsetting.class.php:109
-msgid "Send a test ajax call to you"
+msgid "Send a test browser notification to you"
 msgstr ""
 
 #: inc/notification.class.php:169 inc/notification.class.php:356
@@ -13273,7 +13271,7 @@ msgid "No template selected"
 msgstr ""
 
 #: inc/notification_notificationtemplate.class.php:287
-msgid "Ajax"
+msgid "Browser"
 msgstr ""
 
 #: inc/notificationsettingconfig.class.php:95
@@ -13376,7 +13374,7 @@ msgstr "承認依頼に対する回答が %s から提示されました"
 #: inc/profile.class.php:1039 inc/profile.class.php:1041
 #: inc/profile.class.php:1101 inc/rule.class.php:2019 inc/rule.class.php:2040
 #: inc/rulecollection.class.php:1761 inc/rulerightcollection.class.php:84
-#: inc/ticket.class.php:7307 inc/ticket.class.php:7308
+#: inc/ticket.class.php:7299 inc/ticket.class.php:7300
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "検証"
@@ -14016,13 +14014,13 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:721 inc/ticket.class.php:2762
 #: inc/ticket.class.php:2941 inc/ticket.class.php:4700
-#: inc/ticket.class.php:4702 inc/ticket.class.php:7616
+#: inc/ticket.class.php:4702 inc/ticket.class.php:7608
 msgid "Internal time to own"
 msgstr ""
 
 #: inc/notificationtargetticket.class.php:724 inc/ticket.class.php:2726
 #: inc/ticket.class.php:2955 inc/ticket.class.php:4712
-#: inc/ticket.class.php:4714 inc/ticket.class.php:7632
+#: inc/ticket.class.php:4714 inc/ticket.class.php:7624
 msgid "Internal time to resolve"
 msgstr ""
 
@@ -14071,8 +14069,8 @@ msgstr "調査の回答案内"
 
 #: inc/notificationtargetticket.class.php:856 inc/profile.class.php:649
 #: inc/profile.class.php:1030 inc/profile.class.php:1035
-#: inc/ticket.class.php:3067 inc/ticket.class.php:7301
-#: inc/ticket.class.php:7302 inc/ticket.class.php:7426
+#: inc/ticket.class.php:3067 inc/ticket.class.php:7293
+#: inc/ticket.class.php:7294 inc/ticket.class.php:7418
 #: inc/ticketfollowup.class.php:69
 msgid "Followup"
 msgid_plural "Followups"
@@ -16149,31 +16147,31 @@ msgstr "アラートの追加"
 msgid "Saved searches alerts"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:356
+#: inc/savedsearch_alert.class.php:355
 msgid "less than"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:360
+#: inc/savedsearch_alert.class.php:359
 msgid "less or equals than"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:364
+#: inc/savedsearch_alert.class.php:363
 msgid "equals to"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:368
+#: inc/savedsearch_alert.class.php:367
 msgid "not equals to"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:372
+#: inc/savedsearch_alert.class.php:371
 msgid "greater or equals than"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:376
+#: inc/savedsearch_alert.class.php:375
 msgid "greater than"
 msgstr ""
 
-#: inc/savedsearch_alert.class.php:385
+#: inc/savedsearch_alert.class.php:384
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
 msgstr ""
@@ -17017,16 +17015,16 @@ msgstr ""
 msgid "Last edited on %1$s by %2$s"
 msgstr ""
 
-#: inc/ticket.class.php:7218
+#: inc/ticket.class.php:7210
 #, php-format
 msgid "Ticket# %s description"
 msgstr ""
 
-#: inc/ticket.class.php:7286
+#: inc/ticket.class.php:7278
 msgid "Actions historical"
 msgstr "操作履歴"
 
-#: inc/ticket.class.php:7299
+#: inc/ticket.class.php:7291
 msgid "Timeline filter"
 msgstr "タイムラインフィルター"
 
@@ -17604,7 +17602,7 @@ msgid ""
 "admin' rights with the creation of his new user type."
 msgstr "新しいユーザタイプの作成によって全ての管理者権限のユーザがsuper-admin権限になりました"
 
-#: inc/update.class.php:413
+#: inc/update.class.php:415
 #, php-format
 msgid "Unsupported version (%1$s)"
 msgstr ""
