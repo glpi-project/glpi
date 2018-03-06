@@ -87,13 +87,13 @@ class NotificationAjax implements NotificationInterface {
       $queue = new QueuedNotification();
 
       if (!$queue->add(Toolbox::addslashes_deep($data))) {
-         Session::addMessageAfterRedirect(__('Error inserting ajax notification to queue'), true, ERROR);
+         Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
          return false;
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
          Toolbox::logInFile("notification",
                             sprintf(__('%1$s: %2$s'),
-                                    sprintf(__('An ajax notification to %s was added to queue'),
+                                    sprintf(__('A browser notification to %s was added to queue'),
                                             $options['to']),
                                     $options['subject']."\n"));
       }
