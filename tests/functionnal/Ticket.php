@@ -1648,6 +1648,9 @@ class Ticket extends DbTestCase {
       $saverights = $_SESSION['glpiactiveprofile'];
       $_SESSION['glpiactiveprofile']['ticket'] -= \UPDATE;
       $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      // restore rights
+      $_SESSION['glpiactiveprofile'] = $saverights;
+      //check ticket creation
       $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
       // check status (should be ASSIGNED)
@@ -1677,14 +1680,14 @@ class Ticket extends DbTestCase {
                                                + \Ticket::READGROUP;
                                                + \Ticket::OWN; // OWN right must allow self-assign
       $this->integer((int) $ticket_user->add($input_ticket_user))->isGreaterThan(0);
+      // restore rights
+      $_SESSION['glpiactiveprofile'] = $saverights;
+      //check ticket creation
       $this->boolean($ticket_user->getFromDB($ticket_user->getId()))->isTrue();
 
       // check status (should still be ASSIGNED)
       $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
       $this->integer((int) $ticket->fields['status'])
            ->isEqualto(\CommonITILObject::ASSIGNED);
-
-      // restore right
-      $_SESSION['glpiactiveprofile'] = $saverights;
    }
 }
