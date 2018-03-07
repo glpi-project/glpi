@@ -49,15 +49,35 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBForTicket($ID, $slaType) {
+      global $DB;
 
-      $query = "LEFT JOIN `glpi_slalevels`
-                     ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
-                LEFT JOIN `glpi_slas` ON (`glpi_slalevels`.`slas_id` = `glpi_slas`.`id`)
-                WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
-                      AND `glpi_slas`.`type` = '$slaType'
-                LIMIT 1";
-
-      return $this->getFromDBByQuery($query);
+      $iterator = $DB->request([
+         'SELECT'       => [static::getTable() . '.id'],
+         'FROM'         => static::getTable(),
+         'LEFT JOIN'   => [
+            'glpi_slalevels' => [
+               'FKEY'   => [
+                  static::getTable()   => 'slalevels_id',
+                  'glpi_slalevels'     => 'id'
+               ]
+            ],
+            'glpi_slas'       => [
+               'FKEY'   => [
+                  'glpi_slalevels'     => 'slas_id',
+                  'glpi_slas'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            static::getTable() . '.tickets_id'  => $ID,
+            'glpi_slas.type'                    => $slaType
+         ],
+         'LIMIT'        => 1
+      ]);
+      if (count($iterator)) {
+         return $this->getFromIter($iterator);
+      }
+      return false;
    }
 
 

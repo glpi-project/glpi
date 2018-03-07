@@ -457,9 +457,9 @@ class User extends CommonDBTM {
 
       if (is_array($condition)) {
          $crit = [
-            'SELECT'    => 'id',
+            'SELECT'    => $this->getTable() . '.id',
             'FROM'      => $this->getTable(),
-            'LEF JOIN'  => [
+            'LEFT JOIN'  => [
                'glpi_useremails' => [
                   'FKEY' => [
                      $this->getTable() => 'id',
@@ -477,8 +477,7 @@ class User extends CommonDBTM {
          }
          return false;
       } else {
-         //TODO: cannot be deprecated since some existing conditions use not handle sql functions
-         //Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
+         Toolbox::deprecated('condition param for getFromDBbyEmail must be an array');
          $request = "LEFT JOIN `glpi_useremails`
                      ON (`glpi_useremails`.`users_id` = `".$this->getTable()."`.`id`)
                      WHERE `glpi_useremails`.`email` = '$email'";
@@ -486,7 +485,21 @@ class User extends CommonDBTM {
          if (!empty($condition)) {
             $request .= " AND $condition";
          }
-         return $this->getFromDBByQuery($request);
+
+         //return $this->getFromDBByQuery($request);
+         $query = "SELECT `".$this->getTable()."`.*
+                  FROM `".$this->getTable()."`
+                  $request";
+
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) == 1) {
+               $this->fields = $DB->fetch_assoc($result);
+               $this->post_getFromDB();
+
+               return true;
+            }
+         }
+         return false;
       }
    }
 
@@ -550,7 +563,7 @@ class User extends CommonDBTM {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`$field` = '$token'");
+      return $this->getFromDBByCrit([$this->getTable() . ".$field" => $token]);
    }
 
 
@@ -4202,13 +4215,21 @@ class User extends CommonDBTM {
     * @return boolean true if success
    **/
    public function updateForgottenPassword($input) {
-      if ($this->getFromDBbyEmail($input['email'],
-                                  "`glpi_users`.`is_active`
-                                   AND NOT `glpi_users`.`is_deleted`
-                                   AND (`glpi_users`.`begin_date` IS NULL
-                                        OR `glpi_users`.`begin_date` < NOW())
-                                   AND (`glpi_users`.`end_date` IS NULL
-                                        OR `glpi_users`.`end_date` > NOW())")) {
+      $condition = [
+         'glpi_users.is_active'  => 1,
+         'glpi_users.is_deleted' => 0, [
+            'OR' => [
+               ['glpi_users.begin_date' => null],
+               ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+            ],
+         ], [
+            'OR'  => [
+               ['glpi_users.end_date'   => null],
+               ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
+            ]
+         ]
+      ];
+      if ($this->getFromDBbyEmail($input['email'], $condition)) {
          if (($this->fields["authtype"] == Auth::DB_GLPI)
              || !Auth::useAuthExt()) {
 
@@ -4302,13 +4323,22 @@ class User extends CommonDBTM {
     * @return boolean true if success
     */
    public function forgetPassword($email) {
-      if ($this->getFromDBbyEmail($email,
-                                  "`glpi_users`.`is_active`
-                                   AND NOT `glpi_users`.`is_deleted`
-                                   AND (`glpi_users`.`begin_date` IS NULL
-                                        OR `glpi_users`.`begin_date` < NOW())
-                                   AND (`glpi_users`.`end_date` IS NULL
-                                        OR `glpi_users`.`end_date` > NOW())")) {
+      $condition = [
+         'glpi_users.is_active'  => 1,
+         'glpi_users.is_deleted' => 0, [
+            'OR' => [
+               ['glpi_users.begin_date' => null],
+               ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+            ],
+         ], [
+            'OR'  => [
+               ['glpi_users.end_date'   => null],
+               ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
+            ]
+         ]
+      ];
+
+      if ($this->getFromDBbyEmail($email, $condition)) {
 
          // Send token if auth DB or not external auth defined
          if (($this->fields["authtype"] == Auth::DB_GLPI)

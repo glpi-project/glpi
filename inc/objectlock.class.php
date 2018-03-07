@@ -189,12 +189,13 @@ class ObjectLock extends CommonDBTM {
 
       // should get locking user info
       $user = new User();
-      $user->getFromDBByQuery(" WHERE id = ".$this->fields['users_id']);
+      $user->getFromDB($this->fields['users_id']);
 
       $useremail     = new UserEmail();
-      $showAskUnlock = $useremail->getFromDBByQuery(" WHERE users_id = ".$this->fields['users_id']."
-                                                            AND is_default = 1 ")
-                       && ($CFG_GLPI['notifications_mailing'] == 1);
+      $showAskUnlock = $useremail->getFromDBByCrit([
+         'users_id'     => $this->fields['users_id'],
+         'is_default'   => 1
+      ]) && ($CFG_GLPI['notifications_mailing'] == 1);
 
       $completeUserName = formatUserName(0, $user->fields['name'], $user->fields['realname'],
                                          $user->fields['firstname']);
@@ -302,8 +303,8 @@ class ObjectLock extends CommonDBTM {
       //if( $CFG_GLPI["lock_use_lock_item"] &&
       //    $CFG_GLPI["lock_lockprofile_id"] > 0 &&
       //    in_array($this->itemtype, $CFG_GLPI['lock_item_list']) ) {
-      if (!($gotIt = $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'"
-              . " AND items_id = ".$this->itemid." " ))
+      if (!($gotIt = $this->getFromDBByCrit(['itemtype' => $this->itemtype,
+               'items_id' => $this->itemid]))
                && $id = $this->add(['itemtype' => $this->itemtype,
                                           'items_id' => $this->itemid,
                                           'users_id' => Session::getLoginUserID()])) {
@@ -322,8 +323,10 @@ class ObjectLock extends CommonDBTM {
          $ret = true;
       } else { // can't add a lock as another one is already existing
          if (!$gotIt) {
-            $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
-                                           AND items_id = ".$this->itemid." " );
+            $this->getFromDBByCrit([
+               'itemtype'  => $this->itemtype,
+               'items_id'  => $this->itemid
+            ]);
          }
          // open the object as read-only as it is already locked by someone
          self::setReadonlyProfile();
@@ -353,8 +356,8 @@ class ObjectLock extends CommonDBTM {
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
           && Session::getCurrentInterface() == 'central'
           && in_array($this->itemtype, $CFG_GLPI['lock_item_list'])
-          && $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
-                                      AND items_id = ".$this->itemid." ")) {
+          && $this->getFromDBByCrit(['itemtype' => $this->itemtype,
+                                     'items_id' => $this->itemid])) {
          $ret = true;
       }
       return $ret;

@@ -53,15 +53,35 @@ class OlaLevel_Ticket extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBForTicket($ID, $olaType) {
+      global $DB;
 
-      $query = "LEFT JOIN `glpi_olalevels`
-                     ON (`glpi_olalevels_tickets`.`olalevels_id` = `glpi_olalevels`.`id`)
-                LEFT JOIN `glpi_olas` ON (`glpi_olalevels`.`olas_id` = `glpi_olas`.`id`)
-                WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
-                      AND `glpi_olas`.`type` = '$olaType'
-                LIMIT 1";
-
-      return $this->getFromDBByQuery($query);
+      $iterator = $DB->request([
+         'SELECT'       => [static::getTable() . '.id'],
+         'FROM'         => static::getTable(),
+         'LEFT JOIN'   => [
+            'glpi_olalevels'  => [
+               'FKEY'   => [
+                  static::getTable()   => 'olalevels_id',
+                  'glpi_olalevels'     => 'id'
+               ]
+            ],
+            'glpi_olas'       => [
+               'FKEY'   => [
+                  'glpi_olalevels'     => 'olas_id',
+                  'glpi_olas'          => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            static::getTable() . '.tickets_id'  => $ID,
+            'glpi_olas.type'                    => $olaType
+         ],
+         'LIMIT'        => 1
+      ]);
+      if (count($iterator)) {
+         return $this->getFromIter($iterator);
+      }
+      return false;
    }
 
 

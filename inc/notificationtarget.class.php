@@ -157,9 +157,11 @@ class NotificationTarget extends CommonDBChild {
    **/
    function getFromDBForTarget($notifications_id, $type, $ID) {
 
-      if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`notifications_id` = '$notifications_id'
-                                  AND `".$this->getTable()."`.`items_id` = '$ID'
-                                  AND `".$this->getTable()."`.`type` = '$type'")) {
+      if ($this->getFromDBByCrit([
+         $this->getTable() . '.notifications_id'   => $notifications_id,
+         $this->getTable() . '.items_id'           => $ID,
+         $this->getTable() . '.type'               => $type
+      ])) {
          return true;
       }
       return false;

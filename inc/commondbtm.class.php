@@ -165,8 +165,21 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `" . $this->getTable() . "`.`" . $this->getIndexName() .
-                                     "` = '" . Toolbox::cleanInteger($ID) . "' LIMIT 1");
+      $iterator = $DB->request([
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            $this->getTable() . '.' . $this->getIndexName() => Toolbox::cleanInteger($ID)
+         ],
+         'LIMIT'  => 1
+      ]);
+
+      if (count($iterator) == 1) {
+         $this->fields = $iterator->next();
+         $this->post_getFromDB();
+         return true;
+      }
+
+      return false;
    }
 
    /**
@@ -175,6 +188,7 @@ class CommonDBTM extends CommonGLPI {
     * User::getFromDBbyEmail()).
     *
     * @since 0.84
+    * @deprecated 9.3
     *
     * @param string $query the "WHERE" or "JOIN" part of the SQL query
     *
@@ -182,6 +196,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getFromDBByQuery($query) {
       global $DB;
+
+      Toolbox::deprecated('Use DBmysqlIterator');
 
       // Make new database object and fill variables
 
@@ -247,7 +263,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return boolean|array
     */
-   public function getFromDBByCrit(Array $crit) {
+   public function getFromDBByCrit(array $crit) {
       global $DB;
 
       $crit = ['SELECT' => 'id',
@@ -255,9 +271,16 @@ class CommonDBTM extends CommonGLPI {
                'WHERE'  => $crit];
 
       $iter = $DB->request($crit);
-      if ($iter->numrows()==1) {
+      if (count($iter) == 1) {
          $row = $iter->next();
          return $this->getFromDB($row['id']);
+      } else if (count($iter) > 1) {
+         Toolbox::logWarning(
+            sprintf(
+               'getFromDBByCrit expects to get one result, %1$s found!',
+               count($iter)
+            )
+         );
       }
       return false;
    }
@@ -1946,28 +1969,26 @@ class CommonDBTM extends CommonGLPI {
                         $devfield  = $rel[$tablename][0]; // items_id...
                         $typefield = $rel[$tablename][1]; // itemtype...
 
-                        $sql = "SELECT DISTINCT `$typefield` AS itemtype
-                                FROM `$tablename`
-                                WHERE `$field`='$ID'";
-                        $res = $DB->query($sql);
+                        $iterator = $DB->request([
+                           'SELECT DISTINCT' => $typefield,
+                           'FROM'            => $tablename,
+                           'WHERE'           => [$field => $ID]
+                        ]);
 
                         // Search linked device of each type
-                        if ($res) {
-                           while ($data = $DB->fetch_assoc($res)) {
-                              $itemtype  = $data["itemtype"];
-                              $itemtable = getTableForItemType($itemtype);
-                              $item      = new $itemtype();
+                        while ($data = $iterator->next()) {
+                           $itemtype  = $data[$typefield];
+                           $itemtable = getTableForItemType($itemtype);
+                           $item      = new $itemtype();
 
-                              if ($item->isEntityAssign()) {
-                                 if (countElementsInTable([$tablename, $itemtable],
-                                                          ["$tablename.$field"     => $ID,
-                                                           "$tablename.$typefield" => $itemtype,
-                                                           'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
-                                                           'NOT'  => [$itemtable.'.entities_id' => $entities ]]) > '0') {
-                                    return false;
-                                 }
+                           if ($item->isEntityAssign()) {
+                              if (countElementsInTable([$tablename, $itemtable],
+                                                         ["$tablename.$field"     => $ID,
+                                                         "$tablename.$typefield" => $itemtype,
+                                                         'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
+                                                         'NOT'  => [$itemtable.'.entities_id' => $entities ]]) > '0') {
+                                 return false;
                               }
-
                            }
                         }
 

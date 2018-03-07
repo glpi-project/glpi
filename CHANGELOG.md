@@ -27,6 +27,8 @@ The following methods have been deprecated:
 - `Search::getSearchOptionsNew`
 - `Search::getSearchOptionsToAdd`
 - `Search::getSearchOptionsToAddNew`
+- `CommonDBTM::getFromDBByQuery`
+- `User::getFromDBbyEmail()` call with a string
 
 #### Removed
 

@@ -99,7 +99,7 @@ class Plugin extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBbyDir($dir) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`directory` = '$dir'");
+      return $this->getFromDBByCrit([$this->getTable() . '.directory' => $dir]);
    }
 
 

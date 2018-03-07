@@ -257,17 +257,17 @@ class ProfileRight extends CommonDBChild {
       $me = new self();
       foreach ($rights as $name => $right) {
          if (isset($right)) {
-            if ($me->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
-                                             AND `name` = '$name'")) {
+            if ($me->getFromDBByCrit(['profiles_id'   => $profiles_id,
+                                      'name'          => $name])) {
 
                $input = ['id'          => $me->getID(),
-                              'rights'      => $right];
+                         'rights'      => $right];
                $me->update($input);
 
             } else {
                $input = ['profiles_id' => $profiles_id,
-                              'name'        => $name,
-                              'rights'      => $right];
+                         'name'        => $name,
+                         'rights'      => $right];
                $me->add($input);
             }
          }

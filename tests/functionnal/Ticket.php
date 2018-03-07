@@ -154,11 +154,11 @@ class Ticket extends DbTestCase {
          $ticketId = $ticket->getID();
          $ticketUser = new \Ticket_User();
          $this->boolean(
-            $ticketUser->getFromDBByQuery(
-               "WHERE `tickets_id` = '$ticketId'
-                  AND `users_id` = '0'
-                  AND `alternative_email` = '$alternateEmail'"
-            )
+            $ticketUser->getFromDBByCrit([
+               'tickets_id'         => $ticketId,
+               'users_id'           => 0,
+               'alternative_email'  => $alternateEmail
+            ])
          )->isTrue();
       }
       $this->boolean($ticketUser->isNewItem())->isFalse();

@@ -63,8 +63,10 @@ class IPNetwork_Vlan extends CommonDBRelation {
    **/
    function unassignVlan($portID, $vlanID) {
 
-      $this->getFromDBByQuery("WHERE `ipnetworks_id` = '$portID'
-                                     AND `vlans_id` = '$vlanID'");
+      $this->getFromDBByCrit([
+         'ipnetworks_id'   => $portID,
+         'vlans_id'        => $vlanID
+      ]);
 
       return $this->delete($this->fields);
    }

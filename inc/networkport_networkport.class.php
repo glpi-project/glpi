@@ -59,11 +59,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    **/
    function getFromDBForNetworkPort($ID) {
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`networkports_id_1` = '$ID'
-                                            OR `".$this->getTable()."`.`networkports_id_2` = '$ID'");
+      return $this->getFromDBByCrit([
+         'OR'  => [
+            $this->getTable() . '.networkports_id_1'  => $ID,
+            $this->getTable() . '.networkports_id_2'  => $ID
+         ]
+      ]);
    }
-
-
 
 
    /**

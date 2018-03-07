@@ -127,8 +127,10 @@ class CronTask extends CommonDBTM{
    **/
    function getFromDBbyName($itemtype, $name) {
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`name` = '$name'
-                                            AND `".$this->getTable()."`.`itemtype` = '$itemtype'");
+      return $this->getFromDBByCrit([
+         $this->getTable() . '.name'      => $name,
+         $this->getTable() . '.itemtype'  => $itemtype
+      ]);
    }
 
 
@@ -1684,7 +1686,7 @@ class CronTask extends CommonDBTM{
 
       if (count($crontasks)) {
          $task = new self();
-         $task->getFromDBByQuery("WHERE `itemtype` = 'Crontask' AND `name` = 'watcher'");
+         $task->getFromDBByCrit(['itemtype' => 'Crontask', 'name' => 'watcher']);
          if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
             $cron_status = 1;
             $task->addVolume(1);

@@ -630,12 +630,29 @@ abstract class LevelAgreement extends CommonDBChild {
     * @param $type
     */
    function getDataForTicket($tickets_id, $type) {
+      global $DB;
 
       list($dateField, $field) = static::getFieldNames($type);
 
-      return $this->getFromDBByQuery("INNER JOIN `glpi_tickets`
-                                       ON `glpi_tickets`.`$field` = `".static::getTable()."`.`id`
-                                      WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
+      $iterator = $DB->request([
+         'SELECT'       => [static::getTable() . '.id'],
+         'FROM'         => static::getTable(),
+         'INNER JOIN'   => [
+            'glpi_tickets' => [
+               'FKEY'   => [
+                  static::getTable()   => 'id',
+                  'glpi_tickets'       => $field
+               ]
+            ]
+         ],
+         'WHERE'        => ['glpi_tickets.id' => $tickets_id],
+         'LIMIT'        => 1
+      ]);
+
+      if (count($iterator)) {
+         return $this->getFromIter($iterator);
+      }
+      return false;
    }
 
 
