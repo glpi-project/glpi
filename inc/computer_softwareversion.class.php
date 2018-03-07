@@ -226,22 +226,26 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function countForVersion($softwareversions_id, $entity = '') {
       global $DB;
 
-      $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
-                FROM `glpi_computers_softwareversions`
-                INNER JOIN `glpi_computers`
-                     ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$softwareversions_id'
-                      AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'" .
-                      getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
-
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      $request = [
+         'FROM'         => 'glpi_computers_softwareversions',
+         'COUNT'        => 'cpt',
+         'INNER JOIN'   => [
+            'glpi_computers'  => [
+               'FKEY'   => [
+                  'glpi_computers'                    => 'id',
+                  'glpi_computers_softwareversions'   => 'computers_id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_computers_softwareversions.softwareversions_id' => $softwareversions_id,
+            'glpi_computers.is_deleted'                           => 0,
+            'glpi_computers.is_template'                          => 0,
+            'glpi_computers_softwareversions.is_deleted'          => 0
+         ] + getEntitiesRestrictCriteria('glpi_computers', '', $entity)
+      ];
+      $result = $DB->request($request)->next();
+      return $result['cpt'];
    }
 
 
@@ -255,25 +259,33 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function countForSoftware($softwares_id) {
       global $DB;
 
-      $query = "SELECT COUNT(`glpi_computers_softwareversions`.`id`)
-                FROM `glpi_softwareversions`
-                INNER JOIN `glpi_computers_softwareversions`
-                      ON (`glpi_softwareversions`.`id`
-                              = `glpi_computers_softwareversions`.`softwareversions_id`)
-                INNER JOIN `glpi_computers`
-                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
-                      AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwareversions`.`is_deleted` = '0'" .
-                      getEntitiesRestrictRequest('AND', 'glpi_computers');
-
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      $request = [
+         'FROM'         => 'glpi_softwareversions',
+         'COUNT'        => 'cpt',
+         'INNER JOIN'   => [
+            'glpi_computers_softwareversions'   => [
+               'FKEY'   => [
+                  'glpi_computers_softwareversions'   => 'softwareversions_id',
+                  'glpi_softwareversions'             => 'id'
+               ]
+            ],
+            'glpi_computers'  => [
+               'FKEY'   => [
+                  'glpi_computers_softwareversions'   => 'computers_id',
+                  'glpi_computers'                    => 'id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_softwareversions.softwares_id'         => $softwares_id,
+            'glpi_computers.is_deleted'                  => 0,
+            'glpi_computers.is_template'                 => 0,
+            'glpi_computers_softwareversions.is_deleted' => 0
+         ] + getEntitiesRestrictCriteria('glpi_computers')
+      ];
+      $results = $DB->request($request);
+      $result = $DB->request($request)->next();
+      return $result['cpt'];
    }
 
 
@@ -362,38 +374,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       // Total Number of events
       if ($crit == "softwares_id") {
          // Software ID
-         $query_number = "SELECT COUNT(*) AS cpt
-                          FROM `glpi_computers_softwareversions`
-                          INNER JOIN `glpi_softwareversions`
-                              ON (`glpi_computers_softwareversions`.`softwareversions_id`
-                                    = `glpi_softwareversions`.`id`)
-                          INNER JOIN `glpi_computers`
-                              ON (`glpi_computers_softwareversions`.`computers_id`
-                                    = `glpi_computers`.`id`)
-                          WHERE `glpi_softwareversions`.`softwares_id` = '$searchID'" .
-                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                                AND `glpi_computers`.`is_deleted` = '0'
-                                AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_computers_softwareversions`.`is_deleted` = '0'";
-
+         $number = self::countForSoftware($searchID);
       } else {
          //SoftwareVersion ID
-         $query_number = "SELECT COUNT(*) AS cpt
-                          FROM `glpi_computers_softwareversions`
-                          INNER JOIN `glpi_computers`
-                              ON (`glpi_computers_softwareversions`.`computers_id`
-                                    = `glpi_computers`.`id`)
-                          WHERE `glpi_computers_softwareversions`.`softwareversions_id`
-                                       = '$searchID'".
-                                getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                                AND `glpi_computers`.`is_deleted` = '0'
-                                AND `glpi_computers`.`is_template` = '0'
-                                AND `glpi_computers_softwareversions`.`is_deleted` = '0'";
-      }
-
-      $number = 0;
-      if ($result =$DB->query($query_number)) {
-         $number = $DB->result($result, 0, 0);
+         $number = self::countForVersion($searchID);
       }
 
       echo "<div class='center'>";
@@ -407,6 +391,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       // Display the pager
       Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
+      //needs DB::request() to support aliases to get migrated
       $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,
                        `glpi_computers`.`id` AS cID,
@@ -623,13 +608,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $tot = 0;
 
-      $sql = "SELECT `id`, `completename`
-              FROM `glpi_entities` " .
-              getEntitiesRestrictRequest('WHERE', 'glpi_entities') ."
-              ORDER BY `completename`";
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'completename'],
+         'FROM'   => 'glpi_entities',
+         'WHERE'  => getEntitiesRestrictCriteria('glpi_entities'),
+         'ORDER'  => ['completename']
+      ]);
 
-      foreach ($DB->request($sql) as $ID => $data) {
-         $nb = self::countForVersion($softwareversions_id, $ID);
+      while ($data = $iterator->next()) {
+         $nb = self::countForVersion($softwareversions_id, $data['id']);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
             echo "<td class='numeric'>".$nb."</td></tr>\n";
@@ -679,6 +666,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
 
+      //needs DB::request() to support aliases to get migrated
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
@@ -841,6 +829,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "<div class='spaced'>";
       // Affected licenses NOT installed
+      //needs DB::request() to support aliases to get migrated
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_computers_softwarelicenses`.`id` AS linkID,
                        `glpi_softwares`.`name` AS softname,
@@ -967,6 +956,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</td><td>";
       }
 
+      //needs DB::request() to support aliases to get migrated
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwarelicensetypes`.`name` AS type
                 FROM `glpi_computers_softwarelicenses`
@@ -1114,11 +1104,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function cloneComputer($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_computers_softwareversions`
-                WHERE `computers_id` = '$oldid'";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_computers_softwareversions',
+         'WHERE'  => ['computers_id' => $oldid]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $csv                  = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;

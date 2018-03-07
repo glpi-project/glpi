@@ -570,11 +570,12 @@ class CommonDBTM extends CommonGLPI {
       global $DB;
 
       if ($this->dohistory) {
-         $query = "DELETE
-                   FROM `glpi_logs`
-                   WHERE (`itemtype` = '".$this->getType()."'
-                          AND `items_id` = '".$this->fields['id']."')";
-         $DB->query($query);
+         $DB->delete(
+            'glpi_logs', [
+               'itemtype'  => $this->getType(),
+               'items_id'  => $this->fields['id']
+            ]
+         );
       }
    }
 
@@ -4556,16 +4557,22 @@ class CommonDBTM extends CommonGLPI {
       // force template
       $item->fields['is_template'] = true;
 
-      $query = "SELECT *
-                FROM `".$item->getTable()."`
-                WHERE `is_template` = '1' ";
+      $request = [
+         'FROM'   => $item->getTable(),
+         'WHERE'  => [
+            'is_template'  => 1
+         ],
+         'ORDER'  => ['template_name']
+      ];
 
       if ($item->isEntityAssign()) {
-         $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
-                                              $_SESSION['glpiactiveentities'],
-                                              $item->maybeRecursive());
+         $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria(
+            $item->getTable(),
+            'entities_id',
+            $_SESSION['glpiactiveentities'],
+            $item->maybeRecursive()
+         );
       }
-      $query .= " ORDER by `template_name`";
 
       if (Session::isMultiEntitiesMode()) {
          $colspan=3;
@@ -4573,86 +4580,84 @@ class CommonDBTM extends CommonGLPI {
          $colspan=2;
       }
 
-      $result = $DB->query($query);
+      $iterator = $DB->request($request);
       $blank_params =
          (strpos($target, '?') ? '&amp;' : '?')
          . "id=-1&amp;withtemplate=2";
       $target_blank = $target . $blank_params;
 
-      if ($add && $result->num_rows == 0) {
+      if ($add && count($iterator) == 0) {
          //if there is no template, just use blank
          Html::redirect($target_blank);
       }
 
-      if ($result) {
-         echo "<div class='center'><table class='tab_cadre'>";
-         if ($add) {
-            echo "<tr><th>" . $item->getTypeName(1)."</th>";
-            echo "<th>".__('Choose a template')."</th></tr>";
-            echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
-            echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
-            echo "</tr>";
-         } else {
-            echo "<tr><th>".$item->getTypeName(1)."</th>";
-            if (Session::isMultiEntitiesMode()) {
-               echo "<th>".__('Entity')."</th>";
-            }
-            echo "<th>".__('Templates')."</th></tr>";
+      echo "<div class='center'><table class='tab_cadre'>";
+      if ($add) {
+         echo "<tr><th>" . $item->getTypeName(1)."</th>";
+         echo "<th>".__('Choose a template')."</th></tr>";
+         echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
+         echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
+         echo "</tr>";
+      } else {
+         echo "<tr><th>".$item->getTypeName(1)."</th>";
+         if (Session::isMultiEntitiesMode()) {
+            echo "<th>".__('Entity')."</th>";
          }
-
-         while ($data = $DB->fetch_assoc($result)) {
-            $templname = $data["template_name"];
-            if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
-               $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
-            }
-            if (Session::isMultiEntitiesMode()) {
-               $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-            }
-            if ($item->canCreate() && !$add) {
-               $modify_params =
-                  (strpos($target, '?') ? '&amp;' : '?')
-                  . "id=".$data['id']
-                  . "&amp;withtemplate=1";
-               $target_modify = $target . $modify_params;
-
-               echo "<tr><td class='tab_bg_1 center'>";
-               echo "<a href=\"$target_modify\">";
-               echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
-               if (Session::isMultiEntitiesMode()) {
-                  echo "<td class='tab_bg_1 center'>$entity</td>";
-               }
-               echo "<td class='tab_bg_2 center b'>";
-               if ($item->can($data['id'], PURGE)) {
-                  Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
-                                       ['withtemplate' => 1,
-                                        'id'           => $data['id']]);
-               }
-               echo "</td>";
-            } else {
-               $add_params =
-                  (strpos($target, '?') ? '&amp;' : '?')
-                  . "id=".$data['id']
-                  . "&amp;withtemplate=2";
-               $target_add = $target . $add_params;
-
-               echo "<tr><td class='tab_bg_1 center' colspan='2'>";
-               echo "<a href=\"$target_add\">";
-               echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
-            }
-            echo "</tr>";
-         }
-
-         if ($item->canCreate() && !$add) {
-            $create_params =
-               (strpos($target, '?') ? '&amp;' : '?')
-               . "withtemplate=1";
-            $target_create = $target . $create_params;
-            echo "<tr><td class='tab_bg_2 center b' colspan='3'>";
-            echo "<a href=\"$target_create\">" . __('Add a template...') . "</a>";
-            echo "</td></tr>";
-         }
-         echo "</table></div>\n";
+         echo "<th>".__('Templates')."</th></tr>";
       }
+
+      while ($data = $iterator->next()) {
+         $templname = $data["template_name"];
+         if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
+            $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
+         }
+         if (Session::isMultiEntitiesMode()) {
+            $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
+         }
+         if ($item->canCreate() && !$add) {
+            $modify_params =
+               (strpos($target, '?') ? '&amp;' : '?')
+               . "id=".$data['id']
+               . "&amp;withtemplate=1";
+            $target_modify = $target . $modify_params;
+
+            echo "<tr><td class='tab_bg_1 center'>";
+            echo "<a href=\"$target_modify\">";
+            echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+            if (Session::isMultiEntitiesMode()) {
+               echo "<td class='tab_bg_1 center'>$entity</td>";
+            }
+            echo "<td class='tab_bg_2 center b'>";
+            if ($item->can($data['id'], PURGE)) {
+               Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
+                                    ['withtemplate' => 1,
+                                       'id'           => $data['id']]);
+            }
+            echo "</td>";
+         } else {
+            $add_params =
+               (strpos($target, '?') ? '&amp;' : '?')
+               . "id=".$data['id']
+               . "&amp;withtemplate=2";
+            $target_add = $target . $add_params;
+
+            echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+            echo "<a href=\"$target_add\">";
+            echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+         }
+         echo "</tr>";
+      }
+
+      if ($item->canCreate() && !$add) {
+         $create_params =
+            (strpos($target, '?') ? '&amp;' : '?')
+            . "withtemplate=1";
+         $target_create = $target . $create_params;
+         echo "<tr><td class='tab_bg_2 center b' colspan='3'>";
+         echo "<a href=\"$target_create\">" . __('Add a template...') . "</a>";
+         echo "</td></tr>";
+      }
+      echo "</table></div>\n";
    }
 
 

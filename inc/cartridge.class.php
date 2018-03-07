@@ -258,14 +258,19 @@ class Cartridge extends CommonDBChild {
       global $DB;
 
       // Get first unused cartridge
-      $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE (`cartridgeitems_id` = '$tID'
-                       AND `date_use` IS NULL)";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => ['id'],
+         'FROM'   => $this->getTable(),
+         'WHERE'  => [
+            'cartridgeitems_id'  => $tID,
+            'date_use'           => null
+         ],
+         'LIMIT'  => 1
+      ]);
 
-      if ($DB->numrows($result)>0) {
-         $cID = $DB->result($result, 0, 0);
+      if (count($iterator)) {
+         $result = $iterator->next();
+         $cID = $result['id'];
          // Mise a jour cartouche en prenant garde aux insertion multiples
          $result = $DB->update(
             $this->getTable(), [
@@ -273,7 +278,7 @@ class Cartridge extends CommonDBChild {
                'printers_id'  => $pID
             ], [
                'id'        => $cID,
-               'date_use'  => 'NULL'
+               'date_use'  => null
             ]
          );
          if ($result && ($DB->affected_rows() > 0)) {
@@ -471,7 +476,7 @@ class Cartridge extends CommonDBChild {
          'COUNT'  => 'cpt',
          'WHERE'  => ['printers_id' => $pID]
       ])->next();
-      return $row['cpt'];
+      return (int)$row['cpt'];
    }
 
 
@@ -485,13 +490,19 @@ class Cartridge extends CommonDBChild {
    static function getUsedNumber($tID) {
       global $DB;
 
-      $query = "SELECT id
-                FROM `glpi_cartridges`
-                WHERE (`cartridgeitems_id` = '$tID'
-                       AND `date_use` IS NOT NULL
-                       AND `date_out` IS NULL)";
-      $result = $DB->query($query);
-      return $DB->numrows($result);
+      $row = $DB->request([
+         'SELECT' => ['id'],
+         'COUNT'  => 'cpt',
+         'FROM'   => 'glpi_cartridges',
+         'WHERE'  => [
+            'cartridgeitems_id'  => $tID,
+            'date_out'           => null,
+            'NOT'                => [
+               'date_use'  => null
+            ]
+         ]
+      ])->next();
+      return (int)$row['cpt'];
    }
 
 

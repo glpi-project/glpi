@@ -868,22 +868,28 @@ class Auth extends CommonGLPI {
 
       $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
-      $sql = "SELECT COUNT(*) AS cpt
-              FROM `glpi_authldaps`
-              WHERE `is_active` = 1";
-      $result = $DB->query($sql);
+      $result = $DB->request([
+         'FROM'   => 'glpi_authldaps',
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'is_active' => 1
+         ]
+      ])->next();
 
-      if ($DB->result($result, 0, "cpt") > 0) {
+      if ($result['cpt'] > 0) {
          $methods[self::LDAP]     = __('Authentication on a LDAP directory');
          $methods[self::EXTERNAL] = __('External authentications');
       }
 
-      $sql = "SELECT COUNT(*) AS cpt
-              FROM `glpi_authmails`
-              WHERE `is_active` = 1";
-      $result = $DB->query($sql);
+      $result = $DB->request([
+         'FROM'   => 'glpi_authmails',
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'is_active' => 1
+         ]
+      ])->next();
 
-      if ($DB->result($result, 0, "cpt") > 0) {
+      if ($result['cpt'] > 0) {
          $methods[self::MAIL] = __('Authentication on mail server');
       }
 

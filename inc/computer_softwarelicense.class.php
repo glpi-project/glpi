@@ -209,25 +209,31 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static function countForLicense($softwarelicenses_id, $entity = '') {
       global $DB;
 
-      $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
-                FROM `glpi_computers_softwarelicenses`
-                INNER JOIN `glpi_computers`
-                      ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$softwarelicenses_id'
-                      AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
+      $request = [
+         'FROM'         => 'glpi_computers_softwarelicenses',
+         'COUNT'        => 'cpt',
+         'INNER JOIN'   => [
+            'glpi_computers'  => [
+               'FKEY'   => [
+                  'glpi_computers'                    => 'id',
+                  'glpi_computers_softwarelicenses'   => 'computers_id'
+               ]
+            ]
+         ],
+         'WHERE'        => [
+            'glpi_computers_softwarelicenses.softwarelicenses_id' => $softwarelicenses_id,
+            'glpi_computers.is_deleted'                           => 0,
+            'glpi_computers.is_template'                          => 0,
+            'glpi_computers_softwarelicenses.is_deleted'          => 0
+         ]
+      ];
 
       if ($entity != -1) {
-         $query .= getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
+         $request['WHERE'] = $request['WHERE'] + getEntitiesRestrictCriteria('glpi_computers', '', $entity);
       }
 
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      $result = $DB->request($request)->next();
+      return $result['cpt'];
    }
 
 
@@ -241,25 +247,33 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static function countForSoftware($softwares_id) {
       global $DB;
 
-      $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
-                FROM `glpi_softwarelicenses`
-                INNER JOIN `glpi_computers_softwarelicenses`
-                      ON (`glpi_softwarelicenses`.`id`
-                          = `glpi_computers_softwarelicenses`.`softwarelicenses_id`)
-                INNER JOIN `glpi_computers`
-                      ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_softwarelicenses`.`softwares_id` = '$softwares_id'
-                      AND `glpi_computers`.`is_deleted` = '0'
-                      AND `glpi_computers`.`is_template` = '0'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'" .
-                      getEntitiesRestrictRequest('AND', 'glpi_computers');
+      $request = [
+         'FROM'   => 'glpi_softwarelicenses',
+         'COUNT'  => 'cpt',
+         'INNER JOIN'   => [
+            'glpi_computers_softwarelicenses'   => [
+               'FKEY'   => [
+                  'glpi_softwarelicenses'             => 'id',
+                  'glpi_computers_softwarelicenses'   => 'softwarelicenses_id'
+               ]
+            ],
+            'glpi_computers'   => [
+               'FKEY'   => [
+                  'glpi_computers'                    => 'id',
+                  'glpi_computers_softwarelicenses'   => 'computers_id'
+               ]
+            ]
+         ],
+         'WHERE'  => [
+            'glpi_softwarelicenses.softwares_id'         => $softwares_id,
+            'glpi_computers.is_deleted'                  => 0,
+            'glpi_computers.is_template'                 => 0,
+            'glpi_computers_softwarelicenses.is_deleted' => 0
+         ] + getEntitiesRestrictCriteria('glpi_computers')
+      ];
 
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      $result = $DB->request($request)->next();
+      return $result['cpt'];
    }
 
 
@@ -287,13 +301,15 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $tot = 0;
 
-      $sql = "SELECT `id`, `completename`
-              FROM `glpi_entities` " .
-              getEntitiesRestrictRequest('WHERE', 'glpi_entities') ."
-              ORDER BY `completename`";
+      $iterator = $DB->request([
+         'SELECT' => ['id', 'completename'],
+         'FROM'   => 'glpi_entities',
+         'WHERE'  => getEntitiesRestrictCriteria('glpi_entities'),
+         'ORDER'  => ['completename']
+      ]);
 
-      foreach ($DB->request($sql) as $ID => $data) {
-         $nb = self::countForLicense($softwarelicense_id, $ID);
+      while ($data = $iterator->next()) {
+         $nb = self::countForLicense($softwarelicense_id, $data['id']);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
             echo "<td class='numeric'>".$nb."</td></tr>\n";
@@ -351,21 +367,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
 
       //SoftwareLicense ID
-      $query_number = "SELECT COUNT(*) AS cpt
-                       FROM `glpi_computers_softwarelicenses`
-                       INNER JOIN `glpi_computers`
-                           ON (`glpi_computers_softwarelicenses`.`computers_id`
-                                 = `glpi_computers`.`id`)
-                       WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'".
-                             getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                             AND `glpi_computers`.`is_deleted` = '0'
-                             AND `glpi_computers`.`is_template` = '0'
-                             AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
-
-      $number = 0;
-      if ($result = $DB->query($query_number)) {
-         $number = $DB->result($result, 0, 0);
-      }
+      $number = self::countForLicense($searchID);
 
       echo "<div class='center'>";
 
@@ -401,6 +403,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       // Display the pager
       Html::printAjaxPager(__('Affected computers'), $start, $number);
 
+      //needs DB::request() to support aliases to get migrated
       $query = "SELECT `glpi_computers_softwarelicenses`.*,
                        `glpi_computers`.`name` AS compname,
                        `glpi_computers`.`id` AS cID,
@@ -580,7 +583,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          $computers_id = $this->fields['computers_id'];
          $this->delete(['id' => $licID]);
          $this->add(['computers_id'        => $computers_id,
-                          'softwarelicenses_id' => $softwarelicenses_id]);
+                     'softwarelicenses_id' => $softwarelicenses_id]);
       }
    }
 
@@ -597,6 +600,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       global $DB;
 
       $lic = [];
+
+      //needs DB::request() to support aliases to get migrated
       $sql = "SELECT `glpi_softwarelicenses`.*,
                      `glpi_softwarelicensetypes`.`name` AS type
               FROM `glpi_softwarelicenses`
@@ -628,11 +633,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static function cloneComputer($oldid, $newid) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `glpi_computers_softwarelicenses`
-                WHERE `computers_id` = '$oldid'";
+      $iterator = $DB->request([
+         'FROM'   => 'glpi_computers_softwarelicenses',
+         'WHERE'  => ['computers_id' => $oldid]
+      ]);
 
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          $csl                  = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
@@ -691,16 +697,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static function countLicenses($softwares_id) {
       global $DB;
 
-      $query = "SELECT COUNT(*)
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '$softwares_id' " .
-                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses');
-
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 0) {
-         return $DB->result($result, 0, 0);
-      }
-      return 0;
+      $result = $DB->request([
+         'FROM'   => 'glpi_softwarelicenses',
+         'COUNT'  => 'cpt',
+         'WHERE'  => [
+            'softwares_id' => $softwares_id
+         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses')
+      ])->next();
+      return $result['cpt'];
    }
 }
