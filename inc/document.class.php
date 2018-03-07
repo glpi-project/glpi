@@ -549,8 +549,10 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`sha1sum` = '$sum'
-                                     AND `".$this->getTable()."`.`entities_id` = '$entity'");
+      return $this->getFromDBByCrit([
+         $this->getTable() . '.sha1sum'      => $sum,
+         $this->getTable() . '.entities_id'  => $entity
+      ]);
    }
 
 

@@ -139,8 +139,10 @@ class NotificationTargetObjectLock extends NotificationTarget {
       if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
           && isset($_SESSION['glpilock_directunlock_notification'])
           && ($_SESSION['glpilock_directunlock_notification'] > 0)
-          && $mails->getFromDBByQuery(" WHERE users_id = ".$_SESSION['glpiID']."
-                                              AND is_default = 1 " )) {
+          && $mails->getFromDBByCrit([
+             'users_id'    => $_SESSION['glpiID'],
+             'is_default'  => 1
+          ])) {
 
             $ret = ['email' => $mails->fields['email'],
                     'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],

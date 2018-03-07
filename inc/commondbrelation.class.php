@@ -233,7 +233,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @param $item1 object 1
     * @param $item2 object 2
     *
-    * @return boolean founded ?
+    * @return boolean
    **/
    function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2) {
 
@@ -243,23 +243,23 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
 
       $wheres = [];
-      $wheres[] = "`".static::$items_id_1."` = '".$item1->getID()."'";
-      $wheres[] = "`".static::$items_id_2."` = '".$item2->getID()."'";
+      $wheres[static::$items_id_1] = $item1->getID();
+      $wheres[static::$items_id_2] = $item2->getID();
 
       // Check item 1 type
       if (preg_match('/^itemtype/', static::$itemtype_1)) {
-         $wheres[] = "`".static::$itemtype_1."` = '".$item1->getType()."'";
+         $wheres[static::$itemtype_1] = $item1->getType();
       } else if (!is_a($item1, static::$itemtype_1)) {
          return false;
       }
 
       // Check item 1 type
       if (preg_match('/^itemtype/', static::$itemtype_2)) {
-         $wheres[] = "`".static::$itemtype_2."` = '".$item2->getType()."'";
+         $wheres[static::$itemtype_2] = $item2->getType();
       } else if (!is_a($item2, static::$itemtype_2)) {
          return false;
       }
-      return $this->getFromDBByQuery("WHERE ".implode(' AND ', $wheres));
+      return $this->getFromDBByCrit($wheres);
    }
 
 

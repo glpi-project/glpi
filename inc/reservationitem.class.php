@@ -113,8 +113,10 @@ class ReservationItem extends CommonDBChild {
    **/
    function getFromDBbyItem($itemtype, $ID) {
 
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
-                                            AND `".$this->getTable()."`.`items_id` = '$ID'");
+      return $this->getFromDBByCrit([
+         $this->getTable() . '.itemtype'  => $itemtype,
+         $this->getTable() . '.items_id'  => $ID
+      ]);
    }
 
 

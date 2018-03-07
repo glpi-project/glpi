@@ -317,8 +317,7 @@ class Planning extends CommonGLPI {
             } else if ($itemtype = 'Problem') {
                $task = new ProblemTask();
             }
-            if ($task->getFromDBByQuery("WHERE `tickets_id` = ".$item->fields['id'])) {
-               $id = $task->fields['id'];
+            if ($task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
                $users['users_id'] = getUserName($task->fields['users_id_tech']);
                $group_id = $task->fields['groups_id_tech'];
                if ($group_id) {

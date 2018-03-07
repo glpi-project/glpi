@@ -2628,19 +2628,20 @@ class Config extends CommonDBTM {
 
       $config = new self();
       foreach ($values as $name => $value) {
-         if ($config->getFromDBByQuery("WHERE `context` = '$context'
-                                              AND `name` = '$name'")) {
-
+         if ($config->getFromDBByCrit([
+            'context'   => $context,
+            'name'      => $name
+         ])) {
             $input = ['id'      => $config->getID(),
-                           'context' => $context,
-                           'value'   => $value];
+                      'context' => $context,
+                      'value'   => $value];
 
             $config->update($input);
 
          } else {
             $input = ['context' => $context,
-                           'name'    => $name,
-                           'value'   => $value];
+                      'name'    => $name,
+                      'value'   => $value];
 
             $config->add($input);
          }

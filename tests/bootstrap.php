@@ -566,7 +566,7 @@ function getItemByTypeName($type, $name, $onlyid = false) {
 
    $item = getItemForItemtype($type);
    $nameField = $type::getNameField();
-   if ($item->getFromDBByQuery("WHERE `$nameField`='$name'")) {
+   if ($item->getFromDBByCrit([$nameField => $name])) {
       return ($onlyid ? $item->getField('id') : $item);
    }
    return false;

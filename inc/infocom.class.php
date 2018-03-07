@@ -236,8 +236,10 @@ class Infocom extends CommonDBChild {
    **/
    function getFromDBforDevice ($itemtype, $ID) {
 
-      if ($this->getFromDBByQuery("WHERE `".$this->getTable()."`.`items_id` = '$ID'
-                                  AND `".$this->getTable()."`.`itemtype` = '$itemtype'")) {
+      if ($this->getFromDBByCrit([
+         $this->getTable() . '.items_id'  => $ID,
+         $this->getTable() . '.itemtype'  => $itemtype
+      ])) {
          return true;
       }
       $this->getEmpty();

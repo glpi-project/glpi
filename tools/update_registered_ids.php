@@ -52,12 +52,14 @@ foreach (['PCI' => 'http://pciids.sourceforge.net/v2.2/pci.ids',
       if ($line[0] != '\t') {
          $id   = strtolower(substr($line, 0, 4));
          $name = addslashes(trim(substr($line, 4)));
-         if ($registeredid->getFromDBByQuery("WHERE `itemtype` = 'Manufacturer'
-                                                    AND `name` = '$id'
-                                                    AND `device_type` = '$type'")) {
+         if ($registeredid->getFromDBByCrit([
+            'itemtype'     => 'Manufacturer',
+            'name'         => $id,
+            'device_type'  => $type
+         ])) {
             $manufacturer->getFromDB($registeredid->fields['items_id']);
          } else {
-            if (!$manufacturer->getFromDBByQuery("WHERE `name` = '$name'")) {
+            if (!$manufacturer->getFromDBByCrit(['name' => $name])) {
                $input = ['name' => $name];
                $manufacturer->add($input);
             }

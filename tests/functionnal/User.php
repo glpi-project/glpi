@@ -70,12 +70,9 @@ class User extends \GLPITestCase {
             $user->forgetPassword('this-email-does-not-exists@example.com');
          }
       )
-      ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
+         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
 
       // Test request for a password
-      $input = [
-         'email' => $user->getDefaultEmail(),
-      ];
       $result = $user->forgetPassword($user->getDefaultEmail());
       $this->boolean($result)->isTrue();
 

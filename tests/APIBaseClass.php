@@ -1164,7 +1164,7 @@ abstract class APIBaseClass extends \atoum {
 
       // Check an other setting is disclosed (when not empty)
       $config = new Config();
-      $config->getFromDBByQuery("WHERE `context`='core' AND `name`='admin_email'");
+      $config->getFromDBByCrit(['context' => 'core', 'name' => 'admin_email']);
       $data = $this->query('getItem',
                            ['itemtype' => 'Config',
                             'id'       => $config->getID(),
