@@ -5064,7 +5064,7 @@ class Ticket extends CommonITILObject {
             echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          }
       } else {
-         echo $content;
+         echo Toolbox::getHtmlToDisplay($content);
       }
       echo $tt->getEndHiddenFieldValue('content', $this);
 
