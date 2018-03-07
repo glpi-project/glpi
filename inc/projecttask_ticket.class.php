@@ -273,6 +273,54 @@ class ProjectTask_Ticket extends CommonDBRelation{
          }
       }
 
+      if ($canedit) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
+                 method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='4'>".__('Add a project task')."</th></tr>";
+
+         $rand = mt_rand();
+
+         echo "<tr class='tab_bg_2'><td class='right'>";
+         echo Html::hidden('tickets_id', ['value' => $ID]);
+         Project::dropdown(['entity'      => $ticket->getEntityID(),
+                            'entity_sons' => $ticket->isRecursive(),
+                            'rand'        => $rand]);
+
+         $p = ['projects_id'     => '__VALUE__',
+               'entity_restrict' => $ticket->getEntityID(),
+               'used'            => $used,
+               'rand'            => $rand,
+               'myname'          => "projects"];
+
+         Ajax::updateItemOnSelectEvent("dropdown_projects_id$rand", "results_projects$rand",
+                                       $CFG_GLPI["root_doc"].
+                                       "/ajax/dropdownProjectTaskTicket.php",
+                                       $p);
+
+         echo "</td>";
+         echo "<td class='right'>";
+         echo "<span id='results_projects$rand'>";
+         $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
+         ProjectTask::dropdown(['used'        => $used,
+                                'entity'      => $ticket->getEntityID(),
+                                'entity_sons' => $ticket->isRecursive(),
+                                'condition'       => $condition,
+                                'displaywith' => ['id']]);
+         echo "</span>";
+
+         echo "</td><td width='20%'>";
+         echo "</td><td class='center'>";
+         echo Html::submit(_sx('button', 'Add'), ['name' => 'add']);
+         echo "</td></tr>";
+
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
       echo "<div class='spaced'>";
 
       if ($numrows) {
