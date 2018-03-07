@@ -53,7 +53,7 @@ $CFG_GLPI["debug"]=0;
 if (!isset($_GET['delay'])) {
    print "
 *******************************************
- This script kill babies : don t use it !!
+ This script kills babies : don t use it !!
 
    If you really want to try it:
    Do a full backup before use.
