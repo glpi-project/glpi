@@ -100,18 +100,23 @@ if (isset($_POST["send"])) {
                   'Monitor'          => __('Monitor'),
                   'Peripheral'       => __('Device')];
    foreach ($types as $type => $label) {
-      $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
-                FROM `".getTableForItemType($type)."`
-                WHERE `is_template` = '0'
-                      AND `is_deleted` = '0'
-                      AND (`contact` LIKE '%".$_POST["NomContact"]."%'
-                           OR `name` LIKE '%".$_POST["NomContact"]."%'
-                           OR `serial` LIKE '%".$_POST["NomContact"]."%'
-                           OR `otherserial` LIKE '%".$_POST["NomContact"]."%')
-                ORDER BY `name`";
-      $result = $DB->query($query);
+      $iterator = $DB->request([
+         'SELECT' => ['name', 'id', 'contact', 'serial', 'otherserial'],
+         'FROM'   => getTableForItemType($type),
+         'WHERE'  => [
+            'is_template'  => 0,
+            'is_deleted'   => 0,
+            'OR'           => [
+               'contact'      => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+               'name'         => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+               'serial'       => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+               'otherserial'  => ['LIKE', '%' . $_POST['NomContact'] . '%'],
+            ]
+         ],
+         'ORDER'           => ['name']
+      ]);
 
-      while ($ligne = $DB->fetch_assoc($result)) {
+      while ($ligne = $iterator->next()) {
          $Comp_num = $ligne['id'];
          $Contact  = $ligne['contact'];
          $Computer = $ligne['name'];

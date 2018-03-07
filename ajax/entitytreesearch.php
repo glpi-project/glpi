@@ -47,12 +47,15 @@ $res = [];
 $root_entities_for_profiles = array_column($_SESSION['glpiactiveprofile']['entities'], 'id');
 
 if (isset($_POST['str'])) {
-   $query = "SELECT *
-             FROM `glpi_entities`
-             WHERE `name` LIKE '%".$_POST['str']."%'
-             ORDER BY `completename`";
+   $iterator = $DB->request([
+      'FROM'   => 'glpi_entities',
+      'WHERE'  => [
+         'name' => ['LIKE', '%' . $_POST['str'] . '%']
+      ],
+      'ORDER'  => ['completename']
+   ]);
 
-   foreach ($DB->request($query) as $data) {
+   while ($data = $iterator->next()) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {
          if (!in_array($val, $res)) {

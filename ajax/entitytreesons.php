@@ -63,11 +63,12 @@ if (isset($_GET['node'])) {
 
          if ($is_recursive) {
             $path['children'] = true;
-            $query2 = "SELECT count(*)
-                       FROM `glpi_entities`
-                       WHERE `entities_id` = '$ID'";
-            $result2 = $DB->query($query2);
-            if ($DB->result($result2, 0, 0) > 0) {
+            $result2 = $DB->request([
+               'FROM'   => 'glpi_entities',
+               'COUNT'  => 'cpt',
+               'WHERE'  => ['entities_id' => $ID]
+            ]);
+            if ($result2['cpt'] > 0) {
                //apend a i tag (one of shortest tags) to have the is_recursive link
                $path['text'].= '<i/>';
                if (isset($ancestors[$ID])) {

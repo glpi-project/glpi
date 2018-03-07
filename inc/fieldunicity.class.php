@@ -195,21 +195,22 @@ class FieldUnicity extends CommonDropdown {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT *
-                FROM `glpi_fieldunicities`
-                WHERE `itemtype` = '$itemtype' ".
-                      getEntitiesRestrictRequest("AND", 'glpi_fieldunicities', "", $entities_id,
-                                                 true);
+      $request = [
+         'FROM'   => 'glpi_fieldunicities',
+         'WHERE'  => [
+            'itemtype'  => $itemtype
+         ] + getEntitiesRestrictCriteria('glpi_fieldunicities', '', $entities_id, true),
+         'ORDER'  => ['entities_id DESC']
+      ];
 
       if ($check_active) {
-         $query .= " AND `is_active` = '1' ";
+         $request['WHERE']['is_active'] = 1;
       }
-
-      $query .= "ORDER BY `entities_id` DESC";
+      $iterator = $DB->request($request);
 
       $current_entity = false;
       $return         = [];
-      foreach ($DB->request($query) as $data) {
+      while ($data = $iterator->next()) {
          //First row processed
          if (!$current_entity) {
             $current_entity = $data['entities_id'];

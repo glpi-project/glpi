@@ -602,6 +602,7 @@ class Migration {
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
+         //nedds DB::insert to support subqeries to get migrated
          $query = "INSERT INTO `$newtable`
                           (SELECT *
                            FROM `$oldtable`)";

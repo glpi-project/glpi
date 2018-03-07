@@ -63,6 +63,44 @@ class Computer_SoftwareLicense extends DbTestCase {
 
    }
 
+   public function testGetLicenseForInstallation() {
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $version1 = getItemByTypeName('SoftwareVersion', '_test_softver_1');
+
+      $this->Login();
+
+      $this->array(
+         \Computer_SoftwareLicense::getLicenseForInstallation(
+            $computer1->fields['id'],
+            $version1->fields['id']
+         )
+      )->isEmpty();
+
+      //simulate license install
+      $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_1');
+      $this->boolean(
+         $lic->update([
+            'id'                       => $lic->fields['id'],
+            'softwareversions_id_use'  => $version1->fields['id']
+         ])
+      )->isTrue();
+
+      $this->array(
+         \Computer_SoftwareLicense::getLicenseForInstallation(
+            $computer1->fields['id'],
+            $version1->fields['id']
+         )
+      )->hasSize(1);
+
+      //reset license
+      $this->boolean(
+         $lic->update([
+            'id'                       => $lic->fields['id'],
+            'softwareversions_id_use'  => 'NULL'
+         ])
+      )->isTrue();
+   }
+
    public function testAddUpdateDelete() {
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer2 = getItemByTypeName('Computer', '_test_pc02');

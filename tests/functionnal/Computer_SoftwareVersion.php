@@ -190,4 +190,27 @@ class Computer_SoftwareVersion extends DbTestCase {
       $input['is_deleted'] = '0';
       $this->boolean($computer1->update($input))->isTrue();
    }
+
+   public function testCountForSoftware() {
+      $soft1 = getItemByTypeName('Software', '_test_soft');
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+
+      $this->Login();
+
+      $this->integer(
+         (int)\Computer_SoftwareVersion::countForSoftware($soft1->fields['id'])
+      )->isIdenticalTo(0);
+
+      $csoftver = new \Computer_SoftwareVersion();
+      $this->integer(
+         (int)$csoftver->add([
+            'computers_id'          => $computer1->fields['id'],
+            'softwareversions_id'   => $soft1->fields['id']
+         ])
+      )->isGreaterThan(0);
+
+      $this->integer(
+         (int)\Computer_SoftwareVersion::countForSoftware($soft1->fields['id'])
+      )->isIdenticalTo(1);
+   }
 }
