@@ -43,6 +43,7 @@ abstract class API extends CommonGLPI {
    protected $session_write = false;
 
    static $api_url = "";
+   static $content_type = "application/json";
    protected $format;
    protected $iptxt         = "";
    protected $ipnum         = "";
@@ -75,6 +76,12 @@ abstract class API extends CommonGLPI {
     */
    abstract protected function returnResponse($response, $code, $additionalheaders);
 
+   /**
+    * Upload and validate files from request and append to $this->parameters['input']
+    *
+    * @return void
+    */
+   abstract protected function manageUploadedFiles();
 
    /**
     * Constructor
@@ -84,8 +91,17 @@ abstract class API extends CommonGLPI {
     *
     * @return void
     */
-   public function __construct() {
+   public function initApi() {
       global $CFG_GLPI, $DB;
+
+      // Load GLPI configuration
+      include_once (GLPI_ROOT . '/inc/includes.php');
+      $variables = get_defined_vars();
+      foreach ($variables as $var => $value) {
+         if ($var === strtoupper($var)) {
+            $GLOBALS[$var] = $value;
+         }
+      }
 
       // construct api url
       self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
@@ -252,25 +268,12 @@ abstract class API extends CommonGLPI {
          } else if (file_exists(GLPI_ROOT . '/config/config_path.php')) { // For compatibility, deprecated
             include_once (GLPI_ROOT . '/config/config_path.php');
          }
-         if (!defined("GLPI_SESSION_DIR")) {
-            define("GLPI_SESSION_DIR", GLPI_ROOT . "/files/_sessions");
-         }
 
          if ($session!=$current && !empty($current)) {
             session_destroy();
          }
          if ($session!=$current && !empty($session)) {
-            if (ini_get("session.save_handler")=="files") {
-               session_save_path(GLPI_SESSION_DIR);
-            }
             session_id($session);
-            session_start();
-
-            // Define current time for sync of action timing
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-            Session::loadLanguage();
          }
       }
    }
@@ -2084,7 +2087,7 @@ abstract class API extends CommonGLPI {
    protected function header($html = false, $title = "") {
 
       // Send UTF8 Headers
-      $content_type = "application/json";
+      $content_type = static::$content_type;
       if ($html) {
          $content_type = "text/html";
       }
