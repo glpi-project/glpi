@@ -782,16 +782,14 @@ class AuthLDAP extends DbTestCase {
     * @dataProvider ssoVariablesProvider
     */
    public function testOtherAuth($sso_field_id, $sso_field_name) {
-      //$this->dump($sso_field_id, $sso_field_name);
       $config = new \Config;
-      $config->update([
-         'id' => 1,
+      $this->boolean($config->update([
+         'id'              => 1,
          'ssovariables_id' => $sso_field_id,
-      ]);
+         'context'         => 'core',
+      ]))->isTrue();
 
       $_SERVER[$sso_field_name] = 'brazil6';
-
-      //$this->dump($sso_field_name, $_SERVER[$sso_field_name]);
 
       unset($_SESSION['glpiname']);
 
