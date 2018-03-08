@@ -789,14 +789,14 @@ class AuthLDAP extends DbTestCase {
          'ssovariables_id' => $sso_field_id,
       ]);
 
-      $_SERVER[$sso_field_name] = 'ecuador0';
+      $_SERVER[$sso_field_name] = 'brazil6';
 
-      $this->dump($sso_field_name, $_SERVER[$sso_field_name]);
+      //$this->dump($sso_field_name, $_SERVER[$sso_field_name]);
 
       unset($_SESSION['glpiname']);
 
       $auth = new \Auth;
       $this->boolean($auth->login("", ""))->isTrue();
-      $this->string($_SESSION['glpiname'])->isEqualTo('ecuador0');
+      $this->string($_SESSION['glpiname'])->isEqualTo('brazil6');
    }
 }
