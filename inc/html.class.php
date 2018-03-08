@@ -3507,6 +3507,7 @@ class Html {
             menubar: false,
             statusbar: false,
             skin: 'light',
+            cache_suffix: '?v=".GLPI_VERSION."',
             setup: function(editor) {
                if ($('#$name').attr('required') == 'required') {
                   $('#$name').closest('form').find('input[type=submit]').click(function() {
