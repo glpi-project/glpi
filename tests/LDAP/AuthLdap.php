@@ -784,8 +784,6 @@ class AuthLDAP extends DbTestCase {
    public function testOtherAuth($sso_field_id, $sso_field_name) {
       global $CFG_GLPI;
 
-      $this->dump("test sso field", $sso_field_name);
-
       $config_values = \Config::setConfigurationValues('core', [
          'ssovariables_id' => $sso_field_id
       ]);
