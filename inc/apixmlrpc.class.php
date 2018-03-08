@@ -42,11 +42,19 @@ class APIXmlrpc extends API {
    protected $debug = 0;
    protected $format = "json";
 
+   static $content_type = "application/xml";
 
    public static function getTypeName($nb = 0) {
       return __('XMLRPC API');
    }
 
+   /**
+    * Upload and validate files from request and append to $this->parameters['input']
+    *
+    * @return void
+    */
+   public function manageUploadedFiles() {
+   }
 
    /**
     * parse POST var to retrieve
@@ -65,6 +73,7 @@ class APIXmlrpc extends API {
 
       // retrieve session (if exist)
       $this->retrieveSession();
+      $this->initApi();
 
       $code = 200;
 
