@@ -177,6 +177,13 @@ class CommonDBTM extends CommonGLPI {
          $this->fields = $iterator->next();
          $this->post_getFromDB();
          return true;
+      } else if (count($iterator) > 1) {
+         Toolbox::logWarning(
+            sprintf(
+               'getFromDB expects to get one result, %1$s found!',
+               count($iterator)
+            )
+         );
       }
 
       return false;
