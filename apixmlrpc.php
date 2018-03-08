@@ -35,13 +35,10 @@
  */
 
 
+define('GLPI_ROOT', __DIR__);
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
-include ('./inc/includes.php');
+include ('./inc/autoload.function.php');
 
 $api = new APIXmlrpc;
-if ($CFG_GLPI['enable_api']) {
-   $api->call();
-} else {
-   Html::displayErrorAndDie(__("API disabled"), true);
-}
+$api->call();
