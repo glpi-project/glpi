@@ -528,14 +528,24 @@ class Ticket extends DbTestCase {
 
       //drop update ticket right from tech profile
       global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168965], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
       //ACLs have changed: login again.
       $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168967], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
@@ -630,14 +640,24 @@ class Ticket extends DbTestCase {
 
       //drop update ticket right from tech profile
       global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 168965 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168965], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
       //ACLs have changed: login again.
       $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168967], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       $this->boolean((boolean)$ticket->getFromDB($ticket->getID()))->isTrue();
       $this->boolean((boolean)$ticket->canAdminActors())->isFalse();
@@ -1078,8 +1098,13 @@ class Ticket extends DbTestCase {
       global $DB;
 
       // set new rights
-      $DB->query("UPDATE glpi_profilerights SET rights = $rights
-                  WHERE profiles_id = 6 AND name = 'ticket'");
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => $rights], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       //ACLs have changed: login again.
       $auth = new \Auth();
@@ -1087,8 +1112,13 @@ class Ticket extends DbTestCase {
 
       if ($rights != 168967) {
          //reset rights. Done here so ACLs are reset even if tests fails.
-         $DB->query("UPDATE glpi_profilerights SET rights = 168967
-                     WHERE profiles_id = 6 AND name = 'ticket'");
+         $DB->update(
+            'glpi_profilerights',
+            ['rights' => 168967], [
+               'profiles_id'  => 6,
+               'name'         => 'ticket'
+            ]
+         );
       }
    }
 
@@ -1129,14 +1159,25 @@ class Ticket extends DbTestCase {
 
       //Add priority right from tech profile
       global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 234503 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 234503], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
+
       //ACLs have changed: login again.
       $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168967], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       $this->boolean((boolean)\Session::haveRight(\Ticket::$rightname, \Ticket::CHANGEPRIORITY))->isTrue();
       //check output with changed ACLs
@@ -1197,14 +1238,25 @@ class Ticket extends DbTestCase {
 
       //Drop being in charge from tech profile
       global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 136199 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 136199], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
+
       //ACLs have changed: login again.
       $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168967], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       $this->boolean((boolean)$ticket->canAssign())->isFalse();
       $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();
@@ -1228,14 +1280,25 @@ class Ticket extends DbTestCase {
       );
 
       //Add assign in charge from tech profile
-      $query = "UPDATE glpi_profilerights SET rights = 144391 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 144391], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
+
       //ACLs have changed: login again.
       $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 168967 WHERE profiles_id = 6 AND name = 'ticket'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 168967], [
+            'profiles_id'  => 6,
+            'name'         => 'ticket'
+         ]
+      );
 
       $this->boolean((boolean)$ticket->canAssign())->isTrue();
       $this->boolean((boolean)$ticket->canAssignToMe())->isFalse();

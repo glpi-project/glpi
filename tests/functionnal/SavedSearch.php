@@ -50,15 +50,25 @@ class SavedSearch extends DbTestCase {
 
       //add public saved searches read right for normal profile
       global $DB;
-      $query = "UPDATE glpi_profilerights SET rights = 1 WHERE profiles_id = 2 AND name = 'bookmark_public'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 1], [
+            'profiles_id'  => 2,
+            'name'         => 'bookmark_public'
+         ]
+      );
 
       //ACLs have changed: login again.
       $this->login('normal', 'normal');
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 0 WHERE profiles_id = 2 AND name = 'bookmark_public'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 0], [
+            'profiles_id'  => 2,
+            'name'         => 'bookmark_public'
+         ]
+      );
 
       $this->string(\SavedSearch::addVisibilityRestrict())
          ->isIdenticalTo('(glpi_savedsearches.is_private=1 AND glpi_savedsearches.users_id=5 OR glpi_savedsearches.is_private=0)');

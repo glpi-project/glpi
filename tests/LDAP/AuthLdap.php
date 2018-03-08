@@ -496,7 +496,11 @@ class AuthLDAP extends DbTestCase {
       $this->string($user->fields['name'])->isIdenticalTo('testecuador');
 
       global $DB;
-      $DB->queryOrDie("UPDATE glpi_authldaps SET sync_field=NULL WHERE id=" . $ldap->getID());
+      $DB->updateOrDie(
+         'glpi_authldaps',
+         ['sync_field' => null],
+         ['id' => $ldap->getID()]
+      );
    }
 
    /**
@@ -594,7 +598,11 @@ class AuthLDAP extends DbTestCase {
       $this->resource($auth->ldap_connection)->isOfType('ldap link');
 
       global $DB;
-      $DB->queryOrDie("UPDATE glpi_authldaps SET sync_field=NULL WHERE id=" . $ldap->getID());
+      $DB->updateOrDie(
+         'glpi_authldaps',
+         ['sync_field' => null],
+         ['id' => $ldap->getID()]
+      );
    }
 
    /**

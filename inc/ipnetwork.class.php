@@ -889,7 +889,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             'ipnetworks_id'   => 0,
             'level'           => 1,
             'completename'    => new \QueryExpression($DB->quoteName('name'))
-         ]
+         ], [true]
       );
 
       // Foreach IPNetwork ...
