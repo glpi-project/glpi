@@ -464,4 +464,31 @@ class DBmysqlIterator extends DbTestCase {
       $nb2 = count($users_list2);
       $this->integer($nb)->isEqualTo($nb2);
    }
+
+   public function testAlias() {
+      $it = $this->it->execute(['FROM' => 'foo AS f']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` AS `f`');
+
+      $it = $this->it->execute(['SELECT' => ['field AS f'], 'FROM' => 'bar AS b']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `field` AS `f` FROM `bar` AS `b`');
+
+      $it = $this->it->execute(['SELECT' => ['b.field AS f'], 'FROM' => 'bar AS b']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`field` AS `f` FROM `bar` AS `b`');
+
+      $it = $this->it->execute(['SELECT' => ['id', 'field AS f', 'baz as Z'], 'FROM' => 'bar AS b']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT `id`, `field` AS `f`, `baz` AS `Z` FROM `bar` AS `b`');
+
+      $it = $this->it->execute([
+         'FROM' => 'bar AS b',
+         'INNER JOIN'   => [
+            'foo AS f' => [
+               'FKEY' => [
+                  'b'   => 'fid',
+                  'f'   => 'id'
+               ]
+            ]
+         ]
+      ]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)');
+   }
 }

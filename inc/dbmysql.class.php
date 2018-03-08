@@ -835,13 +835,28 @@ class DBmysql {
     * @return string
     */
    public static function quoteName($name) {
-      if (strpos($name, '.')) {
-         $n = explode('.', $name, 2);
-         $table = self::quoteName($n[0]);
-         $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
-         return "$table.$field";
+      //handle aliases
+      $names = preg_split('/ AS /i', $name);
+      if (count($names) > 2) {
+         throw new \RuntimeException(
+            'Invalid field name ' . $name
+         );
       }
-      return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
+      if (count($names) == 2) {
+         $name = self::quoteName($names[0]);
+         if (count($names) == 2) {
+            $name .= ' AS ' . self::quoteName($names[1]);
+         }
+         return $name;
+      } else {
+         if (strpos($name, '.')) {
+            $n = explode('.', $name, 2);
+            $table = self::quoteName($n[0]);
+            $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
+            return "$table.$field";
+         }
+         return ($name[0]=='`' ? $name : ($name === '*') ? $name : "`$name`");
+      }
    }
 
    /**

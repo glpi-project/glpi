@@ -72,7 +72,10 @@ class DB extends \GLPITestCase {
          ['`field`', '`field`'],
          ['*', '*'],
          ['table.field', '`table`.`field`'],
-         ['table.*', '`table`.*']
+         ['table.*', '`table`.*'],
+         ['field AS f', '`field` AS `f`'],
+         ['field as f', '`field` AS `f`'],
+         ['table.field as f', '`table`.`field` AS `f`'],
       ];
    }
 
