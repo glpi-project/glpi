@@ -10,7 +10,7 @@ rm -rf ${LDAP_DB} && mkdir ${LDAP_DB} && cp /usr/share/doc/slapd/examples/DB_CON
 echo "Launching OpenLDAP ..."
 
 # Start slapd with non root privileges
-slapd -d 2 -h "ldap://0.0.0.0:3890/" -f ${DIR}/slapd.conf&
+slapd -h "ldap://0.0.0.0:3890/" -f ${DIR}/slapd.conf&
 
 # Wait for LDAP to start
 sleep 1
