@@ -765,4 +765,38 @@ class AuthLDAP extends DbTestCase {
       $this->boolean($user->getFromDB($uid))->isTrue();
       $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
    }
+
+   protected function ssoVariablesProvider() {
+      global $DB;
+
+      $iterator = $DB->request(\SsoVariable::getTable());
+      $sso_vars = [];
+      foreach ($iterator as $current) {
+         $sso_vars[] = [$current['id'], $current['name']];
+      }
+
+      return $sso_vars;
+   }
+
+   /**
+    * @dataProvider ssoVariablesProvider
+    */
+   public function testOtherAuth($sso_field_id, $sso_field_name) {
+      //$this->dump($sso_field_id, $sso_field_name);
+      $config = new \Config;
+      $config->update([
+         'id' => 1,
+         'ssovariables_id' => $sso_field_id,
+      ]);
+
+      $_SERVER[$sso_field_name] = 'ecuador0';
+
+      $this->dump($sso_field_name, $_SERVER[$sso_field_name]);
+
+      unset($_SESSION['glpiname']);
+
+      $auth = new \Auth;
+      $this->boolean($auth->login("", ""))->isTrue();
+      $this->string($_SESSION['glpiname'])->isEqualTo('ecuador0');
+   }
 }
