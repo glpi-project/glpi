@@ -1226,8 +1226,13 @@ abstract class APIBaseClass extends \atoum {
       $this->integer($id)->isGreaterThan(0);
 
       //drop update access on item_devicesimcard
-      $query = "UPDATE glpi_profilerights SET rights = 2 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 2], [
+            'profiles_id'  => 4,
+            'name'         => 'devicesimcard_pinpuk'
+         ]
+      );
 
       // Profile changed then login
       $backupSessionToken = $this->session_token;
@@ -1235,8 +1240,13 @@ abstract class APIBaseClass extends \atoum {
       $limitedSessionToken = $this->session_token;
 
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 3 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 3], [
+            'profiles_id'  => 4,
+            'name'         => 'devicesimcard_pinpuk'
+         ]
+      );
       $this->session_token = $backupSessionToken;
 
       // test getItem does not disclose sensitive fields when READ disabled

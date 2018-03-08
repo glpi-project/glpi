@@ -410,6 +410,7 @@ function changeVarcharToID($table1, $table2, $chps) {
              ADD `temp` INT";
    $DB->queryOrDie($query);
 
+   //needs DB::request to support aliases to get migrated
    $query = "SELECT `$table1`.`ID` AS row1,
                     `$table2`.`ID` AS row2
              FROM `$table1`, `$table2`
@@ -417,10 +418,11 @@ function changeVarcharToID($table1, $table2, $chps) {
    $result = $DB->queryOrDie($query);
 
    while ($line = $DB->fetch_assoc($result)) {
-      $query = "UPDATE `$table1`
-                SET `temp` = ". $line["row2"] ."
-                WHERE `ID` = '". $line["row1"] ."'";
-      $DB->queryOrDie($query);
+      $DB->updateOrDie(
+         $table1,
+         ['temp' => $line['row2']],
+         ['ID' => $line['row1']]
+      );
    }
    $DB->free_result($result);
 

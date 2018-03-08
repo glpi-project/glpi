@@ -322,8 +322,7 @@ class AuthLDAP extends DbTestCase {
       $this->addLdapServers();
 
       $this->boolean(\AuthLDAP::useAuthLdap())->isTrue();
-      $sql = "UPDATE `glpi_authldaps` SET `is_active`='0'";
-      $DB->query($sql);
+      $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
       $this->boolean(\AuthLDAP::useAuthLdap())->isFalse();
    }
 
@@ -332,8 +331,7 @@ class AuthLDAP extends DbTestCase {
       $this->addLdapServers();
 
       $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(3);
-      $sql = "UPDATE `glpi_authldaps` SET `is_active`='0'";
-      $DB->query($sql);
+      $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
       $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(0);
    }
 

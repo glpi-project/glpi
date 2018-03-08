@@ -83,7 +83,11 @@ if ($GLPI_CACHE) {
    echo "+ Cache: disabled\n";
 }
 echo "+ Clear sons cache\n";
-$DB->query("UPDATE glpi_entities SET sons_cache=NULL");
+$DB->update(
+   'glpi_entities',
+   ['sons_cache' => null],
+   [true]
+);
 
 $tps = microtime(true);
 echo "+ Run with empty cache\n";

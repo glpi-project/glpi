@@ -810,7 +810,7 @@ class DbUtils extends DbTestCase {
    public function testGetAncestorsOf() {
       global $DB;
       //ensure db cache is unset
-      $DB->query('UPDATE glpi_entities SET ancestors_cache=NULL');
+      $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
       $this->runGetAncestorsOf();
 
       $this->integer(countElementsInTable('glpi_entities', ['ancestors_cache' => 'NULL']))->isIdenticalTo(0);
@@ -961,7 +961,7 @@ class DbUtils extends DbTestCase {
    public function testGetSonsOf() {
       global $DB;
       //ensure db cache is unset
-      $DB->query('UPDATE glpi_entities SET sons_cache=NULL');
+      $DB->update('glpi_entities', ['sons_cache' => null], [true]);
       $this->runGetSonsOf();
 
       $this->integer($this->testedInstance->countElementsInTable('glpi_entities', ['sons_cache' => 'NULL']))->isIdenticalTo(0);

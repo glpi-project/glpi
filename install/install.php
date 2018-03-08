@@ -467,23 +467,30 @@ function step7() {
 
    if (isset($_POST['send_stats'])) {
       //user has accepted to send telemetry infos; activate cronjob
-      $query = 'UPDATE glpi_crontasks SET state = 1 WHERE name=\'telemetry\'';
-      $DB->query($query);
+      $DB->update(
+         'glpi_crontasks',
+         ['state' => 1],
+         ['name' => 'telemetry']
+      );
    }
 
    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
-   $query = "UPDATE `glpi_configs`
-             SET `value`     = '".$DB->escape($url_base)."'
-             WHERE `context` = 'core'
-                   AND `name`    = 'url_base'";
-   $DB->query($query);
+   $DB->update(
+      'glpi_configs',
+      ['value' => $DB->escape($url_base)], [
+         'context'   => 'core',
+         'name'      => 'url_base'
+      ]
+   );
 
    $url_base_api = "$url_base/apirest.php/";
-   $query = "UPDATE `glpi_configs`
-             SET `value`     = '".$DB->escape($url_base_api)."'
-             WHERE `context` = 'core'
-                   AND `name`    = 'url_base_api'";
-   $DB->query($query);
+   $DB->update(
+      'glpi_configs',
+      ['value' => $Db->escape($url_base_api)], [
+         'context'   => 'core',
+         'name'      => 'url_base_api'
+      ]
+   );
 
    echo "<h2>".__('The installation is finished')."</h2>";
    echo "<p>".__('Default logins / passwords are:')."</p>";

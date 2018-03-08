@@ -218,8 +218,13 @@ class Entity extends DbTestCase {
    public function testChangeEntityParent() {
       global $DB;
       //ensure db cache are unset
-      $DB->query('UPDATE glpi_entities SET ancestors_cache=NULL');
-      $DB->query('UPDATE glpi_entities SET sons_cache=NULL');
+      $DB->update(
+         'glpi_entities', [
+            'ancestors_cache' => null,
+            'sons_cache'      => null
+         ],
+         [true]
+      );
       $this->runChangeEntityParent();
       //reset cache (checking for expected defaults) then run a second time: db cache must be set
       $this->checkParentsSonsAreReset();

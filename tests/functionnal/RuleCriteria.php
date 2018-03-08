@@ -765,7 +765,10 @@ class RuleCriteria extends DbTestCase {
    private function updateDateMod($rules_id, $time) {
       global $DB;
 
-      $query = "UPDATE `glpi_rules` SET `date_mod`='$time' WHERE `id`='$rules_id'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_rules',
+         ['date_mod' => $time],
+         ['id' => $rules_id]
+      );
    }
 }

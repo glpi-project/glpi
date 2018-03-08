@@ -1031,6 +1031,7 @@ class Plugin extends CommonDBTM {
             foreach ($entities as $entID => $val) {
                if ($do_recursive) {
                   // Non recursive ones
+                  // needs DB::update to support subqueries to be migrated
                   $query3 = "UPDATE `glpi_infocoms`
                              SET `entities_id` = '$entID',
                                  `is_recursive` = '0'
@@ -1043,6 +1044,7 @@ class Plugin extends CommonDBTM {
                                   in glpi_infocoms for $name");
 
                   // Recursive ones
+                  // needs DB::update to support subqueries to be migrated
                   $query3 = "UPDATE `glpi_infocoms`
                              SET `entities_id` = '$entID',
                                  `is_recursive` = '1'
@@ -1054,6 +1056,7 @@ class Plugin extends CommonDBTM {
                   $DB->queryOrDie($query3, "update entities_id and is_recursive=1
                                   in glpi_infocoms for $name");
                } else {
+                  // needs DB::update to support subqueries to be migrated
                   $query3 = "UPDATE `glpi_infocoms`
                              SET `entities_id` = '$entID'
                              WHERE `itemtype` = '$name'

@@ -391,8 +391,8 @@ class Migration {
             if (!empty($params['update'])) {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
-                         SET `$field` = ".$params['update']." ".
-                         $params['condition']."";
+                        SET `$field` = ".$params['update']." ".
+                        $params['condition']."";
                $DB->queryOrDie($query, $this->version." set $field in $table");
             }
             return true;

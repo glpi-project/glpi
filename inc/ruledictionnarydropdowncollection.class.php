@@ -192,17 +192,23 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             if ($data['id'] != $ID) {
                $tocheck[$data["id"]][] = $ID;
-               $sql                    = "UPDATE `$model_table`
-                                          SET `$model_field` = '$ID'
-                                          WHERE `$model_field` = '".$data['id']."'";
+               $where = [
+                  $model_field => $data['id']
+               ];
 
                if (empty($data['idmanu'])) {
-                  $sql .= " AND (`manufacturers_id` IS NULL
-                                 OR `manufacturers_id` = '0')";
+                  $where['OR'] = [
+                     ['manufacturers_id'  => null],
+                     ['manufacturers_id'  => 0]
+                  ];
                } else {
-                  $sql .= " AND `manufacturers_id` = '".$data['idmanu']."'";
+                  $where['manufacturers_id'] = $data['idmanu'];
                }
-               $DB->query($sql);
+               $DB->update(
+                  $model_table,
+                  [$model_field => $ID],
+                  $where
+               );
             }
 
             $i++;

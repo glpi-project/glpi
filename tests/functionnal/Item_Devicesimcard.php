@@ -100,14 +100,24 @@ class Item_DeviceSimcard extends DbTestCase {
    public function testDenyPinPukUpdate() {
       global $DB;
       //drop update access on item_devicesimcard
-      $query = "UPDATE glpi_profilerights SET rights = 1 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 1], [
+            'profiles_id'  => 4,
+            'name'         => 'devicesimcard_pinpuk'
+         ], [true]
+      );
 
       // Profile changed then login
       $this->login();
       //reset rights. Done here so ACLs are reset even if tests fails.
-      $query = "UPDATE glpi_profilerights SET rights = 3 WHERE profiles_id = 4 AND name = 'devicesimcard_pinpuk'";
-      $DB->query($query);
+      $DB->update(
+         'glpi_profilerights',
+         ['rights' => 3], [
+            'profiles_id'  => 4,
+            'name'         => 'devicesimcard_pinpuk'
+         ], [true]
+      );
 
       $obj = new \Item_DeviceSimcard();
 
