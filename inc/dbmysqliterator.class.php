@@ -94,7 +94,16 @@ class DBmysqlIterator implements Iterator, Countable {
       $this->res = false;
       $this->parameters = [];
 
+      $is_legacy = false;
+
       if (is_string($table) && strpos($table, " ")) {
+         $names = preg_split('/ AS /i', $table);
+         if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1])) {
+            $is_legacy = true;
+         }
+      }
+
+      if ($is_legacy) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
          //}
@@ -174,7 +183,7 @@ class DBmysqlIterator implements Iterator, Countable {
                      if (is_array($val)) {
                         $jointype = ($key == 'INNER JOIN' ? 'INNER' : 'LEFT');
                         foreach ($val as $jointable => $joincrit) {
-                           $join .= " $jointype JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                           $join .= " $jointype JOIN " .  DBmysql::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
                         }
                      } else {
                         trigger_error("BAD JOIN, value must be [ table => criteria ]", E_USER_ERROR);
@@ -194,14 +203,14 @@ class DBmysqlIterator implements Iterator, Countable {
          if (is_array($field)) {
             foreach ($field as $t => $f) {
                if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . self::quoteName($f);
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . DBmysql::quoteName($f);
                } else if (is_array($f)) {
-                  $t = self::quoteName($t);
-                  $f = array_map([__CLASS__, 'quoteName'], $f);
+                  $t = DBmysql::quoteName($t);
+                  $f = array_map([DBmysql::class, 'quoteName'], $f);
                   $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.", $f);
                } else {
-                  $t = self::quoteName($t);
-                  $f = ($f == '*' ? $f : self::quoteName($f));
+                  $t = DBmysql::quoteName($t);
+                  $f = ($f == '*' ? $f : DBmysql::quoteName($f));
                   $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
@@ -209,22 +218,22 @@ class DBmysqlIterator implements Iterator, Countable {
             $this->sql = "SELECT *";
          } else if (!empty($field)) {
             if ($count) {
-               $this->sql = "SELECT COUNT($distinct " . self::quoteName($field) . ") AS $count";
+               $this->sql = "SELECT COUNT($distinct " . DBmysql::quoteName($field) . ") AS $count";
             } else {
-               $this->sql = "SELECT $distinct " . self::quoteName($field);
+               $this->sql = "SELECT $distinct " . DBmysql::quoteName($field);
             }
          }
 
          // FROM table list
          if (is_array($table)) {
             if (count($table)) {
-               $table = array_map([__CLASS__, 'quoteName'], $table);
+               $table = array_map([DBmysql::class, 'quoteName'], $table);
                $this->sql .= ' FROM '.implode(", ", $table);
             } else {
                trigger_error("Missing table name", E_USER_ERROR);
             }
          } else if ($table) {
-            $table = self::quoteName($table);
+            $table = DBmysql::quoteName($table);
             $this->sql .= " FROM $table";
          } else {
             /*
@@ -247,13 +256,13 @@ class DBmysqlIterator implements Iterator, Countable {
          // GROUP BY field list
          if (is_array($groupby)) {
             if (count($groupby)) {
-               $groupby = array_map([__CLASS__, 'quoteName'], $groupby);
+               $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
                $this->sql .= ' GROUP BY '.implode(", ", $groupby);
             } else {
                trigger_error("Missing group by field", E_USER_ERROR);
             }
          } else if ($groupby) {
-            $groupby = self::quoteName($groupby);
+            $groupby = DBmysql::quoteName($groupby);
             $this->sql .= " GROUP BY $groupby";
          }
 
@@ -263,7 +272,7 @@ class DBmysqlIterator implements Iterator, Countable {
             foreach ($orderby as $o) {
                $new = '';
                $tmp = explode(' ', $o);
-               $new .= self::quoteName($tmp[0]);
+               $new .= DBmysql::quoteName($tmp[0]);
                // ASC OR DESC added
                if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                   $new .= ' '.$tmp[1];
@@ -284,7 +293,7 @@ class DBmysqlIterator implements Iterator, Countable {
                }
                $field = trim($field);
                $tmp = explode(' ', $field);
-               $this->sql .= self::quoteName($tmp[0]);
+               $this->sql .= DBmysql::quoteName($tmp[0]);
                // ASC OR DESC added
                if (isset($tmp[1]) && in_array($tmp[1], ['ASC', 'DESC'])) {
                   $this->sql .= ' '.$tmp[1];
@@ -303,20 +312,6 @@ class DBmysqlIterator implements Iterator, Countable {
       if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
          Toolbox::logSqlDebug("Generated query:", $this->getSql());
       }
-   }
-
-
-   /**
-    * Quote field name
-    *
-    * @since 9.1
-    *
-    * @param string $name of field to quote (or table.field)
-    *
-    * @return string
-    */
-   private static function quoteName($name) {
-      return DB::quoteName($name);
    }
 
 
@@ -386,8 +381,8 @@ class DBmysqlIterator implements Iterator, Countable {
                $f1 = $value[$t1];
                $t2 = $keys[1];
                $f2 = $value[$t2];
-               $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
-                       (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
+               $ret .= (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
+                       (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
             } else {
                trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
             }
@@ -396,19 +391,19 @@ class DBmysqlIterator implements Iterator, Countable {
             if (count($value) == 2
                   && isset($value[0]) && in_array($value[0], $operators, true)) {
 
-               $ret .= self::quoteName($name) . " {$value[0]} " . $DB::quoteValue($value[1]);
+               $ret .= DBmysql::quoteName($name) . " {$value[0]} " . $DB::quoteValue($value[1]);
             } else {
                // Array of Values
                foreach ($value as $k => $v) {
                   $value[$k] = $DB::quoteValue($v);
                }
-               $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
+               $ret .= DBmysql::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
             }
          } else if (is_null($value)) {
             // NULL condition
-            $ret .= self::quoteName($name) . " IS NULL";
+            $ret .= DBmysql::quoteName($name) . " IS NULL";
          } else {
-            $ret .= self::quoteName($name) . " = " . $DB::quoteValue($value);
+            $ret .= DBmysql::quoteName($name) . " = " . $DB::quoteValue($value);
          }
       }
       return $ret;
