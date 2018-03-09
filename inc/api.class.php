@@ -271,6 +271,11 @@ abstract class API extends CommonGLPI {
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
             Session::loadLanguage();
+
+            if (!isset($_SESSION["glpi_plugins"])) {
+               $plugin = new Plugin();
+               $plugin->init();
+            }
          }
       }
    }
