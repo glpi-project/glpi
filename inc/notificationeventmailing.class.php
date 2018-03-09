@@ -140,6 +140,27 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          if (empty($current->fields['body_html'])) {
             $mmail->isHTML(false);
             $mmail->Body = $current->fields['body_text'];
+
+             if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
+                 // manage item attached documents
+                 $document_items = $DB->request('glpi_documents_items', [
+                     'items_id' => $current->fields['items_id'],
+                     'itemtype' => $current->fields['itemtype'],
+                 ]);
+
+                 $doc = new Document();
+
+                 foreach ($document_items as $doc_i_data) {
+                     $doc->getFromDB($doc_i_data['documents_id']);
+
+                     // Add all other attachments, according to configuration
+                     $path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                     $mmail->addAttachment(
+                         $path,
+                         $doc->fields['filename']
+                     );
+                 }
+             }
          } else {
             $mmail->isHTML(true);
             $mmail->Body = '';
