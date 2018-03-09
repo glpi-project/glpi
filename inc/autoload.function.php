@@ -320,6 +320,12 @@ function glpi_autoload($classname) {
       return true;
    }
 
+   if ($classname === 'phpCAS'
+       && file_exists(stream_resolve_include_path("CAS.php"))) {
+      include_once('CAS.php');
+      return true;
+   }
+
    $dir = GLPI_ROOT . "/inc/";
 
    if ($plug = isPluginItemType($classname)) {
