@@ -375,6 +375,11 @@ class Auth extends CommonGLPI {
 
       switch ($authtype) {
          case self::CAS :
+            if (!Toolbox::canUseCAS()) {
+               Toolbox::logDebug("CAS lib not installed");
+               return false;
+            }
+
             phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                            $CFG_GLPI["cas_uri"], false);
 
@@ -1288,7 +1293,8 @@ class Auth extends CommonGLPI {
       }
       echo "</th></tr>\n";
 
-      if (function_exists('curl_init')) {
+      if (function_exists('curl_init')
+          && Toolbox::canUseCAS()) {
 
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
@@ -1305,8 +1311,14 @@ class Auth extends CommonGLPI {
               "</tr>\n";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<p class='red'>".__("The CURL extension for your PHP parser isn't installed");
-         echo "</p>";
+         if (!function_exists('curl_init')) {
+            echo "<p class='red'>".__("The CURL extension for your PHP parser isn't installed");
+            echo "</p>";
+         }
+         if (!Toolbox::canUseCAS()) {
+            echo "<p class='red'>".__("The CAS lib isn't available, GLPI doesn't package it anymore for license compatibility issue.");
+            echo "</p>";
+         }
          echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
       }
       // X509 config

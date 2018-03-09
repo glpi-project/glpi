@@ -40,7 +40,8 @@ include ('../inc/includes.php');
 
 if (!isset($_SESSION["noAUTO"])
     && isset($_SESSION["glpiauthtype"])
-    && ($_SESSION["glpiauthtype"] == Auth::CAS)) {
+    && $_SESSION["glpiauthtype"] == Auth::CAS
+    && Toolbox::canUseCAS()) {
 
    phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                   $CFG_GLPI["cas_uri"], false);

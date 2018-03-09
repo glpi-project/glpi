@@ -19,7 +19,6 @@
         "ext-gd": "*",
         "ext-zlib": "*",
         "ext-curl": "*",
-        "jasig/phpcas": "~1.3.0",
         "iamcal/lib_autolink": "~1.7",
         "phpmailer/phpmailer": "~6.0",
         "sabre/vobject": "~4.1",

@@ -2335,6 +2335,11 @@ class Config extends CommonDBTM {
             //for XMLRPC API
             'xmlrpc'     => [
                'required'  => false
+            ],
+            //for CAS lib
+            'CAS'     => [
+               'required' => false,
+               'class'    => 'phpCAS'
             ]
          ];
       } else {
