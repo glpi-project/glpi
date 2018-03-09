@@ -88,7 +88,8 @@ class DBmysqlIterator extends DbTestCase {
       $this->when(
          function () {
             $it = $this->it->execute('', ['foo' => 1]);
-            $this->string($it->getSql())->isIdenticalTo('SELECT * WHERE `foo` = \'1\'');
+            $this->array($it->getParameters())->isIdenticalTo([1]);
+            $this->string($it->getSql())->isIdenticalTo('SELECT * WHERE `foo` = ?');
          }
       )->error()
          ->withType(E_USER_ERROR)
@@ -269,28 +270,36 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testOperators() {
       $it = $this->it->execute('foo', ['a' => 1]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = ?');
 
       $it = $this->it->execute('foo', ['a' => ['=', 1]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` = ?');
 
       $it = $this->it->execute('foo', ['a' => ['>', 1]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` > \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` > ?');
 
       $it = $this->it->execute('foo', ['a' => ['LIKE', '%bar%']]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'');
+      $this->array($it->getParameters())->isIdenticalTo(['%bar%']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` LIKE ?');
 
       $it = $this->it->execute('foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')');
+      $this->array($it->getParameters())->isIdenticalTo(['%bar%']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` LIKE ?)');
 
       $it = $this->it->execute('foo', ['a' => ['NOT LIKE', '%bar%']]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'');
+      $this->array($it->getParameters())->isIdenticalTo(['%bar%']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` NOT LIKE ?');
 
       $it = $this->it->execute('foo', ['a' => ['<>', 1]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` <> \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` <> ?');
 
       $it = $this->it->execute('foo', ['a' => ['&', 1]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `a` & ?');
    }
 
 
@@ -308,28 +317,36 @@ class DBmysqlIterator extends DbTestCase {
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` IS NULL');
 
       $it = $this->it->execute('foo', ['bar' => 1]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'1\'');
+      $this->array($it->getParameters())->isIdenticalTo([1]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
       $it = $this->it->execute('foo', ['bar' => [1, 2, 4]]);
-      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')");
+      $this->array($it->getParameters())->isIdenticalTo([1, 2, 4]);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN (?,?,?)");
 
       $it = $this->it->execute('foo', ['bar' => ['a', 'b', 'c']]);
-      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')");
+      $this->array($it->getParameters())->isIdenticalTo(['a', 'b', 'c']);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` IN (?,?,?)");
 
       $it = $this->it->execute('foo', ['bar' => 'val']);
-      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'val'");
+      $this->array($it->getParameters())->isIdenticalTo(['val']);
+      $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = ?");
 
-      $it = $this->it->execute('foo', ['bar' => '`field`']);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = `field`');
+      //not really sure about this one
+      $expr = new \QueryExpression('`field`');
+      $it = $this->it->execute('foo', ['bar' => $expr]);
+      $this->array($it->getParameters())->isIdenticalTo([$expr]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
       $it = $this->it->execute('foo', ['bar' => '?']);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'?\'');
+      $this->array($it->getParameters())->isIdenticalTo(['?']);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
       $it = $this->it->execute('foo', ['bar' => new \QueryParam()]);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
-      $it = $this->it->execute('foo', ['bar' => new \QueryParam('myparam')]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = :myparam');
+      /*$it = $this->it->execute('foo', ['bar' => new \QueryParam('myparam')]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = :myparam');*/
    }
 
 
@@ -378,16 +395,20 @@ class DBmysqlIterator extends DbTestCase {
 
    public function testLogical() {
       $it = $this->it->execute(['foo'], [['a' => 1, 'b' => 2]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')');
+      $this->array($it->getParameters())->isIdenticalTo([1, 2]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)');
 
       $it = $this->it->execute(['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')');
+      $this->array($it->getParameters())->isIdenticalTo([1, 2]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)');
 
       $it = $this->it->execute(['foo'], ['OR' => ['a' => 1, 'b' => 2]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = \'1\' OR `b` = \'2\')');
+      $this->array($it->getParameters())->isIdenticalTo([1, 2]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE (`a` = ? OR `b` = ?)');
 
       $it = $this->it->execute(['foo'], ['NOT' => ['a' => 1, 'b' => 2]]);
-      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` = \'1\' AND `b` = \'2\')');
+      $this->array($it->getParameters())->isIdenticalTo([1, 2]);
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE NOT (`a` = ? AND `b` = ?)');
 
       $crit = [
          'WHERE' => [
@@ -404,8 +425,9 @@ class DBmysqlIterator extends DbTestCase {
             ],
          ],
       ];
-      $sql = "SELECT * FROM `foo` WHERE `a` = '1' AND (`b` = '2' OR NOT (`c` IN ('2', '3') AND (`d` = '4' AND `e` = '5')))";
+      $sql = "SELECT * FROM `foo` WHERE `a` = ? AND (`b` = ? OR NOT (`c` IN (?,?) AND (`d` = ? AND `e` = ?)))";
       $it = $this->it->execute(['foo'], $crit);
+      $this->array($it->getParameters())->isIdenticalTo([1, 2, 2, 3, 4, 5]);
       $this->string($it->getSql())->isIdenticalTo($sql);
 
       $crit['FROM'] = 'foo';
@@ -420,8 +442,9 @@ class DBmysqlIterator extends DbTestCase {
          'FROM'   => 'foo',
          'WHERE'  => ['c' => 1],
       ];
-      $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = '1'";
+      $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = ?";
       $it = $this->it->execute($req);
+      $this->array($it->getParameters())->isIdenticalTo([1]);
       $this->string($it->getSql())->isIdenticalTo($sql);
    }
 

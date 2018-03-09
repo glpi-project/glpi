@@ -988,7 +988,7 @@ class DBmysql {
             $keys[] = $value->getValue();
             unset($params[$key]);
          } else {
-            $keys[]   = ":$key";
+            $keys[]   = ':' . trim($key, '`');
          }
       }
 

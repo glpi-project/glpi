@@ -418,8 +418,6 @@ class DBmysqlIterator implements Iterator, Countable {
          } else if (is_null($value)) {
             // NULL condition
             $ret .= DBmysql::quoteName($name) . " IS NULL";
-         } else if (preg_match('/^`.+`(\.`.+`)?/', $value)) {
-            $ret .= DBmysql::quoteName($name) . " = " . $value;
          } else {
             // String
             $ret .= DBmysql::quoteName($name) . " = ?";
