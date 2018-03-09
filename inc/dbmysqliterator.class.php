@@ -94,7 +94,16 @@ class DBmysqlIterator implements Iterator, Countable {
       $this->res = false;
       $this->parameters = [];
 
+      $is_legacy = false;
+
       if (is_string($table) && strpos($table, " ")) {
+         $names = preg_split('/ AS /i', $table);
+         if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1])) {
+            $is_legacy = true;
+         }
+      }
+
+      if ($is_legacy) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
          //}

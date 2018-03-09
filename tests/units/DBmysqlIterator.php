@@ -466,6 +466,9 @@ class DBmysqlIterator extends DbTestCase {
    }
 
    public function testAlias() {
+      $it = $this->it->execute('foo AS f');
+      $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` AS `f`');
+
       $it = $this->it->execute(['FROM' => 'foo AS f']);
       $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` AS `f`');
 
