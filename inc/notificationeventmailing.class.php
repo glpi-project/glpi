@@ -137,19 +137,23 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          }
          $mmail->Subject  = $current->fields['name'];
 
+         // manage item attached documents
+         $document_items = $DB->request('glpi_documents_items', [
+            'items_id' => $current->fields['items_id'],
+            'itemtype' => $current->fields['itemtype'],
+         ]);
+
+         $documents_to_attach = [];
+
          if (empty($current->fields['body_html'])) {
             $mmail->isHTML(false);
             $mmail->Body = GLPIMailer::normalizeBreaks($current->fields['body_text']);
+            $documents_to_attach = iterator_to_array($document_items);
          } else {
             $mmail->isHTML(true);
             $mmail->Body = '';
             $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
 
-            // manage item attached documents
-            $document_items = $DB->request('glpi_documents_items', [
-               'items_id' => $current->fields['items_id'],
-               'itemtype' => $current->fields['itemtype'],
-            ]);
             $inline_docs = [];
             $doc = new Document();
             if (count($document_items)) {
@@ -169,19 +173,8 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                                                   $doc->fields['mime'])) {
                         $inline_docs[$doc_i_data['documents_id']] = $doc->fields['tag'];
                      }
-                  } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
-                     // Add all other attachments, according to configuration
-                     $path = GLPI_DOC_DIR."/".$doc->fields['filepath'];
-                     if (Document::isImage($path)) {
-                        $path = Document::getImage(
-                           $path,
-                           'mail'
-                        );
-                     }
-                     $mmail->addAttachment(
-                        $path,
-                        $doc->fields['filename']
-                     );
+                  } else {
+                     $documents_to_attach[] = $doc_i_data;
                   }
                }
             }
@@ -244,6 +237,8 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $mmail->Body    = GLPIMailer::normalizeBreaks($current->fields['body_html']);
             $mmail->AltBody = GLPIMailer::normalizeBreaks($current->fields['body_text']);
          }
+
+         self::attachDocuments($mmail, $documents_to_attach);
 
          $recipient = $current->getField('recipient');
          if (defined('GLPI_FORCE_MAIL')) {
@@ -309,6 +304,39 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
       }
 
       return count($processed);
+   }
+
+   /**
+    * Attach documents to message.
+    * Documents will not be attached if configuration says they should not be.
+    *
+    * @param GLPIMailer $mmail
+    * @param array      $documents_data
+    *
+    * @return void
+    */
+   static private function attachDocuments(GLPIMailer $mmail, array $documents_data) {
+      global $CFG_GLPI;
+
+      if (!$CFG_GLPI['attach_ticket_documents_to_mail']) {
+         return;
+      }
+
+      $document = new Document();
+      foreach ($documents_data as $document_data) {
+         $document->getFromDB($document_data['documents_id']);
+         $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
+         if (Document::isImage($path)) {
+            $path = Document::getImage(
+               $path,
+               'mail'
+            );
+         }
+         $mmail->addAttachment(
+            $path,
+            $document->fields['filename']
+         );
+      }
    }
 
    static protected function extraRaise($params) {
