@@ -104,7 +104,7 @@ class RuleCriteria extends DbTestCase {
    }
 
    public function testPost_addItem() {
-      $this->Login();
+      $this->login();
       $rule     = new \Rule();
       $criteria = new \RuleCriteria();
 
@@ -136,7 +136,7 @@ class RuleCriteria extends DbTestCase {
    }
 
    public function testPost_purgeItem() {
-      $this->Login();
+      $this->login();
       $rule     = new \Rule();
       $criteria = new \RuleCriteria();
 
@@ -645,7 +645,7 @@ class RuleCriteria extends DbTestCase {
    }
 
    public function testMatchConditionUnderNotUnder() {
-      $this->Login();
+      $this->login();
 
       $criteria = new \RuleCriteria();
       $location = new \Location();

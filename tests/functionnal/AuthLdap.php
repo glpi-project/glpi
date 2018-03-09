@@ -502,7 +502,7 @@ class AuthLDAP extends DbTestCase {
    }
 
    public function testgetTabNameForItem() {
-      $this->Login();
+      $this->login();
       $this->addLdapServers();
 
       $ldap   = getItemByTypeName('AuthLDAP', 'LDAP1');

@@ -121,7 +121,7 @@ class RuleDictionnarySoftwareCollection extends DbTestCase {
    }
 
    public function testPutOldSoftsInTrash() {
-      $this->Login();
+      $this->login();
 
       $collection = new \RuleDictionnarySoftwareCollection();
       $software   = new \Software();

@@ -44,7 +44,7 @@ if (PHP_SAPI != 'cli') {
 }
 
 $auth = new Auth();
-if (!$auth->Login('glpi', 'glpi', true)) {
+if (!$auth->login('glpi', 'glpi', true)) {
     exit('Authentication failed!');
 }
 

@@ -83,7 +83,7 @@ class KnowbaseItem_Comment extends DbTestCase {
     * @return void
     */
    private function addComments(\KnowbaseItem $kb, $lang = 'NULL') {
-      $this->Login();
+      $this->login();
       $kbcom = new \KnowbaseItem_Comment();
       $input = [
          'knowbaseitems_id' => $kb->getID(),
@@ -156,7 +156,7 @@ class KnowbaseItem_Comment extends DbTestCase {
 
       //same tests, from another user
       $auth = new \Auth();
-      $result = $auth->Login('glpi', 'glpi', true);
+      $result = $auth->login('glpi', 'glpi', true);
       $this->boolean($result)->isTrue();
 
       $html = \KnowbaseItem_Comment::displayComments(

@@ -62,7 +62,7 @@ class Config extends DbTestCase {
 
       //check ACLs from tech profile
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
       $this->boolean((boolean)\Config::canView())->isFalse();
       $this->boolean(\Config::canCreate())->isFalse();
       $this->boolean($conf->canViewItem())->isTrue();
@@ -92,7 +92,7 @@ class Config extends DbTestCase {
 
       //Standards users do not have extra tabs
       $auth = new \Auth();
-      $this->boolean((boolean)$auth->Login('tech', 'tech', true))->isTrue();
+      $this->boolean((boolean)$auth->login('tech', 'tech', true))->isTrue();
       $this
          ->given($this->newTestedInstance)
             ->then

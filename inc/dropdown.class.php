@@ -1811,6 +1811,7 @@ class Dropdown {
       $param['emptylabel']          = self::EMPTY_VALUE;
       $param['display_emptychoice'] = false;
       $param['disabled']            = false;
+      $param['noselect2']           = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1969,8 +1970,10 @@ class Dropdown {
          }
       }
 
-      // Width set on select
-      $output .= Html::jsAdaptDropdown($field_id, ['width' => $param["width"]]);
+      if (!$param['noselect2']) {
+         // Width set on select
+         $output .= Html::jsAdaptDropdown($field_id, ['width' => $param["width"]]);
+      }
 
       if ($param["multiple"]) {
          // Hack for All / None because select2 does not provide it

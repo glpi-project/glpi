@@ -54,7 +54,7 @@ class NotificationAjax extends DbTestCase {
       global $CFG_GLPI;
 
       //setup
-      $this->Login();
+      $this->login();
 
       $this->boolean(\NotificationAjax::testNotification())->isTrue();
       //another one

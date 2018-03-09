@@ -87,6 +87,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'media="screen" />';
    // CSS theme link
    echo Html::css("css/palettes/".$CFG_GLPI["palette"].".css");
+   // font awesome icons
+   echo Html::css('lib/font-awesome-4.7.0/css/font-awesome.min.css');
 
    echo "</head>";
 
@@ -113,16 +115,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Toolbox::manageRedirect($_GET["redirect"]);
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }
-   echo '<p class="login_input">
+   echo '<p class="login_input" id="login_input_name">
          <input type="text" name="'.$namfield.'" id="login_name" required="required"
                 placeholder="'.__('Login').'" autofocus="autofocus" />
-         <span class="login_img"></span>
          </p>';
-   echo '<p class="login_input">
+   echo '<p class="login_input" id="login_input_password">
          <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
-         <span class="login_img"></span>
          </p>';
+
+   // Add dropdown for auth (local, LDAPxxx, LDAPyyy, imap...)
+   echo '<p class="login_input" id="login_input_src">';
+   Auth::dropdownLogin();
+   echo '</p>';
+
    if ($CFG_GLPI["login_remember_time"]) {
       echo '<p class="login_input">
             <label for="login_remember">

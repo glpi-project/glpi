@@ -52,7 +52,7 @@ class NotificationMailing extends DbTestCase {
 
    public function testSendNotification() {
       //setup
-      $this->Login();
+      $this->login();
 
       $instance = new \NotificationMailing();
       $res = $instance->sendNotification([

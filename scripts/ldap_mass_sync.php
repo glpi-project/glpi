@@ -165,6 +165,7 @@ function import(array $options) {
             }
             $dbuser = $authldap->getLdapExistingUser(
                $user['user'],
+               $options['authldaps_id'],
                $user_sync_field
             );
 

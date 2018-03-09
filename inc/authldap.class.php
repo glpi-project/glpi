@@ -493,6 +493,12 @@ class AuthLDAP extends CommonDBTM {
                               ['value' => $this->fields["deref_option"]]);
       echo"</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Domain name used by inventory tool for link the user')."</td>";
+      echo "<td colspan='3'>";
+      Html::autocompletionTextField($this, "inventory_domain", ['size' => 100]);
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
       echo $hidden;
@@ -2677,13 +2683,15 @@ class AuthLDAP extends CommonDBTM {
             //There's already an existing user in DB with the same DN but its login field has changed
             $auth->user->fields['name'] = $login;
             $auth->user_present         = true;
+            $auth->user_dn              = $user_dn;
          } else if ($user_sync !== null && $auth->user->getFromDBbySyncField($user_sync)) {
             //user login/dn have changed
             $auth->user->fields['name']      = $login;
             $auth->user->fields['user_dn']   = $user_dn;
             $auth->user_present              = true;
+            $auth->user_dn                   = $user_dn;
          } else { // The user is a new user
-            $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+            $auth->user_present = false;
          }
          $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
                                   !$auth->user_present);
@@ -3589,7 +3597,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return false|User
     */
-   public function getLdapExistingUser($name, $sync = null) {
+   public function getLdapExistingUser($name, $authldaps_id, $sync = null) {
       global $DB;
       $user = new User();
 
@@ -3597,7 +3605,7 @@ class AuthLDAP extends CommonDBTM {
          return $user;
       }
 
-      if ($user->getFromDBbyName($DB->escape($name))) {
+      if ($user->getFromDBbyNameAndAuth($DB->escape($name), Auth::LDAP, $authldaps_id)) {
          return $user;
       }
 
@@ -3765,7 +3773,8 @@ class AuthLDAP extends CommonDBTM {
             }
          }
 
-         $user = $config_ldap->getLdapExistingUser($userinfos['user'], $user_sync_field);
+         $user = $config_ldap->getLdapExistingUser($userinfos['user'], $values['authldaps_id'],
+                                                   $user_sync_field);
          if (isset($_SESSION['ldap_import']) && !$_SESSION['ldap_import']['mode'] && $user) {
             continue;
          }

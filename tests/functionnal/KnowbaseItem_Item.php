@@ -112,7 +112,7 @@ class KnowbaseItem_Item extends DbTestCase {
    }
 
    public function testGetKbsFromItem() {
-      $this->Login();
+      $this->login();
       $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
       $kbs = \KnowbaseItem_Item::getItems($ticket3);
       $this->array($kbs)

@@ -39,7 +39,7 @@ use \DbTestCase;
 class RuleSoftwareCategoryCollection extends DbTestCase {
 
    public function testPrepareInputDataForProcess() {
-      $this->Login();
+      $this->login();
 
       $collection = new \RuleSoftwareCategoryCollection();
 
@@ -62,7 +62,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
    }
 
    public function testNoRuleMatches() {
-      $this->Login();
+      $this->login();
 
       $categoryCollection = new \RuleSoftwareCategoryCollection();
 
@@ -75,7 +75,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
    }
 
    public function testRuleMatchImport() {
-      $this->Login();
+      $this->login();
 
       $categoryCollection = new \RuleSoftwareCategoryCollection();
       $rule               = new \Rule();
@@ -108,7 +108,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
    }
 
    public function testRuleSetCategory() {
-      $this->Login();
+      $this->login();
 
       $categoryCollection = new \RuleSoftwareCategoryCollection();
 
@@ -171,7 +171,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase {
    }
 
    public function testRuleIgnoreImport() {
-      $this->Login();
+      $this->login();
 
       $categoryCollection = new \RuleSoftwareCategoryCollection();
 

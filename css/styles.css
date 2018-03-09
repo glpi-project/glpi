@@ -2264,6 +2264,7 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin input[type=text],
+#boxlogin select,
 #boxlogin input[type=password] {
    width: 100%;
    height: 30px;
@@ -2276,6 +2277,7 @@ a.icon_nav_move:hover img {
 }
 
 #boxlogin input[type=text]:focus,
+#boxlogin select:focus,
 #boxlogin input[type=password]:focus{
    border-color:#FFA500;
    background-color: #fff;
@@ -2295,20 +2297,28 @@ a.icon_nav_move:hover img {
    box-shadow: 0 0 0px 1000px white inset;
 }
 
-#boxlogin .login_img {
-   position: absolute;
-   content:'';
-   width: 24px;
-   height: 24px;
-   left: 5px;
-   top: 5px;
+#boxlogin .login_input:before {
+   font-family: FontAwesome;
+   left:8px;
+   position:absolute;
+   top:3px;
+   color: #9B9B9B;
+   font-size: 24px;
 }
 
-#boxlogin #login_name ~ .login_img {
-   background: url(../pics/login_user.png) no-repeat 3% 50%;
+#boxlogin #login_input_name:before {
+   content: "\f2be";
 }
-#boxlogin #login_password ~ .login_img {
-   background: url(../pics/login_password.png) no-repeat 3% 50%;
+#boxlogin #login_input_password:before {
+   content: "\f023";
+   left: 11px;
+}
+#boxlogin #login_input_src:before {
+   content: "\f2ba";
+}
+
+#boxlogin #dropdown_auth1:before {
+   background: url(../pics/login_source.png) no-repeat 3% 50%;
 }
 
 #boxlogin input.submit {

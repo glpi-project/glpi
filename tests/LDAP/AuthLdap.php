@@ -58,7 +58,7 @@ class AuthLDAP extends DbTestCase {
    }
 
    /**
-    * Tets LDAP connection
+    * Test LDAP connection
     *
     * @extensions ldap
     *
@@ -603,6 +603,40 @@ class AuthLDAP extends DbTestCase {
          ['sync_field' => null],
          ['id' => $ldap->getID()]
       );
+   }
+
+   /**
+    * Test LDAP authentication when specify the auth source (local, LDAP...)
+    *
+    * @extensions ldap
+    *
+    * @return void
+    */
+   public function testLdapAuthSpecifyAuth() {
+
+      // Add a local account with same name than a LDAP user ('brazil8')
+      $input = [
+         'name'        => 'brazil8',
+         'password'    => 'passwordlocal',
+         'password2'   => 'passwordlocal',
+         'profiles_id' => 1
+      ];
+
+      $user = new \User();
+      $id = $user->add($input);
+      $this->integer($id)->isGreaterThan(0);
+
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil8', 'password', false, false, 'ldap-'.$this->ldap->getID()))->isTrue();
+      $user_ldap_id = $auth->user->fields['id'];
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'ldap-'.$this->ldap->getID()))->isFalse();
+
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil8', 'password', false, false, 'local'))->isFalse();
+      $auth = new \Auth();
+      $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'local'))->isTrue();
+      $this->string($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
    }
 
    /**
