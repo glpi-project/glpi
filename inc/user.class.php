@@ -128,8 +128,10 @@ class User extends CommonDBTM {
 
 
    function canUpdateItem() {
+
+      $entities = Profile_User::getUserEntities($this->fields['id'], false);
       if (Session::isViewAllEntities()
-          || Session::haveAccessToOneOfEntities($this->getEntities())) {
+          || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
       return false;
