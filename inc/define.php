@@ -428,7 +428,7 @@ $CFG_GLPI["certificate_types"]     = ['Computer',
 
 $CFG_GLPI['javascript'] = [
    'central'   => [
-      'central'   => ['fullcalendar']
+      'central'   => ['fullcalendar', 'tinymce']
    ],
    'helpdesk'  => [
       'planning'  => ['fullcalendar', 'colorpicker', 'tinymce'],
