@@ -427,7 +427,7 @@ $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI['javascript'] = [
    'central'   => [
-      'central'   => ['fullcalendar']
+      'central'   => ['fullcalendar', 'tinymce']
    ],
    'assets'    => [
       'rack'         => ['colorpicker', 'gridstack']
