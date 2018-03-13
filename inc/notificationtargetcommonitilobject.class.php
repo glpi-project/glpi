@@ -123,6 +123,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $author_lang  = $data["language"];
             $author_id    = $data['users_id'];
 
+            if (isset($this->options['followup_id'])
+                && isset($this->options['author_id'])
+                && $this->options['author_id'] == $author_id) {
+               continue;
+            }
+
             if (!empty($data['altemail'])
                 && ($data['altemail'] != $author_email)
                 && NotificationMailing::isUserAddressValid($data['altemail'])) {

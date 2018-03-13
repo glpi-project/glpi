@@ -248,8 +248,9 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($donotif) {
          $options = ['followup_id' => $this->fields["id"],
+                          'author_id'  => $this->fields['users_id'],
                            // Force is_private with data / not available
-                          'is_private'  => $this->fields['is_private']];
+                          'is_private' => $this->fields['is_private']];
          NotificationEvent::raiseEvent('delete_followup', $job, $options);
       }
    }
@@ -300,7 +301,8 @@ class TicketFollowup  extends CommonDBTM {
                //FIXME: _need_send_mail does not seems to be used
 
                $options = ['followup_id' => $this->fields["id"],
-                                'is_private'  => $this->fields['is_private']];
+                                'author_id'  => $this->fields['users_id'],
+                                'is_private' => $this->fields['is_private']];
 
                NotificationEvent::raiseEvent("update_followup", $job, $options);
             }
@@ -466,7 +468,8 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($donotif) {
          $options = ['followup_id' => $this->fields["id"],
-                          'is_private'  => $this->fields['is_private']];
+                          'author_id'  => $this->fields['users_id'],
+                          'is_private' => $this->fields['is_private']];
          NotificationEvent::raiseEvent("add_followup", $this->input["_job"], $options);
       }
 
