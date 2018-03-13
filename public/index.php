@@ -111,6 +111,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       return $this->view->render($response, 'login.twig');
    })->setName('login');
 
+   $app->get('/central', function ($request, $response, $args) {
+      $central = new Central();
+
+      ob_start();
+      $central->display();
+      $contents = ob_get_contents();
+      ob_end_clean();
+      return $this->view->render($response, 'central.twig', ['contents' => $contents]);
+   })->setName('central');
+
    // Run app
    $app->run();
 
