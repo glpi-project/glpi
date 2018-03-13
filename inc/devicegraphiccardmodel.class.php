@@ -41,6 +41,6 @@ class DeviceGraphicCardModel extends CommonDeviceModel {
 
 
    static function getTypeName($nb = 0) {
-      return _n('Device harddrive model', 'Device harddrive models', $nb);
+      return _n('Device graphic card model', 'Device graphic card models', $nb);
    }
 }
