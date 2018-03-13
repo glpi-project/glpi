@@ -154,6 +154,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             $CFG_GLPI['lock_lockprofile'] = $prof->fields;
       }
 
+      // Fix root_doc from command line
+      if (isCommandLine() && isset($CFG_GLPI['url_base'])) {
+         $path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
+         if (!$path) {
+            $path = "";
+         }
+         $CFG_GLPI["root_doc"] = rtrim($path, '/');
+      }
+
       // Path for icon of document type (web mode only)
       if (isset($CFG_GLPI["root_doc"])) {
          $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
