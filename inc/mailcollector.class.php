@@ -712,6 +712,10 @@ class MailCollector  extends CommonDBTM {
          $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head['from'];
       }
 
+      // Fix author of attachment
+      // Move requester to author of followup
+      $tkt['users_id'] = $tkt['_users_id_requester'];
+
       // Add to and cc as additional observer if user found
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
@@ -834,9 +838,6 @@ class MailCollector  extends CommonDBTM {
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
             $to_keep        = [];
-
-            // Move requester to author of followup :
-            $tkt['users_id'] = $tkt['_users_id_requester'];
 
             $begin_strip     = -1;
             $end_strip       = -1;
