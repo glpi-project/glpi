@@ -117,14 +117,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                'required'  => true,
                'placeholder'  => __('Login'),
                'autofocus'    => true,
-               'post_html'    => '<span class="login_img"></span>'
+               'icon'         => 'user-circle'
             ],
             'password'  => [
                'type'      => 'password',
                'name'      => 'login_password',
                'required'  => true,
                'placeholder'  => __('Password'),
-               'post_html'    => '<span class="pass"></span>'
+               'icon'         => 'lock'
             ]
          ]
       ];

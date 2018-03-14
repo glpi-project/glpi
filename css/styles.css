@@ -2338,6 +2338,16 @@ a.icon_nav_move:hover img {
    box-shadow: 0 0 0px 1000px white inset;
 }
 
+.input-img {
+   /*left:8px;
+   position:absolute;
+   top:3px;*/
+   color: #9B9B9B;
+   font-size: 1.5em!important;
+   position: absolute;
+   top: 10px;
+   left: 50px;
+}
 #boxlogin .login_input:before {
    font-family: 'Font Awesome\ 5 Free';
    left:8px;

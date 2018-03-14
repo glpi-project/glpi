@@ -66,7 +66,11 @@
         {%if element.placeholder is defined %} placeholder="{{ element.placeholder }}"{% endif %}
         />
    {% endblock %}
-   {% if element.post_html is defined %}{{ element.post_html|raw }}{% endif %}
+   {% block icon %}
+      {% if element.icon is defined %}
+      <span class="fa fa-{{ element.icon}} input-img"></span>
+      {% endif %}
+   {% endblock %}
    {% if element.message is defined %}
       <span class="pure-form-message-inline">{{ element.message }}</span>
    {% endif %}
