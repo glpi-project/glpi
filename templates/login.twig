@@ -40,40 +40,19 @@
       </div>
 
       <div id='boxlogin'>
+         {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
          <form action='{{ path_for('login') }}' method='post'>
 
    {#
-   // Other CAS
-   if (isset($_GET["noAUTO"])) {
-      echo "<input type='hidden' name='noAUTO' value='1' />";
-   }
+   //TODO: delegate redirects to routing
    // redirect to ticket
    if (isset($_GET["redirect"])) {
       Toolbox::manageRedirect($_GET["redirect"]);
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }#}
             <p class="login_input">
-               <input type="text" name="{# '.$namfield.' #}" id="login_name" required="required"
-                placeholder="{% trans "Login" %}" autofocus="autofocus" />
-               <span class="login_img"></span>
-            </p>
-            <p class="login_input">
-               <input type="password" name="{# '.$pwdfield.' #}" id="login_password" required="required"
-                placeholder="{% trans "Password" %}"  />
-               <span class="login_img"></span>
-            </p>
-            {%if CFG_GLPI.login_remember_time %}
-               <p class="login_input">
-                  <label for="login_remember">
-                     <input type="checkbox" name="{# '.$rmbfield.' #}" id="login_remember" {% if CFG_GLPI.login_remember_default %} checked="checked"{% endif %} />
-                     {% trans "Remember me" %}
-                  </label>
-               </p>
-            {% endif %}
-            <p class="login_input">
                <input type="submit" name="submit" value="{% trans "Login" %}" class="submit" />
             </p>
-{% include "elements/hidden.twig" with {'id': '_csrf', 'name': '_csrf', 'value': ''} %}
 {#
    if ($CFG_GLPI["notifications_mailing"]
        && countElementsInTable('glpi_notifications',

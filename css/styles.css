@@ -2292,7 +2292,8 @@ a.icon_nav_move:hover img {
 #boxlogin {
    padding-top: 10px;
    bottom: 0;
-   width: 100%;
+   width: 20em;
+   margin: 0 auto;
 }
 
 

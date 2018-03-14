@@ -105,10 +105,47 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    })->setName('slash');
 
    // Render Twig template in route
-   $app->get('/login', function ($request, $response, $args) {
+   $app->get('/login', function ($request, $response, $args) use ($CFG_GLPI) {
       //if user is logged in, redirect to /central
 
-      return $this->view->render($response, 'login.twig');
+      $glpi_form = [
+         'pure_form' => 'aligned',
+         'elements'  => [
+            'login'     => [
+               'type'      => 'text',
+               'name'      => 'login_name',
+               'required'  => true,
+               'placeholder'  => __('Login'),
+               'autofocus'    => true,
+               'post_html'    => '<span class="login_img"></span>'
+            ],
+            'password'  => [
+               'type'      => 'password',
+               'name'      => 'login_password',
+               'required'  => true,
+               'placeholder'  => __('Password'),
+               'post_html'    => '<span class="pass"></span>'
+            ]
+         ]
+      ];
+
+      if ($CFG_GLPI['login_remember_time']) {
+         $glpi_form['remember'] = [
+            'type'      => 'checkbox',
+            'name'      => 'login_remember',
+            'label'     => __('Remember me')
+         ];
+      }
+      if (isset($_GET["noAUTO"])) {
+         // Other CAS
+         $glpi_form['elements']['noAUTO'] = [
+            'type'   => 'hidden',
+            'name'   => 'noAUTO',
+            'value'  => 1
+         ];
+      }
+
+      return $this->view->render($response, 'login.twig', ['glpi_form' => $glpi_form]);
    })->setName('login');
 
    $app->get('/central', function ($request, $response, $args) {
