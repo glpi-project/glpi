@@ -74,9 +74,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // Register component on container
    $container['view'] = function ($container) {
       $view = new \Slim\Views\Twig(__DIR__ .'/../templates', [
-         //'cache'              => GLPI_CACHE_DIR,
-         'debug'              => true,
-         'strict_variables'   => true
+         'cache'              => ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) ? GLPI_CACHE_DIR : false,
+         'debug'              => ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE),
+         'strict_variables'   => true,
+         'auto_reload'        => ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
       ]);
 
       $view->getEnvironment()->addGlobal(
