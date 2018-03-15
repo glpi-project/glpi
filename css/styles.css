@@ -2345,8 +2345,8 @@ a.icon_nav_move:hover img {
    color: #9B9B9B;
    font-size: 1.5em!important;
    position: absolute;
-   top: 10px;
-   left: 50px;
+   top: .3em;
+   left: .8em;
 }
 #boxlogin .login_input:before {
    font-family: 'Font Awesome\ 5 Free';
