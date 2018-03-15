@@ -28,29 +28,15 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  #}
-<form class="pure-form{% if glpi_form.pure_form is defined %} pure-form-{{ glpi_form.pure_form}}{% endif %}{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
-{% block form_header %}
-   {% if glpi_form.header is not defined or glpi_form.header == true %}
-   {% endif %}
+{% extends "elements/input.twig" %}
 
-   <fieldset>
-   {% for element in glpi_form.elements %}
-      {% set tpl = 'input' %}
-      {% if element.type == 'password' %}
-         {% set tpl = 'password' %}
-      {#% elseif element.type == 'checkbox' %#}
-      {% endif %}
-      {% include "elements/" ~ tpl ~".twig" with {'element':  element} %}
-   {% endfor %}
-   </fieldset>
-
-   {% if glpi_form.extra_header is defined  %}{{ glpi_form.extra_header|raw  }}{% endif %}
-   {% if glpi_form.extra_footer is defined  %}{{ glpi_form.extra_footer|raw  }}{% endif %}
-   {% if glpi_form.footer is not defined or glpi_form.footer == true %}
-   {% endif %}
+{% block component %}
+   {#% set notag = true %#}
+   {% set element = element|merge({
+      'type':     'submit',
+      'title':    '',
+      'class':    'pure-button submit'
+   }) %}
+   {{ parent() }}
 {% endblock %}
-   {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
-{% block form_submit %}
-   {% include "elements/submit.twig" with {'element': {'name': 'submit', 'value': 'Login'}} %}
-{% endblock %}
-</form>
+{%block label %}{% endblock %}
