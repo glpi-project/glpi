@@ -53,7 +53,7 @@
    <div id='header'>
       <div id='header_top'>
          <div id='c_logo'>
-            <a ref="{{ path_for('slash') }}" accesskey="1"><span class="sr-only">{% trans "Home" %}</span></a>
+            <a ref="{{ path_for('slash') }}" accesskey="1"><span class="sr-only">{{ __('Home') }}</span></a>
          </div>
          {# Preferences and logout link #}
          {#self::displayTopMenu(true);#}
@@ -93,17 +93,17 @@
    <div id='c_preference' >
       <ul>
          <li id='deconnexion'>
-            <a href='{#{ path_for('logout') }#}' title="{% autoescape 'html_attr' %}{% trans "Logout" %}{% endautoescape %}" class="fa fa-sign-out">
+            <a href='{#{ path_for('logout') }#}' title="{{ __s('Logout') }}" class="fa fa-sign-out">
       {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
          //FIXME: Manage in logout route?
          echo "?noAUTO=1";
       }}#}
-               <span class='sr-only'>{% trans "Logout" %}</span>
+               <span class='sr-only'>{{ __('Logout') }}</span>
             </a>
          </li>
          <li id='preferences_link'>
-            <a href='{#{ path_for('/user/preferences') }#}' title="{% autoescape 'html_attr' %}{% trans "My settings" %}{% endautoescape %}" class='fa fa-cog'>
-               <span class='sr-only'>{% trans "My settings" %}</span>
+            <a href='{#{ path_for('/user/preferences') }#}' title="{{ __s('My settings') }}" class='fa fa-cog'>
+               <span class='sr-only'>{{ __('My settings') }}</span>
 
                {# check user id : header used for display messages when session logout #}
                {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
@@ -146,8 +146,8 @@
       echo "</a></li>";#}
 
          <li id='help_link'>
-            <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{% autoescape 'html_attr' %}{% trans "Help" %}{% endautoescape %}" class='fa fa-question'>
-               <span class='sr-only'>{% trans "Help" %}</span>
+            <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{{ __s('Help') }}" class='fa fa-question'>
+               <span class='sr-only'>{{ __('Help') }}</span>
             </a>
          </li>
 
@@ -169,7 +169,7 @@
       {% if CFG_GLPI.allow_search_global %}
          <form method='get' action='{{ CFG_GLPI.root_doc }}/front/search.php'>
             <span id='champRecherche'>
-               <input size='15' type='text' name='globalsearch' placeholder='{% autoescape 'html_attr' %}{% trans "Search" %}{% endautoescape %}'>
+               <input size='15' type='text' name='globalsearch' placeholder='{{ __s('Search') }}'>
                <button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>
             </span>
             {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}

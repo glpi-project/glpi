@@ -42,7 +42,7 @@
             {{ label }}
          {% endif %}
          {%- if element.required is defined and element.required -%}
-            (<span title="{% trans "This element is required" %}">*</span>)
+            (<span title="{{ __s('This element is required') }}">*</span>)
          {%- endif -%}
       </label>
       {% endif %}

@@ -118,6 +118,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $view->addExtension(new \Twig_Extension_Debug());
       include_once __DIR__ . '/../twig_extensions/Reflection.php';
       $view->addExtension(new \Twig\Glpi\Extensions\Reflection());
+      include_once __DIR__ . '/../twig_extensions/Locales.php';
+      $view->addExtension(new \Twig\Glpi\Extensions\Locales());
 
       return $view;
    };

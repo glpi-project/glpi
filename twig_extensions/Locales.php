@@ -32,38 +32,53 @@
 
 namespace Twig\Glpi\Extensions;
 
-class Reflection extends \Twig_Extension
+class Locales extends \Twig_Extension
 {
+   /**
+    * Sets aliases for functions
+    *
+    * @see Twig_Extension::getFunctions()
+    * @return array
+    */
    public function getFunctions() {
       return [
-         new \Twig_SimpleFunction('call_static', [$this, 'callStaticMethod']),
-         new \Twig_SimpleFunction('get_static', [$this, 'getStaticProperty']),
+         new \Twig_SimpleFunction('__', '__'),
+         new \Twig_SimpleFunction('__s', '__s'),
+         new \Twig_SimpleFunction('_e', '_e'),
+         new \Twig_SimpleFunction('_ex', '_ex'),
+         new \Twig_SimpleFunction('_n', '_n'),
+         new \Twig_SimpleFunction('_nx', '_nx'),
+         new \Twig_SimpleFunction('_sn', '_sn'),
+         new \Twig_SimpleFunction('_sx', '_sx'),
+         new \Twig_SimpleFunction('_x', '_x'),
       ];
    }
 
-   public function callStaticMethod($class, $method, array $args = []) {
-      $refl = new \reflectionClass($class);
-
-      // Check that method is static AND public
-      if ($refl->hasMethod($method) && $refl->getMethod($method)->isStatic() && $refl->getMethod($method)->isPublic()) {
-         return call_user_func_array($class.'::'.$method, $args);
-      }
-
-      throw new \RuntimeException(sprintf('Invalid static method call for class %s and method %s', $class, $method));
-   }
-
-   public function getStaticProperty($class, $property) {
-      $refl = new \reflectionClass($class);
-
-      // Check that property is static AND public
-      if ($refl->hasProperty($property) && $refl->getProperty($property)->isStatic() && $refl->getProperty($property)->isPublic()) {
-         return $refl->getProperty($property)->getValue();
-      }
-
-      throw new \RuntimeException(sprintf('Invalid static property get for class %s and property %s', $class, $property));
-   }
-
+   /**
+    * Returns the name of the extension.
+    *
+    * @return string The extension name
+    *
+    * @see Twig_ExtensionInterface::getName()
+    */
    public function getName() {
-      return 'glpi_reflection';
+      return 'glpi_locales';
+   }
+
+   public function getFilters() {
+      return [
+         new \Twig_SimpleFilter('fileSize', [$this, 'fileSizeFilter']),
+      ];
+   }
+
+   /**
+    * Format a size passing a size in octet
+    *
+    * @param int $number
+    *
+    * @return string
+    */
+   public function fileSizeFilter($number) {
+      return Toolbox::getSize($number);
    }
 }
