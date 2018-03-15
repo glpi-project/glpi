@@ -419,12 +419,14 @@ class Ajax {
 
                   ui.jqXHR.error(function(e) {
                      console.log(e);
-                     ui.panel.html(
-                        '<div class=\'error\'><h3>" .
-                        addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
-                        addslashes(__('Please check GLPI logs or contact your administrator.'))  .
-                        "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
-                     );
+                     if (e.statusText != 'abort') {
+                        ui.panel.html(
+                           '<div class=\'error\'><h3>" .
+                           addslashes(__('An error occured loading contents!'))  . "</h3><p>" .
+                           addslashes(__('Please check GLPI logs or contact your administrator.'))  .
+                           "<br/>" . addslashes(__('or')) . " <a href=\'#\' onclick=\'return reloadTab()\'>" . addslashes(__('try to reload'))  . "</a></p></div>'
+                        );
+                     }
                   });
                }
 
