@@ -115,6 +115,31 @@ class CommonDBTM extends DbTestCase {
 
    }
 
+   public function testGetFromDBByCrit() {
+      $instance = new \Computer();
+      $instance->getFromDBByCrit(['name' => '_test_pc01']);
+      // the instance must be populated
+      $this->boolean($instance->isNewItem())->isFalse();
+
+      $instance = new \Computer();
+      $this->exception(
+         function() use ($instance) {
+            $instance->getFromDBByCrit(['entities_id' => '1']);
+         }
+      )->isInstanceOf(\RuntimeException::class)
+      ->message
+      ->contains('getFromDBByRequest expects to get one result, 3 found!');;
+      // the instance must not be populated
+      $this->boolean($instance->isNewItem())->isTrue();
+
+      $instance = new \Computer();
+      $success = $instance->getFromDBByCrit(['name' => 'non existent computer']);
+      // Must return false because no row returned by the SQL query
+      $this->boolean($success)->isFalse();
+      // the instance must not be populated
+      $this->string($instance->getField('name'))->isEqualTo(NOT_AVAILABLE);
+   }
+
    public function testGetFromDBByRequest() {
       $instance = new \Computer();
       $instance->getFromDbByRequest([

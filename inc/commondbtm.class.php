@@ -272,27 +272,8 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean|array
     */
    public function getFromDBByCrit(array $crit) {
-      global $DB;
-
-      $crit = ['SELECT' => 'id',
-               'FROM'   => $this->getTable(),
-               'WHERE'  => $crit];
-
-      $iter = $DB->request($crit);
-      if (count($iter) == 1) {
-         $row = $iter->next();
-         return $this->getFromDB($row['id']);
-      } else if (count($iter) > 1) {
-         Toolbox::logWarning(
-            sprintf(
-               'getFromDBByCrit expects to get one result, %1$s found!',
-               count($iter)
-            )
-         );
-      }
-      return false;
+      return $this->getFromDBByRequest(['WHERE' => $crit]);
    }
-
 
    /**
     * Retrieve an item from the database by request. The request is an array

@@ -124,9 +124,9 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
+         1 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
          2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-         3 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
+         3 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
       ]);
 
@@ -142,9 +142,9 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
+         1 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
          2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-         3 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
+         3 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')'
       ]);
 
@@ -159,7 +159,24 @@ class Migration extends \GLPITestCase {
          'value'     => 'setted value'
       ]];
       $it = new \ArrayIterator($dbresult);
-      $this->calling($this->db)->request = $it;
+      $this->db = new \mock\DB();
+      $queries = &$this->queries;
+      $this->calling($this->db)->query = function ($query) use (&$queries) {
+         $queries[] = $query;
+         return true;
+      };
+      $this->calling($this->db)->free_result = true;
+      $this->calling($this->db)->request[1] = $it;
+      $this->calling($this->db)->request[2] = [];
+      $this->calling($this->db)->numrows = 0;
+      $this->calling($this->db)->fetch_assoc = [];
+      $this->calling($this->db)->data_seek = true;
+      $this->calling($this->db)->list_fields = [
+         'id'        => '',
+         'context'   => '',
+         'name'      => '',
+         'value'     => ''
+      ];
 
       $DB = $this->db;
 

@@ -808,14 +808,14 @@ class Migration {
                                        AND `itemtype` = '$type'";
                      if ($result2 = $DB->query($query)) {
                         if ($DB->numrows($result2) == 0) {
-                              $DB->insert(
-                                 'glpi_displaypreferences', [
-                                    'itemtype'  => $type,
-                                    'num'       => $newval,
-                                    'rank'      => $rank++,
-                                    'users_id'  => $data['users_id']
-                                 ]
-                              );
+                           $DB->insert(
+                              'glpi_displaypreferences', [
+                                 'itemtype'  => $type,
+                                 'num'       => $newval,
+                                 'rank'      => $rank++,
+                                 'users_id'  => $data['users_id']
+                              ]
+                           );
                         }
                      }
                   }
@@ -824,14 +824,14 @@ class Migration {
             } else { // Add for default user
                $rank = 1;
                foreach ($tab as $newval) {
-                     $DB->insert(
-                        'glpi_displaypreferences', [
-                           'itemtype'  => $type,
-                           'num'       => $newval,
-                           'rank'      => $rank++,
-                           'users_id'  => 0
-                        ]
-                     );
+                  $DB->insert(
+                     'glpi_displaypreferences', [
+                        'itemtype'  => $type,
+                        'num'       => $newval,
+                        'rank'      => $rank++,
+                        'users_id'  => 0
+                     ]
+                  );
                }
             }
          }
