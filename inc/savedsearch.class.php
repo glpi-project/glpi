@@ -761,7 +761,7 @@ class SavedSearch extends CommonDBTM {
       $colspan = 2;
       echo "<table class='tab_cadre_fixehov'>";
       echo "<thead><tr><th colspan='$colspan' class='search_header'>" .
-                  "<input type='text' id='search_savedsearch' placeholder='".__('Search')."'></i>" .
+                  "<input type='text' id='filter_savedsearch' placeholder='".__('Filter list')."' style='width: 95%; padding: 5px'></i>" .
            "</th></tr></thead>";
       echo "<thead><tr><th colspan='$colspan' class='private_header'>" .
                   sprintf(
@@ -843,7 +843,7 @@ class SavedSearch extends CommonDBTM {
                      .addClass('fa-chevron-circle-down');
                }
             });
-            $('#search_savedsearch').on('keyup', function() {
+            $('#filter_savedsearch').on('keyup', function() {
                var _this = $(this);
                var searchtext = _this.val() + '';
                var searchparts = searchtext.toLowerCase().split(/\s+/);
