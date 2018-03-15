@@ -1,0 +1,212 @@
+{#
+ * ---------------------------------------------------------------------
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2015-2018 Teclib' and contributors.
+ *
+ * http://glpi-project.org
+ *
+ * based on GLPI - Gestionnaire Libre de Parc Informatique
+ * Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * GLPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GLPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ * ---------------------------------------------------------------------
+ #}
+{% extends "glpi.twig" %}
+
+{% block head %}
+   {% set css_paths = css_paths|default([])|merge([
+      '../lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css',
+      '../css/jstree-glpi.css',
+      '../lib/jqueryplugins/select2/css/select2.css',
+      '../lib/jqueryplugins/qtip2/jquery.qtip.css',
+      '../lib/leaflet/leaflet.css',
+      '../lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.css',
+      '../lib/leaflet/plugins/Leaflet.markercluster/MarkerCluster.Default.css',
+      '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.css',
+      '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.css',
+      '../lib/leaflet/plugins/Leaflet.fullscreen/leaflet.fullscreen.css'
+      ]) %}
+   {% for css_path in css_paths %}
+      <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/{{ css_path }}" type="text/css" media="screen" />
+   {% endfor %}
+   {{ parent() }}
+{% endblock %}
+
+{% block header %}
+   <div id='header'>
+      <div id='header_top'>
+         <div id='c_logo'>
+            <a ref="{{ path_for('slash') }}" accesskey="1"><span class="sr-only">{% trans "Home" %}</span></a>
+         </div>
+         {# Preferences and logout link #}
+         {#self::displayTopMenu(true);#}
+         {{ block('topmenu') }}
+      </div>
+      {{ block('menu') }}
+      {#//Main menu
+      self::displayMainMenu(
+         true, [
+            'sector' => $sector,
+            'item'   => $item,
+            'option' => $option
+         ]
+      );#}
+
+   </div>
+{% endblock %}
+
+{% block javascripts %}
+   {% set js_paths = js_paths|default([])|merge([
+         '../lib/jquery/js/jquery-ui-1.10.4.custom.js',
+         '../lib/jqueryplugins/select2/js/select2.js',
+         '../lib/jqueryplugins/qtip2/jquery.qtip.js',
+         '../lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js',
+         '../lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js',
+         '../lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js',
+         '../lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js'
+      ]) %}
+   {% for js_path in js_paths %}
+      <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>
+   {% endfor %}
+   {{ parent() }}
+{% endblock %}
+
+{# Prefs / Logout link #}
+{% block topmenu %}
+   <div id='c_preference' >
+      <ul>
+         <li id='deconnexion'>
+            <a href='{#{ path_for('logout') }#}' title="{% autoescape 'html_attr' %}{% trans "Logout" %}{% endautoescape %}" class="fa fa-sign-out">
+      {#if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
+         //FIXME: Manage in logout route?
+         echo "?noAUTO=1";
+      }}#}
+               <span class='sr-only'>{% trans "Logout" %}</span>
+            </a>
+         </li>
+         <li id='preferences_link'>
+            <a href='{#{ path_for('/user/preferences') }#}' title="{% autoescape 'html_attr' %}{% trans "My settings" %}{% endautoescape %}" class='fa fa-cog'>
+               <span class='sr-only'>{% trans "My settings" %}</span>
+
+               {# check user id : header used for display messages when session logout #}
+               {% if call_static('Session', 'getLoginUserID') and user_name is defined %}
+               <span id='myname'>{{ user_name }}</span>
+               {% endif %}
+            </a>
+         </li>
+
+      {% if call_static('Config', 'canUpdate') %}
+      {#if (Config::canUpdate()) {
+         $current_mode = $_SESSION['glpi_use_mode'];
+         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
+         $title = $current_mode == Session::DEBUG_MODE ?
+            __('Debug mode enabled') :
+            __('Debug mode disabled');
+         echo "<li id='debug_mode'>";
+         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
+                title='$title'>";
+         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
+         echo "</a>";
+         echo "</li>";
+      }#}
+      {% endif %}
+
+      {#/// Bookmark load
+      echo "<li id='bookmark_link'>";
+      Ajax::createSlidePanel(
+         'showSavedSearches',
+         [
+            'title'     => __('Saved searches'),
+            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
+            'icon'      => '/pics/menu_config.png',
+            'icon_url'  => SavedSearch::getSearchURL(),
+            'icon_txt'  => __('Manage saved searches')
+         ]
+      );
+      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
+             __s('Load a bookmark'). "\">";
+      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
+      echo "</a></li>";#}
+
+         <li id='help_link'>
+            <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{% autoescape 'html_attr' %}{% trans "Help" %}{% endautoescape %}" class='fa fa-question'>
+               <span class='sr-only'>{% trans "Help" %}</span>
+            </a>
+         </li>
+
+      {#if (!GLPI_DEMO_MODE) {
+         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                    "/front/preference.php?forcetab=User\$1' title=\"".
+                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
+      } else {
+         echo "<li id='language_link'><span>" .
+            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
+      }
+#}
+         <li id='c_recherche'>
+{#
+      if ($full === true) {
+         /// Search engine
+#}
+      {% if CFG_GLPI.allow_search_global %}
+         <form method='get' action='{{ CFG_GLPI.root_doc }}/front/search.php'>
+            <span id='champRecherche'>
+               <input size='15' type='text' name='globalsearch' placeholder='{% autoescape 'html_attr' %}{% trans "Search" %}{% endautoescape %}'>
+               <button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>
+            </span>
+            {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
+         </form>
+      {% endif %}
+{#
+         }
+      }
+#}
+      </li>
+
+      </ul>
+   </div>
+{% endblock %}
+
+{% macro menu_links(entry) %}
+   <li class="pure-menu-item{% if entry.content is defined and entry.content|length %} pure-menu-has-children pure-menu-allow-hover{% endif %}">
+      <a href="{#% if entry.page is defined %}{{ entry.page }}{% endif %#}" class="pure-menu-link">{{ entry.title }}</a>
+   {% if entry.content is defined %}
+      <ul class="pure-menu-children">
+      {% for child in entry.content %}
+         <li class="pure-menu-item">
+            <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}" class="pure-menu-link">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
+         </li>
+      {% endfor %}
+      </ul>
+   {% endif %}
+   </li>
+{% endmacro %}
+
+{% block menu %}
+<div id="c_menu" class="pure-menu pure-menu-horizontal">
+   <ul class="pure-menu-list">
+   {% import _self as glpi_page %}
+   {% for menu in glpi_menus %}
+      {{ glpi_page.menu_links(menu) }}
+   {% endfor %}
+   </ul>
+</div>
+{% endblock %}

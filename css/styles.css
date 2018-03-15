@@ -2552,7 +2552,7 @@ a.icon_nav_move:hover img {
 }
 
 #c_menu {
-   height: 30px;
+   /*height: 30px;*/
    text-align: center;
    padding-left: 95px;
 }

@@ -31,24 +31,21 @@
 <!DOCTYPE html>
 <html lang="" class="{% block html_class  %}{% endblock %}">
     <head>
-
          <meta charset="utf-8"/>
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <link rel="shortcut icon" type="images/x-icon" href="{{ CFG_GLPI.root_doc }}/pics/favicon.ico" />
-
-         {# auto desktop / mobile viewport #}
-         <meta name='viewport' content='width=device-width, initial-scale=1'/>
-
+         <meta name='viewport' content='width=device-width, initial-scale=1'/>{# auto desktop / mobile viewport #}
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/styles.css" type="text/css" media="screen" />
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/../css/palettes/{{ CFG_GLPI.palette }}.css" type="text/css" media="screen" />
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/public/css/pure-min.css" type="text/css" media="screen" />
          <link rel="stylesheet" href="{{ CFG_GLPI.root_doc }}/lib/font-awesome-4.7.0/css/font-awesome.min.css" type="text/css" media="screen" />
-
+         <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/../lib/jquery/js/jquery-1.10.2.js"></script>
         {% block head %}
             <title>{% block title %}{% endblock %} - GLPI</title>
         {% endblock %}
     </head>
     <body>
+        {% block header %}{% endblock %}
         <div id="content">{% block content %}{% endblock %}</div>
         <div id="footer">
             {% block footer %}{% endblock %}
@@ -60,5 +57,10 @@
                GLPI {{ constant('GLPI_VERSION') }} Copyright (C) 2015-{{ "now"|date("Y") }} Teclib' and contributors
             </a>
         </div>
+   {% block javascripts %}
+      {#% for script in glpi_scripts %}
+         <script type="text/javascript">{{ script|raw }}</script>
+      {% endfor %#}
+   {% endblock %}
     </body>
 </html>

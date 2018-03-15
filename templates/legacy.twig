@@ -30,7 +30,7 @@
  #}
 {% extends "glpi_page.twig" %}
 
-{% block title %}{% trans "Central" %}{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 {% block content %}
    {{ contents|raw }}
 {% endblock %}

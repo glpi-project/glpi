@@ -77,8 +77,14 @@ a, a:link, .ui-widget-content a {
    background-color: #3A5693;
 }
 
+
+#c_menu  .pure-menu-link,
 ul#menu a.itemP, ul#menu a.itemP1 {
    color: #FFF;
+}
+#c_menu li ul .pure-menu-link,
+#c_menu  .pure-menu-link:hover {
+   color: black;
 }
 
 ul#menu > li.active,

@@ -90,10 +90,33 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $CFG_GLPI
       );
 
+      if (Session::getLoginUserID()) {
+         $view->getEnvironment()->addGlobal(
+            'user_name',
+            formatUserName(
+               0,
+               $_SESSION["glpiname"],
+               $_SESSION["glpirealname"],
+               $_SESSION["glpifirstname"],
+               0,
+               20
+            )
+         );
+      }
+
+      $menus = Html::generateMenuSession($container['router'], true);
+      $view->getEnvironment()->addGlobal(
+         'glpi_menus',
+         $menus
+      );
+
       // Instantiate and add Slim specific extension
       $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
       $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
       $view->addExtension(new \Twig_Extensions_Extension_I18n());
+      $view->addExtension(new \Twig_Extension_Debug());
+      include_once __DIR__ . '/../twig_extensions/Reflection.php';
+      $view->addExtension(new \Twig\Glpi\Extensions\Reflection());
 
       return $view;
    };
@@ -155,8 +178,46 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $central->display();
       $contents = ob_get_contents();
       ob_end_clean();
-      return $this->view->render($response, 'central.twig', ['contents' => $contents]);
+      return $this->view->render(
+         $response,
+         'central.twig',
+         ['contents' => $contents]
+      );
    })->setName('central');
+
+   $app->get('/{itemtype}/list', function ($request, $response, $args) {
+      $item = new $args['itemtype']();
+
+      ob_start();
+      Search::show($item->getType());
+      $contents = ob_get_contents();
+      ob_end_clean();
+      return $this->view->render(
+         $response,
+         'legacy.twig', [
+            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'contents'     => $contents
+         ]
+      );
+   })->setName('asset');
+
+   $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
+      $item = new $args['itemtype']();
+
+      ob_start();
+      $item->display([
+         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+      ]);
+      $contents = ob_get_contents();
+      ob_end_clean();
+      return $this->view->render(
+         $response,
+         'legacy.twig', [
+            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'contents'     => $contents
+         ]
+      );
+   })->setName('add-asset');
 
    // Run app
    $app->run();
