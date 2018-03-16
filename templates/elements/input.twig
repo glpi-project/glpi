@@ -30,7 +30,7 @@
  #}
 {% block component %}
    {% if notag is not defined or not notag %}
-   <div class="pure-control-group{% if element.u is defined  %}pure-u-1-{{ element.u }}{% endif %}">
+   <div class="pure-control-group{% if glpi_form.columns is not empty %} pure-u-{{ element.width|default(1) }}-{{ glpi_form.columns }}{% endif %}{% if form_class is defined %} {{ form_class }}{% endif %}">
    {% endif %}
    {% block label %}
       {% if element.label is defined %}
@@ -42,14 +42,16 @@
             {{ label }}
          {% endif %}
          {%- if element.required is defined and element.required -%}
-            (<span title="{{ __s('This element is required') }}">*</span>)
+            <span class="required" title="{{ __s('This element is required') }}">*</span>
          {%- endif -%}
+         {# FIXME: find a way to identify auto-fillable fields #}
+         {#{ item.getAutofillMark(element.name, withtemplate)|raw }#}
       </label>
       {% endif %}
    {% endblock %}
    {%if element.tip is defined %}<span class="tip">{{ element.tip }}</span>{% endif %}
    {% block element %}<input
-        type="{{ element.type }}"
+        type="{{ element.type|default('text') }}"
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
         value="{% if element.value is defined %}{{ element.value }}{% endif %}"
@@ -64,6 +66,11 @@
         {%if element.size is defined %} size="{{ element.size }}"{% endif %}
         {%if element.checked is defined and element.checked == true %} checked="checked"{% endif %}
         {%if element.placeholder is defined %} placeholder="{{ element.placeholder }}"{% endif %}
+        {%if element.data is defined %}
+            {% for id, data in element.data %}
+                data-{{ id }}="{{ data }}"
+            {% endfor %}
+        {% endif %}
         />
    {% endblock %}
    {% block icon %}

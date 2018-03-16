@@ -207,6 +207,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
 
+      $params = [];
       ob_start();
       $item->display([
          'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
@@ -215,9 +216,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       ob_end_clean();
       return $this->view->render(
          $response,
-         'legacy.twig', [
+         'add_page.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
-            'contents'     => $contents
+            'item'         => $item,
+            'contents'     => $contents,
+            'glpi_form'    => $item->getAddForm(),
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
          ]
       );
    })->setName('add-asset');

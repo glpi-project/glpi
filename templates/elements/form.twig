@@ -31,16 +31,46 @@
 <form class="pure-form{% if glpi_form.pure_form is defined %} pure-form-{{ glpi_form.pure_form}}{% endif %}{{ ' ' ~ glpi_form.form_class|default('') }}" action='{{ glpi_form.action|default('') }}' method='post'>
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
+   <header class="pure-form pure-form-aligned">
+      {% if withtemplate == 2 and item.isNewID() %}
+         {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
+         {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+      {% elseif withtemplate == 1 %}
+         {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
+         {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
+            {#Html::autocompletionTextField(
+               $this,
+               'template_name',
+               [
+                  'size'      => 25,
+                  'required'  => true,
+                  'rand'      => $rand
+               ]
+            );#}
+      {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
+         {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+         printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
+         {{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}
+      {% else %}
+         {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+         if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
+            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+            $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+         }
+         echo $nametype;#}
+         {{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}
+      {% endif %}
+   </header>
    {% endif %}
 
-   <fieldset>
+   <fieldset class="pure-g">
    {% for element in glpi_form.elements %}
-      {% set tpl = 'input' %}
+      {% set tpl = element.type|default('input') %}
+      {#% set tpl = 'input' %}
       {% if element.type == 'password' %}
          {% set tpl = 'password' %}
-      {#% elseif element.type == 'checkbox' %#}
-      {% endif %}
-      {% include "elements/" ~ tpl ~".twig" with {'element':  element} %}
+      {% endif %#}
+      {% include "elements/" ~ tpl ~".twig" with {'element':  element, 'glpi_form': glpi_form} %}
    {% endfor %}
    </fieldset>
 
@@ -51,6 +81,6 @@
 {% endblock %}
    {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
 {% block form_submit %}
-   {% include "elements/submit.twig" with {'element': {'name': 'submit', 'value': 'Login'}} %}
+   {% include "elements/submit.twig" with {'form_class': 'center', 'element': {'name': 'submit', 'value': glpi_form.submit_label|default(__('Post')), 'width': glpi_form.columns}} %}
 {% endblock %}
 </form>

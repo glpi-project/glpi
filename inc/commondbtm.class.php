@@ -5120,4 +5120,55 @@ class CommonDBTM extends CommonGLPI {
          }
       }
    }
+
+   /**
+    * Get add form
+    *
+    * @return array
+    */
+   public function getAddForm() {
+      global $DB;
+      $columns = $DB->list_fields($this->getTable());
+      foreach (['id', 'entities_id', 'is_deleted', 'is_dynamic', 'is_recursive', 'is_template'] as $field) {
+         unset($columns[$field]);
+      }
+
+      $elements = [];
+      foreach ($columns as $column) {
+         $element = [
+            'type'         => null,
+            'name'         => $column['Field'],
+            'autofocus'    => count($elements) == 0,
+            'label'        => __($column['Field'])
+         ];
+
+         if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
+            if ($column['Field'] == 'locations_id') {
+               $element['type'] = 'location';
+            } else {
+               $element['type'] = 'select';
+            }
+            $table = getTableNameForForeignKeyField($column['Field']);
+            $element['values'] = [];
+         } else if (strstr($column['Field'], 'date')) {
+            $element['type'] = 'date';
+         } else if ($column['Field'] == 'comment') {
+            $element['type'] = 'textarea';
+         } else {
+            switch ($column['Type']) {
+               default:
+                  $element['type'] = 'text';
+                  break;
+            }
+         }
+         $elements[] = $element;
+      }
+
+      return [
+         'pure_form' => 'aligned',
+         'columns'   => 2,
+         'submit_label' => __('Add'),
+         'elements'  => $elements
+      ];
+   }
 }
