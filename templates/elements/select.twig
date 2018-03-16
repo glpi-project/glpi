@@ -34,8 +34,10 @@
     <select
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
+        class="forSelect2{%if element.class is defined %} {{ element.class }}{% endif %}"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
         {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
+        data-itemtype="{{ element.itemtype }}"
       >
    {% for value, label in element.values %}
          <option value="{{ value }}">{{ label }}</option>

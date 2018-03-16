@@ -86,6 +86,111 @@
    {% for js_path in js_paths %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>
    {% endfor %}
+   <script type="text/javascript">
+      {#
+      if (!isset($params['value'])) {
+         $value = 0;
+      } else {
+         $value = $params['value'];
+      }
+      if (!isset($params['value'])) {
+         $valuename = Dropdown::EMPTY_VALUE;
+      } else {
+         $valuename = $params['valuename'];
+      }
+      $on_change = '';
+      if (isset($params["on_change"])) {
+         $on_change = $params["on_change"];
+         unset($params["on_change"]);
+      }
+      $width = '80%';
+      if (isset($params["width"])) {
+         $width = $params["width"];
+         unset($params["width"]);
+      }
+      unset($params['value']);
+      unset($params['valuename']);
+
+      $options = [
+         'id'        => $field_id,
+         'selected'  => $value
+      ];
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $val) {
+            if (is_array($val)) {
+               $val = implode(' ', $val);
+            }
+            $options[$tag] = $val;
+         }
+      }
+
+      $values = [$value => $valuename];
+      $output = self::select($name, $values, $options);
+      #}
+
+      $('.forSelect2').select2({
+         width: '14em{#$width#}',
+         minimumInputLength: 0,
+         quietMillis: 100,
+         dropdownAutoWidth: true,
+         minimumResultsForSearch: {{ CFG_GLPI.ajax_limit_count }},
+         ajax: {
+            url: '{{ CFG_GLPI.root_doc }}/ajax/getDropdownValue.php{#{ path_for('slash') }#}',
+            dataType: 'json',
+            type: 'POST',
+            data: function (params) {
+               query = params;
+               return {
+      {#
+      foreach ($params as $key => $val) {
+         // Specific boolean case
+         if (is_bool($val)) {
+            $js .= "$key: ".($val?1:0).",\n";
+         } else {
+            $js .= "$key: ".json_encode($val).",\n";
+         }
+      }
+      #}
+                  itemtype: $(this).data('itemtype'),
+                  display_emptychoice: 1,
+                  emptylabel: '-----',
+                  searchText: params.term,
+                  page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
+                  page: params.page || 1, // page number
+                  {#
+condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
+display_emptychoice	1
+emptylabel	-----
+entity_restrict	0
+itemtype	ITILCategory
+page	1
+page_limit	100
+permit_select_parent	0
+#}
+               };
+            },
+            processResults: function (data, params) {
+               params.page = params.page || 1;
+               var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+
+               return {
+                  results: data.results,
+                  pagination: {
+                        more: more
+                  }
+               };
+            }
+         },
+         templateResult: formatResult
+      });
+      {#
+      if (!empty($on_change)) {
+         $js .= " $('#$field_id').on('change', function(e) {".
+                  stripslashes($on_change)."});";
+      }
+      $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
+      #}
+   </script>
    {{ parent() }}
 {% endblock %}
 
