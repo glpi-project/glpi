@@ -1733,9 +1733,9 @@ class Search {
                // End Line
                echo self::showEndLine($data['display_type']);
                // Flush ONLY for an HTML display (issue #3348)
-               if ($data['display_type'] == self::HTML_OUTPUT) {
+               /*if ($data['display_type'] == self::HTML_OUTPUT) {
                   Html::glpi_flush();
-               }
+               }*/
             }
 
             // Create title
