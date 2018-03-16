@@ -137,28 +137,22 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
          }
          $mmail->Subject  = $current->fields['name'];
 
+         // manage item attached documents
+         $document_items = $DB->request('glpi_documents_items', [
+            'items_id' => $current->fields['items_id'],
+            'itemtype' => $current->fields['itemtype'],
+         ]);
+
+         $doc = new Document();
+
          if (empty($current->fields['body_html'])) {
             $mmail->isHTML(false);
             $mmail->Body = $current->fields['body_text'];
 
             if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
                // manage item attached documents
-               $document_items = $DB->request('glpi_documents_items', [
-                  'items_id' => $current->fields['items_id'],
-                  'itemtype' => $current->fields['itemtype'],
-               ]);
-
-               $doc = new Document();
-
                foreach ($document_items as $doc_i_data) {
-                  $doc->getFromDB($doc_i_data['documents_id']);
-
-                  // Add all other attachments, according to configuration
-                  $path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
-                  $mmail->addAttachment(
-                     $path,
-                     $doc->fields['filename']
-                  );
+                  self::attachDocument($mmail, $doc, $doc_i_data);
                }
             }
          } else {
@@ -166,19 +160,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
             $mmail->Body = '';
             $current->fields['body_html'] = Html::entity_decode_deep($current->fields['body_html']);
 
-            // manage item attached documents
-            $document_items = $DB->request('glpi_documents_items', [
-               'items_id' => $current->fields['items_id'],
-               'itemtype' => $current->fields['itemtype'],
-            ]);
             $inline_docs = [];
-            $doc = new Document();
             if (count($document_items)) {
                foreach ($document_items as $doc_i_data) {
-                  $doc->getFromDB($doc_i_data['documents_id']);
                   // Add embeded image if tag present in ticket content
                   if (preg_match_all('/'.Document::getImageTag($doc->fields['tag']).'/',
                                      $current->fields['body_html'], $matches, PREG_PATTERN_ORDER)) {
+
+                     $doc->getFromDB($doc_i_data['documents_id']);
+
                      $tag = Document::getImageTag($doc->fields['tag']);
                      $image_path = Document::getImage(
                         GLPI_DOC_DIR."/".$doc->fields['filepath'],
@@ -193,17 +183,7 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
                      }
                   } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
                      // Add all other attachments, according to configuration
-                     $path = GLPI_DOC_DIR."/".$doc->fields['filepath'];
-                     if (Document::isImage($path)) {
-                        $path = Document::getImage(
-                           $path,
-                           'mail'
-                        );
-                     }
-                     $mmail->addAttachment(
-                        $path,
-                        $doc->fields['filename']
-                     );
+                     self::attachDocument($mmail, $doc, $doc_i_data);
                   }
                }
             }
@@ -331,6 +311,15 @@ class NotificationEventMailing extends NotificationEventAbstract implements Noti
       }
 
       return count($processed);
+   }
+
+   static private function attachDocument(GLPIMailer $mmail, Document $doc, $doc_i_data) {
+      $doc->getFromDB($doc_i_data['documents_id']);
+
+      // Add all other attachments, according to configuration
+      $path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+
+      $mmail->addAttachment($path, $doc->fields['filename']);
    }
 
    static protected function extraRaise($params) {
