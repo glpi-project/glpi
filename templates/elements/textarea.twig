@@ -48,13 +48,13 @@
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
         value="{% if element.value is defined %}{{ element.value }}{% endif %}"
-        cols="50"
+        cols="25"
         rows="6"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
         {% if element.disabled is defined and element.disabled == true %} disabled="disabled"{% endif %}
         {% if element.title is defined %} title="{{ title }}"{% endif %}
         {% if element.maxlength is defined %} maxlength="{{ element.maxlength }}"{% endif %}
-        {% if element.class is defined %} class="{{ element.class }}"{% endif %}
+        class="autogrow{% if element.class is defined %} {{ element.class }}{% endif %}"
         {% if element.autocomplete is defined %} autocomplete="{{ element.autocomplete }}"{% endif %}
         {% if element.size is defined %} size="{{ element.size }}"{% endif %}
         {%if element.placeholder is defined %}

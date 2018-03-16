@@ -5122,6 +5122,76 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
+    * Form fields configuration and mapping.
+    *
+    * Array order will define fields display order.
+    *
+    * Missing fields from database will be automatically displayed.
+    * If you want to avoid this;
+    * @see getHiddenFields and/or @see getFieldsToDrop
+    *
+    * @return array
+    */
+   protected function getFormFields() {
+      return [
+         'name'         => [
+            'label'  => __('Name')
+         ],
+         'states_id'    => [
+            'label'  => __('Status')
+         ],
+         'locations_id' => [
+            'label'  => __('Location')
+         ],
+         'computertypes_id'   => [
+            'label'  => __('Type')
+         ],
+         'groups_id_tech'  => [
+            'label'  => __('Group in charge')
+         ],
+         'computermodels_id' => [
+            'label'  => __('Model')
+         ],
+         'users_id_tech'   => [
+            'label'  => __('Technician in charge')
+         ],
+         'contact_num'     => [
+            'label'  => __('Alternate user number')
+         ],
+         'serial'          => [
+            'label'     => __('Serial'),
+            'autofill'  => true
+         ]
+      ];
+   }
+
+   protected function getHiddenFields($add = false) {
+      $fields = [
+         'is_dynamic',
+         'is_template',
+         'date_mod',
+         'date_creation'
+      ];
+      if ($add == false) {
+         $fields[] = 'id';
+         $fields[] = 'is_deleted';
+      }
+      return $fields;
+   }
+
+   protected function getFieldsToDrop($add = false) {
+      $fields = [
+         'entities_id',
+         'is_recursive'
+      ];
+      if ($add == true) {
+         $fields[] = 'id';
+         $fields[] = 'is_deleted';
+      }
+      return $fields;
+   }
+
+   /**
     * Get add form
     *
     * @return array
@@ -5129,41 +5199,19 @@ class CommonDBTM extends CommonGLPI {
    public function getAddForm() {
       global $DB;
       $columns = $DB->list_fields($this->getTable());
-      foreach (['id', 'entities_id', 'is_deleted', 'is_dynamic', 'is_recursive', 'is_template'] as $field) {
-         unset($columns[$field]);
+
+      $this->form_elements = [];
+      $form_fields = $this->getFormFields();
+      foreach ($form_fields as $name => $form_field) {
+         $this->form_elements[$name] = $form_field;
       }
 
-      $elements = [];
       foreach ($columns as $column) {
-         $element = [
-            'type'         => null,
-            'name'         => $column['Field'],
-            'autofocus'    => count($elements) == 0,
-            'label'        => __($column['Field'])
-         ];
+         $this->form_elements[$column['Field']] = $this->buildFormElement($column);
+      }
 
-         if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
-            if ($column['Field'] == 'locations_id') {
-               $element['type'] = 'location';
-            } else {
-               $element['type'] = 'select';
-            }
-            $table = getTableNameForForeignKeyField($column['Field']);
-            $itemtype = getItemTypeForTable($table);
-            $element['itemtype'] = $itemtype;
-            $element['values'] = [];
-         } else if (strstr($column['Field'], 'date')) {
-            $element['type'] = 'date';
-         } else if ($column['Field'] == 'comment') {
-            $element['type'] = 'textarea';
-         } else {
-            switch ($column['Type']) {
-               default:
-                  $element['type'] = 'text';
-                  break;
-            }
-         }
-         $elements[] = $element;
+      foreach ($this->getFieldsToDrop(true) as $field) {
+         unset($this->form_elements[$field]);
       }
 
       /*if ($this->$p['maybeempty'] && $p['canedit']) {
@@ -5173,12 +5221,52 @@ class CommonDBTM extends CommonGLPI {
       }
       $output .= "</div>";*/
 
-
       return [
          'pure_form'    => 'aligned',
          'columns'      => 2,
          'submit_label' => __('Add'),
-         'elements'     => $elements
+         'elements'     => $this->form_elements
       ];
+   }
+
+   protected function buildFormElement(array $column) {
+      $element = [
+         'type'         => null,
+         'name'         => $column['Field'],
+         'autofocus'    => count($this->form_elements) == 0,
+         'label'        => __($column['Field'])
+      ];
+
+      //$form_fields = $this->getFormFields();
+      if (isset($this->form_elements[$column['Field']])) {
+         $element = $this->form_elements[$column['Field']] + $element;
+      }
+
+      $hiddens = $this->getHiddenFields(true);
+      if (in_array($column['Field'], $hiddens)) {
+         $element['type'] = 'hidden';
+      } else if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
+         if ($column['Field'] == 'locations_id') {
+            $element['type'] = 'location';
+         } else {
+            $element['type'] = 'select';
+         }
+         $table = getTableNameForForeignKeyField($column['Field']);
+         $itemtype = getItemTypeForTable($table);
+         $element['itemtype'] = $itemtype;
+         $element['values'] = [];
+      } else if (strstr($column['Field'], 'date')) {
+         $element['type'] = 'date';
+      } else if ($column['Field'] == 'comment') {
+         $element['type'] = 'textarea';
+      } else {
+         switch ($column['Type']) {
+            default:
+               $element['type'] = 'text';
+               break;
+         }
+      }
+
+      return $element;
    }
 }

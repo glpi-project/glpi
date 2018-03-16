@@ -975,12 +975,16 @@ var formatResult = function(result) {
    return _elt;
 };
 
-var _initInputs = function() {
-   $('.btn_location').on('click', function(e){
+var _initInputs = function(prefix) {
+   if (typeof(prefix) == 'undefined') {
+      prefix = '';
+   }
+   $(prefix + '.autogrow').autogrow();
+   $(prefix + '.btn_location').on('click', function(e){
       e.preventDefault();
       showMapForLocation();
    });
-   $('.datepicker').datepicker({
+   $(prefix + '.datepicker').datepicker({
       /*altField: '#hiddendate".$p['rand']."',*/
       altField: $(this).attr('name').replace(/_picker/, ''),
       altFormat: 'yy-mm-dd',
@@ -1027,4 +1031,60 @@ var _initInputs = function() {
       $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
       $js .= "});";*/
    });
+}
+
+var query = {};
+function markMatch (text, term) {
+   // Find where the match is
+   var match = text.toUpperCase().indexOf(term.toUpperCase());
+
+   var _result = $('<span></span>');
+
+   // If there is no match, move on
+   if (match < 0) {
+      return _result.text(text);
+   }
+
+   // Put in whatever text is before the match
+   _result.text(text.substring(0, match));
+
+   // Mark the match
+   var _match = $('<span class=\'select2-rendered__match\'></span>');
+   _match.text(text.substring(match, match + term.length));
+
+   // Append the matching text
+   _result.append(_match);
+
+   // Put in whatever is after the match
+   _result.append(text.substring(match + term.length));
+
+   return _result.html();
+}
+
+var formatResult = function(result) {
+   if (!result.id) {
+      return result.text;
+   }
+
+   var _elt = $('<span></span>');
+   _elt.attr('title', result.title);
+
+   var markup=[result.text];
+
+   var _term = query.term || '';
+   var markup = markMatch(result.text, _term);
+
+   if (result.level) {
+      var a='';
+      var i=result.level;
+      while (i>1) {
+         a = a+'&nbsp;&nbsp;&nbsp;';
+         i=i-1;
+      }
+      _elt.html(a+'&raquo;'+markup);
+   } else {
+      _elt.html(markup);
+   }
+
+   return _elt;
 };
