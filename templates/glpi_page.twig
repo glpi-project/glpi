@@ -81,12 +81,23 @@
          '../lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js',
          '../lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js',
          '../lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js',
+         '../lib/leaflet/leaflet.js',
+         '../lib/spin.js/spin.min.js',
+         '../lib/leaflet/plugins/leaflet.spin/leaflet.spin.min.js',
+         '../lib/leaflet/plugins/Leaflet.markercluster/leaflet.markercluster.js',
+         '../lib/leaflet/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js',
+         '../lib/leaflet/plugins/leaflet-control-osm-geocoder/Control.OSMGeocoder.js',
+         '../lib/leaflet/plugins/Leaflet.fullscreen/Leaflet.fullscreen.min.js',
          '../js/common.js'
       ]) %}
    {% for js_path in js_paths %}
       <script type="text/javascript" src="{{ CFG_GLPI.root_doc }}/{{ js_path }}"></script>
    {% endfor %}
    <script type="text/javascript">
+      var CFG_GLPI  = {
+         'url_base': '{{ CFG_GLPI.url_base|default('') }}',
+         'root_doc': '{{ CFG_GLPI.root_doc }}',
+      };
       {#
       if (!isset($params['value'])) {
          $value = 0;
