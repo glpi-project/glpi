@@ -633,6 +633,8 @@ $(function() {
          submitparentForm($(this));
       }
    });
+
+   _initInputs();
 });
 
 /**
@@ -971,4 +973,58 @@ var formatResult = function(result) {
    }
 
    return _elt;
+};
+
+var _initInputs = function() {
+   $('.btn_location').on('click', function(e){
+      e.preventDefault();
+      showMapForLocation();
+   });
+   $('.datepicker').datepicker({
+      /*altField: '#hiddendate".$p['rand']."',*/
+      altField: $(this).attr('name').replace(/_picker/, ''),
+      altFormat: 'yy-mm-dd',
+      firstDay: 1,
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      showButtonPanel: true,
+      changeMonth: true,
+      changeYear: true,
+      showOn: 'button',
+      showWeek: true,
+      buttonText: '<i class=\'fa fa-calendar\'></i>',
+
+      /*if (!$p['canedit']) {
+         $js .= ",disabled: true";
+      }
+
+      if (!empty($p['min'])) {
+         $js .= ",minDate: '".self::convDate($p['min'])."'";
+      }
+
+      if (!empty($p['max'])) {
+         $js .= ",maxDate: '".self::convDate($p['max'])."'";
+      }
+
+      if (!empty($p['yearrange'])) {
+         $js .= ",yearRange: '". $p['yearrange'] ."'";
+      }*/
+
+      /*switch ($_SESSION['glpidate_format']) {
+         case 1 :
+            $p['showyear'] ? $format='dd-mm-yy' : $format='dd-mm';
+            break;
+
+         case 2 :
+            $p['showyear'] ? $format='mm-dd-yy' : $format='mm-dd';
+            break;
+
+         default :
+            $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
+      }
+      $js .= ",dateFormat: '".$format."'";
+
+      $js .= "}).next('.ui-datepicker-trigger').addClass('pointer');";
+      $js .= "});";*/
+   });
 };

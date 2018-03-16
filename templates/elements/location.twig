@@ -32,4 +32,5 @@
 
 {% block element %}
    {{ parent() }}
+   <span class="fa fa-globe pointer btn_location" title="{{ __s('Display on map') }}" data-fid="{{ element.id|default(element.name) }}"></span>
 {% endblock %}

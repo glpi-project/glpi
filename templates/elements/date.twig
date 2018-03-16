@@ -35,8 +35,15 @@
    {% if element.class is defined %}
       {% set class = class ~ ' ' ~ element.class %}
    {% endif %}
+   {% set name = element.name %}
    {% set element = element|merge({
-      'class': class
+      'class': class,
+      'name': name ~ '_picker'
    }) %}
    {{ parent() }}
+   {% set element = element|merge({
+      'name': name,
+      'class': ''
+   }) %}
+   {% include "elements/hidden.twig" with {'element': element} %}
 {% endblock %}

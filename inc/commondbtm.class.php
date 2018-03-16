@@ -5164,11 +5164,19 @@ class CommonDBTM extends CommonGLPI {
          $elements[] = $element;
       }
 
+      /*if ($this->$p['maybeempty'] && $p['canedit']) {
+         $output .= "<span class='fa fa-times-circle pointer' title='".__s('Clear').
+                      "' id='resetdate".$p['rand']."'>" .
+                      "<span class='sr-only'>" . __('Clear') . "</span></span>";
+      }
+      $output .= "</div>";*/
+
+
       return [
-         'pure_form' => 'aligned',
-         'columns'   => 2,
+         'pure_form'    => 'aligned',
+         'columns'      => 2,
          'submit_label' => __('Add'),
-         'elements'  => $elements
+         'elements'     => $elements
       ];
    }
 }
