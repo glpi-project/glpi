@@ -79,7 +79,7 @@
    {% if glpi_form.footer is not defined or glpi_form.footer == true %}
    {% endif %}
 {% endblock %}
-   {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
+   {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
 {% block form_submit %}
    {% include "elements/submit.twig" with {'form_class': 'center', 'element': {'name': 'submit', 'value': glpi_form.submit_label|default(__('Post')), 'width': glpi_form.columns}} %}
 {% endblock %}

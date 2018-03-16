@@ -207,7 +207,37 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
 
-      $params = [];
+      /*$params = [];
+      ob_start();
+      $item->display([
+         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+      ]);
+      $contents = ob_get_contents();
+      ob_end_clean();*/
+
+      $form = $item->getAddForm();
+      if (!isset($form['action'])) {
+         $form['action'] = $this->router->pathFor(
+            'do-add-asset',
+            ['itemtype' => $args['itemtype']]
+         );
+      }
+
+      return $this->view->render(
+         $response,
+         'add_page.twig', [
+            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'item'         => $item,
+            'glpi_form'    => $form,
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+         ]
+      );
+   })->setName('add-asset');
+
+   $app->get('/{itemtype}/edit/{id:\d+}', function ($request, $response, $args) {
+      $item = new $args['itemtype']();
+
+      /*$params = [];
       ob_start();
       $item->display([
          'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
@@ -223,8 +253,56 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             'glpi_form'    => $item->getAddForm(),
             'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
          ]
-      );
-   })->setName('add-asset');
+      );*/
+   })->setName('update-asset');
+
+   $app->post('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
+      $item = new $args['itemtype']();
+
+      $post = $request->getParsedBody();
+      $item->check(-1, CREATE, $post);
+      if ($newID = $item->add($post)) {
+         /** FIXME 
+         Event::log($newID, "computers", 4, "inventory",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+
+         if ($_SESSION['glpibackcreated']) {
+            Html::redirect($computer->getLinkURL());
+         }*/
+      }
+
+      $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
+      if ($_SESSION['glpibackcreated']) {
+         $redirect_uri = $this->router->pathFor(
+            'update-asset', [
+               'itemtype'  => $args['itemtype'],
+               'id'        => $item->fields['id']
+            ]
+         );
+      }
+
+      return $response
+         ->withStatus(301)
+         ->withHeader('Location', $redirect_uri);
+      /*$params = [];
+      ob_start();
+      $item->display([
+         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+      ]);
+      $contents = ob_get_contents();
+      ob_end_clean();
+      return $this->view->render(
+         $response,
+         'add_page.twig', [
+            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'item'         => $item,
+            'contents'     => $contents,
+            'glpi_form'    => $item->getAddForm(),
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+         ]
+      );*/
+   })->setName('do-add-asset');
+
 
    // Run app
    $app->run();
