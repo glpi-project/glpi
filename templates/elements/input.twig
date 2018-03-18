@@ -46,7 +46,7 @@
          {%- endif -%}
          {# FIXME: find a way to identify auto-fillable fields #}
          {% if element.autofill is defined and element.autofill == true %}
-            {{ item.getAutofillMark(element.name, withtemplate)|raw }}
+            {{ item.getAutofillMark(element.name, {'withtemplate': withtemplate})|raw }}
          {% endif %}
       </label>
       {% endif %}

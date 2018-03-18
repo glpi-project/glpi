@@ -43,4 +43,21 @@
          <option value="{{ value }}">{{ label }}</option>
    {% endfor %}
     </select>
+{% if element.listicon is not defined or element.listicon == true %}
+   <a href="{{ path_for('asset', {'itemtype': element.itemtype}) }}" class="tooltip"
+      data-tooltip="{{ __s("Show %1$s")|format(element.itemtype_name) }}">
+      <span class='fa fa-info pointer'></span>
+   </a>
+{% endif %}
+{% if element.addicon is not defined or element.addicon == true %}
+   <span class="fa fa-plus-circle pointer" title="{{ __s('Add') }}"
+{#onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['name'].$params['rand']).".dialog('open');\"#}
+      ><span class="sr-only">{{ __s('Add') }}</span>
+   </span>
+{#
+      $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['name'].$params['rand'],
+                                                        $item->getFormURL(),
+                                                        ['display' => false]);
+      #}
+{% endif %}
 {% endblock %}
