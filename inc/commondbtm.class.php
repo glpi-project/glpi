@@ -5149,6 +5149,9 @@ class CommonDBTM extends CommonGLPI {
          'groups_id_tech'  => [
             'label'  => __('Group in charge')
          ],
+         'manufacturers_id'   => [
+            'label'  => __('Manufacturer')
+         ],
          'computermodels_id' => [
             'label'  => __('Model')
          ],
@@ -5161,6 +5164,33 @@ class CommonDBTM extends CommonGLPI {
          'serial'          => [
             'label'     => __('Serial'),
             'autofill'  => true
+         ],
+         'contact'         => [
+            'label'     => __('Alternate username')
+         ],
+         'otherserial'     => [
+            'label'     => __('Inventory number')
+         ],
+         'users_id'        => [
+            'label'     => __('User')
+         ],
+         'groups_id'       => [
+            'label'     => __('Group')
+         ],
+         'networks_id'     => [
+            'label'     => __('Network')
+         ],
+         'comment'         => [
+            'label'     => __('Comment'),
+         ],
+         'domains_id'      => [
+            'label'     => __('Domain')
+         ],
+         'uuid'            => [
+            'label'     => __('UUID')
+         ],
+         'autoupdatesystems_id'  => [
+            'label'     => __('Update source')
          ]
       ];
 
@@ -5196,7 +5226,9 @@ class CommonDBTM extends CommonGLPI {
    protected function getFieldsToDrop($add = false) {
       $fields = [
          'entities_id',
-         'is_recursive'
+         'is_recursive',
+         'template_name',
+         'ticket_tco' //what is this one?
       ];
       if ($add == true) {
          $fields[] = 'id';
