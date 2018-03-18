@@ -5133,7 +5133,7 @@ class CommonDBTM extends CommonGLPI {
     * @return array
     */
    protected function getFormFields() {
-      return [
+      $fields = [
          'name'         => [
             'label'  => __('Name')
          ],
@@ -5163,6 +5163,20 @@ class CommonDBTM extends CommonGLPI {
             'autofill'  => true
          ]
       ];
+
+      global $DB;
+      if ($dbfields = $DB->list_fields($this->getTable())) {
+         foreach (array_keys($fields) as $field) {
+            if (!isset($dbfields[$field])) {
+               Toolbox::logWarning(
+                  sprintf('Field %1$s does not exists in table %2$s', $field, $this->getTable())
+               );
+               unset($fields[$field]);
+            }
+         }
+      }
+
+      return $fields;
    }
 
    protected function getHiddenFields($add = false) {
