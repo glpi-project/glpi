@@ -264,15 +264,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       $post = $request->getParsedBody();
       $item->check(-1, CREATE, $post);
+      /** FIXME
       if ($newID = $item->add($post)) {
-         /** FIXME 
          Event::log($newID, "computers", 4, "inventory",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
 
          if ($_SESSION['glpibackcreated']) {
             Html::redirect($computer->getLinkURL());
-         }*/
-      }
+         }
+      }*/
 
       $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
       if ($_SESSION['glpibackcreated']) {
