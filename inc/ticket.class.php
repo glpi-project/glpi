@@ -6874,8 +6874,7 @@ class Ticket extends CommonITILObject {
          $date = "";
          if (isset($item_i['date'])) {
             $date = $item_i['date'];
-         }
-         if (isset($item_i['date_mod'])) {
+         } else if (isset($item_i['date_mod'])) {
             $date = $item_i['date_mod'];
          }
 
