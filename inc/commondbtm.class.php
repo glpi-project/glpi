@@ -5257,20 +5257,40 @@ class CommonDBTM extends CommonGLPI {
     * @return array
     */
    public function getAddForm() {
+      return $this->getForm(true);
+   }
+
+   /**
+    * Get edit form
+    *
+    * @return array
+    */
+   public function getEditForm() {
+      return $this->getForm(false);
+   }
+
+   /**
+    * Get form
+    *
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   public function getForm($add = false) {
       global $DB;
       $columns = $DB->list_fields($this->getTable());
 
       $this->form_elements = [];
-      $form_fields = $this->getFormFields();
+      $form_fields = $this->getFormFields($add);
       foreach ($form_fields as $name => $form_field) {
          $this->form_elements[$name] = $form_field;
       }
 
       foreach ($columns as $column) {
-         $this->form_elements[$column['Field']] = $this->buildFormElement($column);
+         $this->form_elements[$column['Field']] = $this->buildFormElement($column, $add);
       }
 
-      foreach ($this->getFormFieldsToDrop(true) as $field) {
+      foreach ($this->getFormFieldsToDrop($add) as $field) {
          unset($this->form_elements[$field]);
       }
 
@@ -5284,12 +5304,20 @@ class CommonDBTM extends CommonGLPI {
       return [
          'pure_form'    => 'aligned',
          'columns'      => 2,
-         'submit_label' => __('Add'),
+         'submit_label' => $add ? __('Add') : __('Update'),
          'elements'     => $this->form_elements
       ];
    }
 
-   protected function buildFormElement(array $column) {
+   /**
+    * Builds a form element
+    *
+    * @param array $column Database column informations
+    * @param boolean $add Add or edit
+    *
+    * @return array
+    */
+   protected function buildFormElement(array $column, $add = false) {
       $element = [
          'type'         => null,
          'name'         => $column['Field'],
@@ -5302,7 +5330,7 @@ class CommonDBTM extends CommonGLPI {
          $element = $this->form_elements[$column['Field']] + $element;
       }
 
-      $hiddens = $this->getFormHiddenFields(true);
+      $hiddens = $this->getFormHiddenFields($add);
       if (in_array($column['Field'], $hiddens)) {
          $element['type'] = 'hidden';
       } else if (Toolbox::endsWith($column['Field'], '_id') || strstr($column['Field'], '_id_')) {
@@ -5326,6 +5354,9 @@ class CommonDBTM extends CommonGLPI {
                $element['type'] = 'text';
                break;
          }
+      }
+      if (isset($this->fields[$column['Field']])) {
+         $element['value'] = $this->fields[$column['Field']];
       }
 
       return $element;

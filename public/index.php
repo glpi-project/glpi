@@ -210,8 +210,14 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
 
-      /*$params = [];
-      ob_start();
+      //reload data from session on error
+      if (isset($_GET['item_rand'])) {
+         $item->getFromResultset($_SESSION["{$args['itemtype']}_add_$rand"]);
+         unset($_SESSION["{$args['itemtype']}_add_$rand"]);
+      }
+
+      /** TODO: find a way to switch to legacy view when needed */
+      /*ob_start();
       $item->display([
          'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
       ]);
@@ -222,7 +228,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (!isset($form['action'])) {
          $form['action'] = $this->router->pathFor(
             'do-add-asset',
-            ['itemtype' => $args['itemtype']]
+            $args
          );
       }
 
@@ -240,23 +246,39 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $app->get('/{itemtype}/edit/{id:\d+}', function ($request, $response, $args) {
       $item = new $args['itemtype']();
 
-      /*$params = [];
+      //reload data from session on error
+      if (isset($_GET['item_rand'])) {
+         $item->getFromResultset($_SESSION["{$args['itemtype']}_edit_$rand"]);
+         unset($_SESSION["{$args['itemtype']}_edit_$rand"]);
+      }
+
+      /** TODO: find a way to switch to legacy view when needed */
       ob_start();
       $item->display([
+         'id'           => $args['id'],
          'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
       ]);
       $contents = ob_get_contents();
       ob_end_clean();
+
+      $form = $item->getEditForm();
+      if (!isset($form['action'])) {
+         $form['action'] = $this->router->pathFor(
+            'do-edit-asset',
+            $args
+         );
+      }
+
       return $this->view->render(
          $response,
-         'add_page.twig', [
+         'edit_page.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
             'item'         => $item,
             'contents'     => $contents,
-            'glpi_form'    => $item->getAddForm(),
+            'glpi_form'    => $form,
             'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
          ]
-      );*/
+      );
    })->setName('update-asset');
 
    $app->post('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
@@ -264,48 +286,67 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       $post = $request->getParsedBody();
       $item->check(-1, CREATE, $post);
-      /** FIXME
-      if ($newID = $item->add($post)) {
+      $newID = $item->add($post);
+      if ($newID) {
+         $rand = mt_rand();
+         $_SESSION["{$args['itemtype']}_add_$rand"] = $post;
+         $redirect_uri = $this->router->pathFor('add-asset', $args) . "?item_rand=$rand";
+
+         /** FIXME
          Event::log($newID, "computers", 4, "inventory",
-            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));*/
 
-         if ($_SESSION['glpibackcreated']) {
+         /*if ($_SESSION['glpibackcreated']) {
             Html::redirect($computer->getLinkURL());
+         }*/
+      } else {
+         $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
+         if ($_SESSION['glpibackcreated']) {
+            $redirect_uri = $this->router->pathFor(
+               'update-asset', [
+                  'itemtype'  => $args['itemtype'],
+                  'id'        => $item->fields['id']
+               ]
+            );
          }
-      }*/
-
-      $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
-      if ($_SESSION['glpibackcreated']) {
-         $redirect_uri = $this->router->pathFor(
-            'update-asset', [
-               'itemtype'  => $args['itemtype'],
-               'id'        => $item->fields['id']
-            ]
-         );
       }
 
       return $response
          ->withStatus(301)
          ->withHeader('Location', $redirect_uri);
-      /*$params = [];
-      ob_start();
-      $item->display([
-         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-      ]);
-      $contents = ob_get_contents();
-      ob_end_clean();
-      return $this->view->render(
-         $response,
-         'add_page.twig', [
-            'page_title'   => $item->getTypeName(Session::getPluralNumber()),
-            'item'         => $item,
-            'contents'     => $contents,
-            'glpi_form'    => $item->getAddForm(),
-            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-         ]
-      );*/
    })->setName('do-add-asset');
 
+   $app->post('/{itemtype}/edit[/{withtemplate}]', function ($request, $response, $args) {
+      $item = new $args['itemtype']();
+
+      $post = $request->getParsedBody();
+      $item->check($post['id'], UPDATE);
+      if (!$item->update($post)) {
+         $rand = mt_rand();
+         $_SESSION["{$args['itemtype']}_edit_$rand"] = $post;
+         $redirect_uri = $this->router->pathFor('add-asset', $args) . "?item_rand=$rand";
+         /* FIXME:
+         Event::log($_POST["id"], "computers", 4, "inventory",
+               //TRANS: %s is the user login
+            sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+         */
+      } else {
+         $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
+         if ($_SESSION['glpibackcreated']) {
+            $redirect_uri = $this->router->pathFor(
+               'update-asset', [
+                  'itemtype'  => $args['itemtype'],
+                  'id'        => $item->fields['id']
+               ]
+            );
+         }
+      }
+
+      return $response
+         ->withStatus(301)
+         ->withHeader('Location', $redirect_uri);
+
+   })->setName('do-edit-asset');
 
    // Run app
    $app->run();
