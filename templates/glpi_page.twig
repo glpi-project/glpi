@@ -140,6 +140,7 @@
       $output = self::select($name, $values, $options);
       #}
 
+      $(function() {
       $('.forSelect2').select2({
          width: '14em{#$width#}',
          minimumInputLength: 0,
@@ -199,9 +200,16 @@ permit_select_parent	0
       if (!empty($on_change)) {
          $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
-      }
-      $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
-      #}
+      }#}
+         $('label').on(
+            'click', function(){
+               var _this = $(this);
+               if (_next = _this.next('.forSelect2')) {
+                  _next.select2('open');
+               }
+            }
+         );
+      });
    </script>
    {{ parent() }}
 {% endblock %}
