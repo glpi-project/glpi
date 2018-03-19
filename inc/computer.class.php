@@ -54,6 +54,8 @@ class Computer extends CommonDBTM {
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
 
+   protected $twig_compat              = true;
+
 
    /**
     * Name of the type

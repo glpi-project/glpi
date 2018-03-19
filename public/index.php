@@ -91,6 +91,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $CFG_GLPI
       );
 
+      $view->getEnvironment()->addGlobal(
+         'glpi_layout',
+         $_SESSION['glpilayout']
+      );
+
       if (Session::getLoginUserID()) {
          $view->getEnvironment()->addGlobal(
             'user_name',
@@ -209,27 +214,37 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    $app->get('/{itemtype}/add[/{withtemplate}]', function ($request, $response, $args) {
       $item = new $args['itemtype']();
+      $get = $request->getQueryParams();
 
       //reload data from session on error
-      if (isset($_GET['item_rand'])) {
-         $item->getFromResultset($_SESSION["{$args['itemtype']}_add_$rand"]);
-         unset($_SESSION["{$args['itemtype']}_add_$rand"]);
+      if (isset($get['item_rand'])) {
+         $item->getFromResultset($_SESSION["{$args['itemtype']}_add_{$get['item_rand']}"]);
+         unset($_SESSION["{$args['itemtype']}_add_{$get['item_rand']}"]);
       }
 
-      /** TODO: find a way to switch to legacy view when needed */
-      /*ob_start();
-      $item->display([
-         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-      ]);
-      $contents = ob_get_contents();
-      ob_end_clean();*/
+      $params = [];
 
-      $form = $item->getAddForm();
-      if (!isset($form['action'])) {
-         $form['action'] = $this->router->pathFor(
-            'do-add-asset',
-            $args
+      if (!$item->isTwigCompat()) {
+         Toolbox::deprecated(
+            sprintf(
+               '%1$s is not compatible with new templating system!',
+               $args['itemtype']
+            )
          );
+         ob_start();
+         $item->display([
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+         ]);
+         $params['contents'] = ob_get_contents();
+         ob_end_clean();
+      } else {
+         $params['glpi_form'] = $item->getAddForm();
+         if (!isset($form['action'])) {
+            $form['action'] = $this->router->pathFor(
+               'do-add-asset',
+               $args
+            );
+         }
       }
 
       return $this->view->render(
@@ -237,36 +252,45 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'add_page.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
             'item'         => $item,
-            'glpi_form'    => $form,
             'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-         ]
+         ] + $params
       );
    })->setName('add-asset');
 
    $app->get('/{itemtype}/edit/{id:\d+}', function ($request, $response, $args) {
       $item = new $args['itemtype']();
+      $get = $request->getQueryParams();
 
       //reload data from session on error
-      if (isset($_GET['item_rand'])) {
+      if (isset($get['item_rand'])) {
          $item->getFromResultset($_SESSION["{$args['itemtype']}_edit_$rand"]);
          unset($_SESSION["{$args['itemtype']}_edit_$rand"]);
       }
 
-      /** TODO: find a way to switch to legacy view when needed */
-      ob_start();
-      $item->display([
-         'id'           => $args['id'],
-         'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-      ]);
-      $contents = ob_get_contents();
-      ob_end_clean();
+      $params = [];
 
-      $form = $item->getEditForm();
-      if (!isset($form['action'])) {
-         $form['action'] = $this->router->pathFor(
-            'do-edit-asset',
-            $args
+      if (!$item->isTwigCompat()) {
+         Toolbox::deprecated(
+            sprintf(
+               '%1$s is not compatible with new templating system!',
+               $args['itemtype']
+            )
          );
+         ob_start();
+         $item->display([
+            'id'           => $args['id'],
+            'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
+         ]);
+         $params['contents'] = ob_get_contents();
+         ob_end_clean();
+      } else {
+         $params['glpi_form'] = $item->getEditForm();
+         if (!isset($params['glpi_form']['action'])) {
+            $params['glpi_form']['action'] = $this->router->pathFor(
+               'do-edit-asset',
+               $args
+            );
+         }
       }
 
       return $this->view->render(
@@ -274,10 +298,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          'edit_page.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
             'item'         => $item,
-            'contents'     => $contents,
-            'glpi_form'    => $form,
             'withtemplate' => (isset($args['withtemplate']) ? $args['withtemplate'] : 0)
-         ]
+         ] + $params
       );
    })->setName('update-asset');
 
@@ -287,19 +309,18 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $post = $request->getParsedBody();
       $item->check(-1, CREATE, $post);
       $newID = $item->add($post);
-      if ($newID) {
+      if (!$newID) {
          $rand = mt_rand();
          $_SESSION["{$args['itemtype']}_add_$rand"] = $post;
          $redirect_uri = $this->router->pathFor('add-asset', $args) . "?item_rand=$rand";
-
-         /** FIXME
+      } else {
+         /** FIXME: should be handled in commondbtm
          Event::log($newID, "computers", 4, "inventory",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));*/
 
          /*if ($_SESSION['glpibackcreated']) {
             Html::redirect($computer->getLinkURL());
          }*/
-      } else {
          $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
          if ($_SESSION['glpibackcreated']) {
             $redirect_uri = $this->router->pathFor(
@@ -325,12 +346,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $rand = mt_rand();
          $_SESSION["{$args['itemtype']}_edit_$rand"] = $post;
          $redirect_uri = $this->router->pathFor('add-asset', $args) . "?item_rand=$rand";
-         /* FIXME:
+      } else {
+         /** FIXME: should be handled in commondbtm
          Event::log($_POST["id"], "computers", 4, "inventory",
                //TRANS: %s is the user login
             sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
          */
-      } else {
          $redirect_uri = $this->router->pathFor('asset', ['itemtype' => $args['itemtype']]);
          if ($_SESSION['glpibackcreated']) {
             $redirect_uri = $this->router->pathFor(

@@ -30,6 +30,8 @@
  #}
 {% extends "glpi.twig" %}
 
+{% block html_class %}layout_{{ glpi_layout }}{% endblock %}
+
 {% block head %}
    {% set css_paths = css_paths|default([])|merge([
       '../lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.css',

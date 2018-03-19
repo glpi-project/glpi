@@ -32,9 +32,13 @@
 
 {% block title %}{{ __('Add new %1$s')|format(page_title) }}{% endblock %}
 {% block content %}
+   {% if contents is defined %}
+      {{ contents|raw }}
+   {% else %}
    <div class="pure-g">
       <div class="pure-u-3-4 add">
          {% include "elements/form.twig" with {'glpi_form': glpi_form} %}
       </div>
    </div>
+   {% endif %}
 {% endblock %}

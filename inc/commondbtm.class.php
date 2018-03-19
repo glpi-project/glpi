@@ -122,7 +122,12 @@ class CommonDBTM extends CommonGLPI {
    public $taborientation = 'vertical';
 
    /**
-    * {@inheritDoc}
+    * @deprecated
+    * will be dropped in a future version
+    */
+   protected $twig_compat                       = false;
+
+   /**
     */
    public $get_item_to_display_tab = true;
 
@@ -5360,5 +5365,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       return $element;
+   }
+
+   /**
+    * Is current object compatible with twig templating?
+    *
+    * @return boolean
+    */
+   public function isTwigCompat() {
+      return $this->twig_compat;
    }
 }
