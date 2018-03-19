@@ -32,33 +32,37 @@
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
    <header class="pure-form pure-form-aligned">
-      {% if withtemplate == 2 and item.isNewID() %}
-         {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
-         {{ __('Created from the template %s')|format(item.fields['template_name']) }}
-      {% elseif withtemplate == 1 %}
-         {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
-         {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
-            {#Html::autocompletionTextField(
-               $this,
-               'template_name',
-               [
-                  'size'      => 25,
-                  'required'  => true,
-                  'rand'      => $rand
-               ]
-            );#}
-      {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
-         {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-         printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
-         {{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}
+      {% if glpi_form.header_title is defined %}
+         {{ glpi_form.header_title }}
       {% else %}
-         {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
-         if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
-            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-            $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
-         }
-         echo $nametype;#}
-         {{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}
+         {% if withtemplate is defined and withtemplate == 2 and item.isNewID() %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
+            {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+         {% elseif withtemplate is defined and withtemplate == 1 %}
+            {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
+            {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
+               {#Html::autocompletionTextField(
+                  $this,
+                  'template_name',
+                  [
+                     'size'      => 25,
+                     'required'  => true,
+                     'rand'      => $rand
+                  ]
+               );#}
+         {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
+            {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+            printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
+            {{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}
+         {% else %}
+            {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+            if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
+               //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+               $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+            }
+            echo $nametype;#}
+            {{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}
+         {% endif %}
       {% endif %}
    </header>
    {% endif %}
@@ -81,6 +85,6 @@
 {% endblock %}
    {% include "elements/hidden.twig" with {'element': {'name': '_glpi_csrf_token', 'value': call_static('Session', 'getNewCSRFToken')}} %}
 {% block form_submit %}
-   {% include "elements/submit.twig" with {'form_class': 'center', 'element': {'name': 'submit', 'value': glpi_form.submit_label|default(__('Post')), 'width': glpi_form.columns}} %}
+   {% include "elements/submit.twig" with {'form_class': 'center', 'element': {'name': 'submit', 'value': glpi_form.submit_label|default(__('Post')), 'width': glpi_form.columns|default(null)}} %}
 {% endblock %}
 </form>

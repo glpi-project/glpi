@@ -138,6 +138,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       $glpi_form = [
          'pure_form' => 'aligned',
+         'header_title' => null,
          'elements'  => [
             'login'     => [
                'type'      => 'text',
