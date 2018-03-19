@@ -216,6 +216,7 @@ permit_select_parent	0
 
 {# Prefs / Logout link #}
 {% block topmenu %}
+   {% spaceless %}
    <div id='c_preference' >
       <ul>
          <li id='deconnexion'>
@@ -309,6 +310,7 @@ permit_select_parent	0
 
       </ul>
    </div>
+   {% endspaceless %}
 {% endblock %}
 
 {% macro menu_links(entry) %}
