@@ -396,6 +396,82 @@ permit_select_parent	0
             }
          );
       });
+
+      var _initBookmarkPanel = function() {
+         createSlidePanel({
+            'name':     'showSavedSearches',
+            'position': 'right',
+            'title':    '{{ __('Saved searches') }}',
+            'url':      '{{ CFG_GLPI.root_doc }}/ajax/savedsearch.php?action=show',
+            'icon':     '/pics/menu_config.png',
+            'icon_url': '{{path_for('asset', {'itemtype': 'SavedSearch'}) }}',
+            'icon_txt': '{{ __('Manage saved searches') }}'
+         });
+
+      };
+
+      var createSlidePanel = function(params) {
+         var _params = Object.assign({
+            'name':     undefined,
+            'position': undefined,
+            'icon':     true,
+            'icon_url': undefined,
+         }, params);
+
+         var _div = $('<div id="' + _params.name + '" class="slidepanel on' + _params.position  + '">');
+         var _header = $('<div class="header">');
+         var _button = $('<button type="button" class="close ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" title="{{ __s('Close') }}"><span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">{{ __('Close') }}</span></button>');
+         _header.append(_button);
+
+         if (_params.icon) {
+            var _img = $('<img class="icon" src="{{ CFG_GLPI.root_doc }}'+ _params.icon + '" alt="' + _params.icon_txt + '" title="' + _params.icon_txt + '"/>');
+            if (_params.icon_url) {
+               var _a = $('<a href="' + _params.icon_url  + '"></a>');
+               _a.append(_img);
+               _header.append(_a);
+            } else {
+               _header.append(_img);
+            }
+         }
+
+         if (_params.title != '') {
+            _header.append('<h3>' + _params.title + '</h3>');
+         }
+
+         _div.append(_header);
+         _div.append($('<div class="contents"></div>'));
+
+         _div.hide().appendTo('body');
+
+         $('#' + _params.name + ' .close').on('click', function() {
+            $('#' + _params.name).hide(
+               'slow',
+               function () {
+                  $(this).find('.contents').empty();
+               }
+            );
+         });
+         $('#' + _params.name + 'Link').on('click', function() {
+            $('#' + _params.name).show(
+               'slow',
+               function() {
+                  $.ajax({
+                     url: _params.url,
+                     beforeSend: function() {
+                        var _loader = $('<div id="loadingslide"><div class="loadingindicator">{{ __s('Loading...') }}</div></div>');
+                        $('#' + _params.name + ' .contents').html(_loader);
+                     },
+                     complete: function() {
+                        $('#loadingslide').remove();
+                     },
+                     success: function(res) {
+                        $('#' + _params.name + ' .contents').html(res);
+                     }
+                  });
+               }
+            );
+         });
+      }
    </script>
    {{ parent() }}
 {% endblock %}
@@ -426,20 +502,25 @@ permit_select_parent	0
          </li>
 
       {% if call_static('Config', 'canUpdate') %}
-      {#if (Config::canUpdate()) {
-         $current_mode = $_SESSION['glpi_use_mode'];
-         $class = 'debug' . ($current_mode == Session::DEBUG_MODE ? 'on' : 'off');
-         $title = $current_mode == Session::DEBUG_MODE ?
-            __('Debug mode enabled') :
-            __('Debug mode disabled');
-         echo "<li id='debug_mode'>";
-         echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
-                title='$title'>";
-         echo "<span class='sr-only'>" . __('Change mode')  . "</span>";
-         echo "</a>";
-         echo "</li>";
-      }#}
+         <li id='debug_mode'>
+         {% set dbgbtn_class = 'debugoff' %}
+         {% set dbgbtn_title = __('Debug mode disabled') %}
+         {% if glpi_debug %}
+            {% set dbgbtn_class = 'debugon' %}
+            {% set dbgbtn_title = __('Debug mode enabled') %}
+         {% endif %}
+            <a href="?switch=switch-debug" class="fa fa-bug {{ dbgbtn_class }}"
+                title="{{ dbgbtn_title }}">
+               <span class='sr-only'>{{ __('Change mode') }}</span>
+            </a>
+         </li>
       {% endif %}
+
+         <li id='bookmark_link'>
+            <a href='#' id='showSavedSearchesLink' class='fa fa-star' title="{{ __s('Load a bookmark') }}">
+               <span class='sr-only'>{{ __('Saved searches') }}</span>
+            </a>
+         </li>
 
       {#/// Bookmark load
       echo "<li id='bookmark_link'>";
@@ -526,5 +607,5 @@ permit_select_parent	0
 {% endblock %}
 
 {% block footer %}
-   {{ exectime() }}<br/>
+   {% if glpi_debug == true %}{{ exectime() }}<br/>{% endif %}
 {% endblock %}

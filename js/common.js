@@ -635,6 +635,7 @@ $(function() {
    });
 
    _initInputs();
+   _initBookmarkPanel();
 });
 
 /**

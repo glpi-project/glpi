@@ -58,7 +58,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // Create app
    $app_settings = [
       'settings' => [
-         'displayErrorDetails' => true,
+         'displayErrorDetails'               => true,
+         'determineRouteBeforeAppMiddleware' => true
       ],
       'logger' => [
          'name'   => 'GLPI',
@@ -96,6 +97,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $_SESSION['glpilayout']
       );
 
+      $view->getEnvironment()->addGlobal(
+         'glpi_debug',
+         $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+      );
+
       if (Session::getLoginUserID()) {
          $view->getEnvironment()->addGlobal(
             'user_name',
@@ -130,6 +136,30 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       return $view;
    };
+
+   /**
+    * Switch middleware (to get UI reloaded after switching
+    * debug mode, language, ...
+    */
+   $app->add(function ($request, $response, $next) {
+      $get = $request->getQueryParams();
+
+      if (isset($get['switch'])) {
+         $switch_route = $get['switch'];
+         $route = $request->getAttribute('route');
+         $uri = $request->getUri();
+         $route_name = $route->getName();
+         $arguments = $route->getArguments();
+
+         $_SESSION['glpi_switch_route'] = [
+            'name'      => $route_name,
+            'arguments' => $arguments
+         ];
+
+         return $response->withRedirect($this->router->pathFor($switch_route), 301);
+      }
+      return $next($request, $response);
+   });
 
    // Render Twig template in route
    $app->get('/', function ($request, $response, $args) {
@@ -224,7 +254,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
       $params = [];
 
-      if (!$item->isTwigCompat()) {
+      if (!$item->isTwigCompat() && !isset($get['twig'])) {
          Toolbox::deprecated(
             sprintf(
                '%1$s is not compatible with new templating system!',
@@ -368,6 +398,35 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          ->withHeader('Location', $redirect_uri);
 
    })->setName('do-edit-asset');
+
+   $app->get('/ajax/switch-debug', function ($request, $response, $args) use ($CFG_GLPI) {
+      if (Config::canUpdate()) {
+         $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+         $user = new User();
+         $user->update(
+            [
+               'id'        => Session::getLoginUserID(),
+               'use_mode'  => $mode
+            ]
+         );
+         Session::addMessageAfterRedirect(
+            $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
+               __('Debug mode has been enabled!') :
+               __('Debug mode has been disabled!')
+         );
+      }
+
+      $route = $_SESSION['glpi_switch_route'];
+      $_SESSION['glpi_switch_route'] = null;
+
+      return $response->withRedirect(
+         $this->router->pathFor(
+            $route['name'],
+            $route['arguments']
+         ),
+         301
+      );
+   })->setName('switch-debug');
 
    // Run app
    $app->run();
