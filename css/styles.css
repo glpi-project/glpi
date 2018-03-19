@@ -2448,7 +2448,6 @@ a.icon_nav_move:hover img {
 
 #header {
    /*height: 96px;*/
-   margin-bottom: 1.5em;
 }
 
 #header_top {
@@ -2696,6 +2695,7 @@ ul#menu ul.ssmenu {
    padding: 3px 0;
    box-sizing: border-box;
    background-color: #FFF;
+   margin-bottom: 1.5em;
 }
 
 #c_ssmenu2 ul {

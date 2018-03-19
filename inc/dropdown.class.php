@@ -1824,7 +1824,7 @@ class Dropdown {
          $output .= implode('<br>', $to_display);
       } else {
 
-         $output  .= "<select name='$field_name' id='$field_id'";
+         $output  .= "<select name='$field_name' id='$field_id' class='forSelect2'";
 
          if ($param['tooltip']) {
             $output .= ' title="'.Html::entities_deep($param['tooltip']).'"';
