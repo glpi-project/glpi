@@ -2447,7 +2447,8 @@ a.icon_nav_move:hover img {
 /* ################--------------- Header / menu  ---------------#################### */
 
 #header {
-   height: 96px;
+   /*height: 96px;*/
+   margin-bottom: 1.5em;
 }
 
 #header_top {
@@ -2858,6 +2859,7 @@ ul#menu ul.ssmenu {
    padding: 6px;
    height: 18px;
    padding: 5px;
+   margin-top: 1.5em;
 }
 
 #footer > table {
@@ -4098,6 +4100,10 @@ tr.log_history_filter_row .select2-container--default .select2-selection--multip
       top: 0;
       width: 100%;
       z-index: 1000;
+   }
+
+   #content {
+      margin-top: 7em;
    }
 
    #c_ssmenu2 {

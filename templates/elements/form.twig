@@ -32,10 +32,25 @@
 {% block form_header %}
    {% if glpi_form.header is not defined or glpi_form.header == true %}
    <header class="pure-form pure-form-aligned">
-      {% if item.fields['id'] is not defined or item.fields['id'] <= 0 %}
+      {% if withtemplate == 2 and item.isNewID() %}
+         {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
+         {{ __('Created from the template %s')|format(item.fields['template_name']) }}
+      {% elseif withtemplate == 1 %}
+         {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
+         {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
+            {#Html::autocompletionTextField(
+               $this,
+               'template_name',
+               [
+                  'size'      => 25,
+                  'required'  => true,
+                  'rand'      => $rand
+               ]
+            );#}
+      {% elseif item.fields['id'] is not defined or item.fields['id'] <= 0 %}
          {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
          printf(__('%1$s - %2$s'), __('New item'), $nametype);#}
-         <p>{{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}</p>
+         {{ __('%1$s - %2$s')|format(__('New item'), item.getTypeName(1)) }}
       {% else %}
          {#$nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
          if (!$params['noid'] && ($_SESSION['glpiis_ids_visible'] || empty($nametype))) {
@@ -43,24 +58,7 @@
             $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
          }
          echo $nametype;#}
-         <p>{{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}</p>
-      {% endif %}
-
-      {% if withtemplate == 2 and item.isNewID() %}
-         {% include "elements/hidden.twig" with {'element': {'name': 'template_name', 'value': item.fields['template_name']}} %}
-         {{ __('Created from the template %s')|format(item.fields['template_name']) }}
-      {% elseif withtemplate == 1 %}
-         {% include "elements/hidden.twig" with {'element': {'name': 'is_template', 'value': 1}} %}
-         {% include "elements/input.twig" with {'element': {'type': 'text', 'name': 'template_name', 'label': __('Template name'), 'required': true}, 'notag': true} %}
-         {#Html::autocompletionTextField(
-            $this,
-            'template_name',
-            [
-               'size'      => 25,
-               'required'  => true,
-               'rand'      => $rand
-            ]
-         );#}
+         {{ __('%1$s - ID %2$d')|format(item.getTypeName(1), item.fields['id']) }}
       {% endif %}
    </header>
    {% endif %}
