@@ -2804,6 +2804,10 @@ ul#menu ul.ssmenu, #c_menu .pure-menu-list ul.ssmenu {
    display: inline-block;
    line-height: 23px;
 }
+.profile-selector a {
+   display: inline-block;
+   line-height: 23px;
+}
 
 .icons_block a > img,
 .icons_block i.fa {

@@ -112,7 +112,22 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          Dropdown::getLanguageName($_SESSION['glpilanguage'])
       );
 
+      //TODO: change that!
       if (Session::getLoginUserID()) {
+         ob_start();
+         \Html::showProfileSelecter($container['router']->pathFor('slash')/*$CFG_GLPI["root_doc"]."/front/$mainurl.php"*/);
+         $selecter = ob_get_contents();
+         ob_end_clean();
+
+         $view->getEnvironment()->addGlobal(
+            'glpi_profile_selecter',
+            $selecter
+         );
+      }
+
+      $logged = false;
+      if (Session::getLoginUserID()) {
+         $logged = true;
          $view->getEnvironment()->addGlobal(
             'user_name',
             formatUserName(
@@ -125,6 +140,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             )
          );
       }
+      $view->getEnvironment()->addGlobal('is_logged', $logged);
 
       $menus = Html::generateMenuSession($container['router'], ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE));
       $view->getEnvironment()->addGlobal(
@@ -247,6 +263,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $response,
          'legacy.twig', [
             'page_title'   => $item->getTypeName(Session::getPluralNumber()),
+            'item'         => $item,
             'contents'     => $contents
          ]
       );

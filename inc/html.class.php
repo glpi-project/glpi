@@ -3246,8 +3246,8 @@ class Html {
 
          Dropdown::showFromArray('newprofile', $values,
                                  ['value'     => $_SESSION["glpiactiveprofile"]["id"],
-                                       'width'     => '150px',
-                                       'on_change' => 'submit()']);
+                                  'width'     => '150px',
+                                  'on_change' => 'submit()']);
          Html::closeForm();
          echo '</li>';
       }
@@ -3256,7 +3256,7 @@ class Html {
          echo "<li class='profile-selector'>";
          Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
                                  ['title'       => __('Select the desired entity'),
-                                       'extraparams' => ['target' => $target]]);
+                                  'extraparams' => ['target' => $target]]);
          echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".

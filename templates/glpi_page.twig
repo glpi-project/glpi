@@ -53,6 +53,7 @@
 {% endblock %}
 
 {% block header %}
+   {% spaceless %}
    <div id='header'>
       <div id='header_top'>
          <div id='c_logo'>
@@ -83,18 +84,115 @@
             <a href="{{ path_for('slash') }}{#.$CFG_GLPI["root_doc"]."/front/$mainurl.php#}" title="{{__s('Home') }}">{{ __('Home')}}</a>
          </li>
 
-      {#if ($full === true) {
-         if (isset($menu[$sector])) {
-            $link = "/front/central.php";
+      {% for menu in glpi_menus %}
+         {% set menu_itemtype = item.getType()|lower() %}
+         {% if menu.content[menu_itemtype] is defined %}
+            {% set sector = menu.title %}
+            {% if menu.default is defined %}
+               {% set url = menu.default %}
+            {% else %}
+               {% set url = path_for('slash') %}
+            {% endif %}
+         <li class='breadcrumb_item'>
+            <a href="{{ url }}" title="{{ menu.title }}">
+               {{ menu.title }}
+            </a>
+         </li>
 
-            if (isset($menu[$sector]['default'])) {
-               $link = $menu[$sector]['default'];
+            {% if menu.content[menu_itemtype] is defined %}
+               {% set menu_item = menu.content[menu_itemtype] %}
+{#
+            // Title
+            $with_option = false;
+
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['title'])
+               && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
+
+               $with_option = true;
             }
-            echo "<li class='breadcrumb_item'>".
-               "<a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
-                     $menu[$sector]['title']."</a></li>";
-         }
+#}
+               {% if menu_item.page is defined  %}
+               <li class='breadcrumb_item'>
+                  <a href="{{ menu_item.page }}"{#($with_option?"":"class='here'")."#}
+                     title="{{ menu_item.title }}">
+                     {{ menu_item.title }}
+                  </a>
+               </li>
+               {% endif %}
+{#
+            if ($with_option) {
+               echo "<li class='breadcrumb_item'>".
+                  "<a href='".$CFG_GLPI["root_doc"].
+                        $menu[$sector]['content'][$item]['options'][$option]['page'].
+                        "' class='here' title=\"".
+                        $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
+               echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
+                                    17);
+               echo "</a></li>";
+            }
+            $links = [];
+            // Item with Option case
+            if (!empty($option)
+               && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
+               && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
+               $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
 
+            } else if (isset($menu[$sector]['content'][$item]['links'])
+                     && is_array($menu[$sector]['content'][$item]['links'])) {
+               // Without option case : only item links
+
+               $links = $menu[$sector]['content'][$item]['links'];
+            }#}
+
+               {# Add item #}
+               {% set menu_links = menu_item.links %}
+               <li class='icons_block'>
+                  <span>
+               {% if menu_links.add is defined %}
+                  {% set menu_btn = {
+                     'url': path_for('add-asset', {'itemtype': menu_itemtype}),
+                     'text': __('Add'),
+                  } %}
+               {% else %}
+                  {% set menu_btn = {
+                     'url': '#',
+                     'text': __('Add is disabled'),
+                     'class': 'disabled'
+                  } %}
+               {% endif %}
+                  <a href="{{ menu_btn.url }}" class="pointer{% if menu_btn.class is defined %} {{ menu_btn.class}}{% endif %}" title="{{ menu_btn.text }}">
+                     <i class="fa fa-plus"></i>
+                     <span class='sr-only'>{{ menu_btn.text }}</span>
+                  </a>
+               </span>
+
+               {# Search Item #}
+                  <span>
+               {% if menu_links.search is defined %}
+                  {% set menu_btn = {
+                     'url': path_for('asset', {'itemtype': menu_itemtype}),
+                     'text': __('Search'),
+                  } %}
+               {% else %}
+                  {% set menu_btn = {
+                     'url': '#',
+                     'text': __('Search is disabled'),
+                     'class': 'disabled'
+                  } %}
+               {% endif %}
+                  <a href="{{ menu_btn.url }}" class="pointer{% if menu_btn.class is defined %} {{ menu_btn.class}}{% endif %}" title="{{ menu_btn.text }}">
+                     <i class="fa fa-search"></i>
+                     <span class='sr-only'>{{ menu_btn.text }}</span>
+                  </a>
+               </span>
+
+            {% endif %}
+
+         {% endif %}
+      {% endfor %}
+
+      {#if ($full === true) {
          if (isset($menu[$sector]['content'][$item])) {
             // Title
             $with_option = false;
@@ -249,14 +347,18 @@
       }
 
       // Add common items
-
-      // Profile selector
-      // check user id : header used for display messages when session logout
-      if (Session::getLoginUserID()) {
-         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/$mainurl.php");
-      }#}
+#}
+      {#
+         Profile selector
+         check user id : header used for display messages when session logout
+      #}
+      {% if is_logged and glpi_profile_selecter is defined %}
+         {{ glpi_profile_selecter|raw }}
+{# self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/$mainurl.php"); #}
+      {% endif %}
       </ul>
    </div>
+   {% endspaceless %}
 {% endblock %}
 
 {% block javascripts %}
