@@ -294,6 +294,47 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Retrieve an item from the database by request. The request is an array
+    * similar to the one expected in DB::request().
+    *
+    * @since 9.3
+    *
+    * @see DB::request()
+    *
+    * @param array $request expression
+    *
+    * @return boolean true if succeed else false
+    **/
+   public function getFromDBByRequest(array $request) {
+      global $DB;
+
+      // Limit the request to the useful expressions
+      $request = array_diff_key($request, [
+         'FROM' => '',
+         'SELECT' => '',
+         'COUNT' => '',
+         'GROUPBY' => '',
+      ]);
+      $request['FROM'] = $this->getTable();
+      $request['SELECT'] = $this->getTable() . '.*';
+
+      $iterator = $DB->request($request);
+      if (count($iterator) == 1) {
+         $this->fields = $iterator->next();
+         $this->post_getFromDB();
+         return true;
+      } else if (count($iterator) > 1) {
+         Toolbox::logWarning(
+               sprintf(
+                     'getFromDBByRequest expects to get one result, %1$s found!',
+                     count($iterator)
+                     )
+               );
+      }
+      return false;
+   }
+
+   /**
     * Get the identifier of the current item
     *
     * @return integer ID
