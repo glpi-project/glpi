@@ -68,6 +68,7 @@ if (isset($_GET['node'])) {
                'COUNT'  => 'cpt',
                'WHERE'  => ['entities_id' => $ID]
             ]);
+            $result2 = $result2->next();
             if ($result2['cpt'] > 0) {
                //apend a i tag (one of shortest tags) to have the is_recursive link
                $path['text'].= '<i/>';
