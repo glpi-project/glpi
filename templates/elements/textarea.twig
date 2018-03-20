@@ -47,7 +47,6 @@
     <textarea
         name="{{ element.name }}"
         id="{{ element.id|default(element.name) }}"
-        value="{% if element.value is defined %}{{ element.value }}{% endif %}"
         cols="25"
         rows="6"
         {% if element.required is defined and element.required == true %} required="required"{% endif %}
@@ -62,5 +61,5 @@
                 data-{{ id }}="{{ data }}"
             {% endfor %}
         {% endif %}
-        >{% if element.value is defined %}{{ element.value|raw }}{% endif %}</textarea><br/>
+        >{% if element.value is defined %}{{ element.value|raw }}{% endif %}</textarea>
 {% endblock %}

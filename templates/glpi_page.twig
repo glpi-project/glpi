@@ -57,7 +57,7 @@
    <div id='header'>
       <div id='header_top'>
          <div id='c_logo'>
-            <a ref="{{ path_for('slash') }}" accesskey="1"><span class="sr-only">{{ __('Home') }}</span></a>
+            <a href="{{ path_for('slash') }}" accesskey="1"><span class="sr-only">{{ __('Home') }}</span></a>
          </div>
          {# Preferences and logout link #}
          {#self::displayTopMenu(true);#}
@@ -492,6 +492,16 @@ permit_select_parent	0
                }
             }
          );
+
+         $('#global_entity_select').on('click', function() {
+            createModalWindow(
+               CFG_GLPI.root_doc + '/ajax/entitytree.php', {
+                  'title': '{{ __('Select the desired entity') }}',
+                  'extraparams': '{{ {'target': path_for('slash')}|json_encode(constant('JSON_FORCE_OBJECT')) }}',
+                  'open': true
+               }
+            );
+         });
       });
 
       var _initBookmarkPanel = function() {
@@ -628,7 +638,7 @@ permit_select_parent	0
 
          <li id="language_link">
       {% if not constant('GLPI_DEMO_MODE') %}
-            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User\$1" title="{{ glpi_lang_name }}">
+            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User$1" title="{{ glpi_lang_name }}">
                {{  glpi_lang_name }}
             </a>
       {% else %}

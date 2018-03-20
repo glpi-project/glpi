@@ -3254,10 +3254,10 @@ class Html {
 
       if (Session::isMultiEntitiesMode()) {
          echo "<li class='profile-selector'>";
-         Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
+         /*Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
                                  ['title'       => __('Select the desired entity'),
-                                  'extraparams' => ['target' => $target]]);
-         echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
+                                 'extraparams' => ['target' => $target]]);*/
+         echo "<a href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
                 $_SESSION["glpiactive_entity_shortname"]."</a>";

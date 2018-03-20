@@ -635,7 +635,9 @@ $(function() {
    });
 
    _initInputs();
-   _initBookmarkPanel();
+   if (typeof _initBookmarkPanel === "function") {
+      _initBookmarkPanel();
+   }
    if ($('#debugtabs').length) {
       _initDebug();
    }
@@ -1114,5 +1116,36 @@ var formatResult = function(result) {
       _elt.html(markup);
    }
 
+   return _elt;
+};
+
+var createModalWindow = function (url, params) {
+   var _params = Object.assign({
+      'width': 800,
+      'height': 400,
+      'modal': true,
+      'open': false,
+      'container': undefined,
+      'title': '',
+      'extraparams': {},
+      'display': true,
+      'js_modal_fields': '',
+   }, params);
+
+   var _elt = (typeof _params.container != 'undefined') ? $(params.container) : $('<div />');
+   _elt.dialog({
+      width: _params.width,
+      autoOpen: _params.open.toString(),
+      height: _params.height,
+      modal: _params.modal.toString(),
+      title: _params.title,
+      open: function (){
+         var _fields = _params.extraparams;
+         /*if (!empty($param['js_modal_fields'])) {
+            $out .= $param['js_modal_fields']."\n";
+         }*/
+         $(this).load(url, _fields);
+      }
+   });
    return _elt;
 };
