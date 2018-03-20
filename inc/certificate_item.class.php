@@ -125,8 +125,8 @@ class Certificate_Item extends CommonDBRelation {
          return 0;
       }
       return countElementsInTable('glpi_certificates_items',
-                                  "`itemtype` IN ('$types')
-                                   AND `certificates_id` = '" . $item->getID() . "'");
+                                  ['itemtype'         => $types,
+                                   'certificates_id'  => $item->getID()]);
    }
 
    /**
