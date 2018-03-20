@@ -107,8 +107,9 @@ class ContractCost extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    * @return bool
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -252,7 +253,9 @@ class ContractCost extends CommonDBChild {
     * Get last datas for a contract
     *
     * @param $contracts_id        integer  ID of the contract
-   **/
+    *
+    * @return array|null
+    */
    function getLastCostForContract($contracts_id) {
       global $DB;
 
@@ -273,7 +276,9 @@ class ContractCost extends CommonDBChild {
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
 
       if ($ID > 0) {

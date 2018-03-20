@@ -78,7 +78,9 @@ class OlaLevel extends LevelAgreementLevel {
     * @param $ola OLA object
     *
     * @since version 9.1 (before showForOLA)
-   **/
+    *
+    * @return bool
+    */
    function showForOLA(OLA $ola) {
       global $DB;
 

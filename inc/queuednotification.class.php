@@ -380,7 +380,9 @@ class QueuedNotification extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -771,7 +773,9 @@ class QueuedNotification extends CommonDBTM {
     * @since version 0.85
     *
     * @param $string
-    **/
+    *
+    * @return mixed|string
+    */
    static function cleanHtml($string) {
 
       $begin_strip     = -1;

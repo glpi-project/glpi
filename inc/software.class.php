@@ -736,8 +736,8 @@ class Software extends CommonDBTM {
     * @param $myname          select name
     * @param $entity_restrict restrict to a defined entity
     *
-    * @return nothing (print out an HTML select box)
-   **/
+    * @return int|string print out an HTML select box
+    */
    static function dropdownLicenseToInstall($myname, $entity_restrict) {
       global $CFG_GLPI, $DB;
 
@@ -788,8 +788,8 @@ class Software extends CommonDBTM {
     * @param is_recursive         boolean  must the software be recursive (false by default)
     * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
     *
-    * @return the software's ID
-   **/
+    * @return int ID of the new
+    */
    function addSoftware($name, $manufacturer_id, $entity, $comment = '',
                         $is_recursive = false, $is_helpdesk_visible = null) {
       global $DB, $CFG_GLPI;
@@ -836,7 +836,8 @@ class Software extends CommonDBTM {
     * @param comment                         comment (default '')
     * @param is_recursive           boolean  must the software be recursive (false by default)
     * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
-   */
+    * @return int
+    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '',
                                   $is_recursive = false, $is_helpdesk_visible = null) {
       global $DB;

@@ -191,7 +191,9 @@ class RuleAction extends CommonDBChild {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return mixed|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -235,10 +237,12 @@ class RuleAction extends CommonDBChild {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
@@ -346,7 +350,9 @@ class RuleAction extends CommonDBChild {
     *    - value
     *    - alreadyused
     *    - display
-   **/
+    *
+    * @return bool|int|string
+    */
    static function dropdownActions($options = []) {
 
       $p['subtype']     = '';
@@ -409,7 +415,9 @@ class RuleAction extends CommonDBChild {
 
    /**
     * @param $ID
-   **/
+    *
+    * @return mixed|string
+    */
    static function getActionByID($ID) {
 
       $actions = self::getActions();
@@ -423,7 +431,9 @@ class RuleAction extends CommonDBChild {
    /**
     * @param $action
     * @param $regex_result
-   **/
+    *
+    * @return mixed
+    */
    static function getRegexResultById($action, $regex_result) {
 
       $results = [];
@@ -444,7 +454,9 @@ class RuleAction extends CommonDBChild {
    /**
     * @param $rules_id
     * @param $sub_type
-   **/
+    *
+    * @return array
+    */
    function getAlreadyUsedForRuleID($rules_id, $sub_type) {
       global $DB;
 

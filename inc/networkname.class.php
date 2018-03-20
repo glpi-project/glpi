@@ -356,7 +356,9 @@ class NetworkName extends FQDNLabel {
     * The address can be unaffected, and remain "free"
     *
     * @param $networkNameID the id of the NetworkName
-   **/
+    *
+    * @return bool
+    */
    static function unaffectAddressByID($networkNameID) {
       return self::affectAddress($networkNameID, 0, '');
    }
@@ -366,7 +368,9 @@ class NetworkName extends FQDNLabel {
     * @param $networkNameID
     * @param $items_id
     * @param $itemtype
-   **/
+    *
+    * @return bool
+    */
    static function affectAddress($networkNameID, $items_id, $itemtype) {
       global $DB;
 
@@ -672,7 +676,9 @@ class NetworkName extends FQDNLabel {
     *
     * @param $item                     CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -820,7 +826,9 @@ class NetworkName extends FQDNLabel {
 
    /**
     * @param $item      CommonDBTM object
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
       global $DB;
 

@@ -58,7 +58,9 @@ class Lock {
     * Display form to unlock fields and links
     *
     * @param CommonDBTM $item the source item
-   **/
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item) {
       global $DB;
 
@@ -326,8 +328,10 @@ class Lock {
     * @see CommonGLPI::getTabNameForItem()
     *
     * @param $item               CommonGLPI object
-    * @param $withtemplate       (default 0)
-   **/
+    * @param $withtemplate (default 0)
+    *
+    * @return string
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->isDynamic() && $item->canCreate()) {
@@ -339,9 +343,11 @@ class Lock {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->isDynamic()) {

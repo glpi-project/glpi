@@ -264,7 +264,9 @@ class DBConnection extends CommonDBTM {
     * @param $required     connection to the specified server is required
     *                      (if connection failed, do not try to connect to the other server)
     * @param $display      display error message (true by default)
-   **/
+    *
+    * @return bool
+    */
    static function establishDBConnection($use_slave, $required, $display = true) {
       global $DB;
 
@@ -335,7 +337,9 @@ class DBConnection extends CommonDBTM {
     *  Get history max date of a GLPI DB
     *
     * @param $DBconnection DB conneciton used
-   **/
+    *
+    * @return int|mixed
+    */
    static function getHistoryMaxDate($DBconnection) {
 
       if ($DBconnection->connected) {
@@ -373,7 +377,9 @@ class DBConnection extends CommonDBTM {
 
    /**
     * @param $name
-   **/
+    *
+    * @return array
+    */
    static function cronInfo($name) {
 
       return ['description' => __('Check the SQL replica'),
@@ -385,7 +391,9 @@ class DBConnection extends CommonDBTM {
     *  Cron process to check DB replicate state
     *
     * @param $task to log and get param
-   **/
+    *
+    * @return int
+    */
    static function cronCheckDBreplicate($task) {
       global $DB;
 

@@ -113,7 +113,9 @@ class RuleCollection extends CommonDBTM {
 
    /**
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    function getRuleListQuery($options = []) {
 
       $p['active']    = true;
@@ -584,7 +586,9 @@ class RuleCollection extends CommonDBTM {
     * @param $ID     the rule ID whose ranking must be modified
     * @param $action up or down
     * @param $condition action on a specific condition
-   **/
+    *
+    * @return bool|mysqli_result
+    */
    function changeRuleOrder($ID, $action, $condition = 0) {
       global $DB;
 
@@ -1484,7 +1488,9 @@ class RuleCollection extends CommonDBTM {
     * @param $target          where to go
     * @param $values    array of data
     * @param $condition       condition to limit rules (default 0)
-    **/
+    *
+    * @return array
+    */
    function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0) {
       global $DB;
 
@@ -1542,8 +1548,8 @@ class RuleCollection extends CommonDBTM {
     * @param params     array parameters for all internal functions
     * @param $condition       condition to limit rules (DEFAULT 0)
     *
-    * @return the output array updated by actions
-   **/
+    * @return array the output array updated by actions
+    */
    function testAllRules($input = [], $output = [], $params = [], $condition = 0) {
 
       // Get Collection datas
@@ -1594,7 +1600,7 @@ class RuleCollection extends CommonDBTM {
     * @param $input  the input data used to check criterias
     * @param $params parameters
     *
-    * @return the updated input datas
+    * @return the updated input data
    **/
    function prepareInputDataForProcess($input, $params) {
       return $input;
@@ -1639,8 +1645,8 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $condition condition to limit rules (DEFAULT 0)
     *
-    * @return the updated input datas
-   **/
+    * @return array the updated input data
+    */
    function prepareInputDataForTestProcess($condition = 0) {
       global $DB;
 
@@ -1726,7 +1732,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $output    array clean output array to clean
     *
-    * @return cleaned array
+    * @return array cleaned
    **/
    function cleanTestOutputCriterias(array $output) {
 
@@ -1778,7 +1784,9 @@ class RuleCollection extends CommonDBTM {
 
    /**
     * @param $output
-   **/
+    *
+    * @return array
+    */
    function preProcessPreviewResults($output) {
       global $PLUGIN_HOOKS;
 

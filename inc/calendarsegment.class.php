@@ -130,7 +130,9 @@ class CalendarSegment extends CommonDBChild {
     * @param $begin_time      begin time to check
     * @param $end_day         end day number
     * @param $end_time        end time to check
-   **/
+    *
+    * @return array
+    */
    static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time) {
       global $DB;
 
@@ -314,7 +316,9 @@ class CalendarSegment extends CommonDBChild {
     * Show segments of a calendar
     *
     * @param $calendar Calendar object
-   **/
+    *
+    * @return bool
+    */
    static function showForCalendar(Calendar $calendar) {
       global $DB, $CFG_GLPI;
 

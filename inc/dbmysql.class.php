@@ -306,7 +306,7 @@ class DBmysql {
     *
     * @param mysqli_result $result MySQL result handler
     *
-    * @return string[]|null result associative array
+    * @return array|null result associative array
     */
    function fetch_assoc($result) {
       return $result->fetch_assoc();

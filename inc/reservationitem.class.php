@@ -277,7 +277,9 @@ class ReservationItem extends CommonDBChild {
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return bool
+    */
    static function showActivationFormForItem(CommonDBTM $item) {
 
       if (!self::canUpdate()) {
@@ -770,9 +772,11 @@ class ReservationItem extends CommonDBChild {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default1)
+    * @param $tabnum (default1)
     * @param $withtemplate (default0)
-    **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {

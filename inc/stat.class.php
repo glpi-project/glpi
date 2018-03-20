@@ -71,8 +71,10 @@ class Stat extends CommonGLPI {
     * @param $date1
     * @param $date2
     * @param $type
-    * @param $parent    (default 0)
-   **/
+    * @param $parent (default 0)
+    *
+    * @return array
+    */
    static function getItems($itemtype, $date1, $date2, $type, $parent = 0) {
       global $CFG_GLPI, $DB;
 
@@ -283,8 +285,10 @@ class Stat extends CommonGLPI {
     * @param $date2
     * @param $start
     * @param $value     array
-    * @param $value2             (default '')
-   **/
+    * @param $value2 (default '')
+    *
+    * @return array
+    */
    static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "") {
 
       $export_data = [];
@@ -685,11 +689,12 @@ class Stat extends CommonGLPI {
    /**
     * @param $itemtype
     * @param $type
-    * @param $begin              (default '')
-    * @param $end                (default '')
-    * @param $param              (default '')
-    * @param $value              (default '')
-    * @param $value2             (default '')
+    * @param $begin (default '')
+    * @param $end (default '')
+    * @param $param (default '')
+    * @param $value (default '')
+    * @param $value2 (default '')
+    * @return array
     */
    static function constructEntryValues($itemtype, $type, $begin = "", $end = "", $param = "", $value = "",
                                         $value2 = "") {

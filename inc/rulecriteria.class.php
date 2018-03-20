@@ -194,7 +194,9 @@ class RuleCriteria extends CommonDBChild {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -247,10 +249,12 @@ class RuleCriteria extends CommonDBChild {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 
@@ -552,7 +556,9 @@ class RuleCriteria extends CommonDBChild {
     *
     * @param $itemtype
     * @param $params    array
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownConditions($itemtype, $params = []) {
 
       $p['name']             = 'condition';

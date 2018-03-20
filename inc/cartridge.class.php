@@ -1079,7 +1079,9 @@ class Cartridge extends CommonDBChild {
     * @param $ID      integer  Id of the cartridge
     * @param $options array    of possible options:
     *     - parent Object : the printers where the cartridge is used
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1206,7 +1208,9 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @param $item Printer object
-   **/
+    *
+    * @return int
+    */
    static function countForPrinter(Printer $item) {
 
       return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);

@@ -123,10 +123,12 @@ class Contract_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return bool|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -184,7 +186,9 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item    CommonDBTM object
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_contracts_items',
@@ -195,7 +199,9 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item   Contract object
-   **/
+    *
+    * @return int
+    */
    static function countForContract(Contract $item) {
       global $DB;
 
@@ -317,9 +323,11 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 

@@ -112,7 +112,9 @@ class IPAddress extends CommonDBChild {
 
    /**
     * @param $input
-   **/
+    *
+    * @return array
+    */
    function prepareInput($input) {
 
       // If $input['name'] does not exists, then, don't check anything !

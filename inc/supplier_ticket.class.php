@@ -57,7 +57,9 @@ class Supplier_Ticket extends CommonITILActor {
     * @param $email
     *
     * @since version 0.85
-   **/
+    *
+    * @return bool
+    */
    function isSupplierEmail($items_id, $email) {
       global $DB;
 

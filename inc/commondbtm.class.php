@@ -156,7 +156,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param integer $ID ID of the item to get
     *
-    * @return bololean true if succeed else false
+    * @return boolean true if succeed else false
    **/
    function getFromDB($ID) {
       global $DB;
@@ -3344,11 +3344,11 @@ class CommonDBTM extends CommonGLPI {
     * Get the Search options for the given Type
     *
     * This should be overloaded in Class
-    *
     * @return array an *indexed* array of search options
     *
+    * @throws Exception
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
+    */
    function getSearchOptions() {
       $options = [];
 
@@ -3426,9 +3426,9 @@ class CommonDBTM extends CommonGLPI {
     * @since 9.2
     *
     * @param string $itemtype Item type, defaults to null
-    *
     * @return array
-   **/
+    * @throws Exception
+    */
    static function getSearchOptionsToAdd($itemtype = null) {
       $options = [];
 

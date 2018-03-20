@@ -124,7 +124,9 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type (default 0)
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Task', 'Tasks', $nb);
 
@@ -137,7 +139,9 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -1330,7 +1334,9 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @param $ID        Integer : Id of the task
     * @param $options   array
     *     -  parent Object : the object
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -1649,7 +1655,9 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Show the current task sumnary
     *
     * @param $item   CommonITILObject
-   **/
+    *
+    * @return bool
+    */
    function showSummary(CommonITILObject $item) {
       global $DB, $CFG_GLPI;
 

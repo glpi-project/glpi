@@ -761,7 +761,6 @@ class Profile extends CommonDBTM {
    }
 
 
-
    /**
     * Print the Asset rights form for the current profile
     *
@@ -770,7 +769,9 @@ class Profile extends CommonDBTM {
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
     *
-   **/
+    *
+    * @return bool
+    */
    function showFormAsset($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -843,7 +844,9 @@ class Profile extends CommonDBTM {
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
-   **/
+    *
+    * @return bool
+    */
    function showFormManagement($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -908,7 +911,9 @@ class Profile extends CommonDBTM {
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
-   **/
+    *
+    * @return bool
+    */
    function showFormTools($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -972,7 +977,9 @@ class Profile extends CommonDBTM {
     *
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
-   **/
+    *
+    * @return bool
+    */
    function showFormTracking($openform = true, $closeform = true) {
       global $CFG_GLPI;
 
@@ -1159,11 +1166,13 @@ class Profile extends CommonDBTM {
 
 
    /**
-   * Print the Life Cycles form for the current profile
-   *
-   * @param $openform   boolean  open the form (true by default)
-   * @param $closeform  boolean  close the form (true by default)
-   **/
+    * Print the Life Cycles form for the current profile
+    *
+    * @param $openform   boolean  open the form (true by default)
+    * @param $closeform  boolean  close the form (true by default)
+    *
+    * @return bool
+    */
    function showFormLifeCycle($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -1258,13 +1267,15 @@ class Profile extends CommonDBTM {
 
 
    /**
-   * Print the Life Cycles form for the current profile
-   *
-   *  @since version 0.85
-   *
-   * @param $openform   boolean  open the form (true by default)
-   * @param $closeform  boolean  close the form (true by default)
-   **/
+    * Print the Life Cycles form for the current profile
+    *
+    * @since version 0.85
+    *
+    * @param $openform   boolean  open the form (true by default)
+    * @param $closeform  boolean  close the form (true by default)
+    *
+    * @return bool
+    */
    function showFormLifeCycleHelpdesk($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -1298,7 +1309,9 @@ class Profile extends CommonDBTM {
     *
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
-   **/
+    *
+    * @return bool
+    */
    function showFormAdmin($openform = true, $closeform = true) {
       global $DB;
 
@@ -1393,7 +1406,9 @@ class Profile extends CommonDBTM {
     *
     * @param $openform     boolean  open the form (true by default)
     * @param $closeform    boolean  close the form (true by default)
-   **/
+    *
+    * @return bool
+    */
    function showFormSetup($openform = true, $closeform = true) {
 
       if (!self::canView()) {
@@ -2395,7 +2410,9 @@ class Profile extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-    **/
+    *
+    * @return mixed|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -2426,10 +2443,12 @@ class Profile extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -2463,7 +2482,9 @@ class Profile extends CommonDBTM {
     * @param $name      integer  name of the dropdown
     * @param $current   integer  value in database (sum of rights)
     * @param $options   array
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownRights(array $values, $name, $current, $options = []) {
 
       foreach ($values as $key => $value) {
@@ -2615,7 +2636,9 @@ class Profile extends CommonDBTM {
 
    /**
     * @param $value
-   **/
+    *
+    * @return mixed|string
+    */
    static function getInterfaceName($value) {
 
       $tab = self::getInterfaces();
@@ -2630,7 +2653,9 @@ class Profile extends CommonDBTM {
     * @since version 0.84
     *
     * @param $rights   boolean   (false by default)
-   **/
+    *
+    * @return array
+    */
    static function getHelpdeskHardwareTypes($rights = false) {
 
       if ($rights) {
@@ -2650,7 +2675,9 @@ class Profile extends CommonDBTM {
     * @since version 0.84
     *
     * @param $value
-   **/
+    *
+    * @return mixed|string
+    */
    static function getHelpdeskHardwareTypeName($value) {
 
       $tab = self::getHelpdeskHardwareTypes();
@@ -2687,7 +2714,9 @@ class Profile extends CommonDBTM {
     * @param $options array of possible options:
     *    - name : string / name of the select (default is profiles_id)
     *    - values : array of values
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownHelpdeskItemtypes($options) {
       global $CFG_GLPI;
 

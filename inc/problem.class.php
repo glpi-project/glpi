@@ -69,7 +69,9 @@ class Problem extends CommonITILObject {
     * Name of the type
     *
     * @param $nb : number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Problem', 'Problems', $nb);
    }
@@ -630,9 +632,11 @@ class Problem extends CommonITILObject {
     * @since version 0.84
     *
     * @param $start
-    * @param $status             (default 'proces)
-    * @param $showgroupproblems  (true by default)
-   **/
+    * @param $status (default 'proces)
+    * @param $showgroupproblems (true by default)
+    *
+    * @return bool
+    */
    static function showCentralList($start, $status = "process", $showgroupproblems = true) {
       global $DB, $CFG_GLPI;
 
@@ -839,7 +843,9 @@ class Problem extends CommonITILObject {
     * @since version 0.84
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
-   **/
+    *
+    * @return bool
+    */
    static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
@@ -1021,7 +1027,9 @@ class Problem extends CommonITILObject {
    /**
     * @param $ID
     * @param $options   array
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 

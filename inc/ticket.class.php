@@ -96,6 +96,7 @@ class Ticket extends CommonITILObject {
     * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
     * @param int $users_id
     * @since 9.2
+    * @return int
     */
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       $tkt = new self;
@@ -163,7 +164,9 @@ class Ticket extends CommonITILObject {
     * Name of the type
     *
     * @param $nb : number of item in the type (default 0)
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Ticket', 'Tickets', $nb);
    }
@@ -2528,7 +2531,9 @@ class Ticket extends CommonITILObject {
     * @param $ID                           ID of the ticket
     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
-   **/
+    *
+    * @return bool|void
+    */
    function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0) {
       global $DB;
 
@@ -3394,7 +3399,9 @@ class Ticket extends CommonITILObject {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return a|string|type
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -3498,7 +3505,9 @@ class Ticket extends CommonITILObject {
     * Get ticket type Name
     *
     * @param $value type ID
-   **/
+    *
+    * @return string|type
+    */
    static function getTicketTypeName($value) {
 
       switch ($value) {
@@ -4172,7 +4181,9 @@ class Ticket extends CommonITILObject {
     * @since version 0.83
     *
     * @param $entity  integer  entities_id usefull is function called by cron (default 0)
-   **/
+    *
+    * @return array
+    */
    static function getDefaultValues($entity = 0) {
       global $CFG_GLPI;
 
@@ -5303,8 +5314,9 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $start
-    * @param $status             (default ''process)
-    * @param $showgrouptickets   (true by default)
+    * @param $status (default ''process)
+    * @param $showgrouptickets (true by default)
+    * @return bool
     */
    static function showCentralList($start, $status = "process", $showgrouptickets = true) {
       global $DB, $CFG_GLPI;
@@ -5741,7 +5753,9 @@ class Ticket extends CommonITILObject {
     * Get tickets count
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
-   **/
+    *
+    * @return bool
+    */
    static function showCentralCount($foruser = false) {
       global $DB, $CFG_GLPI;
 
@@ -7317,7 +7331,9 @@ class Ticket extends CommonITILObject {
     * @since version 0.90
     *
     * @param $rand
-   **/
+    *
+    * @return bool
+    */
    function showTimelineForm($rand) {
       global $CFG_GLPI;
 
@@ -7472,8 +7488,10 @@ class Ticket extends CommonITILObject {
     * @since version 0.90
     *
     * @param $tickets_id
-    * @param $action         (default 'add')
-   **/
+    * @param $action (default 'add')
+    *
+    * @return string
+    */
    static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
 
       $locale = _sx('button', 'Add');

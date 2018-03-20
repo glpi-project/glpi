@@ -58,7 +58,9 @@ class Peripheral extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Device', 'Devices', $nb);
    }

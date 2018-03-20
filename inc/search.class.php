@@ -1826,7 +1826,9 @@ class Search {
     * @since version 0.85
     *
     * @param $itemtype
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getMetaReferenceItemtype ($itemtype) {
 
       $types = ['Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
@@ -5627,7 +5629,9 @@ class Search {
    /**
     * @param $itemtype
     * @param $field_num
-   **/
+    *
+    * @return array
+    */
    static function getActionsFor($itemtype, $field_num) {
 
       $searchopt = &self::getOptions($itemtype);
@@ -6214,6 +6218,7 @@ class Search {
 
    /**
     * @param $joinparams   array
+    * @return string
     */
    static function computeComplexJoinID(array $joinparams) {
 
@@ -6368,7 +6373,9 @@ class Search {
     *
     * @param $pattern
     * @param $subject
-   **/
+    *
+    * @return array
+    */
    static function explodeWithID($pattern, $subject) {
 
       $tab = explode($pattern, $subject);

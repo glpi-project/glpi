@@ -151,8 +151,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
     *
     * @param $item            CommonDBTM object
-    * @param $relations_id    (default NULL)
-   **/
+    * @param $relations_id (default NULL)
+    *
+    * @return bool|object
+    */
    static function getOpposite(CommonDBTM $item, &$relations_id = null) {
       return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
    }
@@ -163,8 +165,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @param $itemtype        Type of the item to search for its opposite
     * @param $items_id        ID of the item to search for its opposite
-    * @param $relations_id    (default NULL)
-    **/
+    * @param $relations_id (default NULL)
+    *
+    * @return bool|object
+    */
    static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null) {
       global $DB;
 
@@ -619,7 +623,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
     *
     * @param $input
-   **/
+    *
+    * @return array|bool
+    */
    function prepareInputForAdd($input) {
 
       if (!is_array($input)) {

@@ -204,7 +204,9 @@ class Calendar extends CommonDropdown {
    /** Clone a calendar to another entity : name is updated
     *
     * @param $options array of new values to set
-   **/
+    *
+    * @return bool
+    */
    function duplicate($options = []) {
 
       if (is_array($options) && count($options)) {
@@ -604,7 +606,9 @@ class Calendar extends CommonDropdown {
     * Update the calendar cache
     *
     * @param $calendars_id integer calendar ID
-   **/
+    *
+    * @return bool
+    */
    function updateDurationCache($calendars_id) {
 
       if ($this->getFromDB($calendars_id)) {
@@ -620,7 +624,9 @@ class Calendar extends CommonDropdown {
     * Get day number (in week) for a date
     *
     * @param $date date
-   **/
+    *
+    * @return false|string
+    */
    static function getDayNumberInWeek($date) {
       return date('w', $date);
    }

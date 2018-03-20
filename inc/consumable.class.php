@@ -361,7 +361,9 @@ class Consumable extends CommonDBChild {
     * Check if a Consumable is New (not used, in stock)
     *
     * @param $cID integer  consumable ID.
-   **/
+    *
+    * @return bool
+    */
    static function isNew($cID) {
       global $DB;
 
@@ -379,7 +381,9 @@ class Consumable extends CommonDBChild {
     * Check if a consumable is Old (used, not in stock)
     *
     * @param $cID integer  consumable ID.
-   **/
+    *
+    * @return bool
+    */
    static function isOld($cID) {
       global $DB;
 
@@ -738,7 +742,9 @@ class Consumable extends CommonDBChild {
 
    /**
     * @param $item   string  ConsumableItem object
-   **/
+    *
+    * @return int
+    */
    static function countForConsumableItem(ConsumableItem $item) {
 
       return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);

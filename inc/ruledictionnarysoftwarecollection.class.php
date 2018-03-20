@@ -483,7 +483,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
     *
     * @param $software_id  software ID
     * @param $version      version name
-   **/
+    *
+    * @return int|mixed
+    */
    function versionExists($software_id, $version) {
       global $DB;
 

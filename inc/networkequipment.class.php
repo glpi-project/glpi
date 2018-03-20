@@ -53,12 +53,13 @@ class NetworkEquipment extends CommonDBTM {
    protected $usenotepad               = true;
 
 
-
    /**
     * Name of the type
     *
     * @param $nb  integer  number of item in the type (default 0)
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Network device', 'Network devices', $nb);
    }

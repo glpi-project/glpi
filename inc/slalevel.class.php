@@ -77,7 +77,9 @@ class SlaLevel extends LevelAgreementLevel {
     * @param $sla SLA object
     *
     * @since version 9.1 (before showForSLA)
-   **/
+    *
+    * @return bool
+    */
    function showForSLA(SLA $sla) {
       global $DB;
 

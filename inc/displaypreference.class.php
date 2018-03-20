@@ -117,7 +117,9 @@ class DisplayPreference extends CommonDBTM {
     *
     * @param $itemtype  itemtype
     * @param $user_id   user ID
-   **/
+    *
+    * @return array
+    */
    static function getForTypeUser($itemtype, $user_id) {
       global $DB;
 
@@ -147,7 +149,9 @@ class DisplayPreference extends CommonDBTM {
     * Active personal config based on global one
     *
     * @param $input  array parameter (itemtype,users_id)
-   **/
+    *
+    * @return bool
+    */
    function activatePerso(array $input) {
       global $DB;
 
@@ -199,7 +203,9 @@ class DisplayPreference extends CommonDBTM {
     *
     * @param $input  array parameter (id,itemtype,users_id)
     * @param $action       up or down
-   **/
+    *
+    * @return bool
+    */
    function orderItem(array $input, $action) {
       global $DB;
 

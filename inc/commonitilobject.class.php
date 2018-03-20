@@ -1807,7 +1807,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * Get ITIL object priority Name
     *
     * @param $value priority ID
-   **/
+    *
+    * @return int|string
+    */
    static function getPriorityName($value) {
 
       switch ($value) {
@@ -1921,7 +1923,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * Get ITIL object Urgency Name
     *
     * @param $value urgency ID
-   **/
+    *
+    * @return int|string
+    */
    static function getUrgencyName($value) {
 
       switch ($value) {
@@ -2032,7 +2036,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * Get ITIL object Impact Name
     *
     * @param $value impact ID
-   **/
+    *
+    * @return int|string
+    */
    static function getImpactName($value) {
 
       switch ($value) {
@@ -2292,7 +2298,9 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.84
     *
     * @param $value     status ID
-   **/
+    *
+    * @return status
+    */
    static function getStatus($value) {
 
       $tab  = static::getAllStatusArray(true);
@@ -2499,10 +2507,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return nothing|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -4149,7 +4159,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * @param $actiontime
-   **/
+    *
+    * @return string
+    */
    static function getActionTime($actiontime) {
       return Html::timestampToString($actiontime, false);
    }
@@ -4158,8 +4170,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * @param $ID
     * @param $itemtype
-    * @param $link      (default 0)
-   **/
+    * @param $link (default 0)
+    *
+    * @return string
+    */
    static function getAssignName($ID, $itemtype, $link = 0) {
 
       switch ($itemtype) {
@@ -5557,6 +5571,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param string $sub_type is TicketFollowup, Document_Item, TicketTask, TicketValidation or Solution
     * @param int $users_id
     * @since 9.2
+    * @return int
     */
    static function getTimelinePosition($items_id, $sub_type, $users_id) {
       return self::TIMELINE_NOTSET;

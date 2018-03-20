@@ -65,12 +65,13 @@ class Change extends CommonITILObject {
    const READALL                       = 1024;
 
 
-
    /**
     * Name of the type
     *
     * @param $nb : number of item in the type (default 0)
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Change', 'Changes', $nb);
    }

@@ -154,7 +154,9 @@ function current_time() {
  * @param $table  table  name
  * @param $from   begin from
  * @param $limit  limit to
-**/
+ *
+ * @return string
+ */
 function get_content($DB, $table, $from, $limit) {
 
    $content = "";
@@ -190,7 +192,9 @@ function get_content($DB, $table, $from, $limit) {
  *
  * @param $DB     DB object
  * @param $table  table name
-**/
+ *
+ * @return string
+ */
 function get_def($DB, $table) {
 
    $def  = "### Dump table $table\n\n";
@@ -212,7 +216,9 @@ function get_def($DB, $table) {
  * @param $DB        DB object
  * @param $dumpFile  dump file
  * @param $duree     max delay before refresh
-**/
+ *
+ * @return bool
+ */
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
 
@@ -331,7 +337,9 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
  * @param $dumpFile  dump file
  * @param $duree     max delay before refresh
  * @param $rowlimit  rowlimit to backup in one time
-**/
+ *
+ * @return bool
+ */
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;
 

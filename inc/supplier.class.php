@@ -50,12 +50,13 @@ class Supplier extends CommonDBTM {
    protected $usenotepad       = true;
 
 
-
    /**
     * Name of the type
     *
     * @param $nb : number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Supplier', 'Suppliers', $nb);
    }
@@ -426,7 +427,9 @@ class Supplier extends CommonDBTM {
     * Get links for an enterprise (website / edit)
     *
     * @param $withname boolean : also display name ? (false by default)
-   **/
+    *
+    * @return string
+    */
    function getLinks($withname = false) {
       global $CFG_GLPI;
 

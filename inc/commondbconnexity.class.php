@@ -283,7 +283,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $itemtype   the name of the field of the type of the item to get
     * @param $items_id   the name of the field of the id of the item to get
     *
-    * @return true if we have absolute right to create the current connexity
+    * @return boolean true if we have absolute right to create the current connexity
    **/
    static function canConnexity($method, $item_right, $itemtype, $items_id) {
 
@@ -312,9 +312,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $itemtype      the name of the field of the type of the item to get
     * @param $items_id      the name of the field of the id of the item to get
     * @param &$item         the item concerned by the item (default NULL)
-    *
     * @return true if we have absolute right to create the current connexity
-   **/
+    * @throws CommonDBConnexityItemNotFound
+    */
    function canConnexityItem($methodItem, $methodNotItem, $item_right, $itemtype, $items_id,
                              &$item = null) {
 

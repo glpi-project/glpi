@@ -323,7 +323,9 @@ class CronTask extends CommonDBTM{
     * Add a log message for a running task
     *
     * @param $content
-   **/
+    *
+    * @return bool|int
+    */
    function log($content) {
 
       if (!isset($this->fields['id'])) {
@@ -709,8 +711,8 @@ class CronTask extends CommonDBTM{
     * @param $value    default value (default 0)
     * @param $display  display or get string (true by default)
     *
-    * @return nothing (display)
-   **/
+    * @return int|string
+    */
    static function dropdownState($name, $value = 0, $display = true) {
 
       return Dropdown::showFromArray($name,
@@ -1214,10 +1216,12 @@ class CronTask extends CommonDBTM{
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -1456,7 +1460,9 @@ class CronTask extends CommonDBTM{
     * Garbage collector for expired file session
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronSession($task) {
 
       // max time to keep the file session
@@ -1494,7 +1500,9 @@ class CronTask extends CommonDBTM{
     * @since version 0.85
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronCircularlogs($task) {
 
       $actionCode = 0; // by default
@@ -1556,7 +1564,9 @@ class CronTask extends CommonDBTM{
     * Garbage collector for cleaning graph files
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronGraph($task) {
       global $CFG_GLPI;
 
@@ -1590,7 +1600,9 @@ class CronTask extends CommonDBTM{
     * Garbage collector for cleaning tmp files
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronTemp($task) {
       global $CFG_GLPI;
 
@@ -1624,7 +1636,9 @@ class CronTask extends CommonDBTM{
     * Clean log cron function
     *
     * @param $task instance of CronTask
-   **/
+    *
+    * @return int
+    */
    static function cronLogs($task) {
       global $DB;
 
@@ -1649,7 +1663,9 @@ class CronTask extends CommonDBTM{
     * Cron job to check if a new version is available
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronCheckUpdate($task) {
 
       $result = Toolbox::checkNewVersionAvailable(1);
@@ -1663,7 +1679,9 @@ class CronTask extends CommonDBTM{
     * Check zombie crontask
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronWatcher($task) {
       global $CFG_GLPI, $DB;
 

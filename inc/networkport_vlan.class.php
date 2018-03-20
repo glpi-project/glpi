@@ -64,7 +64,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
    /**
     * @param $portID
     * @param $vlanID
-   **/
+    *
+    * @return bool
+    */
    function unassignVlan($portID, $vlanID) {
 
       $this->getFromDBByQuery("WHERE `networkports_id` = '$portID'
@@ -78,7 +80,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @param $port
     * @param $vlan
     * @param $tagged
-   **/
+    *
+    * @return int
+    */
    function assignVlan($port, $vlan, $tagged) {
       $input = ['networkports_id' => $port,
                      'vlans_id'        => $vlan,
@@ -89,7 +93,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    /**
     * @param $port   NetworkPort object
-   **/
+    *
+    * @return bool
+    */
    static function showForNetworkPort(NetworkPort $port) {
       global $DB, $CFG_GLPI;
 
@@ -203,7 +209,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    /**
     * @param $portID
-   **/
+    *
+    * @return array
+    */
    static function getVlansForNetworkPort($portID) {
       global $DB;
 

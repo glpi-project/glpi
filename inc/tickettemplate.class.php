@@ -142,9 +142,11 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @param $withtypeandcategory   (default 0)
-    * @param $withitemtype         (default 0)
-   **/
+    * @param $withtypeandcategory (default 0)
+    * @param $withitemtype (default 0)
+    *
+    * @return mixed
+    */
    static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0) {
 
       static $allowed_fields = [];
@@ -256,9 +258,11 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @param $withtypeandcategory   (default 0)
-    * @param $with_items_id         (default 0)
-   **/
+    * @param $withtypeandcategory (default 0)
+    * @param $with_items_id (default 0)
+    *
+    * @return mixed
+    */
    function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0) {
 
       $searchOption = Search::getOptions('Ticket');
@@ -737,7 +741,9 @@ class TicketTemplate extends CommonDropdown {
     * @since version 0.90
     *
     * @param $data
-   **/
+    *
+    * @return array
+    */
    function formatFieldsToMerge($data) {
 
       $output = [];

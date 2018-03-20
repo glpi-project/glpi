@@ -181,7 +181,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -208,10 +210,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
    /**
     * @param $field
-    * @param $name            (default'')
-    * @param $values           (default '')
+    * @param $name (default'')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

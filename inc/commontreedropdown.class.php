@@ -107,7 +107,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
     * @param $thisName           string item name (need to be addslashes : comes from input)
-   **/
+    *
+    * @return string
+    */
    static function getCompleteNameFromParents($parentCompleteName, $thisName) {
       return addslashes($parentCompleteName). " > ".$thisName;
    }

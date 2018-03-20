@@ -104,7 +104,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
 
    /**
     * @param $item      CommonDBTM object (default NULL)
-   **/
+    * @throws Exception
+    */
    function checkItemType(CommonDBTM $item = null) {
 
       if (($item === null) && (count($this->itemtypes) > 0)) {

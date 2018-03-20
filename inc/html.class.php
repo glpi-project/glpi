@@ -116,8 +116,8 @@ class Html {
     *
     * @param $value string or array
     *
-    * @return array of value (same struct as input)
-   **/
+    * @return array|string value (same struct as input)
+    */
    static function entities_deep($value) {
 
       return (is_array($value) ? array_map([__CLASS__, 'entities_deep'], $value)
@@ -690,12 +690,14 @@ class Html {
 
 
    /**
-   * Clean Display of Request
-   *
-   * @since version 0.83.1
-   *
-   * @param $request SQL request
-   **/
+    * Clean Display of Request
+    *
+    * @since version 0.83.1
+    *
+    * @param mixed $request SQL request
+    *
+    * @return mixed
+    */
    static function cleanSQLDisplay($request) {
 
       $request = str_replace("<", "&lt;", $request);
@@ -1771,7 +1773,9 @@ class Html {
     *
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
-   **/
+    *
+    * @return bool|void
+    */
    static function nullHeader($title, $url = '') {
       global $CFG_GLPI, $HEADER_LOADED;
 
@@ -2647,7 +2651,9 @@ class Html {
     *   - value      : default value to display (default '')
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
-   **/
+    *
+    * @return int|string
+    */
    static function showColorField($name, $options = []) {
       $p['value']      = '';
       $p['rand']       = mt_rand();
@@ -3908,8 +3914,8 @@ class Html {
     *
     * ajax Pager will be displayed if empty
     *
-    * @return void|string
-   **/
+    * @return string|void
+    */
    static function printPagerForm($action = "", $display = true) {
 
       $out = '';
@@ -3973,7 +3979,9 @@ class Html {
     * @param $confirm  String   optional confirm message      (default '')
     *
     * @since version 0.84
-   **/
+    *
+    * @return string
+    */
    static function getSimpleForm($action, $btname, $btlabel, Array $fields = [], $btimage = '',
                                  $btoption = '', $confirm = '') {
 
@@ -5338,7 +5346,9 @@ class Html {
     *                                    (default null)
     * @param $noCallback     string      function that will be called when 'No' is pressed
     *                                    (default null)
-   **/
+    *
+    * @return string
+    */
    static function jsConfirmCallback($msg, $title, $yesCallback = null, $noCallback = null) {
 
       return "
@@ -5451,7 +5461,9 @@ class Html {
     * @param $title        string   title for dialog box
     * @param $okCallback   string   function that will be called when 'Ok' is pressed
     *                               (default null)
-   **/
+    *
+    * @return string
+    */
    static function jsAlertCallback($msg, $title, $okCallback = null) {
       return "
          // Dialog and its properties.

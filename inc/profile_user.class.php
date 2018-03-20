@@ -111,7 +111,9 @@ class Profile_User extends CommonDBRelation {
     * Show rights of a user
     *
     * @param $user User object
-   **/
+    *
+    * @return bool
+    */
    static function showForUser(User $user) {
       global $DB,$CFG_GLPI;
 
@@ -269,7 +271,9 @@ class Profile_User extends CommonDBRelation {
     * Show users of an entity
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showForEntity(Entity $entity) {
       global $DB;
 
@@ -441,7 +445,9 @@ class Profile_User extends CommonDBRelation {
     * Show the User having a profile, in allowed Entity
     *
     * @param $prof Profile object
-   **/
+    *
+    * @return bool
+    */
    static function showForProfile(Profile $prof) {
       global $DB, $CFG_GLPI;
 
@@ -814,7 +820,9 @@ class Profile_User extends CommonDBRelation {
    /**
     * @param $user_ID
     * @param $profile_id
-   **/
+    *
+    * @return mixed
+    */
    static function haveUniqueRight($user_ID, $profile_id) {
       global $DB;
 

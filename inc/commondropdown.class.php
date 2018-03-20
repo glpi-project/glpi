@@ -65,7 +65,9 @@ abstract class CommonDropdown extends CommonDBTM {
     * @since version 0.85
     *
     * @param $nb
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Dropdown', 'Dropdowns', $nb);
    }
@@ -570,7 +572,9 @@ abstract class CommonDropdown extends CommonDBTM {
     * And propose a value to replace
     *
     * @param $target string URL
-   **/
+    *
+    * @return bool
+    */
    function showDeleteConfirmForm($target) {
 
       if ($this->haveChildren()) {
@@ -857,7 +861,9 @@ abstract class CommonDropdown extends CommonDBTM {
     * Get links to Faq
     *
     * @param $withname  boolean  also display name ? (false by default)
-   **/
+    *
+    * @return string
+    */
    function getLinks($withname = false) {
       global $CFG_GLPI;
 

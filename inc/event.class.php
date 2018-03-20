@@ -99,7 +99,9 @@ class Event extends CommonDBTM {
     * @param $level
     * @param $service
     * @param $event
-   **/
+    *
+    * @return int
+    */
    static function log($items_id, $type, $level, $service, $event) {
       global $DB;
 

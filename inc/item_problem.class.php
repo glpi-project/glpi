@@ -84,7 +84,9 @@ class Item_Problem extends CommonDBRelation{
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`

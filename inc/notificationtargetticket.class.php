@@ -193,7 +193,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    /**
     * @param $data   array
-   **/
+    *
+    * @return array
+    */
    function addAdditionnalUserInfo(array $data) {
       global $DB;
 

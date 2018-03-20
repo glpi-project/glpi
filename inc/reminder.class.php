@@ -421,7 +421,9 @@ class Reminder extends CommonDBVisible {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -439,10 +441,12 @@ class Reminder extends CommonDBVisible {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-    **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -497,9 +501,11 @@ class Reminder extends CommonDBVisible {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -620,7 +626,9 @@ class Reminder extends CommonDBVisible {
     * @param $options   array of possible options:
     *     - target filename : where to go when done.
     *     - from_planning_ajax : set to disable planning form part
-    **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 

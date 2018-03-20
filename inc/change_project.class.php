@@ -137,7 +137,9 @@ class Change_Project extends CommonDBRelation{
     * Show tickets for a project
     *
     * @param $project Project object
-   **/
+    *
+    * @return bool
+    */
    static function showForProject(Project $project) {
       global $DB, $CFG_GLPI;
 
@@ -232,7 +234,9 @@ class Change_Project extends CommonDBRelation{
     * Show projects for a change
     *
     * @param $change Change object
-   **/
+    *
+    * @return bool
+    */
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;
 

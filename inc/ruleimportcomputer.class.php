@@ -158,7 +158,9 @@ class RuleImportComputer extends Rule {
     * @param $criteria
     * @param $name
     * @param $value
-   **/
+    *
+    * @return bool
+    */
    function manageSpecificCriteriaValues($criteria, $name, $value) {
 
       switch ($criteria['type']) {
@@ -231,7 +233,9 @@ class RuleImportComputer extends Rule {
 
    /**
     * @param $ID
-   **/
+    *
+    * @return array
+    */
    function getCriteriaByID($ID) {
 
       $criteria = [];

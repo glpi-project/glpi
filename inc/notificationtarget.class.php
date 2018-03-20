@@ -198,8 +198,10 @@ class NotificationTarget extends CommonDBChild {
 
 
    /**
-    * @param $event  (default '')
-   **/
+    * @param $event (default '')
+    *
+    * @return string
+    */
    function getSubjectPrefix($event = '') {
 
       $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
@@ -315,7 +317,9 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * @param $notification Notification object
-   **/
+    *
+    * @return bool
+    */
    function showForNotification(Notification $notification) {
       global $DB;
 
@@ -538,7 +542,9 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $usertype
     * @param $redirect
-   **/
+    *
+    * @return string
+    */
    function formatURL($usertype, $redirect) {
       global $CFG_GLPI;
 
@@ -1143,7 +1149,9 @@ class NotificationTarget extends CommonDBChild {
    /**
     * @param $event
     * @param $options
-   **/
+    *
+    * @return array
+    */
    function &getForTemplate($event, $options) {
       global $CFG_GLPI;
 

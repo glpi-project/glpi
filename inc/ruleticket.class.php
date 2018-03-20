@@ -117,7 +117,9 @@ class RuleTicket extends Rule {
 
    /**
     * @param $params
-   **/
+    *
+    * @return mixed
+    */
    function addSpecificParamsForPreview($params) {
 
       if (!isset($params["entities_id"])) {
@@ -150,7 +152,9 @@ class RuleTicket extends Rule {
    /**
     * @param $output
     * @param $params
-   **/
+    *
+    * @return the
+    */
    function executeActions($output, $params) {
 
       if (count($this->actions)) {

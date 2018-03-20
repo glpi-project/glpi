@@ -113,8 +113,8 @@ class Toolbox {
     * @param $offset    integer  The search offset. If it is not specified, 0 is used.
     *                            (default 0)
     *
-    * @return substring
-   **/
+    * @return bool|false|int
+    */
    static function strpos($str, $tofound, $offset = 0) {
       return mb_strpos($str, $tofound, $offset, "UTF-8");
    }
@@ -144,8 +144,8 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return length of the string
-   **/
+    * @return int
+    */
    static function strlen($str) {
       return mb_strlen($str, "UTF-8");
    }
@@ -158,7 +158,7 @@ class Toolbox {
     * @param $start     integer  start of the result substring
     * @param $length    integer  The maximum length of the returned string if > 0 (default -1)
     *
-    * @return substring
+    * @return string
    **/
    static function substr($str, $start, $length = -1) {
 
@@ -174,7 +174,7 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return lower case string
+    * @return string lowercase
    **/
    static function strtolower($str) {
       return mb_strtolower($str, "UTF-8");
@@ -186,7 +186,7 @@ class Toolbox {
     *
     * @param $str string
     *
-    * @return upper case string
+    * @return string uppercase
    **/
    static function strtoupper($str) {
       return mb_strtoupper($str, "UTF-8");
@@ -212,8 +212,8 @@ class Toolbox {
     * @param $from_charset string   original charset (if 'auto' try to autodetect)
     *                               (default "ISO-8859-1")
     *
-    * @return utf8 string
-   **/
+    * @return mixed|string utf8
+    */
    static function encodeInUtf8($string, $from_charset = "ISO-8859-1") {
 
       if (strcmp($from_charset, "auto") == 0) {
@@ -229,8 +229,8 @@ class Toolbox {
     * @param $string       string   string to convert
     * @param $to_charset   string   destination charset (default "ISO-8859-1")
     *
-    * @return converted string
-   **/
+    * @return mixed|string
+    */
    static function decodeFromUtf8($string, $to_charset = "ISO-8859-1") {
       return mb_convert_encoding($string, $to_charset, "UTF-8");
    }
@@ -242,8 +242,8 @@ class Toolbox {
     * @param $string    string to encrypt
     * @param $key       string key used to encrypt
     *
-    * @return encrypted string
-   **/
+    * @return string encrypted
+    */
    static function encrypt($string, $key) {
 
       $result = '';
@@ -263,7 +263,7 @@ class Toolbox {
     * @param $string    string to decrypt
     * @param $key       string key used to decrypt
     *
-    * @return decrypted string
+    * @return string decrypted
    **/
    static function decrypt($string, $key) {
 
@@ -287,10 +287,10 @@ class Toolbox {
     *
     * @param $value array or string: item to prevent (array or string)
     *
-    * @return clean item
-    *
     * @see unclean_cross_side_scripting_deep*
-   **/
+    *
+    * @return array|mixed|null|resource unclean item
+    */
    static function clean_cross_side_scripting_deep($value) {
 
       $in  = ['<', '>'];
@@ -311,10 +311,10 @@ class Toolbox {
     *
     * @param $value  array or string   item to unclean from clean_cross_side_scripting_deep
     *
-    * @return unclean item
-    *
     * @see clean_cross_side_scripting_deep
-   **/
+    *
+    * @return array|mixed|null|resource unclean item
+    */
    static function unclean_cross_side_scripting_deep($value) {
 
       $in  = ['<', '>'];
@@ -337,10 +337,10 @@ class Toolbox {
     *
     * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
     *
-    * @return unclean item
-    *
     * @see clean_cross_side_scripting_deep
-   **/
+    *
+    * @return array|mixed|null|resource|string unclean item
+    */
    static function unclean_html_cross_side_scripting_deep($value) {
       include_once(GLPI_HTMLAWED);
 
@@ -494,7 +494,9 @@ class Toolbox {
     * @param $name   string   name of the log file
     * @param $text   string   text to log
     * @param $force  boolean  force log in file not seeing use_log_in_files config (false by default)
-   **/
+    *
+    * @return bool
+    */
    static function logInFile($name, $text, $force = false) {
       global $CFG_GLPI;
 
@@ -525,7 +527,9 @@ class Toolbox {
     * @param $errmsg    string   error message.
     * @param $filename  string   filename that the error was raised in.
     * @param $linenum   integer  line number the error was raised at.
-   **/
+    * @return mixed
+    * @throws GlpitestPHPerror
+    */
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum) {
 
       // Date et heure de l'erreur
@@ -1098,7 +1102,7 @@ class Toolbox {
     *
     * @param $path string: directory or file to get size
     *
-    * @return size of the $path
+    * @return int size of the $path
    **/
    static function filesizeDirectory($path) {
 
@@ -1126,7 +1130,7 @@ class Toolbox {
     *
     * @param   $size integer: Size in octet
     *
-    * @return  formatted size
+    * @return string formatted size
    **/
    static function getSize($size) {
 
@@ -1427,7 +1431,9 @@ class Toolbox {
     * @param $full               path or relative one (true by default)
     *
     * return string itemtype Form URL
-   **/
+    *
+    * @return string
+    */
    static function getItemTypeFormURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
@@ -1456,7 +1462,9 @@ class Toolbox {
     * @param $full               path or relative one (true by default)
     *
     * return string itemtype search URL
-   **/
+    *
+    * @return string
+    */
    static function getItemTypeSearchURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
@@ -1490,7 +1498,9 @@ class Toolbox {
     * @param $full               path or relative one (true by default)
     *
     * return string itemtype tabs URL
-   **/
+    *
+    * @return string
+    */
    static function getItemTypeTabsURL($itemtype, $full = true) {
       global $CFG_GLPI;
 
@@ -1667,7 +1677,9 @@ class Toolbox {
    /**
     * @param $need
     * @param $tab
-   **/
+    *
+    * @return bool
+    */
    static function key_exists_deep($need, $tab) {
 
       foreach ($tab as $key => $value) {
@@ -2092,7 +2104,9 @@ class Toolbox {
 
    /**
     * @param $input
-   **/
+    *
+    * @return string
+    */
    static function constructMailServerConfig($input) {
 
       $out = "";

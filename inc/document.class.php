@@ -478,7 +478,8 @@ class Document extends CommonDBTM {
     * @param $params    additonal parameters to be added to the link (default '')
     * @param $len       maximum length of displayed string (default 20)
     *
-   **/
+    * @return string
+    */
    function getDownloadLink($params = '', $len = 20) {
       global $DB,$CFG_GLPI;
 
@@ -1292,7 +1293,9 @@ class Document extends CommonDBTM {
     * Is this file a valid file ? check based on file extension
     *
     * @param $filename filename to clean
-   **/
+    *
+    * @return string
+    */
    static function isValidDoc($filename) {
       global $DB;
 

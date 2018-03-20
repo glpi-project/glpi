@@ -750,7 +750,9 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
     * @param $netport      to be displayed
     * @param $edit         boolean permit to edit ? (false by default)
-   **/
+    *
+    * @return bool
+    */
    static function showConnection($netport, $edit = false) {
 
       $ID = $netport->fields["id"];

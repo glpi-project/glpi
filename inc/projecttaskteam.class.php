@@ -125,7 +125,9 @@ class ProjectTaskTeam extends CommonDBRelation {
     * Get team for a project
     *
     * @param $projects_id
-   **/
+    *
+    * @return array
+    */
    static function getTeamFor($projects_id) {
       global $DB;
 

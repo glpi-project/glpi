@@ -1493,11 +1493,10 @@ class Config extends CommonDBTM {
     *
     * @param $password  string   password to validate
     * @param $display   boolean  display errors messages? (true by default)
+    * @return bool when $display is false and the password does not matches the requirements
     *
-    * @throws PasswordTooWeak when $display is false and the password does not matches the requirements
-    *
-    * @return boolean is password valid?
-   **/
+    * @throws PasswordTooWeakException
+    */
    static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
 
@@ -2161,9 +2160,11 @@ class Config extends CommonDBTM {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 

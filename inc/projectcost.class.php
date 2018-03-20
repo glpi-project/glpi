@@ -104,8 +104,9 @@ class ProjectCost extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    * @return bool
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -249,7 +250,9 @@ class ProjectCost extends CommonDBChild {
     * Get last datas for a project
     *
     * @param $projects_id        integer  ID of the project
-   **/
+    *
+    * @return array|null|string[]
+    */
    function getLastCostForProject($projects_id) {
       global $DB;
 
@@ -270,7 +273,9 @@ class ProjectCost extends CommonDBChild {
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
 
       if ($ID > 0) {

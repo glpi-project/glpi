@@ -166,7 +166,9 @@ class Item_Ticket extends CommonDBRelation{
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
@@ -1016,7 +1018,9 @@ class Item_Ticket extends CommonDBRelation{
     *    - display      : boolean / display or get string (default true)
     *    - width        : specific width needed (default 80%)
     *
-   **/
+    *
+    * @return int|string|void
+    */
    static function dropdown($options = []) {
       global $DB;
 
@@ -1256,7 +1260,9 @@ class Item_Ticket extends CommonDBRelation{
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {

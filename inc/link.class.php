@@ -458,7 +458,9 @@ class Link extends CommonDBTM {
     *
     * @param $item                     CommonDBTM object
     * @param $withtemplate    integer  withtemplate param (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -519,7 +521,9 @@ class Link extends CommonDBTM {
     *
     * @param $item                        CommonDBTM object
     * @param $params    array of params : must contain id / name / link / data
-   **/
+    *
+    * @return array
+    */
    static function getAllLinksFor($item, $params = []) {
       global $CFG_GLPI;
 

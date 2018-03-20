@@ -73,7 +73,9 @@ class Planning extends CommonGLPI {
     * @since version 0.85
     *
     * @param $nb
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return __('Planning');
    }
@@ -157,7 +159,9 @@ class Planning extends CommonGLPI {
     * Get planning state name
     *
     * @param $value status ID
-   **/
+    *
+    * @return string
+    */
    static function getState($value) {
 
       switch ($value) {
@@ -180,7 +184,9 @@ class Planning extends CommonGLPI {
     * @param $value  default value (default '')
     * @param $display  display of send string ? (true by default)
     * @param $options  options
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownState($name, $value = '', $display = true, $options = []) {
 
       $values = [static::INFO => _n('Information', 'Information', 1),
@@ -200,7 +206,9 @@ class Planning extends CommonGLPI {
     * @param $end             end date
     * @param $except    array of items which not be into account array
     *                         ('Reminder'=>array(1,2,id_of_items))
-   **/
+    *
+    * @return bool
+    */
    static function checkAlreadyPlanned($users_id, $begin, $end, $except = []) {
       global $CFG_GLPI;
 

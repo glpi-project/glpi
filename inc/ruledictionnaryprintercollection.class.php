@@ -170,7 +170,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    /**
     * @param $res_rule  array
     * @param $input     array
-   **/
+    *
+    * @return bool
+    */
    static function somethingHasChanged(array $res_rule, array $input) {
 
       if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))

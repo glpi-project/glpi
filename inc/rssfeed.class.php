@@ -286,7 +286,9 @@ class RSSFeed extends CommonDBVisible {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -302,10 +304,12 @@ class RSSFeed extends CommonDBVisible {
 
    /**
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-    **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -482,9 +486,11 @@ class RSSFeed extends CommonDBVisible {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1)
+    * @param $tabnum (default 1)
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -570,7 +576,9 @@ class RSSFeed extends CommonDBVisible {
     * @param $ID        integer  Id of the item to print
     * @param $options   array    of possible options:
     *     - target filename : where to go when done.
-    **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 

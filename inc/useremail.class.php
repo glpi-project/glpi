@@ -145,7 +145,8 @@ class UserEmail  extends CommonDBChild {
     * @param $canedit
     * @param $field_name
     * @param $id
-   **/
+    * @return nothing|void
+    */
    function showChildForItemForm($canedit, $field_name, $id) {
 
       if ($this->isNewID($this->getID())) {
@@ -197,7 +198,9 @@ class UserEmail  extends CommonDBChild {
 
    /**
     * @param $user
-   **/
+    *
+    * @return bool|void
+    */
    static function showAddEmailButton(User $user) {
 
       $users_id = $user->getID();

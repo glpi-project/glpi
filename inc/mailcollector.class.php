@@ -214,9 +214,11 @@ class MailCollector  extends CommonDBTM {
 
    /**
     * @param $item         CommonGLPI object
-    * @param $tabnum       (default 1
+    * @param $tabnum (default 1
     * @param $withtemplate (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -1151,7 +1153,9 @@ class MailCollector  extends CommonDBTM {
 
    /**
     * @param $uid UID of the message
-   **/
+    *
+    * @return array
+    */
    function getAdditionnalHeaders($uid) {
 
       $head   = [];
@@ -1559,7 +1563,9 @@ class MailCollector  extends CommonDBTM {
     * Get The actual mail content from this mail
     *
     * @param $uid : mail UID
-   **/
+    *
+    * @return data|string
+    */
    function getBody($uid) {
       // Get Message Body
 
@@ -1617,7 +1623,9 @@ class MailCollector  extends CommonDBTM {
 
    /**
     * @param $name
-   **/
+    *
+    * @return array
+    */
    static function cronInfo($name) {
 
       switch ($name) {
@@ -1684,7 +1692,9 @@ class MailCollector  extends CommonDBTM {
     * @since version 0.85
     *
     * @param $task for log
-   **/
+    *
+    * @return int
+    */
    static function cronMailgateError($task) {
       global $DB, $CFG_GLPI;
 

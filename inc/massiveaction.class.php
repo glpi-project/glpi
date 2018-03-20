@@ -65,12 +65,12 @@ class MassiveAction {
     *
     * We trust all previous stages: we don't redo the checks
     *
-    * @param $POST  something like $_POST
-    * @param $GET   something like $_GET
+    * @param array|something $POST something like $_POST
+    * @param array|something $GET something like $_GET
     * @param $stage the current stage
     *
-    * @return nothing (it is a constructor).
-   **/
+    * @throws Exception
+    */
    function __construct (array $POST, array $GET, $stage) {
       global $CFG_GLPI;
 
@@ -379,7 +379,9 @@ class MassiveAction {
 
    /**
     * @param $POST
-   **/
+    *
+    * @return null|object
+    */
    function getCheckItem($POST) {
 
       if (!isset($this->check_item)) {

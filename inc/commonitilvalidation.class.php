@@ -165,7 +165,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    /**
     * @param $items_id ID of the item
-   **/
+    *
+    * @return bool
+    */
    static function canValidate($items_id) {
       global $DB;
 
@@ -428,7 +430,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $global             boolean (true for global status, with "no validation" option)
     *                                    (false by default)
     *
-    * @return an array
+    * @return array
    **/
    static function getAllStatusArray($withmetaforsearch = false, $global = false) {
 
@@ -460,7 +462,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *      - global   : for global validation (default false)
     *      - display  : boolean display or get string ? (default true)
     *
-    * @return nothing (display)
+    * @return int|string
    **/
    static function dropdownStatus($name, $options = []) {
 
@@ -487,7 +489,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * Get Ticket validation status Name
     *
     * @param $value status ID
-   **/
+    *
+    * @return int|mixed
+    */
    static function getStatus($value) {
 
       $tab = self::getAllStatusArray(true, true);
@@ -500,7 +504,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * Get Ticket validation status Color
     *
     * @param $value status ID
-   **/
+    *
+    * @return string
+    */
    static function getStatusColor($value) {
 
       switch ($value) {
@@ -529,7 +535,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @deprecated 9.2.2
     *
     * @param $items_id   integer  item ID
-   **/
+    *
+    * @return bool
+    */
    static function isAllValidationsHaveSameStatusForTicket($items_id) {
       global $DB;
       Toolbox::deprecated();
@@ -549,7 +557,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @deprecated 9.2.2
     *
     * @param $items_id   integer  item ID
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getNumberValidationForTicket($items_id) {
       global $DB;
       Toolbox::deprecated();
@@ -570,7 +580,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * Get item validation demands count for a user
     *
     * @param $users_id  integer  User ID
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getNumberToValidate($users_id) {
       global $DB;
 
@@ -592,7 +604,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $items_id   integer  item ID
     * @param $status              status
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getTicketStatusNumber($items_id, $status) {
       global $DB;
 
@@ -733,7 +747,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * Print the validation list into item
     *
     * @param $item class
-   **/
+    *
+    * @return bool
+    */
    function showSummary($item) {
       global $DB, $CFG_GLPI;
 
@@ -907,7 +923,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-    **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
@@ -1248,7 +1266,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return int|mixed|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -1264,10 +1284,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
    /**
     * @param $field
-    * @param $name              (default '')
-    * @param $values            (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {

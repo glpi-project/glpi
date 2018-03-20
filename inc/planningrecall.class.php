@@ -126,7 +126,9 @@ class PlanningRecall extends CommonDBChild {
     * Manage recall set
     *
     * @param $data array of data to manage
-   **/
+    *
+    * @return bool
+    */
    static function manageDatas(array $data) {
 
       // Check data informations
@@ -349,7 +351,9 @@ class PlanningRecall extends CommonDBChild {
     * Cron action on contracts : alert depending of the config : on notice and expire
     *
     * @param $task for log, if NULL display (default NULL)
-   **/
+    *
+    * @return int
+    */
    static function cronPlanningRecall($task = null) {
       global $DB, $CFG_GLPI;
 

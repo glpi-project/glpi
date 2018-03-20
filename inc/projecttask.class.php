@@ -1251,8 +1251,9 @@ class ProjectTask extends CommonDBChild {
 
    /** Get data to display on GANTT for a project task
     *
-   * @param $ID ID of the project task
-   */
+    * @param $ID ID of the project task
+    * @return array
+    */
    static function getDataToDisplayOnGantt($ID) {
       global $DB;
 
@@ -1344,8 +1345,9 @@ class ProjectTask extends CommonDBChild {
 
    /** Get data to display on GANTT for a project
     *
-   * @param $ID ID of the project
-   */
+    * @param $ID ID of the project
+    * @return array
+    */
    static function getDataToDisplayOnGanttForProject($ID) {
       global $DB;
 

@@ -1671,7 +1671,9 @@ class User extends CommonDBTM {
     *
     * @param $mail_method  mail method description array
     * @param $name         login of the user
-   **/
+    *
+    * @return bool
+    */
    function getFromIMAP($mail_method, $name) {
       global $DB;
 
@@ -2189,7 +2191,9 @@ class User extends CommonDBTM {
     * @param $userid Interger ID of the user
     *
     * @since version 0.84
-   **/
+    *
+    * @return bool
+    */
    static function showPersonalInformation($userid) {
       global $CFG_GLPI;
 
@@ -3083,7 +3087,9 @@ class User extends CommonDBTM {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -3110,10 +3116,12 @@ class User extends CommonDBTM {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (defaut '')
+    * @param $name (default '')
+    * @param $values (defaut '')
     * @param $options   array
-   **/
+    *
+    * @return string|void
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -3937,8 +3945,10 @@ class User extends CommonDBTM {
 
 
    /**
-    * @param $email  (default '')
-   **/
+    * @param $email (default '')
+    *
+    * @return int|mixed
+    */
    static function getOrImportByEmail($email = '') {
       global $DB, $CFG_GLPI;
 
@@ -3978,7 +3988,9 @@ class User extends CommonDBTM {
 
    /**
     * @param $users_id
-   **/
+    *
+    * @return bool|void
+    */
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
 
@@ -4043,7 +4055,9 @@ class User extends CommonDBTM {
 
    /**
     * @param $login
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getIdByName($login) {
       return self::getIdByField('name', $login);
    }
@@ -4054,7 +4068,9 @@ class User extends CommonDBTM {
     *
     * @param $field
     * @param $login
-   **/
+    *
+    * @return bool|mixed
+    */
    static function getIdByField($field, $login) {
       global $DB;
 
@@ -4615,7 +4631,9 @@ class User extends CommonDBTM {
     * @param $map String with field format
     * @param $res LDAP result
     *
-   **/
+    *
+    * @return mixed|string
+    */
    private static function getLdapFieldValue($map, array $res) {
 
       $map = Toolbox::unclean_cross_side_scripting_deep($map);

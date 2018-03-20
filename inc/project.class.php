@@ -61,7 +61,9 @@ class Project extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type (default 0)
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Project', 'Projects', $nb);
    }
@@ -1230,10 +1232,12 @@ class Project extends CommonDBTM {
     * @since version 0.85
     *
     * @param $field
-    * @param $name            (default '')
-    * @param $values          (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -1355,9 +1359,10 @@ class Project extends CommonDBTM {
 
    /** Get data to display on GANTT
     *
-   * @param $ID        integer   ID of the project
-   * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
-   */
+    * @param $ID        integer   ID of the project
+    * @param $showall   boolean   show all sub items (projects / tasks) (true by default)
+    * @return array
+    */
    static function getDataToDisplayOnGantt($ID, $showall = true) {
       global $DB;
 
@@ -1456,8 +1461,9 @@ class Project extends CommonDBTM {
 
    /** show GANTT diagram for a project or for all
     *
-   * @param $ID ID of the project or -1 for all projects
-   */
+    * @param $ID ID of the project or -1 for all projects
+    * @return bool
+    */
    static function showGantt($ID) {
       global $DB;
 

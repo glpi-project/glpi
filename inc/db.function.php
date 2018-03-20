@@ -147,7 +147,7 @@ function getTableForItemType($itemtype) {
  *
  * @param $itemtype   string   itemtype
  *
- * @return itemtype object or false if class does not exists
+ * @return object itemtype object or false if class does not exists
  *
  * @deprecated 9.2 see DbUtils::getItemForItemtype()
 **/

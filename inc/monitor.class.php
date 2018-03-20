@@ -55,7 +55,9 @@ class Monitor extends CommonDBTM {
     * Name of the type
     *
     * @param $nb  string   number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Monitor', 'Monitors', $nb);
    }

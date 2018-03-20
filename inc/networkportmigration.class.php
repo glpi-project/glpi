@@ -474,7 +474,9 @@ class NetworkPortMigration extends CommonDBChild {
     * @param $options   array
     * @param $internet_super
     * @param $father
-   **/
+    *
+    * @return null
+    */
    static function getMigrationInstantiationHTMLTableHeaders(HTMLTableGroup $group,
                                                              HTMLTableSuperHeader $super,
                                                              HTMLTableSuperHeader $internet_super = null,

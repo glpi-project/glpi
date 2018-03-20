@@ -155,9 +155,11 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
@@ -174,7 +176,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $item   Supplier  object
-   **/
+    *
+    * @return int
+    */
    static function countForSupplier(Supplier $item) {
 
       $restrict = "`glpi_infocoms`.`suppliers_id` = '".$item->getField('id') ."'
@@ -207,10 +211,12 @@ class Infocom extends CommonDBChild {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return int|string
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 
       if (!is_array($values)) {
@@ -440,7 +446,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $name
-   **/
+    *
+    * @return array
+    */
    static function cronInfo($name) {
       return ['description' => __('Send alarms on financial and administrative information')];
    }
@@ -580,7 +588,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $options array
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownAlert($options) {
 
       $p['name']           = 'alert';
@@ -611,7 +621,9 @@ class Infocom extends CommonDBChild {
     * @param $name      select name
     * @param $value     default value (default 0)
     * @param $display   display or get string (true by default)
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownAmortType($name, $value = 0, $display = true) {
 
       $values = [2 => __('Linear'),
@@ -628,7 +640,9 @@ class Infocom extends CommonDBChild {
     * Get amortissement type name for infocoms
     *
     * @param $value status ID
-   **/
+    *
+    * @return string
+    */
    static function getAmortTypeName($value) {
 
       switch ($value) {
@@ -995,7 +1009,9 @@ class Infocom extends CommonDBChild {
     *
     * @param $item                  CommonDBTM object
     * @param $withtemplate integer  template or basic item (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $CFG_GLPI;
 
@@ -1308,7 +1324,9 @@ class Infocom extends CommonDBChild {
 
    /**
     * @param $itemtype
-   **/
+    *
+    * @return array
+    */
    static function getSearchOptionsToAddNew($itemtype = null) {
       $specific_itemtype = '';
       $beforejoin        = [];

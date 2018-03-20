@@ -53,12 +53,13 @@ class Plugin extends CommonDBTM {
    static $rightname = 'config';
 
 
-
    /**
     * @since version 0.85
     *
     * @param $nb
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Plugin', 'Plugins', $nb);
    }
@@ -926,7 +927,9 @@ class Plugin extends CommonDBTM {
     * is a plugin activated
     *
     * @param $plugin plugin directory
-   **/
+    *
+    * @return bool
+    */
    function isActivated($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
@@ -939,7 +942,9 @@ class Plugin extends CommonDBTM {
     * is a plugin installed
     *
     * @param $plugin plugin directory
-   **/
+    *
+    * @return bool
+    */
    function isInstalled($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
@@ -1438,11 +1443,11 @@ class Plugin extends CommonDBTM {
     * @since 9.2
     *
     * @param string $itemtype Item type
-    *
     * @return array an *indexed* array of search options
     *
+    * @throws Exception
     * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-   **/
+    */
    static function getAddSearchOptionsNew($itemtype) {
       $options = [];
 

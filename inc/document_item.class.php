@@ -213,7 +213,9 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * @param $item   CommonDBTM object
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_documents_items`.`items_id` = '".$item->getField('id')."'
@@ -247,7 +249,9 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * @param $item   Document object
-   **/
+    *
+    * @return int
+    */
    static function countForDocument(Document $item) {
       return countElementsInTable(['glpi_documents_items'],
                                  ['glpi_documents_items.documents_id' => $item->getField('id'),
@@ -573,8 +577,10 @@ class Document_Item extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $item            CommonDBTM object for which associated documents must be displayed
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $withtemplate (default 0)
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       $ID = $item->getField('id');
 

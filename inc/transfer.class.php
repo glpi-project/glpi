@@ -2535,7 +2535,9 @@ class Transfer extends CommonDBTM {
     * @param $data ticket data fields
     *
     * @since version 0.85 (before transferTicketAdditionalInformations)
-   **/
+    *
+    * @return array
+    */
    function transferHelpdeskAdditionalInformations($data) {
 
       $input               = [];
@@ -2719,7 +2721,9 @@ class Transfer extends CommonDBTM {
     * Transfer an enterprise
     *
     * @param $ID ID of the enterprise
-   **/
+    *
+    * @return int|mixed
+    */
    function transferSingleSupplier($ID) {
       global $DB, $CFG_GLPI;
 

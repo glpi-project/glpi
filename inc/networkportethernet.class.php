@@ -318,7 +318,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return array|string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -337,9 +339,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    /**
     * @param $field
-    * @param $name            (default '')
-    * @param $values          (defaul '')
+    * @param $name (default '')
+    * @param $values (defaul '')
     * @param $options   array
+    * @return int|string
     */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
 

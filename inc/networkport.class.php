@@ -503,7 +503,9 @@ class NetworkPort extends CommonDBChild {
     *
     * @param $item                     CommonDBTM object
     * @param $withtemplate   integer   withtemplate param (default 0)
-   **/
+    *
+    * @return bool
+    */
    static function showForItem(CommonDBTM $item, $withtemplate = 0) {
       global $DB, $CFG_GLPI;
 
@@ -916,7 +918,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @param $itemtype
-   **/
+    *
+    * @return array
+    */
    static function getSearchOptionsToAddNew($itemtype = null) {
       $tab = [];
 
@@ -1185,7 +1189,9 @@ class NetworkPort extends CommonDBChild {
 
    /**
     * @param CommonDBTM $item
-   **/
+    *
+    * @return int
+    */
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_networkports',

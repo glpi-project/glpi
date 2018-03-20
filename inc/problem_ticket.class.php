@@ -260,7 +260,9 @@ class Problem_Ticket extends CommonDBRelation{
     * Show tickets for a problem
     *
     * @param $problem Problem object
-   **/
+    *
+    * @return bool
+    */
    static function showForProblem(Problem $problem) {
       global $DB, $CFG_GLPI;
 
@@ -372,7 +374,9 @@ class Problem_Ticket extends CommonDBRelation{
     * Show problems for a ticket
     *
     * @param $ticket Ticket object
-   **/
+    *
+    * @return bool
+    */
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;
 

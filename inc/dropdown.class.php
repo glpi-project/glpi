@@ -581,8 +581,8 @@ class Dropdown {
     * @param $store_path            path where icons are stored
     * @param $display      boolean  display of get string ? (true by default)
     *
-    * @return nothing (print out an HTML select box)
-   **/
+    * @return string
+    */
    static function dropdownIcons($myname, $value, $store_path, $display = true) {
 
       $output = '';
@@ -1148,7 +1148,9 @@ class Dropdown {
     * @param $options   array of additionnal options:
     *    - display_emptychoice : allow selection of no language
     *    - emptylabel          : specific string to empty label if display_emptychoice is true
-   **/
+    *
+    * @return int|string
+    */
    static function showLanguages($myname, $options = []) {
       global $CFG_GLPI;
 
@@ -1441,7 +1443,9 @@ class Dropdown {
     *     - width              specific width needed (default 80%)
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
-   **/
+    *
+    * @return int|String
+    */
    static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
 
@@ -1507,7 +1511,9 @@ class Dropdown {
     *
     * @param $value   integer   number of item
     * @param $unit    string    of unit (maybe year, month, day, hour, % for standard management)
-   **/
+    *
+    * @return string
+    */
    static function getValueWithUnit($value, $unit) {
 
       if (strlen($unit) == 0) {
@@ -1572,7 +1578,9 @@ class Dropdown {
     *    - inhours         : only show timestamp in hours not in days
     *    - display         : boolean / display or return string
     *    - width           : string / display width of the item
-   **/
+    *
+    * @return int|string
+    */
    static function showTimeStamp($myname, $options = []) {
       global $CFG_GLPI;
 
@@ -1692,7 +1700,9 @@ class Dropdown {
     * @param $is_private      default is private ?
     * @param $entity          working entity ID
     * @param $is_recursive    is the item recursive ?
-   **/
+    *
+    * @return int
+    */
    static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
       global $CFG_GLPI;
 
@@ -1735,7 +1745,9 @@ class Dropdown {
     * Toggle view in LDAP user import/synchro between no restriction and date restriction
     *
     * @param $enabled (default 0)
-   **/
+    *
+    * @return int
+    */
    static function showAdvanceDateRestrictionSwitch($enabled = 0) {
       global $CFG_GLPI;
 
@@ -1789,7 +1801,9 @@ class Dropdown {
     *                                'key2' => 'val2'),
     *       'optgroupname2' => array('key3' => 'val3',
     *                                'key4' => 'val4'))
-   **/
+    *
+    * @return int|string
+    */
    static function showFromArray($name, array $elements, $options = []) {
 
       $param['value']               = '';
@@ -2071,8 +2085,8 @@ class Dropdown {
     * @param $itemtype  string   name of the class
     * @param $input     array    of value to import
     *
-    * @return the ID of the new
-   **/
+    * @return bool
+    */
    static function import($itemtype, $input) {
 
       if (!($item = getItemForItemtype($itemtype))) {
@@ -2158,7 +2172,9 @@ class Dropdown {
     * @since version 0.83
     *
     * @param $onchange  String   optional, for ajax (default '')
-   **/
+    *
+    * @return int|string
+    */
    static function showListLimit($onchange = '', $display = true) {
       global $CFG_GLPI;
 

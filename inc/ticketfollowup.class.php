@@ -59,12 +59,13 @@ class TicketFollowup  extends CommonDBTM {
    const SEEPRIVATE      = 8192;
 
 
-
    /**
     * Name of the type
     *
     * @param $nb : number of item in the type
-   **/
+    *
+    * @return string
+    */
    static function getTypeName($nb = 0) {
       return _n('Followup', 'Followups', $nb);
    }
@@ -619,10 +620,12 @@ class TicketFollowup  extends CommonDBTM {
 
    /** form for Followup
     *
-    *@param $ID      integer : Id of the followup
-    *@param $options array of possible options:
+    * @param $ID      integer : Id of the followup
+    * @param $options array of possible options:
     *     - ticket Object : the ticket
-   **/
+    *
+    * @return bool
+    */
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
@@ -830,7 +833,9 @@ class TicketFollowup  extends CommonDBTM {
     * Show the current ticketfollowup summary
     *
     * @param $ticket Ticket object
-   **/
+    *
+    * @return bool
+    */
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
@@ -1063,7 +1068,9 @@ class TicketFollowup  extends CommonDBTM {
 
    /**
     * @param $ID  integer  ID of the ticket
-   **/
+    *
+    * @return string
+    */
    static function showShortForTicket($ID) {
       global $DB, $CFG_GLPI;
 
@@ -1111,7 +1118,9 @@ class TicketFollowup  extends CommonDBTM {
    /** form for soluce's approbation
     *
     * @param $ticket Object : the ticket
-   **/
+    *
+    * @return bool
+    */
    function showApprobationForm($ticket) {
       global $DB, $CFG_GLPI;
 

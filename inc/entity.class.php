@@ -1292,7 +1292,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showStandardOptions(Entity $entity) {
 
       $con_spotted = false;
@@ -1381,7 +1383,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showAdvancedOptions(Entity $entity) {
       global $DB;
 
@@ -1467,7 +1471,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showInventoryOptions(Entity $entity) {
 
       $ID = $entity->getField('id');
@@ -1625,7 +1631,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showNotificationOptions(Entity $entity) {
 
       $ID = $entity->getField('id');
@@ -2016,7 +2024,9 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $field
     * @param $value must be addslashes
-   **/
+    *
+    * @return int|mixed
+    */
    private static function getEntityIDByField($field, $value) {
       global $DB;
 
@@ -2036,7 +2046,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $value
-   **/
+    *
+    * @return int|mixed
+    */
    static function getEntityIDByDN($value) {
       return self::getEntityIDByField("ldap_dn", $value);
    }
@@ -2046,7 +2058,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84
     *
     * @param $value
-   **/
+    *
+    * @return int|mixed
+    */
    static function getEntityIDByCompletename($value) {
       return self::getEntityIDByField("completename", $value);
    }
@@ -2056,7 +2070,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $value
-   **/
+    *
+    * @return int|mixed
+    */
    static function getEntityIDByTag($value) {
       return self::getEntityIDByField("tag", $value);
    }
@@ -2066,7 +2082,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $value
-   **/
+    *
+    * @return int|mixed
+    */
    static function getEntityIDByDomain($value) {
       return self::getEntityIDByField("mail_domain", $value);
    }
@@ -2076,7 +2094,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $entities_id
-   **/
+    *
+    * @return bool
+    */
    static function isEntityDirectoryConfigured($entities_id) {
 
       $entity = new self();
@@ -2098,7 +2118,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
     *
     * @param $entity Entity object
-   **/
+    *
+    * @return bool
+    */
    static function showHelpdeskOptions(Entity $entity) {
       global $CFG_GLPI;
 
@@ -2338,6 +2360,8 @@ class Entity extends CommonTreeDropdown {
     * @param $entities_id
     * @param $fieldval        string   name of the field that we want value (default '')
     * @param $default_value            value to return (default -2)
+    *
+    * @return int
    **/
    static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2) {
 
@@ -2532,7 +2556,9 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84
     *
     * @param $options array
-   **/
+    *
+    * @return int|string
+    */
    static function dropdownAutoAssignMode(array $options) {
 
       $p['name']    = 'auto_assign_mode';
@@ -2556,7 +2582,9 @@ class Entity extends CommonTreeDropdown {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       if (!is_array($values)) {
@@ -2731,10 +2759,12 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84
     *
     * @param $field
-    * @param $name               (default '')
-    * @param $values             (default '')
+    * @param $name (default '')
+    * @param $values (default '')
     * @param $options      array
-   **/
+    *
+    * @return int|string|void
+    */
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
       global $DB;
 

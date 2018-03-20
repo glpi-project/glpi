@@ -76,7 +76,9 @@ class ProfileRight extends CommonDBChild {
    /**
     * @param $profiles_id
     * @param $rights         array
-   **/
+    *
+    * @return array
+    */
    static function getProfileRights($profiles_id, array $rights = []) {
       global $DB;
 
@@ -289,7 +291,9 @@ class ProfileRight extends CommonDBChild {
     * @param $field
     * @param $values
     * @param $options   array
-   **/
+    *
+    * @return string
+    */
    static function getSpecificValueToDisplay($field, $values, array $options = []) {
 
       $itemtype = $options['searchopt']['rightclass'];

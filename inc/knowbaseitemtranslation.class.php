@@ -110,9 +110,11 @@ class KnowbaseItemTranslation extends CommonDBChild {
 
    /**
     * @param $item            CommonGLPI object
-    * @param $tabnum          (default 1)
-    * @param $withtemplate    (default 0)
-   **/
+    * @param $tabnum (default 1)
+    * @param $withtemplate (default 0)
+    *
+    * @return bool
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
@@ -269,6 +271,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
     *
     * @param $ID              field (default -1)
     * @param $options   array
+    * @return bool
     */
    function showForm($ID = -1, $options = []) {
       global $CFG_GLPI;

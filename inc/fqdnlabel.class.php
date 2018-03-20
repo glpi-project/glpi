@@ -76,7 +76,9 @@ abstract class FQDNLabel extends CommonDBChild {
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
     * @param $label        the label to check
-   **/
+    *
+    * @return bool
+    */
    static function checkFQDNLabel($label) {
 
       if (strlen($label) == 1) {
@@ -101,7 +103,9 @@ abstract class FQDNLabel extends CommonDBChild {
 
    /**
     * @param $input
-   **/
+    *
+    * @return bool
+    */
    function prepareLabelInput($input) {
 
       if (isset($input['name']) && !empty($input['name'])) {

@@ -227,7 +227,9 @@ class Change_Ticket extends CommonDBRelation{
     * Show tickets for a change
     *
     * @param $change Change object
-   **/
+    *
+    * @return bool
+    */
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;
 
@@ -333,7 +335,9 @@ class Change_Ticket extends CommonDBRelation{
     * Show changes for a ticket
     *
     * @param $ticket Ticket object
-   **/
+    *
+    * @return bool
+    */
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI;
 

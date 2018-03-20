@@ -160,7 +160,9 @@ class KnowbaseItem extends CommonDBVisible {
     * @since version 0.84
     *
     * @param $full path or relative one (true by default)
-   **/
+    *
+    * @return string
+    */
    static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
@@ -1298,9 +1300,11 @@ class KnowbaseItem extends CommonDBVisible {
    /**
     * Print out list kb item
     *
-    * @param $options            $_GET
+    * @param $options $_GET
     * @param $type      string   search type : browse / search (default search)
-   **/
+    *
+    * @return bool
+    */
    static function showList($options, $type = 'search') {
       global $DB, $CFG_GLPI;
 

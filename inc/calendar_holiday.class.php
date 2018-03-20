@@ -66,7 +66,9 @@ class Calendar_Holiday extends CommonDBRelation {
     * Show holidays for a calendar
     *
     * @param $calendar Calendar object
-   **/
+    *
+    * @return bool
+    */
    static function showForCalendar(Calendar $calendar) {
       global $DB, $CFG_GLPI;
 
