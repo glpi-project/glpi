@@ -124,9 +124,9 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
+         1 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
          2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-         3 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
+         3 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')'
       ]);
 
@@ -142,9 +142,9 @@ class Migration extends \GLPITestCase {
 
       $this->array($this->queries)->isIdenticalTo([
          0 => 'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-         1 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
+         1 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
          2 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-         3 => 'SELECT  `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
+         3 => 'SELECT  `glpi_configs`.* FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
          4 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')'
       ]);
 
