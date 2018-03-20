@@ -358,12 +358,7 @@
                   page: params.page || 1, // page number
                   {#
 condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
-display_emptychoice	1
-emptylabel	-----
 entity_restrict	0
-itemtype	ITILCategory
-page	1
-page_limit	100
 permit_select_parent	0
 #}
                };
@@ -410,6 +405,7 @@ permit_select_parent	0
 
       };
 
+      /** Cannot be moved to a .js file because of translations :/ */
       var createSlidePanel = function(params) {
          var _params = Object.assign({
             'name':     undefined,
@@ -522,59 +518,41 @@ permit_select_parent	0
             </a>
          </li>
 
-      {#/// Bookmark load
-      echo "<li id='bookmark_link'>";
-      Ajax::createSlidePanel(
-         'showSavedSearches',
-         [
-            'title'     => __('Saved searches'),
-            'url'       => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
-            'icon'      => '/pics/menu_config.png',
-            'icon_url'  => SavedSearch::getSearchURL(),
-            'icon_txt'  => __('Manage saved searches')
-         ]
-      );
-      echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"".
-             __s('Load a bookmark'). "\">";
-      echo "<span class='sr-only'>" . __('Saved searches')  . "</span>";
-      echo "</a></li>";#}
-
          <li id='help_link'>
             <a href='{% if CFG_GLPI.central_doc_url is empty %}http://glpi-project.org/help-central{% else %}{{ CFG_GLPI.central_doc_url}}{% endif %}' target='_blank' title="{{ __s('Help') }}" class='fa fa-question'>
                <span class='sr-only'>{{ __('Help') }}</span>
             </a>
          </li>
 
-      {#if (!GLPI_DEMO_MODE) {
-         echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
-                    "/front/preference.php?forcetab=User\$1' title=\"".
-                    addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                    Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
-      } else {
-         echo "<li id='language_link'><span>" .
-            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
-      }
-#}
+         <li id="language_link">
+      {% if not constant('GLPI_DEMO_MODE') %}
+            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User\$1" title="{#{ call_static('Dropdown', 'getLanguageName', glpilanguage)}#}">
+               {# Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>"; #}
+               en_GB
+      {% else %}
+            <span>en_GB{#Dropdown::getLanguageName($_SESSION['glpilanguage']) #}</span>
+      {% endif %}
+         </li>
+
          <li id='c_recherche'>
 {#
       if ($full === true) {
          /// Search engine
 #}
       {% if CFG_GLPI.allow_search_global %}
-         <form method='get' action='{{ CFG_GLPI.root_doc }}/front/search.php'>
-            <span id='champRecherche'>
-               <input size='15' type='text' name='globalsearch' placeholder='{{ __s('Search') }}'>
-               <button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>
-            </span>
-            {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
-         </form>
+            <form method='get' action='{{ CFG_GLPI.root_doc }}/front/search.php'>
+               <span id='champRecherche'>
+                  <input size='15' type='text' name='globalsearch' placeholder='{{ __s('Search') }}'>
+                  <button type='submit' name='globalsearchglass'><i class='fa fa-search'></i></button>
+               </span>
+               {% include "elements/hidden.twig" with {'element': {'name': '_csrf'}} %}
+            </form>
       {% endif %}
 {#
          }
       }
 #}
-      </li>
-
+         </li>
       </ul>
    </div>
    {% endspaceless %}
