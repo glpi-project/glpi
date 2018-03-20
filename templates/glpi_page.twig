@@ -84,6 +84,7 @@
             <a href="{{ path_for('slash') }}{#.$CFG_GLPI["root_doc"]."/front/$mainurl.php#}" title="{{__s('Home') }}">{{ __('Home')}}</a>
          </li>
 
+      {% if item != false %}
       {% for menu in glpi_menus %}
          {% set menu_itemtype = item.getType()|lower() %}
          {% if menu.content[menu_itemtype] is defined %}
@@ -191,6 +192,7 @@
 
          {% endif %}
       {% endfor %}
+      {% endif %}
 
       {#if ($full === true) {
          if (isset($menu[$sector]['content'][$item])) {
@@ -428,62 +430,80 @@
       $output = self::select($name, $values, $options);
       #}
 
-      $(function() {
-      $('.forSelect2').select2({
+      var _select2_common = {
          width: '14em{#$width#}',
          minimumInputLength: 0,
          quietMillis: 100,
          dropdownAutoWidth: true,
+         templateResult: formatResult,
          minimumResultsForSearch: {{ CFG_GLPI.ajax_limit_count }},
-         ajax: {
-            url: '{{ CFG_GLPI.root_doc }}/ajax/getDropdownValue.php{#{ path_for('slash') }#}',
-            dataType: 'json',
-            type: 'POST',
-            data: function (params) {
-               query = params;
-               return {
-      {#
-      foreach ($params as $key => $val) {
-         // Specific boolean case
-         if (is_bool($val)) {
-            $js .= "$key: ".($val?1:0).",\n";
-         } else {
-            $js .= "$key: ".json_encode($val).",\n";
-         }
-      }
-      #}
-                  itemtype: $(this).data('itemtype'),
-                  display_emptychoice: 1,
-                  emptylabel: '-----',
-                  searchText: params.term,
-                  page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
-                  page: params.page || 1, // page number
-                  {#
-condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
-entity_restrict	0
-permit_select_parent	0
-#}
-               };
-            },
-            processResults: function (data, params) {
-               params.page = params.page || 1;
-               var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+      };
 
-               return {
-                  results: data.results,
-                  pagination: {
-                        more: more
+      $(function() {
+         $('.forSelect2:not([data-ajax_url])').select2(
+            Object.assign({
+               formatSelection: function(object, container) {
+                  text = object.text;
+                  if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
+                     text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
                   }
-               };
+                  return text;
+               }
+            }, _select2_common)
+         );
+         $('.forSelect2[data-ajax_url]').select2(
+            Object.assign({
+               ajax: {
+                  url: function () {
+                     return $(this).data('ajax_url');
+                  },
+                  dataType: 'json',
+                  type: 'POST',
+                  data: function (params) {
+                     query = params;
+                     return {
+            {#
+            foreach ($params as $key => $val) {
+               // Specific boolean case
+               if (is_bool($val)) {
+                  $js .= "$key: ".($val?1:0).",\n";
+               } else {
+                  $js .= "$key: ".json_encode($val).",\n";
+               }
             }
-         },
-         templateResult: formatResult
-      });
-      {#
-      if (!empty($on_change)) {
-         $js .= " $('#$field_id').on('change', function(e) {".
-                  stripslashes($on_change)."});";
-      }#}
+            #}
+                        itemtype: $(this).data('itemtype'),
+                        display_emptychoice: 1,
+                        emptylabel: '-----',
+                        searchText: params.term,
+                        page_limit: {{ CFG_GLPI.dropdown_max }}, // page size
+                        page: params.page || 1, // page number
+                        {#
+      condition	08eeb2573550fa16b1bea6fa21840f2089e954f0
+      entity_restrict	0
+      permit_select_parent	0
+#}
+                     };
+                  },
+                  processResults: function (data, params) {
+                     params.page = params.page || 1;
+                     var more = (data.count >= {{ CFG_GLPI.dropdown_max }});
+
+                     return {
+                        results: data.results,
+                        pagination: {
+                              more: more
+                        }
+                     };
+                  }
+               }
+            }, _select2_common)
+         );
+         {#
+         if (!empty($on_change)) {
+            $js .= " $('#$field_id').on('change', function(e) {".
+                     stripslashes($on_change)."});";
+         }#}
          $('label').on(
             'click', function(){
                var _this = $(this);
@@ -582,6 +602,7 @@ permit_select_parent	0
       }
    </script>
    {{ parent() }}
+   {{ debugpanel()|raw }}
 {% endblock %}
 
 {# Prefs / Logout link #}

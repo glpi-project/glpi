@@ -1005,6 +1005,14 @@ var formatResult = function(result) {
    return _elt;
 };
 
+var formatSelection = function(object, container) {
+   text = object.text;
+   if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
+      text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
+   }
+   return text;
+};
+
 var _initInputs = function(prefix) {
    if (typeof(prefix) == 'undefined') {
       prefix = '';

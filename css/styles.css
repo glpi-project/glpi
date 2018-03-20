@@ -5372,11 +5372,15 @@ input[name=as_map]:checked + label {
    color:blue;
 }
 
+div.simpleform,
 div.add {
    margin: 0 auto;
-   padding: 1.5em;
    border: 1px solid #dadada;
    background: #fff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x
+}
+
+div.add {
+   padding: 1.5em;
 }
 
 div.add header {
@@ -5385,6 +5389,14 @@ div.add header {
    text-align: center;
    padding: .6em;
    font-weight: bold;
+}
+
+div.simpleform fieldset {
+   padding: .5em; /** purecss */
+}
+
+div.simpleform .pure-control-group {
+   margin-bottom: 0; /** purecss */
 }
 
 .leaflet-control-geocoder-form {

@@ -455,6 +455,37 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('switch-debug');
 
+   $app->get('/dropdowns[/{dropdown}]', function ($request, $response) {
+
+      $optgroup = Dropdown::getStandardDropdownItemTypes();
+
+      $glpi_form = [
+         'pure_form'    => 'aligned',
+         'header_title' => false,
+         'submit'       => false,
+         'elements'     => [
+            'dropdowns' => [
+               'type'         => 'select',
+               'name'         => 'dropdowns',
+               'autofocus'    => true,
+               'values'       => $optgroup,
+               'listicon'     => false,
+               'addicon'      => false,
+               'label'        => _n('Dropdown', 'Dropdowns', 2),
+               'noajax'       => true
+            ]
+         ]
+      ];
+
+      return $this->view->render($response, 'dropdowns.twig', ['glpi_form' => $glpi_form]);
+   })->setName('dropdowns');
+
+   $app->post('/ajax/dropdown/getvalue', function ($request, $response) {
+      $post = $request->getParsedBody();
+      $values = Dropdown::getDropdownValue($post, false);
+      return $response->withJson($values);
+   })->setName('dropdown-getvalue');
+
    // Run app
    $app->run();
 
