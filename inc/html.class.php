@@ -1348,8 +1348,8 @@ class Html {
                                              'ReservationItem', 'Report', 'MigrationCleaner',
                                              'SavedSearch'];
 
-      $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-      $menu['plugins']['types']      = [];
+      /*$menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
+      $menu['plugins']['types']      = [];*/
 
       $menu['admin']['title']        = __('Administration');
       $menu['admin']['types']        = ['User', 'Group', 'Entity', 'Rule',
@@ -1361,8 +1361,8 @@ class Html {
                                         'MailCollector', 'Link', 'Plugin'];
 
       // Special items
-      $menu['preference']['title']   = __('My settings');
-      $menu['preference']['default'] = '/front/preference.php';
+      /*$menu['preference']['title']   = __('My settings');
+      $menu['preference']['default'] = '/front/preference.php';*/
 
       return $menu;
    }
