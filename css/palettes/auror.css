@@ -78,29 +78,33 @@ a, a:link, .ui-widget-content a {
 }
 
 
-#c_menu  .pure-menu-link,
+#c_menu .pure-menu-link,
 ul#menu a.itemP, ul#menu a.itemP1 {
    color: #FFF;
 }
-#c_menu li ul .pure-menu-link,
-#c_menu  .pure-menu-link:hover {
+#c_menu li ul .pure-menu-link {
    color: black;
 }
 
+#c_menu .pure-menu-list > li.active,
 ul#menu > li.active,
 ul.ssmenu li.active {
    background-color: #8CABDB;
 }
 
+#c_menu .pure-menu-list li:hover,
+#c_menu .pure-menu-link:hover,
 ul#menu > li:hover {
    background-color: #8BAADA;
 }
 
+#c_menu .pure-menu-list ul li a:hover,
 ul#menu ul li a:hover {
    background: #3A5693;
    color: #C7DBF5;
 }
 
+#c_menu .pure-menu-list ul li a,
 ul#menu ul li a {
    color: #131425;
 }

@@ -570,7 +570,7 @@ permit_select_parent	0
       <ul class="pure-menu-children">
       {% for child in entry.content %}
          <li class="pure-menu-item">
-            <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}" class="pure-menu-link">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
+            <a href="{% if child.itemtype is defined %}{{ path_for('asset', {'itemtype': child.itemtype|lower}) }}{% endif %}" class="pure-menu-link itemP">{% if child.title is defined %}{{ child.title }}{% endif %}</a>
          </li>
       {% endfor %}
       </ul>

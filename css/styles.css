@@ -2639,8 +2639,11 @@ ul#menu > li {
    min-width: 135px;
    height: 30px;
 }
+#c_menu .pure-menu-list > li {
+   min-width: 135px;
+}
 
-ul#menu ul.ssmenu {
+ul#menu ul.ssmenu, #c_menu .pure-menu-list ul.ssmenu {
    position: absolute;
    min-width: 135px;
    z-index: 500;
@@ -5321,7 +5324,7 @@ div#viewgraph .rack_side_block .pdu_list td {
    color: rgba(0, 0, 0, .6);
 }
 
-ul#menu ul {
+ul#menu ul, #c_menu .pure-menu-list ul {
    -webkit-column-count: 2;
    -webkit-column-gap: 10px;
    -moz-column-count: 2;
@@ -5330,7 +5333,7 @@ ul#menu ul {
    column-gap:10px;
 }
 
-ul#menu ul li {
+ul#menu ul li, #c_menu .pure-menu-list ul li {
    break-inside: avoid;
 }
 
