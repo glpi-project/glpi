@@ -37,6 +37,7 @@ class GlpiDebug extends \Twig_Extension
    public function getFunctions() {
       return [
          new \Twig_SimpleFunction('exectime', [$this, 'callExecTime']),
+         new \Twig_SimpleFunction('debugpanel', [$this, 'callDebugPanel'])
       ];
    }
 
@@ -50,6 +51,128 @@ class GlpiDebug extends \Twig_Extension
          $timedebug = sprintf(__('%1$s - %2$s'), $timedebug, \Toolbox::getSize(memory_get_usage()));
       }
       return $timedebug;
+   }
+
+   public function callDebugPanel() {
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+
+      $ajax = false; //FIXME
+      $with_session = true; //FIXME
+
+      $panel = '';
+      if ($_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE) { // mode debug
+         $rand = mt_rand();
+         $panel .= "<div class='debug ".($ajax?"debug_ajax":"")."'>";
+         if (!$ajax) {
+            $panel .= "<span class='fa-stack fa-lg' id='see_debug'>
+                     <i class='fa fa-circle fa-stack-2x primary-fg-inverse'></i>
+                     <a href='#' class='fa fa-bug fa-stack-1x primary-fg' title='" . __s('Display GLPI debug informations')  . "'>
+                        <span class='sr-only'>See GLPI DEBUG</span>
+                     </a>
+            </span>";
+         }
+
+         $panel .= "<div id='debugtabs$rand'><ul>";
+         if ($CFG_GLPI["debug_sql"]) {
+            $panel .= "<li><a href='#debugsql$rand'>SQL REQUEST</a></li>";
+         }
+         if ($CFG_GLPI["debug_vars"]) {
+            $panel .= "<li><a href='#debugautoload$rand'>AUTOLOAD</a></li>";
+            $panel .= "<li><a href='#debugpost$rand'>POST VARIABLE</a></li>";
+            $panel .= "<li><a href='#debugget$rand'>GET VARIABLE</a></li>";
+            if ($with_session) {
+               $panel .= "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
+            }
+            $panel .= "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
+         }
+         $panel .= "</ul>";
+
+         if ($CFG_GLPI["debug_sql"]) {
+            $panel .= "<div id='debugsql$rand'>";
+            $panel .= "<div class='b'>".$SQL_TOTAL_REQUEST." Queries ";
+            $panel .= "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
+
+            $panel .= "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
+            $panel .= "<th>Errors</th></tr>";
+
+            foreach ($DEBUG_SQL['queries'] as $num => $query) {
+               $panel .= "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+               $panel .= \Html::cleanSQLDisplay($query);
+               $panel .= "</td><td>";
+               $panel .= $DEBUG_SQL['times'][$num];
+               $panel .= "</td><td>";
+               if (isset($DEBUG_SQL['errors'][$num])) {
+                  $panel .= $DEBUG_SQL['errors'][$num];
+               } else {
+                  $panel .= "&nbsp;";
+               }
+               $panel .= "</td></tr>";
+            }
+            $panel .= "</table>";
+            $panel .= "</div>";
+         }
+         if ($CFG_GLPI["debug_vars"]) {
+            $panel .= "<div id='debugautoload$rand'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
+            $panel .= "<div id='debugpost$rand'>";
+
+            ob_start();
+            \Html::printCleanArray($_POST, 0, true);
+            $panel .= ob_get_contents();
+            ob_end_clean();
+
+            $panel .= "</div>";
+            $panel .= "<div id='debugget$rand'>";
+
+            ob_start();
+            \Html::printCleanArray($_GET, 0, true);
+            $panel .= ob_get_contents();
+            ob_end_clean();
+
+            $panel .= "</div>";
+            if ($with_session) {
+               $panel .= "<div id='debugsession$rand'>";
+               ob_start();
+               \Html::printCleanArray($_SESSION, 0, true);
+               $panel .= ob_get_contents();
+               ob_end_clean();
+               $panel .= "</div>";
+            }
+            $panel .= "<div id='debugserver$rand'>";
+            ob_start();
+            \Html::printCleanArray($_SERVER, 0, true);
+            $panel .= ob_get_contents();
+            ob_end_clean();
+
+            $panel .= "</div>";
+         }
+
+         $panel .= \Html::scriptBlock("
+            $('#debugtabs$rand').tabs({
+               collapsible: true
+            }).addClass( 'ui-tabs-vertical ui-helper-clearfix' );
+
+            $('<li class=\"close\"><button id= \"close_debug$rand\">close debug</button></li>')
+               .appendTo('#debugtabs$rand ul');
+
+            $('#close_debug$rand').button({
+               icons: {
+                  primary: 'ui-icon-close'
+               },
+               text: false
+            }).click(function() {
+                $('#debugtabs$rand').css('display', 'none');
+            });
+
+            $('#see_debug').click(function(e) {
+               e.preventDefault();
+               console.log('see_debug #debugtabs$rand');
+               $('#debugtabs$rand').css('display', 'block');
+            });
+         ");
+
+         $panel .= "</div></div>";
+         return $panel;
+      }
    }
 
    public function getName() {
