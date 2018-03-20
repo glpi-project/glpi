@@ -636,7 +636,34 @@ $(function() {
 
    _initInputs();
    _initBookmarkPanel();
+   if ($('#debugtabs').length) {
+      _initDebug();
+   }
 });
+
+var _initDebug = function() {
+   $('#debugtabs').tabs({
+      collapsible: true
+   }).addClass( 'ui-tabs-vertical ui-helper-clearfix' );
+
+   $('<li class="close"><button id= "close_debug">close debug</button></li>')
+      .appendTo('#debugtabs ul');
+
+   $('#close_debug').button({
+      icons: {
+         primary: 'ui-icon-close'
+      },
+      text: false
+   }).click(function() {
+         $('#debugtabs').css('display', 'none');
+   });
+
+   $('#see_debug').click(function(e) {
+      e.preventDefault();
+      console.log('see_debug #debugtabs');
+      $('#debugtabs').css('display', 'block');
+   });
+};
 
 /**
  * Trigger submit event for a parent form of passed input dom element

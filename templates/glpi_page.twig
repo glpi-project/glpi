@@ -526,11 +526,11 @@ permit_select_parent	0
 
          <li id="language_link">
       {% if not constant('GLPI_DEMO_MODE') %}
-            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User\$1" title="{#{ call_static('Dropdown', 'getLanguageName', glpilanguage)}#}">
-               {# Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>"; #}
-               en_GB
+            <a href="{{ CFG_GLPI.root_doc }}/front/preference.php?forcetab=User\$1" title="{{ glpi_lang_name }}">
+               {{  glpi_lang_name }}
+            </a>
       {% else %}
-            <span>en_GB{#Dropdown::getLanguageName($_SESSION['glpilanguage']) #}</span>
+            <span>{{ glpi_lang_name }}</span>
       {% endif %}
          </li>
 
@@ -560,7 +560,12 @@ permit_select_parent	0
 
 {% macro menu_links(entry) %}
    <li class="pure-menu-item{% if entry.content is defined and entry.content|length %} pure-menu-has-children pure-menu-allow-hover{% endif %}">
-      <a href="{#% if entry.page is defined %}{{ entry.page }}{% endif %#}" class="pure-menu-link">{{ entry.title }}</a>
+      {% set url = '#' %}
+      {% if entry.content is defined %}
+         {% set first = entry.content|first %}
+         {% if first.itemtype is defined %}{% set url = path_for('asset', {'itemtype': first.itemtype|lower}) %}{% endif %}
+      {% endif %}
+      <a href="{{ url }}{#% if entry.page is defined %}{{ entry.page }}{% endif %#}" class="pure-menu-link">{{ entry.title }}</a>
    {% if entry.content is defined %}
       <ul class="pure-menu-children">
       {% for child in entry.content %}

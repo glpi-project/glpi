@@ -102,6 +102,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
       );
 
+      $view->getEnvironment()->addGlobal(
+         'glpi_lang',
+         $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
+      );
+
+      $view->getEnvironment()->addGlobal(
+         'glpi_lang_name',
+         Dropdown::getLanguageName($_SESSION['glpilanguage'])
+      );
+
       if (Session::getLoginUserID()) {
          $view->getEnvironment()->addGlobal(
             'user_name',
