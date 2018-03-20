@@ -2587,6 +2587,9 @@ ul#menu ul li {
    line-height: 20px;
    font-size: 0.9em;
 }
+.pure-menu-item ul {
+   text-align: left;
+}
 
 ul#menu ul li:last-child {
    border-bottom: 0px;

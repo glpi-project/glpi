@@ -126,7 +126,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          );
       }
 
-      $menus = Html::generateMenuSession($container['router'], true);
+      $menus = Html::generateMenuSession($container['router'], ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE));
       $view->getEnvironment()->addGlobal(
          'glpi_menus',
          $menus

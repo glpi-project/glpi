@@ -1412,6 +1412,7 @@ class Html {
                   if ($data = $type::getMenuContent()) {
                      // Multi menu entries management
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
+                        unset($data['is_multi_entries']);
                         if (!isset($menu[$category]['content'])) {
                            $menu[$category]['content'] = [];
                         }
