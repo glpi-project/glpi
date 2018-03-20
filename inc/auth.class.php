@@ -1468,30 +1468,34 @@ class Auth extends CommonGLPI {
       $default = 'local';
 
       // Get LDAP
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_authldaps',
-         'WHERE'  => [
-            'is_active' => 1
-         ],
-         'ORDER'  => ['name']
-      ]);
-      while ($data = $iterator->next()) {
-         $elements['ldap-'.$data['id']] = $data['name'];
-         if ($data['is_default'] == 1) {
-            $default = 'ldap-'.$data['id'];
+      if (Toolbox::canUseLdap()) {
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_authldaps',
+            'WHERE'  => [
+               'is_active' => 1
+            ],
+            'ORDER'  => ['name']
+         ]);
+         while ($data = $iterator->next()) {
+            $elements['ldap-'.$data['id']] = $data['name'];
+            if ($data['is_default'] == 1) {
+               $default = 'ldap-'.$data['id'];
+            }
          }
       }
 
-      // GET Mail servers
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_authmails',
-         'WHERE'  => [
-            'is_active' => 1
-         ],
-         'ORDER'  => ['name']
-      ]);
-      while ($data = $iterator->next()) {
-         $elements['mail-'.$data['id']] = $data['name'];
+      if (Toolbox::canUseImapPop()) {
+         // GET Mail servers
+         $iterator = $DB->request([
+            'FROM'   => 'glpi_authmails',
+            'WHERE'  => [
+               'is_active' => 1
+            ],
+            'ORDER'  => ['name']
+         ]);
+         while ($data = $iterator->next()) {
+            $elements['mail-'.$data['id']] = $data['name'];
+         }
       }
 
       // show dropdown of login src only when multiple src
