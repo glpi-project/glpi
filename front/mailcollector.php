@@ -41,7 +41,7 @@ if (!Toolbox::canUseImapPop()) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr><th colspan='2'>" . _n('Receiver', 'Receivers', 2)."</th></tr>";
    echo "<tr class='tab_bg_2'>";
-   echo "<td class='center red'>" . __('Your PHP parser was compiled without the IMAP functions');
+   echo "<td class='center red'>" . sprintf(__('%s extension is missing'), 'IMAP');
    echo "</td></tr></table>";
    echo "</div>";
    Html::footer();

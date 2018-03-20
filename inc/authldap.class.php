@@ -421,7 +421,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . self::getTypeName(1) . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
-         echo "<p class='red'>". __("The LDAP extension of your PHP parser isn't installed")."</p>";
+         echo "<p class='red'>".sprintf(__('%s extension is missing'), 'LDAP')."</p>";
          echo "<p>".__('Impossible to use LDAP as external source of connection')."</p>".
               "</td></tr></table></div>";
       }

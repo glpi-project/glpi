@@ -212,7 +212,7 @@ class AuthMail extends CommonDBTM {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Email server configuration') . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
-         echo "<p class='red'>".__('Your PHP parser was compiled without the IMAP functions')."</p>";
+         echo "<p class='red'>".sprintf(__('%s extension is missing'), 'IMAP')."</p>";
          echo "<p>". __('Impossible to use email server as external source of connection')."</p>";
          echo "</td></tr></table></div>";
       }
