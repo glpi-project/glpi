@@ -897,8 +897,9 @@ class Computer_Item extends CommonDBRelation{
 
       if ($res) {
          while ($data = $DB->fetch_assoc($res)) {
-            if (countElementsInTable("glpi_computers", "`id` IN (".$data["computers_id"].")
-                                                        AND `entities_id` NOT IN $entities") > 0) {
+            if (countElementsInTable("glpi_computers",
+                                     ['id' => $data["computers_id"],
+                                     'NOT' => ['entities_id' => $entities]]) > 0) {
                return false;
             }
          }

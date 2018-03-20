@@ -255,7 +255,7 @@ class AuthMail extends CommonDBTM {
     * @return boolean
     */
    static function useAuthMail() {
-      return (countElementsInTable('glpi_authmails', "`is_active`") > 0);
+      return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
    }
 
 
