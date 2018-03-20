@@ -54,7 +54,7 @@ echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseImapPop()) {
    echo "<a href='authmail.php'>". _n('Mail server', 'Mail servers', 2)."</a>";
 } else {
-   echo "<p class='red'>".__('Your PHP parser was compiled without the IMAP functions') ."</p>";
+   echo "<p class='red'>".sprintf(__('%s extension is missing'), 'IMAP')."</p>";
    echo "<p>".__('Impossible to use email server as external source of connection').'</p>';
 }
 echo "</td> </tr>";
