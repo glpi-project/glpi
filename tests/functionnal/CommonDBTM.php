@@ -114,4 +114,38 @@ class CommonDBTM extends DbTestCase {
       ]))->isFalse();
 
    }
+
+   public function testGetFromDBByRequest() {
+      $instance = new \Computer();
+      $instance->getFromDbByRequest([
+         'LEFT JOIN' => [
+            \Entity::getTable() => [
+               'FKEY' => [
+                  \Entity::getTable() => 'id',
+                  \Computer::getTable() => \Entity::getForeignKeyField()
+               ]
+            ]
+         ],
+         'WHERE' => ['AND' => [
+            'contact' => 'johndoe'],
+            \Entity::getTable() . '.name' => '_test_root_entity',
+         ]
+      ]);
+      // the instance must be populated
+      $this->boolean($instance->isNewItem())->isFalse();
+
+      $instance = new \Computer();
+      $this->exception(
+         function() use ($instance) {
+            $instance->getFromDbByRequest([
+               'WHERE' => ['contact' => 'johndoe'],
+            ]);
+         }
+      )->isInstanceOf(\RuntimeException::class)
+      ->message
+      ->contains('getFromDBByRequest expects to get one result, 2 found!');
+
+      // the instance must not be populated
+      $this->boolean($instance->isNewItem())->isTrue();
+   }
 }

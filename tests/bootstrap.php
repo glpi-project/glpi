@@ -72,7 +72,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => '4.2',
+      '_version' => '4.3',
 
       // Type => array of entries
       'Entity' => [
@@ -90,17 +90,27 @@ function loadDataset() {
          [
             'name'        => '_test_pc01',
             'entities_id' => '_test_root_entity',
-            'comment'     => 'Comment for computer _test_pc01'
+            'comment'     => 'Comment for computer _test_pc01',
          ], [
             'name'        => '_test_pc02',
             'entities_id' => '_test_root_entity',
-            'comment'     => 'Comment for computer _test_pc02'
+            'comment'     => 'Comment for computer _test_pc02',
+         ], [
+            'name'        => '_test_pc03',
+            'entities_id' => '_test_root_entity',
+            'comment'     => 'Comment for computer _test_pc03',
+            'contact'     => 'johndoe',
          ], [
             'name'        => '_test_pc11',
             'entities_id' => '_test_child_1',
          ], [
             'name'        => '_test_pc12',
             'entities_id' => '_test_child_1',
+         ], [
+            'name'        => '_test_pc13',
+            'entities_id' => '_test_child_1',
+            'comment'     => 'Comment for computer _test_pc13',
+            'contact'     => 'johndoe',
          ], [
             'name'        => '_test_pc21',
             'entities_id' => '_test_child_2',
