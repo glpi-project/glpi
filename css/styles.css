@@ -5372,11 +5372,20 @@ input[name=as_map]:checked + label {
    color:blue;
 }
 
+div.dropdowns_list,
 div.simpleform,
 div.add {
    margin: 0 auto;
+}
+
+div.simpleform,
+div.add {
    border: 1px solid #dadada;
    background: #fff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x
+}
+
+div.dropdowns_list {
+   text-align: center;
 }
 
 div.add {
@@ -5408,6 +5417,38 @@ div.simpleform .pure-control-group {
 }
 .leaflet-control-geocoder-form input[type=submit] {
    border: 1px transparent solid;
+}
+
+.dropdowns_list dl {
+   margin: .5em 1em;
+   border: 1px solid #dadada;
+   background: #fff;
+}
+
+.dropdowns_list dt {
+   font-weight: bold;
+   padding: .5em;
+   background: #F1F1F1;
+}
+
+.dropdowns_list dd {
+   text-align: left;
+}
+
+.dropdowns_list dd a {
+   display: block;
+   padding: .2em .5em;
+}
+.dropdowns_list dd a:hover {
+   background: #8BAADA;
+}
+
+.dropdowns_list .fa {
+   color: #ccc;
+}
+
+.dropdowns_list .fa.wentity {
+   color: #3A5693;
 }
 
 /** ITIL statuses */

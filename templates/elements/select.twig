@@ -30,15 +30,15 @@
  #}
 {% extends "elements/input.twig" %}
 
-{% macro html_options(options) %}
+{% macro html_options(options, selected) %}
    {% for key, values in options %}
       {% if values is iterable %}
          <optgroup label="{{ key }}">
             {% import _self as glpi_select %}
-            {{ glpi_select.html_options(values) }}
+            {{ glpi_select.html_options(values, selected) }}
          </optgroup>
       {% else %}
-         <option value="{{ key }}">{{ values }}</option>
+         <option value="{{ key }}"{% if selected == key %} selected="selected"{% endif %}>{{ values }}</option>
       {% endif %}
    {% endfor %}
 {% endmacro %}
@@ -54,7 +54,7 @@
         {% if element.noajax is not defined or element.noajax == false %}data-ajax_url="{{ element.ajax_url|default(path_for('dropdown-getvalue')) }}"{% endif %}
       >
          {% import _self as glpi_select %}
-         {{ glpi_select.html_options(element.values) }}
+         {{ glpi_select.html_options(element.values, element.value|default('')) }}
     </select>
 {% if element.listicon is not defined or element.listicon == true %}
    <a href="{{ path_for('asset', {'itemtype': element.itemtype}) }}" class="tooltip"

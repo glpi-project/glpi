@@ -455,8 +455,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       );
    })->setName('switch-debug');
 
-   $app->get('/dropdowns[/{dropdown}]', function ($request, $response) {
-
+   $app->get('/dropdowns[/{dropdown}]', function ($request, $response, $args) {
       $optgroup = Dropdown::getStandardDropdownItemTypes();
 
       $glpi_form = [
@@ -472,12 +471,32 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                'listicon'     => false,
                'addicon'      => false,
                'label'        => _n('Dropdown', 'Dropdowns', 2),
-               'noajax'       => true
+               'noajax'       => true,
+               'value'        => isset($args['dropdown']) ? $args['dropdown'] : null
             ]
          ]
       ];
 
-      return $this->view->render($response, 'dropdowns.twig', ['glpi_form' => $glpi_form]);
+      $tpl = 'dropdowns.twig';
+      $params = [
+         'page_title'   => __('Dropdowns'),
+         'glpi_form'    => $glpi_form
+      ];
+      if (isset($args['dropdown'])) {
+         $tpl = 'dropdown.twig';
+         $item = new $args['dropdown']();
+         $params['page_title'] = $item->getTypeName(Session::getPluralNumber());
+         ob_start();
+         Search::show($item->getType());
+         $params['contents'] = ob_get_contents();
+         ob_end_clean();
+      }
+
+      return $this->view->render(
+         $response,
+         $tpl,
+         $params
+      );
    })->setName('dropdowns');
 
    $app->post('/ajax/dropdown/getvalue', function ($request, $response) {

@@ -30,7 +30,7 @@
  #}
 {% block component %}
    {% if notag is not defined or not notag %}
-   <div class="pure-control-group{% if glpi_form.columns is defined and glpi_form.columns is not empty %} pure-u-{{ element.width|default(1) }}-{{ glpi_form.columns }}{% endif %}{% if form_class is defined %} {{ form_class }}{% endif %}">
+   <div class="pure-u-1 pure-control-group{% if glpi_form.columns is defined and glpi_form.columns is not empty %} pure-u-1 pure-u-md-{{ element.width|default(1) }}-{{ glpi_form.columns }}{% endif %}{% if form_class is defined %} {{ form_class }}{% endif %}">
    {% endif %}
    {% block label %}
       {% if element.label is defined %}

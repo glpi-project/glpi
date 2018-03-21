@@ -38,6 +38,7 @@ class Reflection extends \Twig_Extension
       return [
          new \Twig_SimpleFunction('call_static', [$this, 'callStaticMethod']),
          new \Twig_SimpleFunction('get_static', [$this, 'getStaticProperty']),
+         new \Twig_SimpleFunction('getitem', [$this, 'getItemForItemtype']),
       ];
    }
 
@@ -61,6 +62,10 @@ class Reflection extends \Twig_Extension
       }
 
       throw new \RuntimeException(sprintf('Invalid static property get for class %s and property %s', $class, $property));
+   }
+
+   public function getItemForItemtype($itemtype) {
+      return getItemForItemtype($itemtype);
    }
 
    public function getName() {
